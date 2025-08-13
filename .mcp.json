@@ -100,6 +100,13 @@
             "startupDelay": 900,
             "priority": "optional",
             "timeout": 30000
+        },
+        "ymadd-shadcn-ui-mcp-server": {
+            "command": "http",
+            "args": ["https://server.smithery.ai/@ymadd/shadcn-ui-mcp-server/mcp"],
+            "startupDelay": 1000,
+            "priority": "optional",
+            "timeout": 30000
         }
     }
 }
