@@ -1,4 +1,4 @@
-import { Bell, Search, User } from "lucide-react"
+import { Bell, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { SidebarTrigger } from "@/components/ui/sidebar"
+import { UserMenu } from "@/components/auth/UserMenu"
 
 export function DashboardHeader() {
   return (
@@ -44,10 +45,7 @@ export function DashboardHeader() {
       </div>
       
       <div className="flex items-center gap-4">
-        <Button variant="outline" size="icon" className="w-9 h-9 rounded-full border-gray-200 hover:bg-primary-100 hover:border-primary-300 hover:text-primary-600">
-          <User className="h-4 w-4" />
-          <span className="sr-only">User menu</span>
-        </Button>
+        <UserMenu />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon" className="w-9 h-9 rounded-full border-gray-200 hover:bg-primary-100 hover:border-primary-300 hover:text-primary-600">
