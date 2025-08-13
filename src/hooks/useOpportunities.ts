@@ -1,0 +1,419 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { supabase } from '@/lib/supabase'
+import type { 
+  OpportunityInsert, 
+  OpportunityUpdate, 
+  OpportunityFilters,
+  OpportunityWithRelations 
+} from '@/types/entities'
+
+// Query key factory
+export const opportunityKeys = {
+  all: ['opportunities'] as const,
+  lists: () => [...opportunityKeys.all, 'list'] as const,
+  list: (filters?: OpportunityFilters) => [...opportunityKeys.lists(), { filters }] as const,
+  details: () => [...opportunityKeys.all, 'detail'] as const,
+  detail: (id: string) => [...opportunityKeys.details(), id] as const,
+  byOrganization: (organizationId: string) => [...opportunityKeys.all, 'organization', organizationId] as const,
+  byContact: (contactId: string) => [...opportunityKeys.all, 'contact', contactId] as const,
+  byStage: (stage: string) => [...opportunityKeys.all, 'stage', stage] as const,
+  pipeline: () => [...opportunityKeys.all, 'pipeline'] as const,
+}
+
+// Hook to fetch all opportunities with optional filtering
+export function useOpportunities(filters?: OpportunityFilters) {
+  return useQuery({
+    queryKey: opportunityKeys.list(filters),
+    queryFn: async () => {
+      let query = supabase
+        .from('opportunities')
+        .select(`
+          *,
+          organization:organizations!opportunities_organization_id_fkey(*),
+          contact:contacts!opportunities_contact_id_fkey(*),
+          principal_organization:organizations!opportunities_principal_organization_id_fkey(*),
+          distributor_organization:organizations!opportunities_distributor_organization_id_fkey(*)
+        `)
+        .is('deleted_at', null)
+
+      // Apply filters
+      if (filters?.stage) {
+        if (Array.isArray(filters.stage)) {
+          query = query.in('stage', filters.stage)
+        } else {
+          query = query.eq('stage', filters.stage)
+        }
+      }
+
+      if (filters?.priority) {
+        if (Array.isArray(filters.priority)) {
+          query = query.in('priority', filters.priority)
+        } else {
+          query = query.eq('priority', filters.priority)
+        }
+      }
+
+      if (filters?.organization_id) {
+        query = query.eq('organization_id', filters.organization_id)
+      }
+
+      if (filters?.principal_organization_id) {
+        query = query.eq('principal_organization_id', filters.principal_organization_id)
+      }
+
+      if (filters?.distributor_organization_id) {
+        query = query.eq('distributor_organization_id', filters.distributor_organization_id)
+      }
+
+      if (filters?.contact_id) {
+        query = query.eq('contact_id', filters.contact_id)
+      }
+
+      if (filters?.estimated_value_min) {
+        query = query.gte('estimated_value', filters.estimated_value_min)
+      }
+
+      if (filters?.estimated_value_max) {
+        query = query.lte('estimated_value', filters.estimated_value_max)
+      }
+
+      if (filters?.probability_min) {
+        query = query.gte('probability', filters.probability_min)
+      }
+
+      if (filters?.probability_max) {
+        query = query.lte('probability', filters.probability_max)
+      }
+
+      query = query.order('created_at', { ascending: false })
+
+      const { data, error } = await query
+
+      if (error) throw error
+      return data as OpportunityWithRelations[]
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
+}
+
+// Hook to fetch a single opportunity by ID with all relations
+export function useOpportunity(id: string) {
+  return useQuery({
+    queryKey: opportunityKeys.detail(id),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('opportunities')
+        .select(`
+          *,
+          organization:organizations!opportunities_organization_id_fkey(*),
+          contact:contacts!opportunities_contact_id_fkey(*),
+          principal_organization:organizations!opportunities_principal_organization_id_fkey(*),
+          distributor_organization:organizations!opportunities_distributor_organization_id_fkey(*),
+          opportunity_products(
+            *,
+            product:products(*)
+          ),
+          interactions(*)
+        `)
+        .eq('id', id)
+        .is('deleted_at', null)
+        .single()
+
+      if (error) throw error
+      return data as OpportunityWithRelations
+    },
+    enabled: !!id,
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+// Hook to fetch opportunities for a specific organization
+export function useOpportunitiesByOrganization(organizationId: string) {
+  return useQuery({
+    queryKey: opportunityKeys.byOrganization(organizationId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('opportunities')
+        .select(`
+          *,
+          organization:organizations!opportunities_organization_id_fkey(*),
+          contact:contacts!opportunities_contact_id_fkey(*),
+          principal_organization:organizations!opportunities_principal_organization_id_fkey(*),
+          distributor_organization:organizations!opportunities_distributor_organization_id_fkey(*)
+        `)
+        .eq('organization_id', organizationId)
+        .is('deleted_at', null)
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+      return data as OpportunityWithRelations[]
+    },
+    enabled: !!organizationId,
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+// Hook to fetch opportunities for a specific contact
+export function useOpportunitiesByContact(contactId: string) {
+  return useQuery({
+    queryKey: opportunityKeys.byContact(contactId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('opportunities')
+        .select(`
+          *,
+          organization:organizations!opportunities_organization_id_fkey(*),
+          contact:contacts!opportunities_contact_id_fkey(*),
+          principal_organization:organizations!opportunities_principal_organization_id_fkey(*),
+          distributor_organization:organizations!opportunities_distributor_organization_id_fkey(*)
+        `)
+        .eq('contact_id', contactId)
+        .is('deleted_at', null)
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+      return data as OpportunityWithRelations[]
+    },
+    enabled: !!contactId,
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+// Hook to fetch pipeline data (opportunities grouped by stage)
+export function usePipelineData() {
+  return useQuery({
+    queryKey: opportunityKeys.pipeline(),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('opportunities')
+        .select(`
+          stage,
+          estimated_value,
+          probability,
+          organization:organizations!opportunities_organization_id_fkey(name),
+          contact:contacts!opportunities_contact_id_fkey(first_name, last_name)
+        `)
+        .is('deleted_at', null)
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+
+      // Group by stage and calculate metrics
+      const pipeline = data.reduce((acc, opp) => {
+        const stage = opp.stage
+        if (!acc[stage]) {
+          acc[stage] = {
+            stage,
+            count: 0,
+            totalValue: 0,
+            weightedValue: 0,
+            opportunities: []
+          }
+        }
+        
+        acc[stage].count += 1
+        acc[stage].totalValue += opp.estimated_value || 0
+        acc[stage].weightedValue += (opp.estimated_value || 0) * ((opp.probability || 0) / 100)
+        acc[stage].opportunities.push(opp)
+        
+        return acc
+      }, {} as Record<string, any>)
+
+      return Object.values(pipeline)
+    },
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+// Hook to fetch active opportunities (not closed)
+export function useActiveOpportunities() {
+  return useQuery({
+    queryKey: [...opportunityKeys.all, 'active'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('opportunities')
+        .select(`
+          *,
+          organization:organizations!opportunities_organization_id_fkey(*),
+          contact:contacts!opportunities_contact_id_fkey(*),
+          principal_organization:organizations!opportunities_principal_organization_id_fkey(*),
+          distributor_organization:organizations!opportunities_distributor_organization_id_fkey(*)
+        `)
+        .not('stage', 'in', '(closed_won,closed_lost)')
+        .is('deleted_at', null)
+        .order('estimated_close_date')
+
+      if (error) throw error
+      return data as OpportunityWithRelations[]
+    },
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+// Hook to create a new opportunity
+export function useCreateOpportunity() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (opportunity: OpportunityInsert) => {
+      const { data, error } = await supabase
+        .from('opportunities')
+        .insert(opportunity)
+        .select(`
+          *,
+          organization:organizations!opportunities_organization_id_fkey(*),
+          contact:contacts!opportunities_contact_id_fkey(*),
+          principal_organization:organizations!opportunities_principal_organization_id_fkey(*),
+          distributor_organization:organizations!opportunities_distributor_organization_id_fkey(*)
+        `)
+        .single()
+
+      if (error) throw error
+      return data as OpportunityWithRelations
+    },
+    onSuccess: (newOpportunity) => {
+      // Invalidate all opportunity lists
+      queryClient.invalidateQueries({ queryKey: opportunityKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: opportunityKeys.byOrganization(newOpportunity.organization_id) })
+      queryClient.invalidateQueries({ queryKey: opportunityKeys.byContact(newOpportunity.contact_id) })
+      queryClient.invalidateQueries({ queryKey: opportunityKeys.pipeline() })
+      queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'active'] })
+      
+      // Add the new opportunity to the cache
+      queryClient.setQueryData(opportunityKeys.detail(newOpportunity.id), newOpportunity)
+    },
+  })
+}
+
+// Hook to update an opportunity
+export function useUpdateOpportunity() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: OpportunityUpdate }) => {
+      const { data, error } = await supabase
+        .from('opportunities')
+        .update({ ...updates, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select(`
+          *,
+          organization:organizations!opportunities_organization_id_fkey(*),
+          contact:contacts!opportunities_contact_id_fkey(*),
+          principal_organization:organizations!opportunities_principal_organization_id_fkey(*),
+          distributor_organization:organizations!opportunities_distributor_organization_id_fkey(*)
+        `)
+        .single()
+
+      if (error) throw error
+      return data as OpportunityWithRelations
+    },
+    onSuccess: (updatedOpportunity) => {
+      // Update all related queries
+      queryClient.invalidateQueries({ queryKey: opportunityKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: opportunityKeys.byOrganization(updatedOpportunity.organization_id) })
+      queryClient.invalidateQueries({ queryKey: opportunityKeys.byContact(updatedOpportunity.contact_id) })
+      queryClient.invalidateQueries({ queryKey: opportunityKeys.pipeline() })
+      queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'active'] })
+      
+      // Update the specific opportunity in the cache
+      queryClient.setQueryData(opportunityKeys.detail(updatedOpportunity.id), updatedOpportunity)
+    },
+  })
+}
+
+// Hook to advance opportunity to next stage
+export function useAdvanceOpportunityStage() {
+  const queryClient = useQueryClient()
+
+  const stageProgression = {
+    'lead': 'qualified',
+    'qualified': 'proposal',
+    'proposal': 'negotiation',
+    'negotiation': 'closed_won',
+  } as const
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      // First get current stage
+      const { data: currentOpp, error: fetchError } = await supabase
+        .from('opportunities')
+        .select('stage')
+        .eq('id', id)
+        .single()
+
+      if (fetchError) throw fetchError
+
+      const nextStage = stageProgression[currentOpp.stage as keyof typeof stageProgression]
+      if (!nextStage) {
+        throw new Error('Cannot advance opportunity from current stage')
+      }
+
+      const { data, error } = await supabase
+        .from('opportunities')
+        .update({ 
+          stage: nextStage,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', id)
+        .select(`
+          *,
+          organization:organizations!opportunities_organization_id_fkey(*),
+          contact:contacts!opportunities_contact_id_fkey(*),
+          principal_organization:organizations!opportunities_principal_organization_id_fkey(*),
+          distributor_organization:organizations!opportunities_distributor_organization_id_fkey(*)
+        `)
+        .single()
+
+      if (error) throw error
+      return data as OpportunityWithRelations
+    },
+    onSuccess: (updatedOpportunity) => {
+      // Update all related queries
+      queryClient.invalidateQueries({ queryKey: opportunityKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: opportunityKeys.byOrganization(updatedOpportunity.organization_id) })
+      queryClient.invalidateQueries({ queryKey: opportunityKeys.byContact(updatedOpportunity.contact_id) })
+      queryClient.invalidateQueries({ queryKey: opportunityKeys.pipeline() })
+      queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'active'] })
+      
+      // Update the specific opportunity in the cache
+      queryClient.setQueryData(opportunityKeys.detail(updatedOpportunity.id), updatedOpportunity)
+    },
+  })
+}
+
+// Hook to soft delete an opportunity
+export function useDeleteOpportunity() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { data, error } = await supabase
+        .from('opportunities')
+        .update({ 
+          deleted_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', id)
+        .select(`
+          *,
+          organization:organizations!opportunities_organization_id_fkey(*),
+          contact:contacts!opportunities_contact_id_fkey(*)
+        `)
+        .single()
+
+      if (error) throw error
+      return data as OpportunityWithRelations
+    },
+    onSuccess: (deletedOpportunity) => {
+      // Invalidate all opportunity lists
+      queryClient.invalidateQueries({ queryKey: opportunityKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: opportunityKeys.byOrganization(deletedOpportunity.organization_id) })
+      queryClient.invalidateQueries({ queryKey: opportunityKeys.byContact(deletedOpportunity.contact_id) })
+      queryClient.invalidateQueries({ queryKey: opportunityKeys.pipeline() })
+      queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'active'] })
+      
+      // Remove from individual cache
+      queryClient.removeQueries({ queryKey: opportunityKeys.detail(deletedOpportunity.id) })
+    },
+  })
+}

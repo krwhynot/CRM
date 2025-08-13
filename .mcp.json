@@ -67,7 +67,7 @@
             "command": "mcp-server-github",
             "args": [],
             "env": {
-                "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+                "GITHUB_PERSONAL_ACCESS_TOKEN": "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"
             },
             "startupDelay": 600,
             "priority": "essential",
@@ -101,10 +101,26 @@
             "priority": "optional",
             "timeout": 30000
         },
-        "ymadd-shadcn-ui-mcp-server": {
-            "command": "http",
-            "args": ["https://server.smithery.ai/@ymadd/shadcn-ui-mcp-server/mcp"],
-            "startupDelay": 1000,
+        "shadcn-ui": {
+            "command": "npx",
+            "args": [
+                "@jpisnice/shadcn-ui-mcp-server",
+                "--github-api-key",
+                "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"
+            ],
+            "startupDelay": 1100,
+            "priority": "optional",
+            "timeout": 30000
+        },
+        "postgres": {
+            "command": "postgres-mcp",
+            "args": [
+                "--access-mode=unrestricted"
+            ],
+            "env": {
+                "DATABASE_URI": "postgresql://postgres.ixitjldcdvbazvjsnkao:Schererville85%24@aws-0-us-east-2.pooler.supabase.com:6543/postgres"
+            },
+            "startupDelay": 1200,
             "priority": "optional",
             "timeout": 30000
         }
