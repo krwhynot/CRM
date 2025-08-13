@@ -6,6 +6,10 @@ import type {
   Product,
   Opportunity,
   Interaction,
+  ContactWithOrganization,
+  OpportunityWithRelations,
+  InteractionWithRelations,
+  ProductWithPrincipal,
   OrganizationFilters,
   ContactFilters,
   ProductFilters,
@@ -217,26 +221,26 @@ export interface OrganizationTableProps extends Omit<DataTableProps<Organization
   onFiltersChange?: (filters: OrganizationFilters) => void
 }
 
-export interface ContactTableProps extends Omit<DataTableProps<Contact>, 'data' | 'columns'> {
-  contacts: Contact[]
+export interface ContactTableProps extends Omit<DataTableProps<ContactWithOrganization>, 'data' | 'columns'> {
+  contacts: ContactWithOrganization[]
   filters?: ContactFilters
   onFiltersChange?: (filters: ContactFilters) => void
 }
 
-export interface ProductTableProps extends Omit<DataTableProps<Product>, 'data' | 'columns'> {
-  products: Product[]
+export interface ProductTableProps extends Omit<DataTableProps<ProductWithPrincipal>, 'data' | 'columns'> {
+  products: ProductWithPrincipal[]
   filters?: ProductFilters
   onFiltersChange?: (filters: ProductFilters) => void
 }
 
-export interface OpportunityTableProps extends Omit<DataTableProps<Opportunity>, 'data' | 'columns'> {
-  opportunities: Opportunity[]
+export interface OpportunityTableProps extends Omit<DataTableProps<OpportunityWithRelations>, 'data' | 'columns'> {
+  opportunities: OpportunityWithRelations[]
   filters?: OpportunityFilters
   onFiltersChange?: (filters: OpportunityFilters) => void
 }
 
-export interface InteractionTableProps extends Omit<DataTableProps<Interaction>, 'data' | 'columns'> {
-  interactions: Interaction[]
+export interface InteractionTableProps extends Omit<DataTableProps<InteractionWithRelations>, 'data' | 'columns'> {
+  interactions: InteractionWithRelations[]
   filters?: InteractionFilters
   onFiltersChange?: (filters: InteractionFilters) => void
 }

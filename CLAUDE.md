@@ -85,6 +85,100 @@ The system is built around 5 core entities:
 4. **Error Handling**: Use shadcn/ui Toast for transient messages, Alert/Dialog for blocking errors
 5. **Relationship-Centric**: Model data around relationships, track engagement quality over quantity
 
+To prevent specific TypeScript + form validation issues in the future, you’ll want a schema-first, type-driven workflow that keeps your database schema, validation schema, and form types in sync automatically.
+
+1. Use a Single Source of Truth for Types
+
+Generate TypeScript types from your database schema (e.g., using Prisma, Supabase gen types, or Drizzle ORM).
+
+Infer form validation types directly from the Yup/Zod schema instead of manually writing interfaces.
+
+const formSchema = yup.object({
+  firstName: yup.string().required(),
+  age: yup.number().nullable(),
+});
+
+type FormValues = yup.InferType<typeof formSchema>;
+
+
+This ensures form, validation, and DB types always match.
+
+2. Align Database Schema and Validation Rules
+
+Whenever you change a DB column’s nullability, type, or constraints, immediately update:
+
+Your validation schema (Yup/Zod)
+
+Your form defaults in react-hook-form
+
+Use migration scripts that also regenerate types (e.g., prisma generate, drizzle-kit generate).
+
+3. Create a Validation + Form Types Layer
+
+Make a folder like /schemas and store:
+
+form.schema.ts → Yup/Zod schema
+
+form.types.ts → InferType from schema
+
+Use those types everywhere instead of redefining.
+
+Example:
+
+// schemas/contact.schema.ts
+export const contactSchema = yup.object({
+  name: yup.string().required(),
+  email: yup.string().email().nullable(),
+});
+export type ContactFormData = yup.InferType<typeof contactSchema>;
+
+// form component
+const form = useForm<ContactFormData>({
+  resolver: yupResolver(contactSchema),
+});
+
+4. Validate Relationships in Type Definitions
+
+If a component expects ContactWithOrganization, make sure the query and type both guarantee it.
+
+Use type-safe queries so you can't accidentally pass a base type.
+
+Example with Prisma:
+
+type ContactWithOrg = Prisma.ContactGetPayload<{ include: { organization: true } }>;
+
+5. Add a CI Step for Type & Schema Consistency
+
+In CI/CD, run:
+
+tsc --noEmit → catches type errors
+
+A schema drift check (e.g., Prisma db pull and diff)
+
+A type generation step to ensure yup.InferType and DB types match
+
+6. Workflow for Changes
+
+Whenever you modify a form or DB schema:
+
+Update DB migration.
+
+Regenerate DB types.
+
+Update Yup/Zod schema.
+
+Regenerate form types from schema.
+
+Run tsc before commit.
+
+✅ Result:
+
+No more guessing if Yup matches DB.
+
+React Hook Form will always have the correct types.
+
+Components will never get the wrong relationship type.
+
 ## Specialized Agent Architecture
 
 This project follows a 14-agent specialized architecture with MCP tools:

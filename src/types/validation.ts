@@ -5,21 +5,21 @@ import { Constants } from './database.types'
 export const organizationSchema = yup.object({
   name: yup.string().required('Organization name is required').max(255, 'Name must be 255 characters or less'),
   type: yup.string().oneOf(Constants.public.Enums.organization_type, 'Invalid organization type').required('Organization type is required'),
-  description: yup.string().max(500, 'Description must be 500 characters or less'),
-  phone: yup.string().max(50, 'Phone must be 50 characters or less'),
-  email: yup.string().email('Invalid email format').max(255, 'Email must be 255 characters or less'),
-  website: yup.string().url('Invalid website URL').max(255, 'Website must be 255 characters or less'),
-  address_line_1: yup.string().max(255, 'Address line 1 must be 255 characters or less'),
-  address_line_2: yup.string().max(255, 'Address line 2 must be 255 characters or less'),
-  city: yup.string().max(100, 'City must be 100 characters or less'),
-  state_province: yup.string().max(100, 'State/Province must be 100 characters or less'),
-  postal_code: yup.string().max(20, 'Postal code must be 20 characters or less'),
-  country: yup.string().max(100, 'Country must be 100 characters or less'),
-  industry: yup.string().max(100, 'Industry must be 100 characters or less'),
+  description: yup.string().max(500, 'Description must be 500 characters or less').nullable(),
+  phone: yup.string().max(50, 'Phone must be 50 characters or less').nullable(),
+  email: yup.string().email('Invalid email format').max(255, 'Email must be 255 characters or less').nullable(),
+  website: yup.string().url('Invalid website URL').max(255, 'Website must be 255 characters or less').nullable(),
+  address_line_1: yup.string().max(255, 'Address line 1 must be 255 characters or less').nullable(),
+  address_line_2: yup.string().max(255, 'Address line 2 must be 255 characters or less').nullable(),
+  city: yup.string().max(100, 'City must be 100 characters or less').nullable(),
+  state_province: yup.string().max(100, 'State/Province must be 100 characters or less').nullable(),
+  postal_code: yup.string().max(20, 'Postal code must be 20 characters or less').nullable(),
+  country: yup.string().max(100, 'Country must be 100 characters or less').nullable(),
+  industry: yup.string().max(100, 'Industry must be 100 characters or less').nullable(),
   size: yup.string().oneOf(Constants.public.Enums.organization_size, 'Invalid organization size').nullable(),
   annual_revenue: yup.number().positive('Annual revenue must be positive').nullable(),
   employee_count: yup.number().positive('Employee count must be positive').integer('Employee count must be a whole number').nullable(),
-  notes: yup.string().max(1000, 'Notes must be 1000 characters or less')
+  notes: yup.string().max(1000, 'Notes must be 1000 characters or less').nullable()
 })
 
 // Contact validation schema
@@ -27,15 +27,15 @@ export const contactSchema = yup.object({
   first_name: yup.string().required('First name is required').max(100, 'First name must be 100 characters or less'),
   last_name: yup.string().required('Last name is required').max(100, 'Last name must be 100 characters or less'),
   organization_id: yup.string().uuid('Invalid organization ID').required('Organization is required'),
-  title: yup.string().max(100, 'Title must be 100 characters or less'),
+  title: yup.string().max(100, 'Title must be 100 characters or less').nullable(),
   role: yup.string().oneOf(Constants.public.Enums.contact_role, 'Invalid contact role').nullable(),
-  email: yup.string().email('Invalid email format').max(255, 'Email must be 255 characters or less'),
-  phone: yup.string().max(50, 'Phone must be 50 characters or less'),
-  mobile_phone: yup.string().max(50, 'Mobile phone must be 50 characters or less'),
-  department: yup.string().max(100, 'Department must be 100 characters or less'),
-  linkedin_url: yup.string().url('Invalid LinkedIn URL').max(255, 'LinkedIn URL must be 255 characters or less'),
+  email: yup.string().email('Invalid email format').max(255, 'Email must be 255 characters or less').nullable(),
+  phone: yup.string().max(50, 'Phone must be 50 characters or less').nullable(),
+  mobile_phone: yup.string().max(50, 'Mobile phone must be 50 characters or less').nullable(),
+  department: yup.string().max(100, 'Department must be 100 characters or less').nullable(),
+  linkedin_url: yup.string().url('Invalid LinkedIn URL').max(255, 'LinkedIn URL must be 255 characters or less').nullable(),
   is_primary_contact: yup.boolean().default(false),
-  notes: yup.string().max(1000, 'Notes must be 1000 characters or less')
+  notes: yup.string().max(1000, 'Notes must be 1000 characters or less').nullable()
 })
 
 // Product validation schema
@@ -43,17 +43,17 @@ export const productSchema = yup.object({
   name: yup.string().required('Product name is required').max(255, 'Name must be 255 characters or less'),
   principal_id: yup.string().uuid('Invalid principal ID').required('Principal organization is required'),
   category: yup.string().oneOf(Constants.public.Enums.product_category, 'Invalid product category').required('Category is required'),
-  description: yup.string().max(1000, 'Description must be 1000 characters or less'),
-  sku: yup.string().max(100, 'SKU must be 100 characters or less'),
-  unit_of_measure: yup.string().max(50, 'Unit of measure must be 50 characters or less'),
+  description: yup.string().max(1000, 'Description must be 1000 characters or less').nullable(),
+  sku: yup.string().max(100, 'SKU must be 100 characters or less').nullable(),
+  unit_of_measure: yup.string().max(50, 'Unit of measure must be 50 characters or less').nullable(),
   unit_cost: yup.number().positive('Unit cost must be positive').nullable(),
   list_price: yup.number().positive('List price must be positive').nullable(),
   min_order_quantity: yup.number().positive('Minimum order quantity must be positive').integer('Minimum order quantity must be a whole number').nullable(),
   season_start: yup.number().integer('Season start must be a month (1-12)').min(1, 'Season start must be between 1-12').max(12, 'Season start must be between 1-12').nullable(),
   season_end: yup.number().integer('Season end must be a month (1-12)').min(1, 'Season end must be between 1-12').max(12, 'Season end must be between 1-12').nullable(),
   shelf_life_days: yup.number().positive('Shelf life must be positive').integer('Shelf life must be a whole number').nullable(),
-  storage_requirements: yup.string().max(500, 'Storage requirements must be 500 characters or less'),
-  specifications: yup.string().max(1000, 'Specifications must be 1000 characters or less')
+  storage_requirements: yup.string().max(500, 'Storage requirements must be 500 characters or less').nullable(),
+  specifications: yup.string().max(1000, 'Specifications must be 1000 characters or less').nullable()
 })
 
 // Opportunity validation schema
@@ -61,39 +61,37 @@ export const opportunitySchema = yup.object({
   name: yup.string().required('Opportunity name is required').max(255, 'Name must be 255 characters or less'),
   organization_id: yup.string().uuid('Invalid organization ID').required('Organization is required'),
   contact_id: yup.string().uuid('Invalid contact ID').required('Contact is required'),
-  principal_organization_id: yup.string().uuid('Invalid principal organization ID').nullable(),
-  distributor_organization_id: yup.string().uuid('Invalid distributor organization ID').nullable(),
-  stage: yup.string().oneOf(Constants.public.Enums.opportunity_stage, 'Invalid opportunity stage').default('lead'),
+  stage: yup.string().oneOf(Constants.public.Enums.opportunity_stage, 'Invalid opportunity stage').required('Stage is required'),
   priority: yup.string().oneOf(Constants.public.Enums.priority_level, 'Invalid priority level').nullable(),
-  estimated_value: yup.number().positive('Estimated value must be positive').nullable(),
-  estimated_close_date: yup.date().min(new Date(), 'Estimated close date must be in the future').nullable(),
+  estimated_value: yup.number().positive('Value must be positive').nullable(),
   probability: yup.number().min(0, 'Probability must be between 0-100').max(100, 'Probability must be between 0-100').nullable(),
+  estimated_close_date: yup.string().nullable(),
+  actual_close_date: yup.string().nullable(),
   description: yup.string().max(1000, 'Description must be 1000 characters or less'),
-  next_action: yup.string().max(255, 'Next action must be 255 characters or less'),
-  next_action_date: yup.date().min(new Date(), 'Next action date must be in the future').nullable(),
   competition: yup.string().max(500, 'Competition must be 500 characters or less'),
-  decision_criteria: yup.string().max(500, 'Decision criteria must be 500 characters or less'),
-  notes: yup.string().max(1000, 'Notes must be 1000 characters or less')
+  decision_criteria: yup.string().max(1000, 'Decision criteria must be 1000 characters or less'),
+  next_action: yup.string().max(500, 'Next action must be 500 characters or less'),
+  next_action_date: yup.string().nullable(),
+  notes: yup.string().max(1000, 'Notes must be 1000 characters or less'),
+  principal_organization_id: yup.string().uuid('Invalid principal organization ID').nullable(),
+  distributor_organization_id: yup.string().uuid('Invalid distributor organization ID').nullable()
 })
 
 // Interaction validation schema
 export const interactionSchema = yup.object({
-  type: yup.string().oneOf(Constants.public.Enums.interaction_type, 'Invalid interaction type').required('Interaction type is required'),
   subject: yup.string().required('Subject is required').max(255, 'Subject must be 255 characters or less'),
-  description: yup.string().max(1000, 'Description must be 1000 characters or less'),
-  interaction_date: yup.date().max(new Date(), 'Interaction date cannot be in the future').default(() => new Date()),
-  duration_minutes: yup.number().positive('Duration must be positive').integer('Duration must be a whole number').nullable(),
-  contact_id: yup.string().uuid('Invalid contact ID').nullable(),
+  type: yup.string().oneOf(Constants.public.Enums.interaction_type, 'Invalid interaction type').required('Interaction type is required'),
   organization_id: yup.string().uuid('Invalid organization ID').nullable(),
+  contact_id: yup.string().uuid('Invalid contact ID').nullable(),
   opportunity_id: yup.string().uuid('Invalid opportunity ID').nullable(),
+  interaction_date: yup.string().required('Interaction date is required'),
+  duration_minutes: yup.number().positive('Duration must be positive').integer('Duration must be a whole number').nullable(),
+  description: yup.string().max(1000, 'Description must be 1000 characters or less').nullable(),
+  outcome: yup.string().max(500, 'Outcome must be 500 characters or less').nullable(),
   follow_up_required: yup.boolean().default(false),
-  follow_up_date: yup.date().min(new Date(), 'Follow-up date must be in the future').when('follow_up_required', {
-    is: true,
-    then: (schema) => schema.required('Follow-up date is required when follow-up is needed'),
-    otherwise: (schema) => schema.nullable()
-  }),
-  follow_up_notes: yup.string().max(500, 'Follow-up notes must be 500 characters or less'),
-  outcome: yup.string().max(500, 'Outcome must be 500 characters or less')
+  follow_up_date: yup.string().nullable(),
+  follow_up_notes: yup.string().max(500, 'Follow up notes must be 500 characters or less').nullable(),
+  attachments: yup.array().of(yup.string()).nullable()
 })
 
 // Opportunity Product validation schema (for opportunity-product junction)
