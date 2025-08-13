@@ -1,0 +1,105 @@
+{
+    "mcpServers": {
+        "knowledge-graph": {
+            "command": "mcp-knowledge-graph",
+            "args": [
+                "--memory-path",
+                "./.knowledge"
+            ],
+            "startupDelay": 0,
+            "priority": "essential",
+            "timeout": 20000
+        },
+        "exa": {
+            "command": "exa-mcp-server",
+            "args": [
+                "--tools=web_search_exa,github_search,crawling"
+            ],
+            "env": {
+                "EXA_API_KEY": "ec834474-736b-4070-a6cb-265ab6225e89"
+            },
+            "startupDelay": 100,
+            "priority": "essential",
+            "timeout": 30000
+        },
+        "supabase": {
+            "command": "mcp-server-supabase",
+            "args": [],
+            "env": {
+                "SUPABASE_URL": "https://ixitjldcdvbazvjsnkao.supabase.co",
+                "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4aXRqbGRjZHZiYXp2anNua2FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ5Mjg0MjEsImV4cCI6MjA3MDUwNDQyMX0.8h5jXRcT96R34m0MU7PVbgzJPpGvf5azgQd2wo5AB2Q",
+                "SUPABASE_ACCESS_TOKEN": "sbp_17142d4b5b2564e01ce95878bb99f69a85b1581c"
+            },
+            "startupDelay": 200,
+            "priority": "essential",
+            "timeout": 30000
+        },
+        "magicuidesign": {
+            "command": "mcp",
+            "args": [],
+            "startupDelay": 300,
+            "priority": "optional",
+            "timeout": 30000
+        },
+        "sequential-thinking": {
+            "command": "mcp-server-sequential-thinking",
+            "args": [
+                "--max-thoughts=8",
+                "--branch-limit=1",
+                "--detail-level=minimal",
+                "--revision-depth=2"
+            ],
+            "env": {
+                "DISABLE_THOUGHT_LOGGING": "true"
+            },
+            "startupDelay": 400,
+            "priority": "optional",
+            "timeout": 15000
+        },
+        "Context7": {
+            "command": "context7-mcp",
+            "args": [],
+            "startupDelay": 500,
+            "priority": "optional",
+            "timeout": 30000
+        },
+        "github": {
+            "command": "mcp-server-github",
+            "args": [],
+            "env": {
+                "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+            },
+            "startupDelay": 600,
+            "priority": "essential",
+            "timeout": 30000
+        },
+        "filesystem": {
+            "command": "mcp-server-filesystem",
+            "args": [
+                "/home/krwhynot/Projects/KitchenPantry",
+                "/home/krwhynot/Projects",
+                "/home/krwhynot"
+            ],
+            "startupDelay": 700,
+            "priority": "essential",
+            "timeout": 30000
+        },
+        "playwright": {
+            "command": "mcp-server-playwright",
+            "args": [
+                "--isolated",
+                "--headless"
+            ],
+            "startupDelay": 800,
+            "priority": "optional",
+            "timeout": 30000
+        },
+        "vercel": {
+            "command": "vercel",
+            "args": [],
+            "startupDelay": 900,
+            "priority": "optional",
+            "timeout": 30000
+        }
+    }
+}

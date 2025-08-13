@@ -1,0 +1,3 @@
+{"type":"entity","name":"KitchenPantry CRM","entityType":"project","observations":["Vue 3 + TypeScript project","Supabase backend","14 specialized agents","16-week timeline"],"createdAt":"2025-08-11T16:40:06.209Z","version":1}
+{"type":"entity","name":"Database Schema Architect","entityType":"agent","observations":["High priority agent","Phase 1 Foundation","PostgreSQL schema design","RLS policies"],"createdAt":"2025-08-11T16:40:06.209Z","version":1}
+{"type":"relation","from":"Database Schema Architect","to":"KitchenPantry CRM","relationType":"works_on","createdAt":"2025-08-11T16:40:13.361Z","version":1}
