@@ -24,8 +24,13 @@ const queryClient = new QueryClient({
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
   
-  if (loading) return <div>Loading...</div>
-  if (!user) return <Navigate to="/login" replace />
+  if (loading) {
+    return <div>Loading...</div>
+  }
+  
+  if (!user) {
+    return <Navigate to="/login" replace />
+  }
   
   return <>{children}</>
 }
@@ -36,8 +41,12 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
+            {/* Public auth routes */}
             <Route path="/login" element={<AuthPage />} />
+            <Route path="/forgot-password" element={<AuthPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
+            
+            {/* Protected app routes */}
             <Route path="/*" element={
               <ProtectedRoute>
                 <Layout>

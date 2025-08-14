@@ -17,18 +17,25 @@ export function ResetPasswordPage() {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
 
-  const accessToken = searchParams.get('access_token')
-  const refreshToken = searchParams.get('refresh_token')
+  const tokenHash = searchParams.get('token_hash')
+  const type = searchParams.get('type')
 
   useEffect(() => {
-    if (accessToken && refreshToken) {
-      // Set the session with the tokens from the URL
-      supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
+    if (tokenHash && type === 'recovery') {
+      // Verify the OTP token for password reset
+      supabase.auth.verifyOtp({
+        token_hash: tokenHash,
+        type: 'recovery'
+      }).then(({ data, error }) => {
+        if (error) {
+          console.error('Error verifying token:', error)
+          setError('Invalid or expired reset link')
+        } else if (data.session) {
+          console.log('Token verified successfully, session established')
+        }
       })
     }
-  }, [accessToken, refreshToken])
+  }, [tokenHash, type])
 
   const validatePassword = (password: string) => {
     if (password.length < 8) {
@@ -82,7 +89,7 @@ export function ResetPasswordPage() {
     }
   }
 
-  if (!accessToken || !refreshToken) {
+  if (!tokenHash || type !== 'recovery') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <Card className="w-full max-w-md mx-auto">
