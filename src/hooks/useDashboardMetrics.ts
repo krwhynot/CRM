@@ -144,8 +144,8 @@ export interface DashboardMetricsOptions {
  * Comprehensive dashboard metrics hook that calculates all KPIs and business intelligence metrics
  * for the KitchenPantry CRM system.
  */
-export function useDashboardMetrics(options: DashboardMetricsOptions = {}): DashboardMetrics {
-  const { } = options
+export function useDashboardMetrics(_options: DashboardMetricsOptions = {}): DashboardMetrics {
+  // Options parameter reserved for future use (filters, date ranges, etc.)
 
   // ============================================================================
   // DATA FETCHING
