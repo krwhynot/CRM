@@ -4,7 +4,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider, useAuth } from '@/contexts/AuthContext'
 import { Toaster } from '@/components/ui/sonner'
 import { Layout } from '@/components/layout/Layout'
-import { LoginForm } from '@/components/auth/LoginForm'
+import { AuthPage } from '@/components/auth/AuthPage'
+import { ResetPasswordPage } from '@/components/auth/ResetPasswordPage'
 import { DashboardPage } from '@/pages/Dashboard'
 import { OrganizationsPage } from '@/pages/Organizations'
 import { ContactsPage } from '@/pages/Contacts'
@@ -35,7 +36,8 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
-            <Route path="/login" element={<LoginForm />} />
+            <Route path="/login" element={<AuthPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/*" element={
               <ProtectedRoute>
                 <Layout>

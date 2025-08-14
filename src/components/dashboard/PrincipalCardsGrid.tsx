@@ -1,0 +1,131 @@
+import { PrincipalCard } from './PrincipalCard'
+import { usePrincipals } from '@/hooks/useOrganizations'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Card, CardContent } from '@/components/ui/card'
+
+interface PrincipalCardsGridProps {
+  className?: string
+  maxItems?: number
+}
+
+/**
+ * PrincipalCardsGrid Component
+ * 
+ * Displays a responsive grid of PrincipalCard components showing
+ * all principal organizations with their key metrics and analytics.
+ * 
+ * Features:
+ * - Responsive grid layout (1 column mobile, 2 tablet, 3+ desktop)
+ * - Loading states with skeleton placeholders
+ * - Error handling with user-friendly messages
+ * - Optional limit on number of cards displayed
+ * - Optimized data fetching using existing hooks
+ */
+export function PrincipalCardsGrid({ className, maxItems }: PrincipalCardsGridProps) {
+  const { 
+    data: principals = [], 
+    isLoading, 
+    error,
+    isError
+  } = usePrincipals()
+
+  // Handle loading state
+  if (isLoading) {
+    return (
+      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ${className || ''}`}>
+        {Array.from({ length: 8 }).map((_, index) => (
+          <div key={index} className="space-y-4">
+            <Skeleton className="h-48 w-full rounded-lg" />
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  // Handle error state
+  if (isError) {
+    return (
+      <div className={`${className || ''}`}>
+        <Card className="border-red-200 bg-red-50">
+          <CardContent className="p-6">
+            <div className="text-red-800">
+              <h3 className="font-semibold">Failed to load principal organizations</h3>
+              <p className="text-sm mt-1">Please try again later.</p>
+              {error?.message && (
+                <div className="mt-2 text-xs text-red-600">
+                  Error: {error.message}
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  // Handle empty state
+  if (principals.length === 0) {
+    return (
+      <div className={`${className || ''}`}>
+        <div className="text-center py-12">
+          <h3 className="text-lg font-semibold text-muted-foreground">
+            No Principal Organizations Found
+          </h3>
+          <p className="text-sm text-muted-foreground mt-2">
+            Add principal organizations to see them displayed here.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  // Apply optional limit
+  const displayPrincipals = maxItems 
+    ? principals.slice(0, maxItems)
+    : principals
+
+  // Sort principals by priority (A+ first) and then by name
+  const sortedPrincipals = displayPrincipals.sort((a, b) => {
+    // Priority order: enterprise -> large -> medium -> small -> null
+    const priorityOrder = {
+      'enterprise': 0,
+      'large': 1,
+      'medium': 2,
+      'small': 3
+    }
+    
+    const aPriority = priorityOrder[a.size as keyof typeof priorityOrder] ?? 4
+    const bPriority = priorityOrder[b.size as keyof typeof priorityOrder] ?? 4
+    
+    if (aPriority !== bPriority) {
+      return aPriority - bPriority
+    }
+    
+    // If same priority, sort by name
+    return a.name.localeCompare(b.name)
+  })
+
+  return (
+    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ${className || ''}`}>
+      {sortedPrincipals.map((principal) => (
+        <PrincipalCard
+          key={principal.id}
+          principal={principal}
+          className="h-full"
+        />
+      ))}
+      
+      {maxItems && principals.length > maxItems && (
+        <div className="col-span-full">
+          <div className="text-center py-4">
+            <p className="text-sm text-muted-foreground">
+              Showing {maxItems} of {principals.length} principal organizations
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default PrincipalCardsGrid
