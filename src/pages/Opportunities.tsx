@@ -1,10 +1,11 @@
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { OpportunitiesTable } from '@/components/opportunities/OpportunitiesTable'
 import { OpportunityForm } from '@/components/opportunities/OpportunityForm'
-import { useOpportunities } from '@/hooks/useOpportunities'
+import { useOpportunities, useCreateOpportunity } from '@/hooks/useOpportunities'
 import { Target, Plus, Search, DollarSign, TrendingUp } from 'lucide-react'
 import {
   Dialog,
@@ -19,6 +20,7 @@ export function OpportunitiesPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const { data: opportunities = [], isLoading } = useOpportunities()
+  const createOpportunityMutation = useCreateOpportunity()
 
   const filteredOpportunities = opportunities.filter(opp =>
     opp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -64,10 +66,17 @@ export function OpportunitiesPage() {
               <DialogTitle>Create New Opportunity</DialogTitle>
             </DialogHeader>
             <OpportunityForm 
-              onSubmit={(data) => {
-                console.log('Opportunity form submitted:', data)
-                setIsCreateDialogOpen(false)
+              onSubmit={async (data) => {
+                try {
+                  await createOpportunityMutation.mutateAsync(data as any)
+                  setIsCreateDialogOpen(false)
+                  toast.success('Opportunity created successfully!')
+                } catch (error) {
+                  console.error('Failed to create opportunity:', error)
+                  toast.error('Failed to create opportunity. Please try again.')
+                }
               }}
+              loading={createOpportunityMutation.isPending}
             />
           </DialogContent>
         </Dialog>

@@ -44,7 +44,7 @@ export function OrganizationForm({
       postal_code: initialData?.postal_code || '',
       country: initialData?.country || '',
       industry: initialData?.industry || '',
-      size: initialData?.size || null,
+      size: initialData?.size ?? 'not_specified',
       annual_revenue: initialData?.annual_revenue || null,
       employee_count: initialData?.employee_count || null,
       notes: initialData?.notes || ''
@@ -52,6 +52,15 @@ export function OrganizationForm({
   })
 
   const selectedType = watch('type')
+
+  const handleFormSubmit = (data: OrganizationFormData) => {
+    // Convert placeholder values to null before submission
+    const cleanData = {
+      ...data,
+      size: data.size === 'not_specified' ? null : data.size
+    }
+    onSubmit(cleanData as any)
+  }
 
   return (
     <Card className="w-full max-w-4xl mx-auto">
@@ -61,7 +70,7 @@ export function OrganizationForm({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
           {/* Basic Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -295,7 +304,7 @@ export function OrganizationForm({
                   Organization Size
                 </label>
                 <Select 
-                  value={watch('size') || ''} 
+                  value={watch('size') || 'not_specified'} 
                   onValueChange={(value) => setValue('size', value as any)}
                   disabled={loading}
                 >
@@ -303,7 +312,7 @@ export function OrganizationForm({
                     <SelectValue placeholder="Select size" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Not specified</SelectItem>
+                    <SelectItem value="not_specified">Not specified</SelectItem>
                     {Constants.public.Enums.organization_size.map((size) => (
                       <SelectItem key={size} value={size}>
                         {size.replace('_', '-').toUpperCase()}

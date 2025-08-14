@@ -16,7 +16,7 @@ export const organizationSchema = yup.object({
   postal_code: yup.string().max(20, 'Postal code must be 20 characters or less').nullable(),
   country: yup.string().max(100, 'Country must be 100 characters or less').nullable(),
   industry: yup.string().max(100, 'Industry must be 100 characters or less').nullable(),
-  size: yup.string().oneOf(Constants.public.Enums.organization_size, 'Invalid organization size').nullable(),
+  size: yup.string().oneOf([...Constants.public.Enums.organization_size, 'not_specified'], 'Invalid organization size').nullable(),
   annual_revenue: yup.number().positive('Annual revenue must be positive').nullable(),
   employee_count: yup.number().positive('Employee count must be positive').integer('Employee count must be a whole number').nullable(),
   notes: yup.string().max(1000, 'Notes must be 1000 characters or less').nullable()

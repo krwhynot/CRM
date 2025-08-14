@@ -256,9 +256,23 @@ export function useCreateOpportunity() {
 
   return useMutation({
     mutationFn: async (opportunity: OpportunityInsert) => {
+      // Get current user ID for RLS policy compliance
+      const { data: { user }, error: authError } = await supabase.auth.getUser()
+      
+      if (authError || !user) {
+        throw new Error('Authentication required to create opportunity')
+      }
+
+      // Ensure required audit fields are set for RLS policy
+      const opportunityData = {
+        ...opportunity,
+        created_by: user.id,
+        updated_by: user.id,
+      }
+
       const { data, error } = await supabase
         .from('opportunities')
-        .insert(opportunity)
+        .insert(opportunityData)
         .select(`
           *,
           organization:organizations!opportunities_organization_id_fkey(*),

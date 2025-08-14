@@ -1,10 +1,11 @@
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ProductsTable } from '@/components/products/ProductsTable'
 import { ProductForm } from '@/components/products/ProductForm'
-import { useProducts } from '@/hooks/useProducts'
+import { useProducts, useCreateProduct } from '@/hooks/useProducts'
 import { Package, Plus, Search, Archive, Star } from 'lucide-react'
 import {
   Dialog,
@@ -19,6 +20,7 @@ export function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const { data: products = [], isLoading } = useProducts()
+  const createProductMutation = useCreateProduct()
 
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -57,10 +59,17 @@ export function ProductsPage() {
               <DialogTitle>Create New Product</DialogTitle>
             </DialogHeader>
             <ProductForm 
-              onSubmit={(data) => {
-                console.log('Product form submitted:', data)
-                setIsCreateDialogOpen(false)
+              onSubmit={async (data) => {
+                try {
+                  await createProductMutation.mutateAsync(data as any)
+                  setIsCreateDialogOpen(false)
+                  toast.success('Product created successfully!')
+                } catch (error) {
+                  console.error('Failed to create product:', error)
+                  toast.error('Failed to create product. Please try again.')
+                }
               }}
+              loading={createProductMutation.isPending}
             />
           </DialogContent>
         </Dialog>

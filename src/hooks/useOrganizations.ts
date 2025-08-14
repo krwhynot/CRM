@@ -132,9 +132,23 @@ export function useCreateOrganization() {
 
   return useMutation({
     mutationFn: async (organization: OrganizationInsert) => {
+      // Get current user ID for RLS policy compliance
+      const { data: { user }, error: authError } = await supabase.auth.getUser()
+      
+      if (authError || !user) {
+        throw new Error('Authentication required to create organization')
+      }
+
+      // Ensure required audit fields are set for RLS policy
+      const organizationData = {
+        ...organization,
+        created_by: user.id,
+        updated_by: user.id,
+      }
+
       const { data, error } = await supabase
         .from('organizations')
-        .insert(organization)
+        .insert(organizationData)
         .select()
         .single()
 

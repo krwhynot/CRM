@@ -139,9 +139,23 @@ export function useCreateContact() {
 
   return useMutation({
     mutationFn: async (contact: ContactInsert) => {
+      // Get current user ID for RLS policy compliance
+      const { data: { user }, error: authError } = await supabase.auth.getUser()
+      
+      if (authError || !user) {
+        throw new Error('Authentication required to create contact')
+      }
+
+      // Ensure required audit fields are set for RLS policy
+      const contactData = {
+        ...contact,
+        created_by: user.id,
+        updated_by: user.id,
+      }
+
       const { data, error } = await supabase
         .from('contacts')
-        .insert(contact)
+        .insert(contactData)
         .select(`
           *,
           organization:organizations(*)

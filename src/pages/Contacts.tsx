@@ -1,10 +1,11 @@
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ContactsTable } from '@/components/contacts/ContactsTable'
 import { ContactForm } from '@/components/contacts/ContactForm'
-import { useContacts } from '@/hooks/useContacts'
+import { useContacts, useCreateContact } from '@/hooks/useContacts'
 import { Users, Plus, Search, Mail, Phone } from 'lucide-react'
 import {
   Dialog,
@@ -19,6 +20,7 @@ export function ContactsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const { data: contacts = [], isLoading } = useContacts()
+  const createContactMutation = useCreateContact()
 
   const filteredContacts = contacts.filter(contact =>
     contact.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -57,10 +59,17 @@ export function ContactsPage() {
               </DialogDescription>
             </DialogHeader>
             <ContactForm 
-              onSubmit={(data) => {
-                console.log('Contact form submitted:', data)
-                setIsCreateDialogOpen(false)
+              onSubmit={async (data) => {
+                try {
+                  await createContactMutation.mutateAsync(data as any)
+                  setIsCreateDialogOpen(false)
+                  toast.success('Contact created successfully!')
+                } catch (error) {
+                  console.error('Failed to create contact:', error)
+                  toast.error('Failed to create contact. Please try again.')
+                }
               }}
+              loading={createContactMutation.isPending}
             />
           </DialogContent>
         </Dialog>

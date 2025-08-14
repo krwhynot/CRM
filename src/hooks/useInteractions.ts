@@ -280,9 +280,23 @@ export function useCreateInteraction() {
 
   return useMutation({
     mutationFn: async (interaction: InteractionInsert) => {
+      // Get current user ID for RLS policy compliance
+      const { data: { user }, error: authError } = await supabase.auth.getUser()
+      
+      if (authError || !user) {
+        throw new Error('Authentication required to create interaction')
+      }
+
+      // Ensure required audit fields are set for RLS policy
+      const interactionData = {
+        ...interaction,
+        created_by: user.id,
+        updated_by: user.id,
+      }
+
       const { data, error } = await supabase
         .from('interactions')
-        .insert(interaction)
+        .insert(interactionData)
         .select(`
           *,
           contact:contacts(*),

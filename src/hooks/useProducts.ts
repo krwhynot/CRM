@@ -159,9 +159,23 @@ export function useCreateProduct() {
 
   return useMutation({
     mutationFn: async (product: ProductInsert) => {
+      // Get current user ID for RLS policy compliance
+      const { data: { user }, error: authError } = await supabase.auth.getUser()
+      
+      if (authError || !user) {
+        throw new Error('Authentication required to create product')
+      }
+
+      // Ensure required audit fields are set for RLS policy
+      const productData = {
+        ...product,
+        created_by: user.id,
+        updated_by: user.id,
+      }
+
       const { data, error } = await supabase
         .from('products')
-        .insert(product)
+        .insert(productData)
         .select(`
           *,
           principal:organizations!products_principal_id_fkey(*)

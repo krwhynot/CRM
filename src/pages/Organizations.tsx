@@ -1,23 +1,43 @@
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { OrganizationsTable } from '@/components/organizations/OrganizationsTable'
 import { OrganizationForm } from '@/components/organizations/OrganizationForm'
-import { useOrganizations } from '@/hooks/useOrganizations'
+import { useOrganizations, useCreateOrganization, useUpdateOrganization, useDeleteOrganization } from '@/hooks/useOrganizations'
 import { Building2, Plus, Search } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import type { Organization } from '@/types/entities'
 
 export function OrganizationsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null)
+  
   const { data: organizations = [], isLoading } = useOrganizations()
+  const createOrganizationMutation = useCreateOrganization()
+  const updateOrganizationMutation = useUpdateOrganization()
+  const deleteOrganizationMutation = useDeleteOrganization()
 
   const filteredOrganizations = organizations.filter(org =>
     org.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -26,6 +46,30 @@ export function OrganizationsPage() {
 
   const principals = organizations.filter(org => org.type === 'principal')
   const retailers = organizations.filter(org => org.type === 'customer')
+
+  const handleEdit = (organization: Organization) => {
+    setSelectedOrganization(organization)
+    setIsEditDialogOpen(true)
+  }
+
+  const handleDelete = (organization: Organization) => {
+    setSelectedOrganization(organization)
+    setIsDeleteDialogOpen(true)
+  }
+
+  const handleConfirmDelete = async () => {
+    if (!selectedOrganization) return
+
+    try {
+      await deleteOrganizationMutation.mutateAsync(selectedOrganization.id)
+      setIsDeleteDialogOpen(false)
+      setSelectedOrganization(null)
+      toast.success('Organization deleted successfully!')
+    } catch (error) {
+      console.error('Failed to delete organization:', error)
+      toast.error('Failed to delete organization. Please try again.')
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -49,12 +93,23 @@ export function OrganizationsPage() {
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>Create New Organization</DialogTitle>
+              <DialogDescription>
+                Add a new organization to your CRM system with contact and business information.
+              </DialogDescription>
             </DialogHeader>
             <OrganizationForm 
-              onSubmit={(data) => {
-                console.log('Organization form submitted:', data)
-                setIsCreateDialogOpen(false)
+              onSubmit={async (data) => {
+                try {
+                  // The OrganizationForm already handles the data conversion
+                  await createOrganizationMutation.mutateAsync(data as any)
+                  setIsCreateDialogOpen(false)
+                  toast.success('Organization created successfully!')
+                } catch (error) {
+                  console.error('Failed to create organization:', error)
+                  toast.error('Failed to create organization. Please try again.')
+                }
               }}
+              loading={createOrganizationMutation.isPending}
             />
           </DialogContent>
         </Dialog>
@@ -112,10 +167,71 @@ export function OrganizationsPage() {
           {isLoading ? (
             <div className="text-center py-8">Loading organizations...</div>
           ) : (
-            <OrganizationsTable organizations={filteredOrganizations} />
+            <OrganizationsTable 
+              organizations={filteredOrganizations}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
           )}
         </CardContent>
       </Card>
+
+      {/* Edit Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Organization</DialogTitle>
+            <DialogDescription>
+              Update organization information and business details.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedOrganization && (
+            <OrganizationForm
+              initialData={selectedOrganization}
+              onSubmit={async (data) => {
+                try {
+                  await updateOrganizationMutation.mutateAsync({
+                    id: selectedOrganization.id,
+                    updates: data as any
+                  })
+                  setIsEditDialogOpen(false)
+                  setSelectedOrganization(null)
+                  toast.success('Organization updated successfully!')
+                } catch (error) {
+                  console.error('Failed to update organization:', error)
+                  toast.error('Failed to update organization. Please try again.')
+                }
+              }}
+              loading={updateOrganizationMutation.isPending}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action will permanently delete "{selectedOrganization?.name}". 
+              This action cannot be undone and will remove all associated data.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setSelectedOrganization(null)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              className="bg-red-600 hover:bg-red-700"
+              disabled={deleteOrganizationMutation.isPending}
+            >
+              {deleteOrganizationMutation.isPending ? 'Deleting...' : 'Delete Organization'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
