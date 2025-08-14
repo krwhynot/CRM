@@ -96,6 +96,7 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
               required
+              autoComplete="email"
             />
           </div>
           
@@ -112,6 +113,7 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
                 required
+                autoComplete="new-password"
               />
               <Button
                 type="button"
@@ -146,6 +148,7 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 disabled={loading}
                 required
+                autoComplete="new-password"
               />
               <Button
                 type="button"

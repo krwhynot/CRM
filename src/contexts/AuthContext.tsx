@@ -97,8 +97,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   const resetPassword = async (email: string) => {
+    // Use the configured Site URL from Supabase instead of window.location.origin
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: `${window.location.protocol}//${window.location.host}/reset-password`,
     })
     return { error }
   }

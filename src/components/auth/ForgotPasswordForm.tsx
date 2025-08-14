@@ -76,6 +76,7 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
               required
+              autoComplete="email"
             />
           </div>
         </CardContent>

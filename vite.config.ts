@@ -10,4 +10,16 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    // Ensure SPA routing works correctly in development
+    historyApiFallback: true,
+  },
+  build: {
+    // Ensure proper handling of hash routing in production
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
+  },
 })

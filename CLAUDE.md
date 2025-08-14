@@ -85,6 +85,8 @@ The system is built around 5 core entities:
 4. **Error Handling**: Use shadcn/ui Toast for transient messages, Alert/Dialog for blocking errors
 5. **Relationship-Centric**: Model data around relationships, track engagement quality over quantity
 
+- WHENEVER POSSIBLE USE A SUB AGENT  
+
 To prevent specific TypeScript + form validation issues in the future, you’ll want a schema-first, type-driven workflow that keeps your database schema, validation schema, and form types in sync automatically.
 
 1. Use a Single Source of Truth for Types
@@ -205,6 +207,18 @@ This project follows a 14-agent specialized architecture with MCP tools:
 - `playwright`: Browser automation and testing
 - `vercel`: Deployment and hosting
 
+### MCP Tool Response Size Limits
+⚠️ **Important**: All MCP tools have a **25,000 token response limit**. Always use pagination, filtering, and limit parameters to prevent errors.
+
+**Key Guidelines:**
+- Use `limit` parameters (recommended: 5-25 for docs, 100 for DB queries)
+- Apply specific filters before querying large datasets
+- Break large queries into smaller, focused requests
+- Always include `LIMIT` clauses in SQL queries
+- Use pagination for list operations (`page`, `per_page` parameters)
+
+See `/docs/MCP_TOOL_REFERENCE_GUIDE.md` for comprehensive usage guidelines.
+
 ## Important Files
 - `components.json`: shadcn/ui configuration (new-york style, slate theme)
 - `vite.config.ts`: Vite configuration with path aliases
@@ -250,3 +264,29 @@ This project follows a 14-agent specialized architecture with MCP tools:
 - Prioritize shadcn/ui components for UI consistency
 - Implement optimistic UI updates with proper error handling
 - **MVP is production-ready** - All testing phases completed with >90% confidence
+
+### MCP Tool Development Guidelines
+When working with MCP tools in this project:
+
+1. **Always Use Limits**: Never execute unlimited queries or searches
+   - Documentation searches: `limit: 5-10`
+   - Database queries: Include `LIMIT 100` or less
+   - API calls: Use `per_page: 25-50`
+
+2. **Query Strategy**: Break large requests into focused, sequential queries
+   - Start with overview/summary queries
+   - Follow up with specific detail queries
+   - Use filters and search terms to narrow scope
+
+3. **Error Handling**: If you encounter response size errors:
+   - Reduce the `limit` parameter immediately
+   - Make search terms more specific
+   - Consider alternative query approaches
+   - Use templates from `/docs/templates/mcp-query-templates.md`
+
+4. **Performance**: Always include appropriate WHERE clauses and indexes
+   - Use `WHERE deleted_at IS NULL` for soft-deleted records
+   - Filter by date ranges when appropriate
+   - Index foreign keys and commonly queried columns
+
+See `/docs/MCP_TOOL_REFERENCE_GUIDE.md` for complete guidelines and `/docs/templates/mcp-query-templates.md` for ready-to-use query patterns.

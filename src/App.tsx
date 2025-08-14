@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { Layout } from '@/components/layout/Layout'
 import { AuthPage } from '@/components/auth/AuthPage'
 import { ResetPasswordPage } from '@/components/auth/ResetPasswordPage'
+import { AuthCallbackHandler } from '@/components/auth/AuthCallbackHandler'
 import { DashboardPage } from '@/pages/Dashboard'
 import { OrganizationsPage } from '@/pages/Organizations'
 import { ContactsPage } from '@/pages/Contacts'
@@ -40,27 +41,53 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Router>
-          <Routes>
-            {/* Public auth routes */}
-            <Route path="/login" element={<AuthPage />} />
-            <Route path="/forgot-password" element={<AuthPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
-            
-            {/* Protected app routes */}
-            <Route path="/*" element={
-              <ProtectedRoute>
-                <Layout>
-                  <Routes>
-                    <Route index element={<DashboardPage />} />
-                    <Route path="organizations" element={<OrganizationsPage />} />
-                    <Route path="contacts" element={<ContactsPage />} />
-                    <Route path="opportunities" element={<OpportunitiesPage />} />
-                    <Route path="products" element={<ProductsPage />} />
-                  </Routes>
-                </Layout>
-              </ProtectedRoute>
-            } />
-          </Routes>
+          <AuthCallbackHandler>
+            <Routes>
+              {/* Public auth routes - must come first */}
+              <Route path="/login" element={<AuthPage />} />
+              <Route path="/forgot-password" element={<AuthPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
+              
+              {/* Root redirect */}
+              <Route path="/" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <DashboardPage />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              
+              {/* Protected app routes */}
+              <Route path="/organizations" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <OrganizationsPage />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/contacts" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ContactsPage />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/opportunities" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <OpportunitiesPage />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/products" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ProductsPage />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+            </Routes>
+          </AuthCallbackHandler>
           <Toaster />
         </Router>
       </AuthProvider>

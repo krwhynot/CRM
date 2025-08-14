@@ -63,6 +63,7 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
               required
+              autoComplete="email"
             />
           </div>
           
@@ -79,6 +80,7 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
                 required
+                autoComplete="current-password"
               />
               <Button
                 type="button"
