@@ -42,17 +42,17 @@ export function OpportunityForm({
     defaultValues: {
       name: initialData?.name || '',
       organization_id: preselectedOrganization || initialData?.organization_id || '',
-      contact_id: preselectedContact || initialData?.contact_id || '',
+      contact_id: preselectedContact || initialData?.contact_id || null,
       stage: initialData?.stage || 'lead',
       priority: initialData?.priority || 'medium',
       estimated_value: initialData?.estimated_value || null,
       probability: initialData?.probability || null,
-      estimated_close_date: initialData?.estimated_close_date || '',
-      description: initialData?.description || '',
-      decision_criteria: initialData?.decision_criteria || '',
-      competition: initialData?.competition || '',
-      next_action: initialData?.next_action || '',
-      notes: initialData?.notes || ''
+      estimated_close_date: initialData?.estimated_close_date || null,
+      description: initialData?.description || null,
+      decision_criteria: initialData?.decision_criteria || null,
+      competition: initialData?.competition || null,
+      next_action: initialData?.next_action || null,
+      notes: initialData?.notes || null
     }
   })
 
@@ -158,15 +158,15 @@ export function OpportunityForm({
                   Primary Contact
                 </label>
                 <Select 
-                  value={selectedContact} 
-                  onValueChange={(value) => setValue('contact_id', value)}
+                  value={selectedContact || 'none'} 
+                  onValueChange={(value) => setValue('contact_id', value === 'none' ? null : value)}
                   disabled={loading || !selectedOrganization || !!preselectedContact}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select contact" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">No contact</SelectItem>
+                    <SelectItem value="none">No contact</SelectItem>
                     {filteredContacts.map((contact) => (
                       <SelectItem key={contact.id} value={contact.id}>
                         {contact.first_name} {contact.last_name} ({contact.title || 'No title'})

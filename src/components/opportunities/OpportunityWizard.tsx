@@ -207,15 +207,15 @@ export function OpportunityWizard({
                 Primary Contact
               </label>
               <Select 
-                value={watchedValues.contact_id || undefined} 
-                onValueChange={(value) => setValue('contact_id', value || '')}
+                value={watchedValues.contact_id || 'none'} 
+                onValueChange={(value) => setValue('contact_id', value === 'none' ? null : value || null)}
                 disabled={loading || !selectedOrganization || !!preselectedContact}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select contact" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">No contact</SelectItem>
+                  <SelectItem value="none">No contact</SelectItem>
                   {filteredContacts.map((contact) => (
                     <SelectItem key={contact.id} value={contact.id}>
                       {contact.first_name} {contact.last_name} ({contact.title || 'No title'})

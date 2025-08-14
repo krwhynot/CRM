@@ -187,15 +187,15 @@ export function InteractionForm({
                   Contact
                 </label>
                 <Select 
-                  value={selectedContact || undefined} 
-                  onValueChange={(value) => setValue('contact_id', value || undefined)}
+                  value={selectedContact || 'none'} 
+                  onValueChange={(value) => setValue('contact_id', value === 'none' ? undefined : value || undefined)}
                   disabled={loading || !selectedOrganization || !!preselectedContact}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select contact" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">No contact</SelectItem>
+                    <SelectItem value="none">No contact</SelectItem>
                     {filteredContacts.map((contact) => (
                       <SelectItem key={contact.id} value={contact.id}>
                         {contact.first_name} {contact.last_name} ({contact.title || 'No title'})
@@ -213,15 +213,15 @@ export function InteractionForm({
                   Opportunity
                 </label>
                 <Select 
-                  value={selectedOpportunity || undefined} 
-                  onValueChange={(value) => setValue('opportunity_id', value || undefined)}
+                  value={selectedOpportunity || 'none'} 
+                  onValueChange={(value) => setValue('opportunity_id', value === 'none' ? undefined : value || undefined)}
                   disabled={loading || !selectedOrganization || !!preselectedOpportunity}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select opportunity" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">No opportunity</SelectItem>
+                    <SelectItem value="none">No opportunity</SelectItem>
                     {filteredOpportunities.map((opportunity) => (
                       <SelectItem key={opportunity.id} value={opportunity.id}>
                         {opportunity.name} ({opportunity.stage})

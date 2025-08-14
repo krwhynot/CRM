@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { OpportunitiesTable } from '@/components/opportunities/OpportunitiesTable'
 import { OpportunityForm } from '@/components/opportunities/OpportunityForm'
-import { useOpportunities, useCreateOpportunity } from '@/hooks/useOpportunities'
+import { useOpportunities, useCreateOpportunity, useUpdateOpportunity, useDeleteOpportunity } from '@/hooks/useOpportunities'
 import { Target, Plus, Search, DollarSign, TrendingUp } from 'lucide-react'
+import type { Opportunity, OpportunityUpdate } from '@/types/entities'
 import {
   Dialog,
   DialogContent,
@@ -19,8 +20,12 @@ import { Badge } from '@/components/ui/badge'
 export function OpportunitiesPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [editingOpportunity, setEditingOpportunity] = useState<Opportunity | null>(null)
   const { data: opportunities = [], isLoading } = useOpportunities()
   const createOpportunityMutation = useCreateOpportunity()
+  const updateOpportunityMutation = useUpdateOpportunity()
+  const deleteOpportunityMutation = useDeleteOpportunity()
 
   const filteredOpportunities = opportunities.filter(opp =>
     opp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -41,6 +46,23 @@ export function OpportunitiesPage() {
   const activeValue = activeOpportunities
     .filter(opp => opp.estimated_value)
     .reduce((sum, opp) => sum + (opp.estimated_value || 0), 0)
+
+  const handleEdit = (opportunity: Opportunity) => {
+    setEditingOpportunity(opportunity)
+    setIsEditDialogOpen(true)
+  }
+
+  const handleDelete = async (opportunity: Opportunity) => {
+    if (window.confirm(`Are you sure you want to delete the opportunity "${opportunity.name}"?`)) {
+      try {
+        await deleteOpportunityMutation.mutateAsync(opportunity.id)
+        toast.success('Opportunity deleted successfully!')
+      } catch (error) {
+        console.error('Failed to delete opportunity:', error)
+        toast.error('Failed to delete opportunity. Please try again.')
+      }
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -78,6 +100,35 @@ export function OpportunitiesPage() {
               }}
               loading={createOpportunityMutation.isPending}
             />
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit Opportunity Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Edit Opportunity</DialogTitle>
+            </DialogHeader>
+            {editingOpportunity && (
+              <OpportunityForm 
+                initialData={editingOpportunity}
+                onSubmit={async (data) => {
+                  try {
+                    await updateOpportunityMutation.mutateAsync({
+                      id: editingOpportunity.id,
+                      updates: data as OpportunityUpdate
+                    })
+                    setIsEditDialogOpen(false)
+                    setEditingOpportunity(null)
+                    toast.success('Opportunity updated successfully!')
+                  } catch (error) {
+                    console.error('Failed to update opportunity:', error)
+                    toast.error('Failed to update opportunity. Please try again.')
+                  }
+                }}
+                loading={updateOpportunityMutation.isPending}
+              />
+            )}
           </DialogContent>
         </Dialog>
       </div>
@@ -178,7 +229,11 @@ export function OpportunitiesPage() {
           {isLoading ? (
             <div className="text-center py-8">Loading opportunities...</div>
           ) : (
-            <OpportunitiesTable opportunities={filteredOpportunities} />
+            <OpportunitiesTable 
+              opportunities={filteredOpportunities} 
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
           )}
         </CardContent>
       </Card>

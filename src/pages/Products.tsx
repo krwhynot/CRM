@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ProductsTable } from '@/components/products/ProductsTable'
 import { ProductForm } from '@/components/products/ProductForm'
-import { useProducts, useCreateProduct } from '@/hooks/useProducts'
+import { useProducts, useCreateProduct, useUpdateProduct, useDeleteProduct } from '@/hooks/useProducts'
 import { Package, Plus, Search, Archive, Star } from 'lucide-react'
+import type { Product, ProductUpdate } from '@/types/entities'
 import {
   Dialog,
   DialogContent,
@@ -19,8 +20,12 @@ import { Badge } from '@/components/ui/badge'
 export function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const { data: products = [], isLoading } = useProducts()
   const createProductMutation = useCreateProduct()
+  const updateProductMutation = useUpdateProduct()
+  const deleteProductMutation = useDeleteProduct()
 
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -34,6 +39,23 @@ export function ProductsPage() {
   
   // Group products by category
   const categories = [...new Set(products.map(p => p.category).filter(Boolean))]
+
+  const handleEdit = (product: Product) => {
+    setEditingProduct(product)
+    setIsEditDialogOpen(true)
+  }
+
+  const handleDelete = async (product: Product) => {
+    if (window.confirm(`Are you sure you want to delete ${product.name}?`)) {
+      try {
+        await deleteProductMutation.mutateAsync(product.id)
+        toast.success('Product deleted successfully!')
+      } catch (error) {
+        console.error('Failed to delete product:', error)
+        toast.error('Failed to delete product. Please try again.')
+      }
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -71,6 +93,35 @@ export function ProductsPage() {
               }}
               loading={createProductMutation.isPending}
             />
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit Product Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Edit Product</DialogTitle>
+            </DialogHeader>
+            {editingProduct && (
+              <ProductForm 
+                initialData={editingProduct}
+                onSubmit={async (data) => {
+                  try {
+                    await updateProductMutation.mutateAsync({
+                      id: editingProduct.id,
+                      updates: data as ProductUpdate
+                    })
+                    setIsEditDialogOpen(false)
+                    setEditingProduct(null)
+                    toast.success('Product updated successfully!')
+                  } catch (error) {
+                    console.error('Failed to update product:', error)
+                    toast.error('Failed to update product. Please try again.')
+                  }
+                }}
+                loading={updateProductMutation.isPending}
+              />
+            )}
           </DialogContent>
         </Dialog>
       </div>
@@ -166,7 +217,11 @@ export function ProductsPage() {
           {isLoading ? (
             <div className="text-center py-8">Loading products...</div>
           ) : (
-            <ProductsTable products={filteredProducts} />
+            <ProductsTable 
+              products={filteredProducts} 
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
           )}
         </CardContent>
       </Card>

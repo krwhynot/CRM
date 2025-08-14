@@ -263,9 +263,20 @@ export function useCreateOpportunity() {
         throw new Error('Authentication required to create opportunity')
       }
 
-      // Ensure required audit fields are set for RLS policy
+      // Ensure required audit fields are set for RLS policy and clean up empty strings
       const opportunityData = {
         ...opportunity,
+        contact_id: opportunity.contact_id || null,
+        principal_organization_id: opportunity.principal_organization_id || null,
+        distributor_organization_id: opportunity.distributor_organization_id || null,
+        estimated_close_date: opportunity.estimated_close_date || null,
+        actual_close_date: opportunity.actual_close_date || null,
+        description: opportunity.description || null,
+        competition: opportunity.competition || null,
+        decision_criteria: opportunity.decision_criteria || null,
+        next_action: opportunity.next_action || null,
+        next_action_date: opportunity.next_action_date || null,
+        notes: opportunity.notes || null,
         created_by: user.id,
         updated_by: user.id,
       }
@@ -307,7 +318,21 @@ export function useUpdateOpportunity() {
     mutationFn: async ({ id, updates }: { id: string; updates: OpportunityUpdate }) => {
       const { data, error } = await supabase
         .from('opportunities')
-        .update({ ...updates, updated_at: new Date().toISOString() })
+        .update({ 
+          ...updates, 
+          contact_id: updates.contact_id || null,
+          principal_organization_id: updates.principal_organization_id || null,
+          distributor_organization_id: updates.distributor_organization_id || null,
+          estimated_close_date: updates.estimated_close_date || null,
+          actual_close_date: updates.actual_close_date || null,
+          description: updates.description || null,
+          competition: updates.competition || null,
+          decision_criteria: updates.decision_criteria || null,
+          next_action: updates.next_action || null,
+          next_action_date: updates.next_action_date || null,
+          notes: updates.notes || null,
+          updated_at: new Date().toISOString() 
+        })
         .eq('id', id)
         .select(`
           *,

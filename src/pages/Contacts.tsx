@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ContactsTable } from '@/components/contacts/ContactsTable'
 import { ContactForm } from '@/components/contacts/ContactForm'
-import { useContacts, useCreateContact } from '@/hooks/useContacts'
+import { useContacts, useCreateContact, useUpdateContact, useDeleteContact } from '@/hooks/useContacts'
 import { Users, Plus, Search, Mail, Phone } from 'lucide-react'
+import type { Contact, ContactUpdate } from '@/types/entities'
 import {
   Dialog,
   DialogContent,
@@ -19,8 +20,12 @@ import {
 export function ContactsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [editingContact, setEditingContact] = useState<Contact | null>(null)
   const { data: contacts = [], isLoading } = useContacts()
   const createContactMutation = useCreateContact()
+  const updateContactMutation = useUpdateContact()
+  const deleteContactMutation = useDeleteContact()
 
   const filteredContacts = contacts.filter(contact =>
     contact.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -31,6 +36,23 @@ export function ContactsPage() {
 
   const contactsWithEmail = contacts.filter(contact => contact.email)
   const contactsWithPhone = contacts.filter(contact => contact.phone)
+
+  const handleEdit = (contact: Contact) => {
+    setEditingContact(contact)
+    setIsEditDialogOpen(true)
+  }
+
+  const handleDelete = async (contact: Contact) => {
+    if (window.confirm(`Are you sure you want to delete ${contact.first_name} ${contact.last_name}?`)) {
+      try {
+        await deleteContactMutation.mutateAsync(contact.id)
+        toast.success('Contact deleted successfully!')
+      } catch (error) {
+        console.error('Failed to delete contact:', error)
+        toast.error('Failed to delete contact. Please try again.')
+      }
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -71,6 +93,38 @@ export function ContactsPage() {
               }}
               loading={createContactMutation.isPending}
             />
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit Contact Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Edit Contact</DialogTitle>
+              <DialogDescription>
+                Update the contact information below.
+              </DialogDescription>
+            </DialogHeader>
+            {editingContact && (
+              <ContactForm 
+                initialData={editingContact}
+                onSubmit={async (data) => {
+                  try {
+                    await updateContactMutation.mutateAsync({
+                      id: editingContact.id,
+                      updates: data as ContactUpdate
+                    })
+                    setIsEditDialogOpen(false)
+                    setEditingContact(null)
+                    toast.success('Contact updated successfully!')
+                  } catch (error) {
+                    console.error('Failed to update contact:', error)
+                    toast.error('Failed to update contact. Please try again.')
+                  }
+                }}
+                loading={updateContactMutation.isPending}
+              />
+            )}
           </DialogContent>
         </Dialog>
       </div>
@@ -127,7 +181,11 @@ export function ContactsPage() {
           {isLoading ? (
             <div className="text-center py-8">Loading contacts...</div>
           ) : (
-            <ContactsTable contacts={filteredContacts} />
+            <ContactsTable 
+              contacts={filteredContacts} 
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
           )}
         </CardContent>
       </Card>
