@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -12,6 +13,7 @@ interface LoginFormProps {
 
 export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
   const { signIn, loading } = useAuth()
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -30,6 +32,9 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
     
     if (signInError) {
       setError(signInError.message)
+    } else {
+      // Successful login - navigate to dashboard
+      navigate('/', { replace: true })
     }
   }
 
