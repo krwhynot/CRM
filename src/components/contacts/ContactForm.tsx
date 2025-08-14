@@ -138,7 +138,7 @@ export function ContactForm({
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Not specified</SelectItem>
+                  <SelectItem value="not_specified">Not specified</SelectItem>
                   {Constants.public.Enums.contact_role.map((role) => (
                     <SelectItem key={role} value={role}>
                       {role.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}

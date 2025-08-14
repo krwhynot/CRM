@@ -9,6 +9,7 @@ import { Users, Plus, Search, Mail, Phone } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -51,6 +52,9 @@ export function ContactsPage() {
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>Create New Contact</DialogTitle>
+              <DialogDescription>
+                Add a new contact to your CRM system. Fill in the contact details below.
+              </DialogDescription>
             </DialogHeader>
             <ContactForm 
               onSubmit={(data) => {
