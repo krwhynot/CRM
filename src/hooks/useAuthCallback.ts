@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 export interface AuthCallbackData {
   accessToken?: string
@@ -17,7 +17,6 @@ export interface AuthCallbackData {
 export function useAuthCallback() {
   const [isLoading, setIsLoading] = useState(true)
   const [data, setData] = useState<AuthCallbackData>({})
-  const navigate = useNavigate()
   const location = useLocation()
 
   useEffect(() => {

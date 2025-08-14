@@ -47,10 +47,10 @@ export function simulateServerRedirectLoss() {
 
 // Make functions available in development
 if (process.env.NODE_ENV === 'development') {
-  (window as any).testPasswordResetUrl = testPasswordResetUrl
-  (window as any).testPasswordResetWithError = testPasswordResetWithError
-  (window as any).simulateServerRedirectLoss = simulateServerRedirectLoss
-  (window as any).forceCleanState = forceCleanState
+  ;(window as any).testPasswordResetUrl = testPasswordResetUrl
+  ;(window as any).testPasswordResetWithError = testPasswordResetWithError
+  ;(window as any).simulateServerRedirectLoss = simulateServerRedirectLoss
+  ;(window as any).forceCleanState = forceCleanState
   
   console.log('Password reset testing utilities loaded:')
   console.log('- testPasswordResetUrl()')
