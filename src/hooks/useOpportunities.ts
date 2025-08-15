@@ -263,6 +263,16 @@ export function useCreateOpportunity() {
         throw new Error('Authentication required to create opportunity')
       }
 
+      // Business rule validation: Ensure at least organization_id is provided
+      if (!opportunity.organization_id) {
+        throw new Error('Organization is required for all opportunities')
+      }
+
+      // Business rule validation: Warn about advanced stages without contacts
+      if (opportunity.stage && ['proposal', 'negotiation'].includes(opportunity.stage) && !opportunity.contact_id) {
+        console.warn(`Creating opportunity "${opportunity.name}" in stage "${opportunity.stage}" without a contact. Consider assigning a contact for better tracking.`)
+      }
+
       // Ensure required audit fields are set for RLS policy and clean up empty strings
       const opportunityData = {
         ...opportunity,
@@ -300,7 +310,12 @@ export function useCreateOpportunity() {
       // Invalidate all opportunity lists
       queryClient.invalidateQueries({ queryKey: opportunityKeys.lists() })
       queryClient.invalidateQueries({ queryKey: opportunityKeys.byOrganization(newOpportunity.organization_id) })
-      queryClient.invalidateQueries({ queryKey: opportunityKeys.byContact(newOpportunity.contact_id) })
+      
+      // Only invalidate contact-specific queries if contact_id exists
+      if (newOpportunity.contact_id) {
+        queryClient.invalidateQueries({ queryKey: opportunityKeys.byContact(newOpportunity.contact_id) })
+      }
+      
       queryClient.invalidateQueries({ queryKey: opportunityKeys.pipeline() })
       queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'active'] })
       
@@ -350,7 +365,12 @@ export function useUpdateOpportunity() {
       // Update all related queries
       queryClient.invalidateQueries({ queryKey: opportunityKeys.lists() })
       queryClient.invalidateQueries({ queryKey: opportunityKeys.byOrganization(updatedOpportunity.organization_id) })
-      queryClient.invalidateQueries({ queryKey: opportunityKeys.byContact(updatedOpportunity.contact_id) })
+      
+      // Only invalidate contact-specific queries if contact_id exists
+      if (updatedOpportunity.contact_id) {
+        queryClient.invalidateQueries({ queryKey: opportunityKeys.byContact(updatedOpportunity.contact_id) })
+      }
+      
       queryClient.invalidateQueries({ queryKey: opportunityKeys.pipeline() })
       queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'active'] })
       
@@ -410,7 +430,12 @@ export function useAdvanceOpportunityStage() {
       // Update all related queries
       queryClient.invalidateQueries({ queryKey: opportunityKeys.lists() })
       queryClient.invalidateQueries({ queryKey: opportunityKeys.byOrganization(updatedOpportunity.organization_id) })
-      queryClient.invalidateQueries({ queryKey: opportunityKeys.byContact(updatedOpportunity.contact_id) })
+      
+      // Only invalidate contact-specific queries if contact_id exists
+      if (updatedOpportunity.contact_id) {
+        queryClient.invalidateQueries({ queryKey: opportunityKeys.byContact(updatedOpportunity.contact_id) })
+      }
+      
       queryClient.invalidateQueries({ queryKey: opportunityKeys.pipeline() })
       queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'active'] })
       
@@ -447,7 +472,12 @@ export function useDeleteOpportunity() {
       // Invalidate all opportunity lists
       queryClient.invalidateQueries({ queryKey: opportunityKeys.lists() })
       queryClient.invalidateQueries({ queryKey: opportunityKeys.byOrganization(deletedOpportunity.organization_id) })
-      queryClient.invalidateQueries({ queryKey: opportunityKeys.byContact(deletedOpportunity.contact_id) })
+      
+      // Only invalidate contact-specific queries if contact_id exists
+      if (deletedOpportunity.contact_id) {
+        queryClient.invalidateQueries({ queryKey: opportunityKeys.byContact(deletedOpportunity.contact_id) })
+      }
+      
       queryClient.invalidateQueries({ queryKey: opportunityKeys.pipeline() })
       queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'active'] })
       

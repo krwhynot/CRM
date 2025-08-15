@@ -177,7 +177,7 @@ export type Database = {
         Row: {
           actual_close_date: string | null
           competition: string | null
-          contact_id: string
+          contact_id: string | null
           created_at: string | null
           created_by: string | null
           decision_criteria: string | null
@@ -202,7 +202,7 @@ export type Database = {
         Insert: {
           actual_close_date?: string | null
           competition?: string | null
-          contact_id: string
+          contact_id?: string | null
           created_at?: string | null
           created_by?: string | null
           decision_criteria?: string | null
@@ -227,7 +227,7 @@ export type Database = {
         Update: {
           actual_close_date?: string | null
           competition?: string | null
-          contact_id?: string
+          contact_id?: string | null
           created_at?: string | null
           created_by?: string | null
           decision_criteria?: string | null

@@ -156,7 +156,7 @@ export interface ContactFormData {
 export interface OpportunityFormData {
   name: string
   organization_id: string
-  contact_id: string
+  contact_id?: string
   principal_organization_id?: string
   distributor_organization_id?: string
   stage?: OpportunityStage
