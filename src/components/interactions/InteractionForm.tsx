@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { 
   interactionSchema, 
@@ -38,14 +38,12 @@ import { Separator } from '@/components/ui/separator'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { Checkbox } from '@/components/ui/checkbox'
 import {
   ChevronDown,
   ChevronUp,
   Building2,
   Users,
   Eye,
-  Wand2,
   AlertCircle,
   Info,
   Calendar,
@@ -223,9 +221,7 @@ export function InteractionForm({
   
   // Auto-naming store for opportunity creation
   const {
-    generateAutoName,
     previewName,
-    validateName,
     currentPreview,
     isGenerating,
     error: namingError
@@ -240,8 +236,6 @@ export function InteractionForm({
     followUp: false
   })
   const [selectedTemplate, setSelectedTemplate] = useState<MobileInteractionTemplate | null>(null)
-  const [customOpportunityName, setCustomOpportunityName] = useState('')
-  const [autoNamingEnabled, setAutoNamingEnabled] = useState(true)
 
   // Determine which schema to use based on mode
   const schema = mode === 'create-opportunity' ? interactionWithOpportunitySchema : interactionSchema

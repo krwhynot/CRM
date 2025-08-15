@@ -15,11 +15,21 @@ export default defineConfig({
     historyApiFallback: true,
   },
   build: {
-    // Ensure proper handling of hash routing in production
+    // Optimize bundle size and tree-shaking
     rollupOptions: {
       output: {
-        manualChunks: undefined,
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          ui: ['@radix-ui/react-slot', '@radix-ui/react-dialog', '@radix-ui/react-select', '@radix-ui/react-dropdown-menu'],
+          router: ['react-router-dom'],
+          supabase: ['@supabase/supabase-js'],
+          query: ['@tanstack/react-query'],
+        },
       },
     },
+    // Enable tree-shaking for better dead code elimination
+    sourcemap: false,
+    // Optimize chunk size
+    chunkSizeWarningLimit: 1000,
   },
 })
