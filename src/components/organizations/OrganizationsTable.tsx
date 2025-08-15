@@ -40,35 +40,30 @@ export function OrganizationsTable({
 
   const filteredOrganizations = organizations.filter(org =>
     org.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    org.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (org.industry && org.industry.toLowerCase().includes(searchTerm.toLowerCase()))
+    (org.priority && org.priority.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (org.segment && org.segment.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'customer':
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'A':
         return 'bg-green-100 text-green-800'
-      case 'prospect':
+      case 'B':
         return 'bg-blue-100 text-blue-800'
-      case 'partner':
-        return 'bg-purple-100 text-purple-800'
-      case 'supplier':
-        return 'bg-orange-100 text-orange-800'
-      case 'competitor':
-        return 'bg-red-100 text-red-800'
+      case 'C':
+        return 'bg-yellow-100 text-yellow-800'
+      case 'D':
+        return 'bg-gray-100 text-gray-800'
       default:
         return 'bg-gray-100 text-gray-800'
     }
   }
 
-  const formatRevenue = (revenue: number | null) => {
-    if (!revenue) return 'N/A'
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(revenue)
+  const getTypeFlags = (org: any) => {
+    const flags = []
+    if (org.is_principal) flags.push('Principal')
+    if (org.is_distributor) flags.push('Distributor')
+    return flags.length > 0 ? flags.join(' / ') : 'Customer'
   }
 
   if (loading) {
@@ -124,11 +119,10 @@ export function OrganizationsTable({
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
+              <TableHead>Priority</TableHead>
+              <TableHead>Segment</TableHead>
               <TableHead>Type</TableHead>
-              <TableHead>Industry</TableHead>
               <TableHead>Location</TableHead>
-              <TableHead>Revenue</TableHead>
-              <TableHead>Employees</TableHead>
               <TableHead>Contact</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -136,7 +130,7 @@ export function OrganizationsTable({
           <TableBody>
             {filteredOrganizations.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="text-center py-8 text-gray-500">
+                <TableCell colSpan={7} className="text-center py-8 text-gray-500">
                   {searchTerm ? 'No organizations match your search.' : 'No organizations found.'}
                 </TableCell>
               </TableRow>
@@ -146,48 +140,62 @@ export function OrganizationsTable({
                   <TableCell className="font-medium">
                     <div>
                       <div className="font-semibold">{organization.name}</div>
-                      {organization.description && (
-                        <div className="text-sm text-gray-500 truncate max-w-48">
-                          {organization.description}
-                        </div>
-                      )}
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge className={getTypeColor(organization.type)}>
-                      {organization.type.charAt(0).toUpperCase() + organization.type.slice(1)}
+                    <Badge className={getPriorityColor(organization.priority)}>
+                      {organization.priority || 'C'} Priority
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    {organization.industry || 'N/A'}
+                    {organization.segment || 'N/A'}
                   </TableCell>
                   <TableCell>
-                    <div className="text-sm">
-                      {organization.city && organization.state_province ? (
-                        <div>{organization.city}, {organization.state_province}</div>
-                      ) : (
-                        'N/A'
+                    <div className="flex flex-wrap gap-1">
+                      {organization.is_principal && (
+                        <Badge variant="default" className="bg-blue-100 text-blue-800 text-xs">
+                          Principal
+                        </Badge>
                       )}
-                      {organization.country && organization.country !== 'US' && (
-                        <div className="text-gray-500">{organization.country}</div>
+                      {organization.is_distributor && (
+                        <Badge variant="default" className="bg-green-100 text-green-800 text-xs">
+                          Distributor
+                        </Badge>
+                      )}
+                      {!organization.is_principal && !organization.is_distributor && (
+                        <Badge variant="outline" className="text-xs">
+                          Customer
+                        </Badge>
                       )}
                     </div>
                   </TableCell>
                   <TableCell>
-                    {formatRevenue(organization.annual_revenue)}
-                  </TableCell>
-                  <TableCell>
-                    {organization.employee_count || 'N/A'}
+                    <div className="text-sm">
+                      {organization.city && organization.state ? (
+                        <div>{organization.city}, {organization.state}</div>
+                      ) : (
+                        'N/A'
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell>
                     <div className="text-sm">
-                      {organization.email && (
-                        <div>{organization.email}</div>
-                      )}
                       {organization.phone && (
                         <div className="text-gray-500">{organization.phone}</div>
                       )}
-                      {!organization.email && !organization.phone && 'N/A'}
+                      {organization.website && (
+                        <div>
+                          <a 
+                            href={organization.website} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                          >
+                            Website
+                          </a>
+                        </div>
+                      )}
+                      {!organization.phone && !organization.website && 'N/A'}
                     </div>
                   </TableCell>
                   <TableCell className="text-right">

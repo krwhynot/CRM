@@ -1,244 +1,134 @@
-import type { Database } from './database.types'
+// Principal CRM Entity Types
+// This file re-exports entity types from individual type files and provides
+// legacy compatibility for the Principal CRM transformation
 
-// Organization entity types
-export type Organization = Database['public']['Tables']['organizations']['Row']
-export type OrganizationInsert = Database['public']['Tables']['organizations']['Insert']
-export type OrganizationUpdate = Database['public']['Tables']['organizations']['Update']
+// Import database types for supporting entities
+import type { Database } from '../lib/database.types'
 
-// Contact entity types
-export type Contact = Database['public']['Tables']['contacts']['Row']
-export type ContactInsert = Database['public']['Tables']['contacts']['Insert']
-export type ContactUpdate = Database['public']['Tables']['contacts']['Update']
+// Re-export main entity types from individual files
+export type {
+  Contact,
+  ContactInsert,
+  ContactUpdate,
+  ContactWithOrganization,
+  ContactWithPreferredPrincipals,
+  ContactWithRelations,
+  PurchaseInfluenceLevel,
+  DecisionAuthorityRole
+} from './contact.types'
 
-// Product entity types
+export type {
+  Organization,
+  OrganizationInsert,
+  OrganizationUpdate,
+  OrganizationWithContacts,
+  OrganizationPriority,
+  FoodServiceSegment
+} from './organization.types'
+
+export type {
+  Opportunity,
+  OpportunityInsert,
+  OpportunityUpdate,
+  OpportunityWithRelations,
+  OpportunityContext,
+  OpportunityStage
+} from './opportunity.types'
+
+export type {
+  Interaction,
+  InteractionInsert,
+  InteractionUpdate,
+  InteractionWithRelations,
+  InteractionType
+} from './interaction.types'
+
+// Product entity types (unchanged in Principal CRM transformation)
 export type Product = Database['public']['Tables']['products']['Row']
 export type ProductInsert = Database['public']['Tables']['products']['Insert']
 export type ProductUpdate = Database['public']['Tables']['products']['Update']
 
-// Opportunity entity types
-export type Opportunity = Database['public']['Tables']['opportunities']['Row']
-export type OpportunityInsert = Database['public']['Tables']['opportunities']['Insert']
-export type OpportunityUpdate = Database['public']['Tables']['opportunities']['Update']
-
-// Interaction entity types
-export type Interaction = Database['public']['Tables']['interactions']['Row']
-export type InteractionInsert = Database['public']['Tables']['interactions']['Insert']
-export type InteractionUpdate = Database['public']['Tables']['interactions']['Update']
-
-// Opportunity Products junction table types
+// Supporting junction table types
 export type OpportunityProduct = Database['public']['Tables']['opportunity_products']['Row']
 export type OpportunityProductInsert = Database['public']['Tables']['opportunity_products']['Insert']
 export type OpportunityProductUpdate = Database['public']['Tables']['opportunity_products']['Update']
 
-// Principal-Distributor Relationships types
-export type PrincipalDistributorRelationship = Database['public']['Tables']['principal_distributor_relationships']['Row']
-export type PrincipalDistributorRelationshipInsert = Database['public']['Tables']['principal_distributor_relationships']['Insert']
-export type PrincipalDistributorRelationshipUpdate = Database['public']['Tables']['principal_distributor_relationships']['Update']
+// Contact preferred principals junction table types
+export type ContactPreferredPrincipal = Database['public']['Tables']['contact_preferred_principals']['Row']
+export type ContactPreferredPrincipalInsert = Database['public']['Tables']['contact_preferred_principals']['Insert']
+export type ContactPreferredPrincipalUpdate = Database['public']['Tables']['contact_preferred_principals']['Update']
 
-// Enum types for easy access
+// Enum types for legacy compatibility
 export type ContactRole = Database['public']['Enums']['contact_role']
-export type InteractionType = Database['public']['Enums']['interaction_type']
-export type OpportunityStage = Database['public']['Enums']['opportunity_stage']
 export type OrganizationType = Database['public']['Enums']['organization_type']
 export type OrganizationSize = Database['public']['Enums']['organization_size']
 export type PriorityLevel = Database['public']['Enums']['priority_level']
 export type ProductCategory = Database['public']['Enums']['product_category']
 
-// Extended types with relationships (for joins)
-export type OrganizationWithContacts = Organization & {
-  contacts?: Contact[]
-}
-
-export type ContactWithOrganization = Contact & {
-  organization?: Organization
-}
-
-export type OpportunityWithRelations = Opportunity & {
-  organization?: Organization
-  contact?: Contact
-  principal_organization?: Organization
-  distributor_organization?: Organization
-  opportunity_products?: (OpportunityProduct & { product?: Product })[]
-  interactions?: Interaction[]
-}
-
-// Opportunity with founding interaction data
-export type OpportunityWithFoundingInteraction = Opportunity & {
-  organization?: Organization
-  contact?: Contact
-  principal_organization?: Organization
-  distributor_organization?: Organization
-  founding_interaction?: Interaction
-}
-
-// Extended opportunity type with both relations and founding interaction
-export type OpportunityWithFullRelations = Opportunity & {
-  organization?: Organization
-  contact?: Contact
-  principal_organization?: Organization
-  distributor_organization?: Organization
-  opportunity_products?: (OpportunityProduct & { product?: Product })[]
-  interactions?: Interaction[]
-  founding_interaction?: Interaction
-}
-
+// Legacy extended types for backward compatibility
 export type ProductWithPrincipal = Product & {
-  principal?: Organization
+  principal?: Database['public']['Tables']['organizations']['Row']
 }
 
-export type InteractionWithRelations = Interaction & {
-  contact?: Contact
-  organization?: Organization
-  opportunity?: Opportunity
+// Legacy opportunity types (for backward compatibility)
+export type OpportunityWithFoundingInteraction = Database['public']['Tables']['opportunities']['Row'] & {
+  organization?: Database['public']['Tables']['organizations']['Row']
+  contact?: Database['public']['Tables']['contacts']['Row']
+  principal_organization?: Database['public']['Tables']['organizations']['Row']
+  founding_interaction?: Database['public']['Tables']['interactions']['Row']
 }
 
-// Interaction with opportunity founding flag (computed property)
-export type InteractionWithOpportunityFlag = Interaction & {
-  contact?: Contact
-  organization?: Organization
-  opportunity?: Opportunity
+export type OpportunityWithFullRelations = Database['public']['Tables']['opportunities']['Row'] & {
+  organization?: Database['public']['Tables']['organizations']['Row']
+  contact?: Database['public']['Tables']['contacts']['Row']
+  principal_organization?: Database['public']['Tables']['organizations']['Row']
+  opportunity_products?: (OpportunityProduct & { product?: Product })[]
+  interactions?: Database['public']['Tables']['interactions']['Row'][]
+  founding_interaction?: Database['public']['Tables']['interactions']['Row']
+}
+
+// Legacy interaction types (for backward compatibility)
+export type InteractionWithOpportunityFlag = Database['public']['Tables']['interactions']['Row'] & {
+  contact?: Database['public']['Tables']['contacts']['Row']
+  organization?: Database['public']['Tables']['organizations']['Row']
+  opportunity?: Database['public']['Tables']['opportunities']['Row']
   is_founding_interaction?: boolean
 }
 
-// Interaction that can include founded opportunities
-export type InteractionWithFoundedOpportunities = Interaction & {
-  contact?: Contact
-  organization?: Organization
-  opportunity?: Opportunity
-  founded_opportunities?: Opportunity[]
+export type InteractionWithFoundedOpportunities = Database['public']['Tables']['interactions']['Row'] & {
+  contact?: Database['public']['Tables']['contacts']['Row']
+  organization?: Database['public']['Tables']['organizations']['Row']
+  opportunity?: Database['public']['Tables']['opportunities']['Row']
+  founded_opportunities?: Database['public']['Tables']['opportunities']['Row'][]
 }
 
-// Filter types for common queries
-export interface OrganizationFilters {
-  type?: OrganizationType | OrganizationType[]
-  size?: OrganizationSize | OrganizationSize[]
-  industry?: string
-  is_active?: boolean
-  search?: string
-}
+// Re-export filter types from individual entity files
+export type { ContactFilters } from './contact.types'
+export type { OrganizationFilters } from './organization.types'
+export type { OpportunityFilters } from './opportunity.types'
+export type { InteractionFilters } from './interaction.types'
 
-export interface OpportunityFilters {
-  stage?: OpportunityStage | OpportunityStage[]
-  priority?: PriorityLevel | PriorityLevel[]
-  organization_id?: string
-  principal_organization_id?: string
-  distributor_organization_id?: string
-  contact_id?: string
-  founding_interaction_id?: string
-  estimated_value_min?: number
-  estimated_value_max?: number
-  probability_min?: number
-  probability_max?: number
-}
-
-export interface ContactFilters {
-  organization_id?: string
-  role?: ContactRole | ContactRole[]
-  is_primary_contact?: boolean
-  search?: string
-}
-
+// Product filters (unchanged)
 export interface ProductFilters {
   principal_id?: string
   category?: ProductCategory | ProductCategory[]
   search?: string
 }
 
-export interface InteractionFilters {
-  type?: InteractionType | InteractionType[]
-  organization_id?: string
-  contact_id?: string
-  opportunity_id?: string
-  interaction_date_from?: string
-  interaction_date_to?: string
-  follow_up_required?: boolean
-  is_founding_interaction?: boolean
-}
+// Re-export form data types from validation schemas
+export type {
+  ContactFormData,
+  OrganizationFormData,
+  OpportunityFormData,
+  MultiPrincipalOpportunityFormData,
+  InteractionFormData,
+  InteractionWithOpportunityFormData,
+  ProductFormData,
+  OpportunityProductFormData,
+  ContactPreferredPrincipalFormData
+} from './validation'
 
-// Form validation schemas types (to be used with form libraries)
-export interface OrganizationFormData {
-  name: string
-  type: OrganizationType
-  description?: string
-  phone?: string
-  email?: string
-  website?: string
-  address_line_1?: string
-  address_line_2?: string
-  city?: string
-  state_province?: string
-  postal_code?: string
-  country?: string
-  industry?: string
-  size?: OrganizationSize
-  annual_revenue?: number
-  employee_count?: number
-  notes?: string
-}
-
-export interface ContactFormData {
-  first_name: string
-  last_name: string
-  organization_id: string
-  title?: string
-  role?: ContactRole
-  email?: string
-  phone?: string
-  mobile_phone?: string
-  department?: string
-  linkedin_url?: string
-  is_primary_contact?: boolean
-  notes?: string
-}
-
-export interface OpportunityFormData {
-  name: string
-  organization_id: string
-  contact_id?: string
-  principal_organization_id?: string
-  distributor_organization_id?: string
-  founding_interaction_id?: string
-  stage?: OpportunityStage
-  priority?: PriorityLevel
-  estimated_value?: number
-  estimated_close_date?: string
-  probability?: number
-  description?: string
-  next_action?: string
-  next_action_date?: string
-  competition?: string
-  decision_criteria?: string
-  notes?: string
-}
-
-export interface ProductFormData {
-  name: string
-  principal_id: string
-  category: ProductCategory
-  description?: string
-  sku?: string
-  unit_of_measure?: string
-  unit_cost?: number
-  list_price?: number
-  min_order_quantity?: number
-  season_start?: number
-  season_end?: number
-  shelf_life_days?: number
-  storage_requirements?: string
-  specifications?: string
-}
-
-export interface InteractionFormData {
-  type: InteractionType
-  subject: string
-  description?: string
-  interaction_date?: string
-  duration_minutes?: number
-  contact_id?: string
-  organization_id?: string
-  opportunity_id?: string
-  follow_up_required?: boolean
-  follow_up_date?: string
-  follow_up_notes?: string
-  outcome?: string
-}
+// Re-export helper functions from individual type files
+export { generateOpportunityName, getNextStage, getPreviousStage, OPPORTUNITY_STAGE_ORDER } from './opportunity.types'
+export { MOBILE_INTERACTION_TEMPLATES } from './interaction.types'
+export { FOOD_SERVICE_SEGMENTS } from './organization.types'

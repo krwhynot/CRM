@@ -1,0 +1,124 @@
+{
+  "timestamp": "2025-08-15T14:59:39.929Z",
+  "summary": {
+    "totalForms": 4,
+    "compliantForms": 4,
+    "averageScore": 100,
+    "overallCompliance": true
+  },
+  "forms": [
+    {
+      "formName": "Contact Form",
+      "requiredFieldsFound": [
+        "first_name",
+        "last_name",
+        "organization_id",
+        "purchase_influence",
+        "decision_authority"
+      ],
+      "optionalFieldsFound": [
+        "email",
+        "title",
+        "department",
+        "phone",
+        "mobile_phone",
+        "linkedin_url",
+        "is_primary_contact",
+        "notes"
+      ],
+      "prohibitedFieldsFound": [],
+      "missingRequired": [],
+      "unexpectedProhibited": [],
+      "specialFeatures": [
+        "Purchase Influence field present",
+        "Decision Authority field present",
+        "Purchase Influence options: High, Medium, Low, Unknown"
+      ],
+      "compliance": true,
+      "score": 100
+    },
+    {
+      "formName": "Organization Form",
+      "requiredFieldsFound": [
+        "name",
+        "priority",
+        "segment",
+        "is_principal",
+        "is_distributor"
+      ],
+      "optionalFieldsFound": [
+        "address",
+        "city",
+        "state",
+        "zip",
+        "phone",
+        "website",
+        "account_manager",
+        "notes"
+      ],
+      "prohibitedFieldsFound": [],
+      "missingRequired": [],
+      "unexpectedProhibited": [],
+      "specialFeatures": [
+        "Principal/Distributor designation toggles present",
+        "Priority levels: A, B, C, D"
+      ],
+      "compliance": true,
+      "score": 100
+    },
+    {
+      "formName": "Opportunity Form",
+      "requiredFieldsFound": [
+        "organization_id",
+        "stage",
+        "principals"
+      ],
+      "optionalFieldsFound": [
+        "name",
+        "contact_id",
+        "product_id",
+        "opportunity_context",
+        "custom_context",
+        "probability",
+        "expected_close_date",
+        "deal_owner",
+        "notes"
+      ],
+      "prohibitedFieldsFound": [],
+      "missingRequired": [],
+      "unexpectedProhibited": [],
+      "specialFeatures": [
+        "7-point funnel stages: 7/7 found",
+        "Auto-naming functionality detected",
+        "Multiple principal selection capability"
+      ],
+      "compliance": true,
+      "score": 100
+    },
+    {
+      "formName": "Interaction Form",
+      "requiredFieldsFound": [
+        "type",
+        "interaction_date",
+        "subject",
+        "opportunity_id"
+      ],
+      "optionalFieldsFound": [
+        "location",
+        "notes",
+        "follow_up_required",
+        "follow_up_date"
+      ],
+      "prohibitedFieldsFound": [],
+      "missingRequired": [],
+      "unexpectedProhibited": [],
+      "specialFeatures": [
+        "Required opportunity linking enforced"
+      ],
+      "compliance": true,
+      "score": 100
+    }
+  ],
+  "testingMethod": "Static Code Analysis",
+  "version": "1.0"
+}

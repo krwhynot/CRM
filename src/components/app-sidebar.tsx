@@ -2,7 +2,6 @@ import React from "react"
 import { Link } from "react-router-dom"
 import {
   BarChart3,
-  Building2,
   FileText,
   Download,
   Package,
@@ -10,6 +9,8 @@ import {
   MessageSquare,
   Building,
   UserCheck,
+  Factory,
+  AlertTriangle,
 } from "lucide-react"
 
 import {
@@ -24,8 +25,31 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { Badge } from "@/components/ui/badge"
+import { useNavigationCounts } from "@/hooks/useNavigationCounts"
 
-const data = {
+interface NavigationData {
+  navMain: Array<{
+    title: string
+    url: string
+    icon: React.ComponentType<any>
+    isActive?: boolean
+    isPrimaryEntry?: boolean
+  }>
+  navSections: Array<{
+    title: string
+    items: Array<{
+      title: string
+      url: string
+      icon: React.ComponentType<any>
+      showCount?: boolean
+      showWarning?: boolean
+      isPrimaryEntry?: boolean
+    }>
+  }>
+}
+
+const getNavigationData = (): NavigationData => ({
   navMain: [
     {
       title: "Dashboard",
@@ -36,12 +60,30 @@ const data = {
   ],
   navSections: [
     {
-      title: "🏢 BUSINESS",
+      title: "👥 PRIMARY WORKFLOW",
+      items: [
+        {
+          title: "Contacts",
+          url: "/contacts",
+          icon: UserCheck,
+          isPrimaryEntry: true,
+        },
+        {
+          title: "Organizations",
+          url: "/organizations",
+          icon: Building,
+          showWarning: true,
+        },
+      ],
+    },
+    {
+      title: "🏢 PRINCIPALS & PRODUCTS",
       items: [
         {
           title: "Principals",
-          url: "#",
-          icon: Building2,
+          url: "/organizations?type=principal",
+          icon: Factory,
+          showCount: true,
         },
         {
           title: "Products", 
@@ -51,22 +93,7 @@ const data = {
       ],
     },
     {
-      title: "👥 CUSTOMERS",
-      items: [
-        {
-          title: "Organizations",
-          url: "/organizations",
-          icon: Building,
-        },
-        {
-          title: "Contacts",
-          url: "/contacts",
-          icon: UserCheck,
-        },
-      ],
-    },
-    {
-      title: "🎯 SALES",
+      title: "🎯 SALES ACTIVITIES",
       items: [
         {
           title: "Opportunities",
@@ -100,11 +127,54 @@ const data = {
       items: [],
     },
   ],
-}
+})
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: navigationCounts } = useNavigationCounts()
+  const data = getNavigationData()
+
+  const renderNavigationItem = (item: any) => {
+    const showPrimaryBadge = item.isPrimaryEntry
+    const showCountBadge = item.showCount && navigationCounts?.principalsCount
+    const showWarningBadge = item.showWarning && navigationCounts?.organizationsWithoutContactsCount && navigationCounts.organizationsWithoutContactsCount > 0
+
+    return (
+      <SidebarMenuButton 
+        asChild
+        className={`text-sm py-1 mb-1 hover:bg-gradient-to-r hover:from-primary-100 hover:to-primary-50 hover:text-primary-700 hover:border-l-2 hover:border-primary hover:pl-2 ${
+          showPrimaryBadge ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-l-2 border-green-400' : ''
+        }`}
+      >
+        <Link to={item.url} className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-2">
+            {item.icon && <item.icon className="size-4" />}
+            <span>{item.title}</span>
+            {showPrimaryBadge && (
+              <Badge variant="outline" className="bg-green-100 text-green-700 border-green-300 text-xs px-1 py-0">
+                Primary Entry
+              </Badge>
+            )}
+          </div>
+          <div className="flex items-center gap-1">
+            {showCountBadge && (
+              <Badge variant="secondary" className="bg-blue-100 text-blue-700 text-xs px-1.5 py-0">
+                {navigationCounts.principalsCount}
+              </Badge>
+            )}
+            {showWarningBadge && (
+              <Badge variant="destructive" className="bg-orange-100 text-orange-700 border-orange-300 text-xs px-1 py-0 flex items-center gap-1">
+                <AlertTriangle className="size-3" />
+                {navigationCounts.organizationsWithoutContactsCount}
+              </Badge>
+            )}
+          </div>
+        </Link>
+      </SidebarMenuButton>
+    )
+  }
+
   return (
-    <Sidebar variant="sidebar" collapsible="none" className="w-[250px] border-r-2 border-primary" {...props}>
+    <Sidebar variant="sidebar" collapsible="none" className="w-[280px] border-r-2 border-primary" {...props}>
       <SidebarHeader className="border-b-2 border-primary-400 bg-white p-6">
         <SidebarMenu>
           <SidebarMenuItem>
@@ -155,15 +225,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <SidebarMenu>
                   {section.items.map((item) => (
                     <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton 
-                        asChild
-                        className="text-sm py-1 mb-1 hover:bg-gradient-to-r hover:from-primary-100 hover:to-primary-50 hover:text-primary-700 hover:border-l-2 hover:border-primary hover:pl-2"
-                      >
-                        <Link to={item.url}>
-                          {item.icon && <item.icon className="size-4" />}
-                          <span>{item.title}</span>
-                        </Link>
-                      </SidebarMenuButton>
+                      {renderNavigationItem(item)}
                     </SidebarMenuItem>
                   ))}
                 </SidebarMenu>

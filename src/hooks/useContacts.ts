@@ -48,7 +48,7 @@ export function useContacts(filters?: ContactFilters) {
       }
 
       if (filters?.search) {
-        query = query.or(`first_name.ilike.%${filters.search}%,last_name.ilike.%${filters.search}%,email.ilike.%${filters.search}%`)
+        query = query.or(`first_name.ilike.%${filters.search}%,last_name.ilike.%${filters.search}%,title.ilike.%${filters.search}%`)
       }
 
       query = query.order('last_name').order('first_name')

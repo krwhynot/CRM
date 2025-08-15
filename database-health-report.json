@@ -1,0 +1,163 @@
+{
+  "timestamp": "2025-08-15T05:31:19.254Z",
+  "projectId": "ixitjldcdvbazvjsnkao",
+  "mode": "validation",
+  "duration": 22,
+  "results": {
+    "schemaIntegrity": {
+      "name": "Schema Integrity",
+      "checks": {
+        "requiredTables": {
+          "passed": false,
+          "existing": [],
+          "missing": [
+            "organizations",
+            "contacts",
+            "products",
+            "opportunities",
+            "interactions",
+            "opportunity_products",
+            "principal_distributor_relationships"
+          ],
+          "total": 7
+        },
+        "criticalIndexes": {
+          "passed": false,
+          "existing": [],
+          "missing": [
+            "idx_contacts_organization",
+            "idx_opportunities_contact",
+            "idx_interactions_contact",
+            "idx_interactions_opportunity"
+          ],
+          "total": 4
+        },
+        "error": {
+          "passed": false,
+          "message": "Cannot read properties of undefined (reading 'count')"
+        }
+      },
+      "passed": false
+    },
+    "performanceMetrics": {
+      "name": "Performance Metrics",
+      "checks": {
+        "error": {
+          "passed": false,
+          "message": "Cannot read properties of undefined (reading 'table_cache_hit_rate')"
+        }
+      },
+      "passed": false
+    },
+    "securityPosture": {
+      "name": "Security Posture",
+      "checks": {
+        "rlsPolicies": {
+          "passed": true,
+          "tablesWithRLS": 0,
+          "tablesWithoutRLS": [],
+          "total": 6
+        },
+        "functionSecurity": {
+          "passed": true,
+          "secureFunctions": 0,
+          "insecureFunctions": [],
+          "total": 0
+        },
+        "sensitiveDataExposure": {
+          "passed": true,
+          "exposedColumns": [],
+          "count": 0
+        }
+      },
+      "passed": true
+    },
+    "indexHealth": {
+      "name": "Index Health",
+      "checks": {
+        "duplicateIndexes": {
+          "passed": true,
+          "count": 0,
+          "duplicates": [],
+          "threshold": 5
+        },
+        "unusedIndexes": {
+          "passed": true,
+          "count": 0,
+          "indexes": [],
+          "threshold": 50
+        },
+        "indexBloat": {
+          "passed": true,
+          "bloatedCount": 0,
+          "bloatedIndexes": [],
+          "total": 0
+        }
+      },
+      "passed": true
+    },
+    "constraints": {
+      "name": "Constraint Validation",
+      "checks": {
+        "invalidConstraints": {
+          "passed": true,
+          "count": 0,
+          "constraints": []
+        },
+        "foreignKeyConstraints": {
+          "passed": false,
+          "existing": 0,
+          "missing": [
+            "contacts_organization_id_fkey",
+            "opportunities_contact_id_fkey",
+            "interactions_contact_id_fkey",
+            "interactions_opportunity_id_fkey"
+          ],
+          "total": 4
+        },
+        "checkConstraints": {
+          "passed": true,
+          "count": 0,
+          "constraints": []
+        }
+      },
+      "passed": false
+    },
+    "rlsPolicies": {
+      "name": "RLS Policy Validation",
+      "checks": {
+        "rlsPolicySupport": {
+          "passed": false,
+          "tablesWithPolicies": 0,
+          "tablesWithoutPolicies": [
+            "organizations",
+            "contacts",
+            "products",
+            "opportunities",
+            "interactions",
+            "principal_distributor_relationships"
+          ],
+          "totalPolicies": 0,
+          "policiesByTable": {}
+        },
+        "crudPolicyCoverage": {
+          "passed": true,
+          "incompleteTableCount": 0,
+          "incompleteTables": [],
+          "requiredCommands": [
+            "SELECT",
+            "INSERT",
+            "UPDATE",
+            "DELETE"
+          ]
+        }
+      },
+      "passed": false
+    }
+  },
+  "summary": {
+    "total": 6,
+    "passed": 2,
+    "failed": 4
+  }
+}

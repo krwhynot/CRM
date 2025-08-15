@@ -42,33 +42,42 @@ export function ContactsTable({
 
   const filteredContacts = contacts.filter(contact =>
     `${contact.first_name} ${contact.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (contact.email && contact.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
     (contact.title && contact.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (contact.department && contact.department.toLowerCase().includes(searchTerm.toLowerCase()))
+    (contact.organization?.name && contact.organization.name.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
-  const getRoleColor = (role: string | null) => {
-    if (!role) return 'bg-gray-100 text-gray-800'
+  const getInfluenceColor = (influence: string | null) => {
+    if (!influence) return 'bg-gray-100 text-gray-800'
     
-    switch (role) {
-      case 'decision_maker':
-        return 'bg-purple-100 text-purple-800'
-      case 'influencer':
-        return 'bg-blue-100 text-blue-800'
-      case 'user':
+    switch (influence) {
+      case 'High':
         return 'bg-green-100 text-green-800'
-      case 'gatekeeper':
-        return 'bg-orange-100 text-orange-800'
-      case 'technical_contact':
-        return 'bg-indigo-100 text-indigo-800'
+      case 'Medium':
+        return 'bg-yellow-100 text-yellow-800'
+      case 'Low':
+        return 'bg-blue-100 text-blue-800'
+      case 'Unknown':
+        return 'bg-gray-100 text-gray-800'
       default:
         return 'bg-gray-100 text-gray-800'
     }
   }
 
-  const formatRole = (role: string | null) => {
-    if (!role) return 'Not specified'
-    return role.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())
+  const getAuthorityColor = (authority: string | null) => {
+    if (!authority) return 'bg-gray-100 text-gray-800'
+    
+    switch (authority) {
+      case 'Decision Maker':
+        return 'bg-purple-100 text-purple-800'
+      case 'Influencer':
+        return 'bg-indigo-100 text-indigo-800'
+      case 'End User':
+        return 'bg-green-100 text-green-800'
+      case 'Gatekeeper':
+        return 'bg-orange-100 text-orange-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
+    }
   }
 
   if (loading) {
@@ -125,8 +134,9 @@ export function ContactsTable({
             <TableRow>
               <TableHead>Name</TableHead>
               {showOrganization && <TableHead>Organization</TableHead>}
-              <TableHead>Role</TableHead>
-              <TableHead>Title & Department</TableHead>
+              <TableHead>Position</TableHead>
+              <TableHead>Purchase Influence</TableHead>
+              <TableHead>Decision Authority</TableHead>
               <TableHead>Contact Info</TableHead>
               <TableHead>Primary</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -135,7 +145,7 @@ export function ContactsTable({
           <TableBody>
             {filteredContacts.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={showOrganization ? 7 : 6} className="text-center py-8 text-gray-500">
+                <TableCell colSpan={showOrganization ? 8 : 7} className="text-center py-8 text-gray-500">
                   {searchTerm ? 'No contacts match your search.' : 'No contacts found.'}
                 </TableCell>
               </TableRow>
@@ -147,18 +157,6 @@ export function ContactsTable({
                       <div className="font-semibold">
                         {contact.first_name} {contact.last_name}
                       </div>
-                      {contact.linkedin_url && (
-                        <div className="text-sm text-blue-600">
-                          <a 
-                            href={contact.linkedin_url} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="hover:underline"
-                          >
-                            LinkedIn Profile
-                          </a>
-                        </div>
-                      )}
                     </div>
                   </TableCell>
                   {showOrganization && (
@@ -167,33 +165,30 @@ export function ContactsTable({
                     </TableCell>
                   )}
                   <TableCell>
-                    <Badge className={getRoleColor(contact.role)}>
-                      {formatRole(contact.role)}
+                    <div className="text-sm">
+                      {contact.title ? (
+                        <div className="font-medium">{contact.title}</div>
+                      ) : (
+                        'N/A'
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge className={getInfluenceColor(contact.purchase_influence)}>
+                      {contact.purchase_influence || 'Unknown'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge className={getAuthorityColor(contact.decision_authority)}>
+                      {contact.decision_authority || 'Gatekeeper'}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <div className="text-sm">
-                      {contact.title && (
-                        <div className="font-medium">{contact.title}</div>
-                      )}
-                      {contact.department && (
-                        <div className="text-gray-500">{contact.department}</div>
-                      )}
-                      {!contact.title && !contact.department && 'N/A'}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm">
-                      {contact.email && (
-                        <div>{contact.email}</div>
-                      )}
                       {contact.phone && (
                         <div className="text-gray-500">{contact.phone}</div>
                       )}
-                      {contact.mobile_phone && (
-                        <div className="text-gray-500">Mobile: {contact.mobile_phone}</div>
-                      )}
-                      {!contact.email && !contact.phone && !contact.mobile_phone && 'N/A'}
+                      {!contact.phone && 'N/A'}
                     </div>
                   </TableCell>
                   <TableCell>

@@ -1,0 +1,224 @@
+{
+  "timestamp": "2025-08-15T05:31:19.131Z",
+  "config": {
+    "buildMetrics": {
+      "thresholds": {
+        "buildTime": 30000,
+        "bundleSize": 800000,
+        "cssSize": 65000,
+        "chunkCount": 10,
+        "treeshakingEfficiency": 85
+      },
+      "optimization": {
+        "compression": true,
+        "minification": true,
+        "sourceMaps": false,
+        "codesplitting": true
+      }
+    },
+    "runtimeMetrics": {
+      "webVitals": {
+        "firstContentfulPaint": 2000,
+        "largestContentfulPaint": 4000,
+        "cumulativeLayoutShift": 0.1,
+        "firstInputDelay": 100,
+        "totalBlockingTime": 300
+      },
+      "loadTime": {
+        "domContentLoaded": 1500,
+        "fullyLoaded": 3000,
+        "timeToInteractive": 2500
+      },
+      "memoryUsage": {
+        "heapSizeLimit": 50000000,
+        "heapUsed": 25000000,
+        "external": 5000000
+      }
+    },
+    "networkMetrics": {
+      "apiResponse": {
+        "authentication": 500,
+        "crud_operations": 1000,
+        "search": 2000,
+        "dashboard_data": 1500,
+        "reports": 3000
+      },
+      "throughput": {
+        "concurrent_users": 50,
+        "requests_per_second": 100,
+        "database_connections": 20
+      }
+    },
+    "resourceMetrics": {
+      "images": {
+        "totalSize": 2000000,
+        "averageSize": 50000,
+        "formatOptimization": [
+          "webp",
+          "avif"
+        ]
+      },
+      "fonts": {
+        "totalSize": 200000,
+        "fontDisplay": "swap",
+        "subsets": [
+          "latin"
+        ]
+      },
+      "scripts": {
+        "thirdParty": 3,
+        "inlineSize": 10000,
+        "deferredLoading": true
+      }
+    }
+  },
+  "duration": 38704,
+  "results": {
+    "buildPerformance": {
+      "name": "Build Performance",
+      "metrics": {
+        "buildTime": {
+          "value": 38658,
+          "threshold": 30000,
+          "passed": false,
+          "unit": "ms"
+        },
+        "bundleSize": {
+          "value": 782490,
+          "threshold": 800000,
+          "passed": true,
+          "unit": "bytes"
+        },
+        "cssSize": {
+          "value": 61665,
+          "threshold": 65000,
+          "passed": true,
+          "unit": "bytes"
+        },
+        "chunkOptimization": {
+          "hasWarning": false,
+          "passed": true,
+          "recommendation": "Chunk sizes optimal"
+        },
+        "compression": {
+          "totalSize": 828953,
+          "jsSize": 764163,
+          "cssSize": 60220,
+          "fileCount": 4,
+          "passed": true,
+          "recommendation": "Size optimal"
+        }
+      },
+      "passed": false
+    },
+    "bundleComposition": {
+      "name": "Bundle Composition",
+      "analysis": {
+        "dependencies": {
+          "total": 32,
+          "heavy": [
+            "@radix-ui/react-alert-dialog",
+            "@radix-ui/react-avatar",
+            "@radix-ui/react-checkbox",
+            "@radix-ui/react-collapsible",
+            "@radix-ui/react-dialog",
+            "@radix-ui/react-dropdown-menu",
+            "@radix-ui/react-progress",
+            "@radix-ui/react-scroll-area",
+            "@radix-ui/react-select",
+            "@radix-ui/react-separator",
+            "@radix-ui/react-slot",
+            "@radix-ui/react-tabs",
+            "@radix-ui/react-tooltip",
+            "@tanstack/react-query",
+            "@types/react-router-dom",
+            "lucide-react",
+            "react",
+            "react-day-picker",
+            "react-dom",
+            "react-hook-form",
+            "react-router-dom",
+            "recharts"
+          ],
+          "potentialOptimizations": [
+            {
+              "dependency": "recharts",
+              "optimization": "Consider tree shaking or alternative",
+              "impact": "medium"
+            },
+            {
+              "dependency": "date-fns",
+              "optimization": "Consider tree shaking or alternative",
+              "impact": "medium"
+            },
+            {
+              "dependency": "react-router-dom",
+              "optimization": "Consider tree shaking or alternative",
+              "impact": "medium"
+            }
+          ]
+        },
+        "imports": {
+          "totalImports": 462,
+          "externalImports": 267,
+          "internalImports": 195,
+          "ratio": 0.42207792207792205
+        },
+        "treeshaking": {
+          "efficiency": 100,
+          "estimatedUnusedCode": 0,
+          "passed": true
+        }
+      },
+      "passed": true
+    },
+    "runtimePerformance": {
+      "name": "Runtime Performance",
+      "metrics": {
+        "memory": {
+          "estimated": 1564980,
+          "threshold": 25000000,
+          "passed": true,
+          "unit": "bytes"
+        },
+        "timing": {
+          "estimatedLoadTime": 1528.30078125,
+          "domContentLoaded": 1069.810546875,
+          "timeToInteractive": 1833.9609375,
+          "passed": true
+        },
+        "resources": {
+          "images": {
+            "count": 0,
+            "totalSize": 0,
+            "averageSize": 0,
+            "passed": true
+          }
+        },
+        "api": {
+          "authentication": {
+            "estimated": 300,
+            "threshold": 500,
+            "passed": true
+          },
+          "crudOperations": {
+            "estimated": 500,
+            "threshold": 1000,
+            "passed": true
+          },
+          "search": {
+            "estimated": 800,
+            "threshold": 2000,
+            "passed": true
+          }
+        }
+      },
+      "passed": true
+    }
+  },
+  "summary": {
+    "total": 3,
+    "passed": 2,
+    "failed": 1
+  }
+}

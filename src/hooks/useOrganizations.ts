@@ -45,8 +45,8 @@ export function useOrganizations(filters?: OrganizationFilters) {
         }
       }
 
-      if (filters?.industry) {
-        query = query.ilike('industry', `%${filters.industry}%`)
+      if (filters?.segment) {
+        query = query.ilike('segment', `%${filters.segment}%`)
       }
 
       if (typeof filters?.is_active === 'boolean') {

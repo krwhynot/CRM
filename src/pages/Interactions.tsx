@@ -98,13 +98,8 @@ export function InteractionsPage() {
                   // Transform form data to match InteractionInsert interface
                   const interactionData = {
                     ...data,
-                    // Ensure contact_id and opportunity_id are properly handled
-                    contact_id: data.contact_id || null,
-                    opportunity_id: data.opportunity_id || null,
                     // Handle date fields - convert empty strings to null
-                    follow_up_date: data.follow_up_date && data.follow_up_date.trim() !== '' ? data.follow_up_date : null,
-                    // Attachments are now properly typed as string[] | null
-                    attachments: data.attachments?.filter((item): item is string => typeof item === 'string') || null
+                    follow_up_date: data.follow_up_date && typeof data.follow_up_date === 'string' && data.follow_up_date.trim() !== '' ? data.follow_up_date : null
                   }
                   
                   console.log('Submitting interaction data:', interactionData)

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider, useAuth } from '@/contexts/AuthContext'
 import { Toaster } from '@/components/ui/sonner'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { Layout } from '@/components/layout/Layout'
 import { AuthPage } from '@/components/auth/AuthPage'
 import { ResetPasswordPage } from '@/components/auth/ResetPasswordPage'
@@ -41,8 +42,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <Router>
-          <AuthCallbackHandler>
+        <TooltipProvider>
+          <Router>
+            <AuthCallbackHandler>
             <Routes>
               {/* Public auth routes - must come first */}
               <Route path="/login" element={<AuthPage />} />
@@ -95,9 +97,10 @@ function App() {
                 </ProtectedRoute>
               } />
             </Routes>
-          </AuthCallbackHandler>
-          <Toaster />
-        </Router>
+            </AuthCallbackHandler>
+            <Toaster />
+          </Router>
+        </TooltipProvider>
       </AuthProvider>
     </QueryClientProvider>
   )
