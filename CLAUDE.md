@@ -27,6 +27,9 @@ npm run build
 # Lint code
 npm run lint
 
+# Type checking (included in build, but can be run standalone)
+npx tsc --noEmit
+
 # Preview production build
 npm run preview
 ```
