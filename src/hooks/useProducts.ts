@@ -27,10 +27,22 @@ export function useProducts(filters?: ProductFilters) {
       let query = supabase
         .from('products')
         .select(`
-          *,
-          principal:organizations!products_principal_id_fkey(*)
+          id,
+          name,
+          principal_id,
+          category,
+          description,
+          sku,
+          unit_of_measure,
+          unit_cost,
+          list_price,
+          min_order_quantity,
+          created_at,
+          principal:organizations!products_principal_id_fkey(id, name, type)
         `)
         .is('deleted_at', null)
+        .order('name')
+        .limit(100)
 
       // Apply filters
       if (filters?.principal_id) {

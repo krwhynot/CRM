@@ -32,12 +32,24 @@ export function useInteractions(filters?: InteractionFilters) {
       let query = supabase
         .from('interactions')
         .select(`
-          *,
-          contact:contacts(*),
-          organization:organizations(*),
-          opportunity:opportunities!interactions_opportunity_id_fkey(*)
+          id,
+          type,
+          interaction_date,
+          subject,
+          notes,
+          location,
+          follow_up_required,
+          follow_up_date,
+          opportunity_id,
+          contact_id,
+          created_at,
+          contact:contacts(id, name, title, organization_id),
+          organization:organizations(id, name, type),
+          opportunity:opportunities!interactions_opportunity_id_fkey(id, name, stage, organization_id)
         `)
         .is('deleted_at', null)
+        .order('interaction_date', { ascending: false })
+        .limit(50)
 
       // Apply filters
       if (filters?.type) {

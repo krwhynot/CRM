@@ -25,8 +25,31 @@ export function useOrganizations(filters?: OrganizationFilters) {
     queryFn: async () => {
       let query = supabase
         .from('organizations')
-        .select('*')
+        .select(`
+          id,
+          name,
+          type,
+          size,
+          segment,
+          priority,
+          phone,
+          email,
+          website,
+          address_line_1,
+          city,
+          state,
+          country,
+          is_principal,
+          is_distributor,
+          annual_revenue,
+          employee_count,
+          notes,
+          created_at,
+          updated_at
+        `)
         .is('deleted_at', null)
+        .order('name')
+        .limit(100)
 
       // Apply filters
       if (filters?.type) {
@@ -75,7 +98,30 @@ export function useOrganization(id: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('organizations')
-        .select('*')
+        .select(`
+          id,
+          name,
+          type,
+          size,
+          segment,
+          priority,
+          phone,
+          email,
+          website,
+          address_line_1,
+          address_line_2,
+          city,
+          state,
+          country,
+          postal_code,
+          is_principal,
+          is_distributor,
+          annual_revenue,
+          employee_count,
+          notes,
+          created_at,
+          updated_at
+        `)
         .eq('id', id)
         .is('deleted_at', null)
         .single()
@@ -95,10 +141,11 @@ export function usePrincipals() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('organizations')
-        .select('*')
+        .select('id, name, type, phone, email, website, city, state')
         .eq('type', 'principal')
         .is('deleted_at', null)
         .order('name')
+        .limit(50)
 
       if (error) throw error
       return data as Organization[]
@@ -114,10 +161,11 @@ export function useDistributors() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('organizations')
-        .select('*')
+        .select('id, name, type, phone, email, website, city, state')
         .eq('type', 'distributor')
         .is('deleted_at', null)
         .order('name')
+        .limit(50)
 
       if (error) throw error
       return data as Organization[]
