@@ -103,15 +103,8 @@ export function InteractionsPage() {
                     opportunity_id: data.opportunity_id || null,
                     // Handle date fields - convert empty strings to null
                     follow_up_date: data.follow_up_date && data.follow_up_date.trim() !== '' ? data.follow_up_date : null,
-                    // Convert attachments string to array (split by lines and filter empty)
-                    attachments: data.attachments 
-                      ? (typeof data.attachments === 'string' 
-                          ? data.attachments.split('\n').filter(line => line.trim() !== '')
-                          : Array.isArray(data.attachments) 
-                            ? data.attachments 
-                            : []
-                        )
-                      : []
+                    // Attachments are now properly typed as string[] | null
+                    attachments: data.attachments?.filter((item): item is string => typeof item === 'string') || null
                   }
                   
                   console.log('Submitting interaction data:', interactionData)

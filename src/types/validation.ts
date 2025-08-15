@@ -92,7 +92,7 @@ export const interactionSchema = yup.object({
   follow_up_required: yup.boolean().default(false),
   follow_up_date: yup.string().nullable(),
   follow_up_notes: yup.string().max(500, 'Follow up notes must be 500 characters or less').nullable(),
-  attachments: yup.string().nullable()
+  attachments: yup.array().of(yup.string()).nullable()
 })
 
 // Interaction with Opportunity Creation validation schema

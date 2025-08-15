@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Constants } from '@/types/database.types'
 import { useOrganizations } from '@/hooks/useOrganizations'
 import { useContacts } from '@/hooks/useContacts'
@@ -148,7 +147,7 @@ export function InteractionForm({
                 <Select 
                   value={selectedOrganization || undefined} 
                   onValueChange={(value) => {
-                    setValue('organization_id', value || undefined)
+                    setValue('organization_id', value || '')
                     // Clear contact and opportunity selections when organization changes
                     if (value !== selectedOrganization) {
                       setValue('contact_id', '')
