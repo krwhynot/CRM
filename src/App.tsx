@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider, useAuth } from '@/contexts/AuthContext'
@@ -8,6 +8,7 @@ import { Layout } from '@/components/layout/Layout'
 import { AuthPage } from '@/components/auth/AuthPage'
 import { ResetPasswordPage } from '@/components/auth/ResetPasswordPage'
 import { AuthCallbackHandler } from '@/components/auth/AuthCallbackHandler'
+import { CommandPalette } from '@/components/command-palette'
 import { DashboardPage } from '@/pages/Dashboard'
 import { OrganizationsPage } from '@/pages/Organizations'
 import { ContactsPage } from '@/pages/Contacts'
@@ -39,12 +40,15 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <TooltipProvider>
           <Router>
             <AuthCallbackHandler>
+            <CommandPalette open={commandPaletteOpen} setOpen={setCommandPaletteOpen} />
             <Routes>
               {/* Public auth routes - must come first */}
               <Route path="/login" element={<AuthPage />} />
