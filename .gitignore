@@ -45,3 +45,6 @@ dist-ssr
 .DS_Store
 Thumbs.db
 .vercel
+
+# MCP Configuration
+.mcp.json
