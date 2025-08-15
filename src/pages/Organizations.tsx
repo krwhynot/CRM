@@ -90,14 +90,15 @@ export function OrganizationsPage() {
               Add Organization
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
             <DialogHeader>
               <DialogTitle>Create New Organization</DialogTitle>
               <DialogDescription>
                 Add a new organization to your CRM system with contact and business information.
               </DialogDescription>
             </DialogHeader>
-            <OrganizationForm 
+            <div className="max-h-[75vh] overflow-y-auto pr-2">
+              <OrganizationForm 
               onSubmit={async (data) => {
                 try {
                   // The OrganizationForm already handles the data conversion
@@ -111,6 +112,7 @@ export function OrganizationsPage() {
               }}
               loading={createOrganizationMutation.isPending}
             />
+            </div>
           </DialogContent>
         </Dialog>
       </div>
@@ -178,15 +180,16 @@ export function OrganizationsPage() {
 
       {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
           <DialogHeader>
             <DialogTitle>Edit Organization</DialogTitle>
             <DialogDescription>
               Update organization information and business details.
             </DialogDescription>
           </DialogHeader>
-          {selectedOrganization && (
-            <OrganizationForm
+          <div className="max-h-[75vh] overflow-y-auto pr-2">
+            {selectedOrganization && (
+              <OrganizationForm
               initialData={selectedOrganization}
               onSubmit={async (data) => {
                 try {
@@ -203,8 +206,9 @@ export function OrganizationsPage() {
                 }
               }}
               loading={updateOrganizationMutation.isPending}
-            />
-          )}
+              />
+            )}
+          </div>
         </DialogContent>
       </Dialog>
 

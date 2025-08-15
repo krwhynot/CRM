@@ -76,11 +76,12 @@ export function ProductsPage() {
               Add Product
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
             <DialogHeader>
               <DialogTitle>Create New Product</DialogTitle>
             </DialogHeader>
-            <ProductForm 
+            <div className="max-h-[75vh] overflow-y-auto pr-2">
+              <ProductForm 
               onSubmit={async (data) => {
                 try {
                   await createProductMutation.mutateAsync(data as any)
@@ -93,17 +94,19 @@ export function ProductsPage() {
               }}
               loading={createProductMutation.isPending}
             />
+            </div>
           </DialogContent>
         </Dialog>
 
         {/* Edit Product Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
             <DialogHeader>
               <DialogTitle>Edit Product</DialogTitle>
             </DialogHeader>
-            {editingProduct && (
-              <ProductForm 
+            <div className="max-h-[75vh] overflow-y-auto pr-2">
+              {editingProduct && (
+                <ProductForm 
                 initialData={editingProduct}
                 onSubmit={async (data) => {
                   try {
@@ -120,8 +123,9 @@ export function ProductsPage() {
                   }
                 }}
                 loading={updateProductMutation.isPending}
-              />
-            )}
+                />
+              )}
+            </div>
           </DialogContent>
         </Dialog>
       </div>

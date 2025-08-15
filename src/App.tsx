@@ -12,6 +12,7 @@ import { OrganizationsPage } from '@/pages/Organizations'
 import { ContactsPage } from '@/pages/Contacts'
 import { OpportunitiesPage } from '@/pages/Opportunities'
 import { ProductsPage } from '@/pages/Products'
+import { InteractionsPage } from '@/pages/Interactions'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -83,6 +84,13 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <ProductsPage />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/interactions" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <InteractionsPage />
                   </Layout>
                 </ProtectedRoute>
               } />

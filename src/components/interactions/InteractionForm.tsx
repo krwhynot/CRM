@@ -77,16 +77,10 @@ export function InteractionForm({
     : opportunities
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader>
-        <CardTitle>
-          {initialData ? 'Edit Interaction' : 'New Interaction'}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <div className="w-full">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Basic Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <label htmlFor="subject" className="text-sm font-medium">
                 Subject *
@@ -102,24 +96,6 @@ export function InteractionForm({
               )}
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="interaction_date" className="text-sm font-medium">
-                Date *
-              </label>
-              <Input
-                id="interaction_date"
-                type="date"
-                {...register('interaction_date')}
-                disabled={loading}
-              />
-              {errors.interaction_date && (
-                <p className="text-sm text-red-600">{errors.interaction_date.message}</p>
-              )}
-            </div>
-          </div>
-
-          {/* Type */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <label htmlFor="type" className="text-sm font-medium">
                 Type *
@@ -144,11 +120,26 @@ export function InteractionForm({
                 <p className="text-sm text-red-600">{errors.type.message}</p>
               )}
             </div>
+
+            <div className="space-y-2">
+              <label htmlFor="interaction_date" className="text-sm font-medium">
+                Date *
+              </label>
+              <Input
+                id="interaction_date"
+                type="date"
+                {...register('interaction_date')}
+                disabled={loading}
+              />
+              {errors.interaction_date && (
+                <p className="text-sm text-red-600">{errors.interaction_date.message}</p>
+              )}
+            </div>
           </div>
 
           {/* Relationships */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium">Relationships</h3>
+          <div className="space-y-3">
+            <h3 className="text-base font-medium">Relationships</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <label htmlFor="organization_id" className="text-sm font-medium">
@@ -237,9 +228,9 @@ export function InteractionForm({
           </div>
 
           {/* Meeting Details */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium">Details</h3>
-            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+          <div className="space-y-3">
+            <h3 className="text-base font-medium">Details</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label htmlFor="duration_minutes" className="text-sm font-medium">
                   Duration (Minutes)
@@ -269,7 +260,7 @@ export function InteractionForm({
                 {...register('description')}
                 placeholder="Describe what was discussed or communicated"
                 disabled={loading}
-                rows={4}
+                rows={3}
               />
               {errors.description && (
                 <p className="text-sm text-red-600">{errors.description.message}</p>
@@ -285,7 +276,7 @@ export function InteractionForm({
                 {...register('outcome')}
                 placeholder="What was the result or outcome?"
                 disabled={loading}
-                rows={4}
+                rows={3}
               />
               {errors.outcome && (
                 <p className="text-sm text-red-600">{errors.outcome.message}</p>
@@ -294,8 +285,8 @@ export function InteractionForm({
           </div>
 
           {/* Follow-up */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium">Follow-up</h3>
+          <div className="space-y-3">
+            <h3 className="text-base font-medium">Follow-up</h3>
             <div className="flex items-center space-x-2">
               <input
                 id="follow_up_required"
@@ -338,7 +329,7 @@ export function InteractionForm({
             <Textarea
               id="attachments"
               {...register('attachments')}
-              placeholder="List any attachments or documents discussed"
+              placeholder="List any attachments or documents discussed (one per line)"
               disabled={loading}
               rows={2}
             />
@@ -349,13 +340,12 @@ export function InteractionForm({
 
 
           {/* Submit Button */}
-          <div className="flex justify-end space-x-2">
-            <Button type="submit" disabled={loading}>
+          <div className="flex justify-end pt-2">
+            <Button type="submit" disabled={loading} className="min-w-[120px]">
               {loading ? 'Saving...' : submitLabel}
             </Button>
           </div>
         </form>
-      </CardContent>
-    </Card>
+    </div>
   )
 }

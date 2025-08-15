@@ -73,14 +73,15 @@ export function ContactsPage() {
               Add Contact
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
             <DialogHeader>
               <DialogTitle>Create New Contact</DialogTitle>
               <DialogDescription>
                 Add a new contact to your CRM system. Fill in the contact details below.
               </DialogDescription>
             </DialogHeader>
-            <ContactForm 
+            <div className="max-h-[75vh] overflow-y-auto pr-2">
+              <ContactForm 
               onSubmit={async (data) => {
                 try {
                   await createContactMutation.mutateAsync(data as any)
@@ -93,20 +94,22 @@ export function ContactsPage() {
               }}
               loading={createContactMutation.isPending}
             />
+            </div>
           </DialogContent>
         </Dialog>
 
         {/* Edit Contact Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
             <DialogHeader>
               <DialogTitle>Edit Contact</DialogTitle>
               <DialogDescription>
                 Update the contact information below.
               </DialogDescription>
             </DialogHeader>
-            {editingContact && (
-              <ContactForm 
+            <div className="max-h-[75vh] overflow-y-auto pr-2">
+              {editingContact && (
+                <ContactForm 
                 initialData={editingContact}
                 onSubmit={async (data) => {
                   try {
@@ -123,8 +126,9 @@ export function ContactsPage() {
                   }
                 }}
                 loading={updateContactMutation.isPending}
-              />
-            )}
+                />
+              )}
+            </div>
           </DialogContent>
         </Dialog>
       </div>

@@ -83,11 +83,12 @@ export function OpportunitiesPage() {
               Add Opportunity
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
             <DialogHeader>
               <DialogTitle>Create New Opportunity</DialogTitle>
             </DialogHeader>
-            <OpportunityForm 
+            <div className="max-h-[75vh] overflow-y-auto pr-2">
+              <OpportunityForm 
               onSubmit={async (data) => {
                 try {
                   await createOpportunityMutation.mutateAsync(data as any)
@@ -100,17 +101,19 @@ export function OpportunitiesPage() {
               }}
               loading={createOpportunityMutation.isPending}
             />
+            </div>
           </DialogContent>
         </Dialog>
 
         {/* Edit Opportunity Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
             <DialogHeader>
               <DialogTitle>Edit Opportunity</DialogTitle>
             </DialogHeader>
-            {editingOpportunity && (
-              <OpportunityForm 
+            <div className="max-h-[75vh] overflow-y-auto pr-2">
+              {editingOpportunity && (
+                <OpportunityForm 
                 initialData={editingOpportunity}
                 onSubmit={async (data) => {
                   try {
@@ -127,8 +130,9 @@ export function OpportunitiesPage() {
                   }
                 }}
                 loading={updateOpportunityMutation.isPending}
-              />
-            )}
+                />
+              )}
+            </div>
           </DialogContent>
         </Dialog>
       </div>

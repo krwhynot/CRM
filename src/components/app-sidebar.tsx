@@ -1,4 +1,5 @@
 import React from "react"
+import { Link } from "react-router-dom"
 import {
   BarChart3,
   Building2,
@@ -28,7 +29,7 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/",
       icon: BarChart3,
       isActive: true,
     },
@@ -44,7 +45,7 @@ const data = {
         },
         {
           title: "Products", 
-          url: "#",
+          url: "/products",
           icon: Package,
         },
       ],
@@ -54,12 +55,12 @@ const data = {
       items: [
         {
           title: "Organizations",
-          url: "#",
+          url: "/organizations",
           icon: Building,
         },
         {
           title: "Contacts",
-          url: "#",
+          url: "/contacts",
           icon: UserCheck,
         },
       ],
@@ -69,12 +70,12 @@ const data = {
       items: [
         {
           title: "Opportunities",
-          url: "#",
+          url: "/opportunities",
           icon: Target,
         },
         {
           title: "Interactions",
-          url: "#",
+          url: "/interactions",
           icon: MessageSquare,
         },
       ],
@@ -128,11 +129,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               {data.navMain.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton 
+                    asChild
                     isActive={item.isActive}
                     className="mb-1 data-[active=true]:bg-gradient-to-r data-[active=true]:from-primary data-[active=true]:to-primary-400 data-[active=true]:text-white data-[active=true]:font-semibold data-[active=true]:shadow-md"
                   >
-                    {item.icon && <item.icon className="size-6" />}
-                    <span className="text-sm">{item.title}</span>
+                    <Link to={item.url}>
+                      {item.icon && <item.icon className="size-6" />}
+                      <span className="text-sm">{item.title}</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -151,9 +155,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <SidebarMenu>
                   {section.items.map((item) => (
                     <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton className="text-sm py-1 mb-1 hover:bg-gradient-to-r hover:from-primary-100 hover:to-primary-50 hover:text-primary-700 hover:border-l-2 hover:border-primary hover:pl-2">
-                        {item.icon && <item.icon className="size-4" />}
-                        <span>{item.title}</span>
+                      <SidebarMenuButton 
+                        asChild
+                        className="text-sm py-1 mb-1 hover:bg-gradient-to-r hover:from-primary-100 hover:to-primary-50 hover:text-primary-700 hover:border-l-2 hover:border-primary hover:pl-2"
+                      >
+                        <Link to={item.url}>
+                          {item.icon && <item.icon className="size-4" />}
+                          <span>{item.title}</span>
+                        </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   ))}

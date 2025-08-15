@@ -14,7 +14,8 @@ import {
   Users, 
   Package, 
   Target, 
-  Home 
+  Home,
+  MessageSquare
 } from 'lucide-react'
 
 const menuItems = [
@@ -23,6 +24,7 @@ const menuItems = [
   { title: 'Contacts', url: '/contacts', icon: Users },
   { title: 'Products', url: '/products', icon: Package },
   { title: 'Opportunities', url: '/opportunities', icon: Target },
+  { title: 'Interactions', url: '/interactions', icon: MessageSquare },
 ]
 
 export function AppSidebar() {

@@ -82,7 +82,7 @@ export const opportunitySchema = yup.object({
 export const interactionSchema = yup.object({
   subject: yup.string().required('Subject is required').max(255, 'Subject must be 255 characters or less'),
   type: yup.string().oneOf(Constants.public.Enums.interaction_type, 'Invalid interaction type').required('Interaction type is required'),
-  organization_id: yup.string().uuid('Invalid organization ID').nullable(),
+  organization_id: yup.string().uuid('Invalid organization ID').required('Organization is required'),
   contact_id: yup.string().uuid('Invalid contact ID').nullable(),
   opportunity_id: yup.string().uuid('Invalid opportunity ID').nullable(),
   interaction_date: yup.string().required('Interaction date is required'),
@@ -92,7 +92,7 @@ export const interactionSchema = yup.object({
   follow_up_required: yup.boolean().default(false),
   follow_up_date: yup.string().nullable(),
   follow_up_notes: yup.string().max(500, 'Follow up notes must be 500 characters or less').nullable(),
-  attachments: yup.array().of(yup.string()).nullable()
+  attachments: yup.string().nullable()
 })
 
 // Interaction with Opportunity Creation validation schema
