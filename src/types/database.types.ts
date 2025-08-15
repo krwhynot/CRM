@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "13.0.4"
@@ -186,6 +186,7 @@ export type Database = {
           distributor_organization_id: string | null
           estimated_close_date: string | null
           estimated_value: number | null
+          founding_interaction_id: string | null
           id: string
           name: string
           next_action: string | null
@@ -211,6 +212,7 @@ export type Database = {
           distributor_organization_id?: string | null
           estimated_close_date?: string | null
           estimated_value?: number | null
+          founding_interaction_id?: string | null
           id?: string
           name: string
           next_action?: string | null
@@ -236,6 +238,7 @@ export type Database = {
           distributor_organization_id?: string | null
           estimated_close_date?: string | null
           estimated_value?: number | null
+          founding_interaction_id?: string | null
           id?: string
           name?: string
           next_action?: string | null
@@ -262,6 +265,13 @@ export type Database = {
             columns: ["distributor_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opportunities_founding_interaction_id_fkey"
+            columns: ["founding_interaction_id"]
+            isOneToOne: false
+            referencedRelation: "interactions"
             referencedColumns: ["id"]
           },
           {
@@ -562,44 +572,30 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      gtrgm_compress: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      gtrgm_decompress: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      gtrgm_in: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      gtrgm_options: {
-        Args: { "": unknown }
-        Returns: undefined
-      }
-      gtrgm_out: {
-        Args: { "": unknown }
-        Returns: unknown
-      }
-      set_limit: {
-        Args: { "": number }
-        Returns: number
-      }
-      show_limit: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
-      show_trgm: {
-        Args: { "": string }
-        Returns: string[]
-      }
       user_has_org_access: {
-        Args: { org_id: string }
+        Args: { org_id: string } | { org_id: string; user_id: string }
         Returns: boolean
       }
       user_is_admin: {
-        Args: Record<PropertyKey, never>
+        Args: Record<PropertyKey, never> | { user_id: string }
+        Returns: boolean
+      }
+      validate_founding_interaction_timing: {
+        Args: {
+          p_founding_interaction_id: string
+          p_opportunity_created_at: string
+        }
+        Returns: boolean
+      }
+      validate_principal_type: {
+        Args: { org_type: Database["public"]["Enums"]["organization_type"] }
+        Returns: boolean
+      }
+      validate_priority_value_alignment: {
+        Args: {
+          estimated_value: number
+          priority: Database["public"]["Enums"]["priority_level"]
+        }
         Returns: boolean
       }
     }

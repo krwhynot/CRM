@@ -120,7 +120,14 @@ export function useOpportunity(id: string) {
         .single()
 
       if (error) throw error
-      return data as OpportunityWithRelations
+      
+      // Transform the data to match OpportunityWithRelations type
+      const transformedData = {
+        ...data,
+        interactions: data.interactions ? [data.interactions].flat() : []
+      }
+      
+      return transformedData as OpportunityWithRelations
     },
     enabled: !!id,
     staleTime: 5 * 60 * 1000,

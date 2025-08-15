@@ -74,7 +74,8 @@ export const opportunitySchema = yup.object({
   next_action_date: yup.string().nullable(),
   notes: yup.string().max(1000, 'Notes must be 1000 characters or less').nullable(),
   principal_organization_id: yup.string().uuid('Invalid principal organization ID').nullable(),
-  distributor_organization_id: yup.string().uuid('Invalid distributor organization ID').nullable()
+  distributor_organization_id: yup.string().uuid('Invalid distributor organization ID').nullable(),
+  founding_interaction_id: yup.string().uuid('Invalid founding interaction ID').nullable()
 })
 
 // Interaction validation schema
@@ -92,6 +93,35 @@ export const interactionSchema = yup.object({
   follow_up_date: yup.string().nullable(),
   follow_up_notes: yup.string().max(500, 'Follow up notes must be 500 characters or less').nullable(),
   attachments: yup.array().of(yup.string()).nullable()
+})
+
+// Interaction with Opportunity Creation validation schema
+export const interactionWithOpportunitySchema = yup.object({
+  ...interactionSchema.fields,
+  create_opportunity: yup.boolean().default(false),
+  opportunity_name: yup.string()
+    .max(255, 'Opportunity name must be 255 characters or less')
+    .when('create_opportunity', {
+      is: true,
+      then: (schema) => schema.required('Opportunity name is required when creating opportunity'),
+      otherwise: (schema) => schema.nullable()
+    }),
+  opportunity_stage: yup.string()
+    .oneOf(Constants.public.Enums.opportunity_stage, 'Invalid opportunity stage')
+    .when('create_opportunity', {
+      is: true,
+      then: (schema) => schema.required('Opportunity stage is required when creating opportunity'),
+      otherwise: (schema) => schema.nullable()
+    }),
+  opportunity_priority: yup.string()
+    .oneOf(Constants.public.Enums.priority_level, 'Invalid priority level')
+    .nullable(),
+  opportunity_estimated_value: yup.number()
+    .positive('Estimated value must be positive')
+    .nullable(),
+  opportunity_description: yup.string()
+    .max(1000, 'Opportunity description must be 1000 characters or less')
+    .nullable()
 })
 
 // Opportunity Product validation schema (for opportunity-product junction)
@@ -123,6 +153,7 @@ export const validationSchemas = {
   product: productSchema,
   opportunity: opportunitySchema,
   interaction: interactionSchema,
+  interactionWithOpportunity: interactionWithOpportunitySchema,
   opportunityProduct: opportunityProductSchema,
   principalDistributorRelationship: principalDistributorRelationshipSchema
 }
@@ -133,5 +164,6 @@ export type ContactFormData = yup.InferType<typeof contactSchema>
 export type ProductFormData = yup.InferType<typeof productSchema>
 export type OpportunityFormData = yup.InferType<typeof opportunitySchema>
 export type InteractionFormData = yup.InferType<typeof interactionSchema>
+export type InteractionWithOpportunityFormData = yup.InferType<typeof interactionWithOpportunitySchema>
 export type OpportunityProductFormData = yup.InferType<typeof opportunityProductSchema>
 export type PrincipalDistributorRelationshipFormData = yup.InferType<typeof principalDistributorRelationshipSchema>

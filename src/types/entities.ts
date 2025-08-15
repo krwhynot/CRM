@@ -62,6 +62,26 @@ export type OpportunityWithRelations = Opportunity & {
   interactions?: Interaction[]
 }
 
+// Opportunity with founding interaction data
+export type OpportunityWithFoundingInteraction = Opportunity & {
+  organization?: Organization
+  contact?: Contact
+  principal_organization?: Organization
+  distributor_organization?: Organization
+  founding_interaction?: Interaction
+}
+
+// Extended opportunity type with both relations and founding interaction
+export type OpportunityWithFullRelations = Opportunity & {
+  organization?: Organization
+  contact?: Contact
+  principal_organization?: Organization
+  distributor_organization?: Organization
+  opportunity_products?: (OpportunityProduct & { product?: Product })[]
+  interactions?: Interaction[]
+  founding_interaction?: Interaction
+}
+
 export type ProductWithPrincipal = Product & {
   principal?: Organization
 }
@@ -70,6 +90,22 @@ export type InteractionWithRelations = Interaction & {
   contact?: Contact
   organization?: Organization
   opportunity?: Opportunity
+}
+
+// Interaction with opportunity founding flag (computed property)
+export type InteractionWithOpportunityFlag = Interaction & {
+  contact?: Contact
+  organization?: Organization
+  opportunity?: Opportunity
+  is_founding_interaction?: boolean
+}
+
+// Interaction that can include founded opportunities
+export type InteractionWithFoundedOpportunities = Interaction & {
+  contact?: Contact
+  organization?: Organization
+  opportunity?: Opportunity
+  founded_opportunities?: Opportunity[]
 }
 
 // Filter types for common queries
@@ -88,6 +124,7 @@ export interface OpportunityFilters {
   principal_organization_id?: string
   distributor_organization_id?: string
   contact_id?: string
+  founding_interaction_id?: string
   estimated_value_min?: number
   estimated_value_max?: number
   probability_min?: number
@@ -115,6 +152,7 @@ export interface InteractionFilters {
   interaction_date_from?: string
   interaction_date_to?: string
   follow_up_required?: boolean
+  is_founding_interaction?: boolean
 }
 
 // Form validation schemas types (to be used with form libraries)
@@ -159,6 +197,7 @@ export interface OpportunityFormData {
   contact_id?: string
   principal_organization_id?: string
   distributor_organization_id?: string
+  founding_interaction_id?: string
   stage?: OpportunityStage
   priority?: PriorityLevel
   estimated_value?: number
