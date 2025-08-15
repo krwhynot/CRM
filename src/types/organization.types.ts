@@ -78,6 +78,7 @@ export type OrganizationFormData = yup.InferType<typeof organizationSchema>
 
 // Organization filters for queries
 export interface OrganizationFilters {
+  type?: Database['public']['Enums']['organization_type'] | Database['public']['Enums']['organization_type'][]
   priority?: OrganizationPriority | OrganizationPriority[]
   segment?: string | string[]
   is_principal?: boolean

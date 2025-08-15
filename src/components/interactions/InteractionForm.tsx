@@ -242,7 +242,7 @@ export function InteractionForm({
 
   // Form setup with dynamic schema and defaults
   const form = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema) as any,
     defaultValues: mode === 'create-opportunity' ? {
       // Interaction with opportunity creation defaults
       type: initialData?.type || 'follow_up',
@@ -254,9 +254,9 @@ export function InteractionForm({
       opportunity_name: '',
       opportunity_stage: 'New Lead' as OpportunityStage,
       principal_organization_id: null,
-      location: initialData?.location || null,
-      notes: initialData?.notes || null,
-      follow_up_required: initialData?.follow_up_required || false,
+      location: null,
+      notes: null,
+      follow_up_required: false,
       follow_up_date: initialData?.follow_up_date || null,
       create_opportunity: true
     } : {
@@ -265,9 +265,9 @@ export function InteractionForm({
       interaction_date: initialData?.interaction_date || new Date().toISOString().split('T')[0],
       subject: initialData?.subject || '',
       opportunity_id: preselectedOpportunity || initialData?.opportunity_id || '',
-      location: initialData?.location || null,
-      notes: initialData?.notes || null,
-      follow_up_required: initialData?.follow_up_required || false,
+      location: null,
+      notes: null,
+      follow_up_required: false,
       follow_up_date: initialData?.follow_up_date || null
     }
   })
@@ -303,7 +303,7 @@ export function InteractionForm({
 
   // Auto-naming preview effect for opportunity creation
   useEffect(() => {
-    if (mode === 'create-opportunity' && autoNamingEnabled && selectedOrganization && selectedPrincipal && watchedOpportunityContext) {
+    if (mode === 'create-opportunity' && selectedOrganization && selectedPrincipal && watchedOpportunityContext) {
       const principalNames = [selectedPrincipal.name]
       previewName(
         {
@@ -315,7 +315,7 @@ export function InteractionForm({
         principalNames
       ).catch(console.error)
     }
-  }, [watchedOrganizationId, watchedPrincipalId, watchedOpportunityContext, selectedOrganization, selectedPrincipal, mode, autoNamingEnabled])
+  }, [watchedOrganizationId, watchedPrincipalId, watchedOpportunityContext, selectedOrganization, selectedPrincipal, mode, previewName])
 
   // Handle template selection
   const applyTemplate = (template: MobileInteractionTemplate) => {
@@ -337,8 +337,8 @@ export function InteractionForm({
   const onFormSubmit = (data: any) => {
     if (mode === 'create-opportunity') {
       const formData = data as InteractionWithOpportunityFormData
-      // Add auto-generated name if enabled
-      if (autoNamingEnabled && currentPreview) {
+      // Add auto-generated name if available
+      if (currentPreview) {
         formData.opportunity_name = currentPreview.full_name
       }
       onSubmit(formData, mode)

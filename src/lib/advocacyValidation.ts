@@ -69,9 +69,9 @@ export function validateAdvocacyCreation(
   }
 
   // Advocacy strength validation
-  if (data.advocacy_strength !== undefined) {
-    if (data.advocacy_strength < ADVOCACY_BUSINESS_RULES.MIN_ADVOCACY_STRENGTH || 
-        data.advocacy_strength > ADVOCACY_BUSINESS_RULES.MAX_ADVOCACY_STRENGTH) {
+  if (data.advocacy_strength !== undefined && data.advocacy_strength !== null) {
+    if (data.advocacy_strength! < ADVOCACY_BUSINESS_RULES.MIN_ADVOCACY_STRENGTH || 
+        data.advocacy_strength! > ADVOCACY_BUSINESS_RULES.MAX_ADVOCACY_STRENGTH) {
       errors.push(`Advocacy strength must be between ${ADVOCACY_BUSINESS_RULES.MIN_ADVOCACY_STRENGTH} and ${ADVOCACY_BUSINESS_RULES.MAX_ADVOCACY_STRENGTH}`)
     }
   }
@@ -149,15 +149,15 @@ export function validateAdvocacyUpdate(
   const warnings: string[] = []
 
   // Advocacy strength validation
-  if (updates.advocacy_strength !== undefined) {
-    if (updates.advocacy_strength < ADVOCACY_BUSINESS_RULES.MIN_ADVOCACY_STRENGTH || 
-        updates.advocacy_strength > ADVOCACY_BUSINESS_RULES.MAX_ADVOCACY_STRENGTH) {
+  if (updates.advocacy_strength !== undefined && updates.advocacy_strength !== null) {
+    if (updates.advocacy_strength! < ADVOCACY_BUSINESS_RULES.MIN_ADVOCACY_STRENGTH || 
+        updates.advocacy_strength! > ADVOCACY_BUSINESS_RULES.MAX_ADVOCACY_STRENGTH) {
       errors.push(`Advocacy strength must be between ${ADVOCACY_BUSINESS_RULES.MIN_ADVOCACY_STRENGTH} and ${ADVOCACY_BUSINESS_RULES.MAX_ADVOCACY_STRENGTH}`)
     }
 
     // Check for significant changes
-    if (currentData?.advocacy_strength && 
-        Math.abs(updates.advocacy_strength - currentData.advocacy_strength) >= 3) {
+    if (currentData?.advocacy_strength && updates.advocacy_strength !== null &&
+        Math.abs(updates.advocacy_strength! - currentData.advocacy_strength) >= 3) {
       warnings.push('Significant advocacy strength change detected. Consider documenting the reason in notes.')
     }
   }

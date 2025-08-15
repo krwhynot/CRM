@@ -246,7 +246,7 @@ export function useActiveOpportunities() {
           principal_organization:organizations!opportunities_principal_organization_id_fkey(*),
           distributor_organization:organizations!opportunities_distributor_organization_id_fkey(*)
         `)
-        .not('stage', 'in', '(closed_won,closed_lost)')
+        .not('stage', 'in', '(Closed - Won,Closed - Lost)')
         .is('deleted_at', null)
         .order('estimated_close_date')
 
@@ -392,10 +392,12 @@ export function useAdvanceOpportunityStage() {
   const queryClient = useQueryClient()
 
   const stageProgression = {
-    'lead': 'qualified',
-    'qualified': 'proposal',
-    'proposal': 'negotiation',
-    'negotiation': 'closed_won',
+    'New Lead': 'Initial Outreach',
+    'Initial Outreach': 'Sample/Visit Offered',
+    'Sample/Visit Offered': 'Awaiting Response',
+    'Awaiting Response': 'Feedback Logged',
+    'Feedback Logged': 'Demo Scheduled',
+    'Demo Scheduled': 'Closed - Won',
   } as const
 
   return useMutation({
@@ -417,7 +419,7 @@ export function useAdvanceOpportunityStage() {
       const { data, error } = await supabase
         .from('opportunities')
         .update({ 
-          stage: nextStage,
+          stage: nextStage as any,
           updated_at: new Date().toISOString()
         })
         .eq('id', id)

@@ -34,10 +34,10 @@ export function OpportunitiesPage() {
   )
 
   const activeOpportunities = opportunities.filter(opp => 
-    !['closed_won', 'closed_lost'].includes(opp.stage)
+    !['Closed - Won', 'Closed - Lost'].includes(opp.stage)
   )
   
-  const wonOpportunities = opportunities.filter(opp => opp.stage === 'closed_won')
+  const wonOpportunities = opportunities.filter(opp => opp.stage === 'Closed - Won')
   
   const totalValue = opportunities
     .filter(opp => opp.estimated_value)
@@ -192,7 +192,7 @@ export function OpportunitiesPage() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-            {['lead', 'qualified', 'proposal', 'negotiation', 'closed_won'].map(stage => {
+            {['New Lead', 'Initial Outreach', 'Sample/Visit Offered', 'Awaiting Response', 'Feedback Logged', 'Demo Scheduled', 'Closed - Won'].map(stage => {
               const stageOpportunities = opportunities.filter(opp => opp.stage === stage)
               const stageValue = stageOpportunities
                 .filter(opp => opp.estimated_value)

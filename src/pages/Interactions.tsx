@@ -99,8 +99,10 @@ export function InteractionsPage() {
                   const interactionData = {
                     ...data,
                     // Handle date fields - convert empty strings to null
-                    follow_up_date: data.follow_up_date && typeof data.follow_up_date === 'string' && data.follow_up_date.trim() !== '' ? data.follow_up_date : null
-                  }
+                    follow_up_date: data.follow_up_date && typeof data.follow_up_date === 'string' && data.follow_up_date.trim() !== '' ? data.follow_up_date : null,
+                    // Ensure boolean field is properly typed
+                    follow_up_required: Boolean(data.follow_up_required)
+                  } as any
                   
                   console.log('Submitting interaction data:', interactionData)
                   await createInteractionMutation.mutateAsync(interactionData)

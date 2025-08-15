@@ -198,12 +198,12 @@ export function calculateOpportunityMetrics(
   }
 
   // Define active and closed stages
-  const closedStages: OpportunityStage[] = ['closed_won', 'closed_lost']
+  const closedStages: OpportunityStage[] = ['Closed - Won', 'Closed - Lost']
   const activeOpportunities = filteredOpportunities.filter(opp => 
     !closedStages.includes(opp.stage)
   )
   const wonOpportunities = filteredOpportunities.filter(opp => 
-    opp.stage === 'closed_won'
+    opp.stage === 'Closed - Won'
   )
 
   // Calculate basic metrics
@@ -297,7 +297,7 @@ export function calculatePrincipalMetrics(
   }, {} as Record<PriorityLevel, number>)
 
   // Calculate principals with active opportunities
-  const closedStages: OpportunityStage[] = ['closed_won', 'closed_lost']
+  const closedStages: OpportunityStage[] = ['Closed - Won', 'Closed - Lost']
   const activeOpportunities = opportunities.filter(opp => 
     !closedStages.includes(opp.stage)
   )

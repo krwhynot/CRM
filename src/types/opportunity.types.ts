@@ -172,10 +172,14 @@ export interface OpportunityFilters {
   stage?: OpportunityStage | OpportunityStage[]
   organization_id?: string
   principal_organization_id?: string
+  distributor_organization_id?: string
   contact_id?: string
   opportunity_context?: OpportunityContext | OpportunityContext[]
   probability_min?: number
   probability_max?: number
+  estimated_value_min?: number
+  estimated_value_max?: number
+  priority?: string
 }
 
 // Auto-naming utility functions
