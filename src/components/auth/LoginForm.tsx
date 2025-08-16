@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { FormErrorBoundary } from '@/components/ui/form-error-boundary'
 import { AlertCircle, Eye, EyeOff } from 'lucide-react'
 
 interface LoginFormProps {
@@ -39,7 +40,8 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <FormErrorBoundary>
+      <Card className="w-full max-w-md mx-auto">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
         <CardDescription>
@@ -146,5 +148,6 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
         </CardFooter>
       </form>
     </Card>
+    </FormErrorBoundary>
   )
 }

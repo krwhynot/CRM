@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { 
-  interactionSchema, 
   interactionWithOpportunitySchema,
   type InteractionFormData, 
   type InteractionWithOpportunityFormData,
@@ -31,12 +30,15 @@ import {
   SelectGroup,
   SelectLabel
 } from '@/components/ui/select'
+import { DynamicSelectField, type SelectOption } from '@/components/forms/DynamicSelectField'
+import { supabase } from '@/lib/supabase'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
 import { Separator } from '@/components/ui/separator'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { FormErrorBoundary } from '@/components/ui/form-error-boundary'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
   ChevronDown,
@@ -58,10 +60,10 @@ import {
   Zap
 } from 'lucide-react'
 import { useOrganizations, usePrincipals } from '@/hooks/useOrganizations'
-import { useContacts } from '@/hooks/useContacts'
-import { useOpportunities } from '@/hooks/useOpportunities'
+// import { useContacts } from '@/hooks/useContacts'
+// import { useOpportunities } from '@/hooks/useOpportunities'
 import { useOpportunityNaming } from '@/stores/opportunityAutoNamingStore'
-import type { Interaction, OpportunityContext, OpportunityStage } from '@/types/entities'
+import type { Interaction, OpportunityContext } from '@/types/entities'
 
 // Types for the comprehensive form
 type FormMode = 'link-existing' | 'create-opportunity'
@@ -216,8 +218,8 @@ export function InteractionForm({
   // Data hooks
   const { data: organizations = [] } = useOrganizations()
   const { data: principals = [] } = usePrincipals()
-  const { data: contacts = [] } = useContacts()
-  const { data: opportunities = [] } = useOpportunities()
+  // const { data: contacts = [] } = useContacts()
+  // const { data: opportunities = [] } = useOpportunities()
   
   // Auto-naming store for opportunity creation
   const {
@@ -237,12 +239,9 @@ export function InteractionForm({
   })
   const [selectedTemplate, setSelectedTemplate] = useState<MobileInteractionTemplate | null>(null)
 
-  // Determine which schema to use based on mode
-  const schema = mode === 'create-opportunity' ? interactionWithOpportunitySchema : interactionSchema
-
-  // Form setup with dynamic schema and defaults
-  const form = useForm({
-    resolver: yupResolver(schema) as any,
+  // Use unified schema that supports both modes
+  const form = useForm<any>({
+    resolver: yupResolver(interactionWithOpportunitySchema) as any,
     defaultValues: mode === 'create-opportunity' ? {
       // Interaction with opportunity creation defaults
       type: initialData?.type || 'follow_up',
@@ -250,53 +249,129 @@ export function InteractionForm({
       subject: initialData?.subject || '',
       organization_id: preselectedOrganization || initialData?.organization_id || '',
       contact_id: preselectedContact || initialData?.contact_id || null,
-      opportunity_context: 'Follow-up' as OpportunityContext,
-      opportunity_name: '',
-      opportunity_stage: 'New Lead' as OpportunityStage,
+      opportunity_context: 'Follow-up',
+      opportunity_name: null,
+      opportunity_stage: 'New Lead',
       principal_organization_id: null,
       location: null,
-      notes: null,
+      description: null,
       follow_up_required: false,
       follow_up_date: initialData?.follow_up_date || null,
       create_opportunity: true
     } : {
-      // Standard interaction defaults
+      // Standard interaction defaults (using unified schema)
       type: initialData?.type || 'follow_up',
       interaction_date: initialData?.interaction_date || new Date().toISOString().split('T')[0],
       subject: initialData?.subject || '',
       opportunity_id: preselectedOpportunity || initialData?.opportunity_id || '',
       location: null,
-      notes: null,
+      description: null,
       follow_up_required: false,
-      follow_up_date: initialData?.follow_up_date || null
+      follow_up_date: initialData?.follow_up_date || null,
+      create_opportunity: false
     }
   })
 
   const { control, handleSubmit, setValue, watch, formState: { errors } } = form
 
-  // Watch form values
+  // Watch form values - only watch what's actually used
   const watchedType = watch('type')
-  const watchedOrganizationId = watch('organization_id')
-  const watchedContactId = watch('contact_id')
-  const watchedOpportunityId = watch('opportunity_id')
+  const watchedOrganizationId = mode === 'create-opportunity' ? watch('organization_id') : undefined
   const watchedFollowUpRequired = watch('follow_up_required')
-  const watchedOpportunityContext = watch('opportunity_context')
-  const watchedOpportunityName = watch('opportunity_name')
-  const watchedPrincipalId = watch('principal_organization_id')
+  const watchedOpportunityContext = mode === 'create-opportunity' ? watch('opportunity_context') : undefined
+  const watchedPrincipalId = mode === 'create-opportunity' ? watch('principal_organization_id') : undefined
 
-  // Filter contacts by selected organization
-  const filteredContacts = watchedOrganizationId 
-    ? contacts.filter(contact => contact.organization_id === watchedOrganizationId)
-    : contacts
 
-  // Filter opportunities by selected organization
-  const filteredOpportunities = watchedOrganizationId 
-    ? opportunities.filter(opportunity => opportunity.organization_id === watchedOrganizationId)
-    : opportunities
+  // Async search function for contacts
+  const searchContacts = useCallback(async (query: string): Promise<SelectOption[]> => {
+    try {
+      let dbQuery = supabase
+        .from('contacts')
+        .select('id, first_name, last_name, title, email, organization_id, organizations(name)')
+        .is('deleted_at', null)
+        .order('last_name')
+        .limit(25)
+
+      // Filter by organization if one is selected
+      if (watchedOrganizationId) {
+        dbQuery = dbQuery.eq('organization_id', watchedOrganizationId)
+      }
+
+      if (query && query.length >= 1) {
+        dbQuery = dbQuery.or(`first_name.ilike.%${query}%,last_name.ilike.%${query}%,title.ilike.%${query}%`)
+      }
+
+      const { data, error } = await dbQuery
+      if (error) throw error
+
+      return (data || []).map(contact => ({
+        value: contact.id,
+        label: `${contact.first_name} ${contact.last_name}`,
+        description: contact.title ? `${contact.title} at ${contact.organizations?.name}` : contact.organizations?.name || '',
+        metadata: { 
+          organization_id: contact.organization_id,
+          email: contact.email
+        }
+      }))
+    } catch (error) {
+      console.error('Error searching contacts:', error)
+      return []
+    }
+  }, [watchedOrganizationId])
+
+  // Async search function for opportunities
+  const searchOpportunities = useCallback(async (query: string): Promise<SelectOption[]> => {
+    try {
+      let dbQuery = supabase
+        .from('opportunities')
+        .select('id, name, stage, estimated_value, organization_id, organization:organizations!organization_id(name)')
+        .is('deleted_at', null)
+        .order('name')
+        .limit(25)
+
+      // Filter by organization if one is selected
+      if (watchedOrganizationId) {
+        dbQuery = dbQuery.eq('organization_id', watchedOrganizationId)
+      }
+
+      if (query && query.length >= 1) {
+        dbQuery = dbQuery.ilike('name', `%${query}%`)
+      }
+
+      const { data, error } = await dbQuery
+      if (error) throw error
+
+      return (data || []).map(opp => ({
+        value: opp.id,
+        label: opp.name,
+        description: `${opp.stage}${opp.organization?.name ? ` • ${opp.organization.name}` : ''}`,
+        badge: {
+          text: opp.estimated_value ? `${(opp.estimated_value / 1000).toFixed(0)}K` : opp.stage.toUpperCase(),
+          variant: 'outline' as const
+        },
+        metadata: { 
+          organization_id: opp.organization_id,
+          stage: opp.stage,
+          estimated_value: opp.estimated_value
+        }
+      }))
+    } catch (error) {
+      console.error('Error searching opportunities:', error)
+      return []
+    }
+  }, [watchedOrganizationId])
+
+  const handleCreateContact = async () => {
+    console.log('Create new contact')
+  }
+
+  const handleCreateOpportunity = async () => {
+    console.log('Create new opportunity')
+  }
 
   // Get organization name for auto-naming
   const selectedOrganization = organizations.find(org => org.id === watchedOrganizationId)
-  const selectedPrincipal = principals.find(p => p.id === watchedPrincipalId)
+  const selectedPrincipal = watchedPrincipalId ? principals.find(p => p.id === watchedPrincipalId) : undefined
 
   // Get current interaction type config
   const currentTypeConfig = INTERACTION_TYPE_CONFIG.find(config => config.type === watchedType) || INTERACTION_TYPE_CONFIG[0]
@@ -309,7 +384,7 @@ export function InteractionForm({
         {
           organization_id: watchedOrganizationId,
           principals: [watchedPrincipalId!],
-          opportunity_context: watchedOpportunityContext
+          opportunity_context: watchedOpportunityContext as any
         },
         selectedOrganization.name,
         principalNames
@@ -323,7 +398,7 @@ export function InteractionForm({
     setValue('type', template.type)
     setValue('subject', template.subject)
     if (template.defaultNotes) {
-      setValue('notes', template.defaultNotes)
+      setValue('description', template.defaultNotes as any)
     }
     
     // Show template applied feedback
@@ -333,18 +408,34 @@ export function InteractionForm({
     }
   }
 
-  // Handle form submission
+  // Handle form submission with unified typing
   const onFormSubmit = (data: any) => {
+    // Convert date string to ISO timestamp for database compatibility
+    const processedData = {
+      ...data,
+      interaction_date: data.interaction_date ? new Date(data.interaction_date + 'T00:00:00').toISOString() : new Date().toISOString(),
+      follow_up_date: data.follow_up_date || null
+    }
+
     if (mode === 'create-opportunity') {
-      const formData = data as InteractionWithOpportunityFormData
       // Add auto-generated name if available
       if (currentPreview) {
-        formData.opportunity_name = currentPreview.full_name
+        processedData.opportunity_name = currentPreview.full_name
       }
-      onSubmit(formData, mode)
+      onSubmit(processedData, mode)
     } else {
-      const formData = data as InteractionFormData
-      onSubmit(formData, mode)
+      // For link-existing mode, cast to the interface expected by onSubmit
+      const linkingData = {
+        type: processedData.type,
+        interaction_date: processedData.interaction_date,
+        subject: processedData.subject,
+        opportunity_id: processedData.opportunity_id!,
+        location: processedData.location,
+        description: processedData.description,
+        follow_up_required: processedData.follow_up_required,
+        follow_up_date: processedData.follow_up_date
+      } as InteractionFormData
+      onSubmit(linkingData, mode)
     }
   }
 
@@ -354,7 +445,8 @@ export function InteractionForm({
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <FormErrorBoundary>
+      <Card className="w-full max-w-4xl mx-auto">
       <CardHeader className="space-y-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-2xl flex items-center space-x-2">
@@ -668,87 +760,45 @@ export function InteractionForm({
                     />
 
                     {/* Contact Selection */}
-                    <FormField
-                      control={control}
+                    <DynamicSelectField
                       name="contact_id"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Contact Person</FormLabel>
-                          <Select 
-                            value={field.value || 'none'} 
-                            onValueChange={(value) => field.onChange(value === 'none' ? null : value)}
-                            disabled={!watchedOrganizationId || !!preselectedContact}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="h-12">
-                                <SelectValue placeholder="Select contact" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="none">No specific contact</SelectItem>
-                              {filteredContacts.map((contact) => (
-                                <SelectItem key={contact.id} value={contact.id}>
-                                  <div>
-                                    <p className="font-medium">{contact.first_name} {contact.last_name}</p>
-                                    {contact.title && (
-                                      <p className="text-xs text-muted-foreground">{contact.title}</p>
-                                    )}
-                                  </div>
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormDescription>
-                            Specific person involved in this interaction
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                      control={control}
+                      label="Contact Person"
+                      placeholder="Search and select contact..."
+                      searchPlaceholder="Search contacts by name or title..."
+                      createNewText="Create New Contact"
+                      disabled={!watchedOrganizationId || !!preselectedContact}
+                      required={false}
+                      onSearch={searchContacts}
+                      onCreateNew={handleCreateContact}
+                      showCreateWhenEmpty
+                      clearable
+                      debounceMs={300}
+                      minSearchLength={1}
+                      description="Specific person involved in this interaction"
+                      noResultsText={watchedOrganizationId ? "No contacts found for this organization" : "Select an organization first"}
                     />
                   </div>
 
                   {/* Opportunity Linking or Creation */}
                   {mode === 'link-existing' ? (
-                    <FormField
-                      control={control}
+                    <DynamicSelectField
                       name="opportunity_id"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Opportunity *</FormLabel>
-                          <Select 
-                            value={field.value} 
-                            onValueChange={field.onChange}
-                            disabled={!watchedOrganizationId || !!preselectedOpportunity}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="h-12">
-                                <SelectValue placeholder="Select opportunity" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {filteredOpportunities.map((opportunity) => (
-                                <SelectItem key={opportunity.id} value={opportunity.id}>
-                                  <div>
-                                    <p className="font-medium">{opportunity.name}</p>
-                                    <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                                      <Badge variant="outline" className="text-xs">
-                                        {opportunity.stage}
-                                      </Badge>
-                                      {opportunity.estimated_close_date && (
-                                        <span>• {new Date(opportunity.estimated_close_date).toLocaleDateString()}</span>
-                                      )}
-                                    </div>
-                                  </div>
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormDescription>
-                            Required: Every interaction must be linked to an opportunity
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                      control={control}
+                      label="Opportunity"
+                      placeholder="Search and select opportunity..."
+                      searchPlaceholder="Search opportunities by name..."
+                      createNewText="Create New Opportunity"
+                      disabled={!watchedOrganizationId || !!preselectedOpportunity}
+                      required
+                      onSearch={searchOpportunities}
+                      onCreateNew={handleCreateOpportunity}
+                      showCreateWhenEmpty
+                      clearable={!preselectedOpportunity}
+                      debounceMs={300}
+                      minSearchLength={1}
+                      description="Required: Every interaction must be linked to an opportunity"
+                      noResultsText={watchedOrganizationId ? "No opportunities found for this organization" : "Select an organization first"}
                     />
                   ) : null}
                 </CollapsibleContent>
@@ -923,10 +973,10 @@ export function InteractionForm({
               </Collapsible>
             )}
 
-            {/* Notes */}
+            {/* Description/Notes */}
             <FormField
               control={control}
-              name="notes"
+              name="description"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Notes</FormLabel>
@@ -1058,5 +1108,6 @@ export function InteractionForm({
         </Form>
       </CardContent>
     </Card>
+    </FormErrorBoundary>
   )
 }

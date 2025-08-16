@@ -49,8 +49,8 @@ export const interactionSchema = yup.object({
     .max(255, 'Location must be 255 characters or less')
     .nullable(),
   
-  notes: yup.string()
-    .max(500, 'Notes must be 500 characters or less')
+  description: yup.string()
+    .max(500, 'Description must be 500 characters or less')
     .nullable(),
   
   follow_up_required: yup.boolean()
@@ -65,11 +65,50 @@ export const interactionSchema = yup.object({
     })
 })
 
-// Interaction with opportunity creation schema
+// Interaction with opportunity creation schema - rebuilt to avoid field conflicts
 export const interactionWithOpportunitySchema = yup.object({
-  ...interactionSchema.fields,
+  // Base interaction fields
+  type: yup.string()
+    .oneOf([
+      'call',
+      'email',
+      'meeting',
+      'demo',
+      'proposal',
+      'follow_up',
+      'trade_show',
+      'site_visit',
+      'contract_review'
+    ] as const, 'Invalid interaction type')
+    .required('Interaction type is required'),
   
-  // Remove opportunity_id requirement since we're creating it
+  interaction_date: yup.string()
+    .required('Interaction date is required'),
+  
+  subject: yup.string()
+    .required('Subject is required')
+    .max(255, 'Subject must be 255 characters or less'),
+  
+  location: yup.string()
+    .max(255, 'Location must be 255 characters or less')
+    .nullable(),
+  
+  description: yup.string()
+    .max(500, 'Description must be 500 characters or less')
+    .nullable(),
+  
+  follow_up_required: yup.boolean()
+    .default(false),
+  
+  follow_up_date: yup.string()
+    .nullable()
+    .when('follow_up_required', {
+      is: true,
+      then: (schema) => schema.required('Follow-up date is required when follow-up is needed'),
+      otherwise: (schema) => schema.nullable()
+    }),
+  
+  // Opportunity ID is nullable since we're creating the opportunity
   opportunity_id: yup.string()
     .uuid('Invalid opportunity ID')
     .nullable(),
@@ -102,7 +141,8 @@ export const interactionWithOpportunitySchema = yup.object({
       'Awaiting Response',
       'Feedback Logged',
       'Demo Scheduled',
-      'Closed - Won'
+      'Closed - Won',
+      'Closed - Lost'
     ] as const, 'Invalid opportunity stage')
     .when('create_opportunity', {
       is: true,

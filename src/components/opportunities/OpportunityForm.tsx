@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { 
-  opportunitySchema, 
   multiPrincipalOpportunitySchema,
   type OpportunityFormData, 
   type MultiPrincipalOpportunityFormData,
@@ -36,7 +35,7 @@ import { Switch } from '@/components/ui/switch'
 import { Separator } from '@/components/ui/separator'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Progress } from '@/components/ui/progress'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { FormErrorBoundary } from '@/components/ui/form-error-boundary'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Checkbox } from '@/components/ui/checkbox'
 import { 
@@ -48,17 +47,15 @@ import {
   Wand2, 
   AlertCircle, 
   Info, 
-  Calendar,
   Target,
   DollarSign,
-  TrendingUp,
   CheckCircle2
 } from 'lucide-react'
 import { useOrganizations, usePrincipals } from '@/hooks/useOrganizations'
 import { useContacts } from '@/hooks/useContacts'
 import { useProducts } from '@/hooks/useProducts'
 import { useOpportunityNaming } from '@/stores/opportunityAutoNamingStore'
-import type { Opportunity, Organization } from '@/types/entities'
+import type { Opportunity } from '@/types/entities'
 
 // Types for the comprehensive form
 type FormMode = 'standard' | 'multi-principal'
@@ -202,13 +199,9 @@ export function OpportunityForm({
   
   // Auto-naming store
   const {
-    generateAutoName,
     previewName,
-    validateName,
     currentPreview,
-    currentValidation,
     isGenerating,
-    isValidating,
     error: namingError
   } = useOpportunityNaming()
 
@@ -221,18 +214,10 @@ export function OpportunityForm({
     financial: false,
     advanced: false
   })
-  const [autoNamingEnabled, setAutoNamingEnabled] = useState(true)
-  const [selectedPrincipals, setSelectedPrincipals] = useState<string[]>([])
-  const [customContext, setCustomContext] = useState('')
-  const [selectedProducts, setSelectedProducts] = useState<string[]>([])
 
-  // Determine which schema to use based on mode
-  const schema = mode === 'multi-principal' ? multiPrincipalOpportunitySchema : opportunitySchema
-  const FormDataType = mode === 'multi-principal' ? multiPrincipalOpportunitySchema : opportunitySchema
-
-  // Form setup with dynamic schema
-  const form = useForm({
-    resolver: yupResolver(schema),
+  // Use unified schema that supports both modes
+  const form = useForm<any>({
+    resolver: yupResolver(multiPrincipalOpportunitySchema) as any,
     defaultValues: mode === 'multi-principal' ? {
       organization_id: preselectedOrganization || initialData?.organization_id || '',
       contact_id: preselectedContact || initialData?.contact_id || '',
@@ -245,16 +230,16 @@ export function OpportunityForm({
       expected_close_date: '',
       notes: ''
     } : {
-      name: initialData?.name || '',
-      stage: (initialData?.stage as OpportunityStage) || 'New Lead',
+      // Standard mode using multi-principal schema structure
+      organization_id: preselectedOrganization || initialData?.organization_id || '',
+      contact_id: preselectedContact || initialData?.contact_id || '',
       principals: [],
-      product_id: '',
-      opportunity_context: 'Follow-up' as OpportunityContext,
       auto_generated_name: false,
-      principal_id: '',
+      opportunity_context: 'Follow-up' as OpportunityContext,
+      custom_context: '',
+      stage: (initialData?.stage as OpportunityStage) || 'New Lead',
       probability: initialData?.probability || undefined,
       expected_close_date: initialData?.estimated_close_date || '',
-      deal_owner: '',
       notes: initialData?.notes || ''
     }
   })
@@ -268,7 +253,6 @@ export function OpportunityForm({
   const watchedCustomContext = watch('custom_context')
   const watchedAutoNaming = watch('auto_generated_name')
   const watchedStage = watch('stage')
-  const watchedContactId = watch('contact_id')
 
   // Filter contacts by selected organization
   const filteredContacts = watchedOrganizationId 
@@ -294,32 +278,34 @@ export function OpportunityForm({
         principalNames
       ).catch(console.error)
     }
-  }, [watchedOrganizationId, watchedPrincipals, watchedContext, watchedCustomContext, watchedAutoNaming, selectedOrganization, selectedPrincipalOrgs, mode])
+  }, [watchedOrganizationId, watchedPrincipals, watchedContext, watchedCustomContext, watchedAutoNaming, selectedOrganization, selectedPrincipalOrgs, mode, previewName])
 
   // Stage progression helpers
   const currentStageIndex = SALES_FUNNEL_STAGES.findIndex(stage => stage.value === watchedStage)
   const currentStageConfig = SALES_FUNNEL_STAGES[currentStageIndex] || SALES_FUNNEL_STAGES[0]
 
-  // Handle principal selection
-  const handlePrincipalChange = (principalId: string, checked: boolean) => {
-    const newPrincipals = checked 
-      ? [...watchedPrincipals, principalId]
-      : watchedPrincipals.filter(id => id !== principalId)
-    
-    setValue('principals', newPrincipals)
-    setSelectedPrincipals(newPrincipals)
-  }
 
-  // Handle form submission
+  // Handle form submission with unified typing
   const onFormSubmit = (data: any) => {
     if (mode === 'multi-principal') {
-      // For multi-principal mode, generate name if auto-naming is enabled
-      const formData = data as MultiPrincipalOpportunityFormData
-      onSubmit(formData)
+      // For multi-principal mode, use data as is
+      onSubmit(data)
     } else {
-      // For standard mode, use provided name
-      const formData = data as OpportunityFormData
-      onSubmit(formData)
+      // For standard mode, transform to legacy format if needed
+      const standardData = {
+        name: '', // Will be filled by auto-naming or manual entry
+        stage: data.stage,
+        principals: data.principals,
+        product_id: '', // Not used in multi-principal mode
+        opportunity_context: data.opportunity_context,
+        auto_generated_name: data.auto_generated_name,
+        principal_id: data.principals.length > 0 ? data.principals[0] : '',
+        probability: data.probability,
+        expected_close_date: data.expected_close_date,
+        deal_owner: '',
+        notes: data.notes
+      } as OpportunityFormData
+      onSubmit(standardData)
     }
   }
 
@@ -329,7 +315,8 @@ export function OpportunityForm({
   }
 
   return (
-    <Card className="w-full max-w-5xl mx-auto">
+    <FormErrorBoundary>
+      <Card className="w-full max-w-5xl mx-auto">
       <CardHeader className="space-y-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-2xl">
@@ -412,7 +399,6 @@ export function OpportunityForm({
                               checked={field.value}
                               onCheckedChange={(checked) => {
                                 field.onChange(checked)
-                                setAutoNamingEnabled(checked)
                               }}
                             />
                           </FormControl>
@@ -690,7 +676,7 @@ export function OpportunityForm({
                                 onCheckedChange={(checked) => {
                                   const newPrincipals = checked
                                     ? [...(field.value || []), principal.id]
-                                    : (field.value || []).filter(id => id !== principal.id)
+                                    : (field.value || []).filter((id: string) => id !== principal.id)
                                   field.onChange(newPrincipals)
                                 }}
                               />
@@ -705,7 +691,7 @@ export function OpportunityForm({
                         </div>
                         {field.value && field.value.length > 0 && (
                           <div className="flex flex-wrap gap-2 mt-2">
-                            {field.value.map(principalId => {
+                            {field.value.map((principalId: string) => {
                               const principal = principals.find(p => p.id === principalId)
                               return principal ? (
                                 <Badge key={principalId} variant="secondary">
@@ -896,5 +882,6 @@ export function OpportunityForm({
         </Form>
       </CardContent>
     </Card>
+    </FormErrorBoundary>
   )
 }

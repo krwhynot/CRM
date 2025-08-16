@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { contactSchema, type ContactFormData } from '@/types/contact.types'
@@ -14,21 +14,18 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue,
-  SelectGroup,
-  SelectLabel 
-} from '@/components/ui/select'
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useOrganizations, usePrincipals } from '@/hooks/useOrganizations'
+import { FormErrorBoundary } from '@/components/ui/form-error-boundary'
+import { usePrincipals } from '@/hooks/useOrganizations'
+import { DynamicSelectField, type SelectOption } from '@/components/forms/DynamicSelectField'
+import { AddOrganizationDialog } from '@/components/forms/AddOrganizationDialog'
+import { CollapsibleFormSection, FormSectionPresets } from '@/components/forms/CollapsibleFormSection'
+import { supabase } from '@/lib/supabase'
 import { Building2, HelpCircle, Users, Star, AlertCircle, Plus } from 'lucide-react'
 import type { PurchaseInfluenceLevel, DecisionAuthorityRole } from '@/types/contact.types'
+import { mapDecisionAuthorityToRole } from '@/types/contact.types'
 import type { Database } from '@/lib/database.types'
 
 interface ContactFormProps {
@@ -95,11 +92,82 @@ export function ContactForm({
 }: ContactFormProps) {
   const [showAdvocacyQuickAdd, setShowAdvocacyQuickAdd] = useState(false)
   const [selectedPrincipals, setSelectedPrincipals] = useState<string[]>([])
+  const [isAddOrgDialogOpen, setIsAddOrgDialogOpen] = useState(false)
+  const [currentSearchQuery, setCurrentSearchQuery] = useState('')
+  const [updateSearchResults, setUpdateSearchResults] = useState<((updateFn: (results: SelectOption[]) => SelectOption[]) => void) | null>(null)
   
-  const { data: organizations = [] } = useOrganizations()
   const { data: principals = [] } = usePrincipals()
 
-  const form = useForm<ContactFormData>({
+  // Async search function for organizations
+  const searchOrganizations = useCallback(async (query: string): Promise<SelectOption[]> => {
+    console.log('🔍 searchOrganizations called with query:', { query, queryLength: query?.length })
+    
+    try {
+      let dbQuery = supabase
+        .from('organizations')
+        .select('id, name, type, city, state_province')
+        .is('deleted_at', null)
+        .order('name')
+        .limit(25) // Performance optimization per project guidelines
+
+      // Apply search filter if query is provided
+      if (query && query.length >= 1) {
+        // Fix .or() syntax for better compatibility
+        dbQuery = dbQuery.or(`name.ilike.%${query}%,city.ilike.%${query}%`)
+        console.log('🔍 Applied search filter for query:', query)
+      } else {
+        console.log('🔍 No query provided, fetching all organizations (limited to 25)')
+      }
+
+      console.log('🔍 Executing Supabase query...')
+      const { data, error } = await dbQuery
+      
+      if (error) {
+        console.error('🔍 Supabase query error:', error)
+        throw new Error(`Database query failed: ${error.message}`)
+      }
+
+      console.log('🔍 Supabase query successful:', { 
+        resultCount: data?.length || 0,
+        firstResult: data?.[0],
+        query: query
+      })
+
+      const mappedResults = (data || []).map(org => {
+        const selectOption: SelectOption = {
+          value: org.id,
+          label: org.name,
+          description: org.city && org.state_province ? `${org.city}, ${org.state_province}` : org.city || org.state_province || '',
+          badge: {
+            text: org.type.toUpperCase(),
+            variant: org.type === 'principal' ? 'default' as const : 
+                     org.type === 'distributor' ? 'secondary' as const : 'outline' as const
+          },
+          metadata: { type: org.type }
+        }
+        return selectOption
+      })
+
+      console.log('🔍 Mapped results:', { 
+        mappedCount: mappedResults.length,
+        firstMapped: mappedResults[0]
+      })
+
+      return mappedResults
+    } catch (error) {
+      console.error('🔍 Error in searchOrganizations:', error)
+      // Return empty array to prevent component crashes
+      return []
+    }
+  }, [])
+
+  // Handle quick create organization
+  const handleCreateOrganization = useCallback(async () => {
+    console.log('🏢 Opening Add Organization dialog with search query:', currentSearchQuery)
+    setIsAddOrgDialogOpen(true)
+  }, [currentSearchQuery])
+
+  const form = useForm({
     resolver: yupResolver(contactSchema) as any,
     defaultValues: {
       first_name: initialData?.first_name || '',
@@ -111,20 +179,49 @@ export function ContactForm({
       phone: initialData?.phone || null,
       mobile_phone: initialData?.mobile_phone || null,
       linkedin_url: initialData?.linkedin_url || null,
-      is_primary_contact: initialData?.is_primary_contact || false,
+      is_primary_contact: initialData?.is_primary_contact || null,
       purchase_influence: (initialData?.purchase_influence as PurchaseInfluenceLevel) || 'Unknown',
-      decision_authority: (initialData?.decision_authority as DecisionAuthorityRole) || 'Gatekeeper',
+      decision_authority: (initialData?.decision_authority as DecisionAuthorityRole) || 'End User',
       notes: initialData?.notes || null,
       preferred_principals: []
     }
   })
 
-  const watchedOrganization = form.watch('organization_id')
   const watchedPurchaseInfluence = form.watch('purchase_influence')
   const watchedDecisionAuthority = form.watch('decision_authority')
 
-  // Get organization details for enhanced display
-  const selectedOrg = organizations.find(org => org.id === watchedOrganization)
+  // Handle organization created from dialog
+  const handleOrganizationCreated = useCallback((newOrganization: SelectOption) => {
+    console.log('🏢 New organization created:', newOrganization)
+    
+    // Automatically select the newly created organization
+    form.setValue('organization_id', newOrganization.value)
+    
+    // Close the add dialog
+    setIsAddOrgDialogOpen(false)
+    
+    // Clear search query to show the selection
+    setCurrentSearchQuery('')
+    
+    // Optimistic update: Add to current search results immediately
+    if (updateSearchResults) {
+      try {
+        updateSearchResults((currentResults) => {
+          // Check if organization already exists (avoid duplicates)
+          const exists = currentResults.some(result => result.value === newOrganization.value)
+          if (!exists) {
+            console.log('📈 Adding new organization to search results optimistically')
+            return [newOrganization, ...currentResults]
+          }
+          return currentResults
+        })
+      } catch (error) {
+        console.error('❌ Error updating search results optimistically:', error)
+      }
+    }
+    
+    console.log('✅ Organization created and selected successfully:', newOrganization.label)
+  }, [form, updateSearchResults])
 
   const handleFormSubmit = async (data: ContactFormData) => {
     try {
@@ -143,12 +240,12 @@ export function ContactForm({
         purchase_influence: data.purchase_influence,
         decision_authority: data.decision_authority,
         notes: data.notes,
-        // Set unused database fields to null
-        role: null
+        // Map decision authority to database role enum for consistency
+        role: mapDecisionAuthorityToRole(data.decision_authority)
       }
       
       // Submit the main contact form with mapped data
-      await onSubmit(dbData as any)
+      await onSubmit(dbData)
       
       // If advocacy relationships were selected, create them after contact creation
       if (selectedPrincipals.length > 0 && data.organization_id) {
@@ -162,7 +259,8 @@ export function ContactForm({
   }
 
   return (
-    <Card className="w-full max-w-5xl mx-auto">
+    <FormErrorBoundary>
+      <Card className="w-full max-w-5xl mx-auto">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-xl">
           <Users className="h-5 w-5" />
@@ -177,12 +275,10 @@ export function ContactForm({
           <form onSubmit={form.handleSubmit(handleFormSubmit as any)} className="space-y-8">
             
             {/* Basic Information Section */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-2 border-b pb-2">
-                <Building2 className="h-4 w-4" />
-                <h3 className="text-lg font-semibold">Basic Information</h3>
-              </div>
-              
+            <CollapsibleFormSection
+              {...FormSectionPresets.contactBasic}
+              icon={<Building2 className="h-4 w-4" />}
+            >
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Name Fields */}
                 <FormField
@@ -223,85 +319,34 @@ export function ContactForm({
                   )}
                 />
 
-                {/* Organization Selection with Enhanced Display */}
-                <FormField
-                  control={form.control}
-                  name="organization_id"
-                  render={({ field }) => (
-                    <FormItem className="lg:col-span-2">
-                      <FormLabel className="text-sm font-semibold flex items-center gap-2">
-                        Organization *
-                        {selectedOrg && (
-                          <Badge 
-                            variant={selectedOrg.type === 'principal' ? 'default' : 'secondary'}
-                            className="text-xs"
-                          >
-                            {selectedOrg.type.toUpperCase()}
-                          </Badge>
-                        )}
-                      </FormLabel>
-                      <FormControl>
-                        <Select
-                          disabled={loading || !!preselectedOrganization}
-                          onValueChange={field.onChange}
-                          value={field.value}
-                        >
-                          <SelectTrigger className="h-12 text-base">
-                            <SelectValue placeholder="Select organization" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectLabel>Principals</SelectLabel>
-                              {organizations
-                                .filter(org => org.type === 'principal')
-                                .map((org) => (
-                                  <SelectItem key={org.id} value={org.id}>
-                                    <div className="flex items-center justify-between w-full">
-                                      <span>{org.name}</span>
-                                      <Badge variant="default" className="ml-2 text-xs">
-                                        PRINCIPAL
-                                      </Badge>
-                                    </div>
-                                  </SelectItem>
-                                ))}
-                            </SelectGroup>
-                            <SelectGroup>
-                              <SelectLabel>Distributors</SelectLabel>
-                              {organizations
-                                .filter(org => org.type === 'distributor')
-                                .map((org) => (
-                                  <SelectItem key={org.id} value={org.id}>
-                                    <div className="flex items-center justify-between w-full">
-                                      <span>{org.name}</span>
-                                      <Badge variant="secondary" className="ml-2 text-xs">
-                                        DISTRIBUTOR
-                                      </Badge>
-                                    </div>
-                                  </SelectItem>
-                                ))}
-                            </SelectGroup>
-                            <SelectGroup>
-                              <SelectLabel>Other Organizations</SelectLabel>
-                              {organizations
-                                .filter(org => !['principal', 'distributor'].includes(org.type))
-                                .map((org) => (
-                                  <SelectItem key={org.id} value={org.id}>
-                                    <div className="flex items-center justify-between w-full">
-                                      <span>{org.name}</span>
-                                      <Badge variant="outline" className="ml-2 text-xs">
-                                        {org.type.toUpperCase()}
-                                      </Badge>
-                                    </div>
-                                  </SelectItem>
-                                ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* Organization Selection with DynamicSelectField */}
+                <div className="lg:col-span-2">
+                  <DynamicSelectField
+                    name="organization_id"
+                    control={form.control}
+                    label="Organization"
+                    placeholder="Search and select organization..."
+                    searchPlaceholder="Search organizations by name or city..."
+                    createNewText="Create New Organization"
+                    disabled={loading || !!preselectedOrganization}
+                    required
+                    onSearch={searchOrganizations}
+                    onCreateNew={handleCreateOrganization}
+                    onSearchResultsUpdate={(setter) => setUpdateSearchResults(() => setter)}
+                    onSearchQueryChange={setCurrentSearchQuery}
+                    showCreateWhenEmpty
+                    showCreateAlways={false}
+                    groupBy={(option) => {
+                      const type = option.metadata?.type
+                      if (type === 'principal') return 'Principals'
+                      if (type === 'distributor') return 'Distributors'
+                      return 'Other Organizations'
+                    }}
+                    clearable={!preselectedOrganization}
+                    debounceMs={300}
+                    minSearchLength={1}
+                  />
+                </div>
 
                 <FormField
                   control={form.control}
@@ -323,25 +368,17 @@ export function ContactForm({
                   )}
                 />
               </div>
-            </div>
+            </CollapsibleFormSection>
 
             {/* Principal CRM Business Intelligence Section */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-2 border-b pb-2">
-                <Star className="h-4 w-4" />
-                <h3 className="text-lg font-semibold">Business Intelligence</h3>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="max-w-xs">
-                      Principal CRM business intelligence helps identify key decision makers and influencers 
-                      for targeted sales strategies in the food service industry.
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
+            <CollapsibleFormSection
+              id="contact-business-intelligence"
+              title="Business Intelligence"
+              description="Principal CRM business intelligence for sales strategy"
+              icon={<Star className="h-4 w-4" />}
+              defaultOpenMobile={false}
+              defaultOpenDesktop={true}
+            >
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Purchase Influence */}
@@ -365,30 +402,18 @@ export function ContactForm({
                         </Tooltip>
                       </FormLabel>
                       <FormControl>
-                        <Select
+                        <select
+                          {...field}
                           disabled={loading}
-                          onValueChange={field.onChange}
-                          value={field.value}
+                          className="flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         >
-                          <SelectTrigger className="h-12 text-base">
-                            <SelectValue placeholder="Select influence level" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {(Object.entries(purchaseInfluenceHelpers) as [PurchaseInfluenceLevel, any][]).map(([level, helper]) => (
-                              <SelectItem key={level} value={level}>
-                                <div className="flex items-center gap-3 py-2">
-                                  <span className="text-lg">{helper.icon}</span>
-                                  <div>
-                                    <div className="font-medium">{level}</div>
-                                    <div className="text-xs text-muted-foreground max-w-xs">
-                                      {helper.description}
-                                    </div>
-                                  </div>
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                          <option value="">Select influence level</option>
+                          {(Object.entries(purchaseInfluenceHelpers) as [PurchaseInfluenceLevel, any][]).map(([level, helper]) => (
+                            <option key={level} value={level}>
+                              {helper.icon} {level} - {helper.description.substring(0, 50)}...
+                            </option>
+                          ))}
+                        </select>
                       </FormControl>
                       {watchedPurchaseInfluence && (
                         <div className={`text-xs p-2 rounded border ${purchaseInfluenceHelpers[watchedPurchaseInfluence].color}`}>
@@ -420,30 +445,18 @@ export function ContactForm({
                         </Tooltip>
                       </FormLabel>
                       <FormControl>
-                        <Select
+                        <select
+                          {...field}
                           disabled={loading}
-                          onValueChange={field.onChange}
-                          value={field.value}
+                          className="flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         >
-                          <SelectTrigger className="h-12 text-base">
-                            <SelectValue placeholder="Select authority role" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {(Object.entries(decisionAuthorityHelpers) as [DecisionAuthorityRole, any][]).map(([role, helper]) => (
-                              <SelectItem key={role} value={role}>
-                                <div className="flex items-center gap-3 py-2">
-                                  <span className="text-lg">{helper.icon}</span>
-                                  <div>
-                                    <div className="font-medium">{role}</div>
-                                    <div className="text-xs text-muted-foreground max-w-xs">
-                                      {helper.description}
-                                    </div>
-                                  </div>
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                          <option value="">Select authority role</option>
+                          {(Object.entries(decisionAuthorityHelpers) as [DecisionAuthorityRole, any][]).map(([role, helper]) => (
+                            <option key={role} value={role}>
+                              {helper.icon} {role} - {helper.description.substring(0, 50)}...
+                            </option>
+                          ))}
+                        </select>
                       </FormControl>
                       {watchedDecisionAuthority && (
                         <div className={`text-xs p-2 rounded border ${decisionAuthorityHelpers[watchedDecisionAuthority].color}`}>
@@ -455,26 +468,32 @@ export function ContactForm({
                   )}
                 />
               </div>
-            </div>
+            </CollapsibleFormSection>
 
             {/* Principal Advocacy Quick Add Section */}
-            <div className="space-y-6">
-              <div className="flex items-center justify-between border-b pb-2">
-                <div className="flex items-center gap-2">
-                  <Building2 className="h-4 w-4" />
-                  <h3 className="text-lg font-semibold">Principal Advocacy</h3>
-                  <Tooltip>
-                    <TooltipTrigger>
+            <CollapsibleFormSection
+              id="contact-advocacy"
+              title="Principal Advocacy"
+              description="Track preferred principals and advocacy relationships"
+              icon={<Building2 className="h-4 w-4" />}
+              defaultOpenMobile={false}
+              defaultOpenDesktop={false}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <Tooltip>
+                  <TooltipTrigger>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground">Configure Advocacy Relationships</span>
                       <HelpCircle className="h-4 w-4 text-muted-foreground" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="max-w-xs">
-                        Track which principals this contact advocates for or prefers to work with.
-                        This helps identify advocacy relationships for strategic sales planning.
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="max-w-xs">
+                      Track which principals this contact advocates for or prefers to work with.
+                      This helps identify advocacy relationships for strategic sales planning.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
                 <Button
                   type="button"
                   variant="outline"
@@ -519,14 +538,15 @@ export function ContactForm({
                   )}
                 </div>
               )}
-            </div>
+            </CollapsibleFormSection>
 
             {/* Contact Information Section */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-2 border-b pb-2">
-                <AlertCircle className="h-4 w-4" />
-                <h3 className="text-lg font-semibold">Contact Information</h3>
-              </div>
+            <CollapsibleFormSection
+              {...FormSectionPresets.contactAdditional}
+              title="Contact Information"
+              description="Phone, email, and additional contact details"
+              icon={<AlertCircle className="h-4 w-4" />}
+            >
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <FormField
@@ -643,8 +663,8 @@ export function ContactForm({
                         <div className="flex items-center space-x-2">
                           <input 
                             type="checkbox"
-                            checked={field.value || false}
-                            onChange={(e) => field.onChange(e.target.checked)}
+                            checked={field.value === true}
+                            onChange={(e) => field.onChange(e.target.checked ? true : null)}
                             disabled={loading}
                             className="h-4 w-4"
                           />
@@ -658,34 +678,34 @@ export function ContactForm({
 
                 {/* Account Manager field removed - not in database schema */}
               </div>
-            </div>
-
-            {/* Notes Section */}
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="notes"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sm font-semibold">Notes</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        {...field} 
-                        value={field.value || ''}
-                        placeholder="Additional notes about this contact, their preferences, and business relationship details..."
-                        disabled={loading}
-                        rows={4}
-                        className="text-base resize-none"
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Include any relevant business context, preferences, or relationship history.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+              
+              {/* Notes Section */}
+              <div className="space-y-4 border-t pt-6">
+                <FormField
+                  control={form.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-semibold">Notes</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          {...field} 
+                          value={field.value || ''}
+                          placeholder="Additional notes about this contact, their preferences, and business relationship details..."
+                          disabled={loading}
+                          rows={4}
+                          className="text-base resize-none"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Include any relevant business context, preferences, or relationship history.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CollapsibleFormSection>
 
             {/* Submit Actions */}
             <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t">
@@ -710,5 +730,14 @@ export function ContactForm({
         </Form>
       </CardContent>
     </Card>
+
+    {/* Add Organization Dialog */}
+    <AddOrganizationDialog
+      prefilledName={currentSearchQuery}
+      onCreated={handleOrganizationCreated}
+      open={isAddOrgDialogOpen}
+      onOpenChange={setIsAddOrgDialogOpen}
+    />
+    </FormErrorBoundary>
   )
 }

@@ -18,6 +18,11 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<{
+    email?: string
+    password?: string
+    confirmPassword?: string
+  }>({})
 
   const validatePassword = (password: string) => {
     if (password.length < 8) {
@@ -29,33 +34,89 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
     return null
   }
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!email.trim()) {
+      return 'Email is required'
+    }
+    if (!emailRegex.test(email.trim())) {
+      return 'Please enter a valid email address'
+    }
+    return null
+  }
+
+  const validateConfirmPassword = (password: string, confirmPassword: string) => {
+    if (!confirmPassword.trim()) {
+      return 'Please confirm your password'
+    }
+    if (password !== confirmPassword) {
+      return 'Passwords do not match'
+    }
+    return null
+  }
+
+  // Field validation handlers
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setEmail(value)
+    setFieldErrors(prev => ({ ...prev, email: validateEmail(value) || undefined }))
+  }
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setPassword(value)
+    setFieldErrors(prev => ({ 
+      ...prev, 
+      password: validatePassword(value) || undefined,
+      confirmPassword: confirmPassword ? validateConfirmPassword(value, confirmPassword) || undefined : undefined
+    }))
+  }
+
+  const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setConfirmPassword(value)
+    setFieldErrors(prev => ({ ...prev, confirmPassword: validateConfirmPassword(password, value) || undefined }))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     setSuccess(null)
 
-    if (!email || !password || !confirmPassword) {
-      setError('Please fill in all fields')
-      return
-    }
-
+    // Validate all fields
+    const emailError = validateEmail(email)
     const passwordError = validatePassword(password)
-    if (passwordError) {
-      setError(passwordError)
+    const confirmPasswordError = validateConfirmPassword(password, confirmPassword)
+
+    // Update field errors
+    setFieldErrors({
+      email: emailError || undefined,
+      password: passwordError || undefined,
+      confirmPassword: confirmPasswordError || undefined
+    })
+
+    // If any validation errors, stop submission
+    if (emailError || passwordError || confirmPasswordError) {
+      setError('Please fix the errors above before submitting')
       return
     }
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match')
-      return
-    }
-
-    const { error: signUpError } = await signUp(email, password)
-    
-    if (signUpError) {
-      setError(signUpError.message)
-    } else {
-      setSuccess('Account created successfully! Please check your email to verify your account.')
+    try {
+      const { error: signUpError } = await signUp(email.trim(), password.trim())
+      
+      if (signUpError) {
+        setError(signUpError.message)
+      } else {
+        setSuccess('Account created successfully! Please check your email to verify your account.')
+        // Clear form
+        setEmail('')
+        setPassword('')
+        setConfirmPassword('')
+        setFieldErrors({})
+      }
+    } catch (error) {
+      console.error('Sign up error:', error)
+      setError('An unexpected error occurred. Please try again.')
     }
   }
 
@@ -93,11 +154,15 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
               type="email"
               placeholder="Enter your email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
               disabled={loading}
               required
               autoComplete="email"
+              className={fieldErrors.email ? 'border-red-500' : ''}
             />
+            {fieldErrors.email && (
+              <p className="text-sm text-red-600">{fieldErrors.email}</p>
+            )}
           </div>
           
           <div className="space-y-2">
@@ -110,10 +175,11 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Create a password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange}
                 disabled={loading}
                 required
                 autoComplete="new-password"
+                className={fieldErrors.password ? 'border-red-500' : ''}
               />
               <Button
                 type="button"
@@ -130,9 +196,13 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
                 )}
               </Button>
             </div>
-            <p className="text-xs text-gray-500">
-              Must be at least 8 characters with uppercase, lowercase, and number
-            </p>
+            {fieldErrors.password ? (
+              <p className="text-sm text-red-600">{fieldErrors.password}</p>
+            ) : (
+              <p className="text-xs text-gray-500">
+                Must be at least 8 characters with uppercase, lowercase, and number
+              </p>
+            )}
           </div>
           
           <div className="space-y-2">
@@ -145,10 +215,11 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
                 type={showConfirmPassword ? 'text' : 'password'}
                 placeholder="Confirm your password"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={handleConfirmPasswordChange}
                 disabled={loading}
                 required
                 autoComplete="new-password"
+                className={fieldErrors.confirmPassword ? 'border-red-500' : ''}
               />
               <Button
                 type="button"
@@ -165,6 +236,9 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
                 )}
               </Button>
             </div>
+            {fieldErrors.confirmPassword && (
+              <p className="text-sm text-red-600">{fieldErrors.confirmPassword}</p>
+            )}
           </div>
         </CardContent>
         

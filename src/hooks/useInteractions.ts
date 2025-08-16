@@ -36,14 +36,18 @@ export function useInteractions(filters?: InteractionFilters) {
           type,
           interaction_date,
           subject,
-          notes,
-          location,
+          description,
+          duration_minutes,
           follow_up_required,
           follow_up_date,
+          follow_up_notes,
+          outcome,
           opportunity_id,
           contact_id,
+          organization_id,
           created_at,
-          contact:contacts(id, name, title, organization_id),
+          attachments,
+          contact:contacts(id, first_name, last_name, title, organization_id),
           organization:organizations(id, name, type),
           opportunity:opportunities!interactions_opportunity_id_fkey(id, name, stage, organization_id)
         `)
@@ -352,7 +356,32 @@ export function useCreateInteraction() {
         .select('*')
         .single()
 
-      if (error) throw error
+      if (error) {
+        // Handle specific database constraint violations with user-friendly messages
+        if (error.code === '23503') { // Foreign key constraint violation
+          if (error.message?.includes('organization_id')) {
+            throw new Error('The selected organization does not exist. Please refresh and try again.')
+          }
+          if (error.message?.includes('contact_id')) {
+            throw new Error('The selected contact does not exist. Please refresh and try again.')
+          }
+          if (error.message?.includes('opportunity_id')) {
+            throw new Error('The selected opportunity does not exist. Please refresh and try again.')
+          }
+        }
+        if (error.code === '23502') { // Not null constraint violation
+          if (error.message?.includes('type')) {
+            throw new Error('Interaction type is required.')
+          }
+          if (error.message?.includes('subject')) {
+            throw new Error('Interaction subject is required.')
+          }
+          if (error.message?.includes('interaction_date')) {
+            throw new Error('Interaction date is required.')
+          }
+        }
+        throw error
+      }
       return data
     },
     onSuccess: (newInteraction) => {

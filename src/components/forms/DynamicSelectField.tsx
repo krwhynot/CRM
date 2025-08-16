@@ -3,7 +3,7 @@
 import * as React from "react"
 import { useState, useCallback, useEffect, useMemo, useRef } from "react"
 import { useController, Control, FieldValues, Path } from "react-hook-form"
-import { Check, ChevronsUpDown, Search, Plus, Loader2, X } from "lucide-react"
+import { Check, ChevronsUpDown, Plus, Loader2, X } from "lucide-react"
 import { useMediaQuery } from "@/hooks/useMediaQuery"
 import { useDebounce } from "@/hooks/useDebounce"
 import { cn } from "@/lib/utils"
@@ -21,6 +21,7 @@ import {
   Command,
   CommandEmpty,
   CommandGroup,
+  CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
@@ -82,6 +83,12 @@ export interface DynamicSelectFieldProps<TFieldValues extends FieldValues = Fiel
   // Selection behavior
   clearable?: boolean
   onClear?: () => void
+  
+  // Optimistic updates
+  onSearchResultsUpdate?: (setter: (updateFn: (results: SelectOption[]) => SelectOption[]) => void) => void
+  
+  // Search query tracking
+  onSearchQueryChange?: (query: string) => void
 }
 
 export function DynamicSelectField<TFieldValues extends FieldValues = FieldValues>({
@@ -109,6 +116,8 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
   groupBy,
   clearable = true,
   onClear,
+  onSearchResultsUpdate,
+  onSearchQueryChange,
 }: DynamicSelectFieldProps<TFieldValues>) {
   const [open, setOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -119,11 +128,20 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
   
   // Refs for focus management and cleanup
   const triggerRef = useRef<HTMLButtonElement>(null)
-  const searchInputRef = useRef<HTMLInputElement>(null)
   const isMountedRef = useRef(true)
   
   const isMobile = useMediaQuery("(max-width: 768px)")
   const debouncedSearchQuery = useDebounce(searchQuery, debounceMs)
+  
+  // Debug logging for search flow
+  console.log("🔍 DynamicSelectField Debug:", {
+    searchQuery,
+    debouncedSearchQuery,
+    searchResultsLength: searchResults.length,
+    isLoading,
+    preloadOptionsLength: preloadOptions.length,
+    open
+  })
   
   const {
     field,
@@ -140,64 +158,46 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
     return allOptions.find(option => option.value === field.value) || null
   }, [field.value, preloadOptions, searchResults])
 
-  // Stable ref for search function to prevent infinite loops
-  const performSearchRef = useRef<(query: string) => Promise<void>>()
-  
-  // Create stable search function
-  useEffect(() => {
-    performSearchRef.current = async (query: string) => {
-      if (!isMountedRef.current) return
-      
-      if (query.length < minSearchLength) {
-        if (isMountedRef.current) {
-          setSearchResults(preloadOptions)
-        }
-        return
-      }
-
+  // Stable search function to prevent infinite loops
+  const performSearch = useCallback(async (query: string) => {
+    console.log("🔍 performSearch called with:", { query, minSearchLength, isMounted: isMountedRef.current })
+    
+    if (!isMountedRef.current) return
+    
+    if (query.length < minSearchLength) {
+      console.log("🔍 Query too short, using preloadOptions:", preloadOptions.length)
       if (isMountedRef.current) {
-        setIsLoading(true)
+        setSearchResults(preloadOptions)
       }
+      return
+    }
+
+    console.log("🔍 Starting search for query:", query)
+    setIsLoading(true)
+    
+    try {
+      const results = await onSearch(query)
+      console.log("🔍 Search completed, results:", { 
+        resultsLength: results?.length || 0, 
+        results: results?.slice(0, 3) // Log first 3 results for debugging
+      })
       
-      try {
-        const results = await onSearch(query)
-        if (isMountedRef.current) {
-          setSearchResults(results)
-        }
-      } catch (error) {
-        console.error("Search error:", error)
-        if (isMountedRef.current) {
-          setSearchResults([])
-        }
-      } finally {
-        if (isMountedRef.current) {
-          setIsLoading(false)
-        }
+      if (isMountedRef.current) {
+        setSearchResults(results)
+        console.log("🔍 Updated searchResults state")
+      }
+    } catch (error) {
+      console.error("🔍 Search error:", error)
+      if (isMountedRef.current) {
+        setSearchResults([])
+      }
+    } finally {
+      if (isMountedRef.current) {
+        setIsLoading(false)
+        console.log("🔍 Search loading completed")
       }
     }
   }, [onSearch, minSearchLength, preloadOptions])
-
-  // Perform search wrapper that uses the ref
-  const performSearch = useCallback(async (query: string) => {
-    await performSearchRef.current?.(query)
-  }, [])
-
-  // Effect to trigger search when debounced query changes
-  useEffect(() => {
-    if (debouncedSearchQuery !== undefined) {
-      performSearch(debouncedSearchQuery)
-    }
-  }, [debouncedSearchQuery, performSearch])
-
-  // Focus management when popover opens
-  useEffect(() => {
-    if (open && searchInputRef.current) {
-      // Focus search input when popover opens
-      setTimeout(() => {
-        searchInputRef.current?.focus()
-      }, 100)
-    }
-  }, [open])
 
   // Handle keyboard navigation
   const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
@@ -207,8 +207,23 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
     }
   }, [])
 
-  // Clear announcement after it's been read
+  // Combined effects for search and lifecycle management
   useEffect(() => {
+    // Search when debounced query changes
+    if (debouncedSearchQuery !== undefined) {
+      performSearch(debouncedSearchQuery)
+    }
+  }, [debouncedSearchQuery, performSearch])
+
+  useEffect(() => {
+    // Load initial results when component opens
+    if (open && searchQuery === "" && preloadOptions.length === 0) {
+      performSearch("")
+    }
+  }, [open, searchQuery, preloadOptions.length, performSearch])
+
+  useEffect(() => {
+    // Clear announcement after it's been read
     if (announcement) {
       const timer = setTimeout(() => {
         setAnnouncement("")
@@ -217,30 +232,59 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
     }
   }, [announcement])
 
-  // Load initial results when component opens
   useEffect(() => {
-    if (open && searchQuery === "" && preloadOptions.length === 0) {
-      performSearch("")
-    }
-  }, [open, searchQuery, preloadOptions.length, performSearch])
-
-  // Cleanup on unmount
-  useEffect(() => {
+    // Cleanup on unmount
     return () => {
       isMountedRef.current = false
     }
   }, [])
 
+  // Expose search results update function to parent components
+  useEffect(() => {
+    if (onSearchResultsUpdate) {
+      onSearchResultsUpdate((updateFn: (results: SelectOption[]) => SelectOption[]) => {
+        setSearchResults(currentResults => {
+          const newResults = updateFn(currentResults)
+          console.log('🔄 Search results updated via callback:', { 
+            oldCount: currentResults.length, 
+            newCount: newResults.length 
+          })
+          return newResults
+        })
+      })
+    }
+  }, [onSearchResultsUpdate])
+
+  // Track search query changes and notify parent
+  useEffect(() => {
+    if (onSearchQueryChange) {
+      onSearchQueryChange(searchQuery)
+    }
+  }, [searchQuery, onSearchQueryChange])
+
   // Group options if groupBy function is provided
   const groupedOptions = useMemo(() => {
+    console.log("🔍 Grouping options:", { 
+      searchResultsLength: searchResults.length, 
+      hasGroupBy: !!groupBy,
+      searchResults: searchResults.slice(0, 2) // Log first 2 for debugging
+    })
+    
     if (!groupBy) return { "": searchResults }
     
-    return searchResults.reduce((groups, option) => {
+    const grouped = searchResults.reduce((groups, option) => {
       const group = groupBy(option)
       if (!groups[group]) groups[group] = []
       groups[group].push(option)
       return groups
     }, {} as Record<string, SelectOption[]>)
+    
+    console.log("🔍 Grouped options result:", { 
+      groupNames: Object.keys(grouped),
+      totalItems: Object.values(grouped).flat().length
+    })
+    
+    return grouped
   }, [searchResults, groupBy])
 
   // Handle selection
@@ -335,27 +379,27 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
 
   // Render command content
   const renderCommandContent = () => (
-    <Command shouldFilter={false} className="h-full">
-      <div className="flex items-center border-b px-3">
-        <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" aria-hidden="true" />
-        <input
-          ref={searchInputRef}
-          className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 focus:ring-2 focus:ring-ring focus:ring-offset-2"
-          placeholder={searchPlaceholder}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyDown={handleKeyDown}
-          disabled={disabled}
-          aria-label={`Search ${label.toLowerCase()}`}
-          aria-describedby={`${name}-search-help`}
-          autoComplete="off"
-        />
-        {isLoading && <Loader2 className="h-4 w-4 animate-spin" aria-label="Loading search results" />}
-        <div id={`${name}-search-help`} className="sr-only">
-          Type to search for {label.toLowerCase()}. Use arrow keys to navigate results, Enter to select.
+    <Command className="h-full relative" data-slot="command">
+      <CommandInput
+        placeholder={searchPlaceholder}
+        value={searchQuery}
+        onValueChange={setSearchQuery}
+        onKeyDown={handleKeyDown}
+        disabled={disabled}
+        className="h-9"
+        aria-label={`Search ${label.toLowerCase()}`}
+        aria-describedby={`${name}-search-help`}
+        autoComplete="off"
+      />
+      {isLoading && (
+        <div className="absolute right-3 top-3 z-10">
+          <Loader2 className="h-4 w-4 animate-spin" aria-label="Loading search results" />
         </div>
+      )}
+      <div id={`${name}-search-help`} className="sr-only">
+        Type to search for {label.toLowerCase()}. Use arrow keys to navigate results, Enter to select.
       </div>
-      <CommandList className="max-h-[300px] overflow-y-auto">
+      <CommandList className="max-h-[300px] overflow-y-auto" data-slot="command-list">
         {isLoading ? (
           <div className="flex items-center justify-center py-6">
             <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -365,12 +409,13 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
           <>
             {/* Create new option */}
             {onCreateNew && (showCreateAlways || (showCreateWhenEmpty && searchResults.length === 0)) && (
-              <CommandGroup>
+              <CommandGroup data-slot="command-group">
                 <CommandItem
                   onSelect={handleCreateNew}
                   disabled={isCreateOpen}
-                  className="flex items-center gap-2 text-primary focus:bg-accent focus:text-accent-foreground"
+                  className="flex items-center gap-2 text-primary data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground"
                   aria-label={`${createNewText}. Press Enter to open creation dialog.`}
+                  data-slot="command-item"
                 >
                   <Plus className="h-4 w-4" aria-hidden="true" />
                   <span>{createNewText}</span>
@@ -380,31 +425,94 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
             )}
 
             {/* Search results */}
-            {Object.entries(groupedOptions).map(([groupName, options]) => (
-              <CommandGroup key={groupName} heading={groupName || undefined}>
-                {options.length === 0 && !isLoading && (
-                  <CommandEmpty>{noResultsText}</CommandEmpty>
+            {Object.entries(groupedOptions).length === 0 || Object.values(groupedOptions).every(group => group.length === 0) ? (
+              // No results found - show enhanced empty state with inline quick add
+              <div>
+                <CommandEmpty data-slot="command-empty">
+                  <div className="text-center py-6 px-4">
+                    <div className="text-sm text-muted-foreground mb-3">
+                      {searchQuery 
+                        ? `No results found for "${searchQuery}"`
+                        : noResultsText || "No options available"
+                      }
+                    </div>
+                    {onCreateNew && searchQuery && (
+                      <div className="space-y-2">
+                        <p className="text-xs text-muted-foreground">
+                          Create a new organization with this name:
+                        </p>
+                        <button
+                          onClick={handleCreateNew}
+                          disabled={isCreateOpen}
+                          className="inline-flex items-center gap-2 px-3 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50"
+                        >
+                          <Plus className="h-4 w-4" />
+                          {isCreateOpen ? 'Creating...' : `Create "${searchQuery}"`}
+                          {isCreateOpen && <Loader2 className="h-4 w-4 animate-spin" />}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </CommandEmpty>
+                
+                {/* Alternative: Inline quick add as a command item when no search query */}
+                {onCreateNew && !searchQuery && (
+                  <CommandGroup data-slot="command-group">
+                    <CommandItem
+                      onSelect={handleCreateNew}
+                      disabled={isCreateOpen}
+                      className="flex items-center gap-2 text-primary data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground cursor-pointer"
+                      aria-label={`${createNewText}. Press Enter to open creation dialog.`}
+                      data-slot="command-item"
+                    >
+                      <Plus className="h-4 w-4" aria-hidden="true" />
+                      <span>{createNewText}</span>
+                      {isCreateOpen && <Loader2 className="h-4 w-4 animate-spin ml-auto" aria-label="Creating new item" />}
+                    </CommandItem>
+                  </CommandGroup>
                 )}
-                {options.map((option) => (
-                  <CommandItem
-                    key={option.value}
-                    value={option.value}
-                    onSelect={() => handleSelect(option.value)}
-                    className="flex items-center gap-2 focus:bg-accent focus:text-accent-foreground"
-                    aria-label={`${option.label}${option.description ? `. ${option.description}` : ''}. ${selectedOption?.value === option.value ? 'Currently selected.' : 'Press Enter to select.'}`}
-                  >
-                    <Check
-                      className={cn(
-                        "h-4 w-4",
-                        selectedOption?.value === option.value ? "opacity-100" : "opacity-0"
-                      )}
-                      aria-hidden="true"
-                    />
-                    {renderOptionContent(option)}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            ))}
+              </div>
+            ) : (
+              Object.entries(groupedOptions).map(([groupName, options]) => {
+                console.log("🔍 Rendering CommandGroup:", { 
+                  groupName, 
+                  optionsCount: options.length, 
+                  firstOption: options[0] 
+                })
+                return (
+                  <CommandGroup key={groupName} heading={groupName || undefined} data-slot="command-group">
+                    {options.map((option) => {
+                      // Ensure value is a string for cmdk filtering
+                      const itemValue = String(option.value)
+                      console.log("🔍 Rendering CommandItem:", { 
+                        value: itemValue, 
+                        label: option.label,
+                        selected: selectedOption?.value === option.value
+                      })
+                      return (
+                        <CommandItem
+                          key={itemValue}
+                          value={itemValue}
+                          onSelect={() => handleSelect(option.value)}
+                          className="flex items-center gap-2 data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground"
+                          aria-label={`${option.label}${option.description ? `. ${option.description}` : ''}. ${selectedOption?.value === option.value ? 'Currently selected.' : 'Press Enter to select.'}`}
+                          data-slot="command-item"
+                        >
+                          <Check
+                            className={cn(
+                              "h-4 w-4",
+                              selectedOption?.value === option.value ? "opacity-100" : "opacity-0"
+                            )}
+                            aria-hidden="true"
+                          />
+                          {renderOptionContent(option)}
+                        </CommandItem>
+                      )
+                    })}
+                  </CommandGroup>
+                )
+              })
+            )}
           </>
         )}
       </CommandList>
@@ -417,7 +525,7 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
       <div className="flex items-center gap-1">
         {clearable && selectedOption && (
           <span
-            className="inline-flex items-center justify-center h-auto p-1 cursor-pointer hover:bg-accent rounded-sm focus:ring-2 focus:ring-ring focus:ring-offset-1 focus:outline-none"
+            className="inline-flex items-center justify-center h-auto p-1 cursor-pointer hover:bg-accent rounded-sm focus:ring-2 focus:ring-ring focus:ring-offset-1 outline-hidden"
             onClick={handleClear}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
@@ -454,7 +562,7 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
                 aria-expanded={open}
                 aria-haspopup="dialog"
                 aria-label={`${label}. ${selectedOption ? `Currently selected: ${selectedOption.label}` : 'No selection'}. Press Enter or Space to open selection dialog.`}
-                className="h-12 justify-between text-left font-normal focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                className="h-12 justify-between text-left font-normal focus:ring-2 focus:ring-ring focus:ring-offset-2 outline-hidden"
                 disabled={disabled}
               >
                 {triggerContent}
@@ -480,7 +588,7 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
                 aria-expanded={open}
                 aria-haspopup="listbox"
                 aria-label={`${label}. ${selectedOption ? `Currently selected: ${selectedOption.label}` : 'No selection'}. Press Enter or Space to open selection menu.`}
-                className="h-12 justify-between text-left font-normal focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                className="h-12 justify-between text-left font-normal focus:ring-2 focus:ring-ring focus:ring-offset-2 outline-hidden"
                 disabled={disabled}
               >
                 {triggerContent}

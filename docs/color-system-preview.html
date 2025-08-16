@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Color-Coding System Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f9fafb;
+            color: #111827;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #111827;
+            font-size: 2.25rem;
+            font-weight: 700;
+        }
+
+        .brand-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .brand-green {
+            background-color: #10b981; /* Your branded bright green */
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-block;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .section {
+            background: white;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+
+        .section-content {
+            padding: 2rem;
+        }
+
+        /* Entity Color Definitions */
+        .entity-organizations {
+            background-color: rgb(239, 246, 255); /* blue-50 */
+            border: 1px solid rgb(191, 219, 254); /* blue-200 */
+            color: rgb(29, 78, 216); /* blue-700 */
+        }
+
+        .entity-contacts {
+            background-color: rgb(236, 253, 245); /* emerald-50 */
+            border: 1px solid rgb(167, 243, 208); /* emerald-200 */
+            color: rgb(5, 150, 105); /* emerald-700 */
+        }
+
+        .entity-products {
+            background-color: rgb(245, 243, 255); /* violet-50 */
+            border: 1px solid rgb(196, 181, 253); /* violet-200 */
+            color: rgb(109, 40, 217); /* violet-700 */
+        }
+
+        .entity-opportunities {
+            background-color: rgb(255, 247, 237); /* orange-50 */
+            border: 1px solid rgb(254, 215, 170); /* orange-200 */
+            color: rgb(194, 65, 12); /* orange-700 */
+        }
+
+        .entity-interactions {
+            background-color: rgb(254, 252, 232); /* amber-50 */
+            border: 1px solid rgb(253, 230, 138); /* amber-200 */
+            color: rgb(180, 83, 9); /* amber-700 */
+        }
+
+        /* Badge Styles */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin: 0.25rem;
+        }
+
+        /* Card Styles */
+        .card {
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 1px solid #e5e7eb;
+        }
+
+        .card-organizations {
+            border-top: 3px solid rgb(147, 197, 253); /* blue-300 */
+        }
+
+        .card-contacts {
+            border-top: 3px solid rgb(110, 231, 183); /* emerald-300 */
+        }
+
+        .card-products {
+            border-top: 3px solid rgb(167, 139, 250); /* violet-300 */
+        }
+
+        .card-opportunities {
+            border-top: 3px solid rgb(253, 186, 116); /* orange-300 */
+        }
+
+        .card-interactions {
+            border-top: 3px solid rgb(252, 211, 77); /* amber-300 */
+        }
+
+        /* Table Styles */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .table th {
+            background-color: #f9fafb;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        .table tr:hover {
+            background-color: #f3f4f6;
+        }
+
+        /* Navigation Styles */
+        .nav-item {
+            display: block;
+            padding: 0.75rem 1rem;
+            margin: 0.25rem 0;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #6b7280;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+
+        .nav-item.active-organizations {
+            border-left: 3px solid rgb(29, 78, 216);
+            background-color: rgb(239, 246, 255);
+            color: rgb(29, 78, 216);
+            font-weight: 600;
+        }
+
+        .nav-item.active-contacts {
+            border-left: 3px solid rgb(5, 150, 105);
+            background-color: rgb(236, 253, 245);
+            color: rgb(5, 150, 105);
+            font-weight: 600;
+        }
+
+        /* Form Styles */
+        .form-section {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .form-field-critical {
+            border: 2px solid rgb(191, 219, 254);
+            background-color: rgb(248, 250, 252);
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin: 0.5rem 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .comparison {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9fafb;
+            border-radius: 6px;
+        }
+
+        .color-swatch {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .branded-green-swatch {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .contact-green-swatch {
+            background-color: rgb(236, 253, 245);
+            border: 1px solid rgb(167, 243, 208);
+            color: rgb(5, 150, 105);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 CRM Color-Coding System Preview</h1>
+
+        <!-- Brand Green Protection -->
+        <div class="brand-section">
+            <h2 style="margin-bottom: 1rem;">🟢 Branded Green Protection</h2>
+            <div class="comparison">
+                <div>
+                    <div class="color-swatch branded-green-swatch">Brand</div>
+                    <p><strong>Branded Bright Green</strong><br>
+                    Primary brand color<br>
+                    #10b981 (preserved)</p>
+                </div>
+                <div style="font-size: 2rem;">≠</div>
+                <div>
+                    <div class="color-swatch contact-green-swatch">Contact</div>
+                    <p><strong>Contact Entity Green</strong><br>
+                    Subtle emerald variant<br>
+                    emerald-50/emerald-700</p>
+                </div>
+            </div>
+            <div class="brand-green">Primary CTA Button (Branded Green)</div>
+            <div class="brand-green">Success Message</div>
+            <div class="brand-green">Key Brand Element</div>
+        </div>
+
+        <!-- Entity Color Palette -->
+        <div class="section">
+            <div class="section-header">🎨 Entity Color Palette</div>
+            <div class="section-content">
+                <div class="grid">
+                    <div>
+                        <h3>🔵 Organizations (Blue)</h3>
+                        <div class="badge entity-organizations">Principal</div>
+                        <div class="badge entity-organizations">A+ Priority</div>
+                        <div class="badge entity-organizations">Distributor</div>
+                    </div>
+                    <div>
+                        <h3>🟢 Contacts (Green - NOT Branded)</h3>
+                        <div class="badge entity-contacts">High Authority</div>
+                        <div class="badge entity-contacts">Primary Contact</div>
+                        <div class="badge entity-contacts">Advocate</div>
+                    </div>
+                    <div>
+                        <h3>🟣 Products (Purple)</h3>
+                        <div class="badge entity-products">Category A</div>
+                        <div class="badge entity-products">Active</div>
+                        <div class="badge entity-products">Premium</div>
+                    </div>
+                    <div>
+                        <h3>🟠 Opportunities (Orange)</h3>
+                        <div class="badge entity-opportunities">New Lead</div>
+                        <div class="badge entity-opportunities">In Progress</div>
+                        <div class="badge entity-opportunities">High Priority</div>
+                    </div>
+                    <div>
+                        <h3>🟡 Interactions (Yellow)</h3>
+                        <div class="badge entity-interactions">Phone Call</div>
+                        <div class="badge entity-interactions">Follow-up</div>
+                        <div class="badge entity-interactions">Meeting</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="section">
+            <div class="section-header">📊 Dashboard Cards with Entity Accents</div>
+            <div class="section-content">
+                <div class="grid">
+                    <div class="card card-organizations">
+                        <h4>Organizations</h4>
+                        <p>125 Total Companies</p>
+                        <div class="badge entity-organizations">15 Principals</div>
+                    </div>
+                    <div class="card card-contacts">
+                        <h4>Contacts</h4>
+                        <p>342 Business Contacts</p>
+                        <div class="badge entity-contacts">89 High Authority</div>
+                    </div>
+                    <div class="card card-opportunities">
+                        <h4>Opportunities</h4>
+                        <p>$1.2M Pipeline Value</p>
+                        <div class="badge entity-opportunities">23 Active Deals</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Table -->
+        <div class="section">
+            <div class="section-header">📋 Enhanced Table Scanability</div>
+            <div class="section-content">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Organization</th>
+                            <th>Type</th>
+                            <th>Priority</th>
+                            <th>Contact</th>
+                            <th>Authority</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Acme Food Distributors</td>
+                            <td><span class="badge entity-organizations">Principal</span></td>
+                            <td><span class="badge entity-organizations">A+</span></td>
+                            <td>John Smith</td>
+                            <td><span class="badge entity-contacts">High</span></td>
+                        </tr>
+                        <tr>
+                            <td>Metro Restaurant Group</td>
+                            <td><span class="badge entity-organizations">Customer</span></td>
+                            <td><span class="badge entity-organizations">A</span></td>
+                            <td>Sarah Johnson</td>
+                            <td><span class="badge entity-contacts">Medium</span></td>
+                        </tr>
+                        <tr>
+                            <td>Fresh Foods Inc</td>
+                            <td><span class="badge entity-organizations">Distributor</span></td>
+                            <td><span class="badge entity-organizations">B</span></td>
+                            <td>Mike Chen</td>
+                            <td><span class="badge entity-contacts">High</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="section">
+            <div class="section-header">🧭 Navigation with Entity Recognition</div>
+            <div class="section-content">
+                <div style="max-width: 300px;">
+                    <a href="#" class="nav-item active-organizations">🏢 Organizations</a>
+                    <a href="#" class="nav-item active-contacts">👥 Contacts</a>
+                    <a href="#" class="nav-item">🛍️ Products</a>
+                    <a href="#" class="nav-item">💼 Opportunities</a>
+                    <a href="#" class="nav-item">📞 Interactions</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Fields -->
+        <div class="section">
+            <div class="section-header">📝 Form with Critical Field Emphasis</div>
+            <div class="section-content">
+                <div class="form-section">
+                    <h4>Organization Details</h4>
+                    <div class="form-field-critical">
+                        <label><strong>Account Priority (Critical Field)</strong></label>
+                        <div style="margin-top: 0.5rem;">
+                            <span class="badge entity-organizations">A+</span>
+                            <span class="badge entity-organizations">A</span>
+                            <span class="badge entity-organizations">B</span>
+                        </div>
+                    </div>
+                    <div style="margin: 1rem 0;">
+                        <label>Organization Name</label>
+                        <input type="text" style="width: 100%; padding: 0.5rem; margin-top: 0.25rem; border: 1px solid #d1d5db; border-radius: 4px;" placeholder="Enter organization name">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Professional Comparison -->
+        <div class="section">
+            <div class="section-header">✨ Professional vs. Overwhelming Comparison</div>
+            <div class="section-content">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div>
+                        <h4 style="color: #10b981;">✅ Our Approach (Professional)</h4>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin: 0.5rem 0;">🔵 Subtle blue accents for organizations</li>
+                            <li style="margin: 0.5rem 0;">🟢 Muted green (NOT branded) for contacts</li>
+                            <li style="margin: 0.5rem 0;">🎨 60% neutral, 30% entity accents, 10% semantic</li>
+                            <li style="margin: 0.5rem 0;">✨ <strong style="color: #10b981;">Branded green preserved</strong></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: #ef4444;">❌ Avoid (Overwhelming)</h4>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin: 0.5rem 0;">🌈 Full-color backgrounds everywhere</li>
+                            <li style="margin: 0.5rem 0;">💥 Bright colors competing with brand</li>
+                            <li style="margin: 0.5rem 0;">🤯 Visual noise and cognitive overload</li>
+                            <li style="margin: 0.5rem 0;">⚠️ Brand color confusion</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Summary -->
+        <div class="section">
+            <div class="section-header">📋 Implementation Summary</div>
+            <div class="section-content">
+                <div class="grid">
+                    <div>
+                        <h4>🎯 Design Principles</h4>
+                        <ul>
+                            <li><strong>Professional First:</strong> Enterprise-grade aesthetics</li>
+                            <li><strong>Clean Hierarchy:</strong> Neutral foundation with strategic accents</li>
+                            <li><strong>Brand Protection:</strong> Preserve bright green identity</li>
+                            <li><strong>Accessibility:</strong> WCAG AA contrast compliance</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>🚀 Benefits</h4>
+                        <ul>
+                            <li><strong>Instant Recognition:</strong> &lt;2s entity identification</li>
+                            <li><strong>Reduced Fatigue:</strong> Easier data scanning</li>
+                            <li><strong>Professional Appearance:</strong> Enterprise-appropriate</li>
+                            <li><strong>Brand Consistency:</strong> Bright green remains distinctive</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

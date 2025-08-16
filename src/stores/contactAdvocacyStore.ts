@@ -743,7 +743,7 @@ export const useContactAdvocacyStore = create<ContactAdvocacyState>()(
             return metrics
           },
 
-          getAdvocacyTrends: async (_timeframe: 'week' | 'month' | 'quarter') => {
+          getAdvocacyTrends: async (/* _timeframe?: 'week' | 'month' | 'quarter' */) => {
             // Implementation for trend analysis would go here
             // This would analyze advocacy strength changes over time
             return {}

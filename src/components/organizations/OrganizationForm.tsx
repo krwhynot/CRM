@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { organizationSchema, type OrganizationFormData, FOOD_SERVICE_SEGMENTS, type FoodServiceSegment } from '@/types/organization.types'
+import { organizationSchema, type OrganizationFormData, FOOD_SERVICE_SEGMENTS, type FoodServiceSegment, ORGANIZATION_TYPES, type OrganizationType, deriveOrganizationType } from '@/types/organization.types'
 import { 
   Form, 
   FormControl, 
@@ -19,17 +19,16 @@ import {
   SelectContent, 
   SelectItem, 
   SelectTrigger, 
-  SelectValue,
-  SelectGroup,
-  SelectLabel 
+  SelectValue 
 } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { FormErrorBoundary } from '@/components/ui/form-error-boundary'
 import { useAdvocacyRelationships } from '@/stores/contactAdvocacyStore'
-import { Building2, HelpCircle, Users, Star, AlertCircle, ChevronDown, ChevronRight, TrendingUp } from 'lucide-react'
+import { Building2, HelpCircle, Users, Star, ChevronDown, ChevronRight } from 'lucide-react'
 import type { Organization, Contact } from '@/types/entities'
 import type { OrganizationPriority } from '@/types/organization.types'
 
@@ -164,7 +163,7 @@ function AdvocacySummary({ organizationId, isVisible }: AdvocacySummaryProps) {
         {advocacyData.topAdvocates.length > 0 && (
           <div className="space-y-2">
             <span className="text-sm font-medium text-blue-700">Top Advocates:</span>
-            {advocacyData.topAdvocates.map((advocate, index) => (
+            {advocacyData.topAdvocates.map((advocate) => (
               <div key={advocate.contact.id} className="flex items-center justify-between text-xs">
                 <span className="text-blue-600">
                   {advocate.contact.first_name} {advocate.contact.last_name}
@@ -191,22 +190,25 @@ export function OrganizationForm({
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false)
   const [showAdvocacySummary, setShowAdvocacySummary] = useState(false)
   
-  const form = useForm<OrganizationFormData>({
-    resolver: yupResolver(organizationSchema),
+  const form = useForm({
+    resolver: yupResolver(organizationSchema) as any,
     defaultValues: {
       name: initialData?.name || '',
       priority: (initialData?.priority as OrganizationPriority) || 'C',
       segment: initialData?.segment || '',
+      type: (initialData?.type as OrganizationType) || deriveOrganizationType(
+        initialData?.is_principal || false,
+        initialData?.is_distributor || false
+      ),
       is_principal: initialData?.is_principal || false,
       is_distributor: initialData?.is_distributor || false,
-      address: initialData?.address || '',
-      city: initialData?.city || '',
-      state: initialData?.state || '',
-      zip: initialData?.zip || '',
-      phone: initialData?.phone || '',
-      website: initialData?.website || '',
-      account_manager: initialData?.account_manager || '',
-      notes: initialData?.notes || ''
+      address: initialData?.address_line_1 || null,
+      city: initialData?.city || null,
+      state: initialData?.state_province || null,
+      zip: initialData?.postal_code || null,
+      phone: initialData?.phone || null,
+      website: initialData?.website || null,
+      notes: initialData?.notes || null,
     }
   })
   
@@ -215,29 +217,44 @@ export function OrganizationForm({
   const isDistributor = watchedValues.is_distributor
   const selectedPriority = watchedValues.priority
   const selectedSegment = watchedValues.segment
+  const selectedType = watchedValues.type
   
   useEffect(() => {
     setShowAdvocacySummary(isPrincipal && !!initialData?.id)
   }, [isPrincipal, initialData?.id])
 
+  // Sync type field when boolean flags change
+  useEffect(() => {
+    const derivedType = deriveOrganizationType(isPrincipal, isDistributor)
+    if (selectedType !== derivedType) {
+      form.setValue('type', derivedType)
+    }
+  }, [isPrincipal, isDistributor, selectedType, form])
+
   const handleFormSubmit = (data: OrganizationFormData) => {
-    // Clean up data before submission - convert empty strings to null for optional fields
+    // Clean up data before submission and map form fields to database fields
     const cleanData = {
-      ...data,
-      address: data.address || null,
+      name: data.name,
+      priority: data.priority,
+      segment: data.segment,
+      type: data.type, // Include the required type field
+      is_principal: data.is_principal,
+      is_distributor: data.is_distributor,
+      // Map form fields to database field names
+      address_line_1: data.address || null,
       city: data.city || null,
-      state: data.state || null,
-      zip: data.zip || null,
+      state_province: data.state || null,
+      postal_code: data.zip || null,
       phone: data.phone || null,
       website: data.website || null,
-      account_manager: data.account_manager || null,
       notes: data.notes || null
     }
     onSubmit(cleanData)
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <FormErrorBoundary>
+      <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Building2 className="h-5 w-5" />
@@ -391,13 +408,60 @@ export function OrganizationForm({
                   </FormItem>
                 )}
               />
+              
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      Organization Type
+                      <span className="text-red-500">*</span>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <HelpCircle className="h-4 w-4 text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-sm">
+                          <p>Select the organization's business relationship type with your company</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </FormLabel>
+                    <Select 
+                      onValueChange={(value) => {
+                        field.onChange(value)
+                        // Auto-update boolean flags based on type selection
+                        const isPrincipal = value === 'principal'
+                        const isDistributor = value === 'distributor'
+                        form.setValue('is_principal', isPrincipal)
+                        form.setValue('is_distributor', isDistributor)
+                      }} 
+                      defaultValue={field.value}
+                      disabled={loading}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="h-12 text-base">
+                          <SelectValue placeholder="Select organization type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {ORGANIZATION_TYPES.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            <div className="capitalize">{type}</div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             {/* Organization Type Management */}
             <div className="space-y-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
               <div className="flex items-center gap-2">
                 <Building2 className="h-4 w-4 text-amber-600" />
-                <span className="font-medium text-amber-900">Organization Type</span>
+                <span className="font-medium text-amber-900">Business Relationship Details</span>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <HelpCircle className="h-4 w-4 text-amber-600" />
@@ -405,9 +469,18 @@ export function OrganizationForm({
                   <TooltipContent className="max-w-sm">
                     <p><strong>Principal:</strong> Food manufacturers or suppliers that Master Food Brokers represents</p>
                     <p><strong>Distributor:</strong> Companies that purchase and distribute products to end customers</p>
-                    <p>Organizations can be both Principal and Distributor</p>
+                    <p>These flags work with the organization type above to define the business relationship</p>
                   </TooltipContent>
                 </Tooltip>
+              </div>
+              
+              <div className="text-sm text-amber-700 mb-3">
+                Current Type: <strong className="capitalize">{selectedType}</strong>
+                {selectedType === 'principal' && ' - This organization is a principal we represent'}
+                {selectedType === 'distributor' && ' - This organization distributes our products'}
+                {selectedType === 'customer' && ' - This organization is a customer or prospect'}
+                {selectedType === 'prospect' && ' - This organization is a potential customer'}
+                {selectedType === 'vendor' && ' - This organization provides services to us'}
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -427,7 +500,12 @@ export function OrganizationForm({
                       <FormControl>
                         <Switch
                           checked={field.value}
-                          onCheckedChange={field.onChange}
+                          onCheckedChange={(checked) => {
+                            field.onChange(checked)
+                            // Auto-update type when flags change
+                            const newType = deriveOrganizationType(checked, isDistributor)
+                            form.setValue('type', newType)
+                          }}
                           disabled={loading}
                         />
                       </FormControl>
@@ -451,7 +529,12 @@ export function OrganizationForm({
                       <FormControl>
                         <Switch
                           checked={field.value}
-                          onCheckedChange={field.onChange}
+                          onCheckedChange={(checked) => {
+                            field.onChange(checked)
+                            // Auto-update type when flags change
+                            const newType = deriveOrganizationType(isPrincipal, checked)
+                            form.setValue('type', newType)
+                          }}
                           disabled={loading}
                         />
                       </FormControl>
@@ -500,6 +583,7 @@ export function OrganizationForm({
                               disabled={loading}
                               className="h-12 text-base"
                               {...field}
+                              value={field.value || ''}
                             />
                           </FormControl>
                           <FormMessage />
@@ -519,6 +603,7 @@ export function OrganizationForm({
                               disabled={loading}
                               className="h-12 text-base"
                               {...field}
+                              value={field.value || ''}
                             />
                           </FormControl>
                           <FormMessage />
@@ -527,27 +612,6 @@ export function OrganizationForm({
                     />
                   </div>
                   
-                  <FormField
-                    control={form.control}
-                    name="account_manager"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Account Manager</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Primary account manager or sales contact"
-                            disabled={loading}
-                            className="h-12 text-base"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Name of the primary person managing this account relationship
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                 </div>
 
                 <div className="space-y-4">
@@ -564,6 +628,7 @@ export function OrganizationForm({
                             disabled={loading}
                             className="h-12 text-base"
                             {...field}
+                            value={field.value || ''}
                           />
                         </FormControl>
                         <FormMessage />
@@ -584,6 +649,7 @@ export function OrganizationForm({
                               disabled={loading}
                               className="h-12 text-base"
                               {...field}
+                              value={field.value || ''}
                             />
                           </FormControl>
                           <FormMessage />
@@ -603,6 +669,7 @@ export function OrganizationForm({
                               disabled={loading}
                               className="h-12 text-base"
                               {...field}
+                              value={field.value || ''}
                             />
                           </FormControl>
                           <FormMessage />
@@ -622,6 +689,7 @@ export function OrganizationForm({
                               disabled={loading}
                               className="h-12 text-base"
                               {...field}
+                              value={field.value || ''}
                             />
                           </FormControl>
                           <FormMessage />
@@ -649,6 +717,7 @@ export function OrganizationForm({
                       rows={4}
                       className="text-base"
                       {...field}
+                      value={field.value || ''}
                     />
                   </FormControl>
                   <FormDescription>
@@ -686,5 +755,6 @@ export function OrganizationForm({
         </Form>
       </CardContent>
     </Card>
+    </FormErrorBoundary>
   )
 }

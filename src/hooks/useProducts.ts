@@ -194,7 +194,16 @@ export function useCreateProduct() {
         `)
         .single()
 
-      if (error) throw error
+      if (error) {
+        // Handle specific database constraint violations with user-friendly messages
+        if (error.code === '23505') { // Unique constraint violation
+          if (error.message?.includes('sku')) {
+            throw new Error('A product with this SKU already exists. Please use a different SKU.')
+          }
+          throw new Error('This product information conflicts with an existing product. Please check for duplicates.')
+        }
+        throw error
+      }
       return data as ProductWithPrincipal
     },
     onSuccess: (newProduct) => {

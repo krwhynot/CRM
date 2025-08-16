@@ -68,7 +68,7 @@ export function StatsCards() {
       change: `${metrics.growthMetrics.opportunitiesGrowth >= 0 ? '+' : ''}${metrics.growthMetrics.opportunitiesGrowth.toFixed(1)}%`,
       changeType: metrics.growthMetrics.opportunitiesGrowth >= 0 ? "increase" : "decrease",
       icon: Target,
-      subtitle: `${metrics.opportunitiesByStage['lead'] || 0} New Leads, ${metrics.opportunitiesByStage['qualified'] || 0} Qualified`,
+      subtitle: `${metrics.opportunitiesByStage['New Lead'] || 0} New Leads, ${metrics.opportunitiesByStage['Demo Scheduled'] || 0} Demos Scheduled`,
     },
     {
       title: "This Week's Interactions",

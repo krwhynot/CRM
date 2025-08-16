@@ -2,6 +2,8 @@
 
 Generates an MVP checklist from a migration plan, organized by the Vertical Scaling Workflow.
 
+**📋 Tech Stack Note**: This checklist template is designed for React + TypeScript projects using shadcn/ui, React Hook Form, TanStack React Query, and Supabase. Code examples should follow React patterns, not Vue.js patterns.
+
 ## Usage
 
 ```bash
@@ -46,19 +48,20 @@ Take the complete list of high-confidence tasks and organize them under the stag
 
 3. **Stage 2: Type Definitions & Interfaces**
    - Create Feature-Specific Types
-   - Create Composables (if needed)
+   - Create Custom React Hooks (if needed)
 
-4. **Stage 3: Store Implementation**
-   - Create Pinia Store
+4. **Stage 3: React Query Implementation**
+   - Create TanStack React Query hooks
+   - Implement optimistic updates
 
 5. **Stage 4: Component Implementation**
-   - Create Form Component
-   - Create List Component
+   - Create Form Component (React Hook Form + Yup)
+   - Create List Component (shadcn/ui + TanStack Table)
 
 6. **Stage 5: Route Integration**
-   - Add New Routes
-   - Create View Component
-   - Update Navigation
+   - Add New Routes (React Router DOM)
+   - Create Page Component
+   - Update Navigation (App Sidebar)
 
 7. **Stage 6: Testing & Validation**
    - Manual Testing Checklist

@@ -5,7 +5,7 @@
  * Tests field presence, validation, business logic, and mobile responsiveness
  */
 
-import { test, expect, Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import { FieldComplianceValidator } from '../utils/field-compliance-validator'
 
 // Principal CRM Field Specifications (Updated based on form analysis)
@@ -539,7 +539,7 @@ test.describe('Detailed Form Compliance Testing', () => {
       
       // Test that organization selection filters contacts appropriately
       const orgField = page.locator('select[name="organization_id"], [data-field="organization_id"]').first()
-      const contactField = page.locator('select[name="contact_id"], [data-field="contact_id"]').first()
+      // const contactField = page.locator('select[name="contact_id"], [data-field="contact_id"]').first()
       
       if (await orgField.isVisible()) {
         const orgOptions = await orgField.locator('option').count()

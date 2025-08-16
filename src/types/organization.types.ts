@@ -31,6 +31,11 @@ export const organizationSchema = yup.object({
     .required('Segment is required')
     .max(100, 'Segment must be 100 characters or less'),
 
+  // REQUIRED type field - matches database enum exactly
+  type: yup.string()
+    .oneOf(['customer', 'principal', 'distributor', 'prospect', 'vendor'] as const, 'Invalid organization type')
+    .required('Organization type is required'),
+
   // IMPORTANT FIELDS per specification
   is_principal: yup.boolean()
     .default(false),
@@ -64,9 +69,6 @@ export const organizationSchema = yup.object({
     .max(255, 'Website must be 255 characters or less')
     .nullable(),
   
-  account_manager: yup.string()
-    .max(100, 'Account manager must be 100 characters or less')
-    .nullable(),
   
   notes: yup.string()
     .max(500, 'Notes must be 500 characters or less')
@@ -105,3 +107,15 @@ export const FOOD_SERVICE_SEGMENTS = [
 ] as const
 
 export type FoodServiceSegment = typeof FOOD_SERVICE_SEGMENTS[number]
+
+// Organization types - must match database enum exactly
+export const ORGANIZATION_TYPES = ['customer', 'principal', 'distributor', 'prospect', 'vendor'] as const
+export type OrganizationType = typeof ORGANIZATION_TYPES[number]
+
+// Business rule for type derivation from boolean flags
+export const deriveOrganizationType = (isPrincipal: boolean, isDistributor: boolean): OrganizationType => {
+  if (isPrincipal && isDistributor) return "principal" // Principal takes precedence 
+  if (isPrincipal) return "principal"
+  if (isDistributor) return "distributor"
+  return "customer" // Default for new prospects
+}

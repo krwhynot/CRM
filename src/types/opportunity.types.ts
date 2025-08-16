@@ -48,14 +48,9 @@ export const opportunitySchema = yup.object({
     ] as const, 'Invalid opportunity stage')
     .required('Stage is required'),
   
-  principals: yup.array()
-    .of(yup.string().uuid('Invalid principal organization ID'))
-    .min(1, 'At least one principal must be selected')
-    .required('Principals are required'),
-  
-  product_id: yup.string()
-    .uuid('Invalid product ID')
-    .required('Product is required'),
+  principal_organization_id: yup.string()
+    .uuid('Invalid principal organization ID')
+    .required('Principal organization is required'),
 
   // IMPORTANT FIELDS per specification
   opportunity_context: yup.string()
@@ -73,9 +68,6 @@ export const opportunitySchema = yup.object({
   auto_generated_name: yup.boolean()
     .default(false),
   
-  principal_id: yup.string()
-    .uuid('Invalid principal organization ID')
-    .nullable(),
 
   // OPTIONAL FIELDS per specification
   probability: yup.number()
@@ -83,12 +75,9 @@ export const opportunitySchema = yup.object({
     .max(100, 'Probability must be between 0-100')
     .nullable(),
   
-  expected_close_date: yup.string()
+  estimated_close_date: yup.string()
     .nullable(),
   
-  deal_owner: yup.string()
-    .max(100, 'Deal owner must be 100 characters or less')
-    .nullable(),
   
   notes: yup.string()
     .max(500, 'Notes must be 500 characters or less')
@@ -97,6 +86,15 @@ export const opportunitySchema = yup.object({
 
 // Multiple Principal Opportunity Creation Schema
 export const multiPrincipalOpportunitySchema = yup.object({
+  // Name field - required by database
+  name: yup.string()
+    .when('auto_generated_name', {
+      is: false,
+      then: (schema) => schema.required('Opportunity name is required when auto-generation is disabled'),
+      otherwise: (schema) => schema.nullable()
+    })
+    .max(255, 'Name must be 255 characters or less'),
+  
   // Organization and context info
   organization_id: yup.string()
     .uuid('Invalid organization ID')
@@ -106,11 +104,10 @@ export const multiPrincipalOpportunitySchema = yup.object({
     .uuid('Invalid contact ID')
     .nullable(),
   
-  // Multiple principals selection
-  principals: yup.array()
-    .of(yup.string().uuid('Invalid principal organization ID'))
-    .min(1, 'At least one principal must be selected')
-    .required('Principals are required'),
+  // Single principal selection (aligned with database schema)
+  principal_organization_id: yup.string()
+    .uuid('Invalid principal organization ID')
+    .required('Principal organization is required'),
   
   // Auto-naming configuration
   auto_generated_name: yup.boolean()
@@ -155,7 +152,7 @@ export const multiPrincipalOpportunitySchema = yup.object({
     .max(100, 'Probability must be between 0-100')
     .nullable(),
   
-  expected_close_date: yup.string()
+  estimated_close_date: yup.string()
     .nullable(),
   
   notes: yup.string()
@@ -179,7 +176,7 @@ export interface OpportunityFilters {
   probability_max?: number
   estimated_value_min?: number
   estimated_value_max?: number
-  priority?: string
+  priority?: Database['public']['Enums']['priority_level'] | Database['public']['Enums']['priority_level'][]
 }
 
 // Auto-naming utility functions

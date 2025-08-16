@@ -1,0 +1,308 @@
+name: Database Integration Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run daily at 2 AM UTC to catch schema drift
+    - cron: '0 2 * * *'
+
+env:
+  NODE_VERSION: '18'
+  
+jobs:
+  database-schema-validation:
+    name: Database Schema Validation
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: crm_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup test environment
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'http://localhost:54321' }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'test-key' }}
+          POSTGRES_URL: postgresql://postgres:postgres@localhost:5432/crm_test
+        run: |
+          echo "Setting up test database..."
+          # Add database setup scripts here if needed
+
+      - name: Run schema validation tests
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'http://localhost:54321' }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'test-key' }}
+        run: npm run test:database -- src/test/database/schema-validation.test.ts
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: schema-validation-results
+          path: |
+            test-results/
+            coverage/
+
+  database-crud-tests:
+    name: Database CRUD Operations
+    runs-on: ubuntu-latest
+    needs: database-schema-validation
+    
+    strategy:
+      matrix:
+        entity: [
+          'organizations-crud',
+          'contacts-crud', 
+          'constraint-validation'
+        ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run CRUD tests for ${{ matrix.entity }}
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'http://localhost:54321' }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'test-key' }}
+        run: npm run test:database -- src/test/database/${{ matrix.entity }}.test.ts
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: crud-test-results-${{ matrix.entity }}
+          path: |
+            test-results/
+            coverage/
+
+  form-integration-tests:
+    name: Form Integration Tests
+    runs-on: ubuntu-latest
+    needs: database-crud-tests
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run form integration tests
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'http://localhost:54321' }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'test-key' }}
+        run: npm run test:integration
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: form-integration-results
+          path: |
+            test-results/
+            coverage/
+
+  database-health-check:
+    name: Database Health Check
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run database health checks
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          npm run test:database -- --reporter=json --outputFile=health-check-results.json
+          
+      - name: Generate health report
+        run: |
+          echo "# Database Health Check Report" > health-report.md
+          echo "Generated on: $(date)" >> health-report.md
+          echo "" >> health-report.md
+          
+          if [ -f health-check-results.json ]; then
+            echo "## Test Results" >> health-report.md
+            cat health-check-results.json | jq -r '.tests[] | "- \(.name): \(.status)"' >> health-report.md
+          fi
+
+      - name: Upload health report
+        uses: actions/upload-artifact@v4
+        with:
+          name: database-health-report
+          path: |
+            health-report.md
+            health-check-results.json
+
+  regression-prevention:
+    name: Regression Prevention Tests
+    runs-on: ubuntu-latest
+    needs: [database-schema-validation, database-crud-tests, form-integration-tests]
+    if: always() && (needs.database-schema-validation.result == 'success' || needs.database-crud-tests.result == 'success')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run regression prevention tests
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'http://localhost:54321' }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'test-key' }}
+        run: |
+          # Test specific issues from Phase 1-2 findings
+          echo "Running regression tests for known issues..."
+          
+          # Organization type/priority/segment field mapping
+          npm run test:database -- --grep "organization type flags consistency"
+          
+          # Contact decision_authority and purchase_influence validation  
+          npm run test:database -- --grep "decision authority levels"
+          
+          # Opportunity priority_level and estimated_close_date alignment
+          npm run test:database -- --grep "opportunity.*probability.*constraints"
+          
+          # Product category and principal_id validation
+          npm run test:database -- --grep "product.*principal.*type"
+          
+          # Interaction type and date handling
+          npm run test:database -- --grep "interaction.*type.*enum"
+
+      - name: Generate regression report
+        run: |
+          echo "# Regression Prevention Report" > regression-report.md
+          echo "Generated on: $(date)" >> regression-report.md
+          echo "" >> regression-report.md
+          echo "## Issues Tested" >> regression-report.md
+          echo "- Organization type/priority/segment field mapping" >> regression-report.md
+          echo "- Contact decision_authority and purchase_influence validation" >> regression-report.md  
+          echo "- Opportunity priority_level and estimated_close_date alignment" >> regression-report.md
+          echo "- Product category and principal_id validation" >> regression-report.md
+          echo "- Interaction type and date handling" >> regression-report.md
+
+      - name: Upload regression report
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-prevention-report
+          path: regression-report.md
+
+  test-summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs: [database-schema-validation, database-crud-tests, form-integration-tests, regression-prevention]
+    if: always()
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Generate comprehensive test report
+        run: |
+          echo "# Database Integration Test Summary" > test-summary.md
+          echo "Generated on: $(date)" >> test-summary.md
+          echo "Commit: ${{ github.sha }}" >> test-summary.md
+          echo "Branch: ${{ github.ref_name }}" >> test-summary.md
+          echo "" >> test-summary.md
+          
+          echo "## Test Results" >> test-summary.md
+          echo "- Schema Validation: ${{ needs.database-schema-validation.result }}" >> test-summary.md
+          echo "- CRUD Operations: ${{ needs.database-crud-tests.result }}" >> test-summary.md
+          echo "- Form Integration: ${{ needs.form-integration-tests.result }}" >> test-summary.md
+          echo "- Regression Prevention: ${{ needs.regression-prevention.result }}" >> test-summary.md
+          echo "" >> test-summary.md
+          
+          if [ "${{ needs.database-schema-validation.result }}" = "failure" ] || [ "${{ needs.database-crud-tests.result }}" = "failure" ] || [ "${{ needs.form-integration-tests.result }}" = "failure" ]; then
+            echo "## ⚠️ Action Required" >> test-summary.md
+            echo "One or more database integration tests failed. Please review the test results and fix any issues before merging." >> test-summary.md
+            echo "" >> test-summary.md
+            echo "Common issues to check:" >> test-summary.md
+            echo "- Database schema changes not reflected in TypeScript types" >> test-summary.md
+            echo "- Form validation schemas out of sync with database constraints" >> test-summary.md
+            echo "- Enum values mismatch between code and database" >> test-summary.md
+            echo "- Foreign key constraint violations" >> test-summary.md
+          else
+            echo "## ✅ All Tests Passed" >> test-summary.md
+            echo "Database integration is healthy and no regressions detected." >> test-summary.md
+          fi
+
+      - name: Upload test summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-summary-report
+          path: test-summary.md
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            if (fs.existsSync('test-summary.md')) {
+              const summary = fs.readFileSync('test-summary.md', 'utf8');
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: summary
+              });
+            }

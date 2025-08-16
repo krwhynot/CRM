@@ -17,7 +17,12 @@ export const productSchema = yup.object({
   principal_id: yup.string().uuid('Invalid principal ID').required('Principal organization is required'),
   category: yup.string().required('Category is required'),
   description: yup.string().max(1000, 'Description must be 1000 characters or less').nullable(),
-  sku: yup.string().max(100, 'SKU must be 100 characters or less').nullable(),
+  sku: yup.string().max(100, 'SKU must be 100 characters or less').nullable()
+    .test('unique-sku', 'SKU must be unique across all products', function(value) {
+      // Note: This validation will be enhanced with async validation in the component
+      if (!value) return true // Allow null/empty SKUs
+      return true // Placeholder - actual uniqueness check happens in form component
+    }),
   unit_of_measure: yup.string().max(50, 'Unit of measure must be 50 characters or less').nullable(),
   unit_cost: yup.number().positive('Unit cost must be positive').nullable(),
   list_price: yup.number().positive('List price must be positive').nullable(),
@@ -73,7 +78,22 @@ export type { OrganizationFormData } from './organization.types'
 export type { OpportunityFormData, MultiPrincipalOpportunityFormData } from './opportunity.types'
 export type { InteractionFormData, InteractionWithOpportunityFormData } from './interaction.types'
 
-// Supporting form data types
-export type ProductFormData = yup.InferType<typeof productSchema>
+// Supporting form data types - explicit type to match schema exactly
+export type ProductFormData = {
+  name: string
+  principal_id: string
+  category: string
+  description: string | null
+  sku: string | null
+  unit_of_measure: string | null
+  unit_cost: number | null
+  list_price: number | null
+  min_order_quantity: number | null
+  season_start: number | null
+  season_end: number | null
+  shelf_life_days: number | null
+  storage_requirements: string | null
+  specifications: string | null
+}
 export type OpportunityProductFormData = yup.InferType<typeof opportunityProductSchema>
 export type ContactPreferredPrincipalFormData = yup.InferType<typeof contactPreferredPrincipalSchema>

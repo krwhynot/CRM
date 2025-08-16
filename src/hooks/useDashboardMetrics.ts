@@ -144,7 +144,7 @@ export interface DashboardMetricsOptions {
  * Comprehensive dashboard metrics hook that calculates all KPIs and business intelligence metrics
  * for the KitchenPantry CRM system.
  */
-export function useDashboardMetrics(_options: DashboardMetricsOptions = {}): DashboardMetrics {
+export function useDashboardMetrics(/* _options?: DashboardMetricsOptions */): DashboardMetrics {
   // Options parameter reserved for future use (filters, date ranges, etc.)
 
   // ============================================================================
@@ -168,7 +168,7 @@ export function useDashboardMetrics(_options: DashboardMetricsOptions = {}): Das
   , [organizationsQuery.data])
   
   const activeOpportunities = useMemo(() =>
-    opportunitiesQuery.data?.filter(opp => opp.stage !== 'closed_won' && opp.stage !== 'closed_lost') || []
+    opportunitiesQuery.data?.filter(opp => opp.stage !== 'Closed - Won' && opp.stage !== 'Closed - Lost') || []
   , [opportunitiesQuery.data])
 
   // ============================================================================
@@ -262,8 +262,8 @@ export function useDashboardMetrics(_options: DashboardMetricsOptions = {}): Das
     // Simple calculations
     const total = opportunitiesQuery.data.reduce((sum, opp) => sum + (opp.estimated_value || 0), 0)
     const activeTotal = activeOpportunities.reduce((sum, opp) => sum + (opp.estimated_value || 0), 0)
-    const won = opportunitiesQuery.data.filter(opp => opp.stage === 'closed_won').length
-    const totalClosed = opportunitiesQuery.data.filter(opp => opp.stage === 'closed_won' || opp.stage === 'closed_lost').length
+    const won = opportunitiesQuery.data.filter(opp => opp.stage === 'Closed - Won').length
+    const totalClosed = opportunitiesQuery.data.filter(opp => opp.stage === 'Closed - Won' || opp.stage === 'Closed - Lost').length
     
     return {
       totalPipelineValue: total,
@@ -436,24 +436,24 @@ export function useDashboardMetrics(_options: DashboardMetricsOptions = {}): Das
 /**
  * Hook for opportunity-specific metrics only
  */
-export function useOpportunityMetrics(filters?: MetricsFilters) {
-  const { opportunityMetrics } = useDashboardMetrics({ filters })
+export function useOpportunityMetrics() {
+  const { opportunityMetrics } = useDashboardMetrics()
   return opportunityMetrics
 }
 
 /**
  * Hook for principal-specific metrics only
  */
-export function usePrincipalMetrics(filters?: MetricsFilters) {
-  const { principalMetrics } = useDashboardMetrics({ filters })
+export function usePrincipalMetrics() {
+  const { principalMetrics } = useDashboardMetrics()
   return principalMetrics
 }
 
 /**
  * Hook for interaction-specific metrics only
  */
-export function useInteractionMetrics(filters?: MetricsFilters) {
-  const { interactionMetrics } = useDashboardMetrics({ filters })
+export function useInteractionMetrics() {
+  const { interactionMetrics } = useDashboardMetrics()
   return interactionMetrics
 }
 
@@ -469,9 +469,7 @@ export function useRealTimeActivityMetrics() {
     interactionsRequiringFollowUp,
     isLoading,
     error 
-  } = useDashboardMetrics({ 
-    includeGrowthMetrics: false 
-  })
+  } = useDashboardMetrics()
 
   return {
     totalInteractions,

@@ -14,10 +14,68 @@ export type Database = {
   }
   public: {
     Tables: {
+      contact_preferred_principals: {
+        Row: {
+          advocacy_notes: string | null
+          advocacy_strength: number | null
+          contact_id: string
+          created_at: string | null
+          created_by: string | null
+          deleted_at: string | null
+          id: string
+          principal_organization_id: string
+          relationship_type: string | null
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          advocacy_notes?: string | null
+          advocacy_strength?: number | null
+          contact_id: string
+          created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
+          id?: string
+          principal_organization_id: string
+          relationship_type?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          advocacy_notes?: string | null
+          advocacy_strength?: number | null
+          contact_id?: string
+          created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
+          id?: string
+          principal_organization_id?: string
+          relationship_type?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_preferred_principals_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_preferred_principals_principal_id_fkey"
+            columns: ["principal_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contacts: {
         Row: {
           created_at: string | null
           created_by: string | null
+          decision_authority: string
           deleted_at: string | null
           department: string | null
           email: string | null
@@ -30,6 +88,7 @@ export type Database = {
           notes: string | null
           organization_id: string
           phone: string | null
+          purchase_influence: string
           role: Database["public"]["Enums"]["contact_role"] | null
           title: string | null
           updated_at: string | null
@@ -38,6 +97,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           created_by?: string | null
+          decision_authority?: string
           deleted_at?: string | null
           department?: string | null
           email?: string | null
@@ -50,6 +110,7 @@ export type Database = {
           notes?: string | null
           organization_id: string
           phone?: string | null
+          purchase_influence?: string
           role?: Database["public"]["Enums"]["contact_role"] | null
           title?: string | null
           updated_at?: string | null
@@ -58,6 +119,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           created_by?: string | null
+          decision_authority?: string
           deleted_at?: string | null
           department?: string | null
           email?: string | null
@@ -70,6 +132,7 @@ export type Database = {
           notes?: string | null
           organization_id?: string
           phone?: string | null
+          purchase_influence?: string
           role?: Database["public"]["Enums"]["contact_role"] | null
           title?: string | null
           updated_at?: string | null
@@ -176,6 +239,7 @@ export type Database = {
       opportunities: {
         Row: {
           actual_close_date: string | null
+          auto_generated_name: boolean | null
           competition: string | null
           contact_id: string | null
           created_at: string | null
@@ -192,6 +256,7 @@ export type Database = {
           next_action: string | null
           next_action_date: string | null
           notes: string | null
+          opportunity_context: string | null
           organization_id: string
           principal_organization_id: string | null
           priority: Database["public"]["Enums"]["priority_level"] | null
@@ -202,6 +267,7 @@ export type Database = {
         }
         Insert: {
           actual_close_date?: string | null
+          auto_generated_name?: boolean | null
           competition?: string | null
           contact_id?: string | null
           created_at?: string | null
@@ -218,6 +284,7 @@ export type Database = {
           next_action?: string | null
           next_action_date?: string | null
           notes?: string | null
+          opportunity_context?: string | null
           organization_id: string
           principal_organization_id?: string | null
           priority?: Database["public"]["Enums"]["priority_level"] | null
@@ -228,6 +295,7 @@ export type Database = {
         }
         Update: {
           actual_close_date?: string | null
+          auto_generated_name?: boolean | null
           competition?: string | null
           contact_id?: string | null
           created_at?: string | null
@@ -244,6 +312,7 @@ export type Database = {
           next_action?: string | null
           next_action_date?: string | null
           notes?: string | null
+          opportunity_context?: string | null
           organization_id?: string
           principal_organization_id?: string | null
           priority?: Database["public"]["Enums"]["priority_level"] | null
@@ -357,11 +426,15 @@ export type Database = {
           id: string
           industry: string | null
           is_active: boolean | null
+          is_distributor: boolean | null
+          is_principal: boolean | null
           name: string
           notes: string | null
           parent_organization_id: string | null
           phone: string | null
           postal_code: string | null
+          priority: string
+          segment: string
           size: Database["public"]["Enums"]["organization_size"] | null
           state_province: string | null
           type: Database["public"]["Enums"]["organization_type"]
@@ -384,11 +457,15 @@ export type Database = {
           id?: string
           industry?: string | null
           is_active?: boolean | null
+          is_distributor?: boolean | null
+          is_principal?: boolean | null
           name: string
           notes?: string | null
           parent_organization_id?: string | null
           phone?: string | null
           postal_code?: string | null
+          priority?: string
+          segment?: string
           size?: Database["public"]["Enums"]["organization_size"] | null
           state_province?: string | null
           type: Database["public"]["Enums"]["organization_type"]
@@ -411,11 +488,15 @@ export type Database = {
           id?: string
           industry?: string | null
           is_active?: boolean | null
+          is_distributor?: boolean | null
+          is_principal?: boolean | null
           name?: string
           notes?: string | null
           parent_organization_id?: string | null
           phone?: string | null
           postal_code?: string | null
+          priority?: string
+          segment?: string
           size?: Database["public"]["Enums"]["organization_size"] | null
           state_province?: string | null
           type?: Database["public"]["Enums"]["organization_type"]
@@ -619,12 +700,14 @@ export type Database = {
         | "contract_review"
       opportunity_priority: "low" | "medium" | "high" | "critical"
       opportunity_stage:
-        | "lead"
-        | "qualified"
-        | "proposal"
-        | "negotiation"
-        | "closed_won"
-        | "closed_lost"
+        | "New Lead"
+        | "Initial Outreach"
+        | "Sample/Visit Offered"
+        | "Awaiting Response"
+        | "Feedback Logged"
+        | "Demo Scheduled"
+        | "Closed - Won"
+        | "Closed - Lost"
       organization_size: "small" | "medium" | "large" | "enterprise"
       organization_type:
         | "customer"
@@ -794,12 +877,14 @@ export const Constants = {
       ],
       opportunity_priority: ["low", "medium", "high", "critical"],
       opportunity_stage: [
-        "lead",
-        "qualified",
-        "proposal",
-        "negotiation",
-        "closed_won",
-        "closed_lost",
+        "New Lead",
+        "Initial Outreach",
+        "Sample/Visit Offered",
+        "Awaiting Response",
+        "Feedback Logged",
+        "Demo Scheduled",
+        "Closed - Won",
+        "Closed - Lost",
       ],
       organization_size: ["small", "medium", "large", "enterprise"],
       organization_type: [

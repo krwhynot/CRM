@@ -5,6 +5,35 @@ import * as yup from 'yup'
 export type PurchaseInfluenceLevel = 'High' | 'Medium' | 'Low' | 'Unknown'
 export type DecisionAuthorityRole = 'Decision Maker' | 'Influencer' | 'End User' | 'Gatekeeper'
 
+// Database enum type
+export type ContactRole = Database['public']['Enums']['contact_role']
+
+// Mapping between business logic and database enum
+export const DECISION_AUTHORITY_TO_ROLE_MAPPING: Record<DecisionAuthorityRole, ContactRole> = {
+  'Decision Maker': 'decision_maker',
+  'Influencer': 'influencer', 
+  'End User': 'end_user',
+  'Gatekeeper': 'gatekeeper'
+}
+
+// Helper function to map decision authority to database role
+export function mapDecisionAuthorityToRole(decisionAuthority: DecisionAuthorityRole): ContactRole {
+  return DECISION_AUTHORITY_TO_ROLE_MAPPING[decisionAuthority]
+}
+
+// Database constraint validation helpers
+export const VALID_PURCHASE_INFLUENCE_VALUES: PurchaseInfluenceLevel[] = ['High', 'Medium', 'Low', 'Unknown']
+export const VALID_DECISION_AUTHORITY_VALUES: DecisionAuthorityRole[] = ['Decision Maker', 'Influencer', 'End User', 'Gatekeeper']
+
+// Runtime validation functions
+export function isValidPurchaseInfluence(value: string): value is PurchaseInfluenceLevel {
+  return VALID_PURCHASE_INFLUENCE_VALUES.includes(value as PurchaseInfluenceLevel)
+}
+
+export function isValidDecisionAuthority(value: string): value is DecisionAuthorityRole {
+  return VALID_DECISION_AUTHORITY_VALUES.includes(value as DecisionAuthorityRole)
+}
+
 // Base contact types from database
 export type Contact = Database['public']['Tables']['contacts']['Row']
 export type ContactInsert = Database['public']['Tables']['contacts']['Insert']
@@ -49,7 +78,7 @@ export const contactSchema = yup.object({
   decision_authority: yup.string()
     .oneOf(['Decision Maker', 'Influencer', 'End User', 'Gatekeeper'] as const, 'Invalid decision authority role')
     .required('Decision authority is required')
-    .default('Gatekeeper'),
+    .default('End User'),
 
   // OPTIONAL FIELDS - Database schema aligned
   email: yup.string()
@@ -99,5 +128,7 @@ export interface ContactFilters {
   organization_id?: string
   purchase_influence?: PurchaseInfluenceLevel | PurchaseInfluenceLevel[]
   decision_authority?: DecisionAuthorityRole | DecisionAuthorityRole[]
+  role?: Database['public']['Enums']['contact_role'] | Database['public']['Enums']['contact_role'][]
+  is_primary_contact?: boolean
   search?: string
 }

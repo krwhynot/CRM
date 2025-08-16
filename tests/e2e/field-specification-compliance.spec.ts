@@ -248,7 +248,7 @@ test.describe('Field Specification Compliance Testing', () => {
     })
 
     // Test form validation
-    const validationResults = await validator.validateFormValidation(CONTACT_SPECIFICATION)
+    await validator.validateFormValidation(CONTACT_SPECIFICATION)
     
     console.log('Contact Form Compliance Results:', JSON.stringify(validator.getResults(), null, 2))
   })
@@ -347,8 +347,8 @@ test.describe('Field Specification Compliance Testing', () => {
         await autoNamingToggle.check()
         
         // Check if name preview appears when required fields are filled
-        const namePreview = page.locator('[data-testid="name-preview"], .name-preview').first()
         // This would require filling organization and principals first
+        // const namePreview = page.locator('[data-testid="name-preview"], .name-preview').first()
         // expect(await namePreview.isVisible(), 'Auto-generated name preview should appear').toBe(true)
       }
     })

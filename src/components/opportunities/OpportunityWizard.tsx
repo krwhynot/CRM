@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { opportunitySchema, type OpportunityFormData } from '@/types/validation'
+import { multiPrincipalOpportunitySchema, type MultiPrincipalOpportunityFormData } from '@/types/validation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -9,12 +9,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Constants } from '@/types/database.types'
-import { useOrganizations } from '@/hooks/useOrganizations'
-import { useContacts } from '@/hooks/useContacts'
+import { DynamicSelectField, type SelectOption } from '@/components/forms/DynamicSelectField'
+import { CollapsibleFormSection, FormSectionPresets } from '@/components/forms/CollapsibleFormSection'
+import { supabase } from '@/lib/supabase'
 import { ChevronLeft, ChevronRight, Check, Building, Users, DollarSign, Calendar, FileText } from 'lucide-react'
 
 interface OpportunityWizardProps {
-  onSubmit: (data: OpportunityFormData) => void
+  onSubmit: (data: MultiPrincipalOpportunityFormData) => void
   onCancel: () => void
   loading?: boolean
   preselectedOrganization?: string
@@ -22,11 +23,11 @@ interface OpportunityWizardProps {
 }
 
 const STEPS = [
-  { id: 1, title: 'Basic Info', icon: FileText, description: 'Opportunity name and type' },
+  { id: 1, title: 'Context', icon: FileText, description: 'Opportunity context and type' },
   { id: 2, title: 'Organization', icon: Building, description: 'Select organization and contact' },
-  { id: 3, title: 'Details', icon: Users, description: 'Stage, priority, and description' },
-  { id: 4, title: 'Financial', icon: DollarSign, description: 'Value and probability' },
-  { id: 5, title: 'Timeline', icon: Calendar, description: 'Dates and next steps' }
+  { id: 3, title: 'Principals', icon: Users, description: 'Select principal organizations' },
+  { id: 4, title: 'Details', icon: DollarSign, description: 'Stage and probability' },
+  { id: 5, title: 'Notes', icon: Calendar, description: 'Additional information' }
 ] as const
 
 export function OpportunityWizard({
@@ -37,8 +38,25 @@ export function OpportunityWizard({
   preselectedContact
 }: OpportunityWizardProps) {
   const [currentStep, setCurrentStep] = useState(1)
-  const { data: organizations = [] } = useOrganizations()
-  const { data: contacts = [] } = useContacts()
+  const [selectedPrincipal, setSelectedPrincipal] = useState<string>('')
+
+  const form = useForm({
+    resolver: yupResolver(multiPrincipalOpportunitySchema),
+    mode: 'onBlur',
+    defaultValues: {
+      name: '',
+      organization_id: preselectedOrganization || '',
+      contact_id: preselectedContact || '',
+      principal_organization_id: '',
+      auto_generated_name: false,
+      opportunity_context: 'New Product Interest' as any,
+      custom_context: '',
+      stage: 'New Lead' as any,
+      probability: null,
+      estimated_close_date: '',
+      notes: ''
+    }
+  })
 
   const {
     register,
@@ -46,43 +64,105 @@ export function OpportunityWizard({
     setValue,
     watch,
     trigger,
+    control,
     formState: { errors }
-  } = useForm({
-    resolver: yupResolver(opportunitySchema),
-    mode: 'onBlur',
-    defaultValues: {
-      name: '',
-      organization_id: preselectedOrganization || '',
-      contact_id: preselectedContact || '',
-      stage: 'lead',
-      priority: 'medium',
-      estimated_value: null,
-      probability: null,
-      estimated_close_date: '',
-      description: '',
-      decision_criteria: '',
-      competition: '',
-      next_action: '',
-      notes: ''
-    }
-  })
+  } = form
 
   const watchedValues = watch()
   const selectedOrganization = watch('organization_id')
 
-  // Filter contacts by selected organization
-  const filteredContacts = selectedOrganization 
-    ? contacts.filter(contact => contact.organization_id === selectedOrganization)
-    : contacts
+
+  // Async search function for organizations
+  const searchOrganizations = useCallback(async (query: string): Promise<SelectOption[]> => {
+    try {
+      let dbQuery = supabase
+        .from('organizations')
+        .select('id, name, type, city, state_province')
+        .is('deleted_at', null)
+        .order('name')
+        .limit(25)
+
+      if (query && query.length >= 1) {
+        dbQuery = dbQuery.or(`name.ilike.%${query}%,city.ilike.%${query}%`)
+      }
+
+      const { data, error } = await dbQuery
+      if (error) throw error
+
+      return (data || []).map(org => ({
+        value: org.id,
+        label: org.name,
+        description: org.city && org.state_province ? `${org.city}, ${org.state_province}` : org.city || org.state_province || '',
+        badge: {
+          text: org.type.toUpperCase(),
+          variant: org.type === 'principal' ? 'default' as const : 
+                   org.type === 'distributor' ? 'secondary' as const : 'outline' as const
+        },
+        metadata: { type: org.type }
+      }))
+    } catch (error) {
+      console.error('Error searching organizations:', error)
+      return []
+    }
+  }, [])
+
+  // Async search function for contacts
+  const searchContacts = useCallback(async (query: string): Promise<SelectOption[]> => {
+    try {
+      let dbQuery = supabase
+        .from('contacts')
+        .select('id, first_name, last_name, title, email, organization_id, organizations(name)')
+        .is('deleted_at', null)
+        .order('last_name')
+        .limit(25)
+
+      // Filter by organization if one is selected
+      if (selectedOrganization) {
+        dbQuery = dbQuery.eq('organization_id', selectedOrganization)
+      }
+
+      if (query && query.length >= 1) {
+        dbQuery = dbQuery.or(`first_name.ilike.%${query}%,last_name.ilike.%${query}%,title.ilike.%${query}%`)
+      }
+
+      const { data, error } = await dbQuery
+      if (error) throw error
+
+      return (data || []).map(contact => ({
+        value: contact.id,
+        label: `${contact.first_name} ${contact.last_name}`,
+        description: contact.title ? `${contact.title} at ${contact.organizations?.name}` : contact.organizations?.name || '',
+        metadata: { 
+          organization_id: contact.organization_id,
+          email: contact.email
+        }
+      }))
+    } catch (error) {
+      console.error('Error searching contacts:', error)
+      return []
+    }
+  }, [selectedOrganization])
+
+  // TODO: Re-implement searchPrincipals function for dynamic principal search
+
+  // Handle quick create organization
+  const handleCreateOrganization = async () => {
+    console.log('Create new organization')
+  }
+
+  // Handle quick create contact
+  const handleCreateContact = async () => {
+    console.log('Create new contact')
+  }
 
   const getStepValidation = async (step: number): Promise<boolean> => {
     switch (step) {
       case 1:
-        return await trigger(['name'])
+        return await trigger(['opportunity_context'])
       case 2:
         return await trigger(['organization_id'])
       case 3:
-        return await trigger(['stage', 'priority'])
+        return await trigger(['principal_organization_id']) // Validate principal organization field
       case 4:
         return true // Financial info is optional
       case 5:
@@ -130,6 +210,16 @@ export function OpportunityWizard({
     return 'upcoming'
   }
 
+  // Transform form data to match schema before submission
+  const handleFormSubmit = (formData: MultiPrincipalOpportunityFormData) => {
+    const transformedData: MultiPrincipalOpportunityFormData = {
+      ...formData,
+      principal_organization_id: selectedPrincipal || formData.principal_organization_id
+    }
+    
+    onSubmit(transformedData)
+  }
+
   const progress = ((currentStep - 1) / (STEPS.length - 1)) * 100
 
   const renderStepContent = () => {
@@ -138,105 +228,175 @@ export function OpportunityWizard({
         return (
           <div className="space-y-4">
             <div>
-              <label htmlFor="name" className="text-sm font-medium">
-                Opportunity Name *
+              <label htmlFor="opportunity_context" className="text-sm font-medium">
+                Opportunity Context *
               </label>
-              <Input
-                id="name"
-                {...register('name')}
-                placeholder="Enter opportunity name"
+              <Select 
+                value={watchedValues.opportunity_context || undefined} 
+                onValueChange={(value) => setValue('opportunity_context', value as any)}
                 disabled={loading}
-              />
-              {errors.name && (
-                <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select opportunity context" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Site Visit">Site Visit</SelectItem>
+                  <SelectItem value="Food Show">Food Show</SelectItem>
+                  <SelectItem value="New Product Interest">New Product Interest</SelectItem>
+                  <SelectItem value="Follow-up">Follow-up</SelectItem>
+                  <SelectItem value="Demo Request">Demo Request</SelectItem>
+                  <SelectItem value="Sampling">Sampling</SelectItem>
+                  <SelectItem value="Custom">Custom</SelectItem>
+                </SelectContent>
+              </Select>
+              {errors.opportunity_context && (
+                <p className="text-sm text-red-600 mt-1">{errors.opportunity_context.message}</p>
               )}
             </div>
-            <div>
-              <label htmlFor="description" className="text-sm font-medium">
-                Description
+            
+            {watchedValues.opportunity_context === 'Custom' && (
+              <div>
+                <label htmlFor="custom_context" className="text-sm font-medium">
+                  Custom Context *
+                </label>
+                <Input
+                  id="custom_context"
+                  {...register('custom_context')}
+                  placeholder="Enter custom context"
+                  disabled={loading}
+                />
+                {errors.custom_context && (
+                  <p className="text-sm text-red-600 mt-1">{errors.custom_context.message}</p>
+                )}
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  {...register('auto_generated_name')}
+                  disabled={loading}
+                />
+                <span className="text-sm font-medium">Auto-generate opportunity name</span>
               </label>
-              <Textarea
-                id="description"
-                {...register('description')}
-                placeholder="Brief description of the opportunity"
-                disabled={loading}
-                rows={3}
-              />
-              {errors.description && (
-                <p className="text-sm text-red-600 mt-1">{errors.description.message}</p>
-              )}
+              <p className="text-xs text-gray-500">
+                When enabled, opportunity names will be automatically generated based on organization, principals, and context
+              </p>
             </div>
           </div>
         )
 
       case 2:
         return (
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="organization_id" className="text-sm font-medium">
-                Organization *
-              </label>
-              <Select 
-                value={selectedOrganization || undefined} 
-                onValueChange={(value) => {
-                  setValue('organization_id', value || '')
-                  if (value !== selectedOrganization) {
-                    setValue('contact_id', '')
-                  }
-                }}
+          <CollapsibleFormSection
+            {...FormSectionPresets.opportunityBasic}
+            title="Organization & Contact"
+            description="Select the organization and primary contact for this opportunity"
+            icon={<Building className="h-4 w-4" />}
+            forceState={true}
+            defaultOpen={true}
+          >
+            <div className="space-y-6">
+              <DynamicSelectField
+                name="organization_id"
+                control={control as any}
+                label="Organization"
+                placeholder="Search and select organization..."
+                searchPlaceholder="Search organizations by name or city..."
+                createNewText="Create New Organization"
                 disabled={loading || !!preselectedOrganization}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select organization" />
-                </SelectTrigger>
-                <SelectContent>
-                  {organizations.map((org) => (
-                    <SelectItem key={org.id} value={org.id}>
-                      {org.name} ({org.type})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.organization_id && (
-                <p className="text-sm text-red-600 mt-1">{errors.organization_id.message}</p>
-              )}
-            </div>
+                required
+                onSearch={searchOrganizations}
+                onCreateNew={handleCreateOrganization}
+                showCreateWhenEmpty
+                groupBy={(option) => {
+                  const type = option.metadata?.type
+                  if (type === 'principal') return 'Principals'
+                  if (type === 'distributor') return 'Distributors'
+                  return 'Other Organizations'
+                }}
+                clearable={!preselectedOrganization}
+                debounceMs={300}
+                minSearchLength={1}
+                onClear={() => {
+                  // Clear contact when organization changes
+                  setValue('contact_id', '')
+                }}
+              />
 
-            <div>
-              <label htmlFor="contact_id" className="text-sm font-medium">
-                Primary Contact
-              </label>
-              <Select 
-                value={watchedValues.contact_id || 'none'} 
-                onValueChange={(value) => setValue('contact_id', value === 'none' ? null : value || null)}
+              <DynamicSelectField
+                name="contact_id"
+                control={control as any}
+                label="Primary Contact"
+                placeholder="Search and select contact..."
+                searchPlaceholder="Search contacts by name or title..."
+                createNewText="Create New Contact"
                 disabled={loading || !selectedOrganization || !!preselectedContact}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select contact" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">No contact</SelectItem>
-                  {filteredContacts.map((contact) => (
-                    <SelectItem key={contact.id} value={contact.id}>
-                      {contact.first_name} {contact.last_name} ({contact.title || 'No title'})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.contact_id && (
-                <p className="text-sm text-red-600 mt-1">{errors.contact_id.message}</p>
-              )}
+                required={false}
+                onSearch={searchContacts}
+                onCreateNew={handleCreateContact}
+                showCreateWhenEmpty
+                clearable
+                debounceMs={300}
+                minSearchLength={1}
+                noResultsText={selectedOrganization ? "No contacts found for this organization" : "Select an organization first"}
+              />
             </div>
-          </div>
+          </CollapsibleFormSection>
         )
 
       case 3:
+        return (
+          <CollapsibleFormSection
+            {...FormSectionPresets.opportunityBasic}
+            title="Principal Organizations"
+            description="Select the principal organizations for this opportunity"
+            icon={<Users className="h-4 w-4" />}
+            forceState={true}
+            defaultOpen={true}
+          >
+            <div className="space-y-4">
+              {/* TODO: Implement multiple selection for principals array */}
+              <div>
+                <label htmlFor="principal_select" className="text-sm font-medium">
+                  Principal Organization *
+                </label>
+                <Select 
+                  value={watchedValues.principal_organization_id || selectedPrincipal} 
+                  onValueChange={(value) => {
+                    setSelectedPrincipal(value)
+                    setValue('principal_organization_id', value)
+                  }}
+                  disabled={loading}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select principal organization" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="temp-principal-1">Sample Principal 1</SelectItem>
+                    <SelectItem value="temp-principal-2">Sample Principal 2</SelectItem>
+                    <SelectItem value="temp-principal-3">Sample Principal 3</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.principal_organization_id && (
+                  <p className="text-sm text-red-600 mt-1">{errors.principal_organization_id.message}</p>
+                )}
+              </div>
+              <p className="text-xs text-gray-500">
+                Select the primary principal organization for this opportunity. Multiple principal support and dynamic search will be added in a future update.
+              </p>
+            </div>
+          </CollapsibleFormSection>
+        )
+
+      case 4:
         return (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="stage" className="text-sm font-medium">
-                  Stage *
+                  Stage
                 </label>
                 <Select 
                   value={watchedValues.stage} 
@@ -249,75 +409,13 @@ export function OpportunityWizard({
                   <SelectContent>
                     {Constants.public.Enums.opportunity_stage.map((stage) => (
                       <SelectItem key={stage} value={stage}>
-                        {stage.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                        {stage}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
                 {errors.stage && (
                   <p className="text-sm text-red-600 mt-1">{errors.stage.message}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="priority" className="text-sm font-medium">
-                  Priority *
-                </label>
-                <Select 
-                  value={watchedValues.priority || undefined} 
-                  onValueChange={(value) => setValue('priority', value as any)}
-                  disabled={loading}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select priority" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Constants.public.Enums.opportunity_priority.map((priority) => (
-                      <SelectItem key={priority} value={priority}>
-                        {priority.charAt(0).toUpperCase() + priority.slice(1)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.priority && (
-                  <p className="text-sm text-red-600 mt-1">{errors.priority.message}</p>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="decision_criteria" className="text-sm font-medium">
-                Decision Criteria
-              </label>
-              <Textarea
-                id="decision_criteria"
-                {...register('decision_criteria')}
-                placeholder="What criteria will be used to make the decision?"
-                disabled={loading}
-                rows={3}
-              />
-            </div>
-          </div>
-        )
-
-      case 4:
-        return (
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="estimated_value" className="text-sm font-medium">
-                  Opportunity Value ($)
-                </label>
-                <Input
-                  id="estimated_value"
-                  type="number"
-                  step="0.01"
-                  {...register('estimated_value', { valueAsNumber: true })}
-                  placeholder="0.00"
-                  disabled={loading}
-                />
-                {errors.estimated_value && (
-                  <p className="text-sm text-red-600 mt-1">{errors.estimated_value.message}</p>
                 )}
               </div>
 
@@ -341,23 +439,6 @@ export function OpportunityWizard({
             </div>
 
             <div>
-              <label htmlFor="competition" className="text-sm font-medium">
-                Competition
-              </label>
-              <Input
-                id="competition"
-                {...register('competition')}
-                placeholder="Competing companies or products"
-                disabled={loading}
-              />
-            </div>
-          </div>
-        )
-
-      case 5:
-        return (
-          <div className="space-y-4">
-            <div>
               <label htmlFor="estimated_close_date" className="text-sm font-medium">
                 Estimated Close Date
               </label>
@@ -367,21 +448,16 @@ export function OpportunityWizard({
                 {...register('estimated_close_date')}
                 disabled={loading}
               />
+              {errors.estimated_close_date && (
+                <p className="text-sm text-red-600 mt-1">{errors.estimated_close_date.message}</p>
+              )}
             </div>
+          </div>
+        )
 
-            <div>
-              <label htmlFor="next_action" className="text-sm font-medium">
-                Next Action
-              </label>
-              <Textarea
-                id="next_action"
-                {...register('next_action')}
-                placeholder="What is the next action to move this opportunity forward?"
-                disabled={loading}
-                rows={3}
-              />
-            </div>
-
+      case 5:
+        return (
+          <div className="space-y-4">
             <div>
               <label htmlFor="notes" className="text-sm font-medium">
                 Notes
@@ -391,8 +467,17 @@ export function OpportunityWizard({
                 {...register('notes')}
                 placeholder="Additional notes about this opportunity"
                 disabled={loading}
-                rows={4}
+                rows={6}
               />
+              {errors.notes && (
+                <p className="text-sm text-red-600 mt-1">{errors.notes.message}</p>
+              )}
+            </div>
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h4 className="text-sm font-medium text-blue-900 mb-2">Summary</h4>
+              <p className="text-sm text-blue-700">
+                Review your opportunity details before creating. Multiple opportunities will be created if you selected multiple principals.
+              </p>
             </div>
           </div>
         )
@@ -461,7 +546,7 @@ export function OpportunityWizard({
         </div>
 
         {/* Step Content */}
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(handleFormSubmit)}>
           <div className="min-h-[300px] mb-6">
             {renderStepContent()}
           </div>
