@@ -84,8 +84,6 @@ export function useInteractions(filters?: InteractionFilters) {
         query = query.eq('follow_up_required', filters.follow_up_required)
       }
 
-      query = query.order('interaction_date', { ascending: false })
-
       const { data, error } = await query
 
       if (error) throw error
