@@ -1,0 +1,18 @@
+{
+  "status": "healthy",
+  "timestamp": "2025-08-17T00:00:00Z",
+  "version": "1.0.0",
+  "name": "KitchenPantry CRM",
+  "environment": "production",
+  "checks": {
+    "database": "Supabase PostgreSQL 17.4.1.069",
+    "auth": "Supabase Auth",
+    "build": "Vite Production Build",
+    "bundle_size": "87.37KB gzipped"
+  },
+  "endpoints": {
+    "api": "https://ixitjldcdvbazvjsnkao.supabase.co",
+    "auth": "https://ixitjldcdvbazvjsnkao.supabase.co/auth/v1",
+    "storage": "https://ixitjldcdvbazvjsnkao.supabase.co/storage/v1"
+  }
+}
