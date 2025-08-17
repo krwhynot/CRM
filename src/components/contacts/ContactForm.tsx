@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { contactSchema, type ContactFormData } from '@/types/contact.types'
@@ -94,9 +94,27 @@ export function ContactForm({
   const [selectedPrincipals, setSelectedPrincipals] = useState<string[]>([])
   const [isAddOrgDialogOpen, setIsAddOrgDialogOpen] = useState(false)
   const [currentSearchQuery, setCurrentSearchQuery] = useState('')
-  const [updateSearchResults, setUpdateSearchResults] = useState<((updateFn: (results: SelectOption[]) => SelectOption[]) => void) | null>(null)
+  const updateSearchResultsRef = useRef<((updateFn: (results: SelectOption[]) => SelectOption[]) => void) | null>(null)
+  const renderCountRef = useRef(0)
+  
+  // Development safety net: Track renders to detect infinite loops
+  renderCountRef.current += 1
+  if (renderCountRef.current > 100) {
+    console.error('🚨 INFINITE LOOP DETECTED: ContactForm has rendered more than 100 times!', {
+      component: 'ContactForm',
+      renderCount: renderCountRef.current,
+      currentSearchQuery,
+      showAdvocacyQuickAdd,
+      isAddOrgDialogOpen
+    })
+  }
   
   const { data: principals = [] } = usePrincipals()
+
+  // Stable callback for search results update to prevent infinite loops
+  const handleSearchResultsUpdate = useCallback((setter: (updateFn: (results: SelectOption[]) => SelectOption[]) => void) => {
+    updateSearchResultsRef.current = setter
+  }, [])
 
   // Async search function for organizations
   const searchOrganizations = useCallback(async (query: string): Promise<SelectOption[]> => {
@@ -204,9 +222,9 @@ export function ContactForm({
     setCurrentSearchQuery('')
     
     // Optimistic update: Add to current search results immediately
-    if (updateSearchResults) {
+    if (updateSearchResultsRef.current) {
       try {
-        updateSearchResults((currentResults) => {
+        updateSearchResultsRef.current((currentResults) => {
           // Check if organization already exists (avoid duplicates)
           const exists = currentResults.some(result => result.value === newOrganization.value)
           if (!exists) {
@@ -221,7 +239,7 @@ export function ContactForm({
     }
     
     console.log('✅ Organization created and selected successfully:', newOrganization.label)
-  }, [form, updateSearchResults])
+  }, [form])
 
   const handleFormSubmit = async (data: ContactFormData) => {
     try {
@@ -332,7 +350,7 @@ export function ContactForm({
                     required
                     onSearch={searchOrganizations}
                     onCreateNew={handleCreateOrganization}
-                    onSearchResultsUpdate={(setter) => setUpdateSearchResults(() => setter)}
+                    onSearchResultsUpdate={handleSearchResultsUpdate}
                     onSearchQueryChange={setCurrentSearchQuery}
                     showCreateWhenEmpty
                     showCreateAlways={false}

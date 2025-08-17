@@ -121,6 +121,7 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
 }: DynamicSelectFieldProps<TFieldValues>) {
   const [open, setOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+  const [selectedValue, setSelectedValue] = useState("")
   const [searchResults, setSearchResults] = useState<SelectOption[]>(preloadOptions)
   const [isLoading, setIsLoading] = useState(false)
   const [isCreateOpen, setIsCreateOpen] = useState(false)
@@ -128,7 +129,22 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
   
   // Refs for focus management and cleanup
   const triggerRef = useRef<HTMLButtonElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
   const isMountedRef = useRef(true)
+  const renderCountRef = useRef(0)
+  
+  // Development safety net: Track renders to detect infinite loops
+  renderCountRef.current += 1
+  if (renderCountRef.current > 100) {
+    console.error('🚨 INFINITE LOOP DETECTED: DynamicSelectField has rendered more than 100 times!', {
+      component: 'DynamicSelectField',
+      renderCount: renderCountRef.current,
+      searchQuery,
+      searchResultsLength: searchResults.length,
+      open,
+      isLoading
+    })
+  }
   
   const isMobile = useMediaQuery("(max-width: 768px)")
   const debouncedSearchQuery = useDebounce(searchQuery, debounceMs)
@@ -158,16 +174,38 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
     return allOptions.find(option => option.value === field.value) || null
   }, [field.value, preloadOptions, searchResults])
 
+  // Stable references for performSearch dependencies
+  const onSearchRef = useRef(onSearch)
+  const minSearchLengthRef = useRef(minSearchLength)
+  const preloadOptionsRef = useRef(preloadOptions)
+  
+  // Update refs when props change
+  useEffect(() => {
+    onSearchRef.current = onSearch
+  }, [onSearch])
+  
+  useEffect(() => {
+    minSearchLengthRef.current = minSearchLength
+  }, [minSearchLength])
+  
+  useEffect(() => {
+    preloadOptionsRef.current = preloadOptions
+  }, [preloadOptions])
+
   // Stable search function to prevent infinite loops
   const performSearch = useCallback(async (query: string) => {
-    console.log("🔍 performSearch called with:", { query, minSearchLength, isMounted: isMountedRef.current })
+    console.log("🔍 performSearch called with:", { query, minSearchLength: minSearchLengthRef.current, isMounted: isMountedRef.current })
     
     if (!isMountedRef.current) return
     
-    if (query.length < minSearchLength) {
-      console.log("🔍 Query too short, using preloadOptions:", preloadOptions.length)
+    if (query.length < minSearchLengthRef.current) {
+      console.log("🔍 Query too short, using preloadOptions:", preloadOptionsRef.current.length)
       if (isMountedRef.current) {
-        setSearchResults(preloadOptions)
+        // Only set preload options if we have them, don't clear existing results unnecessarily
+        if (preloadOptionsRef.current.length > 0) {
+          setSearchResults(preloadOptionsRef.current)
+        }
+        // If no preload options, leave existing results in place
       }
       return
     }
@@ -176,7 +214,7 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
     setIsLoading(true)
     
     try {
-      const results = await onSearch(query)
+      const results = await onSearchRef.current(query)
       console.log("🔍 Search completed, results:", { 
         resultsLength: results?.length || 0, 
         results: results?.slice(0, 3) // Log first 3 results for debugging
@@ -197,7 +235,7 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
         console.log("🔍 Search loading completed")
       }
     }
-  }, [onSearch, minSearchLength, preloadOptions])
+  }, []) // Empty dependency array - now truly stable
 
   // Handle keyboard navigation
   const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
@@ -213,14 +251,21 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
     if (debouncedSearchQuery !== undefined) {
       performSearch(debouncedSearchQuery)
     }
-  }, [debouncedSearchQuery, performSearch])
+  }, [debouncedSearchQuery, performSearch]) // performSearch is now stable
 
   useEffect(() => {
     // Load initial results when component opens
-    if (open && searchQuery === "" && preloadOptions.length === 0) {
-      performSearch("")
+    if (open && searchQuery === "") {
+      if (preloadOptions.length > 0) {
+        // Use preload options if available
+        setSearchResults(preloadOptions)
+      } else if (searchResults.length === 0) {
+        // Only fetch fresh data if we have no results at all
+        performSearch("")
+      }
+      // If we already have search results, keep them to avoid clearing dropdown
     }
-  }, [open, searchQuery, preloadOptions.length, performSearch])
+  }, [open, searchQuery, preloadOptions, searchResults.length, performSearch]) // performSearch is now stable
 
   useEffect(() => {
     // Clear announcement after it's been read
@@ -239,28 +284,38 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
     }
   }, [])
 
+  // Create a stable callback that always works with current state
+  const updateSearchResults = useCallback((updateFn: (results: SelectOption[]) => SelectOption[]) => {
+    setSearchResults(currentResults => {
+      const newResults = updateFn(currentResults)
+      console.log('🔄 Search results updated via callback:', { 
+        oldCount: currentResults.length, 
+        newCount: newResults.length 
+      })
+      return newResults
+    })
+  }, []) // Empty deps - callback reference never changes (prevents infinite loops)
+
   // Expose search results update function to parent components
   useEffect(() => {
     if (onSearchResultsUpdate) {
-      onSearchResultsUpdate((updateFn: (results: SelectOption[]) => SelectOption[]) => {
-        setSearchResults(currentResults => {
-          const newResults = updateFn(currentResults)
-          console.log('🔄 Search results updated via callback:', { 
-            oldCount: currentResults.length, 
-            newCount: newResults.length 
-          })
-          return newResults
-        })
-      })
+      onSearchResultsUpdate(updateSearchResults)
     }
-  }, [onSearchResultsUpdate])
+  }, [onSearchResultsUpdate, updateSearchResults]) // Re-register when parent callback changes
+
+  // Stable reference for search query change callback
+  const onSearchQueryChangeRef = useRef(onSearchQueryChange)
+  
+  useEffect(() => {
+    onSearchQueryChangeRef.current = onSearchQueryChange
+  }, [onSearchQueryChange])
 
   // Track search query changes and notify parent
   useEffect(() => {
-    if (onSearchQueryChange) {
-      onSearchQueryChange(searchQuery)
+    if (onSearchQueryChangeRef.current) {
+      onSearchQueryChangeRef.current(searchQuery)
     }
-  }, [searchQuery, onSearchQueryChange])
+  }, [searchQuery]) // Only depend on searchQuery, not the callback
 
   // Group options if groupBy function is provided
   const groupedOptions = useMemo(() => {
@@ -293,15 +348,16 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
     field.onChange(value)
     setOpen(false)
     setSearchQuery("")
+    setSelectedValue("") // Reset command selection state
     
     // Announce selection for screen readers
     if (selectedOption) {
       setAnnouncement(`Selected ${selectedOption.label}`)
     }
     
-    // Return focus to trigger
+    // Return focus to input for better UX
     setTimeout(() => {
-      triggerRef.current?.focus()
+      inputRef.current?.focus()
     }, 100)
   }, [field, searchResults])
 
@@ -379,8 +435,14 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
 
   // Render command content
   const renderCommandContent = () => (
-    <Command className="h-full relative" data-slot="command">
+    <Command 
+      className="h-full relative" 
+      data-slot="command"
+      value={selectedValue}
+      onValueChange={setSelectedValue}
+    >
       <CommandInput
+        ref={inputRef}
         placeholder={searchPlaceholder}
         value={searchQuery}
         onValueChange={setSearchQuery}
