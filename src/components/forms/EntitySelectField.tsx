@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { Control, FieldValues, Path } from "react-hook-form"
 import { DynamicSelectField, SelectOption } from "./DynamicSelectField"
 import { QuickCreateOrganization } from "./QuickCreateOrganization"
@@ -87,32 +87,35 @@ export function EntitySelectField<TFieldValues extends FieldValues = FieldValues
 }: EntitySelectFieldProps<TFieldValues>) {
   const [quickCreateOpen, setQuickCreateOpen] = useState(false)
   
+  // Memoize search hook options to prevent recreation on every render
+  const searchOptions = useMemo(() => ({}), [])
+  
   // Select the appropriate search hook based on entity type
-  const organizationSearch = useOrganizationSearch()
-  const principalSearch = usePrincipalSearch()
-  const distributorSearch = useDistributorSearch()
-  const contactSearch = useContactSearch(organizationId)
-  const productSearch = useProductSearch()
-  const opportunitySearch = useOpportunitySearch()
+  const organizationSearch = useOrganizationSearch(searchOptions)
+  const principalSearch = usePrincipalSearch(searchOptions)
+  const distributorSearch = useDistributorSearch(searchOptions)
+  const contactSearch = useContactSearch(organizationId, searchOptions)
+  const productSearch = useProductSearch(searchOptions)
+  const opportunitySearch = useOpportunitySearch(searchOptions)
 
-  const searchHooks = {
+  const searchHooks = useMemo(() => ({
     organization: organizationSearch,
     principal: principalSearch,
     distributor: distributorSearch,
     contact: contactSearch,
     product: productSearch,
     opportunity: opportunitySearch,
-  }
+  }), [organizationSearch, principalSearch, distributorSearch, contactSearch, productSearch, opportunitySearch])
 
   const selectedSearch = searchHooks[entityType]
   const Icon = entityIcons[entityType]
   const entityLabel = entityLabels[entityType]
 
-  // Handle search function
-  const handleSearch = async (query: string): Promise<SelectOption[]> => {
+  // Handle search function - memoized to prevent endless re-renders
+  const handleSearch = useCallback(async (query: string): Promise<SelectOption[]> => {
     await selectedSearch.search(query)
     return selectedSearch.searchResults
-  }
+  }, [selectedSearch])
 
   // Handle quick create
   const handleQuickCreate = async () => {

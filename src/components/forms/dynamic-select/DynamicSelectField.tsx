@@ -81,6 +81,13 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
     throw new Error('DynamicSelectField: Infinite render loop detected')
   }
   
+  // Reset render count on unmount to handle component remounts
+  useEffect(() => {
+    return () => {
+      renderCountRef.current = 0
+    }
+  }, [])
+  
   const isMobile = useMediaQuery("(max-width: 768px)")
   
   // Use extracted search logic with error handling

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import type { SelectOption } from '@/components/forms/DynamicSelectField'
@@ -233,11 +233,25 @@ export function useAsyncEntitySearch(
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
   const [currentQuery, setCurrentQuery] = useState<string>("")
+  
+  // Use refs to avoid stale closures and prevent dependency issues
+  const configRef = useRef(config)
+  const enabledRef = useRef(enabled)
+  const minSearchLengthRef = useRef(minSearchLength)
+  const enableReactQueryRef = useRef(enableReactQuery)
+  
+  // Update refs when props change
+  useEffect(() => {
+    configRef.current = config
+    enabledRef.current = enabled
+    minSearchLengthRef.current = minSearchLength
+    enableReactQueryRef.current = enableReactQuery
+  }, [config, enabled, minSearchLength, enableReactQuery])
 
   // React Query version (optional)
   const reactQueryResult = useQuery({
     queryKey: ['entity-search', config.entityType, currentQuery, config.additionalFilters],
-    queryFn: ({ signal }) => performEntitySearch(config, currentQuery),
+    queryFn: ({ signal }) => performEntitySearch(configRef.current, currentQuery),
     enabled: enableReactQuery && enabled && currentQuery.length >= minSearchLength,
     staleTime,
     gcTime,
@@ -248,17 +262,17 @@ export function useAsyncEntitySearch(
 
   // Manual search function (maintains backward compatibility)
   const search = useCallback(async (query: string) => {
-    if (!enabled) return
+    if (!enabledRef.current) return
     
     setCurrentQuery(query)
     
-    if (enableReactQuery) {
+    if (enableReactQueryRef.current) {
       // Let React Query handle the search
       return
     }
 
     // Legacy manual search implementation
-    if (query.length < minSearchLength) {
+    if (query.length < minSearchLengthRef.current) {
       setSearchResults([])
       return
     }
@@ -267,7 +281,7 @@ export function useAsyncEntitySearch(
     setError(null)
 
     try {
-      const options = await performEntitySearch(config, query)
+      const options = await performEntitySearch(configRef.current, query)
       setSearchResults(options)
     } catch (err) {
       console.error('Entity search error:', err)
@@ -277,7 +291,7 @@ export function useAsyncEntitySearch(
     } finally {
       setIsLoading(false)
     }
-  }, [config, enabled, minSearchLength, enableReactQuery])
+  }, []) // Empty dependency array since we use refs
 
   const clearSearch = useCallback(() => {
     setSearchResults([])
@@ -324,15 +338,17 @@ export const useDistributorSearch = (options?: UseAsyncEntitySearchOptions) =>
   useAsyncEntitySearch(entitySearchConfigs.distributorOrganizations, options)
 
 export const useContactSearch = (organizationId?: string, options?: UseAsyncEntitySearchOptions) => {
-  const config = organizationId 
-    ? {
-        ...entitySearchConfigs.contactsByOrganization,
-        additionalFilters: { 
-          ...entitySearchConfigs.contactsByOrganization.additionalFilters,
-          organization_id: organizationId 
+  const config = useMemo(() => {
+    return organizationId 
+      ? {
+          ...entitySearchConfigs.contactsByOrganization,
+          additionalFilters: { 
+            ...entitySearchConfigs.contactsByOrganization.additionalFilters,
+            organization_id: organizationId 
+          }
         }
-      }
-    : entitySearchConfigs.allContacts
+      : entitySearchConfigs.allContacts
+  }, [organizationId])
   
   return useAsyncEntitySearch(config, options)
 }
