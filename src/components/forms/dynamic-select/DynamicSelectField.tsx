@@ -172,6 +172,13 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
     }
   }, [open, searchQuery, loadInitialResults])
 
+  // Handle selection when selectedValue changes (cmdk integration)
+  useEffect(() => {
+    if (selectedValue && open) {
+      handleSelect(selectedValue)
+    }
+  }, [selectedValue, open, handleSelect])
+
   // Clear announcement after it's been read
   useEffect(() => {
     if (announcement) {
