@@ -25,8 +25,7 @@ export const organizationSchema = yup.object({
   
   type: yup.string()
     .oneOf(['customer', 'principal', 'distributor', 'prospect', 'vendor'] as const, 'Invalid organization type')
-    .required('Organization type is required')
-    .default('prospect'),
+    .required('Organization type is required'),
   
   priority: yup.string()
     .oneOf(['A', 'B', 'C', 'D'] as const, 'Invalid priority level')

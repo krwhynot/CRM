@@ -101,7 +101,14 @@ export function OrganizationsPage() {
               <OrganizationForm 
               onSubmit={async (data) => {
                 try {
-                  // The OrganizationForm already handles the data conversion
+                  console.log('🔍 Form data received:', data)
+                  console.log('🚀 Sending to database (no fallbacks):', data)
+                  
+                  // Validate type field is present before submission
+                  if (!data.type) {
+                    throw new Error('Organization type is required but missing from form data')
+                  }
+                  
                   await createOrganizationMutation.mutateAsync(data as any)
                   setIsCreateDialogOpen(false)
                   toast.success('Organization created successfully!')

@@ -42,7 +42,7 @@ export function OrganizationForm({
     resolver: yupResolver(organizationSchema),
     defaultValues: {
       name: initialData?.name || '',
-      type: (initialData as any)?.type || 'prospect',
+      type: (initialData as any)?.type || '',  // No fallback - must be explicitly selected
       priority: initialData?.priority || 'C',
       segment: initialData?.segment || '',
       is_principal: initialData?.is_principal || false,
@@ -51,6 +51,12 @@ export function OrganizationForm({
     }
   })
 
+  const handleSubmit = (data: OrganizationFormData) => {
+    console.log('📝 Form validation passed, submitting data:', data)
+    console.log('🔍 Type field value:', data.type)
+    onSubmit(data)
+  }
+
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
@@ -58,7 +64,7 @@ export function OrganizationForm({
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             
             {/* Name */}
             <FormField
@@ -82,10 +88,10 @@ export function OrganizationForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Organization Type *</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger className="h-12 text-base">
-                        <SelectValue />
+                        <SelectValue placeholder="Select organization type" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
