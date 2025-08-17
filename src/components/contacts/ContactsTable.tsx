@@ -184,11 +184,17 @@ export function ContactsTable({
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <div className="text-sm">
-                      {contact.phone && (
-                        <div className="text-gray-500">{contact.phone}</div>
+                    <div className="text-sm space-y-1">
+                      {contact.email && (
+                        <div className="text-gray-600">{contact.email}</div>
                       )}
-                      {!contact.phone && 'N/A'}
+                      {contact.phone && (
+                        <div className="text-gray-500">📞 {contact.phone}</div>
+                      )}
+                      {contact.mobile_phone && (
+                        <div className="text-gray-500">📱 {contact.mobile_phone}</div>
+                      )}
+                      {!contact.email && !contact.phone && !contact.mobile_phone && 'N/A'}
                     </div>
                   </TableCell>
                   <TableCell>

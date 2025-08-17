@@ -1,4 +1,3 @@
-import React from 'react'
 import { ProgressiveDetails } from '@/components/forms'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -6,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { Checkbox } from '@/components/ui/checkbox'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { contactSchema, type ContactFormData } from '@/types/contact.types'
@@ -36,8 +36,12 @@ export function ContactForm({
       title: initialData?.title || '',
       organization_id: preselectedOrganization || initialData?.organization_id || '',
       purchase_influence: initialData?.purchase_influence || 'Unknown',
+      decision_authority: initialData?.decision_authority || 'Gatekeeper',
       email: initialData?.email || '',
       phone: initialData?.phone || '',
+      mobile_phone: initialData?.mobile_phone || '',
+      department: initialData?.department || '',
+      is_primary_contact: initialData?.is_primary_contact || false,
       notes: initialData?.notes || ''
     }
   })
@@ -104,6 +108,22 @@ export function ContactForm({
               </FormItem>
             )} />
 
+            <FormField control={form.control} name="decision_authority" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Decision Authority *</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl><SelectTrigger className="h-11"><SelectValue /></SelectTrigger></FormControl>
+                  <SelectContent>
+                    <SelectItem value="Decision Maker">Decision Maker</SelectItem>
+                    <SelectItem value="Influencer">Influencer</SelectItem>
+                    <SelectItem value="End User">End User</SelectItem>
+                    <SelectItem value="Gatekeeper">Gatekeeper</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )} />
+
             <ProgressiveDetails buttonText="Add Details">
               <div className="space-y-4">
                 <FormField control={form.control} name="email" render={({ field }) => (
@@ -111,6 +131,26 @@ export function ContactForm({
                 )} />
                 <FormField control={form.control} name="phone" render={({ field }) => (
                   <FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} type="tel" className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
+                )} />
+                <FormField control={form.control} name="mobile_phone" render={({ field }) => (
+                  <FormItem><FormLabel>Mobile Phone</FormLabel><FormControl><Input {...field} type="tel" className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
+                )} />
+                <FormField control={form.control} name="department" render={({ field }) => (
+                  <FormItem><FormLabel>Department</FormLabel><FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
+                )} />
+                <FormField control={form.control} name="is_primary_contact" render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={loading}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>Primary Contact</FormLabel>
+                    </div>
+                  </FormItem>
                 )} />
                 <FormField control={form.control} name="notes" render={({ field }) => (
                   <FormItem><FormLabel>Notes</FormLabel><FormControl><Textarea {...field} rows={3} disabled={loading} /></FormControl><FormMessage /></FormItem>
