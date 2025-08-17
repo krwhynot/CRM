@@ -114,14 +114,9 @@ function FormFieldRenderer<T extends FieldValues>({
             {label}
             {required && <span className="text-red-500">*</span>}
             {tooltip && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <HelpCircle className="h-4 w-4 text-muted-foreground" />
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs">
-                  <p>{tooltip}</p>
-                </TooltipContent>
-              </Tooltip>
+              <span className="text-xs text-gray-500 ml-1">
+                ({tooltip})
+              </span>
             )}
           </FormLabel>
           
