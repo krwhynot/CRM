@@ -23,6 +23,11 @@ export const organizationSchema = yup.object({
     .required('Organization name is required')
     .max(255, 'Name must be 255 characters or less'),
   
+  type: yup.string()
+    .oneOf(['customer', 'principal', 'distributor', 'prospect', 'vendor'] as const, 'Invalid organization type')
+    .required('Organization type is required')
+    .default('prospect'),
+  
   priority: yup.string()
     .oneOf(['A', 'B', 'C', 'D'] as const, 'Invalid priority level')
     .required('Priority is required'),

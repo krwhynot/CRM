@@ -42,6 +42,7 @@ export function OrganizationForm({
     resolver: yupResolver(organizationSchema),
     defaultValues: {
       name: initialData?.name || '',
+      type: (initialData as any)?.type || 'prospect',
       priority: initialData?.priority || 'C',
       segment: initialData?.segment || '',
       is_principal: initialData?.is_principal || false,
@@ -69,6 +70,32 @@ export function OrganizationForm({
                   <FormControl>
                     <Input {...field} className="h-12 text-base" disabled={loading} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Type */}
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Organization Type *</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="h-12 text-base">
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="customer">Customer</SelectItem>
+                      <SelectItem value="principal">Principal</SelectItem>
+                      <SelectItem value="distributor">Distributor</SelectItem>
+                      <SelectItem value="prospect">Prospect</SelectItem>
+                      <SelectItem value="vendor">Vendor</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
