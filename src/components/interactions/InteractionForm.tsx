@@ -60,6 +60,7 @@ import {
   Zap
 } from 'lucide-react'
 import { useOrganizations, usePrincipals } from '@/hooks/useOrganizations'
+import { useOrganizationSearch } from '@/hooks/useAsyncEntitySearch'
 // import { useContacts } from '@/hooks/useContacts'
 // import { useOpportunities } from '@/hooks/useOpportunities'
 import { useOpportunityNaming } from '@/stores/opportunityAutoNamingStore'
@@ -218,6 +219,7 @@ export function InteractionForm({
   // Data hooks
   const { data: organizations = [] } = useOrganizations()
   const { data: principals = [] } = usePrincipals()
+  const { search: searchOrganizations } = useOrganizationSearch()
   // const { data: contacts = [] } = useContacts()
   // const { data: opportunities = [] } = useOpportunities()
   
@@ -281,6 +283,39 @@ export function InteractionForm({
   const watchedOpportunityContext = mode === 'create-opportunity' ? watch('opportunity_context') : undefined
   const watchedPrincipalId = mode === 'create-opportunity' ? watch('principal_organization_id') : undefined
 
+  // Async search function for organizations (customers only)
+  const searchCustomerOrganizations = useCallback(async (query: string): Promise<SelectOption[]> => {
+    try {
+      let dbQuery = supabase
+        .from('organizations')
+        .select('id, name, type, email, website, city, state_province')
+        .eq('type', 'customer')
+        .is('deleted_at', null)
+        .order('name')
+        .limit(25)
+
+      if (query && query.length >= 1) {
+        dbQuery = dbQuery.or(`name.ilike.%${query}%,email.ilike.%${query}%,website.ilike.%${query}%`)
+      }
+
+      const { data, error } = await dbQuery
+      if (error) throw error
+
+      return (data || []).map(org => ({
+        value: org.id,
+        label: org.name,
+        description: org.email || `${org.city ? org.city + ', ' : ''}${org.state_province || ''}`.trim() || undefined,
+        badge: {
+          text: org.type.toUpperCase(),
+          variant: 'outline' as const
+        },
+        metadata: org
+      }))
+    } catch (error) {
+      console.error('Error searching organizations:', error)
+      return []
+    }
+  }, [])
 
   // Async search function for contacts
   const searchContacts = useCallback(async (query: string): Promise<SelectOption[]> => {
@@ -361,6 +396,10 @@ export function InteractionForm({
     }
   }, [watchedOrganizationId])
 
+  const handleCreateOrganization = async () => {
+    console.log('Create new organization')
+  }
+
   const handleCreateContact = async () => {
     console.log('Create new contact')
   }
@@ -375,6 +414,21 @@ export function InteractionForm({
 
   // Get current interaction type config
   const currentTypeConfig = INTERACTION_TYPE_CONFIG.find(config => config.type === watchedType) || INTERACTION_TYPE_CONFIG[0]
+
+  // Handle organization change - clear dependent fields
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === 'organization_id') {
+        // Clear contact and opportunity when organization changes
+        setValue('contact_id', null)
+        if (mode === 'link-existing') {
+          setValue('opportunity_id', '')
+        }
+      }
+    })
+    
+    return () => subscription.unsubscribe()
+  }, [form, setValue, mode])
 
   // Auto-naming preview effect for opportunity creation
   useEffect(() => {
@@ -715,48 +769,23 @@ export function InteractionForm({
                 <CollapsibleContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Organization Selection */}
-                    <FormField
-                      control={control}
+                    <DynamicSelectField
                       name="organization_id"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Customer Organization *</FormLabel>
-                          <Select 
-                            value={field.value} 
-                            onValueChange={(value) => {
-                              field.onChange(value)
-                              // Clear contact and opportunity when organization changes
-                              if (value !== watchedOrganizationId) {
-                                setValue('contact_id', null)
-                                if (mode === 'link-existing') {
-                                  setValue('opportunity_id', '')
-                                }
-                              }
-                            }}
-                            disabled={!!preselectedOrganization}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="h-12">
-                                <SelectValue placeholder="Select organization" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Customer Organizations</SelectLabel>
-                                {organizations.filter(org => org.type === 'customer').map((org) => (
-                                  <SelectItem key={org.id} value={org.id}>
-                                    <div className="flex items-center space-x-2">
-                                      <Building2 className="h-4 w-4" />
-                                      <span>{org.name}</span>
-                                    </div>
-                                  </SelectItem>
-                                ))}
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                      control={control}
+                      label="Customer Organization"
+                      placeholder="Search and select organization..."
+                      searchPlaceholder="Search organizations by name or email..."
+                      createNewText="Create New Organization"
+                      disabled={!!preselectedOrganization}
+                      required
+                      onSearch={searchCustomerOrganizations}
+                      onCreateNew={handleCreateOrganization}
+                      showCreateWhenEmpty
+                      clearable={!preselectedOrganization}
+                      debounceMs={300}
+                      minSearchLength={1}
+                      description="Customer organization for this interaction"
+                      noResultsText="No customer organizations found"
                     />
 
                     {/* Contact Selection */}

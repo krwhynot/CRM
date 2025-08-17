@@ -118,8 +118,6 @@ export function ContactForm({
 
   // Async search function for organizations
   const searchOrganizations = useCallback(async (query: string): Promise<SelectOption[]> => {
-    console.log('🔍 searchOrganizations called with query:', { query, queryLength: query?.length })
-    
     try {
       let dbQuery = supabase
         .from('organizations')
@@ -132,24 +130,13 @@ export function ContactForm({
       if (query && query.length >= 1) {
         // Fix .or() syntax for better compatibility
         dbQuery = dbQuery.or(`name.ilike.%${query}%,city.ilike.%${query}%`)
-        console.log('🔍 Applied search filter for query:', query)
-      } else {
-        console.log('🔍 No query provided, fetching all organizations (limited to 25)')
       }
 
-      console.log('🔍 Executing Supabase query...')
       const { data, error } = await dbQuery
       
       if (error) {
-        console.error('🔍 Supabase query error:', error)
         throw new Error(`Database query failed: ${error.message}`)
       }
-
-      console.log('🔍 Supabase query successful:', { 
-        resultCount: data?.length || 0,
-        firstResult: data?.[0],
-        query: query
-      })
 
       const mappedResults = (data || []).map(org => {
         const selectOption: SelectOption = {
@@ -166,14 +153,8 @@ export function ContactForm({
         return selectOption
       })
 
-      console.log('🔍 Mapped results:', { 
-        mappedCount: mappedResults.length,
-        firstMapped: mappedResults[0]
-      })
-
       return mappedResults
     } catch (error) {
-      console.error('🔍 Error in searchOrganizations:', error)
       // Return empty array to prevent component crashes
       return []
     }
@@ -181,7 +162,6 @@ export function ContactForm({
 
   // Handle quick create organization
   const handleCreateOrganization = useCallback(async () => {
-    console.log('🏢 Opening Add Organization dialog with search query:', currentSearchQuery)
     setIsAddOrgDialogOpen(true)
   }, [currentSearchQuery])
 

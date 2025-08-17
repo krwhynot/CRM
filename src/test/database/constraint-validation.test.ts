@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { testSupabase, cleanupTestData } from '../utils/test-database'
 import { TestDataFactory, TestDataSets } from '../fixtures/test-data'
-import type { Database } from '@/lib/database.types'
 
 describe('Database Constraint Validation', () => {
   let testOrganizationId: string

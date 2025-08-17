@@ -104,10 +104,19 @@ export const multiPrincipalOpportunitySchema = yup.object({
     .uuid('Invalid contact ID')
     .nullable(),
   
-  // Single principal selection (aligned with database schema)
+  // Principal selection - supports both single and multiple selection
   principal_organization_id: yup.string()
     .uuid('Invalid principal organization ID')
-    .required('Principal organization is required'),
+    .when('principal_organization_ids', {
+      is: (val: any) => !val || !Array.isArray(val) || val.length === 0,
+      then: (schema) => schema.required('Principal organization is required'),
+      otherwise: (schema) => schema.nullable()
+    }),
+  
+  // Multiple principal selection (for multi-select functionality)
+  principal_organization_ids: yup.array()
+    .of(yup.string().uuid('Invalid principal organization ID'))
+    .nullable(),
   
   // Auto-naming configuration
   auto_generated_name: yup.boolean()

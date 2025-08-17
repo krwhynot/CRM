@@ -48,6 +48,7 @@ export function OpportunityWizard({
       organization_id: preselectedOrganization || '',
       contact_id: preselectedContact || '',
       principal_organization_id: '',
+      principal_organization_ids: [],
       auto_generated_name: false,
       opportunity_context: 'New Product Interest' as any,
       custom_context: '',
@@ -143,7 +144,39 @@ export function OpportunityWizard({
     }
   }, [selectedOrganization])
 
-  // TODO: Re-implement searchPrincipals function for dynamic principal search
+  // Async search function for principal organizations
+  const searchPrincipals = useCallback(async (query: string): Promise<SelectOption[]> => {
+    try {
+      let dbQuery = supabase
+        .from('organizations')
+        .select('id, name, type, city, state_province')
+        .eq('type', 'principal')
+        .is('deleted_at', null)
+        .order('name')
+        .limit(25)
+
+      if (query && query.length >= 1) {
+        dbQuery = dbQuery.or(`name.ilike.%${query}%,city.ilike.%${query}%`)
+      }
+
+      const { data, error } = await dbQuery
+      if (error) throw error
+
+      return (data || []).map(org => ({
+        value: org.id,
+        label: org.name,
+        description: org.city && org.state_province ? `${org.city}, ${org.state_province}` : org.city || org.state_province || '',
+        badge: {
+          text: 'PRINCIPAL',
+          variant: 'default' as const
+        },
+        metadata: { type: org.type }
+      }))
+    } catch (error) {
+      console.error('Error searching principal organizations:', error)
+      return []
+    }
+  }, [])
 
   // Handle quick create organization
   const handleCreateOrganization = async () => {
@@ -162,7 +195,13 @@ export function OpportunityWizard({
       case 2:
         return await trigger(['organization_id'])
       case 3:
-        return await trigger(['principal_organization_id']) // Validate principal organization field
+        const principalIds = watch('principal_organization_ids')
+        const singlePrincipal = watch('principal_organization_id')
+        const hasValidPrincipals = (principalIds && principalIds.length > 0) || singlePrincipal
+        if (!hasValidPrincipals) {
+          return false
+        }
+        return await trigger(['principal_organization_ids', 'principal_organization_id'])
       case 4:
         return true // Financial info is optional
       case 5:
@@ -351,41 +390,45 @@ export function OpportunityWizard({
           <CollapsibleFormSection
             {...FormSectionPresets.opportunityBasic}
             title="Principal Organizations"
-            description="Select the principal organizations for this opportunity"
+            description="Select one or more principal organizations for this opportunity"
             icon={<Users className="h-4 w-4" />}
             forceState={true}
             defaultOpen={true}
           >
             <div className="space-y-4">
-              {/* TODO: Implement multiple selection for principals array */}
-              <div>
-                <label htmlFor="principal_select" className="text-sm font-medium">
-                  Principal Organization *
-                </label>
-                <Select 
-                  value={watchedValues.principal_organization_id || selectedPrincipal} 
-                  onValueChange={(value) => {
-                    setSelectedPrincipal(value)
-                    setValue('principal_organization_id', value)
-                  }}
-                  disabled={loading}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select principal organization" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="temp-principal-1">Sample Principal 1</SelectItem>
-                    <SelectItem value="temp-principal-2">Sample Principal 2</SelectItem>
-                    <SelectItem value="temp-principal-3">Sample Principal 3</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.principal_organization_id && (
-                  <p className="text-sm text-red-600 mt-1">{errors.principal_organization_id.message}</p>
-                )}
+              <DynamicSelectField
+                name="principal_organization_ids"
+                control={control as any}
+                label="Principal Organizations"
+                placeholder="Search and select principal organizations..."
+                searchPlaceholder="Search principals by name or location..."
+                createNewText="Create New Principal"
+                disabled={loading}
+                required
+                multiple={true}
+                maxSelections={5}
+                onSearch={searchPrincipals}
+                showCreateWhenEmpty
+                clearable
+                debounceMs={300}
+                minSearchLength={1}
+                description="Select the principal organizations that will be involved in this opportunity. You can select multiple principals."
+              />
+              
+              {/* Validation message for principals */}
+              {errors.principal_organization_ids && (
+                <p className="text-sm text-red-600 mt-1">{errors.principal_organization_ids.message}</p>
+              )}
+              {errors.principal_organization_id && (
+                <p className="text-sm text-red-600 mt-1">{errors.principal_organization_id.message}</p>
+              )}
+              
+              <div className="bg-blue-50 p-3 rounded-lg">
+                <p className="text-xs text-blue-700">
+                  <strong>Multi-Principal Support:</strong> You can now select multiple principal organizations for this opportunity. 
+                  The system will create individual opportunities for each principal-organization combination.
+                </p>
               </div>
-              <p className="text-xs text-gray-500">
-                Select the primary principal organization for this opportunity. Multiple principal support and dynamic search will be added in a future update.
-              </p>
             </div>
           </CollapsibleFormSection>
         )
@@ -476,7 +519,11 @@ export function OpportunityWizard({
             <div className="bg-blue-50 p-4 rounded-lg">
               <h4 className="text-sm font-medium text-blue-900 mb-2">Summary</h4>
               <p className="text-sm text-blue-700">
-                Review your opportunity details before creating. Multiple opportunities will be created if you selected multiple principals.
+                Review your opportunity details before creating. 
+                {watchedValues.principal_organization_ids && watchedValues.principal_organization_ids.length > 1 
+                  ? `${watchedValues.principal_organization_ids.length} separate opportunities will be created, one for each principal organization.`
+                  : 'One opportunity will be created for the selected principal organization.'
+                }
               </p>
             </div>
           </div>

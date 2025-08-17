@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import type { SelectOption } from '@/components/forms/DynamicSelectField'
 
@@ -22,6 +23,10 @@ export interface UseAsyncEntitySearchOptions {
   debounceMs?: number
   minSearchLength?: number
   enabled?: boolean
+  // React Query options
+  staleTime?: number
+  gcTime?: number
+  enableReactQuery?: boolean
 }
 
 export interface UseAsyncEntitySearchReturn {
@@ -31,6 +36,9 @@ export interface UseAsyncEntitySearchReturn {
   search: (query: string) => Promise<void>
   clearSearch: () => void
   clearResults: () => void
+  // React Query specific methods
+  refetch?: () => void
+  invalidateCache?: () => void
 }
 
 // Predefined configurations for common entity searches
@@ -131,7 +139,83 @@ export const entitySearchConfigs: Record<string, EntitySearchConfig> = {
 }
 
 /**
- * Custom hook for async entity search with debounce
+ * Shared entity search function for React Query and manual search
+ */
+async function performEntitySearch(config: EntitySearchConfig, query: string): Promise<SelectOption[]> {
+  let supabaseQuery = supabase
+    .from(config.entityType)
+    .select(config.selectFields)
+    .limit(config.limit || 50)
+
+  // Apply additional filters
+  if (config.additionalFilters) {
+    Object.entries(config.additionalFilters).forEach(([key, value]) => {
+      if (value === null) {
+        supabaseQuery = supabaseQuery.is(key, null)
+      } else {
+        supabaseQuery = supabaseQuery.eq(key, value)
+      }
+    })
+  }
+
+  // Build search query across multiple fields
+  if (query.trim()) {
+    const searchConditions = config.searchFields
+      .map(field => `${field}.ilike.%${query}%`)
+      .join(',')
+    supabaseQuery = supabaseQuery.or(searchConditions)
+  }
+
+  // Apply ordering
+  if (config.orderBy) {
+    supabaseQuery = supabaseQuery.order(config.orderBy)
+  }
+
+  const { data, error: supabaseError } = await supabaseQuery
+
+  if (supabaseError) throw supabaseError
+
+  // Transform data into SelectOption format
+  const options: SelectOption[] = (data || []).map((item: any) => {
+    let label = item[config.labelField]
+    
+    // Handle computed fields like full_name for contacts
+    if (config.labelField === 'full_name' && item.first_name && item.last_name) {
+      label = `${item.first_name} ${item.last_name}`
+    }
+
+    let description = config.descriptionField ? item[config.descriptionField] : undefined
+    
+    // Handle nested organization name for description
+    if (config.descriptionField === 'organization_name' && item.organization?.name) {
+      description = item.organization.name
+    }
+
+    let badge = undefined
+    if (config.badgeField) {
+      const badgeText = item[config.badgeField]
+      if (badgeText) {
+        badge = {
+          text: String(badgeText).toUpperCase(),
+          variant: config.badgeVariant || 'default',
+        }
+      }
+    }
+
+    return {
+      value: item[config.valueField || 'id'],
+      label,
+      description,
+      badge,
+      metadata: item,
+    }
+  })
+
+  return options
+}
+
+/**
+ * Custom hook for async entity search with optional React Query integration
  */
 export function useAsyncEntitySearch(
   config: EntitySearchConfig,
@@ -140,14 +224,40 @@ export function useAsyncEntitySearch(
   const {
     minSearchLength = 1,
     enabled = true,
+    enableReactQuery = false,
+    staleTime = 60 * 1000, // 1 minute for entity searches
+    gcTime = 5 * 60 * 1000, // 5 minutes
   } = options
 
   const [searchResults, setSearchResults] = useState<SelectOption[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
+  const [currentQuery, setCurrentQuery] = useState<string>("")
 
+  // React Query version (optional)
+  const reactQueryResult = useQuery({
+    queryKey: ['entity-search', config.entityType, currentQuery, config.additionalFilters],
+    queryFn: ({ signal }) => performEntitySearch(config, currentQuery),
+    enabled: enableReactQuery && enabled && currentQuery.length >= minSearchLength,
+    staleTime,
+    gcTime,
+    retry: 1,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  })
+
+  // Manual search function (maintains backward compatibility)
   const search = useCallback(async (query: string) => {
     if (!enabled) return
+    
+    setCurrentQuery(query)
+    
+    if (enableReactQuery) {
+      // Let React Query handle the search
+      return
+    }
+
+    // Legacy manual search implementation
     if (query.length < minSearchLength) {
       setSearchResults([])
       return
@@ -157,75 +267,7 @@ export function useAsyncEntitySearch(
     setError(null)
 
     try {
-      let supabaseQuery = supabase
-        .from(config.entityType)
-        .select(config.selectFields)
-        .limit(config.limit || 50)
-
-      // Apply additional filters
-      if (config.additionalFilters) {
-        Object.entries(config.additionalFilters).forEach(([key, value]) => {
-          if (value === null) {
-            supabaseQuery = supabaseQuery.is(key, null)
-          } else {
-            supabaseQuery = supabaseQuery.eq(key, value)
-          }
-        })
-      }
-
-      // Build search query across multiple fields
-      if (query.trim()) {
-        const searchConditions = config.searchFields
-          .map(field => `${field}.ilike.%${query}%`)
-          .join(',')
-        supabaseQuery = supabaseQuery.or(searchConditions)
-      }
-
-      // Apply ordering
-      if (config.orderBy) {
-        supabaseQuery = supabaseQuery.order(config.orderBy)
-      }
-
-      const { data, error: supabaseError } = await supabaseQuery
-
-      if (supabaseError) throw supabaseError
-
-      // Transform data into SelectOption format
-      const options: SelectOption[] = (data || []).map((item: any) => {
-        let label = item[config.labelField]
-        
-        // Handle computed fields like full_name for contacts
-        if (config.labelField === 'full_name' && item.first_name && item.last_name) {
-          label = `${item.first_name} ${item.last_name}`
-        }
-
-        let description = config.descriptionField ? item[config.descriptionField] : undefined
-        
-        // Handle nested organization name for description
-        if (config.descriptionField === 'organization_name' && item.organization?.name) {
-          description = item.organization.name
-        }
-
-        let badge = undefined
-        if (config.badgeField) {
-          const badgeText = item[config.badgeField]
-          if (badgeText) {
-            badge = {
-              text: String(badgeText).toUpperCase(),
-              variant: config.badgeVariant || 'default',
-            }
-          }
-        }
-
-        return {
-          value: item[config.valueField || 'id'],
-          label,
-          description,
-          badge,
-          metadata: item,
-        }
-      })
-
+      const options = await performEntitySearch(config, query)
       setSearchResults(options)
     } catch (err) {
       console.error('Entity search error:', err)
@@ -235,24 +277,37 @@ export function useAsyncEntitySearch(
     } finally {
       setIsLoading(false)
     }
-  }, [config, enabled, minSearchLength])
+  }, [config, enabled, minSearchLength, enableReactQuery])
 
   const clearSearch = useCallback(() => {
     setSearchResults([])
     setError(null)
+    setCurrentQuery("")
   }, [])
 
   const clearResults = useCallback(() => {
     setSearchResults([])
   }, [])
 
+  // Use React Query results if enabled, otherwise use manual state
+  const finalResults = enableReactQuery ? (reactQueryResult.data || []) : searchResults
+  const finalIsLoading = enableReactQuery ? reactQueryResult.isLoading : isLoading
+  const finalError = enableReactQuery ? reactQueryResult.error : error
+
   return {
-    searchResults,
-    isLoading,
-    error,
+    searchResults: finalResults,
+    isLoading: finalIsLoading,
+    error: finalError,
     search,
     clearSearch,
     clearResults,
+    // React Query specific methods
+    ...(enableReactQuery && {
+      refetch: reactQueryResult.refetch,
+      invalidateCache: () => {
+        // This would be handled by the cache invalidation hooks
+      },
+    }),
   }
 }
 

@@ -13,14 +13,19 @@ module.exports = {
       jsx: true
     }
   },
-  plugins: ['@typescript-eslint', 'react-hooks', 'react-refresh'],
+  plugins: ['@typescript-eslint', 'react-hooks', 'react-refresh', 'unused-imports'],
   rules: {
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },
     ],
     'no-unused-vars': 'off',
-    '@typescript-eslint/no-unused-vars': 'warn',
+    '@typescript-eslint/no-unused-vars': 'off',
+    'unused-imports/no-unused-imports': 'error',
+    'unused-imports/no-unused-vars': [
+      'warn',
+      { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_' }
+    ],
     '@typescript-eslint/no-explicit-any': 'off',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',

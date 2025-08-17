@@ -72,6 +72,18 @@ module.exports = {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      // Dynamic Select Field design tokens
+      spacing: {
+        'dynamic-select-option': 'var(--dynamic-select-option-height, 40px)',
+        'dynamic-select-max': 'var(--dynamic-select-max-height, 300px)',
+      },
+      height: {
+        'dynamic-select-option': 'var(--dynamic-select-option-height, 40px)',
+        'dynamic-select-max': 'var(--dynamic-select-max-height, 300px)',
+      },
+      maxHeight: {
+        'dynamic-select': 'var(--dynamic-select-max-height, 300px)',
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

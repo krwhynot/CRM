@@ -1,17 +1,14 @@
+import React from 'react'
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { testSupabase, cleanupTestData } from '../utils/test-database'
 import { TestDataFactory } from '../fixtures/test-data'
 import { organizationSchema } from '@/types/organization.types'
 import * as yup from 'yup'
 
 // Mock components for testing form validation
-import { OrganizationForm } from '@/components/organizations/OrganizationForm'
-import { ContactForm } from '@/components/contacts/ContactForm'
 
-// Test wrapper for forms
-const TestWrapper = ({ children }: { children: React.ReactNode }) => {
+// Test wrapper for forms (currently unused but may be needed for future tests)
+const _TestWrapper = ({ children }: { children: React.ReactNode }) => {
   return <div>{children}</div>
 }
 
