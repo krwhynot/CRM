@@ -42,21 +42,13 @@ export const organizationSchema = yup.object({
   is_distributor: yup.boolean()
     .default(false),
 
-  // OPTIONAL FIELDS per specification
-  address: yup.string()
-    .max(255, 'Address must be 255 characters or less')
-    .nullable(),
-  
+  // OPTIONAL FIELDS per specification  
   city: yup.string()
     .max(100, 'City must be 100 characters or less')
     .nullable(),
   
   state: yup.string()
-    .max(100, 'State must be 100 characters or less')
-    .nullable(),
-  
-  zip: yup.string()
-    .max(20, 'ZIP code must be 20 characters or less')
+    .max(100, 'State/Province must be 100 characters or less')
     .nullable(),
   
   phone: yup.string()

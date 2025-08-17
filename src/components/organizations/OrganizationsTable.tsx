@@ -171,8 +171,8 @@ export function OrganizationsTable({
                   </TableCell>
                   <TableCell>
                     <div className="text-sm">
-                      {organization.city && organization.state ? (
-                        <div>{organization.city}, {organization.state}</div>
+                      {organization.city && (organization as any).state_province ? (
+                        <div>{organization.city}, {(organization as any).state_province}</div>
                       ) : (
                         'N/A'
                       )}

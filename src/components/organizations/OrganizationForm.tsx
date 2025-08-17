@@ -47,6 +47,10 @@ export function OrganizationForm({
       segment: initialData?.segment || '',
       is_principal: initialData?.is_principal || false,
       is_distributor: initialData?.is_distributor || false,
+      city: (initialData as any)?.city || '',
+      state: (initialData as any)?.state_province || '',
+      phone: initialData?.phone || '',
+      website: initialData?.website || '',
       notes: initialData?.notes || ''
     }
   })
@@ -179,6 +183,66 @@ export function OrganizationForm({
                     <FormControl>
                       <Switch checked={field.value} onCheckedChange={field.onChange} disabled={loading} />
                     </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Location Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>City</FormLabel>
+                    <FormControl>
+                      <Input {...field} className="h-12 text-base" disabled={loading} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="state"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>State/Province</FormLabel>
+                    <FormControl>
+                      <Input {...field} className="h-12 text-base" disabled={loading} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Contact Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone</FormLabel>
+                    <FormControl>
+                      <Input {...field} className="h-12 text-base" disabled={loading} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="website"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Website</FormLabel>
+                    <FormControl>
+                      <Input {...field} className="h-12 text-base" disabled={loading} />
+                    </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />

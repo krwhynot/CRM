@@ -102,14 +102,22 @@ export function OrganizationsPage() {
               onSubmit={async (data) => {
                 try {
                   console.log('🔍 Form data received:', data)
-                  console.log('🚀 Sending to database (no fallbacks):', data)
+                  
+                  // Transform form data to match database schema
+                  const dbData = {
+                    ...data,
+                    state_province: data.state, // Map state to state_province
+                  }
+                  delete (dbData as any).state // Remove the form field name
+                  
+                  console.log('🚀 Sending to database:', dbData)
                   
                   // Validate type field is present before submission
                   if (!data.type) {
                     throw new Error('Organization type is required but missing from form data')
                   }
                   
-                  await createOrganizationMutation.mutateAsync(data as any)
+                  await createOrganizationMutation.mutateAsync(dbData as any)
                   setIsCreateDialogOpen(false)
                   toast.success('Organization created successfully!')
                 } catch (error) {

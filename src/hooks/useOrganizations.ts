@@ -37,7 +37,7 @@ export function useOrganizations(filters?: OrganizationFilters) {
           website,
           address_line_1,
           city,
-          state,
+          state_province,
           country,
           is_principal,
           is_distributor,
@@ -109,7 +109,7 @@ export function useOrganization(id: string) {
           address_line_1,
           address_line_2,
           city,
-          state,
+          state_province,
           country,
           postal_code,
           is_principal,
@@ -139,7 +139,7 @@ export function usePrincipals() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('organizations')
-        .select('id, name, type, phone, email, website, city, state')
+        .select('id, name, type, phone, email, website, city, state_province')
         .eq('type', 'principal')
         .is('deleted_at', null)
         .order('name')
@@ -159,7 +159,7 @@ export function useDistributors() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('organizations')
-        .select('id, name, type, phone, email, website, city, state')
+        .select('id, name, type, phone, email, website, city, state_province')
         .eq('type', 'distributor')
         .is('deleted_at', null)
         .order('name')
