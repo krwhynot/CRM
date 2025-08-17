@@ -59,12 +59,6 @@ export function OrganizationsTable({
     }
   }
 
-  const getTypeFlags = (org: any) => {
-    const flags = []
-    if (org.is_principal) flags.push('Principal')
-    if (org.is_distributor) flags.push('Distributor')
-    return flags.length > 0 ? flags.join(' / ') : 'Customer'
-  }
 
   if (loading) {
     return (

@@ -47,7 +47,7 @@ export const organizationSchema = yup.object({
     .max(100, 'City must be 100 characters or less')
     .nullable(),
   
-  state: yup.string()
+  state_province: yup.string()
     .max(100, 'State/Province must be 100 characters or less')
     .nullable(),
   

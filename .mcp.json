@@ -123,6 +123,20 @@
             "startupDelay": 1200,
             "priority": "optional",
             "timeout": 30000
+        },
+        "perplexity-ask": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "server-perplexity-ask"
+            ],
+            "env": {
+                "PERPLEXITY_API_KEY": "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",
+                "PERPLEXITY_MODEL": "sonar-reasoning-pro"
+            },
+            "startupDelay": 1300,
+            "priority": "optional",
+            "timeout": 30000
         }
     }
 }

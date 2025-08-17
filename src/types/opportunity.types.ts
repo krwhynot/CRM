@@ -83,7 +83,7 @@ export const opportunitySchema = yup.object({
     .max(100, 'Probability must be between 0-100')
     .nullable(),
   
-  expected_close_date: yup.string()
+  estimated_close_date: yup.string()
     .nullable(),
   
   deal_owner: yup.string()
@@ -155,7 +155,7 @@ export const multiPrincipalOpportunitySchema = yup.object({
     .max(100, 'Probability must be between 0-100')
     .nullable(),
   
-  expected_close_date: yup.string()
+  estimated_close_date: yup.string()
     .nullable(),
   
   notes: yup.string()
