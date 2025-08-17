@@ -69,6 +69,7 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
   const [announcement, setAnnouncement] = useState("")
   const [searchError, setSearchError] = useState<string | null>(null)
   const [isSearchRetrying, setIsSearchRetrying] = useState(false)
+  const [selectedOptionCache, setSelectedOptionCache] = useState<SelectOption | null>(null)
   
   // Refs for focus management and cleanup
   const triggerRef = useRef<HTMLButtonElement>(null)
@@ -129,12 +130,20 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
     rules: { required: required ? `${label} is required` : false },
   })
 
-  // Find selected option(s)
+  // Find selected option(s) - use cache if not found in current results
   const selectedOption = useMemo(() => {
     if (multiple) return null
     const allOptions = [...preloadOptions, ...searchResults]
-    return allOptions.find(option => option.value === field.value) || null
-  }, [field.value, preloadOptions, searchResults, multiple])
+    const foundOption = allOptions.find(option => option.value === field.value)
+    
+    // If we can't find the option in current results but have a cached value
+    // and the cached value matches the current field value, use the cache
+    if (!foundOption && selectedOptionCache && selectedOptionCache.value === field.value) {
+      return selectedOptionCache
+    }
+    
+    return foundOption || null
+  }, [field.value, preloadOptions, searchResults, multiple, selectedOptionCache])
 
   const selectedOptions = useMemo(() => {
     if (!multiple) return []
@@ -179,6 +188,13 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
     }
   }, [selectedValue, open, handleSelect])
 
+  // Clear cache when field value is externally cleared
+  useEffect(() => {
+    if (!multiple && !field.value && selectedOptionCache) {
+      setSelectedOptionCache(null)
+    }
+  }, [field.value, multiple, selectedOptionCache])
+
   // Clear announcement after it's been read
   useEffect(() => {
     if (announcement) {
@@ -189,7 +205,8 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
 
   // Handle selection
   const handleSelect = useCallback((value: string) => {
-    const selectedOption = searchResults.find(option => option.value === value)
+    const allOptions = [...preloadOptions, ...searchResults]
+    const selectedOption = allOptions.find(option => option.value === value)
     
     if (multiple) {
       const currentValues = Array.isArray(field.value) ? field.value : []
@@ -218,22 +235,26 @@ export function DynamicSelectField<TFieldValues extends FieldValues = FieldValue
     } else {
       // Single select mode
       field.onChange(value)
+      
+      // Cache the selected option for display persistence
+      if (selectedOption) {
+        setSelectedOptionCache(selectedOption)
+        setAnnouncement(`Selected ${selectedOption.label}`)
+      }
+      
       setOpen(false)
       setSearchQuery("")
       setSelectedValue("")
       
-      if (selectedOption) {
-        setAnnouncement(`Selected ${selectedOption.label}`)
-      }
-      
       setTimeout(() => inputRef.current?.focus(), 100)
     }
-  }, [field, searchResults, setSearchQuery, multiple, maxSelections])
+  }, [field, searchResults, setSearchQuery, multiple, maxSelections, preloadOptions])
 
   // Handle clear
   const handleClear = useCallback((event: React.MouseEvent) => {
     event.stopPropagation()
     field.onChange(multiple ? [] : "")
+    setSelectedOptionCache(null) // Clear cached option
     setAnnouncement("Selection cleared")
     onClear?.()
   }, [field, onClear, multiple])
