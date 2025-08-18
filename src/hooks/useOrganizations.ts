@@ -76,6 +76,14 @@ export function useOrganizations(filters?: OrganizationFilters) {
         query = query.eq('is_active', filters.is_active)
       }
 
+      if (typeof filters?.is_principal === 'boolean') {
+        query = query.eq('is_principal', filters.is_principal)
+      }
+
+      if (typeof filters?.is_distributor === 'boolean') {
+        query = query.eq('is_distributor', filters.is_distributor)
+      }
+
       if (filters?.search) {
         query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%`)
       }

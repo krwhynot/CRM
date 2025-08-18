@@ -5,6 +5,22 @@ import * as yup from 'yup'
 export type PurchaseInfluenceLevel = 'High' | 'Medium' | 'Low' | 'Unknown'
 export type DecisionAuthorityRole = 'Decision Maker' | 'Influencer' | 'End User' | 'Gatekeeper'
 
+// Position types for food service industry contacts
+export type ContactPosition = 
+  | 'Executive Chef'
+  | 'Manager' 
+  | 'Buyer'
+  | 'Owner'
+  | 'Custom'
+
+// Predefined position options for dropdown
+export const CONTACT_POSITIONS: ContactPosition[] = [
+  'Executive Chef',
+  'Manager',
+  'Buyer', 
+  'Owner'
+] as const
+
 // Base contact types from database
 export type Contact = Database['public']['Tables']['contacts']['Row']
 export type ContactInsert = Database['public']['Tables']['contacts']['Insert']
@@ -50,6 +66,20 @@ export const contactSchema = yup.object({
     .oneOf(['Decision Maker', 'Influencer', 'End User', 'Gatekeeper'] as const, 'Invalid decision authority role')
     .required('Decision authority is required')
     .default('Gatekeeper'),
+
+  position: yup.string()
+    .required('Position is required')
+    .max(100, 'Position must be 100 characters or less'),
+
+  // For custom positions when "Custom" is selected
+  custom_position: yup.string()
+    .max(100, 'Custom position must be 100 characters or less')
+    .nullable()
+    .when('position', {
+      is: 'Custom',
+      then: (schema) => schema.required('Custom position is required when "Custom" is selected'),
+      otherwise: (schema) => schema.nullable()
+    }),
 
   // OPTIONAL FIELDS - Database schema aligned
   email: yup.string()
@@ -99,5 +129,21 @@ export interface ContactFilters {
   organization_id?: string
   purchase_influence?: PurchaseInfluenceLevel | PurchaseInfluenceLevel[]
   decision_authority?: DecisionAuthorityRole | DecisionAuthorityRole[]
+  position?: string | string[]
   search?: string
+}
+
+// Utility functions for position handling
+export const getDisplayPosition = (contact: Contact): string => {
+  // If the contact has a position field in the database, use it
+  // Otherwise, fall back to the title field for backward compatibility
+  return contact.position || contact.title || 'Unknown'
+}
+
+export const isCustomPosition = (position: string): boolean => {
+  return !CONTACT_POSITIONS.includes(position as ContactPosition)
+}
+
+export const getPositionValue = (formData: ContactFormData): string => {
+  return formData.position === 'Custom' ? formData.custom_position || '' : formData.position
 }

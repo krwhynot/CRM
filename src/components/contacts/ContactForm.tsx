@@ -8,8 +8,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { contactSchema, type ContactFormData } from '@/types/contact.types'
+import { contactSchema, type ContactFormData, CONTACT_POSITIONS } from '@/types/contact.types'
 import { useOrganizations } from '@/hooks/useOrganizations'
+import { PreferredPrincipalsSelect } from './PreferredPrincipalsSelect'
 
 interface ContactFormProps {
   onSubmit: (data: ContactFormData) => void
@@ -34,6 +35,8 @@ export function ContactForm({
       first_name: initialData?.first_name || '',
       last_name: initialData?.last_name || '',
       title: initialData?.title || '',
+      position: initialData?.position || '',
+      custom_position: initialData?.custom_position || '',
       organization_id: preselectedOrganization || initialData?.organization_id || '',
       purchase_influence: initialData?.purchase_influence || 'Unknown',
       decision_authority: initialData?.decision_authority || 'Gatekeeper',
@@ -42,7 +45,8 @@ export function ContactForm({
       mobile_phone: initialData?.mobile_phone || '',
       department: initialData?.department || '',
       is_primary_contact: initialData?.is_primary_contact || false,
-      notes: initialData?.notes || ''
+      notes: initialData?.notes || '',
+      preferred_principals: initialData?.preferred_principals || []
     }
   })
 
@@ -76,6 +80,32 @@ export function ContactForm({
                 <FormMessage />
               </FormItem>
             )} />
+
+            <FormField control={form.control} name="position" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Position *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl><SelectTrigger className="h-11"><SelectValue placeholder="Select position" /></SelectTrigger></FormControl>
+                  <SelectContent>
+                    {CONTACT_POSITIONS.map((position) => (
+                      <SelectItem key={position} value={position}>{position}</SelectItem>
+                    ))}
+                    <SelectItem value="Custom">Custom</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )} />
+
+            {form.watch('position') === 'Custom' && (
+              <FormField control={form.control} name="custom_position" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Custom Position *</FormLabel>
+                  <FormControl><Input {...field} className="h-11" disabled={loading} placeholder="Enter custom position" /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+            )}
 
             <FormField control={form.control} name="organization_id" render={({ field }) => (
               <FormItem>
@@ -137,6 +167,19 @@ export function ContactForm({
                 )} />
                 <FormField control={form.control} name="department" render={({ field }) => (
                   <FormItem><FormLabel>Department</FormLabel><FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
+                )} />
+                <FormField control={form.control} name="preferred_principals" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Preferred Principals</FormLabel>
+                    <FormControl>
+                      <PreferredPrincipalsSelect
+                        value={field.value || []}
+                        onChange={field.onChange}
+                        disabled={loading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )} />
                 <FormField control={form.control} name="is_primary_contact" render={({ field }) => (
                   <FormItem className="flex flex-row items-start space-x-3 space-y-0">
