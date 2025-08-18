@@ -17,7 +17,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 
-export function ContactsPage() {
+function ContactsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -196,3 +196,5 @@ export function ContactsPage() {
     </div>
   )
 }
+
+export default ContactsPage

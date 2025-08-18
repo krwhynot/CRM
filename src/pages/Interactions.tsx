@@ -30,7 +30,7 @@ import {
 } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
 
-export function InteractionsPage() {
+function InteractionsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -262,3 +262,5 @@ export function InteractionsPage() {
     </div>
   )
 }
+
+export default InteractionsPage

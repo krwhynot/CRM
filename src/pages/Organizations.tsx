@@ -27,7 +27,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import type { Organization } from '@/types/entities'
 
-export function OrganizationsPage() {
+function OrganizationsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -254,3 +254,5 @@ export function OrganizationsPage() {
     </div>
   )
 }
+
+export default OrganizationsPage

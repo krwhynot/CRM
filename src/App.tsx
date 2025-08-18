@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, Suspense, lazy } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider, useAuth } from '@/contexts/AuthContext'
@@ -9,13 +9,17 @@ import { AuthPage } from '@/components/auth/AuthPage'
 import { ResetPasswordPage } from '@/components/auth/ResetPasswordPage'
 import { AuthCallbackHandler } from '@/components/auth/AuthCallbackHandler'
 import { CommandPalette } from '@/components/command-palette'
-import { DashboardPage } from '@/pages/Dashboard'
-import { OrganizationsPage } from '@/pages/Organizations'
-import { ContactsPage } from '@/pages/Contacts'
-import { OpportunitiesPage } from '@/pages/Opportunities'
-import { ProductsPage } from '@/pages/Products'
-import { InteractionsPage } from '@/pages/Interactions'
-import { ImportExportPage } from '@/pages/ImportExport'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
+import { setupPerformanceMonitoring } from '@/lib/performance'
+
+// Lazy load main pages for code splitting
+const DashboardPage = lazy(() => import('@/pages/Dashboard'))
+const OrganizationsPage = lazy(() => import('@/pages/Organizations'))
+const ContactsPage = lazy(() => import('@/pages/Contacts'))
+const OpportunitiesPage = lazy(() => import('@/pages/Opportunities'))
+const ProductsPage = lazy(() => import('@/pages/Products'))
+const InteractionsPage = lazy(() => import('@/pages/Interactions'))
+const ImportExportPage = lazy(() => import('@/pages/ImportExport'))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -43,6 +47,11 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function App() {
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
 
+  // Set up performance monitoring
+  React.useEffect(() => {
+    setupPerformanceMonitoring()
+  }, [])
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -60,7 +69,9 @@ function App() {
               <Route path="/" element={
                 <ProtectedRoute>
                   <Layout>
-                    <DashboardPage />
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <DashboardPage />
+                    </Suspense>
                   </Layout>
                 </ProtectedRoute>
               } />
@@ -69,42 +80,54 @@ function App() {
               <Route path="/organizations" element={
                 <ProtectedRoute>
                   <Layout>
-                    <OrganizationsPage />
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <OrganizationsPage />
+                    </Suspense>
                   </Layout>
                 </ProtectedRoute>
               } />
               <Route path="/contacts" element={
                 <ProtectedRoute>
                   <Layout>
-                    <ContactsPage />
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <ContactsPage />
+                    </Suspense>
                   </Layout>
                 </ProtectedRoute>
               } />
               <Route path="/opportunities" element={
                 <ProtectedRoute>
                   <Layout>
-                    <OpportunitiesPage />
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <OpportunitiesPage />
+                    </Suspense>
                   </Layout>
                 </ProtectedRoute>
               } />
               <Route path="/products" element={
                 <ProtectedRoute>
                   <Layout>
-                    <ProductsPage />
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <ProductsPage />
+                    </Suspense>
                   </Layout>
                 </ProtectedRoute>
               } />
               <Route path="/interactions" element={
                 <ProtectedRoute>
                   <Layout>
-                    <InteractionsPage />
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <InteractionsPage />
+                    </Suspense>
                   </Layout>
                 </ProtectedRoute>
               } />
               <Route path="/import-export" element={
                 <ProtectedRoute>
                   <Layout>
-                    <ImportExportPage />
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <ImportExportPage />
+                    </Suspense>
                   </Layout>
                 </ProtectedRoute>
               } />

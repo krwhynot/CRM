@@ -64,7 +64,7 @@ function ActivityFeed({ interactions }: { interactions: any[] }) {
   )
 }
 
-export function DashboardPage() {
+function DashboardPage() {
   const { data: organizations = [] } = useOrganizations()
   const { data: opportunities = [] } = useOpportunities()
   const { data: interactions = [] } = useInteractions()
@@ -179,3 +179,5 @@ export function DashboardPage() {
     </div>
   )
 }
+
+export default DashboardPage

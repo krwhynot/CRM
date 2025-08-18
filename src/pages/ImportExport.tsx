@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import { OrganizationImporter } from '@/components/import-export/OrganizationImporter'
 
-export function ImportExportPage() {
+function ImportExportPage() {
   const [selectedImportType, setSelectedImportType] = useState<'none' | 'organizations'>('none')
 
   return (
@@ -236,3 +236,5 @@ export function ImportExportPage() {
     </div>
   )
 }
+
+export default ImportExportPage

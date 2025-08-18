@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
 
-export function ProductsPage() {
+function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -232,3 +232,5 @@ export function ProductsPage() {
     </div>
   )
 }
+
+export default ProductsPage
