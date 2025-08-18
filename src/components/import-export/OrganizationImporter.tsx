@@ -327,7 +327,13 @@ export function OrganizationImporter() {
         const batch = batches[batchIndex]
         
         try {
-          // Prepare data for database insertion
+          // Get current user for RLS compliance
+          const { data: { user } } = await supabase.auth.getUser()
+          if (!user) {
+            throw new Error('User not authenticated')
+          }
+
+          // Prepare data for database insertion with RLS-required audit fields
           const organizationsToInsert = batch.map(row => ({
             name: row.name,
             type: row.type,
@@ -345,6 +351,8 @@ export function OrganizationImporter() {
             secondary_manager_name: row.secondary_manager_name,
             import_notes: row.import_notes,
             is_active: row.is_active,
+            created_by: user.id, // Required by RLS policy
+            updated_by: user.id, // Required by RLS policy
           }))
 
           // Insert batch into database
