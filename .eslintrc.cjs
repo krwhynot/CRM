@@ -21,9 +21,24 @@ module.exports = {
     ],
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': 'warn',
-    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-explicit-any': 'error', // Enforce type safety
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
+    
+    // CRM Architecture Enforcement Rules
+    'no-restricted-imports': ['error', {
+      patterns: [{
+        group: ['@supabase/supabase-js'],
+        importNames: ['createClient'],
+        message: 'Use feature-specific hooks instead of direct Supabase calls in components. Import supabase from existing hook files only.'
+      }]
+    }],
+    
+    // Performance and bundle size awareness
+    'no-restricted-syntax': ['error', {
+      selector: "ImportDeclaration[source.value='xlsx'] CallExpression[callee.name!='import']",
+      message: 'Use dynamic import() for heavy libraries like xlsx to avoid bundle bloat'
+    }],
   },
   settings: {
     react: {
