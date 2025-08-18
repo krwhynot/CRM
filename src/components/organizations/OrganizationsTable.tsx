@@ -41,7 +41,14 @@ export function OrganizationsTable({
   const filteredOrganizations = organizations.filter(org =>
     org.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (org.priority && org.priority.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (org.segment && org.segment.toLowerCase().includes(searchTerm.toLowerCase()))
+    (org.segment && org.segment.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (org.type && org.type.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (org.phone && org.phone.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (org.city && org.city.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    ((org as any).state_province && (org as any).state_province.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    ((org as any).primary_manager_name && (org as any).primary_manager_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    ((org as any).secondary_manager_name && (org as any).secondary_manager_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (org.notes && org.notes.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
   const getPriorityColor = (priority: string) => {
@@ -108,88 +115,122 @@ export function OrganizationsTable({
         )}
       </div>
 
-      <div className="border rounded-lg">
+      <div className="border rounded-lg overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
+              <TableHead className="min-w-[180px]">Organization</TableHead>
               <TableHead>Priority</TableHead>
-              <TableHead>Segment</TableHead>
               <TableHead>Type</TableHead>
-              <TableHead>Location</TableHead>
-              <TableHead>Contact</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="min-w-[120px]">Segment</TableHead>
+              <TableHead>Phone</TableHead>
+              <TableHead className="min-w-[120px]">LinkedIn</TableHead>
+              <TableHead className="min-w-[150px]">Address</TableHead>
+              <TableHead className="min-w-[120px]">Primary Manager</TableHead>
+              <TableHead className="min-w-[120px]">Secondary Manager</TableHead>
+              <TableHead className="min-w-[100px]">Notes</TableHead>
+              <TableHead className="text-right min-w-[80px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredOrganizations.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                <TableCell colSpan={11} className="text-center py-8 text-gray-500">
                   {searchTerm ? 'No organizations match your search.' : 'No organizations found.'}
                 </TableCell>
               </TableRow>
             ) : (
               filteredOrganizations.map((organization) => (
                 <TableRow key={organization.id}>
+                  {/* Organization Name */}
                   <TableCell className="font-medium">
-                    <div>
-                      <div className="font-semibold">{organization.name}</div>
-                    </div>
+                    <div className="font-semibold">{organization.name}</div>
                   </TableCell>
+                  
+                  {/* Priority */}
                   <TableCell>
                     <Badge className={getPriorityColor(organization.priority)}>
-                      {organization.priority || 'C'} Priority
+                      {organization.priority || 'C'}
                     </Badge>
                   </TableCell>
+                  
+                  {/* Type */}
                   <TableCell>
-                    {organization.segment || 'N/A'}
+                    <Badge variant="outline" className="text-xs">
+                      {organization.type || 'Customer'}
+                    </Badge>
                   </TableCell>
+                  
+                  {/* Segment */}
                   <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {organization.is_principal && (
-                        <Badge variant="default" className="bg-blue-100 text-blue-800 text-xs">
-                          Principal
-                        </Badge>
-                      )}
-                      {organization.is_distributor && (
-                        <Badge variant="default" className="bg-green-100 text-green-800 text-xs">
-                          Distributor
-                        </Badge>
-                      )}
-                      {!organization.is_principal && !organization.is_distributor && (
-                        <Badge variant="outline" className="text-xs">
-                          Customer
-                        </Badge>
-                      )}
-                    </div>
+                    <span className="text-sm">{organization.segment || '-'}</span>
                   </TableCell>
+                  
+                  {/* Phone */}
+                  <TableCell>
+                    <span className="text-sm">{organization.phone || '-'}</span>
+                  </TableCell>
+                  
+                  {/* LinkedIn/Website */}
+                  <TableCell>
+                    {organization.website ? (
+                      <a 
+                        href={organization.website} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline text-sm"
+                        title={organization.website}
+                      >
+                        LinkedIn
+                        <ExternalLink className="h-3 w-3 ml-1 inline" />
+                      </a>
+                    ) : (
+                      <span className="text-sm text-gray-400">-</span>
+                    )}
+                  </TableCell>
+                  
+                  {/* Address */}
                   <TableCell>
                     <div className="text-sm">
-                      {organization.city && (organization as any).state_province ? (
-                        <div>{organization.city}, {(organization as any).state_province}</div>
-                      ) : (
-                        'N/A'
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm">
-                      {organization.phone && (
-                        <div className="text-gray-500">{organization.phone}</div>
-                      )}
-                      {organization.website && (
-                        <div>
-                          <a 
-                            href={organization.website} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline"
-                          >
-                            Website
-                          </a>
+                      {(organization as any).address_line_1 && (
+                        <div className="truncate max-w-[140px]" title={(organization as any).address_line_1}>
+                          {(organization as any).address_line_1}
                         </div>
                       )}
-                      {!organization.phone && !organization.website && 'N/A'}
+                      {organization.city && (organization as any).state_province ? (
+                        <div className="text-gray-500 text-xs">
+                          {organization.city}, {(organization as any).state_province} {(organization as any).postal_code || ''}
+                        </div>
+                      ) : (
+                        organization.city || (organization as any).state_province ? (
+                          <div className="text-gray-500 text-xs">
+                            {organization.city} {(organization as any).state_province}
+                          </div>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )
+                      )}
+                    </div>
+                  </TableCell>
+                  
+                  {/* Primary Manager */}
+                  <TableCell>
+                    <span className="text-sm">
+                      {(organization as any).primary_manager_name || '-'}
+                    </span>
+                  </TableCell>
+                  
+                  {/* Secondary Manager */}
+                  <TableCell>
+                    <span className="text-sm">
+                      {(organization as any).secondary_manager_name || '-'}
+                    </span>
+                  </TableCell>
+                  
+                  {/* Notes */}
+                  <TableCell>
+                    <div className="text-sm max-w-[90px] truncate" title={organization.notes || ''}>
+                      {organization.notes || '-'}
                     </div>
                   </TableCell>
                   <TableCell className="text-right">
