@@ -1,108 +1,182 @@
 # KitchenPantry CRM
-*Enterprise CRM for Master Food Brokers*
+
+A modern CRM system built for the food service industry, specifically designed for Master Food Brokers. Built with React, TypeScript, and shadcn/ui components with a specialized agent-based architecture for CRM development.
 
 ## 🚀 Quick Start (30 seconds)
+```bash
+# Clone repository
+git clone https://github.com/krwhynot/CRM.git
+cd CRM
+
+# Install dependencies
+npm install
+
+# Copy environment variables
+cp .env.example .env
+
+# Start development server
+npm run dev
+```
+
+Visit `http://localhost:5173` to see your CRM application.
+
+## 📋 Prerequisites
+
+- **Node.js** 18.x or higher
+- **npm** 9.x or higher  
+- **Supabase account** (free tier works)
+
+## 🛠️ Installation
+
+### 1. Clone and Install
 ```bash
 git clone https://github.com/krwhynot/CRM.git
 cd CRM
 npm install
-cp .env.example .env.local
-# Add your Supabase credentials to .env.local
-npm run dev
 ```
 
-## 📋 Prerequisites
-- **Node.js 18+** - [Download here](https://nodejs.org/)
-- **Supabase account** - [Sign up at supabase.com](https://supabase.com)
-- **Modern browser** - Chrome 90+, Firefox 88+, Safari 14+
+### 2. Environment Setup
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your Supabase credentials:
+```env
+VITE_SUPABASE_URL=your_supabase_project_url_here
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+NODE_ENV=development
+```
+
+### 3. Database Setup
+The database schema is automatically handled by Supabase migrations. See [Database Schema](docs/database.md) for details.
+
+### 4. Start Development
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run lint         # Run linting
+npm run preview      # Preview production build
+```
 
 ## 🏗️ Project Structure
+
+This codebase contains two main applications:
+- **Root Vite App** (`/src/`): Primary React + TypeScript + Vite application with shadcn/ui components
+- **Next.js Dashboard** (`/crm-dashboard/`): Secondary Next.js application (experimental/alternative implementation)
+
+**Focus on the root Vite application** unless specifically working on Next.js features.
+
 ```
 src/
-├── components/         # React components (shadcn/ui)
-│   ├── ui/            # shadcn/ui primitives
-│   ├── auth/          # Authentication components
-│   ├── dashboard/     # Dashboard components
-│   ├── organizations/ # Organization management
-│   ├── contacts/      # Contact management
-│   ├── products/      # Product management
-│   ├── opportunities/ # Opportunity management
-│   └── interactions/  # Interaction logging
-├── hooks/             # Custom React hooks
-├── pages/             # Route components
-├── types/             # TypeScript definitions
-├── lib/               # Utilities & Supabase config
-└── contexts/          # React contexts
+├── components/     # React components (dashboard, forms, UI components)
+├── components/ui/  # shadcn/ui components  
+├── hooks/         # Custom React hooks
+├── lib/           # Utilities and shared functions
+├── types/         # TypeScript type definitions
+docs/              # Architecture and development documentation
+crm-dashboard/     # Next.js experimental implementation
 ```
 
-## 🔧 Available Scripts
-| Command | Purpose | When to Use |
-|---------|---------|-------------|
-| `npm run dev` | Development server | Daily development |
-| `npm run build` | Production build | Before deployment |
-| `npm run lint` | Code linting | Before commits |
-| `npm run preview` | Preview production build | Testing builds |
-| `npx tsc --noEmit` | Type checking | Validate TypeScript |
+## 🗃️ Database Entities
 
-## 🌟 Key Features
-- **5 Core CRM Entities** - Organizations, Contacts, Products, Opportunities, Interactions
-- **Mobile-optimized** - iPad-first responsive design for field sales teams
-- **Real-time dashboard** - Live activity feeds and principal overview cards
-- **Excel import functionality** - CSV upload with drag-and-drop interface
-- **Sub-5ms database performance** - Optimized queries and indexing
-- **Enterprise security** - Row Level Security with Supabase Auth
-- **Modern tech stack** - React 18, TypeScript, Vite, shadcn/ui, Tailwind CSS
+The system is built around 5 core CRM entities:
+- **Organizations** - Companies/businesses in the food service industry
+- **Contacts** - Individual people within organizations  
+- **Products** - Food items being sold/distributed
+- **Opportunities** - Sales opportunities and deals
+- **Interactions** - Communication history and touchpoints
+
+Full schema documentation: [Database Schema](docs/database.md)
+
+## 🛡️ Tech Stack
+
+- **React 18** with TypeScript in strict mode
+- **Vite** as build tool with `@vitejs/plugin-react`
+- **shadcn/ui** component library with "new-york" style
+- **Tailwind CSS** with CSS variables and "slate" base color
+- **Radix UI** primitives for accessibility
+- **Supabase** for database and authentication
+
+## 🚀 Development Commands
+
+### Root Application (Primary)
+```bash
+npm run dev        # Development server
+npm run build      # Build for production  
+npm run lint       # Lint code
+npm run preview    # Preview production build
+npx tsc --noEmit   # Type checking
+```
+
+### CRM Dashboard (Next.js - Secondary)
+```bash
+cd crm-dashboard
+npm run dev        # Next.js dev server with Turbopack
+npm run build      # Production build
+npm run lint       # Next.js linting
+```
+
+## 🎯 Key Features
+
+### ✅ Production-Ready Features
+- **5 Core Entities**: Organizations, Contacts, Products, Opportunities, Interactions
+- **Authentication**: Supabase Auth with Row Level Security (RLS)
+- **Business Logic**: Database constraints, validation triggers
+- **Mobile-Optimized**: iPad-focused responsive design for field sales
+- **Performance**: Sub-5ms database queries, <3s page loads
+- **Search**: Full-text search with trigram indexing
+- **Dashboard**: Real-time metrics and activity feeds
+- **Excel Import**: Complete Excel to PostgreSQL migration functionality
+
+### 🎯 Production Status
+**MVP is production-ready** - All testing phases completed with >90% confidence
+- **Live Production URL**: https://crm.kjrcloud.com
+- **Testing Coverage**: Database (95%), UI/UX (88%), Auth (94%), Performance (100%)
 
 ## 📚 Documentation
-- **[User Guide](docs/USER_GUIDE.md)** - Sales manager workflows and feature usage
-- **[Technical Guide](docs/TECHNICAL_GUIDE.md)** - Developer reference and API docs
-- **[Architecture](docs/architecture/)** - System design and technical decisions
-- **[Deployment](docs/PRODUCTION_DEPLOYMENT_GUIDE.md)** - Production setup and monitoring
 
-## ⚠️ Troubleshooting
-1. **Build errors**: Verify Node.js 18+ and run `npm ci` for clean install
-2. **Auth issues**: Check Supabase URL/keys in .env.local match your project
-3. **Slow performance**: Clear browser cache and check network connection
-4. **Database errors**: Verify RLS policies in Supabase dashboard
-5. **Mobile issues**: Test on actual iPad hardware, not just browser simulation
-
-## 🎯 Quick Development Workflow
-1. **Setup**: Follow Quick Start above
-2. **Make changes**: Edit files in `src/`
-3. **Test**: Run `npm run dev` and test in browser
-4. **Validate**: Run `npm run lint` and `npx tsc --noEmit`
-5. **Commit**: Follow conventional commit format
-
-## 🔗 Production URLs
-- **Live Application**: https://crm.kjrcloud.com
-- **Supabase Project**: Project ID `ixitjldcdvbazvjsnkao`
-- **Repository**: https://github.com/krwhynot/CRM.git
+- **[User Guide](docs/USER_GUIDE.md)** - Complete Sales Manager guide
+- **[Technical Guide](docs/TECHNICAL_GUIDE.md)** - Developer documentation  
+- **[Database Schema](docs/database.md)** - Entity relationships and design
+- **[Deployment Guide](docs/DEPLOYMENT.md)** - Production deployment instructions
+- **[Architecture Guide](docs/CRM_AGENT_ARCHITECTURE.md)** - System architecture details
+- **[Coding Rules](docs/Coding_Rules.md)** - Development guidelines and patterns
 
 ## 🤝 Contributing
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development workflow, coding standards, and PR guidelines.
 
-## 📊 Project Status
-- ✅ **MVP Complete** - All 5 core CRM entities implemented
-- ✅ **Production Ready** - Live at https://crm.kjrcloud.com
-- ✅ **Excel Import** - CSV migration functionality complete
-- ✅ **Testing** - 95%+ confidence across all major features
-- ✅ **Mobile Optimized** - iPad-first responsive design
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- Development setup and workflow
+- Code style and TypeScript standards  
+- Pull request guidelines
+- Testing requirements
 
-## 🏢 Architecture Overview
-Built with modern enterprise patterns:
-- **Frontend**: React 18 + TypeScript + Vite
-- **UI Framework**: shadcn/ui + Tailwind CSS
-- **Backend**: Supabase (PostgreSQL + Auth + RLS)
-- **State Management**: React Query + Context API
-- **Authentication**: Supabase Auth with Row Level Security
-- **Deployment**: Vercel (Frontend) + Supabase (Backend)
+## 🔧 Configuration Files
 
-## 📞 Support
-- **Technical Issues**: Check [TECHNICAL_GUIDE.md](docs/TECHNICAL_GUIDE.md)
-- **User Questions**: See [USER_GUIDE.md](docs/USER_GUIDE.md)
-- **Development Help**: Review [docs/architecture/](docs/architecture/)
-- **Production Issues**: Contact system administrator
+- `components.json` - shadcn/ui configuration (new-york style, slate theme)
+- `vite.config.ts` - Vite configuration with path aliases
+- `tsconfig.json` - TypeScript strict mode configuration
+- `.env.example` - Environment variables template
+
+## 📊 Specialized Architecture
+
+This project follows a 14-agent specialized architecture with MCP tools for different development phases:
+- **Weeks 1-4**: Infrastructure setup (database, auth, basic CRUD)
+- **Weeks 5-8**: Advanced features (search, activity feeds, validation)  
+- **Weeks 9-12**: Dashboard and analytics
+- **Weeks 13-16**: Production readiness and deployment
+
+See [Agent Architecture](docs/CRM_AGENT_ARCHITECTURE.md) for detailed information.
+
+## 🐛 Issues & Support
+
+- **Bug Reports**: [GitHub Issues](https://github.com/krwhynot/CRM/issues)
+- **Feature Requests**: [GitHub Discussions](https://github.com/krwhynot/CRM/discussions)
+- **Questions**: Check [docs/](docs/) first, then create an issue
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-*Built specifically for Master Food Brokers in the food service industry*
+**Production Ready**: This CRM system is live and serving Master Food Brokers at [https://crm.kjrcloud.com](https://crm.kjrcloud.com)
