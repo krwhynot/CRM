@@ -15,6 +15,7 @@ import { ContactsPage } from '@/pages/Contacts'
 import { OpportunitiesPage } from '@/pages/Opportunities'
 import { ProductsPage } from '@/pages/Products'
 import { InteractionsPage } from '@/pages/Interactions'
+import { ImportExportPage } from '@/pages/ImportExport'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -97,6 +98,13 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <InteractionsPage />
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/import-export" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ImportExportPage />
                   </Layout>
                 </ProtectedRoute>
               } />

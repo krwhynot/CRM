@@ -1,0 +1,6 @@
+name,type,industry,description,website,phone,email,address
+Acme Food Distribution,customer,Food Service,Regional food distributor,https://acmefood.com,555-0123,contact@acmefood.com,"123 Business Ave, City, State 12345"
+Premium Ingredients Co,principal,Food Manufacturing,Specialty ingredient supplier,https://premiumingredients.com,555-0456,sales@premiumingredients.com,"456 Industrial Blvd, City, State 67890"
+Fresh Market Vendors,vendor,Retail,Local fresh produce vendor,freshmarket.com,555-0789,info@freshmarket.com,"789 Market St, City, State 11111"
+Invalid Organization,,Invalid Type,This should fail validation,invalid-url,not-a-phone,invalid-email,Some address
+Good Organization,customer,Food Service,This one should be valid,https://goodorg.com,555-1234,contact@goodorg.com,"Valid Address, City, State 22222"
