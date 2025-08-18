@@ -666,32 +666,52 @@ export function OrganizationImporter() {
                     Valid Rows Preview
                   </h3>
                   <div className="border rounded-lg overflow-hidden">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Organization</TableHead>
-                          <TableHead>Priority</TableHead>
-                          <TableHead>Type</TableHead>
-                          <TableHead>Segment</TableHead>
-                          <TableHead>Phone</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {uploadState.parsedData.validRows.slice(0, 5).map((row, index) => (
-                          <TableRow key={index}>
-                            <TableCell className="font-medium">{row.name}</TableCell>
-                            <TableCell>
-                              <Badge variant={row.priority === 'A' ? 'default' : 'outline'}>{row.priority}</Badge>
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant="outline">{row.type}</Badge>
-                            </TableCell>
-                            <TableCell>{row.segment || '-'}</TableCell>
-                            <TableCell>{row.phone || '-'}</TableCell>
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="min-w-[150px]">Organization</TableHead>
+                            <TableHead>Priority</TableHead>
+                            <TableHead>Type</TableHead>
+                            <TableHead>Phone</TableHead>
+                            <TableHead className="min-w-[120px]">LinkedIn</TableHead>
+                            <TableHead>Address</TableHead>
+                            <TableHead>City</TableHead>
+                            <TableHead>State</TableHead>
+                            <TableHead>Zip</TableHead>
+                            <TableHead className="min-w-[100px]">Notes</TableHead>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                        </TableHeader>
+                        <TableBody>
+                          {uploadState.parsedData.validRows.slice(0, 5).map((row, index) => (
+                            <TableRow key={index}>
+                              <TableCell className="font-medium">{row.name}</TableCell>
+                              <TableCell>
+                                <Badge variant={row.priority === 'A' ? 'default' : 'outline'}>{row.priority}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline">{row.type}</Badge>
+                              </TableCell>
+                              <TableCell>{row.phone || '-'}</TableCell>
+                              <TableCell className="max-w-[120px] truncate">
+                                {row.website ? (
+                                  <a href={row.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-xs">
+                                    LinkedIn
+                                  </a>
+                                ) : '-'}
+                              </TableCell>
+                              <TableCell className="max-w-[120px] truncate">{row.address_line_1 || '-'}</TableCell>
+                              <TableCell>{row.city || '-'}</TableCell>
+                              <TableCell>{row.state_province || '-'}</TableCell>
+                              <TableCell>{row.postal_code || '-'}</TableCell>
+                              <TableCell className="max-w-[100px] truncate" title={row.notes || ''}>
+                                {row.notes || '-'}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
                   </div>
                   {uploadState.parsedData.validRows.length > 5 && (
                     <p className="text-sm text-gray-500">
