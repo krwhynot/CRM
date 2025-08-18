@@ -1,4 +1,11 @@
-// Core form components
+// New Shared Form Components (3-Tier System)
+export { FormCard } from './FormCard'
+export { FormInput, FormTextarea, FormSelect, FormSwitch, FormCheckbox } from './FormInput'
+export { FormSubmitButton } from './FormSubmitButton'
+export { SimpleForm } from './SimpleForm'
+export { BusinessForm } from './BusinessForm'
+
+// Legacy Core form components
 export { 
   CoreFormLayout, 
   default as CoreFormLayoutDefault 
