@@ -4,7 +4,7 @@ module.exports = {
   extends: [
     'eslint:recommended',
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs', 'node_modules', 'crm-dashboard'],
+  ignorePatterns: ['dist', '.eslintrc.cjs', 'node_modules', 'crm-dashboard', 'docs', 'tests'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',

@@ -230,6 +230,7 @@ export function ContactCreateModal({
 // Example 5: Bulk Contact Import (advanced usage)
 export function ContactBulkImportView() {
   const navigate = useNavigate()
+  const createContact = useCreateContact()
   const [importResults, setImportResults] = React.useState<any[]>([])
   const [isImporting, setIsImporting] = React.useState(false)
 
@@ -241,7 +242,7 @@ export function ContactBulkImportView() {
       for (const contactData of contactsData) {
         try {
           // Use the same form validation and submission logic
-          const contact = await createContact(contactData)
+          const contact = await createContact.mutateAsync(contactData)
           results.push({ success: true, contact, data: contactData })
         } catch (error) {
           results.push({ 

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useOrganizations } from '@/hooks/useOrganizations'
-import type { Organization } from '@/types/entities'
+// Organization type imported directly where needed
 
 interface PreferredPrincipalsSelectProps {
   value: string[]
