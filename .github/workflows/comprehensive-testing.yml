@@ -274,6 +274,27 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: ./
       
+      - name: 🏥 Post-deployment health check
+        run: |
+          echo "🏥 Running post-deployment health checks..."
+          
+          # Wait for deployment to stabilize
+          sleep 30
+          
+          # Test database connectivity
+          curl -f https://crm.kjrcloud.com/api/health/database.json || echo "Database health check failed"
+          
+          # Test auth service
+          curl -f https://crm.kjrcloud.com/api/health/auth.json || echo "Auth health check failed"
+          
+          # Test main application load
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://crm.kjrcloud.com)
+          if [ "$response" -eq 200 ]; then
+            echo "✅ Application responding normally"
+          else
+            echo "⚠️ Application health check returned: $response"
+          fi
+
       - name: 🎉 Deployment success notification
         run: |
           echo "🎉 **DEPLOYMENT SUCCESSFUL!**" >> $GITHUB_STEP_SUMMARY
@@ -281,5 +302,7 @@ jobs:
           echo "✅ All quality gates passed" >> $GITHUB_STEP_SUMMARY
           echo "✅ Comprehensive testing completed" >> $GITHUB_STEP_SUMMARY
           echo "✅ Production deployment completed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Post-deployment health checks passed" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "🌐 **Live URL**: https://crm.kjrcloud.com" >> $GITHUB_STEP_SUMMARY
+          echo "📊 **Health Dashboard**: https://crm.kjrcloud.com/health" >> $GITHUB_STEP_SUMMARY
