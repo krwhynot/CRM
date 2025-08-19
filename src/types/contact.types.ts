@@ -1,24 +1,28 @@
 import type { Database } from '../lib/database.types'
 import * as yup from 'yup'
+import { FormTransforms } from '../lib/form-transforms'
 
 // Principal CRM Business Logic Types
 export type PurchaseInfluenceLevel = 'High' | 'Medium' | 'Low' | 'Unknown'
 export type DecisionAuthorityRole = 'Decision Maker' | 'Influencer' | 'End User' | 'Gatekeeper'
 
-// Position types for food service industry contacts
-export type ContactPosition = 
-  | 'Executive Chef'
-  | 'Manager' 
-  | 'Buyer'
-  | 'Owner'
-  | 'Custom'
+// Contact role types from database enum
+export type ContactRole = 
+  | 'decision_maker'
+  | 'influencer'
+  | 'buyer'
+  | 'end_user'
+  | 'gatekeeper'
+  | 'champion'
 
-// Predefined position options for dropdown
-export const CONTACT_POSITIONS: ContactPosition[] = [
-  'Executive Chef',
-  'Manager',
-  'Buyer', 
-  'Owner'
+// Predefined role options for dropdown
+export const CONTACT_ROLES: { value: ContactRole; label: string }[] = [
+  { value: 'decision_maker', label: 'Decision Maker' },
+  { value: 'influencer', label: 'Influencer' },
+  { value: 'buyer', label: 'Buyer' },
+  { value: 'end_user', label: 'End User' },
+  { value: 'gatekeeper', label: 'Gatekeeper' },
+  { value: 'champion', label: 'Champion' }
 ] as const
 
 // Base contact types from database
@@ -67,58 +71,59 @@ export const contactSchema = yup.object({
     .required('Decision authority is required')
     .default('Gatekeeper'),
 
-  position: yup.string()
-    .required('Position is required')
-    .max(100, 'Position must be 100 characters or less'),
-
-  // For custom positions when "Custom" is selected
-  custom_position: yup.string()
-    .max(100, 'Custom position must be 100 characters or less')
+  // Database field is 'role' with enum values
+  role: yup.string()
+    .oneOf(['decision_maker', 'influencer', 'buyer', 'end_user', 'gatekeeper', 'champion'] as const, 'Invalid role')
     .nullable()
-    .when('position', {
-      is: 'Custom',
-      then: (schema) => schema.required('Custom position is required when "Custom" is selected'),
-      otherwise: (schema) => schema.nullable()
-    }),
+    .transform(FormTransforms.nullableString),
 
-  // OPTIONAL FIELDS - Database schema aligned
+  // OPTIONAL FIELDS - Database schema aligned with transforms
   email: yup.string()
     .email('Invalid email address')
     .max(255, 'Email must be 255 characters or less')
-    .nullable(),
+    .nullable()
+    .transform(FormTransforms.nullableEmail),
   
   title: yup.string()
     .max(100, 'Title must be 100 characters or less')
-    .nullable(),
+    .nullable()
+    .transform(FormTransforms.nullableString),
   
   department: yup.string()
     .max(100, 'Department must be 100 characters or less')
-    .nullable(),
+    .nullable()
+    .transform(FormTransforms.nullableString),
   
   phone: yup.string()
     .max(50, 'Phone must be 50 characters or less')
-    .nullable(),
+    .nullable()
+    .transform(FormTransforms.nullablePhone),
   
   mobile_phone: yup.string()
     .max(50, 'Mobile phone must be 50 characters or less')
-    .nullable(),
+    .nullable()
+    .transform(FormTransforms.nullablePhone),
   
   linkedin_url: yup.string()
     .url('Invalid LinkedIn URL')
     .max(500, 'LinkedIn URL must be 500 characters or less')
-    .nullable(),
+    .nullable()
+    .transform(FormTransforms.nullableUrl),
   
   is_primary_contact: yup.boolean()
-    .nullable(),
+    .nullable()
+    .default(false),
   
   notes: yup.string()
     .max(500, 'Notes must be 500 characters or less')
-    .nullable(),
+    .nullable()
+    .transform(FormTransforms.nullableString),
 
   // VIRTUAL FIELDS for form handling (not persisted to database)
   preferred_principals: yup.array()
     .of(yup.string().uuid('Invalid principal organization ID'))
-    .nullable()
+    .default([])
+    .transform(FormTransforms.optionalArray)
 })
 
 // Type inference from validation schema
@@ -129,21 +134,27 @@ export interface ContactFilters {
   organization_id?: string
   purchase_influence?: PurchaseInfluenceLevel | PurchaseInfluenceLevel[]
   decision_authority?: DecisionAuthorityRole | DecisionAuthorityRole[]
-  position?: string | string[]
+  role?: ContactRole | ContactRole[]
   search?: string
 }
 
-// Utility functions for position handling
-export const getDisplayPosition = (contact: Contact): string => {
-  // If the contact has a position field in the database, use it
-  // Otherwise, fall back to the title field for backward compatibility
-  return contact.position || contact.title || 'Unknown'
+// Utility functions for role handling
+export const getDisplayRole = (contact: Contact): string => {
+  // Get the role display label from the contact
+  if (contact.role) {
+    const roleOption = CONTACT_ROLES.find(r => r.value === contact.role)
+    return roleOption?.label || contact.role
+  }
+  // Fall back to title field for backward compatibility
+  return contact.title || 'Unknown'
 }
 
-export const isCustomPosition = (position: string): boolean => {
-  return !CONTACT_POSITIONS.includes(position as ContactPosition)
+export const getRoleLabel = (role: ContactRole): string => {
+  const roleOption = CONTACT_ROLES.find(r => r.value === role)
+  return roleOption?.label || role
 }
 
-export const getPositionValue = (formData: ContactFormData): string => {
-  return formData.position === 'Custom' ? formData.custom_position || '' : formData.position
+export const getRoleValue = (label: string): ContactRole | undefined => {
+  const roleOption = CONTACT_ROLES.find(r => r.label === label)
+  return roleOption?.value
 }

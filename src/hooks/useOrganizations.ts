@@ -6,6 +6,7 @@ import type {
   OrganizationUpdate, 
   OrganizationFilters 
 } from '@/types/entities'
+import { deriveOrganizationFlags } from '@/lib/organization-utils'
 
 // Query key factory
 export const organizationKeys = {
@@ -194,8 +195,11 @@ export function useCreateOrganization() {
       }
 
       // Ensure required audit fields are set for RLS policy
+      // Also ensure boolean flags are derived from type
+      const derivedFlags = deriveOrganizationFlags(organization.type || 'customer')
       const organizationData = {
         ...organization,
+        ...derivedFlags,
         created_by: user.id,
         updated_by: user.id,
       }
@@ -227,9 +231,17 @@ export function useUpdateOrganization() {
 
   return useMutation({
     mutationFn: async ({ id, updates }: { id: string; updates: OrganizationUpdate }) => {
+      // Ensure boolean flags are derived from type if type is being updated
+      const derivedFlags = updates.type ? deriveOrganizationFlags(updates.type) : {}
+      const updateData = { 
+        ...updates, 
+        ...derivedFlags,
+        updated_at: new Date().toISOString() 
+      }
+      
       const { data, error } = await supabase
         .from('organizations')
-        .update({ ...updates, updated_at: new Date().toISOString() })
+        .update(updateData)
         .eq('id', id)
         .select()
         .single()

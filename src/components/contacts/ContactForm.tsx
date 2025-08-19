@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { contactSchema, type ContactFormData, CONTACT_POSITIONS } from '@/types/contact.types'
+import { contactSchema, type ContactFormData, CONTACT_ROLES } from '@/types/contact.types'
+import { createTypeSafeResolver } from '@/lib/form-resolver'
 import { useOrganizations } from '@/hooks/useOrganizations'
 import { PreferredPrincipalsSelect } from './PreferredPrincipalsSelect'
 
@@ -30,22 +30,22 @@ export function ContactForm({
   const { data: organizations = [] } = useOrganizations()
   
   const form = useForm<ContactFormData>({
-    resolver: yupResolver(contactSchema),
+    resolver: createTypeSafeResolver<ContactFormData>(contactSchema),
     defaultValues: {
       first_name: initialData?.first_name || '',
       last_name: initialData?.last_name || '',
-      title: initialData?.title || '',
-      position: initialData?.position || '',
-      custom_position: initialData?.custom_position || '',
       organization_id: preselectedOrganization || initialData?.organization_id || '',
       purchase_influence: initialData?.purchase_influence || 'Unknown',
       decision_authority: initialData?.decision_authority || 'Gatekeeper',
-      email: initialData?.email || '',
-      phone: initialData?.phone || '',
-      mobile_phone: initialData?.mobile_phone || '',
-      department: initialData?.department || '',
+      role: initialData?.role || null,
+      email: initialData?.email || null,
+      title: initialData?.title || null,
+      department: initialData?.department || null,
+      phone: initialData?.phone || null,
+      mobile_phone: initialData?.mobile_phone || null,
+      linkedin_url: initialData?.linkedin_url || null,
       is_primary_contact: initialData?.is_primary_contact || false,
-      notes: initialData?.notes || '',
+      notes: initialData?.notes || null,
       preferred_principals: initialData?.preferred_principals || []
     }
   })
@@ -76,36 +76,25 @@ export function ContactForm({
             <FormField control={form.control} name="title" render={({ field }) => (
               <FormItem>
                 <FormLabel>Title</FormLabel>
-                <FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl>
+                <FormControl><Input {...field} value={field.value || ''} className="h-11" disabled={loading} /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
 
-            <FormField control={form.control} name="position" render={({ field }) => (
+            <FormField control={form.control} name="role" render={({ field }) => (
               <FormItem>
-                <FormLabel>Position *</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl><SelectTrigger className="h-11"><SelectValue placeholder="Select position" /></SelectTrigger></FormControl>
+                <FormLabel>Role</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value || ''}>
+                  <FormControl><SelectTrigger className="h-11"><SelectValue placeholder="Select role" /></SelectTrigger></FormControl>
                   <SelectContent>
-                    {CONTACT_POSITIONS.map((position) => (
-                      <SelectItem key={position} value={position}>{position}</SelectItem>
+                    {CONTACT_ROLES.map((role) => (
+                      <SelectItem key={role.value} value={role.value}>{role.label}</SelectItem>
                     ))}
-                    <SelectItem value="Custom">Custom</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
               </FormItem>
             )} />
-
-            {form.watch('position') === 'Custom' && (
-              <FormField control={form.control} name="custom_position" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Custom Position *</FormLabel>
-                  <FormControl><Input {...field} className="h-11" disabled={loading} placeholder="Enter custom position" /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-            )}
 
             <FormField control={form.control} name="organization_id" render={({ field }) => (
               <FormItem>
@@ -157,24 +146,24 @@ export function ContactForm({
             <ProgressiveDetails buttonText="Add Details">
               <div className="space-y-4">
                 <FormField control={form.control} name="email" render={({ field }) => (
-                  <FormItem><FormLabel>Email</FormLabel><FormControl><Input {...field} type="email" className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Email</FormLabel><FormControl><Input {...field} value={field.value || ''} type="email" className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={form.control} name="phone" render={({ field }) => (
-                  <FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} type="tel" className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} value={field.value || ''} type="tel" className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={form.control} name="mobile_phone" render={({ field }) => (
-                  <FormItem><FormLabel>Mobile Phone</FormLabel><FormControl><Input {...field} type="tel" className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Mobile Phone</FormLabel><FormControl><Input {...field} value={field.value || ''} type="tel" className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={form.control} name="department" render={({ field }) => (
-                  <FormItem><FormLabel>Department</FormLabel><FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Department</FormLabel><FormControl><Input {...field} value={field.value || ''} className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={form.control} name="preferred_principals" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Preferred Principals</FormLabel>
                     <FormControl>
                       <PreferredPrincipalsSelect
-                        value={field.value || []}
-                        onChange={field.onChange}
+                        value={field.value?.filter((v): v is string => v !== undefined) || []}
+                        onChange={(value) => field.onChange(value)}
                         disabled={loading}
                       />
                     </FormControl>
@@ -185,7 +174,7 @@ export function ContactForm({
                   <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                     <FormControl>
                       <Checkbox
-                        checked={field.value}
+                        checked={Boolean(field.value)}
                         onCheckedChange={field.onChange}
                         disabled={loading}
                       />
@@ -196,7 +185,7 @@ export function ContactForm({
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="notes" render={({ field }) => (
-                  <FormItem><FormLabel>Notes</FormLabel><FormControl><Textarea {...field} rows={3} disabled={loading} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Notes</FormLabel><FormControl><Textarea {...field} value={field.value || ''} rows={3} disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
               </div>
             </ProgressiveDetails>

@@ -8,13 +8,17 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { opportunitySchema, type OpportunityFormData } from '@/types/opportunity.types'
+import { opportunitySchema } from '@/types/opportunity.types'
+import { 
+  type OpportunityFormInterface, 
+  createOpportunityFormInterfaceDefaults 
+} from '@/types/forms/form-interfaces'
 import { useOrganizations } from '@/hooks/useOrganizations'
 import { useContacts } from '@/hooks/useContacts'
 
 interface OpportunityFormProps {
-  onSubmit: (data: OpportunityFormData) => void
-  initialData?: Partial<OpportunityFormData>
+  onSubmit: (data: OpportunityFormInterface) => void
+  initialData?: Partial<OpportunityFormInterface>
   loading?: boolean
   submitLabel?: string
   preselectedOrganization?: string
@@ -32,18 +36,12 @@ export function OpportunityForm({
   const { data: organizations = [] } = useOrganizations()
   const { data: contacts = [] } = useContacts()
   
-  const form = useForm<OpportunityFormData>({
+  const form = useForm<OpportunityFormInterface>({
     resolver: yupResolver(opportunitySchema),
-    defaultValues: {
-      name: initialData?.name || '',
-      organization_id: preselectedOrganization || initialData?.organization_id || '',
-      estimated_value: initialData?.estimated_value || 0,
-      stage: initialData?.stage || 'Discovery',
-      contact_id: initialData?.contact_id || '',
-      estimated_close_date: initialData?.estimated_close_date || '',
-      description: initialData?.description || '',
-      notes: initialData?.notes || ''
-    }
+    defaultValues: createOpportunityFormInterfaceDefaults(
+      preselectedOrganization,
+      initialData
+    )
   })
 
   const watchedOrganization = form.watch('organization_id')
@@ -107,7 +105,7 @@ export function OpportunityForm({
                 <FormField control={form.control} name="contact_id" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Contact</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value || ''}>
                       <FormControl><SelectTrigger className="h-11"><SelectValue placeholder="Select contact" /></SelectTrigger></FormControl>
                       <SelectContent>
                         {filteredContacts.map((contact) => (
@@ -119,13 +117,13 @@ export function OpportunityForm({
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="estimated_close_date" render={({ field }) => (
-                  <FormItem><FormLabel>Est. Close Date</FormLabel><FormControl><Input {...field} type="date" className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Est. Close Date</FormLabel><FormControl><Input {...field} value={field.value || ''} type="date" className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={form.control} name="description" render={({ field }) => (
-                  <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} disabled={loading} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} value={field.value || ''} rows={3} disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={form.control} name="notes" render={({ field }) => (
-                  <FormItem><FormLabel>Notes</FormLabel><FormControl><Textarea {...field} rows={3} disabled={loading} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Notes</FormLabel><FormControl><Textarea {...field} value={field.value || ''} rows={3} disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
               </div>
             </ProgressiveDetails>

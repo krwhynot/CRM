@@ -21,6 +21,7 @@ import {
   Activity 
 } from 'lucide-react'
 import type { InteractionWithRelations, InteractionUpdate } from '@/types/entities'
+import { FormDataTransformer } from '@/lib/form-resolver'
 import {
   Dialog,
   DialogContent,
@@ -134,7 +135,7 @@ function InteractionsPage() {
             <div className="max-h-[75vh] overflow-y-auto pr-2">
               {editingInteraction && (
                 <InteractionForm 
-                initialData={editingInteraction}
+                initialData={FormDataTransformer.toFormData(editingInteraction)}
                 onSubmit={async (data) => {
                   try {
                     await updateInteractionMutation.mutateAsync({

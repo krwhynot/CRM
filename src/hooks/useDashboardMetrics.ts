@@ -262,8 +262,8 @@ export function useDashboardMetrics(_options: DashboardMetricsOptions = {}): Das
     // Simple calculations
     const total = opportunitiesQuery.data.reduce((sum, opp) => sum + (opp.estimated_value || 0), 0)
     const activeTotal = activeOpportunities.reduce((sum, opp) => sum + (opp.estimated_value || 0), 0)
-    const won = opportunitiesQuery.data.filter(opp => opp.stage === 'closed_won').length
-    const totalClosed = opportunitiesQuery.data.filter(opp => opp.stage === 'closed_won' || opp.stage === 'closed_lost').length
+    const won = opportunitiesQuery.data.filter(opp => opp.stage === 'Closed - Won').length
+    const totalClosed = opportunitiesQuery.data.filter(opp => opp.stage === 'Closed - Won' || opp.stage === 'Closed - Lost').length
     
     return {
       totalPipelineValue: total,

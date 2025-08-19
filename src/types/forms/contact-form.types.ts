@@ -1,0 +1,80 @@
+/**
+ * Contact Form Types and Default Values
+ * 
+ * Provides type-safe default values that align with the contact schema expectations.
+ * This ensures React Hook Form defaults match Yup schema validation rules.
+ */
+
+import type { ContactFormData } from '../contact.types'
+
+/**
+ * Default values for contact form that align with schema expectations
+ * All nullable fields default to null instead of empty strings
+ * Required fields have appropriate default values
+ */
+export const defaultContactFormValues: ContactFormData = {
+  // Required fields
+  first_name: '',
+  last_name: '',
+  organization_id: '',
+  purchase_influence: 'Unknown',
+  decision_authority: 'Gatekeeper',
+
+  // Optional role field
+  role: null,
+
+  // Optional fields - using null for nullable schema fields
+  email: null,
+  title: null,
+  department: null,
+  phone: null,
+  mobile_phone: null,
+  linkedin_url: null,
+  is_primary_contact: false,
+  notes: null,
+
+  // Virtual fields
+  preferred_principals: []
+}
+
+/**
+ * Creates default values with optional overrides
+ * Ensures type safety while allowing partial customization
+ */
+export const createContactFormDefaults = (
+  overrides: Partial<ContactFormData> = {}
+): ContactFormData => {
+  return {
+    ...defaultContactFormValues,
+    ...overrides
+  }
+}
+
+/**
+ * Helper to create defaults with preselected organization
+ */
+export const createContactFormDefaultsWithOrganization = (
+  organizationId: string,
+  overrides: Partial<ContactFormData> = {}
+): ContactFormData => {
+  return createContactFormDefaults({
+    organization_id: organizationId,
+    ...overrides
+  })
+}
+
+/**
+ * Type guard to validate contact form data shape
+ */
+export const isContactFormData = (data: any): data is ContactFormData => {
+  return (
+    data &&
+    typeof data === 'object' &&
+    typeof data.first_name === 'string' &&
+    typeof data.last_name === 'string' &&
+    typeof data.organization_id === 'string' &&
+    (data.role === null || typeof data.role === 'string')
+  )
+}
+
+export type { ContactFormData }

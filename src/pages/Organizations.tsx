@@ -103,12 +103,8 @@ function OrganizationsPage() {
                 try {
                   console.log('🔍 Form data received:', data)
                   
-                  // Transform form data to match database schema
-                  const dbData = {
-                    ...data,
-                    state_province: data.state, // Map state to state_province
-                  }
-                  delete (dbData as any).state // Remove the form field name
+                  // Form data already matches database schema
+                  const dbData = data
                   
                   console.log('🚀 Sending to database:', dbData)
                   
@@ -205,7 +201,19 @@ function OrganizationsPage() {
           <div className="max-h-[75vh] overflow-y-auto pr-2">
             {selectedOrganization && (
               <OrganizationForm
-              initialData={selectedOrganization}
+              initialData={{
+                name: selectedOrganization.name,
+                type: selectedOrganization.type,
+                priority: selectedOrganization.priority as 'A' | 'B' | 'C' | 'D',
+                segment: selectedOrganization.segment,
+                is_principal: selectedOrganization.is_principal ?? false,
+                is_distributor: selectedOrganization.is_distributor ?? false,
+                city: selectedOrganization.city,
+                state_province: selectedOrganization.state_province,
+                phone: selectedOrganization.phone,
+                website: selectedOrganization.website,
+                notes: selectedOrganization.notes
+              }}
               onSubmit={async (data) => {
                 try {
                   await updateOrganizationMutation.mutateAsync({

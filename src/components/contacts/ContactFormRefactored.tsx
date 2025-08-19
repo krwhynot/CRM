@@ -1,20 +1,23 @@
-import React from 'react'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm } from 'react-hook-form'
+import { Form } from '@/components/ui/form'
 import { 
-  BusinessForm, 
   FormInput, 
   FormSelect, 
   FormTextarea, 
   FormCheckbox,
   ProgressiveDetails 
 } from '@/components/forms'
-import { contactSchema, type ContactFormData, CONTACT_POSITIONS } from '@/types/contact.types'
+import { FormCard } from '@/components/forms/FormCard'
+import { FormSubmitButton } from '@/components/forms/FormSubmitButton'
+import { contactSchema, CONTACT_ROLES } from '@/types/contact.types'
+import { ContactFormInterface, createContactFormInterfaceDefaults } from '@/types/forms/form-interfaces'
+import { createTypeSafeResolver } from '@/lib/form-resolver'
 import { useOrganizations } from '@/hooks/useOrganizations'
 import { PreferredPrincipalsSelect } from './PreferredPrincipalsSelect'
 
 interface ContactFormProps {
-  onSubmit: (data: ContactFormData) => void
-  initialData?: Partial<ContactFormData>
+  onSubmit: (data: ContactFormInterface) => void
+  initialData?: Partial<ContactFormInterface>
   loading?: boolean
   submitLabel?: string
   preselectedOrganization?: string
@@ -29,23 +32,17 @@ export function ContactFormRefactored({
 }: ContactFormProps) {
   const { data: organizations = [] } = useOrganizations()
   
-  const defaultValues: Partial<ContactFormData> = {
-    first_name: initialData?.first_name || '',
-    last_name: initialData?.last_name || '',
-    title: initialData?.title || '',
-    position: initialData?.position || '',
-    custom_position: initialData?.custom_position || '',
-    organization_id: preselectedOrganization || initialData?.organization_id || '',
-    purchase_influence: initialData?.purchase_influence || 'Unknown',
-    decision_authority: initialData?.decision_authority || 'Gatekeeper',
-    email: initialData?.email || '',
-    phone: initialData?.phone || '',
-    mobile_phone: initialData?.mobile_phone || '',
-    department: initialData?.department || '',
-    is_primary_contact: initialData?.is_primary_contact || false,
-    notes: initialData?.notes || '',
-    preferred_principals: initialData?.preferred_principals || []
-  }
+  // Use the TypeScript-safe default values factory
+  const defaultValues = createContactFormInterfaceDefaults(
+    preselectedOrganization,
+    initialData
+  )
+
+  // Create type-safe form with proper control
+  const form = useForm<ContactFormInterface>({
+    resolver: createTypeSafeResolver<ContactFormInterface>(contactSchema),
+    defaultValues,
+  })
 
   // Prepare organization options
   const organizationOptions = organizations.map(org => ({
@@ -53,11 +50,11 @@ export function ContactFormRefactored({
     label: org.name
   }))
 
-  // Prepare position options  
-  const positionOptions = [
-    ...CONTACT_POSITIONS.map(pos => ({ value: pos, label: pos })),
-    { value: 'Custom', label: 'Custom' }
-  ]
+  // Prepare role options  
+  const roleOptions = CONTACT_ROLES.map(role => ({
+    value: role.value,
+    label: role.label
+  }))
 
   const influenceOptions = [
     { value: 'High', label: 'High' },
@@ -69,111 +66,124 @@ export function ContactFormRefactored({
   const authorityOptions = [
     { value: 'Decision Maker', label: 'Decision Maker' },
     { value: 'Influencer', label: 'Influencer' },
-    { value: 'Gatekeeper', label: 'Gatekeeper' },
-    { value: 'User', label: 'User' }
+    { value: 'End User', label: 'End User' },
+    { value: 'Gatekeeper', label: 'Gatekeeper' }
   ]
 
   return (
-    <BusinessForm
-      title={initialData ? 'Edit Contact' : 'New Contact'}
-      resolver={yupResolver(contactSchema)}
-      defaultValues={defaultValues}
-      onSubmit={onSubmit}
-      submitLabel={submitLabel}
-      loading={loading}
-    >
-      {/* Core Contact Information */}
-      <FormInput 
-        name="first_name" 
-        label="First Name" 
-        required 
-      />
+    <FormCard title={initialData ? 'Edit Contact' : 'New Contact'}>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {/* Core Contact Information */}
+          <FormInput 
+            control={form.control}
+            name="first_name" 
+            label="First Name" 
+            required 
+          />
+          
+          <FormInput 
+            control={form.control}
+            name="last_name" 
+            label="Last Name" 
+            required 
+          />
       
-      <FormInput 
-        name="last_name" 
-        label="Last Name" 
-        required 
-      />
-      
-      <FormInput 
-        name="title" 
-        label="Title" 
-      />
+          <FormInput 
+            control={form.control}
+            name="title" 
+            label="Title" 
+          />
 
-      <FormSelect
-        name="position"
-        label="Position"
-        options={positionOptions}
-        placeholder="Select position"
-        required
-      />
+          <FormSelect
+            control={form.control}
+            name="position"
+            label="Position"
+            options={roleOptions}
+            placeholder="Select position"
+          />
+          
+          <FormSelect
+            control={form.control}
+            name="organization_id"
+            label="Organization"
+            options={organizationOptions}
+            placeholder="Select organization"
+            required
+          />
 
-      {/* Custom Position Field - conditionally rendered */}
-      {/* Note: This would need conditional logic in BusinessForm or separate component */}
-      
-      <FormSelect
-        name="organization_id"
-        label="Organization"
-        options={organizationOptions}
-        placeholder="Select organization"
-        required
-      />
+          {/* Progressive Details for Advanced Fields */}
+          <ProgressiveDetails buttonText="Contact Details">
+            <FormInput 
+              control={form.control}
+              name="email" 
+              label="Email" 
+              type="email"
+              placeholder="contact@company.com"
+            />
+            
+            <FormInput 
+              control={form.control}
+              name="phone" 
+              label="Phone" 
+              type="tel"
+              placeholder="(555) 123-4567"
+            />
+            
+            <FormInput 
+              control={form.control}
+              name="mobile_phone" 
+              label="Mobile Phone" 
+              type="tel"
+              placeholder="(555) 123-4567"
+            />
+            
+            <FormInput 
+              control={form.control}
+              name="department" 
+              label="Department"
+            />
 
-      {/* Progressive Details for Advanced Fields */}
-      <ProgressiveDetails title="Contact Details">
-        <FormInput 
-          name="email" 
-          label="Email" 
-          type="email"
-          placeholder="contact@company.com"
-        />
-        
-        <FormInput 
-          name="phone" 
-          label="Phone" 
-          type="tel"
-          placeholder="(555) 123-4567"
-        />
-        
-        <FormInput 
-          name="mobile_phone" 
-          label="Mobile Phone" 
-          type="tel"
-          placeholder="(555) 123-4567"
-        />
-        
-        <FormInput 
-          name="department" 
-          label="Department"
-        />
+            <FormSelect
+              control={form.control}
+              name="purchase_influence"
+              label="Purchase Influence"
+              options={influenceOptions}
+            />
 
-        <FormSelect
-          name="purchase_influence"
-          label="Purchase Influence"
-          options={influenceOptions}
-        />
+            <FormSelect
+              control={form.control}
+              name="decision_authority"
+              label="Decision Authority"
+              options={authorityOptions}
+            />
 
-        <FormSelect
-          name="decision_authority"
-          label="Decision Authority"
-          options={authorityOptions}
-        />
+            <FormCheckbox
+              control={form.control}
+              name="is_primary_contact"
+              label="Primary Contact"
+              description="This is the primary contact for the organization"
+            />
 
-        <FormCheckbox
-          name="is_primary_contact"
-          label="Primary Contact"
-          description="This is the primary contact for the organization"
-        />
+            <PreferredPrincipalsSelect 
+              value={form.watch('preferred_principals') || []}
+              onChange={(value) => form.setValue('preferred_principals', value)}
+            />
 
-        <PreferredPrincipalsSelect />
+            <FormTextarea
+              control={form.control}
+              name="notes"
+              label="Notes"
+              placeholder="Additional information about this contact..."
+              rows={3}
+            />
+          </ProgressiveDetails>
 
-        <FormTextarea
-          name="notes"
-          label="Notes"
-          placeholder="Additional information about this contact..."
-          rows={3}
-        />
-      </ProgressiveDetails>
-    </BusinessForm>
+          <FormSubmitButton loading={loading}>
+            {submitLabel}
+          </FormSubmitButton>
+        </form>
+      </Form>
+    </FormCard>
   )
 }

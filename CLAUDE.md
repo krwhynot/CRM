@@ -28,10 +28,23 @@ npm run build
 npm run lint
 
 # Type checking (included in build, but can be run standalone)
-npx tsc --noEmit
+npm run type-check
 
 # Preview production build
 npm run preview
+
+# Quality assurance and validation
+npm run validate           # Complete validation: type-check + lint + build
+npm run format            # Format code with Prettier
+npm run format:check      # Check code formatting
+npm run analyze           # Bundle analysis with visualizer
+
+# Documentation validation
+npm run docs:validate     # Validate documentation links and formatting
+
+# Maintenance commands
+npm run clean             # Clean build artifacts
+npm run fresh             # Clean install (removes node_modules)
 ```
 
 ### CRM Dashboard (Next.js)
@@ -280,6 +293,13 @@ See `/docs/MCP_TOOL_REFERENCE_GUIDE.md` for comprehensive usage guidelines.
 - **MVP is production-ready** - All testing phases completed with >90% confidence
 - **Excel Import MVP**: Follow checklist at `/docs/checklists/excel-to-postgresql-migration.md`
 - **Production URL**: https://crm.kjrcloud.com - Live with Excel import functionality
+
+### Quality Gates & Testing
+- Run `npm run validate` before committing changes
+- Use `./scripts/run-quality-gates.sh` for comprehensive validation
+- Playwright tests available for E2E testing (`@playwright/test`)
+- Mobile optimization tests in `/tests/mobile-optimization-*.spec.js`
+- Database health validation with `/scripts/validate-database-health.js`
 
 ### MCP Tool Development Guidelines
 When working with MCP tools in this project:

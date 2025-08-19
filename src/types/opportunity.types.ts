@@ -1,5 +1,6 @@
 import type { Database } from '../lib/database.types'
 import * as yup from 'yup'
+import { FormTransforms } from '../lib/form-transforms'
 
 // Principal CRM Business Logic Types
 export type OpportunityContext = 'Site Visit' | 'Food Show' | 'New Product Interest' | 'Follow-up' | 'Demo Request' | 'Sampling' | 'Custom'
@@ -28,15 +29,29 @@ export type OpportunityWithRelations = Opportunity & {
   interactions?: Database['public']['Tables']['interactions']['Row'][]
 }
 
-// Opportunity validation schema - ONLY specification fields
+// Opportunity validation schema - updated for form compatibility
 export const opportunitySchema = yup.object({
   // REQUIRED FIELDS per specification
   name: yup.string()
     .required('Opportunity name is required')
     .max(255, 'Name must be 255 characters or less'),
   
+  organization_id: yup.string()
+    .uuid('Invalid organization ID')
+    .required('Organization is required'),
+  
+  estimated_value: yup.number()
+    .min(0, 'Estimated value must be positive')
+    .required('Estimated value is required')
+    .transform(FormTransforms.nullableNumber),
+  
   stage: yup.string()
     .oneOf([
+      'Discovery',
+      'Proposal', 
+      'Negotiation',
+      'Closed Won',
+      'Closed Lost',
       'New Lead',
       'Initial Outreach', 
       'Sample/Visit Offered',
@@ -46,18 +61,40 @@ export const opportunitySchema = yup.object({
       'Closed - Won',
       'Closed - Lost'
     ] as const, 'Invalid opportunity stage')
-    .required('Stage is required'),
+    .required('Stage is required')
+    .default('Discovery'),
+
+  // OPTIONAL FIELDS with transforms
+  contact_id: yup.string()
+    .uuid('Invalid contact ID')
+    .nullable()
+    .transform(FormTransforms.uuidField),
   
+  estimated_close_date: yup.string()
+    .nullable()
+    .transform(FormTransforms.nullableString),
+  
+  description: yup.string()
+    .max(1000, 'Description must be 1000 characters or less')
+    .nullable()
+    .transform(FormTransforms.nullableString),
+  
+  notes: yup.string()
+    .max(500, 'Notes must be 500 characters or less')
+    .nullable()
+    .transform(FormTransforms.nullableString),
+
+  // FIELDS for Principal CRM (optional for form compatibility)
   principals: yup.array()
     .of(yup.string().uuid('Invalid principal organization ID'))
-    .min(1, 'At least one principal must be selected')
-    .required('Principals are required'),
+    .default([])
+    .transform(FormTransforms.optionalArray),
   
   product_id: yup.string()
     .uuid('Invalid product ID')
-    .required('Product is required'),
+    .nullable()
+    .transform(FormTransforms.uuidField),
 
-  // IMPORTANT FIELDS per specification
   opportunity_context: yup.string()
     .oneOf([
       'Site Visit',
@@ -68,31 +105,27 @@ export const opportunitySchema = yup.object({
       'Sampling',
       'Custom'
     ] as const, 'Invalid opportunity context')
-    .nullable(),
+    .nullable()
+    .transform(FormTransforms.nullableString),
   
   auto_generated_name: yup.boolean()
     .default(false),
   
   principal_id: yup.string()
     .uuid('Invalid principal organization ID')
-    .nullable(),
+    .nullable()
+    .transform(FormTransforms.uuidField),
 
-  // OPTIONAL FIELDS per specification
   probability: yup.number()
     .min(0, 'Probability must be between 0-100')
     .max(100, 'Probability must be between 0-100')
-    .nullable(),
-  
-  estimated_close_date: yup.string()
-    .nullable(),
+    .nullable()
+    .transform(FormTransforms.nullableNumber),
   
   deal_owner: yup.string()
     .max(100, 'Deal owner must be 100 characters or less')
-    .nullable(),
-  
-  notes: yup.string()
-    .max(500, 'Notes must be 500 characters or less')
     .nullable()
+    .transform(FormTransforms.nullableString)
 })
 
 // Multiple Principal Opportunity Creation Schema

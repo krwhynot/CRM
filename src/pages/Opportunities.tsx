@@ -8,6 +8,7 @@ import { OpportunityForm } from '@/components/opportunities/OpportunityForm'
 import { useOpportunities, useCreateOpportunity, useUpdateOpportunity, useDeleteOpportunity } from '@/hooks/useOpportunities'
 import { Target, Plus, Search, DollarSign, TrendingUp } from 'lucide-react'
 import type { Opportunity, OpportunityUpdate } from '@/types/entities'
+import { FormDataTransformer } from '@/lib/form-resolver'
 import {
   Dialog,
   DialogContent,
@@ -114,7 +115,7 @@ function OpportunitiesPage() {
             <div className="max-h-[75vh] overflow-y-auto pr-2">
               {editingOpportunity && (
                 <OpportunityForm 
-                initialData={editingOpportunity}
+                initialData={FormDataTransformer.toFormData(editingOpportunity)}
                 onSubmit={async (data) => {
                   try {
                     await updateOpportunityMutation.mutateAsync({

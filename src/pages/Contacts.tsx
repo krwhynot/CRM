@@ -8,6 +8,7 @@ import { ContactForm } from '@/components/contacts/ContactForm'
 import { useContacts, useCreateContact, useUpdateContact, useDeleteContact } from '@/hooks/useContacts'
 import { Users, Plus, Search, Mail, Phone } from 'lucide-react'
 import type { Contact, ContactUpdate } from '@/types/entities'
+import { FormDataTransformer } from '@/lib/form-resolver'
 import {
   Dialog,
   DialogContent,
@@ -110,7 +111,7 @@ function ContactsPage() {
             <div className="max-h-[75vh] overflow-y-auto pr-2">
               {editingContact && (
                 <ContactForm 
-                initialData={editingContact}
+                initialData={FormDataTransformer.toFormData(editingContact)}
                 onSubmit={async (data) => {
                   try {
                     await updateContactMutation.mutateAsync({

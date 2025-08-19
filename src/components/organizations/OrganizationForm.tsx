@@ -3,17 +3,21 @@ import { ProgressiveDetails } from '@/components/forms'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Switch } from '@/components/ui/switch'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { organizationSchema, type OrganizationFormData, FOOD_SERVICE_SEGMENTS } from '@/types/organization.types'
+import { organizationSchema, FOOD_SERVICE_SEGMENTS } from '@/types/organization.types'
+import { 
+  type OrganizationFormInterface, 
+  createOrganizationFormInterfaceDefaults 
+} from '@/types/forms/form-interfaces'
+import { deriveOrganizationFlags } from '@/lib/organization-utils'
 
 interface OrganizationFormProps {
-  onSubmit: (data: OrganizationFormData) => void
-  initialData?: Partial<OrganizationFormData>
+  onSubmit: (data: OrganizationFormInterface) => void
+  initialData?: Partial<OrganizationFormInterface>
   loading?: boolean
   submitLabel?: string
 }
@@ -24,29 +28,24 @@ export function OrganizationForm({
   loading = false,
   submitLabel = 'Save Organization'
 }: OrganizationFormProps) {
-  const form = useForm<OrganizationFormData>({
+  const form = useForm<OrganizationFormInterface>({
     resolver: yupResolver(organizationSchema),
-    defaultValues: {
-      name: initialData?.name || '',
-      type: initialData?.type || '',
-      priority: initialData?.priority || 'C',
-      segment: initialData?.segment || '',
-      is_principal: initialData?.is_principal || false,
-      is_distributor: initialData?.is_distributor || false,
-      city: initialData?.city || '',
-      state_province: initialData?.state_province || '',
-      phone: initialData?.phone || '',
-      website: initialData?.website || '',
-      notes: initialData?.notes || ''
-    }
+    defaultValues: createOrganizationFormInterfaceDefaults(initialData)
   })
+
+  const handleSubmit = (data: OrganizationFormInterface) => {
+    // Automatically derive boolean flags from the selected type
+    const derivedFlags = deriveOrganizationFlags(data.type)
+    const submitData = { ...data, ...derivedFlags }
+    onSubmit(submitData)
+  }
 
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader><CardTitle>{initialData ? 'Edit Organization' : 'New Organization'}</CardTitle></CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             
             <FormField control={form.control} name="name" render={({ field }) => (
               <FormItem>
@@ -104,37 +103,23 @@ export function OrganizationForm({
               </FormItem>
             )} />
 
-            <div className="space-y-3">
-              <FormField control={form.control} name="is_principal" render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-lg border p-3">
-                  <FormLabel>Principal</FormLabel>
-                  <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} disabled={loading} /></FormControl>
-                </FormItem>
-              )} />
-              <FormField control={form.control} name="is_distributor" render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-lg border p-3">
-                  <FormLabel>Distributor</FormLabel>
-                  <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} disabled={loading} /></FormControl>
-                </FormItem>
-              )} />
-            </div>
 
             <ProgressiveDetails buttonText="Add Details">
               <div className="space-y-4">
                 <FormField control={form.control} name="city" render={({ field }) => (
-                  <FormItem><FormLabel>City</FormLabel><FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>City</FormLabel><FormControl><Input {...field} value={field.value || ''} className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={form.control} name="state_province" render={({ field }) => (
-                  <FormItem><FormLabel>State/Province</FormLabel><FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>State/Province</FormLabel><FormControl><Input {...field} value={field.value || ''} className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={form.control} name="phone" render={({ field }) => (
-                  <FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} value={field.value || ''} className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={form.control} name="website" render={({ field }) => (
-                  <FormItem><FormLabel>Website</FormLabel><FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Website</FormLabel><FormControl><Input {...field} value={field.value || ''} className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={form.control} name="notes" render={({ field }) => (
-                  <FormItem><FormLabel>Notes</FormLabel><FormControl><Textarea {...field} rows={3} disabled={loading} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Notes</FormLabel><FormControl><Textarea {...field} value={field.value || ''} rows={3} disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
               </div>
             </ProgressiveDetails>

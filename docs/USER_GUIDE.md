@@ -26,7 +26,7 @@ The dashboard provides a quick view of:
 2. Click "Add New Organization" 
 3. Fill in required fields:
    - Name (required)
-   - Priority (A+, A, B, C, D)
+   - Priority (A, B, C, D)
    - Status (Prospect, Active, Inactive)
    - Industry Segment
    - Address information
@@ -34,7 +34,7 @@ The dashboard provides a quick view of:
 5. Save the organization
 
 **Key Fields:**
-- **Priority**: A+ = Highest value, D = Lowest value
+- **Priority**: A = Highest value, D = Lowest value
 - **Principal**: Companies that manufacture/supply products
 - **Distributor**: Companies that distribute products to end customers
 

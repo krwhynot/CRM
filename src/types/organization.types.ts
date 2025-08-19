@@ -1,5 +1,6 @@
 import type { Database } from '../lib/database.types'
 import * as yup from 'yup'
+import { FormTransforms } from '../lib/form-transforms'
 
 // Principal CRM Business Logic Types
 export type OrganizationPriority = 'A' | 'B' | 'C' | 'D'
@@ -35,38 +36,44 @@ export const organizationSchema = yup.object({
     .required('Segment is required')
     .max(100, 'Segment must be 100 characters or less'),
 
-  // IMPORTANT FIELDS per specification
+  // IMPORTANT FIELDS per specification (auto-derived from type)
   is_principal: yup.boolean()
     .default(false),
   
   is_distributor: yup.boolean()
     .default(false),
 
-  // OPTIONAL FIELDS per specification  
+  // OPTIONAL FIELDS per specification with transforms
   city: yup.string()
     .max(100, 'City must be 100 characters or less')
-    .nullable(),
+    .nullable()
+    .transform(FormTransforms.nullableString),
   
   state_province: yup.string()
     .max(100, 'State/Province must be 100 characters or less')
-    .nullable(),
+    .nullable()
+    .transform(FormTransforms.nullableString),
   
   phone: yup.string()
     .max(50, 'Phone must be 50 characters or less')
-    .nullable(),
+    .nullable()
+    .transform(FormTransforms.nullablePhone),
   
   website: yup.string()
     .url('Invalid website URL')
     .max(255, 'Website must be 255 characters or less')
-    .nullable(),
+    .nullable()
+    .transform(FormTransforms.nullableUrl),
   
   account_manager: yup.string()
     .max(100, 'Account manager must be 100 characters or less')
-    .nullable(),
+    .nullable()
+    .transform(FormTransforms.nullableString),
   
   notes: yup.string()
     .max(500, 'Notes must be 500 characters or less')
     .nullable()
+    .transform(FormTransforms.nullableString)
 })
 
 // Type inference from validation schema
