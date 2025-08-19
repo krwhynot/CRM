@@ -1,7 +1,7 @@
 {
   "name": "kitchenpantry-crm",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,11 +11,15 @@
     "docs:lint": "markdownlint docs/**/*.md --config .config/markdownlint.json",
     "docs:links": "markdown-link-check docs/**/*.md",
     "docs:validate": "npm run docs:lint && npm run docs:links",
-    "validate": "npm run lint && npm run build",
+    "validate": "npm run type-check && npm run lint && npm run build",
     "clean": "rm -rf dist reports/*.json logs/*.log *.tsbuildinfo",
+    "clean:all": "rm -rf dist node_modules package-lock.json",
     "fresh": "npm run clean && rm -rf node_modules && npm install",
     "organize": "npm run clean && git status",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx}\"",
+    "analyze": "npm run build && npx vite-bundle-visualizer"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -67,6 +71,7 @@
     "markdown-link-check": "^3.13.7",
     "markdownlint-cli": "^0.41.0",
     "postcss": "^8.4.27",
+    "prettier": "^3.6.2",
     "rollup-plugin-visualizer": "^6.0.3",
     "tailwindcss": "^3.3.3",
     "typescript": "^5.0.2",
