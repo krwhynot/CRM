@@ -135,6 +135,7 @@ export interface ContactFilters {
   purchase_influence?: PurchaseInfluenceLevel | PurchaseInfluenceLevel[]
   decision_authority?: DecisionAuthorityRole | DecisionAuthorityRole[]
   role?: ContactRole | ContactRole[]
+  is_primary_contact?: boolean
   search?: string
 }
 

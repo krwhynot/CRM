@@ -1,4 +1,3 @@
-import React from 'react'
 import { ProgressiveDetails } from '@/components/forms'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -8,16 +7,12 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { organizationSchema, FOOD_SERVICE_SEGMENTS } from '@/types/organization.types'
-import { 
-  type OrganizationFormInterface, 
-  createOrganizationFormInterfaceDefaults 
-} from '@/types/forms/form-interfaces'
+import { organizationSchema, FOOD_SERVICE_SEGMENTS, type OrganizationFormData } from '@/types/organization.types'
 import { deriveOrganizationFlags } from '@/lib/organization-utils'
 
 interface OrganizationFormProps {
-  onSubmit: (data: OrganizationFormInterface) => void
-  initialData?: Partial<OrganizationFormInterface>
+  onSubmit: (data: OrganizationFormData) => void
+  initialData?: Partial<OrganizationFormData>
   loading?: boolean
   submitLabel?: string
 }
@@ -28,12 +23,34 @@ export function OrganizationForm({
   loading = false,
   submitLabel = 'Save Organization'
 }: OrganizationFormProps) {
-  const form = useForm<OrganizationFormInterface>({
+  const form = useForm<OrganizationFormData>({
     resolver: yupResolver(organizationSchema),
-    defaultValues: createOrganizationFormInterfaceDefaults(initialData)
+    defaultValues: {
+      name: initialData?.name || '',
+      type: initialData?.type || 'customer',
+      priority: initialData?.priority || 'C',
+      segment: initialData?.segment || '',
+      is_principal: initialData?.is_principal || false,
+      is_distributor: initialData?.is_distributor || false,
+      description: initialData?.description || null,
+      email: initialData?.email || null,
+      phone: initialData?.phone || null,
+      website: initialData?.website || null,
+      address_line_1: initialData?.address_line_1 || null,
+      address_line_2: initialData?.address_line_2 || null,
+      city: initialData?.city || null,
+      state_province: initialData?.state_province || null,
+      postal_code: initialData?.postal_code || null,
+      country: initialData?.country || null,
+      industry: initialData?.industry || null,
+      annual_revenue: initialData?.annual_revenue || null,
+      employee_count: initialData?.employee_count || null,
+      account_manager: initialData?.account_manager || null,
+      notes: initialData?.notes || null
+    }
   })
 
-  const handleSubmit = (data: OrganizationFormInterface) => {
+  const handleSubmit = (data: OrganizationFormData) => {
     // Automatically derive boolean flags from the selected type
     const derivedFlags = deriveOrganizationFlags(data.type)
     const submitData = { ...data, ...derivedFlags }

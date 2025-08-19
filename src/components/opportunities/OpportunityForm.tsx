@@ -1,4 +1,3 @@
-import React from 'react'
 import { ProgressiveDetails } from '@/components/forms'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -8,23 +7,19 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { opportunitySchema } from '@/types/opportunity.types'
-import { 
-  type OpportunityFormInterface, 
-  createOpportunityFormInterfaceDefaults 
-} from '@/types/forms/form-interfaces'
+import { opportunitySchema, type OpportunityFormData } from '@/types/opportunity.types'
 import { useOrganizations } from '@/hooks/useOrganizations'
 import { useContacts } from '@/hooks/useContacts'
 
 interface OpportunityFormProps {
-  onSubmit: (data: OpportunityFormInterface) => void
-  initialData?: Partial<OpportunityFormInterface>
+  onSubmit: (data: OpportunityFormData) => void
+  initialData?: Partial<OpportunityFormData>
   loading?: boolean
   submitLabel?: string
   preselectedOrganization?: string
 }
 
-const STAGES = ['Discovery', 'Proposal', 'Negotiation', 'Closed Won', 'Closed Lost']
+const STAGES = ['Discovery', 'Proposal', 'Negotiation', 'Closed Won', 'Closed Lost', 'New Lead', 'Initial Outreach', 'Sample/Visit Offered', 'Awaiting Response', 'Feedback Logged', 'Demo Scheduled', 'Closed - Won', 'Closed - Lost']
 
 export function OpportunityForm({ 
   onSubmit, 
@@ -36,12 +31,25 @@ export function OpportunityForm({
   const { data: organizations = [] } = useOrganizations()
   const { data: contacts = [] } = useContacts()
   
-  const form = useForm<OpportunityFormInterface>({
+  const form = useForm<OpportunityFormData>({
     resolver: yupResolver(opportunitySchema),
-    defaultValues: createOpportunityFormInterfaceDefaults(
-      preselectedOrganization,
-      initialData
-    )
+    defaultValues: {
+      name: initialData?.name || '',
+      organization_id: preselectedOrganization || initialData?.organization_id || '',
+      estimated_value: initialData?.estimated_value || 0,
+      stage: initialData?.stage || 'Discovery',
+      contact_id: initialData?.contact_id || null,
+      estimated_close_date: initialData?.estimated_close_date || null,
+      description: initialData?.description || null,
+      notes: initialData?.notes || null,
+      principals: initialData?.principals || [],
+      product_id: initialData?.product_id || null,
+      opportunity_context: initialData?.opportunity_context || null,
+      auto_generated_name: initialData?.auto_generated_name || false,
+      principal_id: initialData?.principal_id || null,
+      probability: initialData?.probability || null,
+      deal_owner: initialData?.deal_owner || null
+    }
   })
 
   const watchedOrganization = form.watch('organization_id')

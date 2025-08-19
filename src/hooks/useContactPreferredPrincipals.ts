@@ -171,7 +171,7 @@ export function useBulkUpdateContactPreferredPrincipals() {
 
       return { added: principalsToAdd.length, removed: principalsToRemove.length }
     },
-    onSuccess: (result, variables) => {
+    onSuccess: (_, variables) => {
       // Invalidate contact preferred principals queries
       queryClient.invalidateQueries({ 
         queryKey: contactPreferredPrincipalsKeys.list(variables.contactId) 

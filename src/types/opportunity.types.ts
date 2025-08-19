@@ -212,7 +212,7 @@ export interface OpportunityFilters {
   probability_max?: number
   estimated_value_min?: number
   estimated_value_max?: number
-  priority?: string
+  priority?: "low" | "medium" | "high" | "critical" | ("low" | "medium" | "high" | "critical")[]
 }
 
 // Auto-naming utility functions

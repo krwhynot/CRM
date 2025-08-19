@@ -12,7 +12,7 @@ import React from 'react'
 import { type Resolver, type FieldValues, type Control } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import type { AnyObjectSchema } from 'yup'
-import { ErrorDetector, TypeInference, FormComponentValidator } from './typescript-guardian'
+import { TypeInference, FormComponentValidator } from './typescript-guardian'
 
 /**
  * Enhanced type-safe resolver with automatic conflict detection
@@ -20,13 +20,11 @@ import { ErrorDetector, TypeInference, FormComponentValidator } from './typescri
 export function createTypeSafeResolver<TFormValues extends FieldValues>(
   schema: AnyObjectSchema,
   options?: {
-    enableConflictDetection?: boolean
     autoTransformNullable?: boolean
     strictTypeValidation?: boolean
   }
 ): Resolver<TFormValues> {
   const {
-    enableConflictDetection = true,
     autoTransformNullable = true,
     strictTypeValidation = false
   } = options || {}
@@ -67,7 +65,7 @@ export function createTypeSafeResolver<TFormValues extends FieldValues>(
 /**
  * Validates form values against expected patterns
  */
-function validateFormValues(values: any, schema: AnyObjectSchema): {
+function validateFormValues(values: Record<string, unknown>, schema: AnyObjectSchema): {
   isValid: boolean
   warnings: string[]
 } {
@@ -191,7 +189,7 @@ export class FormPropGuardian {
    * Validates and auto-fixes form field component props
    */
   static validateAndFixProps<T extends FieldValues>(
-    props: any,
+    props: Record<string, unknown>,
     control: Control<T>,
     componentName: string = 'FormField'
   ): any {
@@ -223,7 +221,7 @@ export class FormPropGuardian {
     control: Control<T>,
     componentName?: string
   ) {
-    return function TypeSafeComponent(props: any) {
+    return function TypeSafeComponent(props: Record<string, unknown>) {
       const safeProps = FormPropGuardian.validateAndFixProps(
         props, 
         control, 
@@ -244,7 +242,7 @@ export class FormPropGuardian {
   ) {
     const originalMethod = descriptor.value
     
-    descriptor.value = function(this: any, props: any, control: Control<T>) {
+    descriptor.value = function(this: unknown, props: Record<string, unknown>, control: Control<T>) {
       if (process.env.NODE_ENV === 'development') {
         const validation = FormComponentValidator.validateFieldProps(props)
         if (!validation.isValid) {

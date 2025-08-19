@@ -183,7 +183,7 @@ export function createOrganizationFormConfig(
     
     contextualSections: [
       {
-        condition: (values) => values.is_principal && Boolean(initialData?.id),
+        condition: (values) => values.is_principal && Boolean((initialData as any)?.id),
         section: {
           id: 'advocacy-summary',
           title: 'Contact Advocacy Summary',

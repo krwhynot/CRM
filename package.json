@@ -19,7 +19,33 @@
     "type-check": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx}\"",
-    "analyze": "npm run build && npx vite-bundle-visualizer"
+    "analyze": "npm run build && npx vite-bundle-visualizer",
+    "test": "./run-tests.sh",
+    "test:auth": "./run-tests.sh --mode auth",
+    "test:crud": "./run-tests.sh --mode crud",
+    "test:dashboard": "./run-tests.sh --mode dashboard",
+    "test:import": "./run-tests.sh --mode import",
+    "test:mobile": "./run-tests.sh --mode mobile",
+    "test:forms": "./run-tests.sh --mode forms",
+    "test:smoke": "./run-tests.sh --mode smoke",
+    "test:headed": "./run-tests.sh --headed",
+    "test:debug": "./run-tests.sh --debug",
+    "test:ipad": "./run-tests.sh --device ipad",
+    "test:mobile-device": "./run-tests.sh --device mobile",
+    "test:firefox": "./run-tests.sh --browser firefox",
+    "test:webkit": "./run-tests.sh --browser webkit",
+    "test:all-browsers": "./run-tests.sh --browser all",
+    "test:backend": "vitest run tests/backend",
+    "test:backend:watch": "vitest tests/backend",
+    "test:backend:coverage": "vitest run tests/backend --coverage",
+    "test:db": "vitest run tests/backend/database",
+    "test:performance": "vitest run tests/backend/performance",
+    "test:security": "vitest run tests/backend/security",
+    "test:integrity": "vitest run tests/backend/integrity",
+    "test:import-backend": "vitest run tests/backend/imports",
+    "playwright:install": "npx playwright install",
+    "playwright:report": "npx playwright show-report",
+    "playwright:trace": "npx playwright show-trace"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -58,11 +84,15 @@
     "zustand": "^5.0.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.54.2",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
+    "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "@vitejs/plugin-react": "^4.0.3",
+    "@vitest/coverage-v8": "^1.6.0",
+    "@vitest/ui": "^1.6.1",
     "autoprefixer": "^10.4.14",
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
@@ -74,6 +104,8 @@
     "rollup-plugin-visualizer": "^6.0.3",
     "tailwindcss": "^3.3.3",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "uuid": "^9.0.1",
+    "vite": "^4.4.5",
+    "vitest": "^1.6.1"
   }
 }

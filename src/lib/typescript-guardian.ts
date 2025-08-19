@@ -5,7 +5,7 @@
  * Provides runtime type validation, automatic type inference, and proactive error detection.
  */
 
-import { type FieldValues, type Control, type Resolver } from 'react-hook-form'
+import { type FieldValues, type Control } from 'react-hook-form'
 import type { AnyObjectSchema } from 'yup'
 
 // ==================== TYPE GUARDS ====================
@@ -20,7 +20,7 @@ export class TypeGuards {
   static hasRequiredProperties<T extends Record<string, any>>(
     obj: unknown,
     requiredProps: Array<keyof T>,
-    typeCheckers?: Partial<Record<keyof T, (value: any) => boolean>>
+    typeCheckers?: Partial<Record<keyof T, (value: unknown) => boolean>>
   ): obj is T {
     if (!obj || typeof obj !== 'object') return false
     
@@ -42,7 +42,7 @@ export class TypeGuards {
   /**
    * Validates React Hook Form control object
    */
-  static isValidControl(control: unknown): control is Control<any> {
+  static isValidControl(control: unknown): control is Control<FieldValues> {
     return (
       control !== null &&
       control !== undefined &&
@@ -101,7 +101,7 @@ export class RuntimeValidator {
   static validateOrganization(data: unknown): {
     isValid: boolean
     errors: string[]
-    typedData?: any
+    typedData?: Record<string, unknown>
   } {
     const errors: string[] = []
     
@@ -148,7 +148,7 @@ export class RuntimeValidator {
   static validateContact(data: unknown): {
     isValid: boolean
     errors: string[]
-    typedData?: any
+    typedData?: Record<string, unknown>
   } {
     const errors: string[] = []
     
@@ -214,7 +214,7 @@ export class TypeInference {
     schema: AnyObjectSchema,
     overrides?: Partial<T>
   ): T {
-    const defaults: any = {}
+    const defaults: Record<string, unknown> = {}
     
     // Extract schema fields and their types
     const fields = schema.fields || {}
@@ -249,7 +249,7 @@ export class TypeInference {
   static databaseToFormType<T>(dbEntity: T): Partial<T> {
     if (!dbEntity || typeof dbEntity !== 'object') return {}
 
-    const formData: any = {}
+    const formData: Record<string, unknown> = {}
     
     for (const [key, value] of Object.entries(dbEntity)) {
       // Convert null to undefined for React Hook Form compatibility
@@ -265,7 +265,7 @@ export class TypeInference {
   static formToDatabaseType<T>(formData: T): T {
     if (!formData || typeof formData !== 'object') return formData
 
-    const dbData: any = {}
+    const dbData: Record<string, unknown> = {}
     
     for (const [key, value] of Object.entries(formData)) {
       // Convert empty strings and undefined to null for database
@@ -289,8 +289,8 @@ export class FormComponentValidator {
   /**
    * Validates that form field components have required props
    */
-  static validateFieldProps<T extends FieldValues>(
-    props: any,
+  static validateFieldProps<_T extends FieldValues>(
+    props: Record<string, unknown>,
     requiredProps: string[] = ['name', 'control']
   ): { isValid: boolean; missingProps: string[]; errors: string[] } {
     const missingProps: string[] = []
@@ -319,9 +319,9 @@ export class FormComponentValidator {
    * Auto-generates missing props for form components
    */
   static generateMissingProps<T extends FieldValues>(
-    existingProps: any,
+    existingProps: Record<string, unknown>,
     control: Control<T>
-  ): any {
+  ): Record<string, unknown> {
     const generatedProps = { ...existingProps }
 
     // Add control if missing

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import { useForm, UseFormReturn, FieldValues } from 'react-hook-form'
+import { useForm, UseFormReturn, FieldValues, DefaultValues, Path } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -51,7 +51,7 @@ export interface CoreFormLayoutProps<T extends FieldValues> {
   contextualSections?: ConditionalSection<T>[]
 }
 
-export interface FormSection<T> {
+export interface FormSection<T extends FieldValues> {
   id: string
   title?: string
   description?: string
@@ -60,7 +60,7 @@ export interface FormSection<T> {
   className?: string
 }
 
-export interface FormFieldConfig<T> {
+export interface FormFieldConfig<T extends FieldValues> {
   name: keyof T
   type: 'text' | 'select' | 'textarea' | 'switch' | 'checkbox' | 'number' | 'email' | 'tel' | 'url'
   label: string
@@ -74,7 +74,7 @@ export interface FormFieldConfig<T> {
   className?: string
 }
 
-export interface ConditionalSection<T> {
+export interface ConditionalSection<T extends FieldValues> {
   condition: (values: T) => boolean
   section: FormSection<T>
 }
@@ -107,7 +107,7 @@ function FormFieldRenderer<T extends FieldValues>({
   return (
     <FormField
       control={form.control}
-      name={name as string}
+      name={name as Path<T>}
       render={({ field: formField }) => (
         <FormItem className={className}>
           <FormLabel className="flex items-center gap-2 text-base">
@@ -248,7 +248,7 @@ function FormSectionComponent<T extends FieldValues>({
   section, 
   form, 
   loading, 
-  entityType 
+  entityType: _entityType 
 }: FormSectionProps<T>) {
   const layoutClass = useMemo(() => {
     switch (section.layout) {
@@ -342,8 +342,8 @@ export function CoreFormLayout<T extends FieldValues>({
   const [showOptionalSections, setShowOptionalSections] = useState(showAdvancedOptions)
   
   const form = useForm<T>({
-    resolver: yupResolver(formSchema),
-    defaultValues: initialData
+    resolver: yupResolver(formSchema) as any,
+    defaultValues: initialData as DefaultValues<T>
   })
   
   const watchedValues = form.watch()
@@ -371,14 +371,14 @@ export function CoreFormLayout<T extends FieldValues>({
       
       <CardContent className="p-6 space-y-8">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(handleSubmit as any)} className="space-y-8">
             
             {/* Core Sections - Always Visible */}
             {coreSections.map((section) => (
               <FormSectionComponent
                 key={section.id}
                 section={section}
-                form={form}
+                form={form as any}
                 loading={loading}
                 entityType={entityType}
               />
@@ -391,7 +391,7 @@ export function CoreFormLayout<T extends FieldValues>({
                 condition={conditionalSection.condition}
                 section={conditionalSection.section}
                 watchedValues={watchedValues}
-                form={form}
+                form={form as any}
                 loading={loading}
                 entityType={entityType}
               />
@@ -415,7 +415,7 @@ export function CoreFormLayout<T extends FieldValues>({
                       <FormSectionComponent
                         key={section.id}
                         section={section}
-                        form={form}
+                        form={form as any}
                         loading={loading}
                         entityType={entityType}
                       />

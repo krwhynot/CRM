@@ -155,8 +155,8 @@ export interface ContactDetailsProps extends FormSectionDetailsProps {
 export function ContactDetails(props: ContactDetailsProps) {
   return (
     <FormSectionDetails
-      sectionTitle="Contact Details"
       {...props}
+      sectionTitle="Contact Details"
     />
   )
 }
@@ -167,8 +167,8 @@ export interface OrganizationDetailsProps extends FormSectionDetailsProps {
 export function OrganizationDetails(props: OrganizationDetailsProps) {
   return (
     <FormSectionDetails
-      sectionTitle="Organization Details"
       {...props}
+      sectionTitle="Organization Details"
     />
   )
 }
@@ -179,8 +179,8 @@ export interface AddressDetailsProps extends FormSectionDetailsProps {
 export function AddressDetails(props: AddressDetailsProps) {
   return (
     <FormSectionDetails
-      sectionTitle="Address Information"
       {...props}
+      sectionTitle="Address Information"
     />
   )
 }

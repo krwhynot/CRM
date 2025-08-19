@@ -168,7 +168,7 @@ export function OrganizationImporter() {
           const validRows: CsvRow[] = []
           const invalidRows: Array<{ row: CsvRow; errors: string[] }> = []
 
-          rows.forEach((row, index) => {
+          rows.forEach((row, _index) => {
             const errors = validateRow(row)
             if (errors.length === 0) {
               // Transform row using MVP field mappings

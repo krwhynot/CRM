@@ -5,7 +5,7 @@
  * component with React Hook Form in the CRM system.
  */
 
-import React from 'react'
+// React import removed - not needed for TSX files in modern React
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -20,9 +20,10 @@ const demoSchema = yup.object({
   preferredPrincipals: yup.array()
     .of(yup.string().uuid('Invalid principal organization ID'))
     .min(1, 'At least one preferred principal is required')
-    .nullable()
+    .default([])
 })
 
+// Use yup.InferType to ensure type alignment
 type DemoFormData = yup.InferType<typeof demoSchema>
 
 export function PreferredPrincipalsSelectDemo() {
@@ -65,7 +66,7 @@ export function PreferredPrincipalsSelectDemo() {
                 <FormLabel>Preferred Principals</FormLabel>
                 <FormControl>
                   <PreferredPrincipalsSelect
-                    value={field.value || []}
+                    value={(field.value || []).filter((id): id is string => typeof id === 'string')}
                     onChange={field.onChange}
                     disabled={form.formState.isSubmitting}
                   />

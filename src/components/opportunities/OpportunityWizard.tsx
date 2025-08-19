@@ -47,23 +47,25 @@ export function OpportunityWizard({
     watch,
     trigger,
     formState: { errors }
-  } = useForm({
+  } = useForm<OpportunityFormData>({
     resolver: yupResolver(opportunitySchema),
     mode: 'onBlur',
     defaultValues: {
       name: '',
       organization_id: preselectedOrganization || '',
-      contact_id: preselectedContact || '',
-      stage: 'lead',
-      priority: 'medium',
-      estimated_value: null,
+      estimated_value: 0,
+      stage: 'Discovery',
+      contact_id: preselectedContact || null,
+      estimated_close_date: null,
+      description: null,
+      notes: null,
+      principals: [],
+      product_id: null,
+      opportunity_context: null,
+      auto_generated_name: false,
+      principal_id: null,
       probability: null,
-      estimated_close_date: '',
-      description: '',
-      decision_criteria: '',
-      competition: '',
-      next_action: '',
-      notes: ''
+      deal_owner: null
     }
   })
 
@@ -82,7 +84,7 @@ export function OpportunityWizard({
       case 2:
         return await trigger(['organization_id'])
       case 3:
-        return await trigger(['stage', 'priority'])
+        return await trigger(['stage', 'estimated_value'])
       case 4:
         return true // Financial info is optional
       case 5:

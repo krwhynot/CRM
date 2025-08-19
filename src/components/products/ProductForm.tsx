@@ -1,4 +1,3 @@
-import React from 'react'
 import { ProgressiveDetails } from '@/components/forms'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -30,7 +29,7 @@ export function ProductForm({
   const principalOrganizations = organizations.filter(org => org.type === 'principal')
   
   const form = useForm<ProductFormData>({
-    resolver: yupResolver(productSchema),
+    resolver: yupResolver(productSchema) as any,
     defaultValues: {
       name: initialData?.name || '',
       sku: initialData?.sku || '',
@@ -50,7 +49,7 @@ export function ProductForm({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             
-            <FormField control={form.control} name="name" render={({ field }) => (
+            <FormField control={form.control as any} name="name" render={({ field }) => (
               <FormItem>
                 <FormLabel>Name *</FormLabel>
                 <FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl>
@@ -58,7 +57,7 @@ export function ProductForm({
               </FormItem>
             )} />
 
-            <FormField control={form.control} name="sku" render={({ field }) => (
+            <FormField control={form.control as any} name="sku" render={({ field }) => (
               <FormItem>
                 <FormLabel>SKU *</FormLabel>
                 <FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl>
@@ -66,7 +65,7 @@ export function ProductForm({
               </FormItem>
             )} />
 
-            <FormField control={form.control} name="principal_id" render={({ field }) => (
+            <FormField control={form.control as any} name="principal_id" render={({ field }) => (
               <FormItem>
                 <FormLabel>Principal *</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
@@ -81,7 +80,7 @@ export function ProductForm({
               </FormItem>
             )} />
 
-            <FormField control={form.control} name="category" render={({ field }) => (
+            <FormField control={form.control as any} name="category" render={({ field }) => (
               <FormItem>
                 <FormLabel>Category *</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -98,17 +97,17 @@ export function ProductForm({
 
             <ProgressiveDetails buttonText="Add Details">
               <div className="space-y-4">
-                <FormField control={form.control} name="description" render={({ field }) => (
+                <FormField control={form.control as any} name="description" render={({ field }) => (
                   <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
-                <FormField control={form.control} name="unit_of_measure" render={({ field }) => (
+                <FormField control={form.control as any} name="unit_of_measure" render={({ field }) => (
                   <FormItem><FormLabel>Unit of Measure</FormLabel><FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
-                <FormField control={form.control} name="list_price" render={({ field }) => (
-                  <FormItem><FormLabel>List Price</FormLabel><FormControl><Input {...field} type="number" step="0.01" className="h-11" disabled={loading} onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)} /></FormControl><FormMessage /></FormItem>
+                <FormField control={form.control as any} name="list_price" render={({ field }) => (
+                  <FormItem><FormLabel>List Price</FormLabel><FormControl><Input {...field} value={field.value || ''} type="number" step="0.01" className="h-11" disabled={loading} onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)} /></FormControl><FormMessage /></FormItem>
                 )} />
-                <FormField control={form.control} name="min_order_quantity" render={({ field }) => (
-                  <FormItem><FormLabel>Min Order Qty</FormLabel><FormControl><Input {...field} type="number" className="h-11" disabled={loading} onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)} /></FormControl><FormMessage /></FormItem>
+                <FormField control={form.control as any} name="min_order_quantity" render={({ field }) => (
+                  <FormItem><FormLabel>Min Order Qty</FormLabel><FormControl><Input {...field} value={field.value || ''} type="number" className="h-11" disabled={loading} onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)} /></FormControl><FormMessage /></FormItem>
                 )} />
               </div>
             </ProgressiveDetails>

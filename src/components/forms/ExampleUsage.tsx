@@ -1,7 +1,7 @@
 // Example usage of CoreFormLayout component
 // This file demonstrates how to use the CoreFormLayout with the organization entity
 
-import React from 'react'
+// React import not needed in modern React
 import { CoreFormLayout } from './CoreFormLayout'
 import { createOrganizationFormConfig } from '@/configs/forms/organization.config'
 import type { OrganizationFormData } from '@/types/organization.types'

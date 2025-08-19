@@ -168,7 +168,7 @@ export function useDashboardMetrics(_options: DashboardMetricsOptions = {}): Das
   , [organizationsQuery.data])
   
   const activeOpportunities = useMemo(() =>
-    opportunitiesQuery.data?.filter(opp => opp.stage !== 'closed_won' && opp.stage !== 'closed_lost') || []
+    opportunitiesQuery.data?.filter(opp => opp.stage !== 'Closed - Won' && opp.stage !== 'Closed - Lost') || []
   , [opportunitiesQuery.data])
 
   // ============================================================================

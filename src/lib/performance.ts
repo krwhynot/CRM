@@ -1,6 +1,6 @@
 import { onCLS, onINP, onFCP, onLCP, onTTFB } from 'web-vitals'
 
-function sendToAnalytics(metric: any) {
+function sendToAnalytics(metric: Record<string, unknown>) {
   // Log performance metrics to console (can be extended to send to analytics service)
   console.log(`Performance: ${metric.name}: ${metric.value}ms`)
   
