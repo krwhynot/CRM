@@ -44,15 +44,16 @@ export const organizationSchema = yup.object({
     .default(false),
 
   // OPTIONAL FIELDS per specification with transforms
-  city: yup.string()
-    .max(100, 'City must be 100 characters or less')
+  description: yup.string()
+    .max(500, 'Description must be 500 characters or less')
     .nullable()
     .transform(FormTransforms.nullableString),
   
-  state_province: yup.string()
-    .max(100, 'State/Province must be 100 characters or less')
+  email: yup.string()
+    .email('Invalid email address')
+    .max(255, 'Email must be 255 characters or less')
     .nullable()
-    .transform(FormTransforms.nullableString),
+    .transform(FormTransforms.nullableEmail),
   
   phone: yup.string()
     .max(50, 'Phone must be 50 characters or less')
@@ -65,10 +66,56 @@ export const organizationSchema = yup.object({
     .nullable()
     .transform(FormTransforms.nullableUrl),
   
-  account_manager: yup.string()
-    .max(100, 'Account manager must be 100 characters or less')
+  address_line_1: yup.string()
+    .max(255, 'Address line 1 must be 255 characters or less')
     .nullable()
     .transform(FormTransforms.nullableString),
+  
+  address_line_2: yup.string()
+    .max(255, 'Address line 2 must be 255 characters or less')
+    .nullable()
+    .transform(FormTransforms.nullableString),
+  
+  city: yup.string()
+    .max(100, 'City must be 100 characters or less')
+    .nullable()
+    .transform(FormTransforms.nullableString),
+  
+  state_province: yup.string()
+    .max(100, 'State/Province must be 100 characters or less')
+    .nullable()
+    .transform(FormTransforms.nullableString),
+  
+  postal_code: yup.string()
+    .max(20, 'Postal code must be 20 characters or less')
+    .nullable()
+    .transform(FormTransforms.nullableString),
+  
+  country: yup.string()
+    .max(100, 'Country must be 100 characters or less')
+    .nullable()
+    .transform(FormTransforms.nullableString),
+  
+  industry: yup.string()
+    .max(100, 'Industry must be 100 characters or less')
+    .nullable()
+    .transform(FormTransforms.nullableString),
+  
+  size: yup.string()
+    .oneOf(['small', 'medium', 'large', 'enterprise'] as const, 'Invalid organization size')
+    .nullable()
+    .transform(FormTransforms.nullableString),
+  
+  annual_revenue: yup.number()
+    .positive('Annual revenue must be positive')
+    .nullable()
+    .transform(FormTransforms.nullableNumber),
+  
+  employee_count: yup.number()
+    .integer('Employee count must be a whole number')
+    .positive('Employee count must be positive')
+    .nullable()
+    .transform(FormTransforms.nullableNumber),
   
   notes: yup.string()
     .max(500, 'Notes must be 500 characters or less')

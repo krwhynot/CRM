@@ -441,7 +441,7 @@ export function OptimizedOpportunityForm({
               <SelectContent>
                 {contacts.map((contact) => (
                   <SelectItem key={contact.id} value={contact.id}>
-                    {contact.name}
+                    {contact.first_name} {contact.last_name}
                   </SelectItem>
                 ))}
               </SelectContent>

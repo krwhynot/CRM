@@ -139,10 +139,10 @@ export function createOrganizationFormConfig(
             placeholder: 'https://www.company.com' 
           },
           { 
-            name: 'account_manager', 
+            name: 'industry', 
             type: 'text', 
-            label: 'Account Manager',
-            description: 'Primary person managing this account relationship',
+            label: 'Industry',
+            description: 'Industry or business sector',
             className: 'md:col-span-2'
           }
         ]
@@ -152,7 +152,7 @@ export function createOrganizationFormConfig(
         title: 'Address Information',
         fields: [
           { 
-            name: 'address', 
+            name: 'address_line_1', 
             type: 'text', 
             label: 'Street Address',
             placeholder: '123 Main Street, Suite 100',
@@ -165,13 +165,13 @@ export function createOrganizationFormConfig(
             placeholder: 'City' 
           },
           { 
-            name: 'state', 
+            name: 'state_province', 
             type: 'text', 
             label: 'State/Province', 
             placeholder: 'State' 
           },
           { 
-            name: 'zip', 
+            name: 'postal_code', 
             type: 'text', 
             label: 'ZIP/Postal Code', 
             placeholder: '12345' 

@@ -24,11 +24,20 @@ export const defaultOrganizationFormValues: OrganizationFormData = {
   is_distributor: false,
 
   // Optional fields - using null for nullable schema fields
-  city: null,
-  state_province: null,
+  description: null,
+  email: null,
   phone: null,
   website: null,
-  account_manager: null,
+  address_line_1: null,
+  address_line_2: null,
+  city: null,
+  state_province: null,
+  postal_code: null,
+  country: null,
+  industry: null,
+  size: null,
+  annual_revenue: null,
+  employee_count: null,
   notes: null
 }
 
