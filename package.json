@@ -8,9 +8,14 @@
     "build": "vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 20",
     "preview": "vite preview",
-    "docs:lint": "markdownlint docs/**/*.md --config .markdownlint.json",
+    "docs:lint": "markdownlint docs/**/*.md --config .config/markdownlint.json",
     "docs:links": "markdown-link-check docs/**/*.md",
-    "docs:validate": "npm run docs:lint && npm run docs:links"
+    "docs:validate": "npm run docs:lint && npm run docs:links",
+    "validate": "npm run lint && npm run build",
+    "clean": "rm -rf dist reports/*.json logs/*.log *.tsbuildinfo",
+    "fresh": "npm run clean && rm -rf node_modules && npm install",
+    "organize": "npm run clean && git status",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",

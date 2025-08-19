@@ -23,13 +23,27 @@ dist-ssr
 *.sln
 *.sw?
 
-# Environment variables
+# Environment variables with secrets
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
-.env.production
+
+# Build artifacts that shouldn't be committed
+*.tsbuildinfo
+dist/
+coverage/
+
+# Reports & logs (should be generated, not committed)
+reports/
+logs/
+*.log
+
+# Test results (generated artifacts)
+tests/results/
+playwright-report/
+test-results/
 
 # TypeScript
 *.tsbuildinfo
@@ -46,5 +60,5 @@ dist-ssr
 Thumbs.db
 .vercel
 
-# MCP Configuration
+# MCP Configuration (contains secrets)
 .mcp.json
