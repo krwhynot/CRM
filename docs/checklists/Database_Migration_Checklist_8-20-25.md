@@ -108,8 +108,8 @@ Complex RLS policies may cause 2-10x performance degradation. **Load test first*
 - **Circuit Breaker**: Creates `migration_control` table for phase tracking and rollback points
 
 **Accept**
-* [ ] `SELECT * FROM stage_lu LIMIT 0;` returns 0 rows (table exists, empty)
-* [ ] No errors; transaction committed
+* [X] `SELECT * FROM stage_lu LIMIT 0;` returns 0 rows (table exists, empty)
+* [X] No errors; transaction committed
 
 **Rollback:** Drop lookup tables (staging only) - idempotent via `IF NOT EXISTS`
 
@@ -126,8 +126,8 @@ Complex RLS policies may cause 2-10x performance degradation. **Load test first*
 - Sets up `updated_at` triggers
 
 **Accept**
-* [ ] Insert `ACME` then `acme` → second fails (unique constraint)
-* [ ] Contact without `organization_id` → fails (FK violation)
+* [X] Insert `ACME` then `acme` → second fails (unique constraint)
+* [X] Contact without `organization_id` → fails (FK violation)
 
 **Rollback:** Drop tables (staging only)
 
@@ -144,8 +144,8 @@ Complex RLS policies may cause 2-10x performance degradation. **Load test first*
 - Includes optional legacy column migration (commented out - uncomment if needed)
 
 **Accept**
-* [ ] Two primaries for one product → fails (constraint violation)
-* [ ] Join table present and writable
+* [X] Two primaries for one product → fails (constraint violation)
+* [X] Join table present and writable
 
 **Rollback:** Delete join rows; re-add legacy column if reverting (staging only)
 
@@ -184,10 +184,10 @@ LEFT JOIN LATERAL (
 **Trade-off**: View approach is simpler but requires application-layer updates to use `opportunities_enriched` instead of base table.
 
 **Accept**
-* [ ] Opp without product **and** principal → fails (constraint violation)
-* [ ] Inserting or updating interaction updates opp stage/status **unless** manual flags are true
+* [X] Opp without product **and** principal → fails (constraint violation)
+* [X] Inserting or updating interaction updates opp stage/status **unless** manual flags are true
 * [ ] Interaction driver edits: opp owner anytime; interaction owner within 24h; others blocked
-* [ ] UI toggles for **Manual stage** / **Manual status** function correctly
+* [X] UI toggles for **Manual stage** / **Manual status** function correctly
 * [ ] **Performance test**: Trigger execution <50ms per interaction insert
 
 **Rollback:** Drop triggers/functions (emergency only); Drop tables (staging only)
@@ -205,7 +205,7 @@ LEFT JOIN LATERAL (
 - Creates `reporting.org_principal_summary` view (rollup statistics)
 
 **Accept**
-* [ ] `SELECT * FROM reporting.pipeline_full LIMIT 1;` returns rows and reflects new interactions
+* [X] `SELECT * FROM reporting.pipeline_full LIMIT 1;` returns rows and reflects new interactions
 
 **Rollback:** `DROP VIEW` (safe operation)
 
@@ -255,8 +255,8 @@ $$ LANGUAGE plpgsql;
 
 **Accept**
 
-* [ ] User A cannot see/edit User B's opps/interactions.
-* [ ] Shared/system orgs (`owner_user_id IS NULL`) visible to all; others scoped.
+* [X] User A cannot see/edit User B's opps/interactions.
+* [X] Shared/system orgs (`owner_user_id IS NULL`) visible to all; others scoped.
 * [ ] Deleting a user with owned data → **blocked**; after `admin_reassign_user_data(from, to)` → deletion succeeds.
 * [ ] **RLS Performance Check**: Query with user context completes in <200ms (P95 target):
   ```sql
@@ -275,7 +275,7 @@ $$ LANGUAGE plpgsql;
   
   -- Monitor RLS overhead: queries should show <50ms RLS penalty
   ```
-* [ ] **Fallback Strategy**: Document Service Role connection for RLS bypass in emergencies
+* [X] **Fallback Strategy**: Document Service Role connection for RLS bypass in emergencies
 
 **Rollback**
 
@@ -303,10 +303,10 @@ $$ LANGUAGE plpgsql;
 - **Materialized views**: Use application-layer caching (Redis) for dashboard data
 
 **Accept**
-* [ ] Stakeholder links work with PK deduplication
-* [ ] `SELECT public.refresh_dashboard_view();` succeeds; MV readable during refresh  
-* [ ] FTS queries work: `SELECT * FROM organizations WHERE search_tsv @@ to_tsquery('acme');`
-* [ ] **Dashboard Performance**: MV refresh completes in <10 seconds
+* [X] Stakeholder links work with PK deduplication
+* [X] `SELECT public.refresh_dashboard_view();` succeeds; MV readable during refresh  
+* [X] FTS queries work: `SELECT * FROM organizations WHERE search_tsv @@ to_tsquery('acme');`
+* [X] **Dashboard Performance**: MV refresh completes in <10 seconds
 
 **Rollback:** Drop `opportunity_contacts`, FTS columns/indexes, MV and refresh function (module-wise revert)
 
@@ -332,9 +332,9 @@ $$ LANGUAGE plpgsql;
 - Optional demo data (minimal principal/distributor/customer pipeline for smoke tests)
 
 **Accept**
-* [ ] Kanban columns render with proper stage names
-* [ ] Forms show lookup dropdown options
-* [ ] `reporting.pipeline_full` returns rows if demo data included
+* [X] Kanban columns render with proper stage names
+* [X] Forms show lookup dropdown options
+* [X] `reporting.pipeline_full` returns rows if demo data included
 
 **Rollback:** `TRUNCATE … RESTART IDENTITY` (staging/dev only)
 
@@ -342,7 +342,7 @@ $$ LANGUAGE plpgsql;
 
 ## Post-migration (all envs)
 
-* [ ] **Generate TypeScript types** from remote DB (MCP types action or CI Supabase CLI) → `src/types/supabase.ts`.
+* [X] **Generate TypeScript types** from remote DB (MCP types action or CI Supabase CLI) → `src/types/supabase.ts`.
 * [ ] **Manual smoke tests** as a normal user (no service role).
 * [ ] **Performance baseline:** capture execution times for `reporting.pipeline_full` and dashboard MV endpoints; set alerts for p95 > **500 ms**.
 * [ ] **Alerting:** on two consecutive failures of `refresh_dashboard_view()`, page on-call.
@@ -375,7 +375,7 @@ $$ LANGUAGE plpgsql;
 * **MV refresh lock** → Use **CONCURRENTLY** with **UNIQUE index**; schedule off-peak.
 * **Migration time overrun** → Budget **30+ minutes**, consider blue-green deployment with Supabase branching.
 
----
+---@
 
 ## Common errors & fixes
 
@@ -568,7 +568,7 @@ USING (
 
 ### **Production Execution**
 * [ ] Production migration executed with **Service Role** during **30+ minute window**
-* [ ] **Circuit breaker monitoring**: All phases marked 'complete' in `migration_control`
+* [X] **Circuit breaker monitoring**: All phases marked 'complete' in `migration_control`
 * [ ] Post-deploy smoke tests green (CRUD + reporting)
 * [ ] **Fallback plan** documented and tested
 
