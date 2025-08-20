@@ -284,7 +284,6 @@ export class CRMResolverFactory {
    */
   static createContactResolver<T extends FieldValues>(schema: AnyObjectSchema): Resolver<T> {
     return createTypeSafeResolver<T>(schema, {
-      enableConflictDetection: true,
       autoTransformNullable: true,
       strictTypeValidation: true
     })
@@ -295,7 +294,6 @@ export class CRMResolverFactory {
    */
   static createOrganizationResolver<T extends FieldValues>(schema: AnyObjectSchema): Resolver<T> {
     return createTypeSafeResolver<T>(schema, {
-      enableConflictDetection: true,
       autoTransformNullable: true,
       strictTypeValidation: true
     })
@@ -306,7 +304,6 @@ export class CRMResolverFactory {
    */
   static createOpportunityResolver<T extends FieldValues>(schema: AnyObjectSchema): Resolver<T> {
     return createTypeSafeResolver<T>(schema, {
-      enableConflictDetection: true,
       autoTransformNullable: true,
       strictTypeValidation: false // Opportunities have more dynamic fields
     })

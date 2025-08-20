@@ -200,7 +200,7 @@ export class TypeInference {
    * Infers the correct TypeScript interface from a Yup schema
    */
   static inferFormTypeFromSchema<T extends AnyObjectSchema>(
-    schema: T
+    _schema: T
   ): string {
     // Generate TypeScript interface string from Yup schema
     // This is a simplified version - in practice, you'd use a more sophisticated parser

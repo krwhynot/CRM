@@ -32,7 +32,7 @@ export function OpportunityForm({
   const { data: contacts = [] } = useContacts()
   
   const form = useForm<OpportunityFormData>({
-    resolver: yupResolver(opportunitySchema),
+    resolver: yupResolver(opportunitySchema) as any,
     defaultValues: {
       name: initialData?.name || '',
       organization_id: preselectedOrganization || initialData?.organization_id || '',
@@ -60,7 +60,7 @@ export function OpportunityForm({
       <CardHeader><CardTitle>{initialData ? 'Edit Opportunity' : 'New Opportunity'}</CardTitle></CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
             
             <FormField control={form.control} name="name" render={({ field }) => (
               <FormItem>

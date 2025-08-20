@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["vitest/globals", "node"],
+    "skipLibCheck": true,
+    "strict": true
+  },
+  "include": [
+    "tests/unit/**/*",
+    "tests/shared/**/*",
+    "vitest.config.ts",
+    "vitest.config.unit.ts",
+    "src/**/*"
+  ],
+  "exclude": [
+    "tests/e2e/**/*",
+    "node_modules",
+    "playwright.config.ts",
+    "**/*.playwright.*"
+  ]
+}

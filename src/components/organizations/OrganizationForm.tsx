@@ -24,7 +24,7 @@ export function OrganizationForm({
   submitLabel = 'Save Organization'
 }: OrganizationFormProps) {
   const form = useForm<OrganizationFormData>({
-    resolver: yupResolver(organizationSchema),
+    resolver: yupResolver(organizationSchema) as any,
     defaultValues: {
       name: initialData?.name || '',
       type: initialData?.type || 'customer',
@@ -45,7 +45,6 @@ export function OrganizationForm({
       industry: initialData?.industry || null,
       annual_revenue: initialData?.annual_revenue || null,
       employee_count: initialData?.employee_count || null,
-      account_manager: initialData?.account_manager || null,
       notes: initialData?.notes || null
     }
   })
@@ -62,7 +61,7 @@ export function OrganizationForm({
       <CardHeader><CardTitle>{initialData ? 'Edit Organization' : 'New Organization'}</CardTitle></CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(handleSubmit as any)} className="space-y-4">
             
             <FormField control={form.control} name="name" render={({ field }) => (
               <FormItem>

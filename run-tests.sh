@@ -1,9 +1,10 @@
 #!/bin/bash
 
-# KitchenPantry CRM - Comprehensive Test Runner
-# This script runs the complete Playwright test suite with various options
+# KitchenPantry CRM - Enhanced Test Runner with Framework Isolation
+# Runs separated Vitest and Playwright test suites with comprehensive options
+# Prevents Symbol($jest-matchers-object) collisions through process isolation
 
-set -e  # Exit on any error
+set -euo pipefail  # Strict error handling
 
 # Colors for output
 RED='\033[0;31m'
@@ -23,14 +24,24 @@ VIDEO=false
 TRACE=false
 WORKERS="auto"
 RETRIES=1
+UNIT_TESTS=true
+E2E_TESTS=true
+FRAMEWORK_CHECK=true
 
 print_usage() {
     echo "Usage: $0 [OPTIONS]"
     echo ""
-    echo "Options:"
+    echo "Framework Isolation Options:"
+    echo "  --unit-only              Run only Vitest unit tests"
+    echo "  --e2e-only               Run only Playwright E2E tests"
+    echo "  --no-framework-check     Skip framework isolation validation"
+    echo ""
+    echo "Test Mode Options:"
     echo "  -m, --mode MODE          Test mode: all, auth, crud, dashboard, import, mobile, forms, smoke"
     echo "  -b, --browser BROWSER    Browser: chromium, firefox, webkit, all"
     echo "  -d, --device DEVICE      Device: desktop, ipad, mobile, all"
+    echo ""
+    echo "Execution Options:"
     echo "  -h, --headed             Run in headed mode"
     echo "  -D, --debug              Run in debug mode"
     echo "  --no-report              Skip generating HTML report"
@@ -41,8 +52,12 @@ print_usage() {
     echo "  -r, --retries RETRIES    Number of retries (default: 1)"
     echo "  --help                   Show this help message"
     echo ""
-    echo "Examples:"
-    echo "  $0                       # Run all tests"
+    echo "Framework Isolation Examples:"
+    echo "  $0 --unit-only           # Run only unit tests (Vitest)"
+    echo "  $0 --e2e-only            # Run only E2E tests (Playwright)"
+    echo "  $0                       # Run both (sequentially, isolated)"
+    echo ""
+    echo "Standard Examples:"
     echo "  $0 -m smoke              # Run smoke tests only"
     echo "  $0 -m auth -h            # Run auth tests in headed mode"
     echo "  $0 -b firefox -d ipad    # Run on Firefox with iPad viewport"
@@ -88,19 +103,49 @@ check_prerequisites() {
         npm install
     fi
     
-    # Check if Playwright browsers are installed
-    if [ ! -d "node_modules/@playwright/test" ]; then
-        log_error "Playwright is not installed. Run 'npm install' first."
-        exit 1
+    # Check framework isolation
+    if [ "$FRAMEWORK_CHECK" = true ]; then
+        check_framework_isolation
     fi
     
     # Check environment variables
-    if [ -z "$TEST_USER_EMAIL" ] || [ -z "$TEST_USER_PASSWORD" ]; then
+    if [ -z "${TEST_USER_EMAIL:-}" ] || [ -z "${TEST_USER_PASSWORD:-}" ]; then
         log_warning "Test user credentials not found in environment variables."
         log_warning "Set TEST_USER_EMAIL and TEST_USER_PASSWORD for full test coverage."
     fi
     
     log_success "Prerequisites check completed"
+}
+
+check_framework_isolation() {
+    log_info "Validating framework isolation..."
+    
+    # Check directory structure
+    if [ ! -d "tests/e2e" ] || [ ! -d "tests/unit" ]; then
+        log_error "Framework isolation not properly set up. Run './emergency-playwright-fix.sh' first."
+        exit 1
+    fi
+    
+    # Check for cross-framework imports
+    if grep -r "from ['\"]vitest" tests/e2e/ 2>/dev/null; then
+        log_error "E2E tests importing Vitest detected. Framework isolation broken."
+        exit 1
+    fi
+    
+    if grep -r "from ['\"]@playwright/test" tests/unit/ 2>/dev/null; then
+        log_error "Unit tests importing Playwright detected. Framework isolation broken."
+        exit 1
+    fi
+    
+    # Check required configs exist
+    for config in "tsconfig.playwright.json" "tsconfig.vitest.json" "vitest.config.unit.ts"; do
+        if [ ! -f "$config" ]; then
+            log_error "Missing isolation config: $config. Run framework isolation setup."
+            exit 1
+        fi
+    done
+    
+    log_success "Framework isolation validated"
 }
 
 check_application() {
@@ -235,11 +280,42 @@ build_playwright_command() {
     echo "$cmd"
 }
 
-run_tests() {
+run_unit_tests() {
+    if [ "$UNIT_TESTS" = false ]; then
+        log_info "Skipping unit tests (--e2e-only specified)"
+        return 0
+    fi
+    
+    log_info "Running Vitest unit tests..."
+    log_info "  Directory: tests/unit/"
+    log_info "  Framework: Vitest (isolated)"
+    
+    # Kill any existing processes to prevent Symbol collisions
+    pkill -f vitest || true
+    sleep 1
+    
+    # Run unit tests with explicit config
+    if npm run test:unit; then
+        log_success "Unit tests completed successfully"
+        return 0
+    else
+        log_error "Unit tests failed"
+        return 1
+    fi
+}
+
+run_e2e_tests() {
+    if [ "$E2E_TESTS" = false ]; then
+        log_info "Skipping E2E tests (--unit-only specified)"
+        return 0
+    fi
+    
     local cmd=$(build_playwright_command)
     
-    log_info "Running tests with command: $cmd"
+    log_info "Running Playwright E2E tests..."
     log_info "Test configuration:"
+    log_info "  Directory: tests/e2e/"
+    log_info "  Framework: Playwright (isolated)"
     log_info "  Mode: $RUN_MODE"
     log_info "  Browser: $BROWSER"
     log_info "  Headed: $HEADED"
@@ -247,15 +323,54 @@ run_tests() {
     log_info "  Workers: $WORKERS"
     log_info "  Retries: $RETRIES"
     
+    # Kill any existing processes to prevent Symbol collisions
+    pkill -f playwright || true
+    pkill -f node || true
+    sleep 2
+    
     # Create results directory
     mkdir -p test-results
     
-    # Run the tests
+    # Run the E2E tests
     if eval "$cmd"; then
-        log_success "Tests completed successfully"
+        log_success "E2E tests completed successfully"
         return 0
     else
-        log_error "Tests failed"
+        log_error "E2E tests failed"
+        return 1
+    fi
+}
+
+run_tests() {
+    local unit_result=0
+    local e2e_result=0
+    
+    # Run tests sequentially with process isolation
+    if [ "$UNIT_TESTS" = true ]; then
+        run_unit_tests || unit_result=$?
+    fi
+    
+    # Wait between test runs to ensure complete process cleanup
+    if [ "$UNIT_TESTS" = true ] && [ "$E2E_TESTS" = true ]; then
+        log_info "Waiting for process cleanup between test frameworks..."
+        sleep 3
+    fi
+    
+    if [ "$E2E_TESTS" = true ]; then
+        run_e2e_tests || e2e_result=$?
+    fi
+    
+    # Evaluate overall result
+    if [ $unit_result -eq 0 ] && [ $e2e_result -eq 0 ]; then
+        log_success "All tests completed successfully"
+        return 0
+    else
+        if [ $unit_result -ne 0 ]; then
+            log_error "Unit tests failed (exit code: $unit_result)"
+        fi
+        if [ $e2e_result -ne 0 ]; then
+            log_error "E2E tests failed (exit code: $e2e_result)"
+        fi
         return 1
     fi
 }
@@ -293,6 +408,20 @@ cleanup() {
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
+        --unit-only)
+            UNIT_TESTS=true
+            E2E_TESTS=false
+            shift
+            ;;
+        --e2e-only)
+            UNIT_TESTS=false
+            E2E_TESTS=true
+            shift
+            ;;
+        --no-framework-check)
+            FRAMEWORK_CHECK=false
+            shift
+            ;;
         -m|--mode)
             RUN_MODE="$2"
             shift 2

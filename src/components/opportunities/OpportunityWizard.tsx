@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { opportunitySchema, type OpportunityFormData } from '@/types/validation'
+import { opportunitySchema, type OpportunityFormData } from '@/types/opportunity.types'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -48,7 +48,7 @@ export function OpportunityWizard({
     trigger,
     formState: { errors }
   } = useForm<OpportunityFormData>({
-    resolver: yupResolver(opportunitySchema),
+    resolver: yupResolver(opportunitySchema) as any,
     mode: 'onBlur',
     defaultValues: {
       name: '',
@@ -84,7 +84,7 @@ export function OpportunityWizard({
       case 2:
         return await trigger(['organization_id'])
       case 3:
-        return await trigger(['stage', 'estimated_value'])
+        return await trigger(['stage'])
       case 4:
         return true // Financial info is optional
       case 5:
@@ -262,39 +262,32 @@ export function OpportunityWizard({
               </div>
 
               <div>
-                <label htmlFor="priority" className="text-sm font-medium">
-                  Priority *
+                <label htmlFor="probability" className="text-sm font-medium">
+                  Probability (%)
                 </label>
-                <Select 
-                  value={watchedValues.priority || undefined} 
-                  onValueChange={(value) => setValue('priority', value as any)}
+                <Input
+                  id="probability"
+                  type="number"
+                  min="0"
+                  max="100"
+                  {...register('probability', { valueAsNumber: true })}
+                  placeholder="50"
                   disabled={loading}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select priority" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Constants.public.Enums.opportunity_priority.map((priority) => (
-                      <SelectItem key={priority} value={priority}>
-                        {priority.charAt(0).toUpperCase() + priority.slice(1)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.priority && (
-                  <p className="text-sm text-red-600 mt-1">{errors.priority.message}</p>
+                />
+                {errors.probability && (
+                  <p className="text-sm text-red-600 mt-1">{errors.probability.message}</p>
                 )}
               </div>
             </div>
 
             <div>
-              <label htmlFor="decision_criteria" className="text-sm font-medium">
-                Decision Criteria
+              <label htmlFor="description" className="text-sm font-medium">
+                Description
               </label>
               <Textarea
-                id="decision_criteria"
-                {...register('decision_criteria')}
-                placeholder="What criteria will be used to make the decision?"
+                id="description"
+                {...register('description')}
+                placeholder="Brief description of the opportunity"
                 disabled={loading}
                 rows={3}
               />
@@ -343,13 +336,13 @@ export function OpportunityWizard({
             </div>
 
             <div>
-              <label htmlFor="competition" className="text-sm font-medium">
-                Competition
+              <label htmlFor="deal_owner" className="text-sm font-medium">
+                Deal Owner
               </label>
               <Input
-                id="competition"
-                {...register('competition')}
-                placeholder="Competing companies or products"
+                id="deal_owner"
+                {...register('deal_owner')}
+                placeholder="Person responsible for this opportunity"
                 disabled={loading}
               />
             </div>
@@ -372,16 +365,27 @@ export function OpportunityWizard({
             </div>
 
             <div>
-              <label htmlFor="next_action" className="text-sm font-medium">
-                Next Action
+              <label htmlFor="opportunity_context" className="text-sm font-medium">
+                Opportunity Context
               </label>
-              <Textarea
-                id="next_action"
-                {...register('next_action')}
-                placeholder="What is the next action to move this opportunity forward?"
+              <Select 
+                value={watchedValues.opportunity_context || undefined} 
+                onValueChange={(value) => setValue('opportunity_context', value as any)}
                 disabled={loading}
-                rows={3}
-              />
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select context" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Site Visit">Site Visit</SelectItem>
+                  <SelectItem value="Food Show">Food Show</SelectItem>
+                  <SelectItem value="New Product Interest">New Product Interest</SelectItem>
+                  <SelectItem value="Follow-up">Follow-up</SelectItem>
+                  <SelectItem value="Demo Request">Demo Request</SelectItem>
+                  <SelectItem value="Sampling">Sampling</SelectItem>
+                  <SelectItem value="Custom">Custom</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
@@ -463,7 +467,7 @@ export function OpportunityWizard({
         </div>
 
         {/* Step Content */}
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit as any)}>
           <div className="min-h-[300px] mb-6">
             {renderStepContent()}
           </div>

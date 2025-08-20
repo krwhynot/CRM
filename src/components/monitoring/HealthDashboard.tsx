@@ -74,7 +74,10 @@ export function HealthDashboard({ showDetails = false, refreshInterval = 60000 }
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>System Health Status</span>
-            <Badge className={isHealthy ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+            <Badge 
+              variant={isHealthy ? "default" : "destructive"}
+              className={isHealthy ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}
+            >
               {summary}
             </Badge>
           </CardTitle>
@@ -93,7 +96,10 @@ export function HealthDashboard({ showDetails = false, refreshInterval = 60000 }
                 <div className="text-sm text-gray-600">
                   {status.database.responseTime}ms response
                 </div>
-                <Badge size="sm" className={getStatusColor(status.database.status)}>
+                <Badge 
+                  variant="outline"
+                  className={`text-xs ${getStatusColor(status.database.status)}`}
+                >
                   {status.database.status.toUpperCase()}
                 </Badge>
               </div>
@@ -110,7 +116,10 @@ export function HealthDashboard({ showDetails = false, refreshInterval = 60000 }
                 <div className="text-sm text-gray-600">
                   {status.auth.responseTime}ms response
                 </div>
-                <Badge size="sm" className={getStatusColor(status.auth.status)}>
+                <Badge 
+                  variant="outline"
+                  className={`text-xs ${getStatusColor(status.auth.status)}`}
+                >
                   {status.auth.status.toUpperCase()}
                 </Badge>
               </div>
@@ -127,7 +136,10 @@ export function HealthDashboard({ showDetails = false, refreshInterval = 60000 }
                 <div className="text-sm text-gray-600">
                   {status.api.responseTime}ms response
                 </div>
-                <Badge size="sm" className={getStatusColor(status.api.status)}>
+                <Badge 
+                  variant="outline"
+                  className={`text-xs ${getStatusColor(status.api.status)}`}
+                >
                   {status.api.status.toUpperCase()}
                 </Badge>
               </div>
