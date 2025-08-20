@@ -1,0 +1,254 @@
+name: Production Deployment & Health Monitoring
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    types: [closed]
+  
+  # Manual workflow trigger
+  workflow_dispatch:
+    inputs:
+      force_deploy:
+        description: 'Force deployment (skip some checks)'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '18'
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  # Quality Gates - Run on all push/PR events
+  quality-gates:
+    runs-on: ubuntu-latest
+    name: Quality Gates & Validation
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: TypeScript compilation check
+        run: npm run type-check
+        
+      - name: ESLint validation
+        run: npm run lint -- --max-warnings 200
+        
+      - name: Build application
+        run: npm run build
+        
+      - name: MCP Test Suite
+        run: npm run test:mcp
+        timeout-minutes: 10
+        
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: dist/
+          retention-days: 7
+
+  # Database Health Check
+  database-health:
+    runs-on: ubuntu-latest
+    name: Database Health Validation
+    needs: quality-gates
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Database health validation
+        run: node scripts/validate-database-health.js
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+
+  # Production Deployment
+  deploy-production:
+    runs-on: ubuntu-latest
+    name: Deploy to Production
+    needs: [quality-gates, database-health]
+    if: |
+      github.event_name == 'push' && 
+      github.ref == 'refs/heads/main' ||
+      (github.event_name == 'pull_request' && 
+       github.event.action == 'closed' && 
+       github.event.pull_request.merged == true)
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+        
+      - name: Pull Vercel Environment
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        
+      - name: Build Project
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        
+      - name: Deploy to Vercel
+        id: deploy
+        run: |
+          DEPLOY_URL=$(vercel --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_OUTPUT
+          echo "::notice title=Deployment::Successfully deployed to $DEPLOY_URL"
+        
+      - name: Update deployment status
+        run: |
+          echo "Deployment completed successfully"
+          echo "URL: ${{ steps.deploy.outputs.DEPLOY_URL }}"
+
+  # Post-Deployment Health Checks
+  post-deployment-validation:
+    runs-on: ubuntu-latest
+    name: Post-Deployment Health Validation
+    needs: deploy-production
+    if: success()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Wait for deployment propagation
+        run: sleep 30
+        
+      - name: Production health check
+        run: |
+          # Make the monitoring script executable
+          chmod +x scripts/production-monitor.sh
+          # Run health checks
+          ./scripts/production-monitor.sh health
+        
+      - name: Performance validation
+        run: |
+          # Test page load times
+          LOAD_TIME=$(curl -s -o /dev/null -w "%{time_total}" https://crm.kjrcloud.com)
+          echo "Page load time: ${LOAD_TIME}s"
+          if (( $(echo "$LOAD_TIME > 5.0" | bc -l) )); then
+            echo "::warning title=Performance::Page load time ${LOAD_TIME}s exceeds 5s threshold"
+          else
+            echo "::notice title=Performance::Page load time ${LOAD_TIME}s within acceptable range"
+          fi
+        
+      - name: Security headers validation
+        run: |
+          HEADERS=$(curl -s -I https://crm.kjrcloud.com)
+          
+          # Check for required security headers
+          SECURITY_HEADERS=("x-content-type-options" "x-frame-options" "content-security-policy" "strict-transport-security")
+          
+          for header in "${SECURITY_HEADERS[@]}"; do
+            if echo "$HEADERS" | grep -i "$header" > /dev/null; then
+              echo "✅ $header header present"
+            else
+              echo "::warning title=Security::Missing $header header"
+            fi
+          done
+        
+      - name: Core functionality smoke test
+        run: |
+          # Test key application endpoints
+          ENDPOINTS=("/" "/#/dashboard" "/#/organizations" "/health.json")
+          
+          for endpoint in "${ENDPOINTS[@]}"; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://crm.kjrcloud.com$endpoint")
+            if [ "$STATUS" = "200" ]; then
+              echo "✅ $endpoint: HTTP $STATUS"
+            else
+              echo "::error title=Endpoint Check::$endpoint returned HTTP $STATUS"
+              exit 1
+            fi
+          done
+
+  # Rollback job (manual trigger only)
+  rollback-production:
+    runs-on: ubuntu-latest
+    name: Rollback Production Deployment
+    if: ${{ failure() && github.event_name == 'workflow_dispatch' }}
+    needs: [deploy-production, post-deployment-validation]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+        
+      - name: Rollback deployment
+        run: |
+          echo "::warning title=Rollback::Initiating production rollback"
+          # Get previous successful deployment and promote it
+          vercel rollback --token=${{ secrets.VERCEL_TOKEN }}
+          
+      - name: Notify rollback completion
+        run: |
+          echo "::notice title=Rollback::Production rollback completed successfully"
+
+  # Scheduled Health Monitoring
+  scheduled-monitoring:
+    runs-on: ubuntu-latest
+    name: Scheduled Health Monitoring
+    if: github.event_name == 'schedule'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Run comprehensive monitoring
+        run: |
+          chmod +x scripts/production-monitor.sh
+          ./scripts/production-monitor.sh monitor
+        
+      - name: Upload monitoring logs
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: monitoring-logs
+          path: logs/
+          retention-days: 30
+
+# Scheduled monitoring runs (every 6 hours)
+---
+name: Scheduled Production Monitoring
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours
+  workflow_dispatch:
+
+jobs:
+  monitoring:
+    uses: ./.github/workflows/deploy-production.yml
+    with:
+      job: scheduled-monitoring
