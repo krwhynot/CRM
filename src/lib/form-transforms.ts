@@ -54,12 +54,16 @@ export const emptyArrayToNull = <T>(value: T[]): T[] | null => {
 /**
  * Transforms empty arrays to empty array (preserves array type)
  * Useful for required array fields that should never be null
+ * Also filters out undefined values from the array
  */
-export const ensureArray = <T>(value: T | T[] | null | undefined): T[] => {
+export const ensureArray = <T>(value: (T | undefined)[] | T | null | undefined): T[] => {
   if (value === null || value === undefined) {
     return []
   }
-  return Array.isArray(value) ? value : []
+  if (Array.isArray(value)) {
+    return value.filter((item): item is T => item !== undefined)
+  }
+  return []
 }
 
 /**

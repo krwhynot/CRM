@@ -59,7 +59,7 @@ export function ProductForm({
             <FormField control={form.control} name="sku" render={({ field }) => (
               <FormItem>
                 <FormLabel>SKU *</FormLabel>
-                <FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl>
+                <FormControl><Input {...field} value={field.value || ''} className="h-11" disabled={loading} /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
@@ -97,10 +97,10 @@ export function ProductForm({
             <ProgressiveDetails buttonText="Add Details">
               <div className="space-y-4">
                 <FormField control={form.control} name="description" render={({ field }) => (
-                  <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} disabled={loading} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} value={field.value || ''} rows={3} disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={form.control} name="unit_of_measure" render={({ field }) => (
-                  <FormItem><FormLabel>Unit of Measure</FormLabel><FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
+                  <FormItem><FormLabel>Unit of Measure</FormLabel><FormControl><Input {...field} value={field.value || ''} className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
                 <FormField control={form.control} name="list_price" render={({ field }) => (
                   <FormItem><FormLabel>List Price</FormLabel><FormControl><Input {...field} value={field.value || ''} type="number" step="0.01" className="h-11" disabled={loading} onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)} /></FormControl><FormMessage /></FormItem>

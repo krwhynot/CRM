@@ -28,7 +28,7 @@ export async function findExistingOrganization(
       .from('organizations')
       .select('id, name, type')
       .ilike('name', name.trim())
-      .eq('type', type)
+      .eq('type', type as any)
       .is('deleted_at', null)
       .limit(1)
       .single()

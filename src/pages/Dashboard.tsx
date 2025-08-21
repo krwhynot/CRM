@@ -1,7 +1,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { useOrganizations } from '@/hooks/useOrganizations'
 import { useOpportunities } from '@/hooks/useOpportunities'
-import { useInteractions } from '@/hooks/useInteractions'
+import { useRecentActivity } from '@/hooks/useInteractions'
 import { useContacts } from '@/hooks/useContacts'
 import { Badge } from '@/components/ui/badge'
 import { formatDistanceToNow } from 'date-fns'
@@ -49,11 +49,11 @@ function ActivityFeed({ interactions }: { interactions: Array<{ id: string; type
                 {interaction.type}
               </span>
               <Badge variant="outline" className="text-xs">
-                {interaction.direction}
+                {interaction.outcome || 'Pending'}
               </Badge>
             </div>
             <p className="text-sm text-muted-foreground line-clamp-2">
-              {interaction.summary || 'No summary available'}
+              {interaction.description || 'No description available'}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {formatDistanceToNow(new Date(interaction.interaction_date), { addSuffix: true })}
@@ -68,7 +68,7 @@ function ActivityFeed({ interactions }: { interactions: Array<{ id: string; type
 function DashboardPage() {
   const { data: organizations = [] } = useOrganizations()
   const { data: opportunities = [] } = useOpportunities()
-  const { data: interactions = [] } = useInteractions()
+  const { data: interactions = [] } = useRecentActivity(10)
   const { data: contacts = [] } = useContacts()
 
   const principals = organizations.filter(org => org.type === 'principal')

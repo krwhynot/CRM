@@ -112,7 +112,7 @@ function ContactsPage() {
             </DialogHeader>
             <div className="max-h-[75vh] overflow-y-auto pr-2">
               {editingContact && (
-                <ContactForm 
+                <EnhancedContactForm 
                 initialData={FormDataTransformer.toFormData(editingContact)}
                 onSubmit={async (data) => {
                   try {

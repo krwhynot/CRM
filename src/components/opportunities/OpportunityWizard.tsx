@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import type { Database } from '@/types/database.types'
+// import type { Database } from '@/types/database.types' // Unused
 import { useOrganizations } from '@/hooks/useOrganizations'
 import { useContacts } from '@/hooks/useContacts'
 import { ChevronLeft, ChevronRight, Check, Building, Users, DollarSign, Calendar, FileText } from 'lucide-react'
@@ -54,7 +54,7 @@ export function OpportunityWizard({
       name: '',
       organization_id: preselectedOrganization || '',
       estimated_value: 0,
-      stage: 'qualified',
+      stage: 'New Lead',
       contact_id: preselectedContact || null,
       estimated_close_date: null,
       description: null,
@@ -242,8 +242,8 @@ export function OpportunityWizard({
                 </label>
                 <Select 
                   value={watchedValues.stage} 
-                  onValueChange={(value: Database['public']['Enums']['opportunity_stage']) => {
-                    setValue('stage', value)
+                  onValueChange={(value: string) => {
+                    setValue('stage', value as OpportunityFormData['stage'])
                   }}
                   disabled={loading}
                 >
@@ -252,15 +252,17 @@ export function OpportunityWizard({
                   </SelectTrigger>
                   <SelectContent>
                     {[
-                      { display: 'New Lead', value: 'lead' },
-                      { display: 'Qualified', value: 'qualified' },
-                      { display: 'Proposal', value: 'proposal' },
-                      { display: 'Negotiation', value: 'negotiation' },
-                      { display: 'Closed Won', value: 'closed_won' },
-                      { display: 'Closed Lost', value: 'closed_lost' }
+                      'New Lead',
+                      'Initial Outreach',
+                      'Sample/Visit Offered',
+                      'Awaiting Response',
+                      'Feedback Logged',
+                      'Demo Scheduled',
+                      'Closed - Won',
+                      'Closed - Lost'
                     ].map((stage) => (
-                      <SelectItem key={stage.value} value={stage.value}>
-                        {stage.display}
+                      <SelectItem key={stage} value={stage}>
+                        {stage}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -476,7 +478,14 @@ export function OpportunityWizard({
         </div>
 
         {/* Step Content */}
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit((data: OpportunityFormData) => {
+          // Filter out undefined values from principals array
+          const cleanedData = {
+            ...data,
+            principals: data.principals.filter((id): id is string => id !== undefined)
+          }
+          onSubmit(cleanedData)
+        })}>
           <div className="min-h-[300px] mb-6">
             {renderStepContent()}
           </div>

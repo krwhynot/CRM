@@ -77,18 +77,24 @@ export function EnhancedContactForm({
   })
 
   const handleSubmit = (contactData: ContactFormData) => {
+    // Filter out undefined values from preferred_principals to match string[] type
+    const cleanedContactData = {
+      ...contactData,
+      preferred_principals: contactData.preferred_principals.filter((id): id is string => id !== undefined)
+    }
+
     let enhancedData: ContactWithOrganizationData
 
     if (organizationMode === 'existing') {
       // Use existing organization
       enhancedData = {
-        ...contactData,
-        organization_id: contactData.organization_id
+        ...cleanedContactData,
+        organization_id: cleanedContactData.organization_id
       }
     } else {
       // Create new organization
       enhancedData = {
-        ...contactData,
+        ...cleanedContactData,
         organization_name: newOrgData.name,
         organization_type: newOrgData.type,
         organization_data: {

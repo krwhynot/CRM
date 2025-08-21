@@ -41,7 +41,7 @@ export function SimpleMultiPrincipalForm({
       name: '',
       organization_id: preselectedOrganization || '',
       estimated_value: 0,
-      stage: 'lead',
+      stage: 'New Lead',
       contact_id: null,
       estimated_close_date: null,
       description: null,
@@ -109,7 +109,7 @@ export function SimpleMultiPrincipalForm({
       // Normalize stage value to match database enum
       const normalizeStage = (stage: string): Database['public']['Enums']['opportunity_stage'] => {
         // Database enum values match the form values exactly
-        const validStages: Database['public']['Enums']['opportunity_stage'][] = [
+        const validStages = [
           'New Lead',
           'Initial Outreach', 
           'Sample/Visit Offered',
@@ -118,14 +118,14 @@ export function SimpleMultiPrincipalForm({
           'Demo Scheduled',
           'Closed - Won',
           'Closed - Lost'
-        ]
+        ] as const
         
-        if (validStages.includes(stage as Database['public']['Enums']['opportunity_stage'])) {
+        if (validStages.includes(stage as any)) {
           return stage as Database['public']['Enums']['opportunity_stage']
         }
         
         // Default fallback
-        return 'New Lead'
+        return 'New Lead' as Database['public']['Enums']['opportunity_stage']
       }
 
       // Create the opportunity with basic data compatible with OpportunityInsert

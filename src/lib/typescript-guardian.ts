@@ -95,6 +95,7 @@ export class TypeGuards {
 /**
  * Runtime type validation for CRM entities (Currently unused)
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class RuntimeValidator {
   /**
    * Validates organization type and priority values
@@ -345,6 +346,7 @@ export class FormComponentValidator {
 /**
  * TypeScript error detection and reporting (Currently unused)
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class ErrorDetector {
   /**
    * Detects common TypeScript patterns that cause errors
@@ -395,6 +397,7 @@ class ErrorDetector {
 /**
  * Development utilities for enhanced TypeScript support (Currently unused)
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class DevUtils {
   /**
    * Logs detailed type information for debugging
