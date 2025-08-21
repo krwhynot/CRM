@@ -26,7 +26,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { Badge } from "@/components/ui/badge"
+import { StatusIndicator } from "@/components/ui/status-indicator"
 import { useNavigationCounts } from "@/hooks/useNavigationCounts"
 
 interface NavigationItem {
@@ -155,22 +155,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             {item.icon && <item.icon className="size-4" />}
             <span>{item.title}</span>
             {showPrimaryBadge && (
-              <Badge variant="outline" className="bg-green-100 text-green-700 border-green-300 text-xs px-1 py-0">
-                Primary Entry
-              </Badge>
+              <StatusIndicator variant="success" size="sm" ariaLabel="Primary workflow entry">Primary Entry</StatusIndicator>
             )}
           </div>
           <div className="flex items-center gap-1">
             {showCountBadge && (
-              <Badge variant="secondary" className="bg-blue-100 text-blue-700 text-xs px-1.5 py-0">
-                {navigationCounts.principalsCount}
-              </Badge>
+              <StatusIndicator variant="secondary" size="sm">{navigationCounts.principalsCount}</StatusIndicator>
             )}
             {showWarningBadge && (
-              <Badge variant="destructive" className="bg-orange-100 text-orange-700 border-orange-300 text-xs px-1 py-0 flex items-center gap-1">
+              <StatusIndicator variant="warning" size="sm" className="flex items-center gap-1">
                 <AlertTriangle className="size-3" />
                 {navigationCounts.organizationsWithoutContactsCount}
-              </Badge>
+              </StatusIndicator>
             )}
           </div>
         </Link>

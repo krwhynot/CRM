@@ -1,7 +1,7 @@
 import React from 'react'
 import { PrincipalCardsGrid } from './PrincipalCardsGrid'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { StatusIndicator } from "@/components/ui/status-indicator"
 import { Button } from '@/components/ui/button'
 import { usePrincipals } from '@/hooks/useOrganizations'
 import { useOpportunities } from '@/hooks/useOpportunities'
@@ -94,9 +94,7 @@ export function PrincipalsDashboard() {
               {isLoading ? '...' : stats.totalPrincipals}
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Badge variant="outline" className="text-xs">
-                {isLoading ? '...' : stats.activePrincipals} Active
-              </Badge>
+              <StatusIndicator variant="success" size="sm">{isLoading ? '...' : stats.activePrincipals} Active</StatusIndicator>
             </div>
           </CardContent>
         </Card>
@@ -155,23 +153,23 @@ export function PrincipalsDashboard() {
         <CardContent>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
             <div className="flex items-center gap-2">
-              <Badge className="bg-red-500 hover:bg-red-600 text-white border-red-500">A+</Badge>
+              <StatusIndicator variant="destructive" size="sm">A+</StatusIndicator>
               <span className="text-sm">Enterprise</span>
             </div>
             <div className="flex items-center gap-2">
-              <Badge className="bg-orange-500 hover:bg-orange-600 text-white border-orange-500">A</Badge>
+              <StatusIndicator variant="warning" size="sm">A</StatusIndicator>
               <span className="text-sm">Large</span>
             </div>
             <div className="flex items-center gap-2">
-              <Badge className="bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-500">B</Badge>
+              <StatusIndicator variant="outline" size="sm" className="bg-yellow-100 text-yellow-800 border-yellow-300">B</StatusIndicator>
               <span className="text-sm">Medium</span>
             </div>
             <div className="flex items-center gap-2">
-              <Badge className="bg-blue-500 hover:bg-blue-600 text-white border-blue-500">C</Badge>
+              <StatusIndicator variant="secondary" size="sm">C</StatusIndicator>
               <span className="text-sm">Small</span>
             </div>
             <div className="flex items-center gap-2">
-              <Badge className="bg-gray-500 hover:bg-gray-600 text-white border-gray-500">D</Badge>
+              <StatusIndicator variant="outline" size="sm">D</StatusIndicator>
               <span className="text-sm">Unassigned</span>
             </div>
           </div>

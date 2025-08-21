@@ -15,7 +15,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
+import { StatusIndicator } from "@/components/ui/status-indicator"
+import { PriorityIndicator } from "@/components/ui/priority-indicator"
 import { MoreHorizontal, Pencil, Trash2, Plus, Search, ExternalLink, Calendar, Users } from 'lucide-react'
 import type { OpportunityWithRelations } from '@/types/entities'
 
@@ -46,37 +47,23 @@ export function OpportunitiesTable({
     (opportunity.contact && `${opportunity.contact.first_name} ${opportunity.contact.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
-  const getStageColor = (stage: string) => {
+
+  const getStageVariant = (stage: string) => {
     switch (stage) {
       case 'lead':
-        return 'bg-gray-100 text-gray-800'
+        return 'outline'
       case 'qualified':
-        return 'bg-blue-100 text-blue-800'
+        return 'secondary'
       case 'proposal':
-        return 'bg-yellow-100 text-yellow-800'
+        return 'warning'
       case 'negotiation':
-        return 'bg-orange-100 text-orange-800'
+        return 'warning'
       case 'closed_won':
-        return 'bg-green-100 text-green-800'
+        return 'success'
       case 'closed_lost':
-        return 'bg-red-100 text-red-800'
+        return 'destructive'
       default:
-        return 'bg-gray-100 text-gray-800'
-    }
-  }
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'low':
-        return 'bg-gray-100 text-gray-800'
-      case 'medium':
-        return 'bg-blue-100 text-blue-800'
-      case 'high':
-        return 'bg-orange-100 text-orange-800'
-      case 'urgent':
-        return 'bg-red-100 text-red-800'
-      default:
-        return 'bg-gray-100 text-gray-800'
+        return 'outline'
     }
   }
 
@@ -189,10 +176,7 @@ export function OpportunitiesTable({
                       <div className="font-semibold flex items-center gap-2">
                         {opportunity.name}
                         {opportunity.description?.includes('Multi-Principal Opportunity') && (
-                          <Badge variant="secondary" className="text-xs flex items-center gap-1">
-                            <Users className="h-3 w-3" />
-                            Multi-Principal
-                          </Badge>
+                          <StatusIndicator variant="secondary" size="sm" className="flex items-center gap-1"><Users className="h-3 w-3" />Multi-Principal</StatusIndicator>
                         )}
                       </div>
                       {opportunity.contact && (
@@ -208,15 +192,19 @@ export function OpportunitiesTable({
                     </TableCell>
                   )}
                   <TableCell>
-                    <Badge className={getStageColor(opportunity.stage)}>
+                    <StatusIndicator 
+                      variant={getStageVariant(opportunity.stage)} 
+                      size="sm"
+                    >
                       {formatStage(opportunity.stage)}
-                    </Badge>
+                    </StatusIndicator>
                   </TableCell>
                   <TableCell>
                     {opportunity.priority ? (
-                      <Badge className={getPriorityColor(opportunity.priority)}>
-                        {opportunity.priority.charAt(0).toUpperCase() + opportunity.priority.slice(1)}
-                      </Badge>
+                      <PriorityIndicator 
+                priority={opportunity.priority} 
+                showLabel={true}
+              />
                     ) : (
                       <span className="text-gray-500">No priority</span>
                     )}

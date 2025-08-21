@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Badge } from '@/components/ui/badge'
+import { StatusIndicator } from "@/components/ui/status-indicator"
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { opportunitySchema, type OpportunityFormData } from '@/types/opportunity.types'
 import type { OpportunityInsert } from '@/types/entities'
@@ -190,9 +190,7 @@ export function SimpleMultiPrincipalForm({
                         <div className="flex items-center justify-between w-full">
                           <span>{org.name}</span>
                           {org.type && (
-                            <Badge variant="outline" className="ml-2">
-                              {org.type}
-                            </Badge>
+                            <StatusIndicator variant="outline" size="sm">{org.type}</StatusIndicator>
                           )}
                         </div>
                       </SelectItem>
@@ -254,7 +252,12 @@ export function SimpleMultiPrincipalForm({
                     {selectedPrincipals.map((principalId) => {
                       const principal = organizations.find(org => org.id === principalId)
                       return principal ? (
-                        <Badge key={principalId} variant="secondary" className="flex items-center gap-1">
+                        <StatusIndicator 
+                          key={principalId} 
+                          variant="secondary" 
+                          size="sm" 
+                          className="flex items-center gap-1"
+                        >
                           {principal.name}
                           <button
                             type="button"
@@ -263,7 +266,7 @@ export function SimpleMultiPrincipalForm({
                           >
                             <X className="h-3 w-3" />
                           </button>
-                        </Badge>
+                        </StatusIndicator>
                       ) : null
                     })}
                   </div>
