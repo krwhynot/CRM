@@ -6,20 +6,29 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { opportunitySchema, type OpportunityFormData } from '@/types/opportunity.types'
+import { createTypeSafeResolver } from '@/lib/form-resolver'
 import { useOrganizations } from '@/hooks/useOrganizations'
 import { useContacts } from '@/hooks/useContacts'
 
 interface OpportunityFormProps {
-  onSubmit: (data: OpportunityFormData) => void
+  onSubmit: (data: OpportunityFormData) => void | Promise<void>
   initialData?: Partial<OpportunityFormData>
   loading?: boolean
   submitLabel?: string
   preselectedOrganization?: string
 }
 
-const STAGES = ['Discovery', 'Proposal', 'Negotiation', 'Closed Won', 'Closed Lost', 'New Lead', 'Initial Outreach', 'Sample/Visit Offered', 'Awaiting Response', 'Feedback Logged', 'Demo Scheduled', 'Closed - Won', 'Closed - Lost']
+const STAGES = [
+  { display: 'New Lead', value: 'New Lead' },
+  { display: 'Initial Outreach', value: 'Initial Outreach' },
+  { display: 'Sample/Visit Offered', value: 'Sample/Visit Offered' },
+  { display: 'Awaiting Response', value: 'Awaiting Response' },
+  { display: 'Feedback Logged', value: 'Feedback Logged' },
+  { display: 'Demo Scheduled', value: 'Demo Scheduled' },
+  { display: 'Closed - Won', value: 'Closed - Won' },
+  { display: 'Closed - Lost', value: 'Closed - Lost' }
+] as const
 
 export function OpportunityForm({ 
   onSubmit, 
@@ -32,12 +41,12 @@ export function OpportunityForm({
   const { data: contacts = [] } = useContacts()
   
   const form = useForm<OpportunityFormData>({
-    resolver: yupResolver(opportunitySchema) as any,
+    resolver: createTypeSafeResolver<OpportunityFormData>(opportunitySchema),
     defaultValues: {
       name: initialData?.name || '',
       organization_id: preselectedOrganization || initialData?.organization_id || '',
       estimated_value: initialData?.estimated_value || 0,
-      stage: initialData?.stage || 'Discovery',
+      stage: initialData?.stage || 'New Lead',
       contact_id: initialData?.contact_id || null,
       estimated_close_date: initialData?.estimated_close_date || null,
       description: initialData?.description || null,
@@ -60,7 +69,7 @@ export function OpportunityForm({
       <CardHeader><CardTitle>{initialData ? 'Edit Opportunity' : 'New Opportunity'}</CardTitle></CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             
             <FormField control={form.control} name="name" render={({ field }) => (
               <FormItem>
@@ -100,7 +109,7 @@ export function OpportunityForm({
                   <FormControl><SelectTrigger className="h-11"><SelectValue /></SelectTrigger></FormControl>
                   <SelectContent>
                     {STAGES.map((stage) => (
-                      <SelectItem key={stage} value={stage}>{stage}</SelectItem>
+                      <SelectItem key={stage.value} value={stage.value}>{stage.display}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>

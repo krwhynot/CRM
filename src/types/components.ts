@@ -90,7 +90,7 @@ export interface ConfirmationDialogProps {
 }
 
 // Search and filter props
-export interface SearchFilterProps<T = any> {
+export interface SearchFilterProps<T = Record<string, unknown>> {
   searchValue: string
   onSearchChange: (value: string) => void
   searchPlaceholder?: string
@@ -133,7 +133,7 @@ export interface ActivityFeedItem {
     name: string
     avatar?: string
   }
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
   icon?: LucideIcon
   variant?: 'default' | 'success' | 'warning' | 'error'
 }
@@ -183,10 +183,10 @@ export interface MultiStepFormProps {
   steps: FormStep[]
   currentStep: number
   onStepChange: (step: number) => void
-  onComplete: (data: any) => void
+  onComplete: (data: Record<string, unknown>) => void
   onCancel: () => void
-  data: any
-  onDataChange: (data: any) => void
+  data: Record<string, unknown>
+  onDataChange: (data: Record<string, unknown>) => void
   loading?: boolean
   canGoBack?: boolean
   canGoNext?: boolean
@@ -198,13 +198,13 @@ export interface FormStep {
   title: string
   description?: string
   component: React.ComponentType<FormStepProps>
-  validation?: (data: any) => boolean | Promise<boolean>
+  validation?: (data: Record<string, unknown>) => boolean | Promise<boolean>
   optional?: boolean
 }
 
 export interface FormStepProps {
-  data: any
-  onDataChange: (data: any) => void
+  data: Record<string, unknown>
+  onDataChange: (data: Record<string, unknown>) => void
   onNext: () => void
   onPrevious: () => void
   onComplete: () => void
@@ -248,7 +248,7 @@ export interface InteractionTableProps extends Omit<DataTableProps<InteractionWi
 // Form component props
 export interface OrganizationFormProps {
   initialData?: Partial<Organization>
-  onSubmit: (data: any) => void | Promise<void>
+  onSubmit: (data: Organization) => void | Promise<void>
   onCancel?: () => void
   loading?: boolean
   mode?: 'create' | 'edit'
@@ -256,7 +256,7 @@ export interface OrganizationFormProps {
 
 export interface ContactFormProps {
   initialData?: Partial<Contact>
-  onSubmit: (data: any) => void | Promise<void>
+  onSubmit: (data: Contact) => void | Promise<void>
   onCancel?: () => void
   loading?: boolean
   mode?: 'create' | 'edit'
@@ -265,7 +265,7 @@ export interface ContactFormProps {
 
 export interface ProductFormProps {
   initialData?: Partial<Product>
-  onSubmit: (data: any) => void | Promise<void>
+  onSubmit: (data: Product) => void | Promise<void>
   onCancel?: () => void
   loading?: boolean
   mode?: 'create' | 'edit'
@@ -274,7 +274,7 @@ export interface ProductFormProps {
 
 export interface OpportunityFormProps {
   initialData?: Partial<Opportunity>
-  onSubmit: (data: any) => void | Promise<void>
+  onSubmit: (data: Opportunity) => void | Promise<void>
   onCancel?: () => void
   loading?: boolean
   mode?: 'create' | 'edit'
@@ -284,7 +284,7 @@ export interface OpportunityFormProps {
 
 export interface InteractionFormProps {
   initialData?: Partial<Interaction>
-  onSubmit: (data: any) => void | Promise<void>
+  onSubmit: (data: Interaction) => void | Promise<void>
   onCancel?: () => void
   loading?: boolean
   mode?: 'create' | 'edit'
@@ -338,7 +338,7 @@ export interface MetricCardProps {
 
 // Chart component props
 export interface ChartProps {
-  data: any[]
+  data: Record<string, unknown>[]
   loading?: boolean
   error?: string | null
   height?: number

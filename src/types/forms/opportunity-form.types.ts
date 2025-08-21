@@ -17,7 +17,7 @@ export const defaultOpportunityFormValues: OpportunityFormData = {
   name: '',
   organization_id: '',
   estimated_value: 0,
-  stage: 'Discovery',
+  stage: 'New Lead',
 
   // Optional fields - using null for nullable schema fields
   contact_id: null,
@@ -83,7 +83,7 @@ export const createDiscoveryOpportunityDefaults = (
   overrides: Partial<OpportunityFormData> = {}
 ): OpportunityFormData => {
   return createOpportunityFormDefaults({
-    stage: 'Discovery',
+    stage: 'Initial Outreach',
     probability: null,
     ...overrides
   })
@@ -93,7 +93,7 @@ export const createProposalOpportunityDefaults = (
   overrides: Partial<OpportunityFormData> = {}
 ): OpportunityFormData => {
   return createOpportunityFormDefaults({
-    stage: 'Proposal',
+    stage: 'Sample/Visit Offered',
     probability: 25,
     ...overrides
   })
@@ -103,7 +103,7 @@ export const createNegotiationOpportunityDefaults = (
   overrides: Partial<OpportunityFormData> = {}
 ): OpportunityFormData => {
   return createOpportunityFormDefaults({
-    stage: 'Negotiation',
+    stage: 'Demo Scheduled',
     probability: 75,
     ...overrides
   })
@@ -112,14 +112,18 @@ export const createNegotiationOpportunityDefaults = (
 /**
  * Type guard to validate opportunity form data shape
  */
-export const isOpportunityFormData = (data: any): data is OpportunityFormData => {
+export const isOpportunityFormData = (data: unknown): data is OpportunityFormData => {
   return (
     data &&
     typeof data === 'object' &&
-    typeof data.name === 'string' &&
-    typeof data.organization_id === 'string' &&
-    typeof data.stage === 'string' &&
-    (typeof data.estimated_value === 'number' || data.estimated_value === null)
+    data !== null &&
+    'name' in data &&
+    'organization_id' in data &&
+    'stage' in data &&
+    typeof (data as Record<string, unknown>).name === 'string' &&
+    typeof (data as Record<string, unknown>).organization_id === 'string' &&
+    typeof (data as Record<string, unknown>).stage === 'string' &&
+    ('estimated_value' in data ? (typeof (data as Record<string, unknown>).estimated_value === 'number' || (data as Record<string, unknown>).estimated_value === null) : true)
   )
 }
 

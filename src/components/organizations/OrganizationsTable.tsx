@@ -45,9 +45,9 @@ export function OrganizationsTable({
     (org.type && org.type.toLowerCase().includes(searchTerm.toLowerCase())) ||
     (org.phone && org.phone.toLowerCase().includes(searchTerm.toLowerCase())) ||
     (org.city && org.city.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    ((org as any).state_province && (org as any).state_province.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    ((org as any).primary_manager_name && (org as any).primary_manager_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    ((org as any).secondary_manager_name && (org as any).secondary_manager_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (org.state_province && org.state_province.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (org.primary_manager_name && org.primary_manager_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (org.secondary_manager_name && org.secondary_manager_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
     (org.notes && org.notes.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
@@ -192,19 +192,19 @@ export function OrganizationsTable({
                   {/* Address */}
                   <TableCell>
                     <div className="text-sm">
-                      {(organization as any).address_line_1 && (
-                        <div className="truncate max-w-[140px]" title={(organization as any).address_line_1}>
-                          {(organization as any).address_line_1}
+                      {organization.address_line_1 && (
+                        <div className="truncate max-w-[140px]" title={organization.address_line_1}>
+                          {organization.address_line_1}
                         </div>
                       )}
-                      {organization.city && (organization as any).state_province ? (
+                      {organization.city && organization.state_province ? (
                         <div className="text-gray-500 text-xs">
-                          {organization.city}, {(organization as any).state_province} {(organization as any).postal_code || ''}
+                          {organization.city}, {organization.state_province} {organization.postal_code || ''}
                         </div>
                       ) : (
-                        organization.city || (organization as any).state_province ? (
+                        organization.city || organization.state_province ? (
                           <div className="text-gray-500 text-xs">
-                            {organization.city} {(organization as any).state_province}
+                            {organization.city} {organization.state_province}
                           </div>
                         ) : (
                           <span className="text-gray-400">-</span>
@@ -216,14 +216,14 @@ export function OrganizationsTable({
                   {/* Primary Manager */}
                   <TableCell>
                     <span className="text-sm">
-                      {(organization as any).primary_manager_name || '-'}
+                      {organization.primary_manager_name || '-'}
                     </span>
                   </TableCell>
                   
                   {/* Secondary Manager */}
                   <TableCell>
                     <span className="text-sm">
-                      {(organization as any).secondary_manager_name || '-'}
+                      {organization.secondary_manager_name || '-'}
                     </span>
                   </TableCell>
                   

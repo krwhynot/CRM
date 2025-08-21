@@ -1,6 +1,44 @@
-# Reporting Schema Views
+# Database Views
 
-## latest_interaction
+This document covers all views in the CRM database, including reporting views and utility views.
+
+## Public Schema Views
+
+### contact_influence_profile
+- **Purpose**: Provides contact influence and advocacy profile data
+- **Usage**: Analyzing contact influence in purchasing decisions
+
+### enum_display_mappings  
+- **Purpose**: Maps enum values to display-friendly text
+- **Usage**: UI display of enum values with proper formatting
+
+### governance_summary
+- **Purpose**: Database governance and health summary
+- **Usage**: Monitoring database structure and compliance
+
+### opportunities_legacy
+- **Purpose**: Legacy compatibility view for opportunity data
+- **Usage**: Maintains backward compatibility during migrations
+
+### phase_3_validation_summary
+- **Purpose**: Validation summary for Phase 3 migration completion
+- **Usage**: Migration progress tracking and validation
+
+### principal_advocacy_dashboard
+- **Purpose**: Principal advocacy network analysis dashboard
+- **Usage**: Business intelligence for principal relationships
+
+### typescript_enum_types
+- **Purpose**: TypeScript-compatible enum type definitions
+- **Usage**: Frontend type generation and validation
+
+### v_org_roles
+- **Purpose**: Organization roles view with aggregated data
+- **Usage**: Role-based organization querying
+
+## Reporting Schema Views
+
+### latest_interaction
 
 ### Definition
 ```sql

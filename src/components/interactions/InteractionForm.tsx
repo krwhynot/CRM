@@ -6,9 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { interactionSchema, type InteractionFormData } from '@/types/interaction.types'
+import { interactionSchema, type InteractionFormData, type InteractionType } from '@/types/interaction.types'
+import { createTypeSafeResolver } from '@/lib/form-resolver'
 import { useOpportunities } from '@/hooks/useOpportunities'
+import { INTERACTION_TYPES } from '@/constants/interaction.constants'
 
 interface InteractionFormProps {
   onSubmit: (data: InteractionFormData) => void
@@ -16,8 +17,6 @@ interface InteractionFormProps {
   loading?: boolean
   submitLabel?: string
 }
-
-const INTERACTION_TYPES = ['call', 'email', 'meeting', 'demo', 'proposal', 'follow_up', 'trade_show', 'site_visit', 'contract_review']
 
 export function InteractionForm({ 
   onSubmit, 
@@ -28,7 +27,7 @@ export function InteractionForm({
   const { data: opportunities = [] } = useOpportunities()
   
   const form = useForm<InteractionFormData>({
-    resolver: yupResolver(interactionSchema) as any,
+    resolver: createTypeSafeResolver<InteractionFormData>(interactionSchema),
     defaultValues: {
       subject: initialData?.subject || '',
       type: initialData?.type || 'call',
@@ -48,9 +47,9 @@ export function InteractionForm({
       <CardHeader><CardTitle>{initialData ? 'Edit Interaction' : 'New Interaction'}</CardTitle></CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             
-            <FormField control={form.control as any} name="subject" render={({ field }) => (
+            <FormField control={form.control} name="subject" render={({ field }) => (
               <FormItem>
                 <FormLabel>Subject *</FormLabel>
                 <FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl>
@@ -58,14 +57,16 @@ export function InteractionForm({
               </FormItem>
             )} />
 
-            <FormField control={form.control as any} name="type" render={({ field }) => (
+            <FormField control={form.control} name="type" render={({ field }) => (
               <FormItem>
                 <FormLabel>Type *</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl><SelectTrigger className="h-11"><SelectValue /></SelectTrigger></FormControl>
                   <SelectContent>
                     {INTERACTION_TYPES.map((type) => (
-                      <SelectItem key={type} value={type}>{type}</SelectItem>
+                      <SelectItem key={type} value={type as InteractionType}>
+                        {type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ')}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -73,7 +74,7 @@ export function InteractionForm({
               </FormItem>
             )} />
 
-            <FormField control={form.control as any} name="interaction_date" render={({ field }) => (
+            <FormField control={form.control} name="interaction_date" render={({ field }) => (
               <FormItem>
                 <FormLabel>Date *</FormLabel>
                 <FormControl><Input {...field} type="date" className="h-11" disabled={loading} /></FormControl>

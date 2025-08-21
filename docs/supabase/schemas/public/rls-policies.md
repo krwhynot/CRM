@@ -95,6 +95,34 @@
 - **Using**: User has access to the opportunity
 - **With Check**: User has access to the opportunity
 
+## opportunity_participants
+
+### select participants via accessible opps
+- **Command**: SELECT
+- **Role**: public
+- **Using**: User can view participants for opportunities they have access to
+- **Logic**: 
+  ```sql
+  EXISTS (
+    SELECT 1 FROM opportunities o 
+    WHERE o.id = opportunity_participants.opportunity_id 
+    AND (user_is_admin() OR o.created_by = auth.uid() OR user_has_org_access(o.organization_id))
+  )
+  ```
+
+### write participants via accessible opps
+- **Command**: INSERT
+- **Role**: authenticated
+- **With Check**: User can add participants to opportunities they have access to
+- **Logic**: Same as SELECT policy - user must have access to the opportunity
+
+### update/delete participants via accessible opps
+- **Command**: UPDATE
+- **Role**: authenticated
+- **Using**: User can modify participants for opportunities they have access to
+- **With Check**: User can modify participants for opportunities they have access to
+- **Logic**: Same as SELECT policy - user must have access to the opportunity
+
 ## organizations
 
 ### organizations_delete_policy

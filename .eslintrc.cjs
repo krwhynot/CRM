@@ -27,11 +27,10 @@ module.exports = {
     
     // CRM Architecture Enforcement Rules
     'no-restricted-imports': ['error', {
-      patterns: [{
-        group: ['@supabase/supabase-js'],
+      paths: [{
+        name: '@supabase/supabase-js',
         importNames: ['createClient'],
-        message: 'Use feature-specific hooks instead of direct Supabase calls in components. Import supabase from existing hook files only.',
-        ignoreFilePattern: 'src/lib/supabase.ts'
+        message: 'Use feature-specific hooks instead of direct Supabase calls in components. Import supabase from existing hook files only.'
       }]
     }],
     

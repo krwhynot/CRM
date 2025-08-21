@@ -40,7 +40,12 @@
     "test:import-backend": "vitest run tests/backend/imports",
     "playwright:install": "npx playwright install",
     "playwright:report": "npx playwright show-report",
-    "playwright:trace": "npx playwright show-trace"
+    "playwright:trace": "npx playwright show-trace",
+    "test:mcp-playwright": "MCP_TARGET=stg playwright test --config=tests/mcp-playwright/playwright.config.js",
+    "test:mcp-playwright:local": "MCP_TARGET=local playwright test --config=tests/mcp-playwright/playwright.config.js",
+    "test:mcp-playwright:ui": "MCP_TARGET=stg playwright test --config=tests/mcp-playwright/playwright.config.js --ui",
+    "test:mcp-playwright:debug": "MCP_TARGET=local playwright test --config=tests/mcp-playwright/playwright.config.js --debug",
+    "test:mcp-playwright:report": "playwright show-report test-results/mcp-playwright-report"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -57,6 +62,7 @@
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-switch": "^1.2.6",
+    "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@supabase/supabase-js": "^2.55.0",
     "@tanstack/react-query": "^5.85.0",

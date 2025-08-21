@@ -6,8 +6,9 @@ import { useContacts } from '@/hooks/useContacts'
 import { Badge } from '@/components/ui/badge'
 import { formatDistanceToNow } from 'date-fns'
 import { Building2, Users, Target, MessageSquare } from 'lucide-react'
+import type { Organization } from '@/types/entities'
 
-function PrincipalCard({ principal }: { principal: any }) {
+function PrincipalCard({ principal }: { principal: Organization }) {
   return (
     <div className="p-4 border rounded-lg space-y-2">
       <div className="flex items-center gap-2">
@@ -27,7 +28,7 @@ function PrincipalCard({ principal }: { principal: any }) {
   )
 }
 
-function ActivityFeed({ interactions }: { interactions: any[] }) {
+function ActivityFeed({ interactions }: { interactions: Array<{ id: string; type: string; interaction_date: string; notes?: string; contact?: { first_name: string; last_name: string } }> }) {
   if (interactions.length === 0) {
     return (
       <div className="text-center text-muted-foreground py-8">
@@ -45,7 +46,7 @@ function ActivityFeed({ interactions }: { interactions: any[] }) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <span className="font-medium text-sm capitalize">
-                {interaction.interaction_type}
+                {interaction.type}
               </span>
               <Badge variant="outline" className="text-xs">
                 {interaction.direction}

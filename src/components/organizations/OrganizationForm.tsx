@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { organizationSchema, FOOD_SERVICE_SEGMENTS, type OrganizationFormData } from '@/types/organization.types'
+import { createTypeSafeResolver } from '@/lib/form-resolver'
 import { deriveOrganizationFlags } from '@/lib/organization-utils'
 
 interface OrganizationFormProps {
@@ -24,7 +24,7 @@ export function OrganizationForm({
   submitLabel = 'Save Organization'
 }: OrganizationFormProps) {
   const form = useForm<OrganizationFormData>({
-    resolver: yupResolver(organizationSchema) as any,
+    resolver: createTypeSafeResolver<OrganizationFormData>(organizationSchema),
     defaultValues: {
       name: initialData?.name || '',
       type: initialData?.type || 'customer',
@@ -61,7 +61,7 @@ export function OrganizationForm({
       <CardHeader><CardTitle>{initialData ? 'Edit Organization' : 'New Organization'}</CardTitle></CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit as any)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             
             <FormField control={form.control} name="name" render={({ field }) => (
               <FormItem>

@@ -19,7 +19,7 @@
 | is_primary_contact | boolean | YES | false | |
 | created_at | timestamptz | YES | now() | |
 | updated_at | timestamptz | YES | now() | |
-| created_by | uuid | YES | | |
+| created_by | uuid | NO | | |
 | updated_by | uuid | YES | | |
 | deleted_at | timestamptz | YES | | |
 | purchase_influence | varchar | NO | 'Unknown'::character varying | Contact influence on purchasing decisions: High, Medium, Low, Unknown |
@@ -45,9 +45,12 @@
 - idx_contacts_name_trgm: gin ((((first_name || ' '::text) || last_name)) gin_trgm_ops) WHERE (deleted_at IS NULL)
 - idx_contacts_org_active: btree (organization_id, deleted_at) WHERE (deleted_at IS NULL)
 - idx_contacts_organization: btree (organization_id)
+- idx_contacts_organization_active: btree (organization_id) WHERE (deleted_at IS NULL)
 - idx_contacts_owner_deleted: btree (created_by, deleted_at) WHERE (deleted_at IS NULL)
 - idx_contacts_primary_per_org: UNIQUE btree (organization_id) WHERE ((is_primary_contact = true) AND (deleted_at IS NULL))
 - idx_contacts_search_tsv: gin (search_tsv)
+- idx_contacts_unique_email_org_active: UNIQUE btree (email, organization_id) WHERE ((deleted_at IS NULL) AND (email IS NOT NULL) AND (TRIM(BOTH FROM email) <> ''::text))
+- uq_contact_email_active: UNIQUE btree (lower(email)) WHERE ((email IS NOT NULL) AND (deleted_at IS NULL))
 
 ## RLS Enabled
 Yes

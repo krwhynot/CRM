@@ -1,11 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import type { 
+  Opportunity,
   OpportunityInsert, 
   OpportunityUpdate, 
   OpportunityFilters,
   OpportunityWithRelations 
 } from '@/types/entities'
+import type { Database } from '@/lib/database.types'
 
 // Query key factory
 export const opportunityKeys = {
@@ -224,7 +226,7 @@ export function usePipelineData() {
         acc[stage].opportunities.push(opp)
         
         return acc
-      }, {} as Record<string, any>)
+      }, {} as Record<string, { stage: string; count: number; totalValue: number; weightedValue: number; opportunities: Opportunity[] }>)
 
       return Object.values(pipeline)
     },
@@ -419,7 +421,7 @@ export function useAdvanceOpportunityStage() {
       const { data, error } = await supabase
         .from('opportunities')
         .update({ 
-          stage: nextStage as any,
+          stage: nextStage as Database['public']['Enums']['opportunity_stage'],
           updated_at: new Date().toISOString()
         })
         .eq('id', id)

@@ -92,14 +92,19 @@ export const createCustomerOrganizationDefaults = (
 /**
  * Type guard to validate organization form data shape
  */
-export const isOrganizationFormData = (data: any): data is OrganizationFormData => {
+export const isOrganizationFormData = (data: unknown): data is OrganizationFormData => {
   return (
     data &&
     typeof data === 'object' &&
-    typeof data.name === 'string' &&
-    typeof data.type === 'string' &&
-    typeof data.priority === 'string' &&
-    typeof data.segment === 'string'
+    data !== null &&
+    'name' in data &&
+    'type' in data &&
+    'priority' in data &&
+    'segment' in data &&
+    typeof (data as Record<string, unknown>).name === 'string' &&
+    typeof (data as Record<string, unknown>).type === 'string' &&
+    typeof (data as Record<string, unknown>).priority === 'string' &&
+    typeof (data as Record<string, unknown>).segment === 'string'
   )
 }
 

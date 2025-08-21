@@ -47,13 +47,8 @@ export const opportunitySchema = yup.object({
   
   stage: yup.string()
     .oneOf([
-      'Discovery',
-      'Proposal', 
-      'Negotiation',
-      'Closed Won',
-      'Closed Lost',
       'New Lead',
-      'Initial Outreach', 
+      'Initial Outreach',
       'Sample/Visit Offered',
       'Awaiting Response',
       'Feedback Logged',
@@ -62,7 +57,7 @@ export const opportunitySchema = yup.object({
       'Closed - Lost'
     ] as const, 'Invalid opportunity stage')
     .required('Stage is required')
-    .default('Discovery'),
+    .default('New Lead'),
 
   // OPTIONAL FIELDS with transforms
   contact_id: yup.string()

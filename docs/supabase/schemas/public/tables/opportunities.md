@@ -1,5 +1,7 @@
 # opportunities
 
+> **Migration Note**: This table is currently in a transitional state. While it retains legacy columns (`organization_id`, `principal_organization_id`, `distributor_organization_id`) for backward compatibility, the preferred pattern is to use the `opportunity_participants` table for managing organization relationships. The `check_ui_readiness_for_legacy_removal()` function validates when legacy columns can be safely removed.
+
 ## Columns
 
 | Column | Type | Nullable | Default | Comment |
@@ -65,3 +67,35 @@
 
 ## RLS Enabled
 Yes
+
+## Relationships
+
+### Child Tables
+- **opportunity_participants** (via `opportunity_id`)
+  - One opportunity can have many participating organizations
+  - Each organization can have different roles (customer, principal, distributor, partner)
+  - Manages complex multi-party opportunity structures
+
+- **opportunity_products** (via `opportunity_id`)
+  - One opportunity can include many products
+  - Many-to-many relationship with products table
+
+- **interactions** (via `opportunity_id`)  
+  - One opportunity can have many related interactions
+  - Tracks communication and activity history
+
+### Parent Tables (Legacy)
+- **organizations** (via `organization_id`) - *Legacy, use opportunity_participants instead*
+- **organizations** (via `principal_organization_id`) - *Legacy, use opportunity_participants instead*  
+- **organizations** (via `distributor_organization_id`) - *Legacy, use opportunity_participants instead*
+- **contacts** (via `contact_id`) - Primary contact for the opportunity
+- **interactions** (via `founding_interaction_id`) - The interaction that created this opportunity
+
+## Migration Path
+
+The opportunities table is transitioning from direct foreign key relationships to the flexible `opportunity_participants` pattern:
+
+1. **Current State**: Both legacy columns and opportunity_participants table exist
+2. **UI Compatibility**: Applications should prefer opportunity_participants data when available
+3. **Validation**: `check_ui_readiness_for_legacy_removal()` confirms migration completeness
+4. **Future State**: Legacy columns will be removed once all applications use opportunity_participants

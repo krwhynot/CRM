@@ -172,32 +172,44 @@ export const createOpportunityFormInterfaceDefaults = (
 /**
  * Type guards for form interfaces
  */
-export const isContactFormInterface = (data: any): data is ContactFormInterface => {
+export const isContactFormInterface = (data: unknown): data is ContactFormInterface => {
   return (
     data &&
     typeof data === 'object' &&
-    typeof data.first_name === 'string' &&
-    typeof data.last_name === 'string' &&
-    typeof data.organization_id === 'string'
+    data !== null &&
+    'first_name' in data &&
+    'last_name' in data &&
+    'organization_id' in data &&
+    typeof (data as Record<string, unknown>).first_name === 'string' &&
+    typeof (data as Record<string, unknown>).last_name === 'string' &&
+    typeof (data as Record<string, unknown>).organization_id === 'string'
   )
 }
 
-export const isOrganizationFormInterface = (data: any): data is OrganizationFormInterface => {
+export const isOrganizationFormInterface = (data: unknown): data is OrganizationFormInterface => {
   return (
     data &&
     typeof data === 'object' &&
-    typeof data.name === 'string' &&
-    typeof data.type === 'string' &&
-    typeof data.priority === 'string'
+    data !== null &&
+    'name' in data &&
+    'type' in data &&
+    'priority' in data &&
+    typeof (data as Record<string, unknown>).name === 'string' &&
+    typeof (data as Record<string, unknown>).type === 'string' &&
+    typeof (data as Record<string, unknown>).priority === 'string'
   )
 }
 
-export const isOpportunityFormInterface = (data: any): data is OpportunityFormInterface => {
+export const isOpportunityFormInterface = (data: unknown): data is OpportunityFormInterface => {
   return (
     data &&
     typeof data === 'object' &&
-    typeof data.name === 'string' &&
-    typeof data.organization_id === 'string' &&
-    typeof data.estimated_value === 'number'
+    data !== null &&
+    'name' in data &&
+    'organization_id' in data &&
+    'estimated_value' in data &&
+    typeof (data as Record<string, unknown>).name === 'string' &&
+    typeof (data as Record<string, unknown>).organization_id === 'string' &&
+    typeof (data as Record<string, unknown>).estimated_value === 'number'
   )
 }

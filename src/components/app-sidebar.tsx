@@ -1,5 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
+import { type LucideIcon } from "lucide-react"
 import {
   BarChart3,
   FileText,
@@ -28,24 +29,28 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { useNavigationCounts } from "@/hooks/useNavigationCounts"
 
+interface NavigationItem {
+  title: string
+  url: string
+  icon: LucideIcon
+  showCount?: boolean
+  showWarning?: boolean
+  isPrimaryEntry?: boolean
+}
+
+interface NavigationMainItem {
+  title: string
+  url: string
+  icon: LucideIcon
+  isActive?: boolean
+  isPrimaryEntry?: boolean
+}
+
 interface NavigationData {
-  navMain: Array<{
-    title: string
-    url: string
-    icon: React.ComponentType<any>
-    isActive?: boolean
-    isPrimaryEntry?: boolean
-  }>
+  navMain: NavigationMainItem[]
   navSections: Array<{
     title: string
-    items: Array<{
-      title: string
-      url: string
-      icon: React.ComponentType<any>
-      showCount?: boolean
-      showWarning?: boolean
-      isPrimaryEntry?: boolean
-    }>
+    items: NavigationItem[]
   }>
 }
 
@@ -133,7 +138,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: navigationCounts } = useNavigationCounts()
   const data = getNavigationData()
 
-  const renderNavigationItem = (item: any) => {
+  const renderNavigationItem = (item: NavigationItem) => {
     const showPrimaryBadge = item.isPrimaryEntry
     const showCountBadge = item.showCount && navigationCounts?.principalsCount
     const showWarningBadge = item.showWarning && navigationCounts?.organizationsWithoutContactsCount && navigationCounts.organizationsWithoutContactsCount > 0

@@ -66,14 +66,18 @@ export const createContactFormDefaultsWithOrganization = (
 /**
  * Type guard to validate contact form data shape
  */
-export const isContactFormData = (data: any): data is ContactFormData => {
+export const isContactFormData = (data: unknown): data is ContactFormData => {
   return (
     data &&
     typeof data === 'object' &&
-    typeof data.first_name === 'string' &&
-    typeof data.last_name === 'string' &&
-    typeof data.organization_id === 'string' &&
-    (data.role === null || typeof data.role === 'string')
+    data !== null &&
+    'first_name' in data &&
+    'last_name' in data &&
+    'organization_id' in data &&
+    typeof (data as Record<string, unknown>).first_name === 'string' &&
+    typeof (data as Record<string, unknown>).last_name === 'string' &&
+    typeof (data as Record<string, unknown>).organization_id === 'string' &&
+    ('role' in data ? ((data as Record<string, unknown>).role === null || typeof (data as Record<string, unknown>).role === 'string') : true)
   )
 }
 

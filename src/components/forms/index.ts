@@ -25,9 +25,11 @@ export {
   AdvancedOptions,
   ContactDetails,
   OrganizationDetails,
-  AddressDetails,
-  useProgressiveDetails
+  AddressDetails
 } from './ProgressiveDetails'
+
+// Hook export
+export { useProgressiveDetails } from '../../hooks/useProgressiveDetails'
 
 // Type exports
 export type {

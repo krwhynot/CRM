@@ -67,7 +67,7 @@ import { isOpportunityFormData } from './opportunity-form.types'
 /**
  * Type guard to check if data is any form data type
  */
-export const isFormData = (data: any): data is AnyFormData => {
+export const isFormData = (data: unknown): data is AnyFormData => {
   return (
     isContactFormData(data) || 
     isOrganizationFormData(data) || 

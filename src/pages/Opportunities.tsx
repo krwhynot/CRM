@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input'
 import { OpportunitiesTable } from '@/components/opportunities/OpportunitiesTable'
 import { OpportunityForm } from '@/components/opportunities/OpportunityForm'
 import { useOpportunities, useCreateOpportunity, useUpdateOpportunity, useDeleteOpportunity } from '@/hooks/useOpportunities'
-import { Target, Plus, Search, DollarSign, TrendingUp } from 'lucide-react'
+import { Target, Plus, Search, DollarSign, TrendingUp, Users } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import type { Opportunity, OpportunityUpdate } from '@/types/entities'
 import { FormDataTransformer } from '@/lib/form-resolver'
 import {
@@ -19,6 +20,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 
 function OpportunitiesPage() {
+  const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState('')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -77,13 +79,22 @@ function OpportunitiesPage() {
             Track and manage your sales pipeline and deals
           </p>
         </div>
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Opportunity
-            </Button>
-          </DialogTrigger>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => navigate('/opportunities/new-multi-principal')}
+            className="flex items-center gap-2"
+          >
+            <Users className="h-4 w-4" />
+            Multi-Principal
+          </Button>
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Opportunity
+              </Button>
+            </DialogTrigger>
           <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
             <DialogHeader>
               <DialogTitle>Create New Opportunity</DialogTitle>
@@ -118,9 +129,12 @@ function OpportunitiesPage() {
                 initialData={FormDataTransformer.toFormData(editingOpportunity)}
                 onSubmit={async (data) => {
                   try {
+                    // Transform form data to OpportunityUpdate by removing non-database fields
+                    const { principals: _principals, auto_generated_name: _auto_generated_name, ...updateData } = data
+                    
                     await updateOpportunityMutation.mutateAsync({
                       id: editingOpportunity.id,
-                      updates: data as OpportunityUpdate
+                      updates: updateData as unknown as OpportunityUpdate
                     })
                     setIsEditDialogOpen(false)
                     setEditingOpportunity(null)
@@ -136,6 +150,7 @@ function OpportunitiesPage() {
             </div>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       {/* Stats Cards */}

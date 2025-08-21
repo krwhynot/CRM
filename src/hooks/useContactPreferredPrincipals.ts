@@ -48,7 +48,16 @@ export function useContactPreferredPrincipals(contactId: string) {
 
       if (error) throw error
       return data as (ContactPreferredPrincipal & {
-        principal_organization?: any
+        principal_organization?: {
+          id: string
+          name: string
+          type: string
+          city: string | null
+          state_province: string | null
+          phone: string | null
+          email: string | null
+          website: string | null
+        }
       })[]
     },
     enabled: !!contactId,

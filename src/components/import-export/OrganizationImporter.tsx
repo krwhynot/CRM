@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react'
 import Papa from 'papaparse'
 import { supabase } from '@/lib/supabase'
+import type { Database } from '@/lib/database.types'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
@@ -32,7 +33,7 @@ interface CsvRow {
 interface ParsedData {
   headers: string[]
   rows: CsvRow[]
-  validRows: CsvRow[]
+  validRows: TransformedOrganizationRow[]
   invalidRows: Array<{ row: CsvRow; errors: string[] }>
 }
 
@@ -42,6 +43,28 @@ interface ImportResult {
   imported: number
   failed: number
   errors: Array<{ row: number; error: string }>
+}
+
+type OrganizationInsert = Database['public']['Tables']['organizations']['Insert']
+
+interface TransformedOrganizationRow {
+  name: string
+  type: Database['public']['Enums']['organization_type']
+  priority: PriorityValue
+  segment: string
+  website: string | null
+  phone: string | null
+  address_line_1: string | null
+  city: string | null
+  state_province: string | null
+  postal_code: string | null
+  country: string | null
+  notes: string | null
+  primary_manager_name: string | null
+  secondary_manager_name: string | null
+  import_notes?: string | null
+  is_active: boolean
+  [key: string]: string | boolean | null | undefined // Add index signature for dynamic assignment
 }
 
 interface FileUploadState {
@@ -57,7 +80,7 @@ interface FileUploadState {
 }
 
 // Excel to PostgreSQL Field Mappings (MVP Hard-coded approach)
-const EXCEL_FIELD_MAPPINGS = {
+const EXCEL_FIELD_MAPPINGS: Record<string, keyof TransformedOrganizationRow> = {
   'organizations': 'name',
   'priority-focus': 'priority', 
   'segment': 'segment',
@@ -71,9 +94,14 @@ const EXCEL_FIELD_MAPPINGS = {
   'state': 'state_province',
   'zip code': 'postal_code',
   'notes': 'notes'
-}
+} as const
 
-const PRIORITY_VALUES = ['A', 'B', 'C', 'D']
+const PRIORITY_VALUES = ['A', 'B', 'C', 'D'] as const
+type PriorityValue = typeof PRIORITY_VALUES[number]
+
+// Organization types that are valid for CSV import
+const VALID_ORGANIZATION_TYPES = ['customer', 'principal', 'distributor', 'prospect', 'vendor'] as const
+type ValidOrganizationType = typeof VALID_ORGANIZATION_TYPES[number]
 
 // Expected CSV columns for organizations (MVP simplified)
 const EXPECTED_COLUMNS = {
@@ -124,7 +152,7 @@ export function OrganizationImporter() {
     // Validate priority if provided (A, B, C, D only)
     if (row['priority-focus']?.trim()) {
       const priority = row['priority-focus'].trim().toUpperCase()
-      if (!PRIORITY_VALUES.includes(priority)) {
+      if (!PRIORITY_VALUES.includes(priority as PriorityValue)) {
         errors.push(`Priority must be one of: ${PRIORITY_VALUES.join(', ')}`)
       }
     }
@@ -141,14 +169,14 @@ export function OrganizationImporter() {
       error: null,
     }))
 
-    Papa.parse(file, {
+    Papa.parse<CsvRow>(file, {
       header: true,
       skipEmptyLines: true,
       transformHeader: (header: string) => header.toLowerCase().trim(),
-      complete: (results) => {
+      complete: (results: Papa.ParseResult<CsvRow>) => {
         try {
           const headers = results.meta.fields || []
-          const rows = results.data as CsvRow[]
+          const rows = results.data
 
           // Check for required columns (MVP simplified - only 'organizations' required)
           const missingRequired = EXPECTED_COLUMNS.required.filter(
@@ -165,44 +193,76 @@ export function OrganizationImporter() {
           }
 
           // Validate each row
-          const validRows: CsvRow[] = []
+          const validRows: TransformedOrganizationRow[] = []
           const invalidRows: Array<{ row: CsvRow; errors: string[] }> = []
 
-          rows.forEach((row, _index) => {
+          rows.forEach((row) => {
             const errors = validateRow(row)
             if (errors.length === 0) {
               // Transform row using MVP field mappings
-              const transformedRow: any = {}
+              const transformedRow: TransformedOrganizationRow = {
+                name: '',
+                type: 'customer' as Database['public']['Enums']['organization_type'],
+                priority: 'C',
+                segment: 'General',
+                website: null,
+                phone: null,
+                address_line_1: null,
+                city: null,
+                state_province: null,
+                postal_code: null,
+                country: null,
+                notes: null,
+                primary_manager_name: null,
+                secondary_manager_name: null,
+                is_active: true
+              }
               
               // Apply hard-coded field mappings
               Object.entries(EXCEL_FIELD_MAPPINGS).forEach(([excelCol, dbField]) => {
-                const value = row[excelCol]?.trim() || ''
-                transformedRow[dbField] = value
+                const value = row[excelCol]?.trim()
+                if (dbField in transformedRow && value) {
+                  // Type-safe assignment with proper null handling
+                  if (dbField === 'type') {
+                    transformedRow.type = value as Database['public']['Enums']['organization_type']
+                  } else if (dbField === 'is_active') {
+                    transformedRow.is_active = Boolean(value)
+                  } else {
+                    // Type-safe assignment for string/null fields using the index signature
+                    const key = dbField as keyof TransformedOrganizationRow
+                    if (key in transformedRow) {
+                      transformedRow[key] = value
+                    }
+                  }
+                }
               })
 
               // Apply MVP business logic transformations
               if (transformedRow.priority) {
-                transformedRow.priority = transformedRow.priority.toUpperCase()
+                const upperPriority = transformedRow.priority.toUpperCase()
+                transformedRow.priority = PRIORITY_VALUES.includes(upperPriority as PriorityValue) 
+                  ? upperPriority as PriorityValue 
+                  : 'C' as PriorityValue
               } else {
-                transformedRow.priority = 'C' // Default priority
+                transformedRow.priority = 'C' as PriorityValue
               }
 
               // Determine organization type from DISTRIBUTOR column or segment
               if (row['distributor']?.toLowerCase().includes('distributor') || 
                   row['segment']?.toLowerCase().includes('distributor')) {
-                transformedRow.type = 'distributor'
+                transformedRow.type = 'distributor' as ValidOrganizationType & Database['public']['Enums']['organization_type']
               } else {
-                transformedRow.type = 'customer' // Default type
+                transformedRow.type = 'customer' as ValidOrganizationType & Database['public']['Enums']['organization_type']
               }
 
               // Set default values
-              transformedRow.country = 'US'
-              transformedRow.is_active = true
+              transformedRow.country = transformedRow.country || 'US'
               transformedRow.segment = transformedRow.segment || 'General'
 
               // Store unmapped columns in import_notes
               const unmappedData = Object.entries(row)
                 .filter(([key]) => !Object.keys(EXCEL_FIELD_MAPPINGS).includes(key))
+                .filter(([, value]) => value && value.trim())
                 .map(([key, value]) => `${key}: ${value}`)
                 .join('; ')
               
@@ -237,7 +297,7 @@ export function OrganizationImporter() {
           }))
         }
       },
-      error: (error) => {
+      error: (error: Error) => {
         setUploadState(prev => ({
           ...prev,
           isUploading: false,
@@ -300,7 +360,7 @@ export function OrganizationImporter() {
   }, [handleFileSelect])
 
   // Import organizations to database
-  const importOrganizations = useCallback(async (validRows: any[]) => {
+  const importOrganizations = useCallback(async (validRows: TransformedOrganizationRow[]) => {
     setUploadState(prev => ({
       ...prev,
       isImporting: true,
@@ -334,7 +394,7 @@ export function OrganizationImporter() {
           }
 
           // Prepare data for database insertion with RLS-required audit fields
-          const organizationsToInsert = batch.map(row => ({
+          const organizationsToInsert: OrganizationInsert[] = batch.map(row => ({
             name: row.name,
             type: row.type,
             priority: row.priority,

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react'
-import { useForm, UseFormReturn, FieldValues, DefaultValues, Path } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm, UseFormReturn, FieldValues, DefaultValues, Path, ControllerRenderProps } from 'react-hook-form'
+import { createTypeSafeResolver } from '@/lib/form-resolver'
 import * as yup from 'yup'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { 
@@ -121,7 +121,7 @@ function FormFieldRenderer<T extends FieldValues>({
           </FormLabel>
           
           <FormControl>
-            {renderFormControl(type, formField, placeholder, loading, options)}
+            {renderFormControl<T>(type, formField, placeholder, loading, options)}
           </FormControl>
           
           {description && (
@@ -137,9 +137,9 @@ function FormFieldRenderer<T extends FieldValues>({
   )
 }
 
-function renderFormControl(
-  type: FormFieldConfig<any>['type'],
-  field: any,
+function renderFormControl<T extends FieldValues>(
+  type: FormFieldConfig<T>['type'],
+  field: ControllerRenderProps<T, Path<T>>,
   placeholder?: string,
   loading?: boolean,
   options?: SelectOption[]
@@ -248,8 +248,11 @@ function FormSectionComponent<T extends FieldValues>({
   section, 
   form, 
   loading, 
-  entityType: _entityType 
+  entityType 
 }: FormSectionProps<T>) {
+  // Use entityType for section-specific styling or behavior
+  const sectionKey = `${section.id}-${entityType}`;
+  
   const layoutClass = useMemo(() => {
     switch (section.layout) {
       case 'single': return 'space-y-4'
@@ -260,8 +263,14 @@ function FormSectionComponent<T extends FieldValues>({
     }
   }, [section.layout])
   
+  // Apply entity-specific styling
+  const sectionClassName = useMemo(() => {
+    const baseClass = cn("space-y-6", section.className)
+    return entityType === 'interaction' ? cn(baseClass, "bg-blue-50/50 p-4 rounded-lg") : baseClass
+  }, [section.className, entityType])
+  
   return (
-    <div className={cn("space-y-6", section.className)}>
+    <div className={sectionClassName} data-section={sectionKey}>
       {section.title && (
         <div className="space-y-2">
           <h3 className="text-lg font-medium text-gray-900">
@@ -342,7 +351,7 @@ export function CoreFormLayout<T extends FieldValues>({
   const [showOptionalSections, setShowOptionalSections] = useState(showAdvancedOptions)
   
   const form = useForm<T>({
-    resolver: yupResolver(formSchema) as any,
+    resolver: createTypeSafeResolver<T>(formSchema),
     defaultValues: initialData as DefaultValues<T>
   })
   
@@ -371,14 +380,14 @@ export function CoreFormLayout<T extends FieldValues>({
       
       <CardContent className="p-6 space-y-8">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit as any)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
             
             {/* Core Sections - Always Visible */}
             {coreSections.map((section) => (
               <FormSectionComponent
                 key={section.id}
                 section={section}
-                form={form as any}
+                form={form}
                 loading={loading}
                 entityType={entityType}
               />
@@ -391,7 +400,7 @@ export function CoreFormLayout<T extends FieldValues>({
                 condition={conditionalSection.condition}
                 section={conditionalSection.section}
                 watchedValues={watchedValues}
-                form={form as any}
+                form={form}
                 loading={loading}
                 entityType={entityType}
               />
@@ -415,7 +424,7 @@ export function CoreFormLayout<T extends FieldValues>({
                       <FormSectionComponent
                         key={section.id}
                         section={section}
-                        form={form as any}
+                        form={form}
                         loading={loading}
                         entityType={entityType}
                       />

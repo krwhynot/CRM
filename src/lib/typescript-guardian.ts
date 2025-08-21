@@ -17,7 +17,7 @@ export class TypeGuards {
   /**
    * Validates that an object has all required properties with correct types
    */
-  static hasRequiredProperties<T extends Record<string, any>>(
+  static hasRequiredProperties<T extends Record<string, unknown>>(
     obj: unknown,
     requiredProps: Array<keyof T>,
     typeCheckers?: Partial<Record<keyof T, (value: unknown) => boolean>>
@@ -25,7 +25,7 @@ export class TypeGuards {
     if (!obj || typeof obj !== 'object') return false
     
     for (const prop of requiredProps) {
-      const value = (obj as any)[prop]
+      const value = (obj as Record<string, unknown>)[prop]
       
       // Check if property exists
       if (value === undefined) return false
@@ -65,7 +65,7 @@ export class TypeGuards {
       typeof props === 'object' &&
       'name' in props &&
       'control' in props &&
-      TypeGuards.isValidControl((props as any).control)
+      TypeGuards.isValidControl((props as Record<string, unknown>).control)
     )
   }
 
@@ -90,11 +90,12 @@ export class TypeGuards {
 }
 
 // ==================== RUNTIME TYPE VALIDATION ====================
+// NOTE: Currently unused but available for future type validation needs
 
 /**
- * Runtime type validation for CRM entities
+ * Runtime type validation for CRM entities (Currently unused)
  */
-export class RuntimeValidator {
+class RuntimeValidator {
   /**
    * Validates organization type and priority values
    */
@@ -109,7 +110,7 @@ export class RuntimeValidator {
       return { isValid: false, errors: ['Invalid organization data'] }
     }
 
-    const obj = data as any
+    const obj = data as Record<string, unknown>
 
     // Required fields
     if (!obj.name || typeof obj.name !== 'string') {
@@ -156,7 +157,7 @@ export class RuntimeValidator {
       return { isValid: false, errors: ['Invalid contact data'] }
     }
 
-    const obj = data as any
+    const obj = data as Record<string, unknown>
 
     // Required fields
     if (!obj.first_name || typeof obj.first_name !== 'string') {
@@ -210,7 +211,7 @@ export class TypeInference {
   /**
    * Generates type-safe default values for forms
    */
-  static generateSafeDefaults<T extends Record<string, any>>(
+  static generateSafeDefaults<T extends Record<string, unknown>>(
     schema: AnyObjectSchema,
     overrides?: Partial<T>
   ): T {
@@ -339,11 +340,12 @@ export class FormComponentValidator {
 }
 
 // ==================== ERROR DETECTION & REPORTING ====================
+// NOTE: Currently unused but available for future error detection needs
 
 /**
- * TypeScript error detection and reporting
+ * TypeScript error detection and reporting (Currently unused)
  */
-export class ErrorDetector {
+class ErrorDetector {
   /**
    * Detects common TypeScript patterns that cause errors
    */
@@ -388,11 +390,12 @@ export class ErrorDetector {
 }
 
 // ==================== DEVELOPMENT UTILITIES ====================
+// NOTE: Currently unused but available for future development utilities
 
 /**
- * Development utilities for enhanced TypeScript support
+ * Development utilities for enhanced TypeScript support (Currently unused)
  */
-export class DevUtils {
+class DevUtils {
   /**
    * Logs detailed type information for debugging
    */
@@ -445,9 +448,7 @@ export class DevUtils {
 
 export default {
   TypeGuards,
-  RuntimeValidator,
   TypeInference,
-  FormComponentValidator,
-  ErrorDetector,
-  DevUtils
+  FormComponentValidator
+  // RuntimeValidator, ErrorDetector, DevUtils are commented out as they're currently unused
 }

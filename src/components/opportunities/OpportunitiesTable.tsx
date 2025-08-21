@@ -16,7 +16,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { MoreHorizontal, Pencil, Trash2, Plus, Search, ExternalLink, Calendar } from 'lucide-react'
+import { MoreHorizontal, Pencil, Trash2, Plus, Search, ExternalLink, Calendar, Users } from 'lucide-react'
 import type { OpportunityWithRelations } from '@/types/entities'
 
 interface OpportunitiesTableProps {
@@ -186,7 +186,15 @@ export function OpportunitiesTable({
                 <TableRow key={opportunity.id}>
                   <TableCell className="font-medium">
                     <div>
-                      <div className="font-semibold">{opportunity.name}</div>
+                      <div className="font-semibold flex items-center gap-2">
+                        {opportunity.name}
+                        {opportunity.description?.includes('Multi-Principal Opportunity') && (
+                          <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                            <Users className="h-3 w-3" />
+                            Multi-Principal
+                          </Badge>
+                        )}
+                      </div>
                       {opportunity.contact && (
                         <div className="text-sm text-gray-500">
                           Contact: {opportunity.contact.first_name} {opportunity.contact.last_name}

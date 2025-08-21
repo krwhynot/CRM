@@ -6,9 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { productSchema, type ProductFormData } from '@/types/validation'
+import { createTypeSafeResolver } from '@/lib/form-resolver'
 import { useOrganizations } from '@/hooks/useOrganizations'
+import { PRODUCT_CATEGORIES } from '@/constants/product.constants'
 
 interface ProductFormProps {
   onSubmit: (data: ProductFormData) => void
@@ -16,8 +17,6 @@ interface ProductFormProps {
   loading?: boolean
   submitLabel?: string
 }
-
-const PRODUCT_CATEGORIES = ['dry_goods', 'refrigerated', 'frozen', 'beverages', 'equipment']
 
 export function ProductForm({ 
   onSubmit, 
@@ -29,7 +28,7 @@ export function ProductForm({
   const principalOrganizations = organizations.filter(org => org.type === 'principal')
   
   const form = useForm<ProductFormData>({
-    resolver: yupResolver(productSchema) as any,
+    resolver: createTypeSafeResolver<ProductFormData>(productSchema),
     defaultValues: {
       name: initialData?.name || '',
       sku: initialData?.sku || '',
@@ -49,7 +48,7 @@ export function ProductForm({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             
-            <FormField control={form.control as any} name="name" render={({ field }) => (
+            <FormField control={form.control} name="name" render={({ field }) => (
               <FormItem>
                 <FormLabel>Name *</FormLabel>
                 <FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl>
@@ -57,7 +56,7 @@ export function ProductForm({
               </FormItem>
             )} />
 
-            <FormField control={form.control as any} name="sku" render={({ field }) => (
+            <FormField control={form.control} name="sku" render={({ field }) => (
               <FormItem>
                 <FormLabel>SKU *</FormLabel>
                 <FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl>
@@ -65,7 +64,7 @@ export function ProductForm({
               </FormItem>
             )} />
 
-            <FormField control={form.control as any} name="principal_id" render={({ field }) => (
+            <FormField control={form.control} name="principal_id" render={({ field }) => (
               <FormItem>
                 <FormLabel>Principal *</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
@@ -80,7 +79,7 @@ export function ProductForm({
               </FormItem>
             )} />
 
-            <FormField control={form.control as any} name="category" render={({ field }) => (
+            <FormField control={form.control} name="category" render={({ field }) => (
               <FormItem>
                 <FormLabel>Category *</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -97,16 +96,16 @@ export function ProductForm({
 
             <ProgressiveDetails buttonText="Add Details">
               <div className="space-y-4">
-                <FormField control={form.control as any} name="description" render={({ field }) => (
+                <FormField control={form.control} name="description" render={({ field }) => (
                   <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={3} disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
-                <FormField control={form.control as any} name="unit_of_measure" render={({ field }) => (
+                <FormField control={form.control} name="unit_of_measure" render={({ field }) => (
                   <FormItem><FormLabel>Unit of Measure</FormLabel><FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
                 )} />
-                <FormField control={form.control as any} name="list_price" render={({ field }) => (
+                <FormField control={form.control} name="list_price" render={({ field }) => (
                   <FormItem><FormLabel>List Price</FormLabel><FormControl><Input {...field} value={field.value || ''} type="number" step="0.01" className="h-11" disabled={loading} onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)} /></FormControl><FormMessage /></FormItem>
                 )} />
-                <FormField control={form.control as any} name="min_order_quantity" render={({ field }) => (
+                <FormField control={form.control} name="min_order_quantity" render={({ field }) => (
                   <FormItem><FormLabel>Min Order Qty</FormLabel><FormControl><Input {...field} value={field.value || ''} type="number" className="h-11" disabled={loading} onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)} /></FormControl><FormMessage /></FormItem>
                 )} />
               </div>

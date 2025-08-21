@@ -1,20 +1,20 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { opportunitySchema, type OpportunityFormData } from '@/types/opportunity.types'
+import { opportunitySchema, type OpportunityFormData, type OpportunityContext } from '@/types/opportunity.types'
+import { createTypeSafeResolver } from '@/lib/form-resolver'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { Constants } from '@/types/database.types'
+import type { Database } from '@/types/database.types'
 import { useOrganizations } from '@/hooks/useOrganizations'
 import { useContacts } from '@/hooks/useContacts'
 import { ChevronLeft, ChevronRight, Check, Building, Users, DollarSign, Calendar, FileText } from 'lucide-react'
 
 interface OpportunityWizardProps {
-  onSubmit: (data: OpportunityFormData) => void
+  onSubmit: (data: OpportunityFormData) => void | Promise<void>
   onCancel: () => void
   loading?: boolean
   preselectedOrganization?: string
@@ -48,13 +48,13 @@ export function OpportunityWizard({
     trigger,
     formState: { errors }
   } = useForm<OpportunityFormData>({
-    resolver: yupResolver(opportunitySchema) as any,
+    resolver: createTypeSafeResolver<OpportunityFormData>(opportunitySchema),
     mode: 'onBlur',
     defaultValues: {
       name: '',
       organization_id: preselectedOrganization || '',
       estimated_value: 0,
-      stage: 'Discovery',
+      stage: 'qualified',
       contact_id: preselectedContact || null,
       estimated_close_date: null,
       description: null,
@@ -242,16 +242,25 @@ export function OpportunityWizard({
                 </label>
                 <Select 
                   value={watchedValues.stage} 
-                  onValueChange={(value) => setValue('stage', value as any)}
+                  onValueChange={(value: Database['public']['Enums']['opportunity_stage']) => {
+                    setValue('stage', value)
+                  }}
                   disabled={loading}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select stage" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Constants.public.Enums.opportunity_stage.map((stage) => (
-                      <SelectItem key={stage} value={stage}>
-                        {stage.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    {[
+                      { display: 'New Lead', value: 'lead' },
+                      { display: 'Qualified', value: 'qualified' },
+                      { display: 'Proposal', value: 'proposal' },
+                      { display: 'Negotiation', value: 'negotiation' },
+                      { display: 'Closed Won', value: 'closed_won' },
+                      { display: 'Closed Lost', value: 'closed_lost' }
+                    ].map((stage) => (
+                      <SelectItem key={stage.value} value={stage.value}>
+                        {stage.display}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -370,7 +379,7 @@ export function OpportunityWizard({
               </label>
               <Select 
                 value={watchedValues.opportunity_context || undefined} 
-                onValueChange={(value) => setValue('opportunity_context', value as any)}
+                onValueChange={(value: OpportunityContext) => setValue('opportunity_context', value)}
                 disabled={loading}
               >
                 <SelectTrigger>
@@ -467,7 +476,7 @@ export function OpportunityWizard({
         </div>
 
         {/* Step Content */}
-        <form onSubmit={handleSubmit(onSubmit as any)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="min-h-[300px] mb-6">
             {renderStepContent()}
           </div>

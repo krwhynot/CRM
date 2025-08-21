@@ -48,7 +48,7 @@ export function createTypeSafeResolver<TFormValues extends FieldValues>(
     }
 
     // Use the base yup resolver but return it with the correct typing
-    const result = await baseResolver(processedValues as any, context, options)
+    const result = await baseResolver(processedValues as FieldValues, context, options)
     
     // Transform result values back to form-compatible format
     const transformedValues = autoTransformNullable 
@@ -82,7 +82,7 @@ function validateFormValues(values: Record<string, unknown>, schema: AnyObjectSc
       }
       
       // Check for empty string to null conversion needs
-      if (value === '' && (schemaFields[fieldName] as any)?.spec?.nullable) {
+      if (value === '' && (schemaFields[fieldName] as { spec?: { nullable?: boolean } })?.spec?.nullable) {
         warnings.push(`Field '${fieldName}' is empty string but should be null for nullable schema`)
       }
     }
@@ -103,10 +103,10 @@ export class FormDataTransformer {
    * Converts database entity to form-compatible data
    * Handles null to undefined conversion for optional fields
    */
-  static toFormData<TFormData>(dbEntity: any): Partial<TFormData> {
+  static toFormData<TFormData>(dbEntity: Record<string, unknown>): Partial<TFormData> {
     if (!dbEntity) return {}
     
-    const formData: any = {}
+    const formData: Record<string, unknown> = {}
     
     for (const [key, value] of Object.entries(dbEntity)) {
       // Convert null to undefined for optional fields in forms
@@ -121,10 +121,10 @@ export class FormDataTransformer {
    * Converts form data to database-compatible format
    * Handles undefined to null conversion for database storage
    */
-  static fromFormData(formData: any): any {
+  static fromFormData(formData: Record<string, unknown>): Record<string, unknown> {
     if (!formData) return {}
     
-    const dbData: any = {}
+    const dbData: Record<string, unknown> = {}
     
     for (const [key, value] of Object.entries(formData)) {
       // Convert empty strings and undefined to null for database
@@ -141,7 +141,7 @@ export class FormDataTransformer {
   /**
    * Validates that required fields are present and not empty
    */
-  static validateRequired(data: any, requiredFields: string[]): string[] {
+  static validateRequired(data: Record<string, unknown>, requiredFields: string[]): string[] {
     const errors: string[] = []
     
     for (const field of requiredFields) {
@@ -192,7 +192,7 @@ export class FormPropGuardian {
     props: Record<string, unknown>,
     control: Control<T>,
     componentName: string = 'FormField'
-  ): any {
+  ): Record<string, unknown> {
     const validation = FormComponentValidator.validateFieldProps(props)
     
     if (!validation.isValid) {
@@ -217,7 +217,7 @@ export class FormPropGuardian {
    * Creates a Higher-Order Component that auto-fixes prop issues
    */
   static withTypeSafety<T extends FieldValues>(
-    WrappedComponent: React.ComponentType<any>,
+    WrappedComponent: React.ComponentType<Record<string, unknown>>,
     control: Control<T>,
     componentName?: string
   ) {
@@ -236,7 +236,7 @@ export class FormPropGuardian {
    * Development-time prop validator decorator
    */
   static validatePropsDecorator<T extends FieldValues>(
-    target: any,
+    target: Record<string, unknown>,
     propertyKey: string,
     descriptor: PropertyDescriptor
   ) {
@@ -263,11 +263,11 @@ export class FormPropGuardian {
 export function createTypeSafeFieldProps<T extends FieldValues>(
   name: keyof T,
   control: Control<T>,
-  additionalProps?: Record<string, any>
+  additionalProps?: Record<string, unknown>
 ): {
   name: keyof T
   control: Control<T>
-} & Record<string, any> {
+} & Record<string, unknown> {
   return {
     name,
     control,

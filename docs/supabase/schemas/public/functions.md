@@ -42,6 +42,48 @@
 - **Returns**: boolean
 - **Language**: plpgsql
 
+### check_ui_readiness_for_legacy_removal
+- **Arguments**: none
+- **Returns**: record (table format)
+- **Language**: plpgsql
+- **Purpose**: Validates UI readiness before removing legacy database columns
+
+### get_enum_display_info
+- **Arguments**: enum_type text, enum_value text  
+- **Returns**: record (table format)
+- **Language**: plpgsql
+- **Purpose**: Gets display information for enum values
+
+### refresh_dashboard_summary_concurrent
+- **Arguments**: none
+- **Returns**: text
+- **Language**: plpgsql
+- **Purpose**: Refreshes dashboard materialized views with concurrent updates
+
+### refresh_dashboard_summary_regular
+- **Arguments**: none
+- **Returns**: text
+- **Language**: plpgsql
+- **Purpose**: Refreshes dashboard materialized views with standard updates
+
+### remove_legacy_opportunity_columns
+- **Arguments**: none
+- **Returns**: text
+- **Language**: plpgsql
+- **Purpose**: Removes legacy opportunity table columns after migration validation
+
+### validate_enum_governance
+- **Arguments**: none
+- **Returns**: record (table format)
+- **Language**: plpgsql
+- **Purpose**: Validates enum governance and consistency across the database
+
+### validate_schema_migration_success
+- **Arguments**: none
+- **Returns**: record (table format)
+- **Language**: plpgsql
+- **Purpose**: Validates successful completion of schema migrations
+
 ## Trigger Functions
 
 ### set_updated_at
@@ -98,6 +140,48 @@
 - **Arguments**: none
 - **Returns**: trigger
 - **Language**: plpgsql
+
+### enforce_participant_role_match
+- **Arguments**: none
+- **Returns**: trigger
+- **Language**: plpgsql
+- **Purpose**: Validates that opportunity participant roles match organization roles
+
+### enforce_single_primary_customer
+- **Arguments**: none
+- **Returns**: trigger
+- **Language**: plpgsql
+- **Purpose**: Ensures each opportunity has only one primary customer
+
+### set_audit_fields
+- **Arguments**: none
+- **Returns**: trigger
+- **Language**: plpgsql
+- **Purpose**: Automatically sets created_by, updated_by, created_at, updated_at fields
+
+### sync_organization_roles
+- **Arguments**: none
+- **Returns**: trigger
+- **Language**: plpgsql
+- **Purpose**: Synchronizes organization roles when organization data changes
+
+### validate_enum_lookup_consistency
+- **Arguments**: none
+- **Returns**: trigger
+- **Language**: plpgsql
+- **Purpose**: Validates consistency between enum values and lookup tables
+
+### validate_interaction_consistency
+- **Arguments**: none
+- **Returns**: trigger
+- **Language**: plpgsql
+- **Purpose**: Validates business rules for interaction records
+
+### validate_opportunity_contact_alignment
+- **Arguments**: none
+- **Returns**: trigger
+- **Language**: plpgsql
+- **Purpose**: Validates that opportunity contacts align with business rules
 
 ## Security Functions
 

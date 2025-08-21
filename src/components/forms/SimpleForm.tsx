@@ -1,4 +1,4 @@
-import { useForm, FieldValues, DefaultValues } from 'react-hook-form'
+import { useForm, FieldValues, DefaultValues, Path, Resolver } from 'react-hook-form'
 import { Form } from '@/components/ui/form'
 import { FormCard } from './FormCard'
 import { FormInput, FormSelect, FormTextarea, FormCheckbox } from './FormInput'
@@ -17,8 +17,9 @@ interface SimpleFormConfig<TFieldValues extends FieldValues> {
   title?: string
   fields: SimpleFieldConfig[]
   submitLabel?: string
-  onSubmit: (data: TFieldValues) => void
+  onSubmit: (data: TFieldValues) => void | Promise<void>
   defaultValues?: DefaultValues<TFieldValues>
+  resolver?: Resolver<TFieldValues>
   loading?: boolean
   className?: string
 }
@@ -29,17 +30,19 @@ export function SimpleForm<TFieldValues extends FieldValues = FieldValues>({
   submitLabel = 'Submit',
   onSubmit,
   defaultValues,
+  resolver,
   loading = false,
   className
 }: SimpleFormConfig<TFieldValues>) {
   const form = useForm<TFieldValues>({
     defaultValues,
+    resolver,
   })
 
   const renderField = (field: SimpleFieldConfig) => {
     const commonProps = {
       control: form.control,
-      name: field.name as any,
+      name: field.name as Path<TFieldValues>,
       label: field.label,
       required: field.required,
       disabled: loading

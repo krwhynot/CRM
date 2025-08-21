@@ -17,6 +17,7 @@ const DashboardPage = lazy(() => import('@/pages/Dashboard'))
 const OrganizationsPage = lazy(() => import('@/pages/Organizations'))
 const ContactsPage = lazy(() => import('@/pages/Contacts'))
 const OpportunitiesPage = lazy(() => import('@/pages/Opportunities'))
+const MultiPrincipalOpportunityPage = lazy(() => import('@/pages/MultiPrincipalOpportunity'))
 const ProductsPage = lazy(() => import('@/pages/Products'))
 const InteractionsPage = lazy(() => import('@/pages/Interactions'))
 const ImportExportPage = lazy(() => import('@/pages/ImportExport'))
@@ -100,6 +101,15 @@ function App() {
                   <Layout>
                     <Suspense fallback={<LoadingSpinner />}>
                       <OpportunitiesPage />
+                    </Suspense>
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/opportunities/new-multi-principal" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <MultiPrincipalOpportunityPage />
                     </Suspense>
                   </Layout>
                 </ProtectedRoute>
