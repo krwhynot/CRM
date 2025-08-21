@@ -1,10 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
+import { resolveOrganization } from '@/lib/organization-resolution'
+import { validateAuthentication, surfaceError } from '@/lib/error-utils'
 import type { 
   ContactInsert, 
   ContactUpdate, 
   ContactFilters,
-  ContactWithOrganization 
+  ContactWithOrganization,
+  OrganizationInsert 
 } from '@/types/entities'
 
 // Query key factory
@@ -170,6 +173,185 @@ export function useCreateContact() {
       queryClient.invalidateQueries({ queryKey: contactKeys.lists() })
       queryClient.invalidateQueries({ queryKey: contactKeys.byOrganization(newContact.organization_id) })
       queryClient.invalidateQueries({ queryKey: [...contactKeys.all, 'primary'] })
+      
+      // Add the new contact to the cache
+      queryClient.setQueryData(contactKeys.detail(newContact.id), newContact)
+    },
+  })
+}
+
+// Enhanced contact creation interface for form data with organization details
+export interface ContactWithOrganizationData extends Omit<ContactInsert, 'organization_id'> {
+  // Organization can be provided as ID (existing) or details (new/existing)
+  organization_id?: string
+  organization_name?: string
+  organization_type?: string
+  organization_data?: Partial<OrganizationInsert>
+}
+
+// Hook to create a contact with bulletproof organization resolution
+export function useCreateContactWithOrganization() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (contactData: ContactWithOrganizationData) => {
+      try {
+        // Validate authentication upfront
+        const { user, error: authError } = await validateAuthentication(supabase)
+        if (authError || !user) {
+          throw new Error(authError || 'Authentication required to create contact')
+        }
+
+        let organizationId: string
+
+        // Case 1: Organization ID provided directly (existing organization)
+        if (contactData.organization_id) {
+          organizationId = contactData.organization_id
+        }
+        // Case 2: Organization name and type provided (find or create)
+        else if (contactData.organization_name && contactData.organization_type) {
+          const orgResult = await resolveOrganization(
+            contactData.organization_name,
+            contactData.organization_type,
+            contactData.organization_data
+          )
+          organizationId = orgResult.id
+        }
+        // Case 3: Neither provided - error
+        else {
+          throw new Error('Either organization_id or organization_name+type must be provided')
+        }
+
+        // Prepare contact data with resolved organization_id and audit fields
+        const { organization_name, organization_type, organization_data, ...cleanContactData } = contactData
+        const finalContactData: ContactInsert = {
+          ...cleanContactData,
+          organization_id: organizationId,
+          created_by: user.id,
+          updated_by: user.id,
+        }
+
+        // Create the contact
+        const { data, error } = await supabase
+          .from('contacts')
+          .insert(finalContactData)
+          .select(`
+            *,
+            organization:organizations(*)
+          `)
+          .single()
+
+        if (error) {
+          throw error
+        }
+
+        if (!data) {
+          throw new Error('Contact creation returned no data')
+        }
+
+        return data as ContactWithOrganization
+      } catch (error) {
+        console.error('Enhanced contact creation failed:', error)
+        throw new Error(surfaceError(error))
+      }
+    },
+    onSuccess: (newContact) => {
+      // Invalidate all contact lists
+      queryClient.invalidateQueries({ queryKey: contactKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: contactKeys.byOrganization(newContact.organization_id) })
+      queryClient.invalidateQueries({ queryKey: [...contactKeys.all, 'primary'] })
+      
+      // Invalidate organization lists since we may have created a new organization
+      queryClient.invalidateQueries({ queryKey: ['organizations'] })
+      
+      // Add the new contact to the cache
+      queryClient.setQueryData(contactKeys.detail(newContact.id), newContact)
+    },
+  })
+}
+
+// Hook to create contact with organization using atomic RPC function
+export function useCreateContactWithOrganizationRPC() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (contactData: ContactWithOrganizationData) => {
+      try {
+        // Validate authentication upfront
+        const { user, error: authError } = await validateAuthentication(supabase)
+        if (authError || !user) {
+          throw new Error(authError || 'Authentication required to create contact')
+        }
+
+        // Prepare organization data
+        let orgName: string
+        let orgType: string
+        let orgData: any = {}
+
+        if (contactData.organization_id) {
+          // If organization_id is provided, we still need to get name/type for the RPC
+          const { data: org, error: orgError } = await supabase
+            .from('organizations')
+            .select('name, type')
+            .eq('id', contactData.organization_id)
+            .single()
+          
+          if (orgError || !org) {
+            throw new Error('Invalid organization_id provided')
+          }
+          
+          orgName = org.name
+          orgType = org.type
+        } else if (contactData.organization_name && contactData.organization_type) {
+          orgName = contactData.organization_name
+          orgType = contactData.organization_type
+          orgData = contactData.organization_data || {}
+        } else {
+          throw new Error('Either organization_id or organization_name+type must be provided')
+        }
+
+        // Prepare contact data (exclude organization fields)
+        const { organization_id, organization_name, organization_type, organization_data, ...cleanContactData } = contactData
+
+        // Call the RPC function
+        const { data, error } = await supabase
+          .rpc('create_contact_with_org', {
+            p_org_name: orgName,
+            p_org_type: orgType,
+            p_org_data: orgData,
+            p_contact_data: cleanContactData
+          })
+
+        if (error) {
+          throw error
+        }
+
+        if (!data || data.length === 0) {
+          throw new Error('RPC function returned no data')
+        }
+
+        const result = data[0]
+        
+        // Combine contact and organization data to match expected return type
+        const contactWithOrg = {
+          ...result.contact_data,
+          organization: result.organization_data
+        }
+
+        return contactWithOrg as ContactWithOrganization
+      } catch (error) {
+        console.error('RPC contact creation failed:', error)
+        throw new Error(surfaceError(error))
+      }
+    },
+    onSuccess: (newContact) => {
+      // Invalidate all contact lists
+      queryClient.invalidateQueries({ queryKey: contactKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: contactKeys.byOrganization(newContact.organization_id) })
+      queryClient.invalidateQueries({ queryKey: [...contactKeys.all, 'primary'] })
+      
+      // Invalidate organization lists since we may have created a new organization
+      queryClient.invalidateQueries({ queryKey: ['organizations'] })
       
       // Add the new contact to the cache
       queryClient.setQueryData(contactKeys.detail(newContact.id), newContact)

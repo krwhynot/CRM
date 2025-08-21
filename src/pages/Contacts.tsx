@@ -4,8 +4,8 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ContactsTable } from '@/components/contacts/ContactsTable'
-import { ContactForm } from '@/components/contacts/ContactForm'
-import { useContacts, useCreateContact, useUpdateContact, useDeleteContact } from '@/hooks/useContacts'
+import { EnhancedContactForm } from '@/components/contacts/EnhancedContactForm'
+import { useContacts, useCreateContactWithOrganizationRPC, useUpdateContact, useDeleteContact } from '@/hooks/useContacts'
 import { Users, Plus, Search, Mail, Phone } from 'lucide-react'
 import type { Contact, ContactUpdate } from '@/types/entities'
 import { FormDataTransformer } from '@/lib/form-resolver'
@@ -24,7 +24,7 @@ function ContactsPage() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [editingContact, setEditingContact] = useState<Contact | null>(null)
   const { data: contacts = [], isLoading } = useContacts()
-  const createContactMutation = useCreateContact()
+  const createContactMutation = useCreateContactWithOrganizationRPC()
   const updateContactMutation = useUpdateContact()
   const deleteContactMutation = useDeleteContact()
 
