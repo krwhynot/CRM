@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ContactsTable } from '@/components/contacts/ContactsTable'
 import { EnhancedContactForm } from '@/components/contacts/EnhancedContactForm'
-import { useContacts, useCreateContactWithOrganizationRPC, useUpdateContact, useDeleteContact } from '@/hooks/useContacts'
+import { useContacts, useCreateContactWithOrganization, useUpdateContact, useDeleteContact } from '@/hooks/useContacts'
 import { Users, Plus, Search, Mail, Phone } from 'lucide-react'
 import type { Contact, ContactUpdate } from '@/types/entities'
 import { FormDataTransformer } from '@/lib/form-resolver'
@@ -24,7 +24,7 @@ function ContactsPage() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [editingContact, setEditingContact] = useState<Contact | null>(null)
   const { data: contacts = [], isLoading } = useContacts()
-  const createContactMutation = useCreateContactWithOrganizationRPC()
+  const createContactMutation = useCreateContactWithOrganization()
   const updateContactMutation = useUpdateContact()
   const deleteContactMutation = useDeleteContact()
 
@@ -82,15 +82,17 @@ function ContactsPage() {
               </DialogDescription>
             </DialogHeader>
             <div className="max-h-[75vh] overflow-y-auto pr-2">
-              <ContactForm 
+              <EnhancedContactForm 
               onSubmit={async (data) => {
                 try {
-                  await createContactMutation.mutateAsync(data as any)
+                  await createContactMutation.mutateAsync(data)
                   setIsCreateDialogOpen(false)
                   toast.success('Contact created successfully!')
                 } catch (error) {
                   console.error('Failed to create contact:', error)
-                  toast.error('Failed to create contact. Please try again.')
+                  // Use the enhanced error message from our error utils
+                  const errorMessage = error instanceof Error ? error.message : 'Failed to create contact. Please try again.'
+                  toast.error(errorMessage)
                 }
               }}
               loading={createContactMutation.isPending}

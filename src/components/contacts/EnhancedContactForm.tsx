@@ -14,7 +14,7 @@ import { createTypeSafeResolver } from '@/lib/form-resolver'
 import { useOrganizations } from '@/hooks/useOrganizations'
 import { PreferredPrincipalsSelect } from './PreferredPrincipalsSelect'
 import type { ContactWithOrganizationData } from '@/hooks/useContacts'
-import { Building2, Plus, User } from 'lucide-react'
+import { Building2, User } from 'lucide-react'
 
 interface EnhancedContactFormProps {
   onSubmit: (data: ContactWithOrganizationData) => void
@@ -60,9 +60,16 @@ export function EnhancedContactForm({
   })
 
   // Additional form fields for new organization creation
-  const [newOrgData, setNewOrgData] = useState({
+  const [newOrgData, setNewOrgData] = useState<{
+    name: string
+    type: 'customer' | 'principal' | 'distributor' | 'prospect' | 'partner'
+    phone: string
+    email: string
+    website: string
+    notes: string
+  }>({
     name: '',
-    type: 'customer' as const,
+    type: 'customer',
     phone: '',
     email: '',
     website: '',
@@ -218,7 +225,7 @@ export function EnhancedContactForm({
                     </Select>
                   </div>
                   
-                  <ProgressiveDetails buttonText="Add Organization Details" size="sm">
+                  <ProgressiveDetails buttonText="Add Organization Details">
                     <div className="space-y-3">
                       <div>
                         <label className="text-sm font-medium">Phone</label>

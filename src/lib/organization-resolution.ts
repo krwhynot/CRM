@@ -58,11 +58,13 @@ export async function createNewOrganization(
     }
 
     // Derive organization flags from type
-    const derivedFlags = deriveOrganizationFlags(organizationData.type || 'customer')
+    const orgType = organizationData.type as 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor' || 'customer'
+    const derivedFlags = deriveOrganizationFlags(orgType)
     
     // Prepare organization data with audit fields
     const fullOrganizationData = {
       ...organizationData,
+      type: orgType,
       ...derivedFlags,
       created_by: user.id,
       updated_by: user.id,
@@ -114,7 +116,7 @@ export async function resolveOrganization(
     // If not found, create new organization
     const newOrg = await createNewOrganization({
       name: name.trim(),
-      type,
+      type: type as 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor',
       ...additionalData
     })
 

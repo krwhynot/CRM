@@ -181,7 +181,7 @@ export function useCreateContact() {
 }
 
 // Enhanced contact creation interface for form data with organization details
-export interface ContactWithOrganizationData extends Omit<ContactInsert, 'organization_id'> {
+export interface ContactWithOrganizationData extends Omit<ContactInsert, 'organization_id' | 'created_by' | 'updated_by'> {
   // Organization can be provided as ID (existing) or details (new/existing)
   organization_id?: string
   organization_name?: string
@@ -320,7 +320,7 @@ export function useCreateContactWithOrganizationRPC() {
             p_org_type: orgType,
             p_org_data: orgData,
             p_contact_data: cleanContactData
-          })
+          }) as { data: any[] | null, error: any }
 
         if (error) {
           throw error
