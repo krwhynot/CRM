@@ -1,14 +1,18 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { toast } from '@/lib/toast-styles'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { OpportunitiesTable } from '@/components/opportunities/OpportunitiesTable'
 import { OpportunityForm } from '@/components/opportunities/OpportunityForm'
+import { InteractionForm } from '@/components/interactions/InteractionForm'
+import { InteractionTimeline } from '@/components/interactions/InteractionTimeline'
 import { useOpportunities, useCreateOpportunity, useUpdateOpportunity, useDeleteOpportunity } from '@/hooks/useOpportunities'
-import { Target, Plus, Search, DollarSign, TrendingUp, Users } from 'lucide-react'
+import { useInteractionsByOpportunity, useCreateInteraction, useUpdateInteraction, useDeleteInteraction } from '@/hooks/useInteractions'
+import { Target, Plus, Search, DollarSign, TrendingUp, Users, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import type { Opportunity, OpportunityUpdate } from '@/types/entities'
+import type { Opportunity, OpportunityUpdate, InteractionWithRelations } from '@/types/entities'
+import type { InteractionFormData } from '@/types/interaction.types'
 import { FormDataTransformer } from '@/lib/form-resolver'
 import {
   Dialog,
@@ -25,10 +29,22 @@ function OpportunitiesPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [editingOpportunity, setEditingOpportunity] = useState<Opportunity | null>(null)
+  
+  // Timeline state management
+  const [selectedOpportunityId, setSelectedOpportunityId] = useState<string | null>(null)
+  const [isInteractionDialogOpen, setIsInteractionDialogOpen] = useState(false)
+  const [editingInteraction, setEditingInteraction] = useState<InteractionWithRelations | null>(null)
+  
   const { data: opportunities = [], isLoading } = useOpportunities()
   const createOpportunityMutation = useCreateOpportunity()
   const updateOpportunityMutation = useUpdateOpportunity()
   const deleteOpportunityMutation = useDeleteOpportunity()
+  
+  // Timeline hooks
+  const { data: opportunityInteractions = [], isLoading: interactionsLoading } = useInteractionsByOpportunity(selectedOpportunityId || '')
+  const createInteractionMutation = useCreateInteraction()
+  const updateInteractionMutation = useUpdateInteraction()
+  const deleteInteractionMutation = useDeleteInteraction()
 
   const filteredOpportunities = opportunities.filter(opp =>
     opp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -66,6 +82,92 @@ function OpportunitiesPage() {
       }
     }
   }
+
+  // Timeline handlers
+  const handleViewOpportunity = useCallback((opportunity: Opportunity) => {
+    setSelectedOpportunityId(opportunity.id)
+  }, [])
+
+  const handleCloseOpportunityDetail = useCallback(() => {
+    setSelectedOpportunityId(null)
+    setIsInteractionDialogOpen(false)
+    setEditingInteraction(null)
+  }, [])
+
+  const handleAddInteraction = useCallback(() => {
+    setEditingInteraction(null)
+    setIsInteractionDialogOpen(true)
+  }, [])
+
+  const handleEditInteraction = useCallback((interaction: InteractionWithRelations) => {
+    setEditingInteraction(interaction)
+    setIsInteractionDialogOpen(true)
+  }, [])
+
+  const handleDeleteInteraction = useCallback(async (interaction: InteractionWithRelations) => {
+    if (window.confirm(`Are you sure you want to delete this ${interaction.type}?`)) {
+      try {
+        await deleteInteractionMutation.mutateAsync(interaction.id)
+        toast.success('Activity deleted successfully!')
+      } catch (error) {
+        console.error('Failed to delete interaction:', error)
+        toast.error('Failed to delete activity. Please try again.')
+      }
+    }
+  }, [deleteInteractionMutation])
+
+  const handleCreateInteraction = useCallback(async (data: InteractionFormData) => {
+    try {
+      // Map form data to database format
+      const interactionData = {
+        opportunity_id: selectedOpportunityId!,
+        interaction_date: data.interaction_date,
+        subject: data.subject,
+        type: data.type as any,
+        description: data.notes || null, // Map notes to description
+        follow_up_required: data.follow_up_required || false,
+        follow_up_date: data.follow_up_date || null
+      }
+      
+      await createInteractionMutation.mutateAsync(interactionData as any)
+      setIsInteractionDialogOpen(false)
+      toast.success('Activity logged successfully!')
+    } catch (error) {
+      console.error('Failed to create interaction:', error)
+      toast.error('Failed to log activity. Please try again.')
+    }
+  }, [selectedOpportunityId, createInteractionMutation])
+
+  const handleUpdateInteraction = useCallback(async (data: InteractionFormData) => {
+    if (!editingInteraction) return
+    
+    try {
+      const updateData = {
+        interaction_date: data.interaction_date,
+        subject: data.subject,
+        type: data.type as any,
+        description: data.notes || null, // Map notes to description
+        follow_up_required: data.follow_up_required || false,
+        follow_up_date: data.follow_up_date || null
+      }
+      
+      await updateInteractionMutation.mutateAsync({
+        id: editingInteraction.id,
+        updates: updateData
+      })
+      setIsInteractionDialogOpen(false)
+      setEditingInteraction(null)
+      toast.success('Activity updated successfully!')
+    } catch (error) {
+      console.error('Failed to update interaction:', error)
+      toast.error('Failed to update activity. Please try again.')
+    }
+  }, [editingInteraction, updateInteractionMutation])
+
+  const handleInteractionItemClick = useCallback((interaction: InteractionWithRelations) => {
+    // For now, just log the click - could be used for quick views
+    console.log('Interaction clicked:', interaction)
+  }, [])
 
   return (
     <div className="space-y-6">
@@ -230,6 +332,93 @@ function OpportunitiesPage() {
         </CardContent>
       </Card>
 
+      {/* Opportunity Detail View with Timeline */}
+      {selectedOpportunityId && (
+        (() => {
+          const selectedOpportunity = opportunities.find(opp => opp.id === selectedOpportunityId)
+          if (!selectedOpportunity) return null
+          
+          return (
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+                <div>
+                  <CardTitle className="text-lg font-nunito">{selectedOpportunity.name}</CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {selectedOpportunity.organization?.name}
+                  </p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleCloseOpportunityDetail}
+                  className="h-8 w-8 p-0"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </CardHeader>
+              
+              <CardContent className="space-y-4">
+                {/* Opportunity Info Grid */}
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">Stage</label>
+                    <p className="text-sm text-gray-900 mt-1">{selectedOpportunity.stage}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">Value</label>
+                    <p className="text-sm text-gray-900 mt-1">
+                      {selectedOpportunity.estimated_value 
+                        ? `$${selectedOpportunity.estimated_value.toLocaleString()}` 
+                        : 'N/A'
+                      }
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">Probability</label>
+                    <p className="text-sm text-gray-900 mt-1">
+                      {selectedOpportunity.probability ? `${selectedOpportunity.probability}%` : 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">Close Date</label>
+                    <p className="text-sm text-gray-900 mt-1">
+                      {selectedOpportunity.estimated_close_date 
+                        ? new Date(selectedOpportunity.estimated_close_date).toLocaleDateString()
+                        : 'N/A'
+                      }
+                    </p>
+                  </div>
+                </div>
+
+                {/* Contact Information */}
+                {selectedOpportunity.contact && (
+                  <div className="pt-2 border-t">
+                    <label className="text-sm font-medium text-gray-700">Primary Contact</label>
+                    <p className="text-sm text-gray-900 mt-1">
+                      {selectedOpportunity.contact.first_name} {selectedOpportunity.contact.last_name}
+                      {selectedOpportunity.contact.title && (
+                        <span className="text-gray-500"> • {selectedOpportunity.contact.title}</span>
+                      )}
+                    </p>
+                  </div>
+                )}
+
+                {/* Timeline Integration */}
+                <InteractionTimeline
+                  interactions={opportunityInteractions}
+                  onAddNew={handleAddInteraction}
+                  onItemClick={handleInteractionItemClick}
+                  onEditInteraction={handleEditInteraction}
+                  onDeleteInteraction={handleDeleteInteraction}
+                  opportunityId={selectedOpportunityId}
+                  loading={interactionsLoading}
+                />
+              </CardContent>
+            </Card>
+          )
+        })()
+      )}
+
       {/* Search and Filter */}
       <Card>
         <CardHeader>
@@ -253,10 +442,43 @@ function OpportunitiesPage() {
               opportunities={filteredOpportunities} 
               onEdit={handleEdit}
               onDelete={handleDelete}
+              onView={handleViewOpportunity}
             />
           )}
         </CardContent>
       </Card>
+
+      {/* Add/Edit Interaction Dialog */}
+      <Dialog open={isInteractionDialogOpen} onOpenChange={setIsInteractionDialogOpen}>
+        <DialogContent className="max-w-md w-[calc(100vw-2rem)] sm:max-w-md max-h-[90vh] overflow-hidden">
+          <DialogHeader>
+            <DialogTitle>
+              {editingInteraction ? 'Edit Activity' : 'Log New Activity'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="max-h-[75vh] overflow-y-auto pr-2">
+            <InteractionForm 
+              onSubmit={editingInteraction ? handleUpdateInteraction : handleCreateInteraction}
+              initialData={editingInteraction ? {
+                subject: editingInteraction.subject,
+                type: editingInteraction.type,
+                interaction_date: editingInteraction.interaction_date,
+                opportunity_id: editingInteraction.opportunity_id,
+                location: null, // Location not stored in database yet
+                notes: editingInteraction.description, // Map description to notes for form
+                follow_up_required: editingInteraction.follow_up_required || false,
+                follow_up_date: editingInteraction.follow_up_date
+              } : undefined}
+              defaultOpportunityId={!editingInteraction ? selectedOpportunityId || undefined : undefined}
+              loading={editingInteraction 
+                ? updateInteractionMutation.isPending 
+                : createInteractionMutation.isPending
+              }
+              submitLabel={editingInteraction ? 'Update Activity' : 'Log Activity'}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -16,13 +16,16 @@ interface InteractionFormProps {
   initialData?: Partial<InteractionFormData>
   loading?: boolean
   submitLabel?: string
+  defaultOpportunityId?: string
+  [key: string]: any // Migration safety
 }
 
 export function InteractionForm({ 
   onSubmit, 
   initialData, 
   loading = false,
-  submitLabel = 'Save Interaction'
+  submitLabel = 'Save Interaction',
+  defaultOpportunityId
 }: InteractionFormProps) {
   const { data: opportunities = [] } = useOpportunities()
   
@@ -32,7 +35,7 @@ export function InteractionForm({
       subject: initialData?.subject || '',
       type: initialData?.type || 'call',
       interaction_date: initialData?.interaction_date || new Date().toISOString().split('T')[0],
-      opportunity_id: initialData?.opportunity_id || '',
+      opportunity_id: initialData?.opportunity_id || defaultOpportunityId || '',
       location: initialData?.location || null,
       notes: initialData?.notes || null,
       follow_up_required: initialData?.follow_up_required || false,
@@ -88,7 +91,7 @@ export function InteractionForm({
                 <FormField control={form.control} name="opportunity_id" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Opportunity *</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value} disabled={!!defaultOpportunityId}>
                       <FormControl><SelectTrigger className="h-11"><SelectValue placeholder="Select opportunity" /></SelectTrigger></FormControl>
                       <SelectContent>
                         {filteredOpportunities.map((opp) => (
@@ -96,6 +99,11 @@ export function InteractionForm({
                         ))}
                       </SelectContent>
                     </Select>
+                    {defaultOpportunityId && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Linked to current opportunity
+                      </p>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )} />
