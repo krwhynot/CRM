@@ -22,6 +22,7 @@ const MultiPrincipalOpportunityPage = lazy(() => import('@/pages/MultiPrincipalO
 const ProductsPage = lazy(() => import('@/pages/Products'))
 const InteractionsPage = lazy(() => import('@/pages/Interactions'))
 const ImportExportPage = lazy(() => import('@/pages/ImportExport'))
+const StyleGuideTestPage = lazy(() => import('@/pages/StyleGuideTest'))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -138,6 +139,15 @@ function App() {
                   <Layout>
                     <Suspense fallback={<LoadingSpinner />}>
                       <ImportExportPage />
+                    </Suspense>
+                  </Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/style-test" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <StyleGuideTestPage />
                     </Suspense>
                   </Layout>
                 </ProtectedRoute>
