@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { CardNew, CardHeader as CardHeaderNew, CardTitle as CardTitleNew, CardDescription as CardDescriptionNew, CardContent as CardContentNew } from '@/components/ui/new/Card';
 import { PriorityBadge } from '@/components/ui/new/PriorityBadge';
 import { InputNew } from '@/components/ui/new/Input';
+import { LabelNew } from '@/components/ui/new/Label';
 
 export function StyleGuideTest() {
   return (
@@ -77,15 +78,29 @@ export function StyleGuideTest() {
               </div>
             </div>
             <div className="mt-4 space-y-3">
-              <p className="text-gray-600 text-sm">Input Fields:</p>
-              <div className="space-y-2">
-                <InputNew placeholder="Organization name..." />
-                <InputNew placeholder="Email address..." type="email" />
-                <InputNew placeholder="Error state example" error={true} />
+              <p className="text-gray-600 text-sm">Form Components:</p>
+              <div className="space-y-4">
+                <div>
+                  <LabelNew required>Organization Name</LabelNew>
+                  <InputNew placeholder="Enter organization name..." />
+                </div>
+                <div>
+                  <LabelNew>Email Address</LabelNew>
+                  <InputNew placeholder="Enter email..." type="email" />
+                </div>
+                <div>
+                  <LabelNew required>Password</LabelNew>
+                  <InputNew placeholder="Enter password..." type="password" error={true} />
+                </div>
                 <div className="flex space-x-2">
-                  <InputNew placeholder="Small" size="sm" />
-                  <InputNew placeholder="Default" size="default" />
-                  <InputNew placeholder="Large" size="lg" />
+                  <div className="flex-1">
+                    <LabelNew>Small Input</LabelNew>
+                    <InputNew placeholder="Small" size="sm" />
+                  </div>
+                  <div className="flex-1">
+                    <LabelNew>Large Input</LabelNew>
+                    <InputNew placeholder="Large" size="lg" />
+                  </div>
                 </div>
               </div>
             </div>
