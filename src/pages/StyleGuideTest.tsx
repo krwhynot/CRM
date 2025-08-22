@@ -3,6 +3,7 @@ import { ButtonNew } from '@/components/ui/new/Button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { CardNew, CardHeader as CardHeaderNew, CardTitle as CardTitleNew, CardDescription as CardDescriptionNew, CardContent as CardContentNew } from '@/components/ui/new/Card';
 import { PriorityBadge } from '@/components/ui/new/PriorityBadge';
+import { InputNew } from '@/components/ui/new/Input';
 
 export function StyleGuideTest() {
   return (
@@ -73,6 +74,19 @@ export function StyleGuideTest() {
                 <PriorityBadge priority="A+" showIcon={false} />
                 <PriorityBadge priority="A" showIcon={false} />
                 <PriorityBadge priority="B" showIcon={false} />
+              </div>
+            </div>
+            <div className="mt-4 space-y-3">
+              <p className="text-gray-600 text-sm">Input Fields:</p>
+              <div className="space-y-2">
+                <InputNew placeholder="Organization name..." />
+                <InputNew placeholder="Email address..." type="email" />
+                <InputNew placeholder="Error state example" error={true} />
+                <div className="flex space-x-2">
+                  <InputNew placeholder="Small" size="sm" />
+                  <InputNew placeholder="Default" size="default" />
+                  <InputNew placeholder="Large" size="lg" />
+                </div>
               </div>
             </div>
           </div>
