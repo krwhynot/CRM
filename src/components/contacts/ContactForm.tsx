@@ -1,6 +1,8 @@
 import { ProgressiveDetails } from '@/components/forms'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { InputNew } from '@/components/ui/new/Input'
+import { LabelNew } from '@/components/ui/new/Label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -61,24 +63,54 @@ export function ContactForm({
             
             <FormField control={form.control} name="first_name" render={({ field }) => (
               <FormItem>
-                <FormLabel>First Name *</FormLabel>
-                <FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl>
+                {USE_NEW_STYLE ? (
+                  <LabelNew required>First Name</LabelNew>
+                ) : (
+                  <FormLabel>First Name *</FormLabel>
+                )}
+                <FormControl>
+                  {USE_NEW_STYLE ? (
+                    <InputNew {...field} disabled={loading} />
+                  ) : (
+                    <Input {...field} className="h-11" disabled={loading} />
+                  )}
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )} />
 
             <FormField control={form.control} name="last_name" render={({ field }) => (
               <FormItem>
-                <FormLabel>Last Name *</FormLabel>
-                <FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl>
+                {USE_NEW_STYLE ? (
+                  <LabelNew required>Last Name</LabelNew>
+                ) : (
+                  <FormLabel>Last Name *</FormLabel>
+                )}
+                <FormControl>
+                  {USE_NEW_STYLE ? (
+                    <InputNew {...field} disabled={loading} />
+                  ) : (
+                    <Input {...field} className="h-11" disabled={loading} />
+                  )}
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )} />
 
             <FormField control={form.control} name="title" render={({ field }) => (
               <FormItem>
-                <FormLabel>Title</FormLabel>
-                <FormControl><Input {...field} value={field.value || ''} className="h-11" disabled={loading} /></FormControl>
+                {USE_NEW_STYLE ? (
+                  <LabelNew>Title</LabelNew>
+                ) : (
+                  <FormLabel>Title</FormLabel>
+                )}
+                <FormControl>
+                  {USE_NEW_STYLE ? (
+                    <InputNew {...field} value={field.value || ''} disabled={loading} />
+                  ) : (
+                    <Input {...field} value={field.value || ''} className="h-11" disabled={loading} />
+                  )}
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )} />
