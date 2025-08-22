@@ -1,3 +1,4 @@
+import React from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import type { 
@@ -7,12 +8,22 @@ import type {
   OrganizationFilters 
 } from '@/types/entities'
 import { deriveOrganizationFlags } from '@/lib/organization-utils'
+import { debugQueryState, measureQueryPerformance } from '@/lib/query-debug'
 
-// Query key factory
+// Query key factory - standardized for consistent caching
 export const organizationKeys = {
   all: ['organizations'] as const,
   lists: () => [...organizationKeys.all, 'list'] as const,
-  list: (filters?: OrganizationFilters) => [...organizationKeys.lists(), { filters }] as const,
+  list: (filters?: OrganizationFilters) => {
+    // Normalize filters to ensure consistent cache keys
+    const normalizedFilters = filters ? {
+      ...filters,
+      // Sort array filters for consistency
+      type: Array.isArray(filters.type) ? [...filters.type].sort() : filters.type,
+      size: Array.isArray(filters.size) ? [...filters.size].sort() : filters.size,
+    } : undefined
+    return [...organizationKeys.lists(), { filters: normalizedFilters }] as const
+  },
   details: () => [...organizationKeys.all, 'detail'] as const,
   detail: (id: string) => [...organizationKeys.details(), id] as const,
   principals: () => [...organizationKeys.all, 'principals'] as const,
@@ -21,9 +32,19 @@ export const organizationKeys = {
 
 // Hook to fetch all organizations with optional filtering
 export function useOrganizations(filters?: OrganizationFilters) {
-  return useQuery({
+  // Debug: Track which component is calling this hook
+  React.useEffect(() => {
+    const stackTrace = new Error().stack
+    console.log('🏗️  [useOrganizations] Hook called from:', stackTrace?.split('\n')[3]?.trim())
+  }, [])
+
+  const queryResult = useQuery({
     queryKey: organizationKeys.list(filters),
     queryFn: async () => {
+      const timer = measureQueryPerformance('useOrganizations query')
+      console.log('🔍 [useOrganizations] Starting query with filters:', filters)
+      console.log('🗝️  [useOrganizations] Query key:', organizationKeys.list(filters))
+      
       let query = supabase
         .from('organizations')
         .select(`
@@ -92,11 +113,48 @@ export function useOrganizations(filters?: OrganizationFilters) {
 
       const { data, error } = await query
 
-      if (error) throw error
+      if (error) {
+        console.error('❌ [useOrganizations] Query failed:', error)
+        console.error('🔗 [useOrganizations] Query details:', { filters, query: query.toString() })
+        throw error
+      }
+      
+      console.log('✅ [useOrganizations] Query successful, found', data?.length, 'organizations')
+      console.log('📊 [useOrganizations] Sample data:', data?.slice(0, 2))
+      timer.end()
       return data as Organization[]
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
   })
+
+  // Debug: Monitor query state changes
+  React.useEffect(() => {
+    debugQueryState(
+      [...organizationKeys.list(filters)],
+      'useOrganizations',
+      queryResult.data,
+      queryResult
+    )
+  }, [queryResult.data, queryResult.isLoading, queryResult.isError, filters, queryResult])
+
+  return queryResult
+}
+
+// Utility hook to force refresh organizations cache
+export function useRefreshOrganizations() {
+  const queryClient = useQueryClient()
+
+  return React.useCallback(() => {
+    console.log('🔄 [useRefreshOrganizations] Invalidating all organization queries')
+    
+    // Invalidate all organization-related queries
+    queryClient.invalidateQueries({ queryKey: organizationKeys.all })
+    queryClient.invalidateQueries({ queryKey: organizationKeys.principals() })
+    queryClient.invalidateQueries({ queryKey: organizationKeys.distributors() })
+    
+    // Also refetch to ensure immediate update
+    queryClient.refetchQueries({ queryKey: organizationKeys.all })
+  }, [queryClient])
 }
 
 // Hook to fetch a single organization by ID

@@ -4,10 +4,17 @@ import { useOpportunities } from './useOpportunities'
 import { useContacts } from './useContacts'
 import { useInteractions } from './useInteractions'
 import { useProducts } from './useProducts'
-import type {
-  OpportunityStage,
-  InteractionType
-} from '@/types/entities'
+import type { InteractionType } from '@/types/entities'
+import { 
+  createDbStageRecord, 
+  type OpportunityStageDB as OpportunityStage 
+} from '@/lib/opportunity-stage-mapping'
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+// Helper functions imported from opportunity-stage-mapping
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -255,8 +262,8 @@ export function useDashboardMetrics(_options: DashboardMetricsOptions = {}): Das
       activePipelineValue: 0,
       conversionRate: 0,
       averageValue: 0,
-      byStage: {} as Record<OpportunityStage, number>,
-      stageValues: {} as Record<OpportunityStage, number>
+      byStage: createDbStageRecord(0),
+      stageValues: createDbStageRecord(0)
     } as OpportunityMetrics
 
     // Simple calculations
@@ -265,13 +272,22 @@ export function useDashboardMetrics(_options: DashboardMetricsOptions = {}): Das
     const won = opportunitiesQuery.data.filter(opp => opp.stage === 'Closed - Won').length
     const totalClosed = opportunitiesQuery.data.filter(opp => opp.stage === 'Closed - Won' || opp.stage === 'Closed - Lost').length
     
+    // Calculate stage breakdowns
+    const stageCounts = createDbStageRecord(0)
+    const stageValues = createDbStageRecord(0)
+    
+    opportunitiesQuery.data.forEach(opp => {
+      stageCounts[opp.stage] += 1
+      stageValues[opp.stage] += (opp.estimated_value || 0)
+    })
+    
     return {
       totalPipelineValue: total,
       activePipelineValue: activeTotal,
       conversionRate: totalClosed > 0 ? (won / totalClosed) * 100 : 0,
       averageValue: opportunitiesQuery.data.length > 0 ? total / opportunitiesQuery.data.length : 0,
-      byStage: {} as Record<OpportunityStage, number>,
-      stageValues: {} as Record<OpportunityStage, number>
+      byStage: stageCounts,
+      stageValues: stageValues
     }
   }, [opportunitiesQuery.data, activeOpportunities])
 
@@ -378,8 +394,8 @@ export function useDashboardMetrics(_options: DashboardMetricsOptions = {}): Das
     averageOpportunityValue: opportunityMetrics.averageValue || 0,
 
     // Breakdown metrics
-    opportunitiesByStage: opportunityMetrics.byStage || {},
-    opportunityValuesByStage: opportunityMetrics.stageValues || {},
+    opportunitiesByStage: opportunityMetrics.byStage || createDbStageRecord(0),
+    opportunityValuesByStage: opportunityMetrics.stageValues || createDbStageRecord(0),
     principalsByPriority: principalMetrics.byPriority || {},
     interactionsByType: interactionMetrics.byType || {},
 

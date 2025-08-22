@@ -87,8 +87,12 @@ export function OrganizationsTable({
           )}
         </div>
         <div className="border rounded-lg">
-          <div className="p-8 text-center text-gray-500">
-            Loading organizations...
+          <div className="p-8 text-center space-y-3">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+            <div className="text-gray-600 font-medium">Loading organizations...</div>
+            <div className="text-sm text-gray-400">
+              Please wait while we fetch your organization data
+            </div>
           </div>
         </div>
       </div>

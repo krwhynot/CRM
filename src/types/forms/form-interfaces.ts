@@ -173,7 +173,7 @@ export const createOpportunityFormInterfaceDefaults = (
  * Type guards for form interfaces
  */
 export const isContactFormInterface = (data: unknown): data is ContactFormInterface => {
-  return (
+  return Boolean(
     data &&
     typeof data === 'object' &&
     data !== null &&
@@ -187,7 +187,7 @@ export const isContactFormInterface = (data: unknown): data is ContactFormInterf
 }
 
 export const isOrganizationFormInterface = (data: unknown): data is OrganizationFormInterface => {
-  return (
+  return Boolean(
     data &&
     typeof data === 'object' &&
     data !== null &&
@@ -201,7 +201,7 @@ export const isOrganizationFormInterface = (data: unknown): data is Organization
 }
 
 export const isOpportunityFormInterface = (data: unknown): data is OpportunityFormInterface => {
-  return (
+  return Boolean(
     data &&
     typeof data === 'object' &&
     data !== null &&

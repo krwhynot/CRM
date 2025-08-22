@@ -1,20 +1,13 @@
 import type { Database } from '../lib/database.types'
 import * as yup from 'yup'
 import { FormTransforms } from '../lib/form-transforms'
+import { DB_STAGES, DEFAULT_OPPORTUNITY_STAGE } from '../lib/opportunity-stage-mapping'
 
 // Principal CRM Business Logic Types
 export type OpportunityContext = 'Site Visit' | 'Food Show' | 'New Product Interest' | 'Follow-up' | 'Demo Request' | 'Sampling' | 'Custom'
 
-// 8-Point Sales Funnel Stages
-export type OpportunityStage = 
-  | 'New Lead'
-  | 'Initial Outreach' 
-  | 'Sample/Visit Offered'
-  | 'Awaiting Response'
-  | 'Feedback Logged'
-  | 'Demo Scheduled'
-  | 'Closed - Won'
-  | 'Closed - Lost'
+// Database-aligned Sales Funnel Stages
+export type OpportunityStage = Database['public']['Enums']['opportunity_stage']
 
 // Base opportunity types from database
 export type Opportunity = Database['public']['Tables']['opportunities']['Row']
@@ -46,18 +39,9 @@ export const opportunitySchema = yup.object({
     .transform(FormTransforms.nullableNumber),
   
   stage: yup.string()
-    .oneOf([
-      'New Lead',
-      'Initial Outreach',
-      'Sample/Visit Offered',
-      'Awaiting Response',
-      'Feedback Logged',
-      'Demo Scheduled',
-      'Closed - Won',
-      'Closed - Lost'
-    ] as const, 'Invalid opportunity stage')
+    .oneOf(DB_STAGES, 'Invalid opportunity stage')
     .required('Stage is required')
-    .default('New Lead'),
+    .default(DEFAULT_OPPORTUNITY_STAGE),
 
   // OPTIONAL FIELDS with transforms
   contact_id: yup.string()
@@ -167,8 +151,16 @@ export const multiPrincipalOpportunitySchema = yup.object({
   // Opportunity details
   stage: yup.string()
     .oneOf([
+      // New TypeScript-aligned values (preferred)
+      'lead',
+      'qualified',
+      'proposal',
+      'negotiation',
+      'closed_won',
+      'closed_lost',
+      // Legacy database values (backward compatibility)
       'New Lead',
-      'Initial Outreach', 
+      'Initial Outreach',
       'Sample/Visit Offered',
       'Awaiting Response',
       'Feedback Logged',
@@ -176,7 +168,26 @@ export const multiPrincipalOpportunitySchema = yup.object({
       'Closed - Won',
       'Closed - Lost'
     ] as const, 'Invalid opportunity stage')
-    .default('New Lead'),
+    .default('lead'),
+
+  status: yup.string()
+    .oneOf([
+      // New TypeScript-aligned values (preferred)
+      'active',
+      'on_hold',
+      'closed_won',
+      'closed_lost',
+      'nurturing',
+      'qualified',
+      // Legacy database values (backward compatibility)
+      'Active',
+      'On Hold',
+      'Closed - Won',
+      'Closed - Lost',
+      'Nurturing',
+      'Qualified'
+    ] as const, 'Invalid opportunity status')
+    .default('active'),
   
   probability: yup.number()
     .min(0, 'Probability must be between 0-100')

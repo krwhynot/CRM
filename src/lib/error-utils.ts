@@ -3,6 +3,9 @@
  * Provides detailed error surfacing for PostgREST and Supabase errors
  */
 
+import type { SupabaseClient, User } from '@supabase/supabase-js'
+import type { Database } from '@/lib/database.types'
+
 export interface DatabaseError extends Error {
   code?: string
   details?: string
@@ -13,49 +16,52 @@ export interface DatabaseError extends Error {
 /**
  * Surface detailed error information from PostgREST/Supabase errors
  */
-export function surfaceError(err: any): string {
+export function surfaceError(err: unknown): string {
+  // Type guard for database errors
+  const dbError = err as DatabaseError
+  
   // Log the full error structure for debugging
   console.error('DB ERROR DETAILS', {
-    code: err?.code,
-    message: err?.message,
-    details: err?.details,
-    hint: err?.hint,
-    status: err?.status
+    code: dbError?.code,
+    message: dbError?.message,
+    details: dbError?.details,
+    hint: dbError?.hint,
+    status: dbError?.status
   })
 
   // Return user-friendly error message
-  if (err?.code === '23505') {
+  if (dbError?.code === '23505') {
     // Unique constraint violation
-    if (err?.details?.includes('organizations')) {
+    if (dbError?.details?.includes('organizations')) {
       return 'An organization with this name and type already exists'
     }
     return 'This record already exists'
   }
 
-  if (err?.code === '23502') {
+  if (dbError?.code === '23502') {
     // NOT NULL constraint violation
-    if (err?.details?.includes('organization_id')) {
+    if (dbError?.details?.includes('organization_id')) {
       return 'Organization selection is required'
     }
-    if (err?.details?.includes('created_by')) {
+    if (dbError?.details?.includes('created_by')) {
       return 'Authentication required - please log in again'
     }
     return 'Required field is missing'
   }
 
-  if (err?.code === '42501') {
+  if (dbError?.code === '42501') {
     // RLS policy violation
     return 'You do not have permission to perform this action'
   }
 
   // Return the most informative available message
-  return err?.details || err?.message || 'An unexpected error occurred'
+  return dbError?.details || dbError?.message || 'An unexpected error occurred'
 }
 
 /**
  * Check if user is authenticated and session is valid
  */
-export async function validateAuthentication(supabase: any): Promise<{ user: any; error?: string }> {
+export async function validateAuthentication(supabase: SupabaseClient<Database>): Promise<{ user: User | null; error?: string }> {
   try {
     const { data: { session }, error: sessionError } = await supabase.auth.getSession()
     
@@ -76,7 +82,7 @@ export async function validateAuthentication(supabase: any): Promise<{ user: any
 /**
  * Enhanced error wrapper for database mutations
  */
-export function wrapDatabaseError<T extends any[], R>(
+export function wrapDatabaseError<T extends unknown[], R>(
   fn: (...args: T) => Promise<R>
 ) {
   return async (...args: T): Promise<R> => {

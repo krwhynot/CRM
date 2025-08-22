@@ -7,11 +7,14 @@ import { supabase } from '@/lib/supabase'
 import { validateAuthentication, surfaceError } from '@/lib/error-utils'
 import { deriveOrganizationFlags } from '@/lib/organization-utils'
 import type { OrganizationInsert } from '@/types/entities'
+import type { Database } from '@/types/database.types'
+
+type OrganizationType = Database['public']['Enums']['organization_type']
 
 export interface OrganizationResolutionResult {
   id: string
   name: string
-  type: string
+  type: OrganizationType
   isNew: boolean
 }
 
@@ -21,14 +24,14 @@ export interface OrganizationResolutionResult {
  */
 export async function findExistingOrganization(
   name: string, 
-  type: string
-): Promise<{ id: string; name: string; type: string } | null> {
+  type: OrganizationType
+): Promise<{ id: string; name: string; type: OrganizationType } | null> {
   try {
     const { data, error } = await supabase
       .from('organizations')
       .select('id, name, type')
       .ilike('name', name.trim())
-      .eq('type', type as any)
+      .eq('type', type)
       .is('deleted_at', null)
       .limit(1)
       .single()
@@ -49,7 +52,7 @@ export async function findExistingOrganization(
  */
 export async function createNewOrganization(
   organizationData: Omit<OrganizationInsert, 'created_by' | 'updated_by'>
-): Promise<{ id: string; name: string; type: string }> {
+): Promise<{ id: string; name: string; type: OrganizationType }> {
   try {
     // Validate authentication
     const { user, error: authError } = await validateAuthentication(supabase)
@@ -97,7 +100,7 @@ export async function createNewOrganization(
  */
 export async function resolveOrganization(
   name: string,
-  type: string,
+  type: OrganizationType,
   additionalData?: Partial<OrganizationInsert>
 ): Promise<OrganizationResolutionResult> {
   try {
@@ -136,7 +139,7 @@ export async function resolveOrganization(
  * Bulk resolve multiple organizations (useful for imports)
  */
 export async function resolveOrganizations(
-  organizations: Array<{ name: string; type: string; data?: Partial<OrganizationInsert> }>
+  organizations: Array<{ name: string; type: OrganizationType; data?: Partial<OrganizationInsert> }>
 ): Promise<OrganizationResolutionResult[]> {
   const results: OrganizationResolutionResult[] = []
   

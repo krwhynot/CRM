@@ -62,7 +62,7 @@ export function EnhancedContactForm({
   // Additional form fields for new organization creation
   const [newOrgData, setNewOrgData] = useState<{
     name: string
-    type: 'customer' | 'principal' | 'distributor' | 'prospect' | 'partner'
+    type: 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor'
     phone: string
     email: string
     website: string
@@ -80,7 +80,7 @@ export function EnhancedContactForm({
     // Filter out undefined values from preferred_principals to match string[] type
     const cleanedContactData = {
       ...contactData,
-      preferred_principals: contactData.preferred_principals.filter((id): id is string => id !== undefined)
+      preferred_principals: contactData.preferred_principals?.filter((id): id is string => id !== undefined)
     }
 
     let enhancedData: ContactWithOrganizationData
@@ -214,7 +214,7 @@ export function EnhancedContactForm({
                     <label className="text-sm font-medium">Organization Type *</label>
                     <Select 
                       value={newOrgData.type}
-                      onValueChange={(value: 'customer' | 'prospect' | 'partner' | 'distributor' | 'principal') => 
+                      onValueChange={(value: 'customer' | 'prospect' | 'vendor' | 'distributor' | 'principal') => 
                         setNewOrgData(prev => ({ ...prev, type: value }))
                       }
                     >
@@ -224,7 +224,7 @@ export function EnhancedContactForm({
                       <SelectContent>
                         <SelectItem value="customer">Customer</SelectItem>
                         <SelectItem value="prospect">Prospect</SelectItem>
-                        <SelectItem value="partner">Partner</SelectItem>
+                        <SelectItem value="vendor">Vendor</SelectItem>
                         <SelectItem value="distributor">Distributor</SelectItem>
                         <SelectItem value="principal">Principal</SelectItem>
                       </SelectContent>

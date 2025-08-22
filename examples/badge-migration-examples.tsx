@@ -12,7 +12,7 @@ import { PriorityIndicator } from '@/components/ui/priority-indicator'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { FormLabel } from '@/components/ui/form'
-import { Users, AlertTriangle, CheckCircle, X } from 'lucide-react'
+import { Users, AlertTriangle, CheckCircle } from 'lucide-react'
 
 export function BadgeMigrationExamples() {
   return (

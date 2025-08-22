@@ -5,6 +5,7 @@
  * This ensures React Hook Form defaults match Yup schema validation rules.
  */
 
+import { DEFAULT_OPPORTUNITY_STAGE } from '@/lib/opportunity-stage-mapping'
 import type { OpportunityFormData } from '../opportunity.types'
 
 /**
@@ -17,7 +18,7 @@ export const defaultOpportunityFormValues: OpportunityFormData = {
   name: '',
   organization_id: '',
   estimated_value: 0,
-  stage: 'New Lead',
+  stage: DEFAULT_OPPORTUNITY_STAGE,
 
   // Optional fields - using null for nullable schema fields
   contact_id: null,
@@ -113,7 +114,7 @@ export const createNegotiationOpportunityDefaults = (
  * Type guard to validate opportunity form data shape
  */
 export const isOpportunityFormData = (data: unknown): data is OpportunityFormData => {
-  return (
+  return Boolean(
     data &&
     typeof data === 'object' &&
     data !== null &&

@@ -64,6 +64,25 @@ export interface AdvocacyMetrics {
   }>
 }
 
+export interface AdvocacyTrends {
+  timeframe: 'week' | 'month' | 'quarter'
+  period_start: string
+  period_end: string
+  advocacy_changes: Array<{
+    contact_id: string
+    principal_organization_id: string
+    strength_change: number
+    previous_strength: number
+    current_strength: number
+  }>
+  metrics_trend: {
+    total_change: number
+    average_strength_change: number
+    new_relationships: number
+    ended_relationships: number
+  }
+}
+
 export interface ContactAdvocacyState {
   // Core State
   relationships: ContactAdvocacyRelationship[]
@@ -112,7 +131,7 @@ export interface ContactAdvocacyState {
     
     // Metrics and Analytics
     calculateMetrics: () => Promise<AdvocacyMetrics>
-    getAdvocacyTrends: (timeframe: 'week' | 'month' | 'quarter') => Promise<any>
+    getAdvocacyTrends: (timeframe: 'week' | 'month' | 'quarter') => Promise<AdvocacyTrends>
     
     // Cache Management
     invalidateCache: () => void
@@ -746,7 +765,21 @@ export const useContactAdvocacyStore = create<ContactAdvocacyState>()(
           getAdvocacyTrends: async (_timeframe: 'week' | 'month' | 'quarter') => {
             // Implementation for trend analysis would go here
             // This would analyze advocacy strength changes over time
-            return {}
+            const now = new Date()
+            const periodStart = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000)) // 30 days ago as placeholder
+            
+            return {
+              timeframe: _timeframe,
+              period_start: periodStart.toISOString(),
+              period_end: now.toISOString(),
+              advocacy_changes: [],
+              metrics_trend: {
+                total_change: 0,
+                average_strength_change: 0,
+                new_relationships: 0,
+                ended_relationships: 0
+              }
+            } as AdvocacyTrends
           },
 
           // Cache Management

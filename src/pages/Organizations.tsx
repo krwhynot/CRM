@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { toast } from 'sonner'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { OrganizationsTable } from '@/components/organizations/OrganizationsTable'
 import { OrganizationForm } from '@/components/organizations/OrganizationForm'
-import { useOrganizations, useCreateOrganization, useUpdateOrganization, useDeleteOrganization } from '@/hooks/useOrganizations'
+import { useOrganizations, useCreateOrganization, useUpdateOrganization, useDeleteOrganization, useRefreshOrganizations } from '@/hooks/useOrganizations'
 import { Building2, Plus, Search } from 'lucide-react'
 import {
   Dialog,
@@ -25,6 +25,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { OrganizationsErrorBoundary } from '@/components/error-boundaries/QueryErrorBoundary'
 import type { Organization } from '@/types/entities'
 
 function OrganizationsPage() {
@@ -34,10 +35,21 @@ function OrganizationsPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null)
   
-  const { data: organizations = [], isLoading } = useOrganizations()
+  const { data: organizations = [], isLoading, error, isError } = useOrganizations()
   const createOrganizationMutation = useCreateOrganization()
   const updateOrganizationMutation = useUpdateOrganization()
   const deleteOrganizationMutation = useDeleteOrganization()
+  const refreshOrganizations = useRefreshOrganizations()
+
+  // Debug: Track Organizations page data state
+  React.useEffect(() => {
+    console.log('📄 [OrganizationsPage] Data state:', {
+      isLoading,
+      isError,
+      organizationsCount: organizations.length,
+      error: error?.message
+    })
+  }, [isLoading, isError, organizations.length, error])
 
   const filteredOrganizations = organizations.filter(org =>
     org.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -72,7 +84,8 @@ function OrganizationsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <OrganizationsErrorBoundary>
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
@@ -177,8 +190,27 @@ function OrganizationsPage() {
             />
           </div>
 
-          {isLoading ? (
-            <div className="text-center py-8">Loading organizations...</div>
+          {isError ? (
+            <div className="text-center py-8 space-y-4">
+              <div className="text-red-600 font-medium">Failed to load organizations</div>
+              <div className="text-gray-500 text-sm">
+                {error?.message || 'An unexpected error occurred while fetching organizations.'}
+              </div>
+              <Button 
+                onClick={refreshOrganizations} 
+                variant="outline"
+                className="mt-2"
+              >
+                Refresh Data
+              </Button>
+            </div>
+          ) : isLoading ? (
+            <div className="text-center py-8 space-y-2">
+              <div className="text-gray-600">Loading organizations...</div>
+              <div className="text-sm text-gray-400">
+                This should only take a few seconds
+              </div>
+            </div>
           ) : (
             <OrganizationsTable 
               organizations={filteredOrganizations}
@@ -259,7 +291,8 @@ function OrganizationsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+      </div>
+    </OrganizationsErrorBoundary>
   )
 }
 

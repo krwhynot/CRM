@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
+import type { Database } from '@/lib/database.types'
 import { resolveOrganization } from '@/lib/organization-resolution'
 import { validateAuthentication, surfaceError } from '@/lib/error-utils'
 import type { 
@@ -7,7 +8,8 @@ import type {
   ContactUpdate, 
   ContactFilters,
   ContactWithOrganization,
-  OrganizationInsert 
+  OrganizationInsert,
+  OrganizationType 
 } from '@/types/entities'
 
 // Query key factory
@@ -186,7 +188,7 @@ export interface ContactWithOrganizationData extends Omit<ContactInsert, 'organi
   // Organization can be provided as ID (existing) or details (new/existing)
   organization_id?: string
   organization_name?: string
-  organization_type?: string
+  organization_type?: Database['public']['Enums']['organization_type']
   organization_data?: Partial<OrganizationInsert>
   // Virtual field for form handling (not stored in contacts table)
   preferred_principals?: string[]
@@ -218,7 +220,7 @@ export function useCreateContactWithOrganization() {
         else if (contactData.organization_name && contactData.organization_type) {
           const orgResult = await resolveOrganization(
             contactData.organization_name,
-            contactData.organization_type,
+            contactData.organization_type as OrganizationType,
             contactData.organization_data
           )
           organizationId = orgResult.id
@@ -231,9 +233,9 @@ export function useCreateContactWithOrganization() {
         // Prepare contact data with resolved organization_id and audit fields
         // Extract virtual fields and organization fields from contact data
         const { 
-          organization_name, 
-          organization_type, 
-          organization_data, 
+          organization_name: _organization_name, 
+          organization_type: _organization_type, 
+          organization_data: _organization_data, 
           preferred_principals, // Remove virtual field
           ...cleanContactData 
         } = contactData
@@ -310,114 +312,16 @@ export function useCreateContactWithOrganization() {
 export function useCreateContactWithOrganizationRPC() {
   const queryClient = useQueryClient()
 
-  return useMutation({
-    mutationFn: async (contactData: ContactWithOrganizationData) => {
-      try {
-        // Validate authentication upfront
-        const { user, error: authError } = await validateAuthentication(supabase)
-        if (authError || !user) {
-          throw new Error(authError || 'Authentication required to create contact')
-        }
-
-        // TODO: Remove when RPC function is implemented
-        /*
-        // Prepare organization data
-        let orgName: string
-        let orgType: string
-        let orgData: any = {}
-
-        if (contactData.organization_id) {
-          // If organization_id is provided, we still need to get name/type for the RPC
-          const { data: org, error: orgError } = await supabase
-            .from('organizations')
-            .select('name, type')
-            .eq('id', contactData.organization_id)
-            .single()
-          
-          if (orgError || !org) {
-            throw new Error('Invalid organization_id provided')
-          }
-          
-          orgName = org.name
-          orgType = org.type
-        } else if (contactData.organization_name && contactData.organization_type) {
-          orgName = contactData.organization_name
-          orgType = contactData.organization_type
-          orgData = contactData.organization_data || {}
-        } else {
-          throw new Error('Either organization_id or organization_name+type must be provided')
-        }
-        */
-
-        // TODO: Implement RPC function or use direct table operations
-        // For now, create organization first, then contact
-        throw new Error('create_contact_with_org RPC function not yet implemented')
-
-        /*
-        // Prepare contact data (exclude organization fields and virtual fields)
-        const { 
-          organization_id, 
-          organization_name, 
-          organization_type, 
-          organization_data, 
-          preferred_principals, // Remove virtual field
-          ...cleanContactData 
-        } = contactData
-        */
-
-        // TODO: Remove unreachable code once RPC function is implemented
-        /*
-        if (error) {
-          throw error
-        }
-
-        if (!data || data.length === 0) {
-          throw new Error('RPC function returned no data')
-        }
-
-        const result = data[0]
-        
-        // Combine contact and organization data to match expected return type
-        const contactWithOrg = {
-          ...result.contact_data,
-          organization: result.organization_data
-        }
-        */
-
-        // TODO: Handle preferred principals when RPC function is implemented
-        /*
-        // Handle preferred principals if provided (virtual field processing)
-        if (preferred_principals && preferred_principals.length > 0) {
-          try {
-            // Get user from previous auth validation
-            const { user } = await validateAuthentication(supabase)
-            if (user) {
-              // Create preferred principal relationships
-              const relationshipPromises = preferred_principals.map(async (principalId) => {
-                return supabase
-                  .from('contact_preferred_principals')
-                  .insert({
-                    contact_id: result.contact_data.id,
-                    principal_organization_id: principalId,
-                    created_by: user.id,
-                    updated_by: user.id
-                  })
-              })
-              
-              await Promise.all(relationshipPromises)
-            }
-          } catch (preferredPrincipalsError) {
-            // Log error but don't fail the contact creation
-            console.warn('Failed to create preferred principal relationships:', preferredPrincipalsError)
-          }
-        }
-
-        return contactWithOrg as ContactWithOrganization
-        */
-      } catch (error) {
-        console.error('RPC contact creation failed:', error)
-        throw new Error(surfaceError(error))
+  return useMutation<ContactWithOrganization, Error, ContactWithOrganizationData>({
+    mutationFn: async (_contactData: ContactWithOrganizationData) => {
+      // Validate authentication upfront
+      const { user, error: authError } = await validateAuthentication(supabase)
+      if (authError || !user) {
+        throw new Error(authError || 'Authentication required to create contact')
       }
+
+      // TODO: This function is not yet implemented - remove when RPC function is ready
+      throw new Error('RPC contact creation not yet implemented')
     },
     onSuccess: (newContact) => {
       // Invalidate all contact lists

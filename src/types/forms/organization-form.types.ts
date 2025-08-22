@@ -93,7 +93,7 @@ export const createCustomerOrganizationDefaults = (
  * Type guard to validate organization form data shape
  */
 export const isOrganizationFormData = (data: unknown): data is OrganizationFormData => {
-  return (
+  return Boolean(
     data &&
     typeof data === 'object' &&
     data !== null &&

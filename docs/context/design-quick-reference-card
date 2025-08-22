@@ -1,0 +1,190 @@
+# 🚀 CRM Design Quick Reference Card
+*Keep this open while building with Claude Code*
+
+---
+
+## ⚡ BEFORE YOU START (Every Time!)
+
+```bash
+✓ Check schema: tables, required fields, enums, foreign keys
+✓ Check RLS: who owns data, what's shared, user roles  
+✓ Check UI: existing patterns in /components folder
+✓ Mobile first: iPad is primary device
+```
+
+---
+
+## 📝 CREATING FORMS
+
+### Must Have:
+- [ ] **Required fields** → `*` indicator + NOT NULL in schema
+- [ ] **Yup validation** → matches EXACT database constraints  
+- [ ] **RLS filtering** → dropdowns show ONLY user's accessible data
+- [ ] **Touch targets** → 44px minimum (use `h-11` for inputs)
+- [ ] **Error display** → Field-specific messages, not generic
+
+### Quick Wins:
+```tsx
+// Good validation message
+"Organization is required" ✅
+// Bad validation message  
+"Please fill this field" ❌
+
+// Good RLS handling
+organizations.filter(org => org.owner_user_id === userId) ✅
+// Bad RLS handling
+organizations // Shows all orgs ❌
+```
+
+---
+
+## 📊 DISPLAYING DATA (Tables/Lists)
+
+### Must Have:
+- [ ] **Soft delete filter** → `WHERE deleted_at IS NULL`
+- [ ] **RLS joins** → Only join accessible related data
+- [ ] **Human readable** → Show `organization.name` not `organization_id`
+- [ ] **Pagination** → LIMIT 20/50/100 with offset
+- [ ] **Mobile view** → Priority columns + expandable rows
+
+### Performance Checklist:
+```sql
+-- Always include these:
+WHERE deleted_at IS NULL
+ORDER BY created_at DESC  
+LIMIT 20 OFFSET 0
+-- Index foreign keys & filtered columns!
+```
+
+---
+
+## ✏️ EDITING RECORDS
+
+### Must Have:
+- [ ] **Check ownership** → Can user edit this record?
+- [ ] **Readonly fields** → id, created_at, created_by NEVER editable
+- [ ] **Update tracking** → Set updated_at = NOW(), updated_by = userId
+- [ ] **Optimistic UI** → Show pending, rollback on error
+- [ ] **Preserve relations** → Check impacts before changes
+
+### RLS Edit Check:
+```tsx
+// Before showing edit button
+if (record.created_by === userId || isAdmin) { 
+  showEditButton() 
+}
+```
+
+---
+
+## 🗑️ DELETING (Soft Delete Only!)
+
+### Must Have:
+- [ ] **Soft delete** → `deleted_at = NOW()` (NEVER hard DELETE)
+- [ ] **Check dependencies** → Warn about related records
+- [ ] **RLS delete** → Verify permission before allowing
+- [ ] **Immediate UI** → Hide from view instantly
+- [ ] **Undo option** → 5-second undo toast
+
+---
+
+## 🎨 CONSISTENCY RULES
+
+### Component Usage:
+```
+✅ ALLOWED (use freely):
+Button, Card, Input, Select, Textarea, Form, Label, Checkbox
+
+❌ BANNED (don't use):
+Badge, Avatar, Separator, Skeleton, Tooltip, Hover-card
+
+🔄 CONDITIONAL (need justification):
+Dialog, Tabs, Switch, Radio-group, Table, Slider
+```
+
+### Standard Patterns:
+```tsx
+// Loading states
+<Spinner /> for actions
+<Skeleton /> for initial load
+
+// Error display  
+<Toast /> for transient (auto-dismiss)
+<Alert /> for important (stays visible)
+
+// Success feedback
+toast.success("Contact created")
+
+// Empty states
+<EmptyState 
+  message="No contacts yet"
+  action={<Button>Add First Contact</Button>}
+/>
+```
+
+---
+
+## 🔴 CRITICAL: Never Forget!
+
+1. **Schema is law** → UI must match database EXACTLY
+2. **RLS is security** → ALWAYS filter by user access  
+3. **Soft delete only** → NEVER hard delete data
+4. **Mobile first** → Test on iPad viewport (768px)
+5. **TypeScript strict** → NO 'any' types ever
+
+---
+
+## 🚦 Quick Validation
+
+Before committing, ask:
+- **Works offline?** → Optimistic updates + retry logic
+- **Handles errors?** → Both validation AND permission errors  
+- **Follows patterns?** → Check similar components first
+- **Touch friendly?** → 44px targets, no hover-only features
+- **Fast enough?** → <500ms response for all actions
+
+---
+
+## 💬 Claude Code Prompts
+
+### Creating:
+```
+"Build [entity] form:
+- Required: [fields from schema]
+- RLS: Filter [related entity] by user access  
+- Mobile: 44px inputs, 16px fonts
+- Pattern: Copy from [ExistingForm.tsx]"
+```
+
+### Listing:
+```
+"Create [entity] table:
+- Query: Include deleted_at filter
+- Columns: [priority fields for mobile]
+- RLS: Join only user's organizations
+- Pattern: Copy from ContactsTable.tsx"
+```
+
+### Debugging:
+```
+"Debug RLS issue:
+- Entity: [table name]
+- User role: [admin/user]
+- Expected: [what should happen]
+- Actual: [what's happening]
+- Check: RLS policies and ownership"
+```
+
+---
+
+## 📍 Quick Links
+
+- **Schema**: `/docs/DATABASE_SCHEMA.md`
+- **Components**: `/src/components/[entity]/`
+- **Validation**: `/src/types/validation.ts`
+- **RLS Patterns**: `/supabase/migrations/`
+- **UI Library**: [shadcn/ui docs](https://ui.shadcn.com)
+
+---
+
+*Version 1.0 | Print and keep visible while coding!*

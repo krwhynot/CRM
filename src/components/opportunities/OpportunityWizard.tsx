@@ -11,6 +11,7 @@ import { Progress } from '@/components/ui/progress'
 // import type { Database } from '@/types/database.types' // Unused
 import { useOrganizations } from '@/hooks/useOrganizations'
 import { useContacts } from '@/hooks/useContacts'
+import { DEFAULT_OPPORTUNITY_STAGE } from '@/lib/opportunity-stage-mapping'
 import { ChevronLeft, ChevronRight, Check, Building, Users, DollarSign, Calendar, FileText } from 'lucide-react'
 
 interface OpportunityWizardProps {
@@ -54,7 +55,7 @@ export function OpportunityWizard({
       name: '',
       organization_id: preselectedOrganization || '',
       estimated_value: 0,
-      stage: 'New Lead',
+      stage: DEFAULT_OPPORTUNITY_STAGE,
       contact_id: preselectedContact || null,
       estimated_close_date: null,
       description: null,

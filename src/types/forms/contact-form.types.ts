@@ -67,7 +67,7 @@ export const createContactFormDefaultsWithOrganization = (
  * Type guard to validate contact form data shape
  */
 export const isContactFormData = (data: unknown): data is ContactFormData => {
-  return (
+  return Boolean(
     data &&
     typeof data === 'object' &&
     data !== null &&

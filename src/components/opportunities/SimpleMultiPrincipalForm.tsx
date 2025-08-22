@@ -10,13 +10,14 @@ import { StatusIndicator } from "@/components/ui/status-indicator"
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { opportunitySchema, type OpportunityFormData } from '@/types/opportunity.types'
 import type { OpportunityInsert } from '@/types/entities'
-import type { Database } from '@/types/database.types'
+import type { Database } from '@/lib/database.types'
 import { createTypeSafeResolver } from '@/lib/form-resolver'
 import { useOrganizations } from '@/hooks/useOrganizations'
 import { useContacts } from '@/hooks/useContacts'
 import { useCreateOpportunity } from '@/hooks/useOpportunities'
 import { toast } from 'sonner'
 import { OPPORTUNITY_CONTEXTS, OPPORTUNITY_STAGES } from '@/constants/opportunity.constants'
+import { DEFAULT_OPPORTUNITY_STAGE } from '@/lib/opportunity-stage-mapping'
 
 interface SimpleMultiPrincipalFormProps {
   onSuccess?: (opportunityId: string) => void
@@ -41,7 +42,7 @@ export function SimpleMultiPrincipalForm({
       name: '',
       organization_id: preselectedOrganization || '',
       estimated_value: 0,
-      stage: 'New Lead',
+      stage: DEFAULT_OPPORTUNITY_STAGE,
       contact_id: null,
       estimated_close_date: null,
       description: null,
@@ -104,37 +105,16 @@ export function SimpleMultiPrincipalForm({
       }
 
       // Remove the principals field and prepare data for OpportunityInsert
-      const { principals: _principals, auto_generated_name: _auto_generated_name, ...opportunityFormData } = data
+      const { principals: _principals, ...opportunityFormData } = data
       
-      // Normalize stage value to match database enum
-      const normalizeStage = (stage: string): Database['public']['Enums']['opportunity_stage'] => {
-        // Database enum values match the form values exactly
-        const validStages = [
-          'New Lead',
-          'Initial Outreach', 
-          'Sample/Visit Offered',
-          'Awaiting Response',
-          'Feedback Logged',
-          'Demo Scheduled',
-          'Closed - Won',
-          'Closed - Lost'
-        ] as const
-        
-        if (validStages.includes(stage as any)) {
-          return stage as Database['public']['Enums']['opportunity_stage']
-        }
-        
-        // Default fallback
-        return 'New Lead' as Database['public']['Enums']['opportunity_stage']
-      }
 
       // Create the opportunity with basic data compatible with OpportunityInsert
       // Note: The hook will add created_by and updated_by fields automatically
-      const opportunityData: OpportunityInsert = {
+      const opportunityData: Partial<OpportunityInsert> = {
         name: opportunityName,
         organization_id: opportunityFormData.organization_id,
         estimated_value: data.estimated_value || 0,
-        stage: normalizeStage(opportunityFormData.stage as string),
+        stage: opportunityFormData.stage as Database['public']['Enums']['opportunity_stage'],
         contact_id: opportunityFormData.contact_id,
         estimated_close_date: opportunityFormData.estimated_close_date,
         notes: opportunityFormData.notes,
@@ -143,7 +123,7 @@ export function SimpleMultiPrincipalForm({
         ).filter(Boolean).join(', ')}`
       }
 
-      const result = await createOpportunity.mutateAsync(opportunityData)
+      const result = await createOpportunity.mutateAsync(opportunityData as OpportunityInsert)
       
       // TODO: In a future iteration, we'll use the atomic RPC to create participants
       // For now, we'll create a basic opportunity and show the principals in the description

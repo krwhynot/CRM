@@ -1,3 +1,4 @@
+import React from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { useOrganizations } from '@/hooks/useOrganizations'
 import { useOpportunities } from '@/hooks/useOpportunities'
@@ -28,7 +29,7 @@ function PrincipalCard({ principal }: { principal: Organization }) {
   )
 }
 
-function ActivityFeed({ interactions }: { interactions: Array<{ id: string; type: string; interaction_date: string; notes?: string; contact?: { first_name: string; last_name: string } }> }) {
+function ActivityFeed({ interactions }: { interactions: Array<{ id: string; type: string; interaction_date: string; notes?: string | null; outcome?: string | null; description?: string | null; contact?: { first_name: string; last_name: string } | null }> }) {
   if (interactions.length === 0) {
     return (
       <div className="text-center text-muted-foreground py-8">
@@ -66,10 +67,19 @@ function ActivityFeed({ interactions }: { interactions: Array<{ id: string; type
 }
 
 function DashboardPage() {
-  const { data: organizations = [] } = useOrganizations()
+  const { data: organizations = [], isLoading: orgsLoading, error: orgsError } = useOrganizations()
   const { data: opportunities = [] } = useOpportunities()
   const { data: interactions = [] } = useRecentActivity(10)
   const { data: contacts = [] } = useContacts()
+
+  // Debug: Track Dashboard page data state  
+  React.useEffect(() => {
+    console.log('🏠 [DashboardPage] Organizations state:', {
+      isLoading: orgsLoading,
+      organizationsCount: organizations.length,
+      error: orgsError?.message
+    })
+  }, [orgsLoading, organizations.length, orgsError])
 
   const principals = organizations.filter(org => org.type === 'principal')
   const activeOpportunities = opportunities.filter(opp => 

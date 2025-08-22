@@ -10,6 +10,8 @@ import { opportunitySchema, type OpportunityFormData } from '@/types/opportunity
 import { createTypeSafeResolver } from '@/lib/form-resolver'
 import { useOrganizations } from '@/hooks/useOrganizations'
 import { useContacts } from '@/hooks/useContacts'
+import { DB_STAGES, DEFAULT_OPPORTUNITY_STAGE } from '@/lib/opportunity-stage-mapping'
+import type { OpportunityStage as OpportunityStageDB } from '@/types/entities'
 
 interface OpportunityFormProps {
   onSubmit: (data: OpportunityFormData) => void | Promise<void>
@@ -19,16 +21,11 @@ interface OpportunityFormProps {
   preselectedOrganization?: string
 }
 
-const STAGES = [
-  { display: 'New Lead', value: 'New Lead' },
-  { display: 'Initial Outreach', value: 'Initial Outreach' },
-  { display: 'Sample/Visit Offered', value: 'Sample/Visit Offered' },
-  { display: 'Awaiting Response', value: 'Awaiting Response' },
-  { display: 'Feedback Logged', value: 'Feedback Logged' },
-  { display: 'Demo Scheduled', value: 'Demo Scheduled' },
-  { display: 'Closed - Won', value: 'Closed - Won' },
-  { display: 'Closed - Lost', value: 'Closed - Lost' }
-] as const
+// Opportunity stages for select dropdown
+const STAGES: Array<{ value: OpportunityStageDB; display: string }> = DB_STAGES.map(stage => ({
+  value: stage,
+  display: stage
+}))
 
 export function OpportunityForm({ 
   onSubmit, 
@@ -46,7 +43,7 @@ export function OpportunityForm({
       name: initialData?.name || '',
       organization_id: preselectedOrganization || initialData?.organization_id || '',
       estimated_value: initialData?.estimated_value || 0,
-      stage: initialData?.stage || 'New Lead',
+      stage: initialData?.stage || DEFAULT_OPPORTUNITY_STAGE,
       contact_id: initialData?.contact_id || null,
       estimated_close_date: initialData?.estimated_close_date || null,
       description: initialData?.description || null,
