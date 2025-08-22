@@ -105,11 +105,11 @@ export function ResetPasswordPage() {
   // Show loading state while parsing auth callback
   if (isAuthLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen flex items-center justify-center bg-mfb-cream py-12 px-4 sm:px-6 lg:px-8">
         <Card className="w-full max-w-md mx-auto">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">Loading...</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-2xl font-bold font-nunito text-mfb-olive">Loading...</CardTitle>
+            <CardDescription className="text-mfb-olive/60 font-nunito">
               Verifying your password reset link
             </CardDescription>
           </CardHeader>
