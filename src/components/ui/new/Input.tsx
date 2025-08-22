@@ -3,10 +3,7 @@ import { cn } from '@/lib/utils';
 
 export interface InputNewProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   error?: boolean;
-  // Compatibility with existing Input component
   size?: 'default' | 'sm' | 'lg';
-  // Migration safety - TODO: Remove any type after migration
-  [key: string]: any;
 }
 
 export const InputNew = forwardRef<HTMLInputElement, InputNewProps>(

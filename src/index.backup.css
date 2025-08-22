@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Primary Colors - Master Food Brokers Green (matching logo #8DC63F) */
+    --primary-50: oklch(0.9600 0.0300 130);
+    --primary-100: oklch(0.9200 0.0600 130);
+    --primary-200: oklch(0.8500 0.1000 130);
+    --primary-300: oklch(0.7800 0.1400 130);
+    --primary-400: oklch(0.7000 0.1700 130);
+    --primary-500: oklch(0.6200 0.2000 130); /* Main Brand Color - MFB Green */
+    --primary-600: oklch(0.5600 0.1800 130);
+    --primary-700: oklch(0.4800 0.1600 130);
+    --primary-800: oklch(0.4000 0.1400 130);
+    --primary-900: oklch(0.3200 0.1200 130);
+    
+    /* Secondary - Warm Gray */
+    --secondary-50: oklch(0.9800 0.0100 80);
+    --secondary-100: oklch(0.9500 0.0150 80);
+    --secondary-200: oklch(0.9000 0.0200 80);
+    --secondary-300: oklch(0.8000 0.0250 80);
+    --secondary-400: oklch(0.6500 0.0300 80);
+    --secondary-500: oklch(0.5000 0.0350 80);
+    --secondary-600: oklch(0.4000 0.0300 80);
+    --secondary-700: oklch(0.3000 0.0250 80);
+    --secondary-800: oklch(0.2000 0.0200 80);
+    --secondary-900: oklch(0.1000 0.0150 80);
+    
+    /* Chart Colors - MFB Brand Palette */
+    --chart-1: oklch(0.6200 0.2000 130); /* MFB Green */
+    --chart-2: oklch(0.7000 0.1700 130); /* Lighter Green */
+    --chart-3: oklch(0.5600 0.1800 130); /* Medium Green */
+    --chart-4: oklch(0.6500 0.1200 160); /* Teal Green */
+    --chart-5: oklch(0.5000 0.1500 110); /* Olive Green */
+    
+    /* Base Grayscale */
+    --gray-50: oklch(0.9800 0 0);
+    --gray-100: oklch(0.9500 0 0);
+    --gray-200: oklch(0.9000 0 0);
+    --gray-300: oklch(0.8000 0 0);
+    --gray-400: oklch(0.6500 0 0);
+    --gray-500: oklch(0.5000 0 0);
+    --gray-600: oklch(0.4000 0 0);
+    --gray-700: oklch(0.3000 0 0);
+    --gray-800: oklch(0.2000 0 0);
+    --gray-900: oklch(0.1000 0 0);
+    --gray-950: oklch(0.0500 0 0);
+    
+    /* Semantic Colors */
+    --success: oklch(0.4800 0.1600 150);
+    --warning: oklch(0.6800 0.1800 85);
+    --error: oklch(0.5000 0.2000 20);
+    --info: oklch(0.5200 0.1400 240);
+    
+    /* shadcn/ui compatibility - converting OKLCH to HSL approximations */
+    --background: 0 0% 98%;
+    --foreground: 240 10% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 10%;
+    --primary: 95 71% 56%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 48 5% 95%;
+    --secondary-foreground: 240 10% 10%;
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 0 0% 95%;
+    --accent-foreground: 240 10% 10%;
+    --destructive: 20 100% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 95 71% 56%;
+    --radius: 0.375rem;
+    
+    /* Sidebar Colors */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 30%;
+    --sidebar-primary: 95 71% 56%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 95 60% 90%;
+    --sidebar-accent-foreground: 95 71% 25%;
+    --sidebar-border: 95 71% 56%;
+    --sidebar-ring: 95 71% 56%;
+  }
+
+  .dark {
+    /* Keep dark mode with same MFB green primary colors */
+    --background: 240 10% 4%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 8%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 8%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 95 71% 56%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 4% 16%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 20 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 4% 16%;
+    --input: 240 4% 16%;
+    --ring: 95 71% 56%;
+    --sidebar-background: 240 10% 4%;
+    --sidebar-foreground: 0 0% 85%;
+    --sidebar-primary: 95 71% 56%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4% 16%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 240 4% 16%;
+    --sidebar-ring: 95 71% 56%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+}

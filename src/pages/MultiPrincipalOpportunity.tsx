@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { toast } from 'sonner'
+import { toast } from '@/lib/toast-styles'
 import { ArrowLeft, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
@@ -32,8 +32,8 @@ function MultiPrincipalOpportunityPage() {
             Back to Opportunities
           </Button>
           <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Users className="h-8 w-8 text-orange-600" />
+            <h1 className="text-3xl font-bold font-nunito text-mfb-olive mb-6 flex items-center gap-2">
+              <Users className="h-8 w-8 text-mfb-green" />
               New Multi-Principal Opportunity
             </h1>
             <p className="text-muted-foreground mt-1">

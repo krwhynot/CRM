@@ -3,8 +3,6 @@ import { cn } from '@/lib/utils';
 
 export interface CardNewProps extends React.HTMLAttributes<HTMLDivElement> {
   hover?: boolean;
-  // Migration safety - TODO: Remove any type after migration
-  [key: string]: any;
 }
 
 export const CardNew = forwardRef<HTMLDivElement, CardNewProps>(

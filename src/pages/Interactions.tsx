@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { toast } from 'sonner'
+import { toast } from '@/lib/toast-styles'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -73,8 +73,8 @@ function InteractionsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <MessageSquare className="h-8 w-8 text-blue-600" />
+          <h1 className="text-3xl font-bold font-nunito text-mfb-olive mb-6 flex items-center gap-2">
+            <MessageSquare className="h-8 w-8 text-mfb-green" />
             Interactions
           </h1>
           <p className="text-muted-foreground mt-1">
@@ -162,31 +162,31 @@ function InteractionsPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Interactions</CardTitle>
+            <CardTitle className="text-sm font-medium font-nunito">Total Interactions</CardTitle>
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.total || 0}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{stats?.total || 0}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Follow-ups Needed</CardTitle>
+            <CardTitle className="text-sm font-medium font-nunito">Follow-ups Needed</CardTitle>
             <AlertTriangle className="h-4 w-4 text-amber-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.followUpsNeeded || 0}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{stats?.followUpsNeeded || 0}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Recent Activity</CardTitle>
-            <Activity className="h-4 w-4 text-green-600" />
+            <CardTitle className="text-sm font-medium font-nunito">Recent Activity</CardTitle>
+            <Activity className="h-4 w-4 text-mfb-green" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.recentActivity || 0}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{stats?.recentActivity || 0}</div>
             <p className="text-xs text-muted-foreground">
               Last 7 days
             </p>
@@ -195,8 +195,8 @@ function InteractionsPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">By Type</CardTitle>
-            <CheckCircle className="h-4 w-4 text-blue-600" />
+            <CardTitle className="text-sm font-medium font-nunito">By Type</CardTitle>
+            <CheckCircle className="h-4 w-4 text-mfb-green" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -250,7 +250,7 @@ function InteractionsPage() {
           </div>
 
           {isLoading ? (
-            <div className="text-center py-8">Loading interactions...</div>
+            <div className="text-center py-8 font-nunito text-mfb-green">Loading interactions...</div>
           ) : (
             <InteractionsTable 
               interactions={filteredInteractions} 

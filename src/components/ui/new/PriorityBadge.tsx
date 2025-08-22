@@ -4,8 +4,6 @@ export interface PriorityBadgeProps {
   priority: 'A+' | 'A' | 'B' | 'C' | 'D';
   showIcon?: boolean;
   className?: string;
-  // Migration safety - TODO: Remove any type after migration
-  [key: string]: any;
 }
 
 export function PriorityBadge({ priority, showIcon = true, className, ...props }: PriorityBadgeProps) {

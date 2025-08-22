@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { toast } from 'sonner'
+import { toast } from '@/lib/toast-styles'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -59,8 +59,8 @@ function ContactsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Users className="h-8 w-8 text-green-600" />
+          <h1 className="text-3xl font-bold font-nunito text-mfb-olive mb-6 flex items-center gap-2">
+            <Users className="h-8 w-8 text-mfb-green" />
             Contacts
           </h1>
           <p className="text-muted-foreground mt-1">
@@ -140,31 +140,31 @@ function ContactsPage() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Contacts</CardTitle>
+            <CardTitle className="text-sm font-medium font-nunito">Total Contacts</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{contacts.length}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{contacts.length}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">With Email</CardTitle>
-            <Mail className="h-4 w-4 text-blue-600" />
+            <CardTitle className="text-sm font-medium font-nunito">With Email</CardTitle>
+            <Mail className="h-4 w-4 text-mfb-green" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{contactsWithEmail.length}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{contactsWithEmail.length}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">With Phone</CardTitle>
-            <Phone className="h-4 w-4 text-green-600" />
+            <CardTitle className="text-sm font-medium font-nunito">With Phone</CardTitle>
+            <Phone className="h-4 w-4 text-mfb-green" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{contactsWithPhone.length}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{contactsWithPhone.length}</div>
           </CardContent>
         </Card>
       </div>
@@ -186,7 +186,7 @@ function ContactsPage() {
           </div>
 
           {isLoading ? (
-            <div className="text-center py-8">Loading contacts...</div>
+            <div className="text-center py-8 font-nunito text-mfb-green">Loading contacts...</div>
           ) : (
             <ContactsTable 
               contacts={filteredContacts} 

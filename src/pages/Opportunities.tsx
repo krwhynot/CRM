@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { toast } from 'sonner'
+import { toast } from '@/lib/toast-styles'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -71,8 +71,8 @@ function OpportunitiesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Target className="h-8 w-8 text-orange-600" />
+          <h1 className="text-3xl font-bold font-nunito text-mfb-olive mb-6 flex items-center gap-2">
+            <Target className="h-8 w-8 text-mfb-green" />
             Opportunities
           </h1>
           <p className="text-muted-foreground mt-1">
@@ -157,41 +157,41 @@ function OpportunitiesPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Opportunities</CardTitle>
+            <CardTitle className="text-sm font-medium font-nunito">Total Opportunities</CardTitle>
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{opportunities.length}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{opportunities.length}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Pipeline</CardTitle>
-            <TrendingUp className="h-4 w-4 text-blue-600" />
+            <CardTitle className="text-sm font-medium font-nunito">Active Pipeline</CardTitle>
+            <TrendingUp className="h-4 w-4 text-mfb-green" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{activeOpportunities.length}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{activeOpportunities.length}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Won Deals</CardTitle>
-            <Target className="h-4 w-4 text-green-600" />
+            <CardTitle className="text-sm font-medium font-nunito">Won Deals</CardTitle>
+            <Target className="h-4 w-4 text-mfb-green" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{wonOpportunities.length}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{wonOpportunities.length}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pipeline Value</CardTitle>
-            <DollarSign className="h-4 w-4 text-green-600" />
+            <CardTitle className="text-sm font-medium font-nunito">Pipeline Value</CardTitle>
+            <DollarSign className="h-4 w-4 text-mfb-green" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold font-nunito text-mfb-green">
               ${activeValue.toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground">
@@ -247,7 +247,7 @@ function OpportunitiesPage() {
           </div>
 
           {isLoading ? (
-            <div className="text-center py-8">Loading opportunities...</div>
+            <div className="text-center py-8 font-nunito text-mfb-green">Loading opportunities...</div>
           ) : (
             <OpportunitiesTable 
               opportunities={filteredOpportunities} 

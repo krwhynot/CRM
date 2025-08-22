@@ -14,7 +14,7 @@ function PrincipalCard({ principal }: { principal: Organization }) {
   return (
     <div className="p-4 border rounded-lg space-y-2">
       <div className="flex items-center gap-2">
-        <Building2 className="h-4 w-4 text-blue-600" />
+        <Building2 className="h-4 w-4 text-mfb-green" />
         <h3 className="font-medium text-sm">{principal.name}</h3>
       </div>
       <p className="text-xs text-muted-foreground line-clamp-2">
@@ -93,8 +93,8 @@ function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Target className="h-8 w-8 text-blue-600" />
+        <h1 className="text-3xl font-bold font-nunito text-mfb-olive mb-6 flex items-center gap-2">
+          <Target className="h-8 w-8 text-mfb-green" />
           Dashboard
         </h1>
         <p className="text-muted-foreground mt-1">
@@ -119,11 +119,11 @@ function DashboardPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Opportunities</CardTitle>
+            <CardTitle className="text-sm font-medium font-nunito">Active Opportunities</CardTitle>
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{activeOpportunities.length}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{activeOpportunities.length}</div>
             <p className="text-xs text-muted-foreground">
               In pipeline
             </p>
@@ -132,11 +132,11 @@ function DashboardPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Organizations</CardTitle>
+            <CardTitle className="text-sm font-medium font-nunito">Total Organizations</CardTitle>
             <Building2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{organizations.length}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{organizations.length}</div>
             <p className="text-xs text-muted-foreground">
               All relationships
             </p>
@@ -145,11 +145,11 @@ function DashboardPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Contacts</CardTitle>
+            <CardTitle className="text-sm font-medium font-nunito">Total Contacts</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{contacts.length}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{contacts.length}</div>
             <p className="text-xs text-muted-foreground">
               People in network
             </p>
@@ -162,7 +162,7 @@ function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Building2 className="h-5 w-5 text-blue-600" />
+              <Building2 className="h-5 w-5 text-mfb-green" />
               Principal Overview
             </CardTitle>
           </CardHeader>
@@ -180,7 +180,7 @@ function DashboardPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <MessageSquare className="h-5 w-5 text-green-600" />
+            <MessageSquare className="h-5 w-5 text-mfb-green" />
             Recent Activity
           </CardTitle>
         </CardHeader>

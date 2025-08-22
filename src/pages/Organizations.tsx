@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { toast } from 'sonner'
+import { toast } from '@/lib/toast-styles'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -88,8 +88,8 @@ function OrganizationsPage() {
       <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Building2 className="h-8 w-8 text-blue-600" />
+          <h1 className="text-3xl font-bold font-nunito text-mfb-olive mb-6 flex items-center gap-2">
+            <Building2 className="h-8 w-8 text-mfb-green" />
             Organizations
           </h1>
           <p className="text-muted-foreground mt-1">
@@ -145,31 +145,31 @@ function OrganizationsPage() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Organizations</CardTitle>
+            <CardTitle className="text-sm font-medium font-nunito">Total Organizations</CardTitle>
             <Building2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{organizations.length}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{organizations.length}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Principals</CardTitle>
-            <Building2 className="h-4 w-4 text-blue-600" />
+            <CardTitle className="text-sm font-medium font-nunito">Principals</CardTitle>
+            <Building2 className="h-4 w-4 text-mfb-green" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{principals.length}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{principals.length}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Retailers</CardTitle>
-            <Building2 className="h-4 w-4 text-green-600" />
+            <CardTitle className="text-sm font-medium font-nunito">Retailers</CardTitle>
+            <Building2 className="h-4 w-4 text-mfb-green" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{retailers.length}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{retailers.length}</div>
           </CardContent>
         </Card>
       </div>
@@ -206,8 +206,8 @@ function OrganizationsPage() {
             </div>
           ) : isLoading ? (
             <div className="text-center py-8 space-y-2">
-              <div className="text-gray-600">Loading organizations...</div>
-              <div className="text-sm text-gray-400">
+              <div className="font-nunito text-mfb-green">Loading organizations...</div>
+              <div className="text-sm text-mfb-olive/60 font-nunito">
                 This should only take a few seconds
               </div>
             </div>

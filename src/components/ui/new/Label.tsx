@@ -3,8 +3,6 @@ import { cn } from '@/lib/utils';
 
 export interface LabelNewProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
   required?: boolean;
-  // Migration safety - TODO: Remove any type after migration
-  [key: string]: any;
 }
 
 export const LabelNew = forwardRef<HTMLLabelElement, LabelNewProps>(

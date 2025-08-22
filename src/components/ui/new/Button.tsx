@@ -4,14 +4,10 @@ import { cn } from '@/lib/utils';
 export interface ButtonNewProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
-  // Compatibility props from existing Button component
-  asChild?: boolean;
-  // Migration safety - TODO: Remove any type after migration
-  [key: string]: any;
 }
 
 export const ButtonNew = forwardRef<HTMLButtonElement, ButtonNewProps>(
-  ({ className, variant = 'primary', size = 'md', asChild = false, ...props }, ref) => {
+  ({ className, variant = 'primary', size = 'md', ...props }, ref) => {
     const variants: Record<string, string> = {
       primary: 'bg-mfb-green hover:bg-mfb-green-hover text-white shadow-sm hover:shadow-md',
       secondary: 'bg-mfb-clay hover:bg-mfb-clay/90 text-white shadow-sm hover:shadow-md',

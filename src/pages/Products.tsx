@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { toast } from 'sonner'
+import { toast } from '@/lib/toast-styles'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -61,8 +61,8 @@ function ProductsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Package className="h-8 w-8 text-purple-600" />
+          <h1 className="text-3xl font-bold font-nunito text-mfb-olive mb-6 flex items-center gap-2">
+            <Package className="h-8 w-8 text-mfb-green" />
             Products
           </h1>
           <p className="text-muted-foreground mt-1">
@@ -134,41 +134,41 @@ function ProductsPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Products</CardTitle>
+            <CardTitle className="text-sm font-medium font-nunito">Total Products</CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{products.length}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{products.length}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Products</CardTitle>
-            <Star className="h-4 w-4 text-green-600" />
+            <CardTitle className="text-sm font-medium font-nunito">Active Products</CardTitle>
+            <Star className="h-4 w-4 text-mfb-green" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{activeProducts}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{activeProducts}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Inactive Products</CardTitle>
-            <Archive className="h-4 w-4 text-red-600" />
+            <CardTitle className="text-sm font-medium font-nunito">Inactive Products</CardTitle>
+            <Archive className="h-4 w-4 text-mfb-clay" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{inactiveProducts}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{inactiveProducts}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Categories</CardTitle>
-            <Package className="h-4 w-4 text-blue-600" />
+            <CardTitle className="text-sm font-medium font-nunito">Categories</CardTitle>
+            <Package className="h-4 w-4 text-mfb-green" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{categories.length}</div>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{categories.length}</div>
           </CardContent>
         </Card>
       </div>
@@ -219,7 +219,7 @@ function ProductsPage() {
           </div>
 
           {isLoading ? (
-            <div className="text-center py-8">Loading products...</div>
+            <div className="text-center py-8 font-nunito text-mfb-green">Loading products...</div>
           ) : (
             <ProductsTable 
               products={filteredProducts} 
