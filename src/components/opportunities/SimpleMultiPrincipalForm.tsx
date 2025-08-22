@@ -15,7 +15,7 @@ import { createTypeSafeResolver } from '@/lib/form-resolver'
 import { useOrganizations } from '@/hooks/useOrganizations'
 import { useContacts } from '@/hooks/useContacts'
 import { useCreateOpportunity } from '@/hooks/useOpportunities'
-import { toast } from 'sonner'
+import { toast } from '@/lib/toast-styles'
 import { OPPORTUNITY_CONTEXTS, OPPORTUNITY_STAGES } from '@/constants/opportunity.constants'
 import { DEFAULT_OPPORTUNITY_STAGE } from '@/lib/opportunity-stage-mapping'
 
