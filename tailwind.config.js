@@ -71,6 +71,17 @@ module.exports = {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        'mfb': {
+          'green': '#7CB342',
+          'green-hover': '#6BA132',
+          'clay': '#EA580C',
+          'cream': '#FEFEF9',
+          'sage': '#F0FDF4',
+          'olive': '#1F2937',
+        },
+      },
+      fontFamily: {
+        'nunito': ['Nunito', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         lg: "var(--radius)",
