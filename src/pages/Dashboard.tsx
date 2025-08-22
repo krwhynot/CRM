@@ -1,5 +1,4 @@
 import React from 'react'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { CardNew, CardHeader as CardHeaderNew, CardTitle as CardTitleNew, CardContent as CardContentNew } from '@/components/ui/new/Card'
 import { useOrganizations } from '@/hooks/useOrganizations'
 import { useOpportunities } from '@/hooks/useOpportunities'
@@ -117,77 +116,77 @@ function DashboardPage() {
           </CardContentNew>
         </CardNew>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-nunito">Active Opportunities</CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
+        <CardNew>
+          <CardHeaderNew className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitleNew className="text-sm font-medium">Active Opportunities</CardTitleNew>
+            <Target className="h-4 w-4 text-mfb-olive/60" />
+          </CardHeaderNew>
+          <CardContentNew>
             <div className="text-2xl font-bold font-nunito text-mfb-green">{activeOpportunities.length}</div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-mfb-olive/60 font-nunito">
               In pipeline
             </p>
-          </CardContent>
-        </Card>
+          </CardContentNew>
+        </CardNew>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-nunito">Total Organizations</CardTitle>
-            <Building2 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
+        <CardNew>
+          <CardHeaderNew className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitleNew className="text-sm font-medium">Total Organizations</CardTitleNew>
+            <Building2 className="h-4 w-4 text-mfb-olive/60" />
+          </CardHeaderNew>
+          <CardContentNew>
             <div className="text-2xl font-bold font-nunito text-mfb-green">{organizations.length}</div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-mfb-olive/60 font-nunito">
               All relationships
             </p>
-          </CardContent>
-        </Card>
+          </CardContentNew>
+        </CardNew>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-nunito">Total Contacts</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
+        <CardNew>
+          <CardHeaderNew className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitleNew className="text-sm font-medium">Total Contacts</CardTitleNew>
+            <Users className="h-4 w-4 text-mfb-olive/60" />
+          </CardHeaderNew>
+          <CardContentNew>
             <div className="text-2xl font-bold font-nunito text-mfb-green">{contacts.length}</div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-mfb-olive/60 font-nunito">
               People in network
             </p>
-          </CardContent>
-        </Card>
+          </CardContentNew>
+        </CardNew>
       </div>
 
       {/* Principal Overview Cards */}
       {principals.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+        <CardNew>
+          <CardHeaderNew>
+            <CardTitleNew className="flex items-center gap-2">
               <Building2 className="h-5 w-5 text-mfb-green" />
               Principal Overview
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </CardTitleNew>
+          </CardHeaderNew>
+          <CardContentNew>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {principals.map(principal => (
                 <PrincipalCard key={principal.id} principal={principal} />
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </CardContentNew>
+        </CardNew>
       )}
 
       {/* Recent Activity */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+      <CardNew>
+        <CardHeaderNew>
+          <CardTitleNew className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5 text-mfb-green" />
             Recent Activity
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </CardTitleNew>
+        </CardHeaderNew>
+        <CardContentNew>
           <ActivityFeed interactions={recentInteractions} />
-        </CardContent>
-      </Card>
+        </CardContentNew>
+      </CardNew>
     </div>
   )
 }
