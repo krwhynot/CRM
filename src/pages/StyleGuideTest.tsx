@@ -1,4 +1,5 @@
-import React from 'react';
+import { Button } from '@/components/ui/button';
+import { ButtonNew } from '@/components/ui/new/Button';
 
 export function StyleGuideTest() {
   return (
@@ -10,7 +11,13 @@ export function StyleGuideTest() {
           <h2 className="text-xl font-semibold mb-4">Current Style</h2>
           {/* Old components will go here */}
           <div className="space-y-4">
-            <p className="text-gray-600">Original components will be displayed here for comparison.</p>
+            <p className="text-gray-600">Original components:</p>
+            <div className="space-x-2">
+              <Button>Save Organization</Button>
+              <Button variant="secondary">Cancel</Button>
+              <Button variant="destructive">Delete</Button>
+              <Button variant="ghost">Edit</Button>
+            </div>
           </div>
         </div>
         
@@ -18,7 +25,18 @@ export function StyleGuideTest() {
           <h2 className="text-xl font-semibold mb-4">New Style</h2>
           {/* New components will go here */}
           <div className="space-y-4">
-            <p className="text-gray-600">New MFB-styled components will be displayed here.</p>
+            <p className="text-gray-600">New MFB-styled components:</p>
+            <div className="space-x-2">
+              <ButtonNew>Save Organization</ButtonNew>
+              <ButtonNew variant="secondary">Cancel</ButtonNew>
+              <ButtonNew variant="danger">Delete</ButtonNew>
+              <ButtonNew variant="ghost">Edit</ButtonNew>
+            </div>
+            <div className="space-x-2 mt-4">
+              <ButtonNew size="sm">Small</ButtonNew>
+              <ButtonNew size="md">Medium</ButtonNew>
+              <ButtonNew size="lg">Large</ButtonNew>
+            </div>
           </div>
         </div>
       </div>
