@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { ButtonNew } from '@/components/ui/new/Button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { CardNew, CardHeader as CardHeaderNew, CardTitle as CardTitleNew, CardDescription as CardDescriptionNew, CardContent as CardContentNew } from '@/components/ui/new/Card';
+import { PriorityBadge } from '@/components/ui/new/PriorityBadge';
 
 export function StyleGuideTest() {
   return (
@@ -59,6 +60,21 @@ export function StyleGuideTest() {
                 <p className="text-sm text-mfb-olive/60 mt-1">Active accounts</p>
               </CardContentNew>
             </CardNew>
+            <div className="mt-4 space-y-2">
+              <p className="text-gray-600 text-sm">Priority Badges:</p>
+              <div className="space-x-2">
+                <PriorityBadge priority="A+" />
+                <PriorityBadge priority="A" />
+                <PriorityBadge priority="B" />
+                <PriorityBadge priority="C" />
+                <PriorityBadge priority="D" />
+              </div>
+              <div className="space-x-2">
+                <PriorityBadge priority="A+" showIcon={false} />
+                <PriorityBadge priority="A" showIcon={false} />
+                <PriorityBadge priority="B" showIcon={false} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
