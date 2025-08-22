@@ -1,5 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { ButtonNew } from '@/components/ui/new/Button';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { CardNew, CardHeader as CardHeaderNew, CardTitle as CardTitleNew, CardDescription as CardDescriptionNew, CardContent as CardContentNew } from '@/components/ui/new/Card';
 
 export function StyleGuideTest() {
   return (
@@ -18,6 +20,16 @@ export function StyleGuideTest() {
               <Button variant="destructive">Delete</Button>
               <Button variant="ghost">Edit</Button>
             </div>
+            <Card className="mt-4">
+              <CardHeader>
+                <CardTitle>Organization Summary</CardTitle>
+                <CardDescription>Key metrics and data</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold">247</p>
+                <p className="text-sm text-gray-500 mt-1">Active accounts</p>
+              </CardContent>
+            </Card>
           </div>
         </div>
         
@@ -37,6 +49,16 @@ export function StyleGuideTest() {
               <ButtonNew size="md">Medium</ButtonNew>
               <ButtonNew size="lg">Large</ButtonNew>
             </div>
+            <CardNew className="mt-4">
+              <CardHeaderNew>
+                <CardTitleNew>Organization Summary</CardTitleNew>
+                <CardDescriptionNew>Key metrics and data</CardDescriptionNew>
+              </CardHeaderNew>
+              <CardContentNew>
+                <p className="text-3xl font-bold font-nunito text-mfb-green">247</p>
+                <p className="text-sm text-mfb-olive/60 mt-1">Active accounts</p>
+              </CardContentNew>
+            </CardNew>
           </div>
         </div>
       </div>
