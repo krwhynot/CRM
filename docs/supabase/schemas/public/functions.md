@@ -48,6 +48,12 @@
 - **Language**: plpgsql
 - **Purpose**: Validates UI readiness before removing legacy database columns
 
+### create_contact_with_org
+- **Arguments**: p_org_name text, p_contact_data jsonb, p_org_type text DEFAULT 'customer', p_org_data jsonb DEFAULT '{}'
+- **Returns**: TABLE(contact_id uuid, contact_data jsonb, organization_id uuid, organization_data jsonb, is_new_org boolean)
+- **Language**: plpgsql
+- **Purpose**: Creates a contact with associated organization, handling organization creation if needed
+
 ### get_enum_display_info
 - **Arguments**: enum_type text, enum_value text  
 - **Returns**: record (table format)

@@ -33,6 +33,9 @@
 | is_distributor | boolean | YES | false | TRUE if this organization is a Distributor |
 | segment | text | NO | 'Standard'::text | Business segment classification (e.g. Premium, Value, Specialty, Standard) |
 | priority | varchar(1) | NO | 'C'::character varying | Business priority level: A=Highest, B=High, C=Medium, D=Low priority |
+| primary_manager_name | text | YES | | Primary manager name (text field for Excel import compatibility) |
+| secondary_manager_name | text | YES | | Secondary manager name (text field for Excel import compatibility) |
+| import_notes | text | YES | | Notes and unmapped data from Excel import process |
 | search_tsv | tsvector | YES | | Full-text search vector |
 
 ## Primary Key

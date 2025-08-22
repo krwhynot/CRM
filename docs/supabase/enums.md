@@ -34,6 +34,12 @@
 - Demo Scheduled
 - Closed - Won
 - Closed - Lost
+- lead
+- qualified
+- proposal
+- negotiation
+- closed_won
+- closed_lost
 
 ## opportunity_status
 - Active
@@ -42,6 +48,12 @@
 - Closed - Lost
 - Nurturing
 - Qualified
+- active
+- on_hold
+- nurturing
+- qualified
+- closed_won
+- closed_lost
 
 ## organization_size
 - small

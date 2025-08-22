@@ -40,13 +40,13 @@ This directory contains complete documentation of the KitchenPantry CRM database
 ## Database Statistics
 - **Tables**: 26 total (16 base tables + 10 lookup/relationship tables)
 - **Core Entity Tables**: 5 (Organizations, Contacts, Products, Opportunities, Interactions)
-- **Functions**: 23 custom + 35+ built-in (excluding extension functions)
-- **RLS Policies**: 31 across 9 secured tables
+- **Functions**: 38 custom functions (excluding system/extension functions)
+- **RLS Policies**: 35 across 9 secured tables
 - **Views**: 7 (including materialized views and reporting views)
-- **Extensions**: 3 (citext, pg_trgm, uuid-ossp)
+- **Extensions**: 9 installed (citext, pg_trgm, uuid-ossp, hypopg, pg_stat_statements, pgcrypto, supabase_vault, pg_graphql, plpgsql)
 - **Enum Types**: 9 (contact_role, interaction_type, opportunity_stage, etc.)
 - **Indexes**: 42 performance-optimized indexes with GIN and trigram support
-- **Triggers**: 52 triggers for audit, validation, and business logic enforcement
+- **Triggers**: 56 triggers for audit, validation, and business logic enforcement
 
 ## Core Entity Relationships
 - **Organizations** → **Contacts** (1:many)
