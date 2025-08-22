@@ -1,0 +1,27 @@
+/* Master Food Brokers Brand Colors */
+:root {
+  /* Primary Palette */
+  --mfb-green: #7CB342;
+  --mfb-green-hover: #6BA132;
+  --mfb-green-light: #7CB34220;
+  
+  /* Accent Colors */
+  --mfb-clay: #EA580C;
+  --mfb-clay-hover: #DC2626;
+  
+  /* Backgrounds */
+  --mfb-cream: #FEFEF9;
+  --mfb-sage-tint: #F0FDF4;
+  --mfb-white: #FFFFFF;
+  
+  /* Text Colors */
+  --mfb-olive: #1F2937;
+  --mfb-olive-light: #4B5563;
+  --mfb-olive-lighter: #9CA3AF;
+  
+  /* Semantic Colors */
+  --mfb-success: #7CB342;
+  --mfb-warning: #FBBF24;
+  --mfb-danger: #EF4444;
+  --mfb-info: #0EA5E9;
+}
