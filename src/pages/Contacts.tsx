@@ -63,7 +63,7 @@ function ContactsPage() {
             <Users className="h-8 w-8 text-mfb-green" />
             Contacts
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-lg text-mfb-olive/70 font-nunito">
             Manage your network of contacts and relationships
           </p>
         </div>

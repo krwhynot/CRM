@@ -177,7 +177,7 @@ function OpportunitiesPage() {
             <Target className="h-8 w-8 text-mfb-green" />
             Opportunities
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-lg text-mfb-olive/70 font-nunito">
             Track and manage your sales pipeline and deals
           </p>
         </div>

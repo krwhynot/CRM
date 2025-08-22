@@ -36,7 +36,7 @@ function MultiPrincipalOpportunityPage() {
               <Users className="h-8 w-8 text-mfb-green" />
               New Multi-Principal Opportunity
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-lg text-mfb-olive/70 font-nunito">
               Create opportunities with multiple principals and complex participant relationships
             </p>
           </div>

@@ -65,7 +65,7 @@ function ProductsPage() {
             <Package className="h-8 w-8 text-mfb-green" />
             Products
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-lg text-mfb-olive/70 font-nunito">
             Manage your product catalog and inventory
           </p>
         </div>

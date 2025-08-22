@@ -9,7 +9,7 @@ import { LabelNew } from '@/components/ui/new/Label';
 export function StyleGuideTest() {
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold mb-8">Style Guide Test Page</h1>
+      <h1 className="text-3xl font-bold font-nunito text-mfb-olive mb-6">Style Guide Test Page</h1>
       
       <div className="grid grid-cols-2 gap-8">
         <div>

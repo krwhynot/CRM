@@ -36,11 +36,11 @@ function ImportExportPage() {
 
       {/* Page Header */}
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Upload className="h-8 w-8 text-blue-600" />
+        <h1 className="text-3xl font-bold font-nunito text-mfb-olive mb-6 flex items-center gap-2">
+          <Upload className="h-8 w-8 text-mfb-green" />
           Import/Export
         </h1>
-        <p className="text-muted-foreground mt-1">
+        <p className="text-lg text-mfb-olive/70 font-nunito">
           Import organizations from Excel files or export your data
         </p>
       </div>

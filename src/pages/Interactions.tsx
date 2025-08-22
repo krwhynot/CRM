@@ -77,7 +77,7 @@ function InteractionsPage() {
             <MessageSquare className="h-8 w-8 text-mfb-green" />
             Interactions
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-lg text-mfb-olive/70 font-nunito">
             Track all customer touchpoints and communication history
           </p>
         </div>

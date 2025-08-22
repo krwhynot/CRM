@@ -92,7 +92,7 @@ function OrganizationsPage() {
             <Building2 className="h-8 w-8 text-mfb-green" />
             Organizations
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-lg text-mfb-olive/70 font-nunito">
             Manage your principals, retailers, and business relationships
           </p>
         </div>
