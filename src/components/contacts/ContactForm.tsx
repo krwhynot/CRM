@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { ButtonNew } from '@/components/ui/new/Button'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useForm } from 'react-hook-form'
@@ -27,6 +28,7 @@ export function ContactForm({
   submitLabel = 'Save Contact',
   preselectedOrganization
 }: ContactFormProps) {
+  const USE_NEW_STYLE = localStorage.getItem('useNewStyle') === 'true';
   const { data: organizations = [] } = useOrganizations()
   
   const form = useForm<ContactFormData>({
@@ -190,9 +192,15 @@ export function ContactForm({
               </div>
             </ProgressiveDetails>
 
-            <Button type="submit" disabled={loading} className="w-full h-11">
-              {loading ? 'Saving...' : submitLabel}
-            </Button>
+            {USE_NEW_STYLE ? (
+              <ButtonNew type="submit" disabled={loading} className="w-full">
+                {loading ? 'Saving...' : submitLabel}
+              </ButtonNew>
+            ) : (
+              <Button type="submit" disabled={loading} className="w-full h-11">
+                {loading ? 'Saving...' : submitLabel}
+              </Button>
+            )}
           </form>
         </Form>
       </CardContent>
