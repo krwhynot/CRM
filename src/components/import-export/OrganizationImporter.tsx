@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
+import { PriorityBadge } from '@/components/ui/new/PriorityBadge'
 import {
   Table,
   TableBody,
@@ -110,6 +111,9 @@ const EXPECTED_COLUMNS = {
 }
 
 export function OrganizationImporter() {
+  // Feature flag for new MFB styling
+  const USE_NEW_STYLE = localStorage.getItem('useNewStyle') === 'true';
+  
   const [uploadState, setUploadState] = useState<FileUploadState>({
     file: null,
     isDragOver: false,
@@ -755,7 +759,11 @@ export function OrganizationImporter() {
                             <TableRow key={index}>
                               <TableCell className="font-medium">{row.name}</TableCell>
                               <TableCell>
-                                <Badge variant={row.priority === 'A' ? 'default' : 'outline'}>{row.priority}</Badge>
+                                {USE_NEW_STYLE ? (
+                                  <PriorityBadge priority={row.priority as 'A+' | 'A' | 'B' | 'C' | 'D'} />
+                                ) : (
+                                  <Badge variant={row.priority === 'A' ? 'default' : 'outline'}>{row.priority}</Badge>
+                                )}
                               </TableCell>
                               <TableCell>
                                 <Badge variant="outline">{row.type}</Badge>

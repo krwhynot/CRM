@@ -16,6 +16,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { PriorityBadge } from '@/components/ui/new/PriorityBadge'
 import { MoreHorizontal, Pencil, Trash2, Plus, Search, ExternalLink } from 'lucide-react'
 import type { Organization } from '@/types/entities'
 
@@ -36,6 +37,8 @@ export function OrganizationsTable({
   onView,
   onAddNew 
 }: OrganizationsTableProps) {
+  // Feature flag for new MFB styling
+  const USE_NEW_STYLE = localStorage.getItem('useNewStyle') === 'true';
   const [searchTerm, setSearchTerm] = useState('')
 
   const filteredOrganizations = organizations.filter(org =>
@@ -153,9 +156,13 @@ export function OrganizationsTable({
                   
                   {/* Priority */}
                   <TableCell>
-                    <Badge className={getPriorityColor(organization.priority)}>
-                      {organization.priority || 'C'}
-                    </Badge>
+                    {USE_NEW_STYLE ? (
+                      <PriorityBadge priority={organization.priority as 'A+' | 'A' | 'B' | 'C' | 'D' || 'C'} />
+                    ) : (
+                      <Badge className={getPriorityColor(organization.priority)}>
+                        {organization.priority || 'C'}
+                      </Badge>
+                    )}
                   </TableCell>
                   
                   {/* Type */}
