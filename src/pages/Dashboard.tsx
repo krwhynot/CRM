@@ -1,5 +1,6 @@
 import React from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { CardNew, CardHeader as CardHeaderNew, CardTitle as CardTitleNew, CardContent as CardContentNew } from '@/components/ui/new/Card'
 import { useOrganizations } from '@/hooks/useOrganizations'
 import { useOpportunities } from '@/hooks/useOpportunities'
 import { useRecentActivity } from '@/hooks/useInteractions'
@@ -103,18 +104,18 @@ function DashboardPage() {
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Principals</CardTitle>
-            <Building2 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{principals.length}</div>
-            <p className="text-xs text-muted-foreground">
+        <CardNew>
+          <CardHeaderNew className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitleNew className="text-sm font-medium">Total Principals</CardTitleNew>
+            <Building2 className="h-4 w-4 text-mfb-olive/60" />
+          </CardHeaderNew>
+          <CardContentNew>
+            <div className="text-2xl font-bold font-nunito text-mfb-green">{principals.length}</div>
+            <p className="text-xs text-mfb-olive/60 font-nunito">
               Active partnerships
             </p>
-          </CardContent>
-        </Card>
+          </CardContentNew>
+        </CardNew>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
