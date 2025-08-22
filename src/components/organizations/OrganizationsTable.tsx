@@ -17,7 +17,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { PriorityBadge } from '@/components/ui/new/PriorityBadge'
+import { TypeIndicator } from '@/components/ui/new/TypeIndicator'
+import { QuickActionsBar } from '@/components/ui/new/QuickActionsBar'
 import { MoreHorizontal, Pencil, Trash2, Plus, Search, ExternalLink } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import type { Organization } from '@/types/entities'
 
 interface OrganizationsTableProps {
@@ -37,8 +40,8 @@ export function OrganizationsTable({
   onView,
   onAddNew 
 }: OrganizationsTableProps) {
-  // Feature flag for new MFB styling
-  const USE_NEW_STYLE = localStorage.getItem('useNewStyle') === 'true';
+  // Feature flag for new MFB styling (default: enabled, opt-out with 'false')
+  const USE_NEW_STYLE = localStorage.getItem('useNewStyle') !== 'false';
   const [searchTerm, setSearchTerm] = useState('')
 
   const filteredOrganizations = organizations.filter(org =>
@@ -122,8 +125,20 @@ export function OrganizationsTable({
         )}
       </div>
 
+      {/* Quick Actions Bar - only show with new styling */}
+      {USE_NEW_STYLE && (
+        <QuickActionsBar
+          onQuickAdd={onAddNew}
+          selectedCount={0} // TODO: Implement selection state
+          onBulkAction={(action: string) => {
+            console.log('Bulk action selected:', action);
+            // TODO: Implement bulk operations
+          }}
+        />
+      )}
+
       <div className="border rounded-lg overflow-x-auto">
-        <Table>
+        <Table className={cn(USE_NEW_STYLE && "compact-table")}>
           <TableHeader>
             <TableRow>
               <TableHead className="min-w-[180px]">Organization</TableHead>
@@ -151,7 +166,14 @@ export function OrganizationsTable({
                 <TableRow key={organization.id}>
                   {/* Organization Name */}
                   <TableCell className="font-medium">
-                    <div className="font-semibold">{organization.name}</div>
+                    <div className="flex items-center gap-2">
+                      {USE_NEW_STYLE && (
+                        <TypeIndicator type={organization.type as any || 'Customer'} />
+                      )}
+                      <span className="truncate max-w-[250px] font-semibold">
+                        {organization.name}
+                      </span>
+                    </div>
                   </TableCell>
                   
                   {/* Priority */}

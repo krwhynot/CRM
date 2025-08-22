@@ -1,0 +1,82 @@
+/* Compact table styles for improved density */
+.compact-table {
+  @apply text-sm;
+}
+
+.compact-table th {
+  @apply py-2 px-4 font-semibold text-[hsl(var(--foreground))];
+}
+
+.compact-table td {
+  @apply py-2 px-4;
+}
+
+.compact-table tr {
+  @apply h-11 hover:bg-muted/30 transition-colors;
+}
+
+.compact-table thead tr {
+  @apply hover:bg-transparent border-b;
+}
+
+/* MFB Green shimmer loading animation */
+.animate-mfb-pulse {
+  animation: mfb-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes mfb-pulse {
+  0%, 100% {
+    background: transparent;
+  }
+  50% {
+    background: linear-gradient(90deg, 
+      transparent, 
+      hsl(var(--primary) / 0.1), 
+      transparent
+    );
+  }
+}
+
+/* Compact spacing utilities */
+.space-y-compact > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+}
+
+/* Enhanced hover states for better interactivity */
+.hover-lift {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+.hover-lift:hover {
+  @apply transform translate-y-[-1px] shadow-md;
+}
+
+/* Compact card grid improvements */
+.compact-grid {
+  @apply grid gap-3 grid-cols-1 sm:grid-cols-2 tablet:grid-cols-2 laptop:grid-cols-4;
+}
+
+/* MFB branded focus ring */
+.focus-mfb {
+  @apply focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))] focus:ring-offset-2;
+}
+
+/* Subtle border improvements */
+.border-subtle {
+  @apply border border-border/50;
+}
+
+/* Compact padding variants */
+.p-compact {
+  @apply p-3;
+}
+
+.px-compact {
+  @apply px-3;
+}
+
+.py-compact {
+  @apply py-2;
+}
