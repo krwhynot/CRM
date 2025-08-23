@@ -22,6 +22,14 @@ export type OpportunityWithRelations = Opportunity & {
   interactions?: Database['public']['Tables']['interactions']['Row'][]
 }
 
+// Opportunity with last activity for table display
+export type OpportunityWithLastActivity = OpportunityWithRelations & {
+  last_activity_date?: string | null
+  last_activity_type?: string | null
+  interaction_count?: number
+  stage_updated_at?: string | null
+}
+
 // Opportunity validation schema - updated for form compatibility
 export const opportunitySchema = yup.object({
   // REQUIRED FIELDS per specification

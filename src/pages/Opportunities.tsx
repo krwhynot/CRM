@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react'
 import { toast } from '@/lib/toast-styles'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { OpportunitiesTable } from '@/components/opportunities/OpportunitiesTable'
 import { OpportunityForm } from '@/components/opportunities/OpportunityForm'
 import { InteractionForm } from '@/components/interactions/InteractionForm'
@@ -237,34 +236,6 @@ function OpportunitiesPage() {
       </div>
 
 
-      {/* Pipeline Overview */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Pipeline Overview</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-            {['New Lead', 'Initial Outreach', 'Sample/Visit Offered', 'Awaiting Response', 'Feedback Logged', 'Demo Scheduled', 'Closed - Won'].map(stage => {
-              const stageOpportunities = opportunities.filter(opp => opp.stage === stage)
-              const stageValue = stageOpportunities
-                .filter(opp => opp.estimated_value)
-                .reduce((sum, opp) => sum + (opp.estimated_value || 0), 0)
-              
-              return (
-                <div key={stage} className="p-4 border rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-medium text-sm capitalize">{stage.replace('_', ' ')}</h3>
-                    <Badge variant="secondary">{stageOpportunities.length}</Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    ${stageValue.toLocaleString()}
-                  </p>
-                </div>
-              )
-            })}
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Opportunity Detail View with Timeline */}
       {selectedOpportunityId && (
@@ -358,10 +329,10 @@ function OpportunitiesPage() {
         <div className="text-center py-8 font-nunito text-mfb-green bg-white rounded-lg border shadow-sm p-12">Loading opportunities...</div>
       ) : (
         <OpportunitiesTable 
-          opportunities={opportunities} 
           onEdit={handleEdit}
           onDelete={handleDelete}
           onView={handleViewOpportunity}
+          onAddNew={() => setIsEditDialogOpen(true)}
         />
       )}
 

@@ -4,7 +4,8 @@ import type {
   OpportunityInsert, 
   OpportunityUpdate, 
   OpportunityFilters,
-  OpportunityWithRelations 
+  OpportunityWithRelations,
+  OpportunityWithLastActivity 
 } from '@/types/opportunity.types'
 import type { Database } from '@/lib/database.types'
 
@@ -506,5 +507,162 @@ export function useDeleteOpportunity() {
       // Remove from individual cache
       queryClient.removeQueries({ queryKey: opportunityKeys.detail(deletedOpportunity.id) })
     },
+  })
+}
+
+// Hook to fetch opportunities with last activity data for table display
+export function useOpportunitiesWithLastActivity(filters?: OpportunityFilters) {
+  return useQuery({
+    queryKey: [...opportunityKeys.all, 'with-activity', { filters }],
+    queryFn: async () => {
+      // First get opportunities with basic relations
+      let opportunityQuery = supabase
+        .from('opportunities')
+        .select(`
+          *,
+          organization:organizations!opportunities_organization_id_fkey(*),
+          contact:contacts!opportunities_contact_id_fkey(*),
+          principal_organization:organizations!opportunities_principal_organization_id_fkey(*)
+        `)
+        .is('deleted_at', null)
+
+      // Apply filters (same as useOpportunities)
+      if (filters?.stage) {
+        if (Array.isArray(filters.stage)) {
+          opportunityQuery = opportunityQuery.in('stage', filters.stage)
+        } else {
+          opportunityQuery = opportunityQuery.eq('stage', filters.stage)
+        }
+      }
+
+      if (filters?.priority) {
+        if (Array.isArray(filters.priority)) {
+          opportunityQuery = opportunityQuery.in('priority', filters.priority)
+        } else {
+          opportunityQuery = opportunityQuery.eq('priority', filters.priority)
+        }
+      }
+
+      if (filters?.organization_id) {
+        opportunityQuery = opportunityQuery.eq('organization_id', filters.organization_id)
+      }
+
+      if (filters?.principal_organization_id) {
+        opportunityQuery = opportunityQuery.eq('principal_organization_id', filters.principal_organization_id)
+      }
+
+      if (filters?.contact_id) {
+        opportunityQuery = opportunityQuery.eq('contact_id', filters.contact_id)
+      }
+
+      if (filters?.estimated_value_min) {
+        opportunityQuery = opportunityQuery.gte('estimated_value', filters.estimated_value_min)
+      }
+
+      if (filters?.estimated_value_max) {
+        opportunityQuery = opportunityQuery.lte('estimated_value', filters.estimated_value_max)
+      }
+
+      if (filters?.probability_min) {
+        opportunityQuery = opportunityQuery.gte('probability', filters.probability_min)
+      }
+
+      if (filters?.probability_max) {
+        opportunityQuery = opportunityQuery.lte('probability', filters.probability_max)
+      }
+
+      const { data: opportunities, error: oppError } = await opportunityQuery
+
+      if (oppError) throw oppError
+      if (!opportunities || opportunities.length === 0) return []
+
+      // Get last activity for each opportunity
+      const opportunityIds = opportunities.map(opp => opp.id)
+      
+      const { data: lastActivities, error: actError } = await supabase
+        .from('interactions')
+        .select('opportunity_id, interaction_date, type')
+        .in('opportunity_id', opportunityIds)
+        .is('deleted_at', null)
+        .order('interaction_date', { ascending: false })
+
+      if (actError) throw actError
+
+      // Get interaction counts per opportunity
+      const { data: interactionCounts, error: countError } = await supabase
+        .from('interactions')
+        .select('opportunity_id')
+        .in('opportunity_id', opportunityIds)
+        .is('deleted_at', null)
+
+      if (countError) throw countError
+
+      // Group interactions by opportunity_id to get last activity and count
+      const lastActivityMap = new Map<string, { date: string; type: string; count: number }>()
+      
+      // Count interactions per opportunity
+      const countMap = interactionCounts.reduce((acc, interaction) => {
+        acc[interaction.opportunity_id] = (acc[interaction.opportunity_id] || 0) + 1
+        return acc
+      }, {} as Record<string, number>)
+
+      // Get last activity per opportunity
+      const activityMap = new Map<string, { date: string; type: string }>()
+      lastActivities?.forEach(activity => {
+        if (!activityMap.has(activity.opportunity_id)) {
+          activityMap.set(activity.opportunity_id, {
+            date: activity.interaction_date,
+            type: activity.type
+          })
+        }
+      })
+
+      // Combine data
+      activityMap.forEach((activity, oppId) => {
+        lastActivityMap.set(oppId, {
+          date: activity.date,
+          type: activity.type,
+          count: countMap[oppId] || 0
+        })
+      })
+
+      // Add interaction counts for opportunities without activities
+      Object.keys(countMap).forEach(oppId => {
+        if (!lastActivityMap.has(oppId)) {
+          lastActivityMap.set(oppId, {
+            date: '',
+            type: '',
+            count: countMap[oppId] || 0
+          })
+        }
+      })
+
+      // Merge opportunities with their last activity data
+      const result: OpportunityWithLastActivity[] = opportunities.map(opp => {
+        const activity = lastActivityMap.get(opp.id)
+        return {
+          ...opp,
+          organization: opp.organization || undefined,
+          contact: opp.contact || undefined,
+          principal_organization: opp.principal_organization || undefined,
+          last_activity_date: activity?.date || null,
+          last_activity_type: activity?.type || null,
+          interaction_count: activity?.count || 0,
+          stage_updated_at: null // TODO: Add stage tracking in future iteration
+        }
+      })
+
+      // Sort by last activity date (most recent first), then by created_at
+      return result.sort((a, b) => {
+        if (a.last_activity_date && b.last_activity_date) {
+          return new Date(b.last_activity_date).getTime() - new Date(a.last_activity_date).getTime()
+        }
+        if (a.last_activity_date && !b.last_activity_date) return -1
+        if (!a.last_activity_date && b.last_activity_date) return 1
+        // Both have no activity, sort by created_at
+        return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+      })
+    },
+    staleTime: 2 * 60 * 1000, // 2 minutes (shorter because activity changes frequently)
   })
 }
