@@ -9,7 +9,7 @@ import { InteractionForm } from '@/components/interactions/InteractionForm'
 import { InteractionTimeline } from '@/components/interactions/InteractionTimeline'
 import { useOpportunities, useCreateOpportunity, useUpdateOpportunity, useDeleteOpportunity } from '@/hooks/useOpportunities'
 import { useInteractionsByOpportunity, useCreateInteraction, useUpdateInteraction, useDeleteInteraction } from '@/hooks/useInteractions'
-import { Target, Plus, Search, DollarSign, TrendingUp, Users, X } from 'lucide-react'
+import { Target, Plus, Users, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import type { Opportunity, OpportunityUpdate, InteractionWithRelations } from '@/types/entities'
 import type { InteractionFormData } from '@/types/interaction.types'
@@ -25,7 +25,6 @@ import { Badge } from '@/components/ui/badge'
 
 function OpportunitiesPage() {
   const navigate = useNavigate()
-  const [searchTerm, setSearchTerm] = useState('')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [editingOpportunity, setEditingOpportunity] = useState<Opportunity | null>(null)
@@ -46,25 +45,7 @@ function OpportunitiesPage() {
   const updateInteractionMutation = useUpdateInteraction()
   const deleteInteractionMutation = useDeleteInteraction()
 
-  const filteredOpportunities = opportunities.filter(opp =>
-    opp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    opp.stage.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (opp.organization?.name && opp.organization.name.toLowerCase().includes(searchTerm.toLowerCase()))
-  )
 
-  const activeOpportunities = opportunities.filter(opp => 
-    !['Closed - Won', 'Closed - Lost'].includes(opp.stage)
-  )
-  
-  const wonOpportunities = opportunities.filter(opp => opp.stage === 'Closed - Won')
-  
-  const totalValue = opportunities
-    .filter(opp => opp.estimated_value)
-    .reduce((sum, opp) => sum + (opp.estimated_value || 0), 0)
-
-  const activeValue = activeOpportunities
-    .filter(opp => opp.estimated_value)
-    .reduce((sum, opp) => sum + (opp.estimated_value || 0), 0)
 
   const handleEdit = (opportunity: Opportunity) => {
     setEditingOpportunity(opportunity)
@@ -255,53 +236,6 @@ function OpportunitiesPage() {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-nunito">Total Opportunities</CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-nunito text-mfb-green">{opportunities.length}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-nunito">Active Pipeline</CardTitle>
-            <TrendingUp className="h-4 w-4 text-mfb-green" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-nunito text-mfb-green">{activeOpportunities.length}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-nunito">Won Deals</CardTitle>
-            <Target className="h-4 w-4 text-mfb-green" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-nunito text-mfb-green">{wonOpportunities.length}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-nunito">Pipeline Value</CardTitle>
-            <DollarSign className="h-4 w-4 text-mfb-green" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-nunito text-mfb-green">
-              ${activeValue.toLocaleString()}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              ${totalValue.toLocaleString()} total value
-            </p>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Pipeline Overview */}
       <Card>
@@ -419,34 +353,17 @@ function OpportunitiesPage() {
         })()
       )}
 
-      {/* Search and Filter */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Opportunities</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <Search className="h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search opportunities by title, stage, or organization..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="max-w-sm"
-            />
-          </div>
-
-          {isLoading ? (
-            <div className="text-center py-8 font-nunito text-mfb-green">Loading opportunities...</div>
-          ) : (
-            <OpportunitiesTable 
-              opportunities={filteredOpportunities} 
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              onView={handleViewOpportunity}
-            />
-          )}
-        </CardContent>
-      </Card>
+      {/* Opportunities Table */}
+      {isLoading ? (
+        <div className="text-center py-8 font-nunito text-mfb-green bg-white rounded-lg border shadow-sm p-12">Loading opportunities...</div>
+      ) : (
+        <OpportunitiesTable 
+          opportunities={opportunities} 
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onView={handleViewOpportunity}
+        />
+      )}
 
       {/* Add/Edit Interaction Dialog */}
       <Dialog open={isInteractionDialogOpen} onOpenChange={setIsInteractionDialogOpen}>

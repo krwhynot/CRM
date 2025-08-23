@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { toast } from '@/lib/toast-styles'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { OrganizationsTable } from '@/components/organizations/OrganizationsTable'
 import { OrganizationForm } from '@/components/organizations/OrganizationForm'
+import { PageHeader } from '@/components/ui/new/PageHeader'
 import { useOrganizations, useCreateOrganization, useUpdateOrganization, useDeleteOrganization, useRefreshOrganizations } from '@/hooks/useOrganizations'
-import { Building2, Plus, Search } from 'lucide-react'
+import { Plus } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import {
   Dialog,
   DialogContent,
@@ -29,11 +29,13 @@ import { OrganizationsErrorBoundary } from '@/components/error-boundaries/QueryE
 import type { Organization } from '@/types/entities'
 
 function OrganizationsPage() {
-  const [searchTerm, setSearchTerm] = useState('')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null)
+  
+  // Feature flag for new MFB styling (default: enabled, opt-out with 'false')
+  const USE_NEW_STYLE = localStorage.getItem('useNewStyle') !== 'false';
   
   const { data: organizations = [], isLoading, error, isError } = useOrganizations()
   const createOrganizationMutation = useCreateOrganization()
@@ -51,13 +53,6 @@ function OrganizationsPage() {
     })
   }, [isLoading, isError, organizations.length, error])
 
-  const filteredOrganizations = organizations.filter(org =>
-    org.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (org.industry && org.industry.toLowerCase().includes(searchTerm.toLowerCase()))
-  )
-
-  const principals = organizations.filter(org => org.type === 'principal')
-  const retailers = organizations.filter(org => org.type === 'customer')
 
   const handleEdit = (organization: Organization) => {
     setSelectedOrganization(organization)
@@ -85,20 +80,20 @@ function OrganizationsPage() {
 
   return (
     <OrganizationsErrorBoundary>
-      <div className="space-y-6">
+      <div className={cn("min-h-screen", USE_NEW_STYLE && "bg-[var(--mfb-cream)]")}>
+        <div className={cn("max-w-7xl mx-auto p-6", USE_NEW_STYLE && "space-y-8")}>
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold font-nunito text-mfb-olive mb-6 flex items-center gap-2">
-            <Building2 className="h-8 w-8 text-mfb-green" />
-            Organizations
-          </h1>
-          <p className="text-lg text-mfb-olive/70 font-nunito">
-            Manage your principals, retailers, and business relationships
-          </p>
-        </div>
+        <PageHeader 
+          title="Manage Organizations"
+          subtitle="Principals, Retailers & Partners"
+          count={organizations.length}
+        />
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className={cn(
+              "btn-primary ml-6",
+              USE_NEW_STYLE && "shadow hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+            )}>
               <Plus className="h-4 w-4 mr-2" />
               Add Organization
             </Button>
@@ -141,85 +136,35 @@ function OrganizationsPage() {
         </Dialog>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-nunito">Total Organizations</CardTitle>
-            <Building2 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-nunito text-mfb-green">{organizations.length}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-nunito">Principals</CardTitle>
-            <Building2 className="h-4 w-4 text-mfb-green" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-nunito text-mfb-green">{principals.length}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-nunito">Retailers</CardTitle>
-            <Building2 className="h-4 w-4 text-mfb-green" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-nunito text-mfb-green">{retailers.length}</div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Search and Filter */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Organizations</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <Search className="h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search organizations by name or industry..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="max-w-sm"
-            />
+      {/* Organizations Table */}
+      {isError ? (
+        <div className="text-center py-8 space-y-4 bg-white rounded-lg border shadow-sm p-12">
+          <div className="text-red-600 font-medium">Failed to load organizations</div>
+          <div className="text-gray-500 text-sm">
+            {error?.message || 'An unexpected error occurred while fetching organizations.'}
           </div>
-
-          {isError ? (
-            <div className="text-center py-8 space-y-4">
-              <div className="text-red-600 font-medium">Failed to load organizations</div>
-              <div className="text-gray-500 text-sm">
-                {error?.message || 'An unexpected error occurred while fetching organizations.'}
-              </div>
-              <Button 
-                onClick={refreshOrganizations} 
-                variant="outline"
-                className="mt-2"
-              >
-                Refresh Data
-              </Button>
-            </div>
-          ) : isLoading ? (
-            <div className="text-center py-8 space-y-2">
-              <div className="font-nunito text-mfb-green">Loading organizations...</div>
-              <div className="text-sm text-mfb-olive/60 font-nunito">
-                This should only take a few seconds
-              </div>
-            </div>
-          ) : (
-            <OrganizationsTable 
-              organizations={filteredOrganizations}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
-          )}
-        </CardContent>
-      </Card>
+          <Button 
+            onClick={refreshOrganizations} 
+            variant="outline"
+            className="mt-2"
+          >
+            Refresh Data
+          </Button>
+        </div>
+      ) : isLoading ? (
+        <div className="text-center py-8 space-y-2 bg-white rounded-lg border shadow-sm p-12">
+          <div className="font-nunito text-mfb-green">Loading organizations...</div>
+          <div className="text-sm text-mfb-olive/60 font-nunito">
+            This should only take a few seconds
+          </div>
+        </div>
+      ) : (
+        <OrganizationsTable 
+          organizations={organizations}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      )}
 
       {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
@@ -291,6 +236,7 @@ function OrganizationsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+        </div>
       </div>
     </OrganizationsErrorBoundary>
   )

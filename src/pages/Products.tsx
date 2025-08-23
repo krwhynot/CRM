@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import { toast } from '@/lib/toast-styles'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { ProductsTable } from '@/components/products/ProductsTable'
 import { ProductForm } from '@/components/products/ProductForm'
+import { PageHeader } from '@/components/ui/new/PageHeader'
 import { useProducts, useCreateProduct, useUpdateProduct, useDeleteProduct } from '@/hooks/useProducts'
-import { Package, Plus, Search, Archive, Star } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import type { Product, ProductUpdate } from '@/types/entities'
 import {
   Dialog,
@@ -15,10 +14,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Badge } from '@/components/ui/badge'
 
 function ProductsPage() {
-  const [searchTerm, setSearchTerm] = useState('')
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
@@ -27,18 +24,7 @@ function ProductsPage() {
   const updateProductMutation = useUpdateProduct()
   const deleteProductMutation = useDeleteProduct()
 
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (product.sku && product.sku.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (product.category && product.category.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (product.principal?.name && product.principal.name.toLowerCase().includes(searchTerm.toLowerCase()))
-  )
 
-  const activeProducts = products.length // Just show total for now
-  const inactiveProducts = 0 // No inactive tracking yet
-  
-  // Group products by category
-  const categories = [...new Set(products.map(p => p.category).filter(Boolean))]
 
   const handleEdit = (product: Product) => {
     setEditingProduct(product)
@@ -58,20 +44,16 @@ function ProductsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold font-nunito text-mfb-olive mb-6 flex items-center gap-2">
-            <Package className="h-8 w-8 text-mfb-green" />
-            Products
-          </h1>
-          <p className="text-lg text-mfb-olive/70 font-nunito">
-            Manage your product catalog and inventory
-          </p>
-        </div>
+        <PageHeader 
+          title="Manage Products"
+          subtitle="Catalog & Inventory"
+          count={products.length}
+        />
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="ml-6">
               <Plus className="h-4 w-4 mr-2" />
               Add Product
             </Button>
@@ -130,105 +112,16 @@ function ProductsPage() {
         </Dialog>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-nunito">Total Products</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-nunito text-mfb-green">{products.length}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-nunito">Active Products</CardTitle>
-            <Star className="h-4 w-4 text-mfb-green" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-nunito text-mfb-green">{activeProducts}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-nunito">Inactive Products</CardTitle>
-            <Archive className="h-4 w-4 text-mfb-clay" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-nunito text-mfb-green">{inactiveProducts}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-nunito">Categories</CardTitle>
-            <Package className="h-4 w-4 text-mfb-green" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-nunito text-mfb-green">{categories.length}</div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Categories Overview */}
-      {categories.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Categories Overview</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {categories.map(category => {
-                const categoryProducts = products.filter(p => p.category === category)
-                const activeCount = categoryProducts.length // All products are considered active for now
-                
-                return (
-                  <div key={category} className="p-4 border rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium text-sm">{category}</h3>
-                      <Badge variant="secondary">{categoryProducts.length}</Badge>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {activeCount} products
-                    </p>
-                  </div>
-                )
-              })}
-            </div>
-          </CardContent>
-        </Card>
+      {/* Products Table */}
+      {isLoading ? (
+        <div className="text-center py-8 font-nunito text-mfb-green bg-white rounded-lg border shadow-sm p-12">Loading products...</div>
+      ) : (
+        <ProductsTable 
+          products={products} 
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
       )}
-
-      {/* Search and Filter */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Products</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <Search className="h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search products by name, SKU, category, or organization..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="max-w-sm"
-            />
-          </div>
-
-          {isLoading ? (
-            <div className="text-center py-8 font-nunito text-mfb-green">Loading products...</div>
-          ) : (
-            <ProductsTable 
-              products={filteredProducts} 
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
-          )}
-        </CardContent>
-      </Card>
     </div>
   )
 }
