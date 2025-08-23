@@ -14,7 +14,7 @@ import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { setupPerformanceMonitoring } from '@/lib/performance'
 
 // Lazy load main pages for code splitting
-const DashboardPage = lazy(() => import('@/pages/Dashboard'))
+const HomePage = lazy(() => import('@/pages/Home'))
 const OrganizationsPage = lazy(() => import('@/pages/Organizations'))
 const ContactsPage = lazy(() => import('@/pages/Contacts'))
 const OpportunitiesPage = lazy(() => import('@/pages/Opportunities'))
@@ -73,7 +73,7 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <Suspense fallback={<LoadingSpinner />}>
-                      <DashboardPage />
+                      <HomePage />
                     </Suspense>
                   </Layout>
                 </ProtectedRoute>
