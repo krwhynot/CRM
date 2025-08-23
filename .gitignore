@@ -62,3 +62,13 @@ Thumbs.db
 
 # MCP Configuration (contains secrets)
 .mcp.json
+
+# Backup files and temporary artifacts
+*.backup
+*.backup.*
+backups/
+tests.backup.*
+*-pre-migration.*
+*-post-migration.*
+type-errors.log
+emergency-*.sh
