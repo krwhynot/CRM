@@ -66,12 +66,15 @@ const yAxisLabels = ['15', '12', '9', '6', '3', '0']
 export function ChartCard() {
   const [activeView, setActiveView] = useState('interactions')
   const [activePeriod, setActivePeriod] = useState('Last 8 Weeks')
+  
+  // Feature flag for new MFB compact styling (default: enabled, opt-out with 'false')
+  const USE_NEW_STYLE = localStorage.getItem('useNewStyle') !== 'false';
 
   return (
-    <div className="bg-white rounded-lg p-6 shadow-[0_4px_12px_rgba(141,198,63,0.1)] border-t-3 border-t-primary-500">
+    <div className={`bg-white rounded-lg shadow-[0_4px_12px_rgba(141,198,63,0.1)] border-t-3 border-t-primary-500 ${USE_NEW_STYLE ? "p-4" : "p-6"}`}>
       {/* Chart Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-base font-semibold text-gray-900 flex items-center gap-2">
+      <div className={`flex justify-between items-center ${USE_NEW_STYLE ? "mb-3" : "mb-4"}`}>
+        <h2 className={`flex items-center gap-2 ${USE_NEW_STYLE ? "text-sm font-bold text-[hsl(var(--foreground))]" : "text-base font-semibold text-gray-900"}`}>
           📈 WEEKLY ACTIVITY OVERVIEW
         </h2>
         <div className="flex gap-2">
@@ -109,8 +112,8 @@ export function ChartCard() {
       </div>
 
       {/* Chart Area */}
-      <div className="relative h-[300px] mb-4">
-        <div className="flex items-end justify-around h-[250px] px-4 border-l-2 border-b-2 border-gray-300 relative">
+      <div className={`relative ${USE_NEW_STYLE ? "h-[280px] mb-3" : "h-[300px] mb-4"}`}>
+        <div className={`flex items-end justify-around px-4 border-l-2 border-b-2 border-gray-300 relative ${USE_NEW_STYLE ? "h-[230px]" : "h-[250px]"}`}>
           {/* Y-axis labels */}
           <div className="absolute -left-8 top-0 h-full flex flex-col justify-between text-[11px] text-gray-500 font-mono">
             {yAxisLabels.map((label, i) => (
@@ -141,7 +144,7 @@ export function ChartCard() {
       </div>
 
       {/* Chart Legend */}
-      <div className="flex flex-wrap gap-4 pt-4 border-t border-gray-200">
+      <div className={`flex flex-wrap gap-4 border-t border-gray-200 ${USE_NEW_STYLE ? "pt-3" : "pt-4"}`}>
         {legendItems.map((item) => (
           <div 
             key={item.id} 

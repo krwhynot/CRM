@@ -132,6 +132,8 @@ function ContactsPage() {
           onDelete={handleDelete}
         />
       )}
+
+
     </div>
   )
 }

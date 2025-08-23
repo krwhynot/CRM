@@ -4,19 +4,32 @@
 }
 
 .compact-table th {
-  @apply py-2 px-4 font-semibold text-[hsl(var(--foreground))];
+  @apply py-4 px-4 font-semibold;
+  background-color: var(--table-header-bg);
+  color: var(--table-header-text);
+  border-bottom: 1px solid var(--table-border);
 }
 
 .compact-table td {
-  @apply py-2 px-4;
+  @apply py-4 px-4;
+  min-height: 48px;
 }
 
-.compact-table tr {
-  @apply h-11 hover:bg-muted/30 transition-colors;
+.compact-table tbody tr {
+  @apply transition-all duration-200 ease-in-out;
+  min-height: 48px;
+  
+  /* Enhanced hover effect with subtle lift */
+  &:hover {
+    background-color: var(--table-row-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
 }
 
 .compact-table thead tr {
   @apply hover:bg-transparent border-b;
+  background-color: var(--table-header-bg);
 }
 
 /* MFB Green shimmer loading animation */
@@ -51,6 +64,65 @@
 
 .hover-lift:hover {
   @apply transform translate-y-[-1px] shadow-md;
+}
+
+/* Enhanced micro-interactions */
+.interactive-element {
+  @apply transition-all duration-200 ease-in-out;
+  @apply hover:scale-105 hover:shadow-lg;
+  @apply active:scale-95 active:shadow-sm;
+}
+
+.button-press {
+  @apply transition-all duration-150 ease-in-out;
+  @apply active:scale-95;
+}
+
+.gentle-bounce {
+  @apply transition-transform duration-300 ease-out;
+  
+  &:hover {
+    animation: gentle-bounce 0.6s ease-in-out;
+  }
+}
+
+@keyframes gentle-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+/* Success feedback animations */
+.success-pulse {
+  animation: success-pulse 0.6s ease-out;
+}
+
+@keyframes success-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(124, 179, 66, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(124, 179, 66, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(124, 179, 66, 0);
+  }
+}
+
+/* Loading shimmer with MFB branding */
+.loading-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(124, 179, 66, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite ease-in-out;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 /* Compact card grid improvements */

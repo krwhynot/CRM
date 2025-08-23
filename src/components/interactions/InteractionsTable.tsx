@@ -16,6 +16,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { QuickActionsBar } from '@/components/ui/new/QuickActionsBar'
 import { 
   MoreHorizontal, 
   Pencil, 
@@ -27,6 +28,7 @@ import {
   Clock,
   AlertCircle
 } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import type { InteractionWithRelations } from '@/types/entities'
 
 interface InteractionsTableProps {
@@ -48,6 +50,8 @@ export function InteractionsTable({
   onAddNew,
   showOrganization = true
 }: InteractionsTableProps) {
+  // Feature flag for new MFB compact styling (default: enabled, opt-out with 'false')
+  const USE_NEW_STYLE = localStorage.getItem('useNewStyle') !== 'false';
   const [searchTerm, setSearchTerm] = useState('')
 
   const filteredInteractions = interactions.filter(interaction =>
@@ -155,8 +159,20 @@ export function InteractionsTable({
         )}
       </div>
 
+      {/* Quick Actions Bar - only show with new styling */}
+      {USE_NEW_STYLE && (
+        <QuickActionsBar
+          onQuickAdd={onAddNew}
+          selectedCount={0} // TODO: Implement selection state
+          onBulkAction={(action: string) => {
+            console.log('Bulk action selected:', action);
+            // TODO: Implement bulk operations
+          }}
+        />
+      )}
+
       <div className="border rounded-lg">
-        <Table>
+        <Table className={cn(USE_NEW_STYLE && "compact-table")}>
           <TableHeader>
             <TableRow>
               <TableHead>Subject</TableHead>

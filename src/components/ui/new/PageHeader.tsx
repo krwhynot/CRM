@@ -18,16 +18,16 @@ export const PageHeader = forwardRef<HTMLDivElement, PageHeaderProps>(
       >
         <div className="w-1 h-8 bg-[hsl(var(--primary))] rounded-full flex-shrink-0" />
         <div className="flex-1 min-w-0">
-          <h1 className="text-2xl font-bold text-[hsl(var(--foreground))]">
+          <h1>
             {title}
             {count !== undefined && (
-              <span className="text-sm font-normal text-muted-foreground ml-2">
+              <span className="text-sm font-normal ml-2" style={{color: 'var(--mfb-olive-light)'}}>
                 ({count} total)
               </span>
             )}
           </h1>
           {subtitle && (
-            <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
+            <p className="text-sm mt-1" style={{color: 'var(--mfb-olive-light)'}}>{subtitle}</p>
           )}
         </div>
       </div>

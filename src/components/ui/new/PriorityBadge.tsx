@@ -9,32 +9,32 @@ export interface PriorityBadgeProps {
 export function PriorityBadge({ priority, showIcon = true, className, ...props }: PriorityBadgeProps) {
   const styles = {
     'A+': {
-      bg: 'bg-red-100',
-      text: 'text-red-700 font-bold',
+      bg: 'bg-[var(--priority-critical-bg)]',
+      text: 'text-[var(--priority-critical-text)] font-bold',
       icon: '🔴',
       label: 'Critical'
     },
     'A': {
-      bg: 'bg-orange-100', 
-      text: 'text-orange-700 font-semibold',
+      bg: 'bg-[var(--priority-high-bg)]', 
+      text: 'text-[var(--priority-high-text)] font-semibold',
       icon: '🟠',
       label: 'High'
     },
     'B': {
-      bg: 'bg-yellow-100',
-      text: 'text-yellow-700',
+      bg: 'bg-[var(--priority-medium-bg)]',
+      text: 'text-[var(--priority-medium-text)]',
       icon: '🟡', 
       label: 'Medium'
     },
     'C': {
-      bg: 'bg-gray-100',
-      text: 'text-gray-600',
+      bg: 'bg-[var(--priority-low-bg)]',
+      text: 'text-[var(--priority-low-text)]',
       icon: '⚪',
       label: 'Low'
     },
     'D': {
-      bg: 'bg-gray-50',
-      text: 'text-gray-400',
+      bg: 'bg-[var(--priority-minimal-bg)]',
+      text: 'text-[var(--priority-minimal-text)]',
       icon: '⚪',
       label: 'Minimal'
     }

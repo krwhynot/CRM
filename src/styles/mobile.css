@@ -1,0 +1,202 @@
+/* Mobile-First Responsive Optimizations */
+
+/* Mobile Card Layout for Tables */
+@media (max-width: 768px) {
+  .mobile-card-view {
+    display: block;
+  }
+  
+  .mobile-card-view .table-container {
+    display: none;
+  }
+  
+  .mobile-card {
+    @apply bg-white rounded-lg border border-gray-200 p-4 mb-4 shadow-sm;
+    @apply transition-all duration-200 ease-in-out;
+    
+    &:hover {
+      @apply shadow-md;
+      transform: translateY(-1px);
+    }
+    
+    &:active {
+      transform: translateY(0);
+      @apply shadow-sm;
+    }
+  }
+  
+  .mobile-card-header {
+    @apply flex items-center justify-between mb-3 pb-2 border-b border-gray-100;
+  }
+  
+  .mobile-card-title {
+    @apply font-nunito font-semibold text-base;
+    color: var(--mfb-olive);
+  }
+  
+  .mobile-card-content {
+    @apply space-y-2;
+  }
+  
+  .mobile-card-field {
+    @apply flex justify-between items-center py-1;
+  }
+  
+  .mobile-card-label {
+    @apply font-nunito text-sm font-medium;
+    color: var(--mfb-olive-light);
+    flex: 0 0 auto;
+    min-width: 80px;
+  }
+  
+  .mobile-card-value {
+    @apply font-nunito text-sm text-right flex-1;
+    color: var(--mfb-olive);
+  }
+  
+  .mobile-card-actions {
+    @apply flex justify-end mt-3 pt-2 border-t border-gray-100;
+  }
+}
+
+/* Bottom Tab Navigation */
+.bottom-tab-nav {
+  @apply fixed bottom-0 left-0 right-0 z-50;
+  @apply bg-white border-t border-gray-200 shadow-lg;
+  @apply flex items-center justify-around;
+  @apply px-2 py-2 pb-safe;
+  min-height: 64px;
+}
+
+.bottom-tab-item {
+  @apply flex flex-col items-center justify-center;
+  @apply px-3 py-2 rounded-lg transition-all duration-200;
+  @apply font-nunito text-xs font-medium;
+  min-width: 64px;
+  min-height: 48px;
+  
+  &.active {
+    background-color: var(--mfb-green-light);
+    color: var(--mfb-green);
+  }
+  
+  &:not(.active) {
+    color: var(--mfb-olive-lighter);
+    
+    &:hover, &:active {
+      background-color: var(--mfb-sage-tint);
+      color: var(--mfb-olive-light);
+    }
+  }
+}
+
+.bottom-tab-icon {
+  @apply w-5 h-5 mb-1;
+}
+
+.bottom-tab-label {
+  @apply text-xs font-medium truncate;
+  max-width: 60px;
+}
+
+/* Mobile-optimized touch targets */
+.mobile-touch-target {
+  min-width: 44px;
+  min-height: 44px;
+  @apply flex items-center justify-center;
+}
+
+/* Mobile search bar */
+.mobile-search {
+  @apply sticky top-0 z-40 bg-white border-b border-gray-200 p-4;
+}
+
+.mobile-search-input {
+  @apply w-full px-4 py-3 rounded-lg border border-gray-300;
+  @apply font-nunito text-base;
+  @apply focus:ring-2 focus:border-transparent;
+  focus-ring-color: var(--mfb-green-focus);
+}
+
+/* Mobile page header */
+.mobile-page-header {
+  @apply px-4 py-4 bg-white border-b border-gray-200;
+}
+
+.mobile-page-title {
+  @apply font-nunito text-xl font-bold;
+  color: var(--mfb-olive);
+}
+
+.mobile-page-subtitle {
+  @apply font-nunito text-sm;
+  color: var(--mfb-olive-light);
+}
+
+/* Mobile-optimized spacing */
+.mobile-container {
+  @apply px-4;
+}
+
+.mobile-section {
+  @apply py-4;
+}
+
+.mobile-content-spacing {
+  /* Add bottom padding for bottom navigation */
+  padding-bottom: 80px;
+}
+
+/* Scrollable table fallback for mobile */
+@media (max-width: 768px) {
+  .table-scroll-mobile {
+    @apply overflow-x-auto;
+    @apply border rounded-lg;
+    
+    /* Ensure table is readable on mobile */
+    table {
+      min-width: 640px;
+    }
+    
+    th, td {
+      @apply px-3 py-3 text-sm;
+      white-space: nowrap;
+    }
+  }
+}
+
+/* iOS-style safe area support */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+
+/* Progressive enhancement for larger screens */
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none !important;
+  }
+  
+  .mobile-card-view {
+    display: none;
+  }
+  
+  .desktop-table-view {
+    display: block;
+  }
+}
+
+/* Tablet optimization (iPad specifically) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .tablet-optimized {
+    @apply grid gap-4;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+  
+  .tablet-card {
+    @apply bg-white rounded-lg border p-6 shadow-sm hover:shadow-md transition-shadow;
+  }
+}
