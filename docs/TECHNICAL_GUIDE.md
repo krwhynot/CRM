@@ -8,7 +8,7 @@ The KitchenPantry CRM is built with a modern, scalable architecture designed for
 - **Frontend**: React 18 + TypeScript + Vite
 - **UI Components**: shadcn/ui with Tailwind CSS
 - **Backend**: Supabase (PostgreSQL + Auth + RLS)
-- **State Management**: React Query + Context API
+- **State Management**: TanStack Query (server) + Zustand (client)
 - **Authentication**: Supabase Auth with Row Level Security
 - **Deployment**: Vercel (Frontend) + Supabase (Backend)
 

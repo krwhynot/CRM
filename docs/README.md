@@ -15,6 +15,7 @@ New developer onboarding - start here:
 Core documentation for daily development:
 - **[Contributing Guide](../CONTRIBUTING.md)** - Development workflow and standards
 - **[Development Workflow](guides/development-workflow.md)** - Quality gates and Git workflow
+- **[State Management Onboarding](guides/state-management-onboarding.md)** - Quick start for client/server state patterns
 - **[Form Development](guides/form-development.md)** - React Hook Form patterns and optimization
 - **[Performance Guide](guides/performance.md)** - Database and frontend optimization
 
@@ -33,6 +34,7 @@ System design and technical decisions:
 ### 🔧 Technical Reference
 For developers and system administrators:
 - **[Technical Guide](TECHNICAL_GUIDE.md)** - Comprehensive API and technical reference
+- **[State Management Guide](STATE_MANAGEMENT_GUIDE.md)** - Client/server state separation patterns
 - **[Coding Rules](Coding_Rules.md)** - 10 essential development rules
 - **[MCP Tool Reference](MCP_TOOL_REFERENCE_GUIDE.md)** - MCP tools and usage patterns
 
@@ -92,7 +94,7 @@ Common issues and solutions:
 - **Frontend**: React 18 + TypeScript + Vite
 - **UI Framework**: shadcn/ui + Tailwind CSS
 - **Backend**: Supabase (PostgreSQL + Auth + RLS)
-- **State Management**: React Query + Context API
+- **State Management**: TanStack Query (server) + Zustand (client)
 - **Deployment**: Vercel (Frontend) + Supabase (Backend)
 - **Testing**: Playwright + Manual UAT
 - **Architecture**: 14-agent specialized development system

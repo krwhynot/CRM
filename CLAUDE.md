@@ -90,8 +90,37 @@ The system is built around 5 core entities:
 3. **Performance-First**: Index foreign keys, use LIMIT on queries, implement pagination
 4. **Error Handling**: Use shadcn/ui Toast for transient messages, Alert/Dialog for blocking errors
 5. **Relationship-Centric**: Model data around relationships, track engagement quality over quantity
+6. **State Separation**: Use TanStack Query for server data, Zustand for client UI state only
 
-- WHENEVER POSSIBLE USE A SUB AGENT  
+- WHENEVER POSSIBLE USE A SUB AGENT
+
+## State Management Architecture
+
+**✅ REFACTORED (January 2025)**: Clear separation of client-side and server-side state following React best practices.
+
+### Server State (TanStack Query)
+- **Location**: `/src/features/*/hooks/`
+- **Purpose**: All data from APIs/database
+- **Examples**: Organizations, contacts, opportunities, authentication status
+
+```typescript
+// ✅ Server data via TanStack Query
+const { data: organizations } = useOrganizations(filters)
+const createMutation = useCreateOrganization()
+```
+
+### Client State (Zustand)
+- **Location**: `/src/stores/`  
+- **Purpose**: UI state, preferences, temporary data
+- **Examples**: View modes, filters, form state, selected items
+
+```typescript
+// ✅ Client UI state via Zustand  
+const { viewMode, setViewMode } = useAdvocacyView()
+const { isFormOpen, openCreateForm } = useAdvocacyForm()
+```
+
+**📚 Full Guide**: `/docs/STATE_MANAGEMENT_GUIDE.md`  
 
 To prevent specific TypeScript + form validation issues in the future, you’ll want a schema-first, type-driven workflow that keeps your database schema, validation schema, and form types in sync automatically.
 
