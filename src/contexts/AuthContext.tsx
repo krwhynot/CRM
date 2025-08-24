@@ -98,10 +98,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   const resetPassword = async (email: string) => {
-    // Use the configured Site URL from Supabase instead of window.location.origin
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.protocol}//${window.location.host}/reset-password`,
-    })
+    // Use Supabase-configured Site URL for security (no client-side redirect URL construction)
+    // This prevents open redirect vulnerabilities by relying on server-side configuration
+    // Optional: Allow environment variable override for explicit control
+    const redirectUrl = import.meta.env.VITE_PASSWORD_RESET_URL
+    const { error } = (redirectUrl && redirectUrl !== 'undefined')
+      ? await supabase.auth.resetPasswordForEmail(email, { redirectTo: redirectUrl })
+      : await supabase.auth.resetPasswordForEmail(email)
     return { error }
   }
 

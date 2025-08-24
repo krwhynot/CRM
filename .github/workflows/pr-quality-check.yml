@@ -1,0 +1,158 @@
+name: PR Quality Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  pr-quality-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Needed for changed file analysis
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Analyze changed files
+        id: changes
+        run: |
+          echo "Changed files:"
+          git diff --name-only HEAD~1 HEAD
+          
+          # Check if any TypeScript/React files changed
+          CHANGED_TS=$(git diff --name-only HEAD~1 HEAD | grep -E '\.(ts|tsx)$' | wc -l)
+          CHANGED_COMPONENTS=$(git diff --name-only HEAD~1 HEAD | grep -E 'src/components|src/features' | wc -l)
+          CHANGED_STYLES=$(git diff --name-only HEAD~1 HEAD | grep -E '\.(css|scss)$' | wc -l)
+          
+          echo "changed_ts=$CHANGED_TS" >> $GITHUB_OUTPUT
+          echo "changed_components=$CHANGED_COMPONENTS" >> $GITHUB_OUTPUT
+          echo "changed_styles=$CHANGED_STYLES" >> $GITHUB_OUTPUT
+          
+          echo "## Changed Files Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "- TypeScript files: $CHANGED_TS" >> $GITHUB_STEP_SUMMARY
+          echo "- Component files: $CHANGED_COMPONENTS" >> $GITHUB_STEP_SUMMARY
+          echo "- Style files: $CHANGED_STYLES" >> $GITHUB_STEP_SUMMARY
+
+      - name: TypeScript type check (always)
+        run: npm run type-check
+
+      - name: ESLint check (always)
+        run: npm run lint
+
+      - name: Component architecture validation
+        if: steps.changes.outputs.changed_components > 0
+        run: |
+          echo "🔍 Running component architecture analysis..."
+          node scripts/analyze-component-usage.js
+          
+          HEALTH_SCORE=$(node scripts/analyze-component-usage.js | grep "Architecture Health Score" | grep -o '[0-9]\+' || echo "0")
+          echo "Architecture Health Score: ${HEALTH_SCORE}%"
+          
+          if [ "$HEALTH_SCORE" -lt 75 ]; then
+            echo "⚠️ Architecture health below 75% - consider refactoring"
+            echo "## ⚠️ Architecture Health Warning" >> $GITHUB_STEP_SUMMARY
+            echo "Current score: ${HEALTH_SCORE}%" >> $GITHUB_STEP_SUMMARY
+            echo "Recommendation: Review component organization and reduce complexity" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Build validation
+        run: |
+          echo "🔨 Building application..."
+          npm run build
+          
+          # Check bundle size impact
+          BUNDLE_SIZE=$(du -sh dist/ | cut -f1)
+          echo "Bundle size: $BUNDLE_SIZE"
+          
+          echo "## Build Results" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Build successful" >> $GITHUB_STEP_SUMMARY
+          echo "📦 Bundle size: $BUNDLE_SIZE" >> $GITHUB_STEP_SUMMARY
+
+      - name: Performance impact check
+        if: steps.changes.outputs.changed_components > 0 || steps.changes.outputs.changed_styles > 0
+        run: |
+          echo "⚡ Checking performance impact..."
+          
+          # Quick performance check
+          timeout 30s npm run dev > dev-server.log 2>&1 &
+          DEV_PID=$!
+          sleep 10
+          
+          # Test if dev server responds
+          if curl -s http://localhost:5173 > /dev/null 2>&1; then
+            echo "✅ Dev server responds quickly"
+            echo "## ⚡ Performance Check" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Development server starts and responds" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Dev server not responding"
+            echo "## ⚠️ Performance Warning" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ Development server not responding within 10s" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          kill $DEV_PID 2>/dev/null || true
+
+      - name: Mobile-first check
+        if: steps.changes.outputs.changed_styles > 0 || steps.changes.outputs.changed_components > 0
+        run: |
+          echo "📱 Checking mobile-first approach..."
+          
+          # Look for mobile-first CSS patterns
+          MOBILE_FIRST_FOUND=$(git diff HEAD~1 HEAD | grep -E '@media.*min-width|mobile-first' | wc -l)
+          DESKTOP_FIRST_FOUND=$(git diff HEAD~1 HEAD | grep -E '@media.*max-width' | wc -l)
+          
+          echo "Mobile-first patterns: $MOBILE_FIRST_FOUND"
+          echo "Desktop-first patterns: $DESKTOP_FIRST_FOUND"
+          
+          if [ "$DESKTOP_FIRST_FOUND" -gt "$MOBILE_FIRST_FOUND" ] && [ "$DESKTOP_FIRST_FOUND" -gt 0 ]; then
+            echo "⚠️ Consider using mobile-first approach with min-width media queries"
+            echo "## 📱 Mobile-First Reminder" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ Detected max-width media queries" >> $GITHUB_STEP_SUMMARY
+            echo "💡 Consider using mobile-first approach with min-width queries" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ Mobile-first approach detected or no responsive changes"
+          fi
+
+      - name: Security and best practices check
+        run: |
+          echo "🔐 Running security checks..."
+          
+          # Check for potential security issues in changed files
+          git diff HEAD~1 HEAD | grep -E '(console\.(log|error|warn)|debugger|TODO|FIXME|any;|as any)' > security-issues.txt || true
+          
+          if [ -s security-issues.txt ]; then
+            echo "⚠️ Found potential issues:"
+            cat security-issues.txt
+            echo "## 🔐 Code Quality Reminders" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ Found console.log, debugger, or 'any' types in changes" >> $GITHUB_STEP_SUMMARY
+            echo "💡 Consider removing debug code and using proper TypeScript types" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ No obvious security or quality issues found"
+          fi
+          
+          rm -f security-issues.txt
+
+      - name: Generate PR summary
+        run: |
+          echo "## 📋 PR Quality Check Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "This PR has been automatically validated for:" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ TypeScript compilation" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ ESLint validation" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Build success" >> $GITHUB_STEP_SUMMARY
+          echo "- 📱 Mobile-first approach" >> $GITHUB_STEP_SUMMARY
+          echo "- 🏗️ Component architecture health" >> $GITHUB_STEP_SUMMARY
+          echo "- ⚡ Performance impact" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔐 Basic security checks" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Ready for human review! 👀" >> $GITHUB_STEP_SUMMARY

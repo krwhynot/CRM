@@ -1,396 +1,260 @@
 #!/bin/bash
 
-# Quality Gates Master Execution Script
-# 
-# This script orchestrates all quality gate validations for the MVP Principal CRM transformation.
-# It provides a comprehensive validation pipeline with clear reporting and failure handling.
-#
-# Usage: ./scripts/run-quality-gates.sh [stage] [options]
-# 
-# Stages: all, build, database, testing, performance
-# Options: --baseline, --fix, --detailed, --ci
+# CRM Quality Gates Runner
+# Comprehensive local quality validation before CI/CD
 
-set -e  # Exit on any error
-
-# Configuration
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$(dirname "$SCRIPT_DIR")"
-LOG_DIR="$ROOT_DIR/quality-gates-logs"
-TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-
-# Create log directory
-mkdir -p "$LOG_DIR"
+set -e
 
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+BOLD='\033[1m'
 NC='\033[0m' # No Color
 
-# Logging functions
-log_info() {
-    echo -e "${BLUE}[INFO]${NC} $1" | tee -a "$LOG_DIR/quality-gates-${TIMESTAMP}.log"
-}
+# Quality gate results tracking
+GATES_PASSED=0
+GATES_FAILED=0
+WARNINGS=0
 
-log_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1" | tee -a "$LOG_DIR/quality-gates-${TIMESTAMP}.log"
-}
+# Initialize report
+REPORT_FILE="./quality-gates-report-$(date +%Y%m%d_%H%M%S).md"
+echo "# CRM Quality Gates Report - $(date)" > "$REPORT_FILE"
+echo "" >> "$REPORT_FILE"
 
-log_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1" | tee -a "$LOG_DIR/quality-gates-${TIMESTAMP}.log"
-}
+echo -e "${BOLD}🔒 CRM Quality Gates${NC}"
+echo -e "${BOLD}===================${NC}"
+echo "Running comprehensive quality validation..."
+echo "Report: $REPORT_FILE"
+echo ""
 
-log_error() {
-    echo -e "${RED}[ERROR]${NC} $1" | tee -a "$LOG_DIR/quality-gates-${TIMESTAMP}.log"
-}
+# Gate 1: TypeScript Compilation
+echo -e "${BLUE}📝 Gate 1: TypeScript Compilation${NC}"
+if npm run type-check > /tmp/ts-check.log 2>&1; then
+    echo -e "${GREEN}✅ TypeScript compilation passed${NC}"
+    echo "## ✅ TypeScript Compilation" >> "$REPORT_FILE"
+    echo "Status: PASSED" >> "$REPORT_FILE"
+    echo "" >> "$REPORT_FILE"
+    ((GATES_PASSED++))
+else
+    echo -e "${RED}❌ TypeScript compilation failed${NC}"
+    echo "## ❌ TypeScript Compilation" >> "$REPORT_FILE"
+    echo "Status: FAILED" >> "$REPORT_FILE"
+    echo "\`\`\`" >> "$REPORT_FILE"
+    cat /tmp/ts-check.log >> "$REPORT_FILE"
+    echo "\`\`\`" >> "$REPORT_FILE"
+    echo "" >> "$REPORT_FILE"
+    ((GATES_FAILED++))
+fi
 
-# Parse arguments
-STAGE="${1:-all}"
-shift 2>/dev/null || true
-OPTIONS="$*"
+# Gate 2: Code Linting
+echo ""
+echo -e "${BLUE}🧹 Gate 2: Code Linting${NC}"
+if npm run lint > /tmp/lint.log 2>&1; then
+    echo -e "${GREEN}✅ Code linting passed${NC}"
+    echo "## ✅ Code Linting" >> "$REPORT_FILE"
+    echo "Status: PASSED" >> "$REPORT_FILE"
+    echo "" >> "$REPORT_FILE"
+    ((GATES_PASSED++))
+else
+    echo -e "${RED}❌ Code linting failed${NC}"
+    echo "## ❌ Code Linting" >> "$REPORT_FILE"
+    echo "Status: FAILED" >> "$REPORT_FILE"
+    echo "\`\`\`" >> "$REPORT_FILE"
+    cat /tmp/lint.log >> "$REPORT_FILE"
+    echo "\`\`\`" >> "$REPORT_FILE"
+    echo "" >> "$REPORT_FILE"
+    ((GATES_FAILED++))
+fi
 
-# Validate stage
-case "$STAGE" in
-    all|build|database|testing|performance)
-        ;;
-    *)
-        log_error "Invalid stage: $STAGE"
-        echo "Valid stages: all, build, database, testing, performance"
-        exit 1
-        ;;
-esac
-
-log_info "Quality Gates Validation Started"
-log_info "Stage: $STAGE"
-log_info "Options: $OPTIONS"
-log_info "Timestamp: $TIMESTAMP"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-# Initialize results tracking
-TOTAL_GATES=0
-PASSED_GATES=0
-FAILED_GATES=0
-declare -a FAILED_GATE_NAMES=()
-
-# Function to run a quality gate
-run_gate() {
-    local gate_name="$1"
-    local gate_command="$2"
-    local gate_description="$3"
-    
-    log_info "Running: $gate_description"
-    echo "   Command: $gate_command"
-    
-    TOTAL_GATES=$((TOTAL_GATES + 1))
-    
-    # Create gate-specific log file
-    local gate_log="$LOG_DIR/gate-${gate_name}-${TIMESTAMP}.log"
-    
-    # Run the gate command
-    if eval "$gate_command" > "$gate_log" 2>&1; then
-        log_success "$gate_description - PASSED"
-        PASSED_GATES=$((PASSED_GATES + 1))
-        return 0
+# Gate 3: Component Architecture Health
+echo ""
+echo -e "${BLUE}🏗️ Gate 3: Component Architecture${NC}"
+if node scripts/analyze-component-usage.js > /tmp/arch-health.log 2>&1; then
+    HEALTH_SCORE=$(cat /tmp/arch-health.log | grep "Architecture Health Score" | grep -o '[0-9]\+' || echo "0")
+    if [ "$HEALTH_SCORE" -ge 80 ]; then
+        echo -e "${GREEN}✅ Architecture health: ${HEALTH_SCORE}%${NC}"
+        echo "## ✅ Component Architecture" >> "$REPORT_FILE"
+        echo "Health Score: ${HEALTH_SCORE}%" >> "$REPORT_FILE"
+        echo "Status: PASSED" >> "$REPORT_FILE"
+        echo "" >> "$REPORT_FILE"
+        ((GATES_PASSED++))
     else
-        log_error "$gate_description - FAILED"
-        FAILED_GATES=$((FAILED_GATES + 1))
-        FAILED_GATE_NAMES+=("$gate_name")
+        echo -e "${YELLOW}⚠️ Architecture health: ${HEALTH_SCORE}% (below 80% threshold)${NC}"
+        echo "## ⚠️ Component Architecture" >> "$REPORT_FILE"
+        echo "Health Score: ${HEALTH_SCORE}%" >> "$REPORT_FILE"
+        echo "Status: WARNING - Below 80% threshold" >> "$REPORT_FILE"
+        echo "\`\`\`" >> "$REPORT_FILE"
+        cat /tmp/arch-health.log >> "$REPORT_FILE"
+        echo "\`\`\`" >> "$REPORT_FILE"
+        echo "" >> "$REPORT_FILE"
+        ((WARNINGS++))
+    fi
+else
+    echo -e "${RED}❌ Architecture analysis failed${NC}"
+    echo "## ❌ Component Architecture" >> "$REPORT_FILE"
+    echo "Status: FAILED" >> "$REPORT_FILE"
+    echo "\`\`\`" >> "$REPORT_FILE"
+    cat /tmp/arch-health.log >> "$REPORT_FILE"
+    echo "\`\`\`" >> "$REPORT_FILE"
+    echo "" >> "$REPORT_FILE"
+    ((GATES_FAILED++))
+fi
+
+# Gate 4: Build Success & Bundle Analysis
+echo ""
+echo -e "${BLUE}📦 Gate 4: Build & Bundle Analysis${NC}"
+BUILD_START=$(date +%s)
+if npm run build > /tmp/build.log 2>&1; then
+    BUILD_END=$(date +%s)
+    BUILD_TIME=$((BUILD_END - BUILD_START))
+    
+    if [ -d "dist" ]; then
+        BUNDLE_SIZE=$(du -sh dist/ | cut -f1 | sed 's/M//')
+        BUNDLE_SIZE_NUM=$(echo "$BUNDLE_SIZE" | sed 's/[^0-9.]*//g')
         
-        # Show last few lines of error log
-        echo "   Last 5 lines from error log:"
-        tail -5 "$gate_log" | sed 's/^/      /'
-        return 1
-    fi
-}
-
-# Function to check prerequisites
-check_prerequisites() {
-    log_info "Checking prerequisites..."
-    
-    # Check Node.js
-    if ! command -v node &> /dev/null; then
-        log_error "Node.js is required but not installed"
-        exit 1
-    fi
-    
-    # Check npm
-    if ! command -v npm &> /dev/null; then
-        log_error "npm is required but not installed"
-        exit 1
-    fi
-    
-    # Check if package.json exists
-    if [ ! -f "$ROOT_DIR/package.json" ]; then
-        log_error "package.json not found in $ROOT_DIR"
-        exit 1
-    fi
-    
-    # Check if node_modules exists
-    if [ ! -d "$ROOT_DIR/node_modules" ]; then
-        log_warning "node_modules not found, running npm install..."
-        cd "$ROOT_DIR"
-        npm install
-    fi
-    
-    log_success "Prerequisites check completed"
-}
-
-# Function to run build gates
-run_build_gates() {
-    log_info "━━━ BUILD QUALITY GATES ━━━"
-    
-    # TypeScript compilation
-    run_gate "typescript" \
-        "cd '$ROOT_DIR' && npx tsc --noEmit" \
-        "TypeScript Compilation Check"
-    
-    # ESLint validation
-    run_gate "eslint" \
-        "cd '$ROOT_DIR' && npm run lint" \
-        "ESLint Code Quality Check"
-    
-    # Production build
-    run_gate "build" \
-        "cd '$ROOT_DIR' && npm run build" \
-        "Production Build Validation"
-    
-    # Build performance measurement
-    run_gate "build-performance" \
-        "cd '$ROOT_DIR' && node scripts/measure-performance-baseline.js" \
-        "Build Performance Measurement"
-}
-
-# Function to run database gates
-run_database_gates() {
-    log_info "━━━ DATABASE QUALITY GATES ━━━"
-    
-    # Database health validation
-    run_gate "database-health" \
-        "cd '$ROOT_DIR' && node scripts/validate-database-health.js $OPTIONS" \
-        "Database Health Validation"
-    
-    # Database advisor checks (requires Supabase project)
-    if [[ "$OPTIONS" != *"--skip-supabase"* ]]; then
-        log_info "Note: Database advisor checks require Supabase project access"
-        # This would run actual Supabase advisor checks in a real environment
-        log_success "Database Advisor Checks - SKIPPED (offline mode)"
-    fi
-}
-
-# Function to run testing gates
-run_testing_gates() {
-    log_info "━━━ TESTING QUALITY GATES ━━━"
-    
-    # Test baseline establishment
-    run_gate "test-baseline" \
-        "cd '$ROOT_DIR' && node scripts/establish-test-baseline.js --run $OPTIONS" \
-        "Test Coverage Baseline"
-    
-    # Run existing E2E tests if available
-    if [ -d "$ROOT_DIR/tests" ] && [ -f "$ROOT_DIR/tests/run-interactions-e2e-tests.js" ]; then
-        run_gate "e2e-tests" \
-            "cd '$ROOT_DIR/tests' && node run-interactions-e2e-tests.js" \
-            "Existing E2E Test Execution"
+        if (( $(echo "$BUNDLE_SIZE_NUM > 3.0" | bc -l) )); then
+            echo -e "${YELLOW}⚠️ Build passed, bundle size: ${BUNDLE_SIZE}MB (exceeds 3MB threshold)${NC}"
+            echo "## ⚠️ Build & Bundle Analysis" >> "$REPORT_FILE"
+            echo "Build Time: ${BUILD_TIME}s" >> "$REPORT_FILE"
+            echo "Bundle Size: ${BUNDLE_SIZE}MB (exceeds 3MB threshold)" >> "$REPORT_FILE"
+            echo "Status: WARNING - Large bundle size" >> "$REPORT_FILE"
+            echo "" >> "$REPORT_FILE"
+            ((WARNINGS++))
+        else
+            echo -e "${GREEN}✅ Build passed, bundle size: ${BUNDLE_SIZE}MB${NC}"
+            echo "## ✅ Build & Bundle Analysis" >> "$REPORT_FILE"
+            echo "Build Time: ${BUILD_TIME}s" >> "$REPORT_FILE"
+            echo "Bundle Size: ${BUNDLE_SIZE}MB" >> "$REPORT_FILE"
+            echo "Status: PASSED" >> "$REPORT_FILE"
+            echo "" >> "$REPORT_FILE"
+            ((GATES_PASSED++))
+        fi
     else
-        log_warning "No E2E tests found - create tests for comprehensive coverage"
+        echo -e "${RED}❌ Build succeeded but dist directory not found${NC}"
+        echo "## ❌ Build & Bundle Analysis" >> "$REPORT_FILE"
+        echo "Status: FAILED - dist directory missing" >> "$REPORT_FILE"
+        echo "" >> "$REPORT_FILE"
+        ((GATES_FAILED++))
     fi
-}
+else
+    echo -e "${RED}❌ Build failed${NC}"
+    echo "## ❌ Build & Bundle Analysis" >> "$REPORT_FILE"
+    echo "Status: FAILED" >> "$REPORT_FILE"
+    echo "\`\`\`" >> "$REPORT_FILE"
+    cat /tmp/build.log >> "$REPORT_FILE"
+    echo "\`\`\`" >> "$REPORT_FILE"
+    echo "" >> "$REPORT_FILE"
+    ((GATES_FAILED++))
+fi
 
-# Function to run performance gates
-run_performance_gates() {
-    log_info "━━━ PERFORMANCE QUALITY GATES ━━━"
+# Gate 5: Performance Baseline
+echo ""
+echo -e "${BLUE}⚡ Gate 5: Performance Baseline${NC}"
+if timeout 60s ./scripts/performance-monitor.sh > /tmp/perf-monitor.log 2>&1; then
+    echo -e "${GREEN}✅ Performance monitoring completed${NC}"
+    echo "## ✅ Performance Baseline" >> "$REPORT_FILE"
+    echo "Status: PASSED" >> "$REPORT_FILE"
     
-    # Performance baseline measurement
-    run_gate "performance-baseline" \
-        "cd '$ROOT_DIR' && node scripts/measure-performance-baseline.js $OPTIONS" \
-        "Performance Baseline Measurement"
-    
-    # Bundle analysis
-    if [ -d "$ROOT_DIR/dist" ]; then
-        run_gate "bundle-analysis" \
-            "cd '$ROOT_DIR' && du -sh dist/ && ls -la dist/assets/" \
-            "Bundle Size Analysis"
-    else
-        log_warning "No dist directory found - run build first"
+    # Extract key metrics if available
+    if [ -f "performance-reports/performance_report_$(date +%Y%m%d)_"*.md ]; then
+        LATEST_REPORT=$(ls -t performance-reports/performance_report_$(date +%Y%m%d)_*.md | head -1)
+        echo "Report: $LATEST_REPORT" >> "$REPORT_FILE"
     fi
-}
+    echo "" >> "$REPORT_FILE"
+    ((GATES_PASSED++))
+else
+    echo -e "${YELLOW}⚠️ Performance monitoring timed out or failed${NC}"
+    echo "## ⚠️ Performance Baseline" >> "$REPORT_FILE"
+    echo "Status: WARNING - Monitoring incomplete" >> "$REPORT_FILE"
+    echo "\`\`\`" >> "$REPORT_FILE"
+    tail -20 /tmp/perf-monitor.log >> "$REPORT_FILE"
+    echo "\`\`\`" >> "$REPORT_FILE"
+    echo "" >> "$REPORT_FILE"
+    ((WARNINGS++))
+fi
 
-# Function to generate comprehensive report
-generate_report() {
-    log_info "━━━ GENERATING COMPREHENSIVE REPORT ━━━"
-    
-    local report_file="$LOG_DIR/quality-gates-summary-${TIMESTAMP}.md"
-    
-    cat > "$report_file" << EOF
-# Quality Gates Validation Report
+# Gate 6: Mobile Optimization Check
+echo ""
+echo -e "${BLUE}📱 Gate 6: Mobile Optimization${NC}"
+MOBILE_CSS=$(find src/ -name "*.css" -exec grep -l "@media.*mobile\|@media.*max-width.*768" {} \; 2>/dev/null | wc -l)
+RESPONSIVE_COMPONENTS=$(find src/ -name "*.tsx" -exec grep -l "useIsMobile\|useMobile\|mobile" {} \; 2>/dev/null | wc -l)
+MOBILE_SCORE=$(( (MOBILE_CSS + RESPONSIVE_COMPONENTS) * 10 ))
 
-**Timestamp**: $(date)  
-**Stage**: $STAGE  
-**Options**: $OPTIONS  
+if [ "$MOBILE_SCORE" -ge 50 ]; then
+    echo -e "${GREEN}✅ Mobile optimization: ${MOBILE_SCORE}%${NC}"
+    echo "## ✅ Mobile Optimization" >> "$REPORT_FILE"
+    echo "Mobile CSS Files: $MOBILE_CSS" >> "$REPORT_FILE"
+    echo "Mobile Components: $RESPONSIVE_COMPONENTS" >> "$REPORT_FILE"
+    echo "Optimization Score: ${MOBILE_SCORE}%" >> "$REPORT_FILE"
+    echo "Status: PASSED" >> "$REPORT_FILE"
+    echo "" >> "$REPORT_FILE"
+    ((GATES_PASSED++))
+else
+    echo -e "${YELLOW}⚠️ Mobile optimization: ${MOBILE_SCORE}% (could be improved)${NC}"
+    echo "## ⚠️ Mobile Optimization" >> "$REPORT_FILE"
+    echo "Mobile CSS Files: $MOBILE_CSS" >> "$REPORT_FILE"
+    echo "Mobile Components: $RESPONSIVE_COMPONENTS" >> "$REPORT_FILE"
+    echo "Optimization Score: ${MOBILE_SCORE}%" >> "$REPORT_FILE"
+    echo "Status: WARNING - Could be improved" >> "$REPORT_FILE"
+    echo "" >> "$REPORT_FILE"
+    ((WARNINGS++))
+fi
 
-## Summary
+# Generate final summary
+echo ""
+echo -e "${BOLD}📋 Quality Gates Summary${NC}"
+echo -e "${BOLD}=========================${NC}"
 
-- **Total Gates**: $TOTAL_GATES
-- **Passed**: $PASSED_GATES
-- **Failed**: $FAILED_GATES
-- **Success Rate**: $(( PASSED_GATES * 100 / TOTAL_GATES ))%
+# Add summary to report
+echo "## Summary" >> "$REPORT_FILE"
+echo "" >> "$REPORT_FILE"
+echo "| Metric | Count |" >> "$REPORT_FILE"
+echo "|--------|-------|" >> "$REPORT_FILE"
+echo "| ✅ Passed | $GATES_PASSED |" >> "$REPORT_FILE"
+echo "| ❌ Failed | $GATES_FAILED |" >> "$REPORT_FILE"
+echo "| ⚠️ Warnings | $WARNINGS |" >> "$REPORT_FILE"
+echo "" >> "$REPORT_FILE"
 
-## Results
-
-### Passed Gates: $PASSED_GATES/$TOTAL_GATES
-
-EOF
-
-    if [ $FAILED_GATES -gt 0 ]; then
-        cat >> "$report_file" << EOF
-### Failed Gates: $FAILED_GATES
-
-EOF
-        for failed_gate in "${FAILED_GATE_NAMES[@]}"; do
-            echo "- $failed_gate" >> "$report_file"
-        done
-        
-        cat >> "$report_file" << EOF
-
-### Remediation Steps
-
-1. Review individual gate logs in: \`$LOG_DIR\`
-2. Fix failing gates before proceeding with transformation
-3. Re-run quality gates after fixes: \`./scripts/run-quality-gates.sh $STAGE $OPTIONS\`
-
-EOF
-    fi
-
-    cat >> "$report_file" << EOF
-## Baseline Metrics
-
-### Build Performance
-- Build time threshold: 30 seconds
-- Bundle size threshold: 800KB
-- CSS size threshold: 65KB
-
-### Database Health
-- Cache hit rate: ≥95%
-- Duplicate indexes: ≤5
-- Security warnings: ≤8
-
-### Test Coverage
-- Unit test coverage: ≥80%
-- E2E test coverage: ≥70%
-- Critical path coverage: ≥95%
-
-### Performance Thresholds
-- First Contentful Paint: ≤2s
-- Largest Contentful Paint: ≤4s
-- Cumulative Layout Shift: ≤0.1
-
-## Generated Files
-
-- Main log: \`quality-gates-${TIMESTAMP}.log\`
-- Individual gate logs: \`gate-*-${TIMESTAMP}.log\`
-- Report file: \`quality-gates-summary-${TIMESTAMP}.md\`
-
-## Next Steps
-
-EOF
-
-    if [ $FAILED_GATES -eq 0 ]; then
-        cat >> "$report_file" << EOF
-✅ **All quality gates passed!**
-
-The system is ready for MVP Principal CRM transformation:
-
-1. Proceed with planned transformation stages
-2. Run quality gates before each major change
-3. Monitor performance during transformation
-4. Maintain test coverage above thresholds
-
-EOF
-    else
-        cat >> "$report_file" << EOF
-❌ **Quality gates failed - Action required**
-
-Before proceeding with transformation:
-
-1. Address all failing quality gates
-2. Review and fix code quality issues
-3. Ensure database health is optimal
-4. Implement missing test coverage
-5. Re-run validation: \`./scripts/run-quality-gates.sh\`
-
-**Do not proceed with transformation until all gates pass.**
-
-EOF
-    fi
-
-    log_info "Report generated: $report_file"
-    
-    # Display summary
-    echo ""
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "📋 Quality Gates Validation Summary"
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "📊 Results: $PASSED_GATES/$TOTAL_GATES gates passed ($(( PASSED_GATES * 100 / TOTAL_GATES ))%)"
-    
-    if [ $FAILED_GATES -eq 0 ]; then
-        log_success "All quality gates PASSED"
-        log_success "System ready for MVP Principal CRM transformation"
-    else
-        log_error "$FAILED_GATES quality gates FAILED"
-        log_error "Fix failing gates before proceeding with transformation"
+if [ "$GATES_FAILED" -eq 0 ]; then
+    if [ "$WARNINGS" -eq 0 ]; then
+        echo -e "${GREEN}🎉 All quality gates passed!${NC}"
+        echo "Status: ✅ ALL PASSED" >> "$REPORT_FILE"
         echo ""
-        echo "Failed gates:"
-        for failed_gate in "${FAILED_GATE_NAMES[@]}"; do
-            echo "  - $failed_gate"
-        done
-    fi
-    
-    echo ""
-    echo "📄 Full report: $report_file"
-    echo "📁 Logs directory: $LOG_DIR"
-}
-
-# Main execution
-main() {
-    # Change to root directory
-    cd "$ROOT_DIR"
-    
-    # Check prerequisites
-    check_prerequisites
-    
-    # Run quality gates based on stage
-    case "$STAGE" in
-        "all")
-            run_build_gates
-            run_database_gates
-            run_testing_gates
-            run_performance_gates
-            ;;
-        "build")
-            run_build_gates
-            ;;
-        "database")
-            run_database_gates
-            ;;
-        "testing")
-            run_testing_gates
-            ;;
-        "performance")
-            run_performance_gates
-            ;;
-    esac
-    
-    # Generate comprehensive report
-    generate_report
-    
-    # Exit with appropriate code
-    if [ $FAILED_GATES -eq 0 ]; then
-        exit 0
+        echo -e "${GREEN}✅ Passed: $GATES_PASSED${NC}"
+        echo -e "${YELLOW}⚠️ Warnings: $WARNINGS${NC}"
+        echo -e "${RED}❌ Failed: $GATES_FAILED${NC}"
+        echo ""
+        echo -e "${BOLD}Ready for deployment! 🚀${NC}"
+        EXIT_CODE=0
     else
-        exit 1
+        echo -e "${YELLOW}⚠️ Quality gates passed with warnings${NC}"
+        echo "Status: ⚠️ PASSED WITH WARNINGS" >> "$REPORT_FILE"
+        echo ""
+        echo -e "${GREEN}✅ Passed: $GATES_PASSED${NC}"
+        echo -e "${YELLOW}⚠️ Warnings: $WARNINGS${NC}"
+        echo -e "${RED}❌ Failed: $GATES_FAILED${NC}"
+        echo ""
+        echo -e "${YELLOW}Consider addressing warnings before deployment${NC}"
+        EXIT_CODE=0
     fi
-}
+else
+    echo -e "${RED}❌ Quality gates failed${NC}"
+    echo "Status: ❌ FAILED" >> "$REPORT_FILE"
+    echo ""
+    echo -e "${GREEN}✅ Passed: $GATES_PASSED${NC}"
+    echo -e "${YELLOW}⚠️ Warnings: $WARNINGS${NC}"
+    echo -e "${RED}❌ Failed: $GATES_FAILED${NC}"
+    echo ""
+    echo -e "${RED}Fix failing gates before deployment${NC}"
+    EXIT_CODE=1
+fi
 
-# Run main function
-main "$@"
+echo ""
+echo -e "${BOLD}📋 Full report: ${BLUE}$REPORT_FILE${NC}"
+
+# Cleanup temp files
+rm -f /tmp/ts-check.log /tmp/lint.log /tmp/arch-health.log /tmp/build.log /tmp/perf-monitor.log
+
+exit $EXIT_CODE

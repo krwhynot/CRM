@@ -1,0 +1,187 @@
+name: Quality Gates
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  quality-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript compilation
+        run: npm run type-check
+
+      - name: Lint code
+        run: npm run lint
+
+      - name: Component organization validation
+        run: |
+          echo "🔍 Validating component organization..."
+          node scripts/analyze-component-usage.js
+          if [ $? -ne 0 ]; then
+            echo "❌ Component organization validation failed"
+            exit 1
+          fi
+
+      - name: Build application
+        run: npm run build
+
+      - name: Bundle size analysis
+        run: |
+          echo "📦 Analyzing bundle size..."
+          BUNDLE_SIZE=$(du -sh dist/ | cut -f1 | sed 's/M//')
+          echo "Current bundle size: ${BUNDLE_SIZE}MB"
+          
+          # Fail if bundle exceeds 3MB threshold
+          if (( $(echo "$BUNDLE_SIZE > 3.0" | bc -l) )); then
+            echo "❌ Bundle size exceeds 3MB threshold"
+            exit 1
+          fi
+          
+          # Create bundle size report
+          echo "## Bundle Size Report" >> $GITHUB_STEP_SUMMARY
+          echo "**Total Size:** ${BUNDLE_SIZE}MB" >> $GITHUB_STEP_SUMMARY
+          echo "**Threshold:** 3.0MB" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Asset Breakdown" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Size |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|------|" >> $GITHUB_STEP_SUMMARY
+          ls -lah dist/assets/ | grep -E '\.(js|css)$' | head -10 | while read line; do
+            size=$(echo "$line" | awk '{print $5}')
+            file=$(echo "$line" | awk '{print $9}')
+            echo "| $file | $size |" >> $GITHUB_STEP_SUMMARY
+          done
+
+      - name: Performance baseline check
+        run: |
+          echo "⚡ Running performance baseline check..."
+          timeout 30s ./scripts/performance-monitor.sh || true
+          
+          # Check if performance report was generated
+          if [ -f "performance-reports/performance_report_$(date +%Y%m%d)_"*.md ]; then
+            echo "✅ Performance report generated"
+          else
+            echo "⚠️ Performance report not generated, but continuing"
+          fi
+
+      - name: Architecture health score
+        run: |
+          echo "🏗️ Checking architecture health..."
+          HEALTH_SCORE=$(node scripts/analyze-component-usage.js | grep "Architecture Health Score" | grep -o '[0-9]\+' || echo "0")
+          echo "Architecture Health Score: ${HEALTH_SCORE}%"
+          
+          # Fail if health score is below 80%
+          if [ "$HEALTH_SCORE" -lt 80 ]; then
+            echo "❌ Architecture health score below 80% threshold"
+            exit 1
+          fi
+          
+          echo "## Architecture Health Report" >> $GITHUB_STEP_SUMMARY
+          echo "**Health Score:** ${HEALTH_SCORE}%" >> $GITHUB_STEP_SUMMARY
+          echo "**Threshold:** 80%" >> $GITHUB_STEP_SUMMARY
+
+  performance-regression:
+    runs-on: ubuntu-latest
+    needs: quality-gates
+    if: github.event_name == 'pull_request'
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and measure performance
+        run: |
+          echo "📊 Measuring build performance..."
+          
+          # Measure build time
+          BUILD_START=$(date +%s)
+          npm run build
+          BUILD_END=$(date +%s)
+          BUILD_TIME=$((BUILD_END - BUILD_START))
+          
+          echo "Build completed in ${BUILD_TIME}s"
+          
+          # Fail if build takes longer than 60 seconds
+          if [ "$BUILD_TIME" -gt 60 ]; then
+            echo "❌ Build time exceeds 60s threshold"
+            exit 1
+          fi
+          
+          # Measure bundle size
+          BUNDLE_SIZE_BYTES=$(du -b dist/ | cut -f1)
+          BUNDLE_SIZE_MB=$(echo "scale=2; $BUNDLE_SIZE_BYTES / 1024 / 1024" | bc)
+          
+          echo "## Performance Metrics" >> $GITHUB_STEP_SUMMARY
+          echo "**Build Time:** ${BUILD_TIME}s (threshold: 60s)" >> $GITHUB_STEP_SUMMARY
+          echo "**Bundle Size:** ${BUNDLE_SIZE_MB}MB (threshold: 3.0MB)" >> $GITHUB_STEP_SUMMARY
+
+  mobile-optimization:
+    runs-on: ubuntu-latest
+    needs: quality-gates
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Mobile optimization check
+        run: |
+          echo "📱 Checking mobile optimization..."
+          
+          # Count mobile-specific CSS
+          MOBILE_CSS=$(find src/ -name "*.css" -exec grep -l "@media.*mobile\|@media.*max-width.*768" {} \; 2>/dev/null | wc -l)
+          RESPONSIVE_COMPONENTS=$(find src/ -name "*.tsx" -exec grep -l "useIsMobile\|useMobile\|mobile" {} \; 2>/dev/null | wc -l)
+          
+          echo "Mobile-specific CSS files: $MOBILE_CSS"
+          echo "Mobile-aware components: $RESPONSIVE_COMPONENTS"
+          
+          # Calculate mobile optimization score
+          MOBILE_SCORE=$(( (MOBILE_CSS + RESPONSIVE_COMPONENTS) * 10 ))
+          echo "Mobile optimization score: ${MOBILE_SCORE}%"
+          
+          # Pass if score is above 50%
+          if [ "$MOBILE_SCORE" -lt 50 ]; then
+            echo "⚠️ Mobile optimization could be improved (score: ${MOBILE_SCORE}%)"
+          else
+            echo "✅ Mobile optimization looks good (score: ${MOBILE_SCORE}%)"
+          fi
+          
+          echo "## Mobile Optimization Report" >> $GITHUB_STEP_SUMMARY
+          echo "**Mobile CSS Files:** $MOBILE_CSS" >> $GITHUB_STEP_SUMMARY
+          echo "**Mobile Components:** $RESPONSIVE_COMPONENTS" >> $GITHUB_STEP_SUMMARY
+          echo "**Optimization Score:** ${MOBILE_SCORE}%" >> $GITHUB_STEP_SUMMARY
