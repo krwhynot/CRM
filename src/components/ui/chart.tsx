@@ -70,36 +70,63 @@ function ChartContainer({
 }
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
-  const colorConfig = Object.entries(config).filter(
-    ([, config]) => config.theme || config.color
-  )
+  React.useEffect(() => {
+    // SSR safety guard
+    if (typeof document === 'undefined') return
 
-  if (!colorConfig.length) {
-    return null
-  }
+    const colorConfig = Object.entries(config).filter(
+      ([, config]) => config.theme || config.color
+    )
+    
+    if (!colorConfig.length) return
 
-  return (
-    <style
-      dangerouslySetInnerHTML={{
-        __html: Object.entries(THEMES)
-          .map(
-            ([theme, prefix]) => `
-${prefix} [data-chart=${id}] {
-${colorConfig
-  .map(([key, itemConfig]) => {
-    const color =
-      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
-      itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
-  })
-  .join("\n")}
-}
-`
-          )
-          .join("\n"),
-      }}
-    />
-  )
+    const styleId = `chart-${id}-styles`
+    
+    // Clean up existing styles for this chart
+    const existingStyle = document.getElementById(styleId)
+    if (existingStyle) {
+      existingStyle.remove()
+    }
+
+    // Create style element using secure DOM API
+    const styleElement = document.createElement('style')
+    styleElement.id = styleId
+    document.head.appendChild(styleElement)
+    
+    const sheet = styleElement.sheet
+    if (!sheet) return
+
+    try {
+      // Generate same CSS rules as before, but using secure insertRule API
+      Object.entries(THEMES).forEach(([theme, prefix]) => {
+        const selector = prefix ? `${prefix} [data-chart="${id}"]` : `[data-chart="${id}"]`
+        const declarations = colorConfig
+          .map(([key, itemConfig]) => {
+            const color = itemConfig.theme?.[theme as keyof typeof itemConfig.theme] || itemConfig.color
+            return color ? `--color-${key}: ${color}` : null
+          })
+          .filter(Boolean)
+          .join('; ')
+        
+        if (declarations) {
+          sheet.insertRule(`${selector} { ${declarations}; }`)
+        }
+      })
+    } catch (error) {
+      console.warn('Failed to insert chart styles:', error)
+    }
+    
+    // Cleanup function prevents memory leaks
+    return () => {
+      const element = document.getElementById(styleId)
+      if (element) {
+        element.remove()
+      }
+    }
+  }, [id, config])
+  
+  // No DOM element needed - styles are injected directly
+  return null
 }
 
 const ChartTooltip = RechartsPrimitive.Tooltip
