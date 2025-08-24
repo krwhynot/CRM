@@ -5,7 +5,6 @@ export interface PageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
   count?: number;
   subtitle?: string;
-  [key: string]: any; // Migration safety
 }
 
 export const PageHeader = forwardRef<HTMLDivElement, PageHeaderProps>(

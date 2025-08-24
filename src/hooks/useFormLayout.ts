@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { FieldValues, UseFormReturn } from 'react-hook-form'
+import { FieldValues, UseFormReturn, RegisterOptions } from 'react-hook-form'
 
 export interface FormSection<T extends FieldValues> {
   id: string
@@ -19,7 +19,7 @@ export interface FormFieldConfig<T extends FieldValues> {
   required?: boolean
   options?: SelectOption[]
   tooltip?: string
-  validation?: any
+  validation?: RegisterOptions
   conditional?: (values: T) => boolean
   className?: string
 }

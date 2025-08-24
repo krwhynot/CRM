@@ -14,7 +14,6 @@ export interface QuickActionsBarProps extends React.HTMLAttributes<HTMLDivElemen
   onQuickAdd?: () => void;
   selectedCount?: number;
   onBulkAction?: (action: string) => void;
-  [key: string]: any; // Migration safety
 }
 
 export const QuickActionsBar = forwardRef<HTMLDivElement, QuickActionsBarProps>(

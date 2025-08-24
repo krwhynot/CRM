@@ -3,7 +3,6 @@ import { cn } from '@/lib/utils';
 
 export interface TypeIndicatorProps extends React.HTMLAttributes<HTMLDivElement> {
   type: 'Principal' | 'Distributor' | 'Customer' | 'principal' | 'distributor' | 'customer';
-  [key: string]: any; // Migration safety
 }
 
 export const TypeIndicator = forwardRef<HTMLDivElement, TypeIndicatorProps>(

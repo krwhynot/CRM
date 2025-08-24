@@ -18,15 +18,16 @@ import {
 } from '@/components/ui/alert-dialog'
 import { OrganizationForm } from './OrganizationForm'
 import type { Organization } from '@/types/entities'
+import type { OrganizationFormInterface } from '@/types/forms/form-interfaces'
 
 interface OrganizationDialogsProps {
   isCreateDialogOpen: boolean
   isEditDialogOpen: boolean
   isDeleteDialogOpen: boolean
   selectedOrganization: Organization | null
-  editFormInitialData: any
-  onCreateSubmit: (data: any) => void
-  onEditSubmit: (selectedOrganization: Organization, data: any) => void
+  editFormInitialData: Partial<OrganizationFormInterface>
+  onCreateSubmit: (data: OrganizationFormInterface) => void
+  onEditSubmit: (selectedOrganization: Organization, data: OrganizationFormInterface) => void
   onDeleteConfirm: (selectedOrganization: Organization) => void
   onCreateDialogChange: (open: boolean) => void
   onEditDialogChange: (open: boolean) => void

@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 
 export interface CardCompactProps extends React.HTMLAttributes<HTMLDivElement> {
-  [key: string]: any; // Migration safety
+  // All props are handled by React.HTMLAttributes<HTMLDivElement>
 }
 
 export const CardCompact = forwardRef<HTMLDivElement, CardCompactProps>(
@@ -32,7 +32,7 @@ export const CardCompactHeader = forwardRef<HTMLDivElement, CardCompactProps>(
   }
 );
 
-export const CardCompactTitle = forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement> & { [key: string]: any }>(
+export const CardCompactTitle = forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(
   ({ className, ...props }, ref) => {
     return (
       <h3
