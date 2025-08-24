@@ -2,8 +2,8 @@ import React from 'react'
 import { Download } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import type { ExportOptions } from '@/hooks/useExportConfiguration'
-import type { ExportProgress } from '@/hooks/useExportExecution'
+import type { ExportOptions } from '@/features/import-export/hooks/useExportConfiguration'
+import type { ExportProgress } from '@/features/import-export/hooks/useExportExecution'
 
 interface ExportActionProps {
   exportOptions: ExportOptions

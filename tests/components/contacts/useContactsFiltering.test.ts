@@ -44,9 +44,8 @@ const mockContacts: ContactWithOrganization[] = [
       is_principal: false,
       notes: null,
       parent_organization_id: null,
-      priority: null,
-      segment: null,
-      tags: null,
+      priority: 'High',
+      segment: 'A',
       linkedin_url: null,
       primary_contact_id: null
     },
@@ -101,9 +100,8 @@ const mockContacts: ContactWithOrganization[] = [
       is_principal: false,
       notes: null,
       parent_organization_id: null,
-      priority: null,
-      segment: null,
-      tags: null,
+      priority: 'Medium',
+      segment: 'B',
       linkedin_url: null,
       primary_contact_id: null
     },
@@ -227,11 +225,11 @@ describe('useContactsFiltering', () => {
     
     const filterPills = result.current.filterPills
     
-    expect(filterPills.find(p => p.key === 'all')?.count).toBe(2)
-    expect(filterPills.find(p => p.key === 'decision-makers')?.count).toBe(1)
-    expect(filterPills.find(p => p.key === 'primary-contacts')?.count).toBe(1)
-    expect(filterPills.find(p => p.key === 'high-influence')?.count).toBe(1)
-    expect(filterPills.find(p => p.key === 'recently-added')?.count).toBe(1)
+    expect(filterPills.find((p: { key: string; }) => p.key === 'all')?.count).toBe(2)
+    expect(filterPills.find((p: { key: string; }) => p.key === 'decision-makers')?.count).toBe(1)
+    expect(filterPills.find((p: { key: string; }) => p.key === 'primary-contacts')?.count).toBe(1)
+    expect(filterPills.find((p: { key: string; }) => p.key === 'high-influence')?.count).toBe(1)
+    expect(filterPills.find((p: { key: string; }) => p.key === 'recently-added')?.count).toBe(1)
   })
 
   it('should return empty results when no matches found', () => {

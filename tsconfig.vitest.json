@@ -8,6 +8,9 @@
   "include": [
     "tests/unit/**/*",
     "tests/shared/**/*",
+    "tests/components/**/*",
+    "tests/mcp/**/*",
+    "tests/mcp-playwright/**/*",
     "vitest.config.ts",
     "vitest.config.unit.ts",
     "src/**/*",

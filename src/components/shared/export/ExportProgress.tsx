@@ -3,7 +3,7 @@ import { FileSpreadsheet, AlertCircle } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import type { ExportProgress as ExportProgressType } from '@/hooks/useExportExecution'
+import type { ExportProgress as ExportProgressType } from '@/features/import-export/hooks/useExportExecution'
 
 interface ExportProgressProps {
   exportProgress: ExportProgressType

@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { toast } from '@/lib/toast-styles'
 import { Button } from '@/components/ui/button'
-import { ProductsTable } from '@/components/products/ProductsTable'
-import { ProductForm } from '@/components/products/ProductForm'
+import { ProductsTable } from '@/features/products/components/ProductsTable'
+import { ProductForm } from '@/features/products/components/ProductForm'
 import { PageHeader } from '@/components/ui/new/PageHeader'
-import { useProducts, useCreateProduct, useUpdateProduct, useDeleteProduct } from '@/hooks/useProducts'
+import { useProducts, useCreateProduct, useUpdateProduct, useDeleteProduct } from '@/features/products/hooks/useProducts'
 import { Plus } from 'lucide-react'
 import type { Product, ProductUpdate } from '@/types/entities'
 import {

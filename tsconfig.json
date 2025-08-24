@@ -17,7 +17,10 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/features/*": ["./src/features/*"],
+      "@/shared/*": ["./src/components/shared/*"],
+      "@/layout/*": ["./src/layout/*"]
     }
   },
   "include": ["src", "tests", "vitest.config.ts", "vitest.config.unit.ts"],

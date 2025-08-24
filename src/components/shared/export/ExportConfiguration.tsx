@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { AVAILABLE_FIELDS, type ExportOptions } from '@/hooks/useExportConfiguration'
+import { AVAILABLE_FIELDS, type ExportOptions } from '@/features/import-export/hooks/useExportConfiguration'
 
 interface ExportConfigurationProps {
   exportOptions: ExportOptions

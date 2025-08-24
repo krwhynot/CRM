@@ -3,7 +3,7 @@ import { toast } from '@/lib/toast-styles'
 import { ArrowLeft, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { SimpleMultiPrincipalForm } from '@/components/opportunities/SimpleMultiPrincipalForm'
+import { SimpleMultiPrincipalForm } from '@/features/opportunities/components/SimpleMultiPrincipalForm'
 
 function MultiPrincipalOpportunityPage() {
   const navigate = useNavigate()

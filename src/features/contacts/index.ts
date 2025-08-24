@@ -1,0 +1,20 @@
+// Contacts Feature - Main Exports
+export { ContactForm } from './components/ContactForm'
+export { EnhancedContactForm } from './components/EnhancedContactForm'
+export { ContactsTable } from './components/ContactsTable'
+export { ContactRow } from './components/ContactRow'
+export { ContactsFilters } from './components/ContactsFilters'
+export { ContactActions } from './components/ContactActions'
+export { ContactBadges } from './components/ContactBadges'
+export { PreferredPrincipalsSelect } from './components/PreferredPrincipalsSelect'
+
+// Hooks
+export { useContacts } from './hooks/useContacts'
+export { useContactsFiltering } from './hooks/useContactsFiltering'
+export { useContactsDisplay } from './hooks/useContactsDisplay'
+export { useContactFormState } from './hooks/useContactFormState'
+export { useContactFormStyle } from './hooks/useContactFormStyle'
+export { useContactsBadges } from './hooks/useContactsBadges'
+export { useContactRowState } from './hooks/useContactRowState'
+export { useContactPreferredPrincipals } from './hooks/useContactPreferredPrincipals'
+export { useEnhancedContactFormState } from './hooks/useEnhancedContactFormState'

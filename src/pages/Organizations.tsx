@@ -1,13 +1,16 @@
 import React, { useEffect } from 'react'
-import { useOrganizations, useRefreshOrganizations } from '@/hooks/useOrganizations'
-import { useOrganizationsPageState } from '@/hooks/useOrganizationsPageState'
-import { useOrganizationsPageActions } from '@/hooks/useOrganizationsPageActions'
-import { useOrganizationFormData } from '@/hooks/useOrganizationFormData'
-import { useOrganizationsPageStyle } from '@/hooks/useOrganizationsPageStyle'
-import { OrganizationsPageHeader } from '@/components/organizations/OrganizationsPageHeader'
-import { OrganizationsDataDisplay } from '@/components/organizations/OrganizationsDataDisplay'
-import { OrganizationDialogs } from '@/components/organizations/OrganizationDialogs'
-import { OrganizationsErrorBoundary } from '@/components/error-boundaries/QueryErrorBoundary'
+import { 
+  useOrganizations, 
+  useRefreshOrganizations,
+  useOrganizationsPageState,
+  useOrganizationsPageActions,
+  useOrganizationFormData,
+  useOrganizationsPageStyle,
+  OrganizationsPageHeader,
+  OrganizationsDataDisplay,
+  OrganizationDialogs
+} from '@/features/organizations'
+import { OrganizationsErrorBoundary } from '@/components/shared/feedback/error-boundaries/QueryErrorBoundary'
 import { cn } from '@/lib/utils'
 
 function OrganizationsPage() {

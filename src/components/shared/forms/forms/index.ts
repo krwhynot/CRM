@@ -29,7 +29,7 @@ export {
 } from './ProgressiveDetails'
 
 // Hook export
-export { useProgressiveDetails } from '../../hooks/useProgressiveDetails'
+export { useProgressiveDetails } from '@/hooks/useProgressiveDetails'
 
 // Type exports
 export type {

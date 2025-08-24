@@ -1,13 +1,13 @@
 import React from 'react'
-import { useInteractions, useInteractionStats } from '@/hooks/useInteractions'
-import { useInteractionsPageState } from '@/hooks/useInteractionsPageState'
-import { useInteractionsPageActions } from '@/hooks/useInteractionsPageActions'
-import { useInteractionsFiltering } from '@/hooks/useInteractionsFiltering'
-import { InteractionsPageHeader } from '@/components/interactions/InteractionsPageHeader'
-import { InteractionsStatsCards } from '@/components/interactions/InteractionsStatsCards'
-import { InteractionTypesBreakdown } from '@/components/interactions/InteractionTypesBreakdown'
-import { InteractionsSearchAndTable } from '@/components/interactions/InteractionsSearchAndTable'
-import { InteractionDialogs } from '@/components/interactions/InteractionDialogs'
+import { useInteractions, useInteractionStats } from '@/features/interactions/hooks/useInteractions'
+import { useInteractionsPageState } from '@/features/interactions/hooks/useInteractionsPageState'
+import { useInteractionsPageActions } from '@/features/interactions/hooks/useInteractionsPageActions'
+import { useInteractionsFiltering } from '@/features/interactions/hooks/useInteractionsFiltering'
+import { InteractionsPageHeader } from '@/features/interactions/components/InteractionsPageHeader'
+import { InteractionsStatsCards } from '@/features/interactions/components/InteractionsStatsCards'
+import { InteractionTypesBreakdown } from '@/features/interactions/components/InteractionTypesBreakdown'
+import { InteractionsSearchAndTable } from '@/features/interactions/components/InteractionsSearchAndTable'
+import { InteractionDialogs } from '@/features/interactions/components/InteractionDialogs'
 
 function InteractionsPage() {
   const { data: interactions = [], isLoading } = useInteractions()

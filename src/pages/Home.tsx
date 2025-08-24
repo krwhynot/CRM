@@ -1,4 +1,4 @@
-import { CRMDashboard } from '@/components/dashboard/CRMDashboard'
+import { CRMDashboard } from '@/features/dashboard/components/CRMDashboard'
 
 function HomePage() {
   return <CRMDashboard />

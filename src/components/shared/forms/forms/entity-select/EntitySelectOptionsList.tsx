@@ -1,6 +1,6 @@
 import React from 'react'
 import { SelectItem } from "@/components/ui/select"
-import type { EntityOption } from '@/components/forms/EntitySelect'
+import type { EntityOption } from '../EntitySelect'
 
 interface EntitySelectOptionsListProps {
   options: EntityOption[]

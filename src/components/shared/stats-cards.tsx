@@ -1,5 +1,5 @@
 import { TrendingUp, TrendingDown, Users, Target, MessageSquare, Building2 } from "lucide-react"
-import { useDashboardMetrics } from "@/hooks/useDashboardMetrics"
+import { useDashboardMetrics } from "@/features/dashboard/hooks/useDashboardMetrics"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 

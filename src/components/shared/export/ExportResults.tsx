@@ -3,7 +3,7 @@ import { CheckCircle } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import type { ExportProgress } from '@/hooks/useExportExecution'
+import type { ExportProgress } from '@/features/import-export/hooks/useExportExecution'
 
 interface ExportResultsProps {
   exportProgress: ExportProgress
