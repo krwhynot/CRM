@@ -21,8 +21,5 @@
     }
   },
   "include": ["src", "tests", "vitest.config.ts", "vitest.config.unit.ts"],
-  "references": [{ "path": "./tsconfig.node.json" }],
-  "compilerOptions": {
-    "types": ["vitest/globals"]
-  }
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

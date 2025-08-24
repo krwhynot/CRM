@@ -1,0 +1,84 @@
+import React from 'react'
+import { Button } from '@/components/ui/button'
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import type { InteractionWithRelations } from '@/types/entities'
+import { InteractionTimelineItem } from '../InteractionTimelineItem'
+
+interface TimelineItemsProps {
+  displayedInteractions: InteractionWithRelations[]
+  expandedItems: Set<string>
+  hasMore: boolean
+  remaining: number
+  showAllInteractions: boolean
+  onItemClick: (interaction: InteractionWithRelations) => void
+  onToggleExpand: (interactionId: string) => void
+  onToggleShowAll: () => void
+  handleEditInteraction: (interaction: InteractionWithRelations) => void
+  handleDeleteInteraction: (interaction: InteractionWithRelations) => void
+  getInteractionIcon: (type: string) => React.ReactNode
+  getInteractionTypeColor: (type: string) => string
+}
+
+export const TimelineItems: React.FC<TimelineItemsProps> = ({
+  displayedInteractions,
+  expandedItems,
+  hasMore,
+  remaining,
+  showAllInteractions,
+  onItemClick,
+  onToggleExpand,
+  onToggleShowAll,
+  handleEditInteraction,
+  handleDeleteInteraction,
+  getInteractionIcon,
+  getInteractionTypeColor
+}) => {
+  return (
+    <div className="space-y-6 pb-4 md:pb-0">
+      <div className="relative">
+        {/* Timeline line */}
+        <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200" />
+        
+        {/* Timeline items */}
+        <div className="space-y-6">
+          {displayedInteractions.map((interaction: InteractionWithRelations) => (
+            <InteractionTimelineItem
+              key={interaction.id}
+              interaction={interaction}
+              isExpanded={expandedItems.has(interaction.id)}
+              onToggleExpand={() => onToggleExpand(interaction.id)}
+              onEdit={() => handleEditInteraction(interaction)}
+              onDelete={() => handleDeleteInteraction(interaction)}
+              onItemClick={() => onItemClick(interaction)}
+              getInteractionIcon={getInteractionIcon}
+              getInteractionTypeColor={getInteractionTypeColor}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Show More/Less Button */}
+      {hasMore && (
+        <div className="text-center pt-4 border-t">
+          <Button
+            variant="outline"
+            onClick={onToggleShowAll}
+            className="w-full md:w-auto flex items-center gap-2"
+          >
+            {showAllInteractions ? (
+              <>
+                <ChevronUp className="h-4 w-4" />
+                Show Less
+              </>
+            ) : (
+              <>
+                <ChevronDown className="h-4 w-4" />
+                Show {remaining} More Activities
+              </>
+            )}
+          </Button>
+        </div>
+      )}
+    </div>
+  )
+}

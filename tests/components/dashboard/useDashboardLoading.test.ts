@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react'
 import { act } from 'react'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { useDashboardLoading } from '@/hooks/useDashboardLoading'
 import { FilterState, ActivityItem } from '@/types/dashboard'
 
@@ -21,11 +22,11 @@ describe('useDashboardLoading', () => {
   ]
 
   beforeEach(() => {
-    jest.useFakeTimers()
+    vi.useFakeTimers()
   })
 
   afterEach(() => {
-    jest.useRealTimers()
+    vi.useRealTimers()
   })
 
   it('should start with initial loading true', () => {
@@ -44,7 +45,7 @@ describe('useDashboardLoading', () => {
     expect(result.current.isInitialLoad).toBe(true)
     
     act(() => {
-      jest.advanceTimersByTime(1500)
+      vi.advanceTimersByTime(1500)
     })
     
     expect(result.current.isInitialLoad).toBe(false)
@@ -94,7 +95,7 @@ describe('useDashboardLoading', () => {
   })
 
   it('should cleanup timer on unmount', () => {
-    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout')
+    const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout')
     
     const { unmount } = renderHook(() => 
       useDashboardLoading(mockFilters, mockActivityItems)

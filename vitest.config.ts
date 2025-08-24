@@ -5,7 +5,7 @@ import path from 'path'
 export default defineConfig({
   test: {
     globals: true,
-    environment: 'node',
+    environment: 'jsdom',
     setupFiles: ['./tests/backend/setup/test-setup.ts'],
     teardownTimeout: 30000,
     testTimeout: 30000,
