@@ -1,15 +1,16 @@
 import { renderHook, act } from '@testing-library/react'
 import { useDashboardFilters } from '@/hooks/useDashboardFilters'
 import { FilterState } from '@/types/dashboard'
+import { vi } from 'vitest'
 
 // Mock the useDebounce hook
-jest.mock('@/hooks/useDebounce', () => ({
-  useDebounce: jest.fn((value) => value)
+vi.mock('@/hooks/useDebounce', () => ({
+  useDebounce: vi.fn((value) => value)
 }))
 
 describe('useDashboardFilters', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('should initialize with default filters', () => {
@@ -36,7 +37,7 @@ describe('useDashboardFilters', () => {
   })
 
   it('should update filters and trigger loading state', async () => {
-    jest.useFakeTimers()
+    vi.useFakeTimers()
     const { result } = renderHook(() => useDashboardFilters())
     
     const newFilters: FilterState = {
@@ -54,16 +55,16 @@ describe('useDashboardFilters', () => {
     
     // Fast forward through the loading simulation
     act(() => {
-      jest.advanceTimersByTime(300)
+      vi.advanceTimersByTime(300)
     })
     
     expect(result.current.isLoading).toBe(false)
     
-    jest.useRealTimers()
+    vi.useRealTimers()
   })
 
   it('should provide debounced filters', () => {
-    const mockUseDebounce = require('@/hooks/useDebounce').useDebounce as jest.Mock
+    const mockUseDebounce = require('@/hooks/useDebounce').useDebounce as ReturnType<typeof vi.fn>
     const mockDebouncedValue = { principal: 'debounced', product: 'debounced', weeks: 'debounced' }
     mockUseDebounce.mockReturnValue(mockDebouncedValue)
     
@@ -74,7 +75,7 @@ describe('useDashboardFilters', () => {
   })
 
   it('should handle multiple rapid filter changes', async () => {
-    jest.useFakeTimers()
+    vi.useFakeTimers()
     const { result } = renderHook(() => useDashboardFilters())
     
     // Trigger multiple filter changes rapidly
@@ -91,11 +92,11 @@ describe('useDashboardFilters', () => {
     
     // Fast forward and check loading completes
     act(() => {
-      jest.advanceTimersByTime(300)
+      vi.advanceTimersByTime(300)
     })
     
     expect(result.current.isLoading).toBe(false)
     
-    jest.useRealTimers()
+    vi.useRealTimers()
   })
 })

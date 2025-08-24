@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useCallback } from 'react'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 
 export interface FormSection<T extends FieldValues> {
@@ -39,10 +39,7 @@ export interface SelectOption {
 
 interface UseFormLayoutProps<T extends FieldValues> {
   entityType: string
-  showAdvancedOptions?: boolean
   coreSections: FormSection<T>[]
-  optionalSections?: FormSection<T>[]
-  contextualSections?: ConditionalSection<T>[]
   form: UseFormReturn<T>
 }
 
@@ -52,19 +49,15 @@ interface UseFormLayoutReturn<T extends FieldValues> {
   watchedValues: T
   getLayoutClass: (layout?: FormSection<T>['layout']) => string
   getSectionClassName: (section: FormSection<T>) => string
-  shouldShowConditionalSection: (condition: (values: T) => boolean) => boolean
+  shouldShowConditionalSection: (condition: (values: T) => boolean, watchedValues: T) => boolean
   cleanFormData: (data: T) => T
 }
 
 export const useFormLayout = <T extends FieldValues>({
   entityType,
-  showAdvancedOptions = false,
-  coreSections,
-  optionalSections = [],
-  contextualSections = [],
   form
 }: UseFormLayoutProps<T>): UseFormLayoutReturn<T> => {
-  const [showOptionalSections, setShowOptionalSections] = useState(showAdvancedOptions)
+  const [showOptionalSections, setShowOptionalSections] = useState(false) // Default to false, can be managed by consuming component
   
   const watchedValues = form.watch()
   
@@ -74,31 +67,27 @@ export const useFormLayout = <T extends FieldValues>({
   }
   
   // Get responsive layout class for section
-  const getLayoutClass = useMemo(() => {
-    return (layout?: FormSection<T>['layout']): string => {
-      switch (layout) {
-        case 'single': return 'space-y-4'
-        case 'double': return 'grid grid-cols-1 md:grid-cols-2 gap-4'
-        case 'triple': return 'grid grid-cols-1 md:grid-cols-3 gap-4'
-        case 'auto': return 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'
-        default: return 'space-y-4'
-      }
+  const getLayoutClass = useCallback((layout?: FormSection<T>['layout']): string => {
+    switch (layout) {
+      case 'single': return 'space-y-4'
+      case 'double': return 'grid grid-cols-1 md:grid-cols-2 gap-4'
+      case 'triple': return 'grid grid-cols-1 md:grid-cols-3 gap-4'
+      case 'auto': return 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'
+      default: return 'space-y-4'
     }
   }, [])
   
   // Get entity-specific section styling
-  const getSectionClassName = useMemo(() => {
-    return (section: FormSection<T>): string => {
-      const baseClass = `space-y-6 ${section.className || ''}`
-      return entityType === 'interaction' 
-        ? `${baseClass} bg-blue-50/50 p-4 rounded-lg` 
-        : baseClass
-    }
+  const getSectionClassName = useCallback((section: FormSection<T>): string => {
+    const baseClass = `space-y-6 ${section.className || ''}`
+    return entityType === 'interaction' 
+      ? `${baseClass} bg-blue-50/50 p-4 rounded-lg` 
+      : baseClass
   }, [entityType])
   
   // Check if conditional section should be shown
-  const shouldShowConditionalSection = (condition: (values: T) => boolean): boolean => {
-    return useMemo(() => condition(watchedValues), [condition, watchedValues])
+  const shouldShowConditionalSection = (condition: (values: T) => boolean, watchedValues: T): boolean => {
+    return condition(watchedValues)
   }
   
   // Clean form data by converting empty strings to null

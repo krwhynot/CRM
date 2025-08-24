@@ -4,7 +4,7 @@ module.exports = {
   extends: [
     'eslint:recommended',
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs', 'node_modules', 'crm-dashboard', 'docs', 'tests', 'tests.backup.*', '*.backup.*', 'backups', 'src/utils/password-reset-test.ts', 'src/lib/supabase.ts'],
+  ignorePatterns: ['dist', '.eslintrc.cjs', 'node_modules', 'docs', 'tests', 'tests.backup.*', '*.backup.*', 'backups', 'src/utils/password-reset-test.ts', 'src/lib/supabase.ts'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',

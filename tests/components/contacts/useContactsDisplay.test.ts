@@ -53,7 +53,7 @@ describe('useContactsDisplay', () => {
     })
     
     expect(result.current.expandedRows.size).toBe(3)
-    contactIds.forEach(id => {
+    contactIds.forEach((id: string) => {
       expect(result.current.isRowExpanded(id)).toBe(true)
     })
   })
@@ -75,7 +75,7 @@ describe('useContactsDisplay', () => {
     })
     
     expect(result.current.expandedRows.size).toBe(0)
-    contactIds.forEach(id => {
+    contactIds.forEach((id: string) => {
       expect(result.current.isRowExpanded(id)).toBe(false)
     })
   })

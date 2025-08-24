@@ -23,8 +23,12 @@ describe('Row Level Security (RLS) Policies', () => {
 
   beforeAll(async () => {
     // Create separate Supabase clients for different users
-    const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://ixitjldcdvbazvjsnkao.supabase.co'
-    const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4aXRqbGRjZHZiYXp2anNua2FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ5Mjg0MjEsImV4cCI6MjA3MDUwNDQyMX0.8h5jXRcT96R34m0MU7PVbgzJPpGvf5azgQd2wo5AB2Q'
+    const supabaseUrl = process.env.VITE_SUPABASE_URL
+    const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      throw new Error('Supabase URL and Anon key must be provided in environment variables for RLS tests')
+    }
 
     user1Client = createClient<Database>(supabaseUrl, supabaseAnonKey)
     user2Client = createClient<Database>(supabaseUrl, supabaseAnonKey)
@@ -538,11 +542,14 @@ describe('Row Level Security (RLS) Policies', () => {
       }
 
       // User1 creates multiple organizations
-      const user1Orgs = []
+      const user1Orgs: string[] = []
       for (let i = 1; i <= 3; i++) {
-        const orgData = {
+        const orgData: Database['public']['Tables']['organizations']['Insert'] = {
           name: `User1 Isolation Test Org ${i}`,
-          type: 'customer' as const
+          type: 'customer' as const,
+          created_by: user1Id,
+          priority: 'medium',
+          segment: 'restaurant'
         }
 
         const result = await user1Client
@@ -556,11 +563,14 @@ describe('Row Level Security (RLS) Policies', () => {
       }
 
       // User2 creates multiple organizations
-      const user2Orgs = []
+      const user2Orgs: string[] = []
       for (let i = 1; i <= 3; i++) {
-        const orgData = {
+        const orgData: Database['public']['Tables']['organizations']['Insert'] = {
           name: `User2 Isolation Test Org ${i}`,
-          type: 'principal' as const
+          type: 'principal' as const,
+          created_by: user2Id,
+          priority: 'high',
+          segment: 'hospitality'
         }
 
         const result = await user2Client
@@ -583,7 +593,7 @@ describe('Row Level Security (RLS) Policies', () => {
       expect(user1Results.data).toBeDefined()
       
       // All results should belong to user1
-      user1Results.data.forEach(org => {
+      user1Results.data.forEach((org: Database['public']['Tables']['organizations']['Row']) => {
         expect(user1Orgs.includes(org.id)).toBe(true)
         expect(user2Orgs.includes(org.id)).toBe(false)
       })
@@ -598,17 +608,17 @@ describe('Row Level Security (RLS) Policies', () => {
       expect(user2Results.data).toBeDefined()
       
       // All results should belong to user2
-      user2Results.data.forEach(org => {
+      user2Results.data.forEach((org: Database['public']['Tables']['organizations']['Row']) => {
         expect(user2Orgs.includes(org.id)).toBe(true)
         expect(user1Orgs.includes(org.id)).toBe(false)
       })
 
       // Verify complete isolation
-      const user1OrgIds = user1Results.data.map(org => org.id)
-      const user2OrgIds = user2Results.data.map(org => org.id)
+      const user1OrgIds = user1Results.data.map((org: Database['public']['Tables']['organizations']['Row']) => org.id)
+      const user2OrgIds = user2Results.data.map((org: Database['public']['Tables']['organizations']['Row']) => org.id)
       
       // No overlap should exist
-      const overlap = user1OrgIds.filter(id => user2OrgIds.includes(id))
+      const overlap = user1OrgIds.filter((id: string) => user2OrgIds.includes(id))
       expect(overlap).toHaveLength(0)
     })
   })
@@ -642,11 +652,14 @@ describe('Row Level Security (RLS) Policies', () => {
       }
 
       // Create multiple organizations to test pagination performance
-      const orgIds = []
+      const orgIds: string[] = []
       for (let i = 1; i <= 10; i++) {
-        const orgData = {
+        const orgData: Database['public']['Tables']['organizations']['Insert'] = {
           name: `Bulk RLS Test Org ${i}`,
-          type: 'customer' as const
+          type: 'customer' as const,
+          created_by: user1Id,
+          priority: 'low',
+          segment: 'retail'
         }
 
         const result = await user1Client

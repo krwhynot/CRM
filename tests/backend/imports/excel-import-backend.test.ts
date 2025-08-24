@@ -23,7 +23,7 @@ describe('Excel Import Backend Validation Tests', () => {
     // Generate import performance report
     console.log('\n📊 IMPORT PERFORMANCE RESULTS:')
     console.log('=' .repeat(70))
-    importTestResults.forEach(result => {
+    importTestResults.forEach((result: any) => {
       const recordsPerSecond = result.recordsProcessed / (result.duration / 1000)
       console.log(`${result.test.padEnd(35)} | ${result.duration.toFixed(0)}ms | ${result.recordsProcessed} records | ${recordsPerSecond.toFixed(1)} records/sec`)
     })
@@ -90,7 +90,7 @@ describe('Excel Import Backend Validation Tests', () => {
       const values = lines[i].split(',')
       const record: any = {}
       
-      headers.forEach((header, index) => {
+      headers.forEach((header: string, index: number) => {
         record[header.toLowerCase().replace(' ', '_')] = values[index]?.trim()
       })
       
@@ -194,7 +194,7 @@ describe('Excel Import Backend Validation Tests', () => {
         { name: '中文餐厅', type: 'customer', description: 'Unicode characters' }
       ]
 
-      specialCharRecords.forEach(record => {
+      specialCharRecords.forEach((record: any) => {
         const validation = validateImportRecord(record)
         expect(validation.errors).toHaveLength(0) // Should handle special characters
       })
@@ -323,7 +323,7 @@ describe('Excel Import Backend Validation Tests', () => {
 
         const batchResults = await Promise.all(batchPromises)
         
-        batchResults.forEach(result => {
+        batchResults.forEach((result: any) => {
           if (result.success) {
             results.successful++
           } else {
@@ -416,7 +416,7 @@ describe('Excel Import Backend Validation Tests', () => {
 
       console.log(`📊 Error handling import: ${results.successful} successful, ${results.failed} failed in ${duration.toFixed(2)}ms`)
       console.log(`📋 Sample errors:`)
-      results.errors.slice(0, 3).forEach(error => {
+      results.errors.slice(0, 3).forEach((error: any) => {
         console.log(`  - ${error.record}: ${error.error}`)
       })
     })
@@ -680,7 +680,7 @@ describe('Excel Import Backend Validation Tests', () => {
       const results = await Promise.all(importPromises)
 
       // All imports should complete successfully
-      results.forEach((result, index) => {
+      results.forEach((result: any, index: number) => {
         expect(result.successful).toBe(recordsPerImport)
         console.log(`📊 Concurrent Import ${result.import}: ${result.duration.toFixed(0)}ms`)
       })
@@ -774,7 +774,7 @@ describe('Excel Import Backend Validation Tests', () => {
       expect(validationErrors).toHaveLength(3)
 
       console.log('\n📋 DETAILED ERROR REPORT:')
-      importReport.errors.forEach(error => {
+      importReport.errors.forEach((error: any) => {
         console.log(`  Row ${error.row}: ${error.record} - ${error.error} (${error.type})`)
       })
     })

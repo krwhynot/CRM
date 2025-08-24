@@ -259,7 +259,7 @@ describe('Contacts Database Operations', () => {
       expect(result.data.length).toBeGreaterThanOrEqual(4)
 
       // Verify all contacts belong to the same organization
-      result.data.forEach(contact => {
+      result.data.forEach((contact: any) => {
         expect(contact.organization_id).toBe(testOrgId)
       })
     })
@@ -282,7 +282,7 @@ describe('Contacts Database Operations', () => {
       expect(result.data.length).toBeGreaterThan(0)
       
       // Verify search results contain the search term
-      result.data.forEach(contact => {
+      result.data.forEach((contact: any) => {
         const fullName = `${contact.first_name} ${contact.last_name}`.toLowerCase()
         expect(fullName).toContain('sample')
       })
@@ -308,7 +308,7 @@ describe('Contacts Database Operations', () => {
         .limit(10)
 
       expect(result.error).toBeNull()
-      result.data.forEach(contact => {
+      result.data.forEach((contact: any) => {
         expect(contact.role).toBe('decision_maker')
       })
     })

@@ -115,7 +115,7 @@ export async function retry<T>(
   maxAttempts: number = 3,
   delay: number = 1000
 ): Promise<T> {
-  let lastError: Error;
+  let lastError: Error = new Error('Retry operation failed');
   
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {

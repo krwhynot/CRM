@@ -321,7 +321,7 @@ describe('Products Database Operations', () => {
       expect(result.data.length).toBeGreaterThanOrEqual(4)
 
       // Verify all products belong to the same principal
-      result.data.forEach(product => {
+      result.data.forEach((product: any) => {
         expect(product.principal_id).toBe(testPrincipalId)
         expect(product.is_active).toBe(true)
         expect(product.deleted_at).toBeNull()
@@ -350,7 +350,7 @@ describe('Products Database Operations', () => {
 
       expect(result.error).toBeNull()
       expect(result.data.length).toBeGreaterThanOrEqual(2)
-      result.data.forEach(product => {
+      result.data.forEach((product: any) => {
         expect(product.category).toBe('dairy')
       })
     })
@@ -373,7 +373,7 @@ describe('Products Database Operations', () => {
       expect(result.data.length).toBeGreaterThan(0)
       
       // Verify search results contain the search term
-      result.data.forEach(product => {
+      result.data.forEach((product: any) => {
         const searchableText = `${product.name} ${product.description || ''}`.toLowerCase()
         expect(searchableText).toContain('sample')
       })
@@ -404,13 +404,13 @@ describe('Products Database Operations', () => {
         .is('deleted_at', null)
 
       expect(result.error).toBeNull()
-      result.data.forEach(product => {
+      result.data.forEach((product: any) => {
         expect(product.is_active).toBe(true)
         expect(product.deleted_at).toBeNull()
       })
 
       // Verify inactive product is not included
-      const inactiveProductInResults = result.data.find(p => p.id === inactiveResult.data.id)
+      const inactiveProductInResults = result.data.find((p: any) => p.id === inactiveResult.data.id)
       expect(inactiveProductInResults).toBeUndefined()
     })
 
@@ -448,7 +448,7 @@ describe('Products Database Operations', () => {
         .gte('season_end', currentMonth)
 
       expect(result.error).toBeNull()
-      result.data.forEach(product => {
+      result.data.forEach((product: any) => {
         if (product.season_start && product.season_end) {
           expect(product.season_start).toBeLessThanOrEqual(currentMonth)
           expect(product.season_end).toBeGreaterThanOrEqual(currentMonth)

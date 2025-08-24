@@ -7,7 +7,8 @@
 
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/lib/database.types'
-import { vi, beforeAll, afterAll, beforeEach } from 'vitest'
+import { vi, beforeAll, afterAll, beforeEach, expect } from 'vitest'
+import '@testing-library/jest-dom'
 
 // Test environment configuration
 const TEST_SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://ixitjldcdvbazvjsnkao.supabase.co'
@@ -262,6 +263,7 @@ beforeEach(() => {
 })
 
 // Make utilities globally available
+// Using `var` in the global declaration is a common workaround for this type of error
 declare global {
   var testSupabase: typeof testSupabase
   var testConfig: typeof testConfig
@@ -270,8 +272,10 @@ declare global {
   var TestAuth: typeof TestAuth
 }
 
-globalThis.testSupabase = testSupabase
-globalThis.testConfig = testConfig
-globalThis.TestCleanup = TestCleanup
-globalThis.PerformanceMonitor = PerformanceMonitor
-globalThis.TestAuth = TestAuth
+Object.assign(globalThis, {
+  testSupabase,
+  testConfig,
+  TestCleanup,
+  PerformanceMonitor,
+  TestAuth
+})

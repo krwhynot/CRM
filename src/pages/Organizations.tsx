@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { toast } from '@/lib/toast-styles'
 import { Button } from '@/components/ui/button'
 import { OrganizationsTable } from '@/components/organizations/OrganizationsTable'
@@ -44,7 +44,7 @@ function OrganizationsPage() {
   const refreshOrganizations = useRefreshOrganizations()
 
   // Debug: Track Organizations page data state
-  React.useEffect(() => {
+  useEffect(() => {
     console.log('📄 [OrganizationsPage] Data state:', {
       isLoading,
       isError,

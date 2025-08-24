@@ -2,6 +2,7 @@ import React from 'react'
 import {
   Table,
   TableBody,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -22,68 +23,7 @@ interface ProductsTableProps {
   onAddNew?: () => void
 }
 
-const DEFAULT_PRODUCTS: ProductWithPrincipal[] = [
-  {
-    id: '1',
-    name: 'Premium Aged Cheddar',
-    sku: 'CHD-001-AGE',
-    description: 'Artisan aged cheddar cheese, 24-month maturation',
-    category: 'dairy',
-    list_price: 45.99,
-    unit_of_measure: 'lb',
-    shelf_life_days: 180,
-    principal_id: '3',
-    principal: {
-      id: '3',
-      name: 'ACME FOOD DISTRIBUTORS',
-      type: 'distributor' as any,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: '2',
-    name: 'Organic Free-Range Chicken Breast',
-    sku: 'CHK-002-ORG',
-    description: 'USDA Organic certified, free-range chicken breast',
-    category: 'meat_poultry',
-    list_price: 12.99,
-    unit_of_measure: 'lb',
-    shelf_life_days: 7,
-    principal_id: '3',
-    principal: {
-      id: '3',
-      name: 'ACME FOOD DISTRIBUTORS',
-      type: 'distributor' as any,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: '3',
-    name: 'Fresh Basil Leaves',
-    sku: 'HRB-003-BSL',
-    description: 'Farm-fresh basil, locally sourced',
-    category: 'fresh_produce',
-    list_price: 3.99,
-    unit_of_measure: 'bunch',
-    shelf_life_days: 3,
-    principal_id: '3',
-    principal: {
-      id: '3',
-      name: 'ACME FOOD DISTRIBUTORS',
-      type: 'distributor' as any,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  }
-]
+const DEFAULT_PRODUCTS: ProductWithPrincipal[] = []
 
 export function ProductsTable({ 
   products = DEFAULT_PRODUCTS, 

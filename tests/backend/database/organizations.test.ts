@@ -230,7 +230,7 @@ describe('Organizations Database Operations', () => {
 
         expect(result.error).toBeNull()
         expect(result.data).toBeDefined()
-        result.data.forEach(org => {
+        result.data.forEach((org: any) => {
           expect(org.type).toBe(type)
         })
       }
@@ -250,7 +250,7 @@ describe('Organizations Database Operations', () => {
       expect(result.data.length).toBeGreaterThan(0)
       
       // Verify search results contain the search term
-      result.data.forEach(org => {
+      result.data.forEach((org: any) => {
         expect(org.name.toLowerCase()).toContain('sample')
       })
     })
@@ -264,7 +264,7 @@ describe('Organizations Database Operations', () => {
         .limit(10)
 
       expect(result.error).toBeNull()
-      result.data.forEach(org => {
+      result.data.forEach((org: any) => {
         expect(org.is_active).toBe(true)
         expect(org.deleted_at).toBeNull()
       })

@@ -27,9 +27,6 @@ Generate a detailed, human-readable structure map for the KitchenPantry CRM whil
 - [ ] `/src/lib/` - Utilities and configurations
 - [ ] `/src/types/` - Type system structure
 
-**Chunked Analysis - Secondary Next.js App**
-- [ ] `/crm-dashboard/` - Alternative implementation status
-  - Note: Experimental features only
 
 **Output**: Structured component inventory with purpose descriptions
 
@@ -58,7 +55,6 @@ Generate a detailed, human-readable structure map for the KitchenPantry CRM whil
 
 ## 🏗️ Architecture Summary
 - **Primary Stack**: React 18 + TypeScript + Vite + shadcn/ui
-- **Secondary Stack**: Next.js (experimental features)
 - **Backend**: Supabase (PostgreSQL + Auth + RLS)
 - **Deployment**: Vercel + Supabase Cloud
 
@@ -103,9 +99,6 @@ Generate a detailed, human-readable structure map for the KitchenPantry CRM whil
 ├── 📄 TECHNICAL_GUIDE.md - Developer guide
 └── 📄 database.md - Schema documentation
 
-### Secondary Application (Next.js)
-📁 **/crm-dashboard/** [EXPERIMENTAL]
-└── [Next.js structure - secondary priority]
 
 ## 🔄 Data Flow Architecture
 Client → Hooks → Supabase → PostgreSQL

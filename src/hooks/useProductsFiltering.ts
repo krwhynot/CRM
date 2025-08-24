@@ -72,9 +72,7 @@ export const useProductsFiltering = (
         product.sku?.toLowerCase().includes(term) ||
         product.description?.toLowerCase().includes(term) ||
         product.category?.toLowerCase().includes(term) ||
-        product.principal_name?.toLowerCase().includes(term) ||
-        product.brand?.toLowerCase().includes(term) ||
-        product.origin_country?.toLowerCase().includes(term)
+        product.principal?.name?.toLowerCase().includes(term)
       )
     }
 

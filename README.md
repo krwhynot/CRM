@@ -60,11 +60,8 @@ npm run preview      # Preview production build
 
 ## 🏗️ Project Structure
 
-This codebase contains two main applications:
+This codebase contains one main application:
 - **Root Vite App** (`/src/`): Primary React + TypeScript + Vite application with shadcn/ui components
-- **Next.js Dashboard** (`/crm-dashboard/`): Secondary Next.js application (experimental/alternative implementation)
-
-**Focus on the root Vite application** unless specifically working on Next.js features.
 
 ```
 src/
@@ -74,7 +71,6 @@ src/
 ├── lib/           # Utilities and shared functions
 ├── types/         # TypeScript type definitions
 docs/              # Architecture and development documentation
-crm-dashboard/     # Next.js experimental implementation
 ```
 
 ## 🗃️ Database Entities
@@ -108,13 +104,6 @@ npm run preview    # Preview production build
 npx tsc --noEmit   # Type checking
 ```
 
-### CRM Dashboard (Next.js - Secondary)
-```bash
-cd crm-dashboard
-npm run dev        # Next.js dev server with Turbopack
-npm run build      # Production build
-npm run lint       # Next.js linting
-```
 
 ## 🎯 Key Features
 

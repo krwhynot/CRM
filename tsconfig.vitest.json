@@ -10,7 +10,8 @@
     "tests/shared/**/*",
     "vitest.config.ts",
     "vitest.config.unit.ts",
-    "src/**/*"
+    "src/**/*",
+    "tests/backend/**/*"
   ],
   "exclude": [
     "tests/e2e/**/*",

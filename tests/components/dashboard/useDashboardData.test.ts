@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { FilterState } from '@/types/dashboard'
+import { vi } from 'vitest'
 
 // Mock the sample data generation
 const mockSampleData = {
@@ -44,17 +45,17 @@ const mockSampleData = {
   ]
 }
 
-jest.mock('@/utils/sampleData', () => ({
+vi.mock('@/utils/sampleData', () => ({
   generateSampleData: () => mockSampleData
 }))
 
-jest.mock('@/utils/dateUtils', () => ({
-  getWeeksBack: jest.fn(() => 4),
-  generateWeeksData: jest.fn(() => [
+vi.mock('@/utils/dateUtils', () => ({
+  getWeeksBack: vi.fn(() => 4),
+  generateWeeksData: vi.fn(() => [
     { week: 'Week 1', weekStart: new Date('2024-01-01') },
     { week: 'Week 2', weekStart: new Date('2024-01-08') }
   ]),
-  isSameWeekMonday: jest.fn((date1, date2) => {
+  isSameWeekMonday: vi.fn((date1, date2) => {
     // Simple mock - consider dates in same week if within 7 days
     const diffTime = Math.abs(date1.getTime() - date2.getTime())
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))

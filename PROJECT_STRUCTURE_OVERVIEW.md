@@ -3,7 +3,6 @@
 
 ## 🏗️ Architecture Summary
 - **Primary Stack**: React 18 + TypeScript + Vite + shadcn/ui
-- **Secondary Stack**: Next.js 15 (experimental features in `/crm-dashboard/`)
 - **Backend**: Supabase (PostgreSQL + Auth + RLS)
 - **Deployment**: Vercel + Supabase Cloud
 - **Testing**: Playwright + Vitest + MCP-based testing
@@ -107,12 +106,6 @@
 ├── 📁 `shared/` - Shared testing utilities
 └── Various test backup directories
 
-### Secondary Application (Next.js) [EXPERIMENTAL]
-📁 **/crm-dashboard/** - Alternative Implementation
-├── 📄 `package.json` - Next.js 15 with Turbopack
-├── 📄 `next.config.ts` - Next.js configuration
-├── 📁 `src/app/` - App Router structure
-└── [Experimental features - secondary priority]
 
 ### Scripts & Automation
 📁 **/scripts/** - Automation & Monitoring (14 scripts)

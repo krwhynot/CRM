@@ -10,7 +10,6 @@ yarn-error.log*
 .nyc_output
 coverage/
 docs/
-crm-dashboard/
 *.md
 !README.md
 .git/

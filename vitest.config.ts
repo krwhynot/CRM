@@ -1,5 +1,5 @@
 /// <reference types="vitest" />
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import path from 'path'
 
 export default defineConfig({
@@ -9,7 +9,6 @@ export default defineConfig({
     setupFiles: ['./tests/backend/setup/test-setup.ts'],
     teardownTimeout: 30000,
     testTimeout: 30000,
-    threads: false, // Important for database tests to avoid conflicts
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

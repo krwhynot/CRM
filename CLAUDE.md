@@ -8,11 +8,8 @@ This is a KitchenPantry CRM system built for the food service industry, specific
 
 ## Project Structure
 
-The codebase contains two main applications:
+The codebase contains one main application:
 - **Root Vite App** (`/src/`): Primary React + TypeScript + Vite application with shadcn/ui components
-- **Next.js Dashboard** (`/crm-dashboard/`): Secondary Next.js application (experimental/alternative implementation)
-
-The main development should focus on the root Vite application unless specifically working on Next.js features.
 
 ## Development Commands
 
@@ -47,13 +44,6 @@ npm run clean             # Clean build artifacts
 npm run fresh             # Clean install (removes node_modules)
 ```
 
-### CRM Dashboard (Next.js)
-```bash
-cd crm-dashboard
-npm run dev        # Next.js dev server with Turbopack
-npm run build      # Production build
-npm run lint       # Next.js linting
-```
 
 ## Architecture Guidelines
 

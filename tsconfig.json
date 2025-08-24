@@ -20,6 +20,9 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src", "tests", "vitest.config.ts", "vitest.config.unit.ts"],
+  "references": [{ "path": "./tsconfig.node.json" }],
+  "compilerOptions": {
+    "types": ["vitest/globals"]
+  }
 }

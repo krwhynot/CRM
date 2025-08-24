@@ -1,13 +1,14 @@
 import { useState, useCallback } from 'react'
+import type { Database } from '@/lib/database.types'
 
 export interface ExportOptions {
   format: 'csv' | 'xlsx'
   includeInactive: boolean
   selectedFields: string[]
   filters: {
-    type?: string[]
-    priority?: string[]
-    segment?: string[]
+    type?: Database["public"]["Enums"]["organization_type"][]
+    priority?: Database["public"]["Enums"]["priority_level"][]
+    segment?: string[] // Assuming segment is still string[] or needs a new enum
   }
 }
 
