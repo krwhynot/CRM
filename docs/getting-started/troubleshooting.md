@@ -117,8 +117,8 @@ console.log(import.meta.env.VITE_SUPABASE_URL) // undefined
 4. **Check file contents:**
    ```bash
    # Should look like this:
-   VITE_SUPABASE_URL=https://ixitjldcdvbazvjsnkao.supabase.co
-   VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+   VITE_SUPABASE_URL=https://your-project-id.supabase.co
+   VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.your-actual-key-here
    ```
 
 ### Development Server Issues
