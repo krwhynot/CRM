@@ -1,6 +1,6 @@
 import React from 'react'
 import { Badge } from '@/components/ui/badge'
-import { useOrganizationsBadges } from '@/hooks/useOrganizationsBadges'
+import { useOrganizationsBadges } from '@/features/organizations/hooks/useOrganizationsBadges'
 
 interface OrganizationBadgesProps {
   priority: string | null

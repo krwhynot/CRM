@@ -2,14 +2,16 @@ import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { ConditionalSectionRenderer } from '../ConditionalSectionRenderer'
 import type { ConditionalSection } from '@/hooks/useFormLayout'
 
+import type { FormSection } from '@/hooks/useFormLayout'
+
 interface ContextualSectionsRendererProps<T extends FieldValues> {
   sections: ConditionalSection<T>[]
   form: UseFormReturn<T>
   loading: boolean
   entityType: 'organization' | 'contact' | 'product' | 'opportunity' | 'interaction'
-  shouldShowConditionalSection: (condition: any) => boolean
-  getLayoutClass: (layout?: string) => string
-  getSectionClassName: (section: any) => string
+  shouldShowConditionalSection: (condition: (values: T) => boolean) => boolean
+  getLayoutClass: (layout?: FormSection<T>['layout']) => string
+  getSectionClassName: (section: FormSection<T>) => string
 }
 
 export function ContextualSectionsRenderer<T extends FieldValues>({

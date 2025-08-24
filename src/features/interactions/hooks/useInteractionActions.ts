@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { toast } from '@/lib/toast-styles'
-import { useCreateInteraction, useUpdateInteraction, useDeleteInteraction } from '@/hooks/useInteractions'
+import { useCreateInteraction, useUpdateInteraction, useDeleteInteraction } from './useInteractions'
 import type { InteractionWithRelations } from '@/types/entities'
 import type { InteractionFormData } from '@/types/interaction.types'
 

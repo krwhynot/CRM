@@ -3,7 +3,7 @@ import { X } from 'lucide-react'
 import { FormLabel } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { StatusIndicator } from "@/components/ui/status-indicator"
-import type { Organization } from '@/hooks/useOrganizations'
+import type { Organization } from '@/features/organizations/hooks/useOrganizations'
 
 interface PrincipalSelectorProps {
   principalOrganizations: Organization[]

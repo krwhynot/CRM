@@ -9,8 +9,8 @@ import {
 } from '@/components/ui/table'
 import { ProductsFilters } from './ProductsFilters'
 import { ProductRow } from './ProductRow'
-import { useProductsFiltering } from '@/hooks/useProductsFiltering'
-import { useProductsDisplay } from '@/hooks/useProductsDisplay'
+import { useProductsFiltering } from '../hooks/useProductsFiltering'
+import { useProductsDisplay } from '../hooks/useProductsDisplay'
 import type { Product, ProductWithPrincipal } from '@/types/entities'
 
 interface ProductsTableProps {

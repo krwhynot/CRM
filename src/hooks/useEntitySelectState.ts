@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { EntityOption } from '@/components/forms/EntitySelect'
+import type { EntityOption } from '@/components/shared/forms/forms/EntitySelect'
 
 export const useEntitySelectState = (
   value: string,

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
-import { OrganizationsTable } from '@/components/organizations/OrganizationsTable'
+import { OrganizationsTable } from './OrganizationsTable'
 import type { Organization } from '@/types/entities'
 
 interface OrganizationsDataDisplayProps {

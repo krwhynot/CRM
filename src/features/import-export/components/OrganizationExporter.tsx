@@ -1,11 +1,11 @@
 import React from 'react'
-import { useExportConfiguration } from '@/hooks/useExportConfiguration'
-import { useExportExecution } from '@/hooks/useExportExecution'
-import { ExportConfiguration } from '@/components/export/ExportConfiguration'
-import { ExportProgressComponent } from '@/components/export/ExportProgress'
-import { ExportResults } from '@/components/export/ExportResults'
-import { ExportError } from '@/components/export/ExportError'
-import { ExportAction } from '@/components/export/ExportAction'
+import { useExportConfiguration } from '../hooks/useExportConfiguration'
+import { useExportExecution } from '../hooks/useExportExecution'
+import { ExportConfiguration } from '@/components/shared/export/ExportConfiguration'
+import { ExportProgressComponent } from '@/components/shared/export/ExportProgress'
+import { ExportResults } from '@/components/shared/export/ExportResults'
+import { ExportError } from '@/components/shared/export/ExportError'
+import { ExportAction } from '@/components/shared/export/ExportAction'
 
 export function OrganizationExporter() {
   const {

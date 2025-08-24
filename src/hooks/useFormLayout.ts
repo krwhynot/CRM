@@ -49,7 +49,7 @@ interface UseFormLayoutReturn<T extends FieldValues> {
   watchedValues: T
   getLayoutClass: (layout?: FormSection<T>['layout']) => string
   getSectionClassName: (section: FormSection<T>) => string
-  shouldShowConditionalSection: (condition: (values: T) => boolean, watchedValues: T) => boolean
+  shouldShowConditionalSection: (condition: (values: T) => boolean) => boolean
   cleanFormData: (data: T) => T
 }
 
@@ -86,7 +86,7 @@ export const useFormLayout = <T extends FieldValues>({
   }, [entityType])
   
   // Check if conditional section should be shown
-  const shouldShowConditionalSection = (condition: (values: T) => boolean, watchedValues: T): boolean => {
+  const shouldShowConditionalSection = (condition: (values: T) => boolean): boolean => {
     return condition(watchedValues)
   }
   

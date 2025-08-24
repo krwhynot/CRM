@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { X } from 'lucide-react'
-import { InteractionTimeline } from '@/components/interactions/InteractionTimeline'
+import { InteractionTimeline } from '@/features/interactions/components/InteractionTimeline'
 import type { Opportunity, InteractionWithRelations } from '@/types/entities'
 
 interface OpportunityDetailCardProps {

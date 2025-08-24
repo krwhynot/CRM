@@ -2,15 +2,15 @@ import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Activity, RefreshCw } from 'lucide-react'
-import { useEnhancedActivityData } from '@/hooks/useEnhancedActivityData'
-import { useActivityFiltering } from '@/hooks/useActivityFiltering'
-import { useActivityFormatting } from '@/hooks/useActivityFormatting'
-import { ActivitySkeleton } from '@/components/activity-enhanced/ActivitySkeleton'
-import { ActivityFilters } from '@/components/activity-enhanced/ActivityFilters'
-import { ActivityItemComponent } from '@/components/activity-enhanced/ActivityItemComponent'
+import { useEnhancedActivityData } from '../hooks/useEnhancedActivityData'
+import { useActivityFiltering } from '../hooks/useActivityFiltering'
+import { useActivityFormatting } from '../hooks/useActivityFormatting'
+import { ActivitySkeleton } from './activity-enhanced/ActivitySkeleton'
+import { ActivityFilters } from './activity-enhanced/ActivityFilters'
+import { ActivityItemComponent } from './activity-enhanced/ActivityItemComponent'
 
 // Re-export ActivityItem type for consumers
-export type { ActivityItem } from '@/hooks/useEnhancedActivityData'
+export type { ActivityItem } from '../hooks/useEnhancedActivityData'
 
 interface EnhancedActivityFeedProps {
   limit?: number
@@ -23,9 +23,7 @@ interface EnhancedActivityFeedProps {
 export function EnhancedActivityFeed({ 
   limit = 20, 
   className,
-  showFilters = true,
-  autoRefresh = false,
-  refreshInterval = 30000
+  showFilters = true
 }: EnhancedActivityFeedProps) {
   const [refreshKey, setRefreshKey] = useState(0)
 

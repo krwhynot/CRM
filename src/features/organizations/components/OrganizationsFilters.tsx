@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { OrganizationFilterType } from '@/hooks/useOrganizationsFiltering'
+import type { OrganizationFilterType } from '@/features/organizations/hooks/useOrganizationsFiltering'
 
 interface FilterPill {
   key: OrganizationFilterType

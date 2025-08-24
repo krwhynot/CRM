@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { ProductFilterType } from '@/hooks/useProductsFiltering'
+import type { ProductFilterType } from '@/features/products/hooks/useProductsFiltering'
 
 interface FilterPill {
   key: ProductFilterType

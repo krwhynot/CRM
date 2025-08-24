@@ -10,7 +10,7 @@ interface OptionalSectionsRendererProps<T extends FieldValues> {
   entityType: 'organization' | 'contact' | 'product' | 'opportunity' | 'interaction'
   showOptionalSections: boolean
   toggleOptionalSections: () => void
-  getLayoutClass: (layout?: string) => string
+  getLayoutClass: (layout?: FormSection<T>['layout']) => string
   getSectionClassName: (section: FormSection<T>) => string
 }
 

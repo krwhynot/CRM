@@ -1,5 +1,6 @@
 import { parseISO, isToday, isYesterday } from 'date-fns'
 import type { InteractionWithRelations, InteractionType } from '@/types/entities'
+import type { ActivityItem } from '@/features/dashboard/hooks/useEnhancedActivityData'
 
 // Activity processing utilities for the ActivityFeed component
 
@@ -15,6 +16,20 @@ export function groupActivitiesByTime(activities: InteractionWithRelations[]): R
     groups[groupKey].push(activity)
     return groups
   }, {} as Record<string, InteractionWithRelations[]>)
+}
+
+/**
+ * Groups activities by time periods for ActivityItems
+ */
+export function groupActivityItemsByTime(activities: ActivityItem[]): Record<string, ActivityItem[]> {
+  return activities.reduce((groups, activity) => {
+    const groupKey = activity.timestamp.toDateString()
+    if (!groups[groupKey]) {
+      groups[groupKey] = []
+    }
+    groups[groupKey].push(activity)
+    return groups
+  }, {} as Record<string, ActivityItem[]>)
 }
 
 /**
@@ -165,7 +180,9 @@ export function getActivityStats(activities: InteractionWithRelations[]) {
 /**
  * Sorts activity groups by priority (Today first, then Yesterday, etc.)
  */
-export function sortActivityGroups(groups: [string, InteractionWithRelations[]][]): [string, InteractionWithRelations[]][] {
+export function sortActivityGroups(groups: [string, InteractionWithRelations[]][]): [string, InteractionWithRelations[]][]
+export function sortActivityGroups(groups: [string, ActivityItem[]][]): [string, ActivityItem[]][]
+export function sortActivityGroups(groups: [string, any[]][]): [string, any[]][] {
   const order = ['Today', 'Yesterday', 'This Week', 'This Month', 'Earlier']
   return groups.sort(([a], [b]) => order.indexOf(a) - order.indexOf(b))
 }

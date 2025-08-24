@@ -8,8 +8,8 @@ import {
 } from '@/components/ui/table'
 import { OrganizationsFilters } from './OrganizationsFilters'
 import { OrganizationRow } from './OrganizationRow'
-import { useOrganizationsFiltering } from '@/hooks/useOrganizationsFiltering'
-import { useOrganizationsDisplay } from '@/hooks/useOrganizationsDisplay'
+import { useOrganizationsFiltering } from '@/features/organizations/hooks/useOrganizationsFiltering'
+import { useOrganizationsDisplay } from '@/features/organizations/hooks/useOrganizationsDisplay'
 import type { Organization } from '@/types/entities'
 
 interface OrganizationsTableProps {

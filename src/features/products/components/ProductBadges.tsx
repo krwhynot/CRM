@@ -1,6 +1,6 @@
 import React from 'react'
 import { Badge } from '@/components/ui/badge'
-import { useProductsBadges } from '@/hooks/useProductsBadges'
+import { useProductsBadges } from '@/features/products/hooks/useProductsBadges'
 
 interface ProductBadgesProps {
   category: string | null

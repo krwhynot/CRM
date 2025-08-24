@@ -7,7 +7,7 @@ interface CoreSectionsRendererProps<T extends FieldValues> {
   form: UseFormReturn<T>
   loading: boolean
   entityType: 'organization' | 'contact' | 'product' | 'opportunity' | 'interaction'
-  getLayoutClass: (layout?: string) => string
+  getLayoutClass: (layout?: FormSection<T>['layout']) => string
   getSectionClassName: (section: FormSection<T>) => string
 }
 

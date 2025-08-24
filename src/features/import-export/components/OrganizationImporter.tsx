@@ -5,7 +5,7 @@ import { FileUploadArea } from './FileUploadArea'
 import { DataPreviewTable } from './DataPreviewTable'
 import { ImportProgress } from './ImportProgress'
 import { useFileUpload } from '@/hooks/useFileUpload'
-import { useImportProgress } from '@/hooks/useImportProgress'
+import { useImportProgress } from '../hooks/useImportProgress'
 
 export function OrganizationImporter() {
   // Use extracted hooks for state management

@@ -1,4 +1,4 @@
-import { ProgressiveDetails } from '@/components/forms'
+import { ProgressiveDetails } from '@/components/shared/forms/forms'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
 import { interactionSchema, type InteractionFormData, type InteractionType } from '@/types/interaction.types'
 import { createTypeSafeResolver } from '@/lib/form-resolver'
-import { useOpportunities } from '@/hooks/useOpportunities'
+import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities'
 import { INTERACTION_TYPES } from '@/constants/interaction.constants'
 
 interface InteractionFormProps {

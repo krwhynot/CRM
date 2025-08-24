@@ -1,5 +1,5 @@
 import { PrincipalCard } from './PrincipalCard'
-import { usePrincipals } from '@/hooks/useOrganizations'
+import { usePrincipals } from '@/features/organizations/hooks/useOrganizations'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Card, CardContent } from '@/components/ui/card'
 

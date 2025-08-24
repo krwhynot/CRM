@@ -1,6 +1,6 @@
 import React from 'react'
-import { useOpportunities } from '@/hooks/useOpportunities'
-import { useInteractions } from '@/hooks/useInteractions'
+import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities'
+import { useInteractions } from '@/features/interactions/hooks/useInteractions'
 import type { Organization, OpportunityWithRelations, InteractionWithRelations } from '@/types/entities'
 
 interface PrincipalMetrics {

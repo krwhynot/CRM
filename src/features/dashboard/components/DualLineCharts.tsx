@@ -1,4 +1,4 @@
-import { useChartData } from '@/hooks/useChartData'
+import { useChartData } from '../hooks/useChartData'
 import { ChartLoadingSkeleton } from './charts/ChartLoadingSkeleton'
 import { OpportunitiesChart } from './charts/OpportunitiesChart'
 import { InteractionsChart } from './charts/InteractionsChart'

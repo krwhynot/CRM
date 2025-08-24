@@ -7,11 +7,16 @@ import type { ActivityFilters } from '@/hooks/useActivityFiltering'
 import { ACTIVITY_CONFIG } from './ActivityConfig'
 
 interface ActivityFiltersProps {
-  filters: ActivityFilters
-  setFilters: React.Dispatch<React.SetStateAction<ActivityFilters>>
-  hasActiveFilters: boolean
-  clearFilters: () => void
+  filters?: ActivityFilters
+  setFilters?: React.Dispatch<React.SetStateAction<ActivityFilters>>
+  hasActiveFilters?: boolean
+  clearFilters?: () => void
   showFilters: boolean
+  // Alternative props for simpler usage
+  selectedType?: string
+  setSelectedType?: (type: string) => void
+  selectedPriority?: string
+  setSelectedPriority?: (priority: string) => void
 }
 
 export const ActivityFiltersComponent: React.FC<ActivityFiltersProps> = ({
@@ -19,9 +24,31 @@ export const ActivityFiltersComponent: React.FC<ActivityFiltersProps> = ({
   setFilters,
   hasActiveFilters,
   clearFilters,
-  showFilters
+  showFilters,
+  selectedType,
+  setSelectedType,
+  selectedPriority,
+  setSelectedPriority
 }) => {
   if (!showFilters) return null
+
+  // Use simple props if available, otherwise complex filters
+  const currentType = selectedType || filters?.type || 'all'
+  const currentPriority = selectedPriority || 'all'
+
+  const handleTypeChange = (value: string) => {
+    if (setSelectedType) {
+      setSelectedType(value)
+    } else if (setFilters) {
+      setFilters(prev => ({ ...prev, type: value as InteractionType | 'all' }))
+    }
+  }
+
+  const handlePriorityChange = (value: string) => {
+    if (setSelectedPriority) {
+      setSelectedPriority(value)
+    }
+  }
 
   return (
     <>
@@ -34,8 +61,8 @@ export const ActivityFiltersComponent: React.FC<ActivityFiltersProps> = ({
       {/* Filter Controls */}
       <div className="flex flex-wrap items-center gap-2 pt-2">
         <Select
-          value={filters.type || 'all'}
-          onValueChange={(value) => setFilters(prev => ({ ...prev, type: value as InteractionType | 'all' }))}
+          value={currentType}
+          onValueChange={handleTypeChange}
         >
           <SelectTrigger className="w-32">
             <SelectValue placeholder="Type" />
@@ -50,27 +77,50 @@ export const ActivityFiltersComponent: React.FC<ActivityFiltersProps> = ({
           </SelectContent>
         </Select>
         
-        <Select
-          value={filters.dateRange || 'all'}
-          onValueChange={(value) => setFilters(prev => ({ ...prev, dateRange: value as ActivityFilters['dateRange'] }))}
-        >
-          <SelectTrigger className="w-32">
-            <SelectValue placeholder="Date Range" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Time</SelectItem>
-            <SelectItem value="today">Today</SelectItem>
-            <SelectItem value="yesterday">Yesterday</SelectItem>
-            <SelectItem value="week">This Week</SelectItem>
-            <SelectItem value="month">This Month</SelectItem>
-          </SelectContent>
-        </Select>
+        {setSelectedPriority && (
+          <Select
+            value={currentPriority}
+            onValueChange={handlePriorityChange}
+          >
+            <SelectTrigger className="w-32">
+              <SelectValue placeholder="Priority" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Priorities</SelectItem>
+              <SelectItem value="high">High</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="low">Low</SelectItem>
+            </SelectContent>
+          </Select>
+        )}
         
-        {hasActiveFilters && (
+        {filters?.dateRange && (
+          <Select
+            value={filters.dateRange || 'all'}
+            onValueChange={(value) => setFilters && setFilters(prev => ({ ...prev, dateRange: value as ActivityFilters['dateRange'] }))}
+          >
+            <SelectTrigger className="w-32">
+              <SelectValue placeholder="Date Range" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Time</SelectItem>
+              <SelectItem value="today">Today</SelectItem>
+              <SelectItem value="yesterday">Yesterday</SelectItem>
+              <SelectItem value="week">This Week</SelectItem>
+              <SelectItem value="month">This Month</SelectItem>
+            </SelectContent>
+          </Select>
+        )}
+        
+        {(hasActiveFilters || (currentType !== 'all' || currentPriority !== 'all')) && (
           <Button
             variant="ghost"
             size="sm"
-            onClick={clearFilters}
+            onClick={() => {
+              if (clearFilters) clearFilters()
+              if (setSelectedType) setSelectedType('all')
+              if (setSelectedPriority) setSelectedPriority('all')
+            }}
             className="text-xs h-8 px-2"
           >
             <X className="w-3 h-3 mr-1" />

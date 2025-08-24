@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { OrganizationBadges } from '../OrganizationBadges'
 
 // Mock the useOrganizationsBadges hook
-jest.mock('@/hooks/useOrganizationsBadges', () => ({
+jest.mock('@/features/organizations/hooks/useOrganizationsBadges', () => ({
   useOrganizationsBadges: () => ({
     getPriorityBadge: (priority: string | null) => ({
       className: 'priority-badge',

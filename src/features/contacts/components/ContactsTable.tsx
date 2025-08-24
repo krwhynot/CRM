@@ -1,8 +1,7 @@
-import React from 'react'
 import { Table } from '@/components/ui/table'
 import { ContactsFilters } from './ContactsFilters'
-import { useContactsFiltering } from '@/hooks/useContactsFiltering'
-import { useContactsDisplay } from '@/hooks/useContactsDisplay'
+import { useContactsFiltering } from '@/features/contacts/hooks/useContactsFiltering'
+import { useContactsDisplay } from '@/features/contacts/hooks/useContactsDisplay'
 import { ContactsTableLoading } from './contacts-table/ContactsTableLoading'
 import { ContactsTableHeader } from './contacts-table/ContactsTableHeader'
 import { ContactsTableBody } from './contacts-table/ContactsTableBody'
@@ -25,7 +24,6 @@ export function ContactsTable({
   contacts = DEFAULT_CONTACTS, 
   loading = false, 
   onEdit, 
-  onDelete, 
   onView,
   onContact,
   onAddNew,

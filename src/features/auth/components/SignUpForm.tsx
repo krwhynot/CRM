@@ -1,7 +1,6 @@
-import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useSignUpForm } from '@/hooks/useSignUpForm'
+import { useSignUpForm } from '@/features/auth/hooks/useSignUpForm'
 import { PasswordInput } from './form-components/PasswordInput'
 import { FormAlert } from './form-components/FormAlert'
 import { SignUpFormLayout } from './form-components/SignUpFormLayout'

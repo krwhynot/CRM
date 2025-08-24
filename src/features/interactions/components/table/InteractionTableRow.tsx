@@ -3,7 +3,7 @@ import { TableCell, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Calendar, Clock, AlertCircle } from 'lucide-react'
 import { InteractionActionsDropdown } from './InteractionActionsDropdown'
-import { useInteractionFormatting } from '@/hooks/useInteractionFormatting'
+import { useInteractionFormatting } from '../../hooks/useInteractionFormatting'
 import type { InteractionWithRelations } from '@/types/entities'
 
 interface InteractionTableRowProps {

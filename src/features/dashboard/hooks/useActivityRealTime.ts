@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import { useRecentActivity } from '@/hooks/useInteractions'
+import { useRecentActivity } from '@/features/interactions/hooks/useInteractions'
 
 interface UseActivityRealTimeProps {
   limit: number

@@ -4,7 +4,7 @@ import { OrganizationsTable } from '../OrganizationsTable'
 import type { Organization } from '@/types/entities'
 
 // Mock the custom hooks
-jest.mock('@/hooks/useOrganizationsFiltering', () => ({
+jest.mock('@/features/organizations/hooks/useOrganizationsFiltering', () => ({
   useOrganizationsFiltering: (organizations: Organization[]) => ({
     activeFilter: 'all',
     setActiveFilter: jest.fn(),
@@ -19,7 +19,7 @@ jest.mock('@/hooks/useOrganizationsFiltering', () => ({
   })
 }))
 
-jest.mock('@/hooks/useOrganizationsDisplay', () => ({
+jest.mock('@/features/organizations/hooks/useOrganizationsDisplay', () => ({
   useOrganizationsDisplay: () => ({
     toggleRowExpansion: jest.fn(),
     isRowExpanded: jest.fn(() => false)

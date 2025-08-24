@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useCreateOpportunity } from '@/hooks/useOpportunities'
+import { useCreateOpportunity } from './useOpportunities'
 import { toast } from '@/lib/toast-styles'
 import type { OpportunityFormData } from '@/types/opportunity.types'
 import type { OpportunityInsert } from '@/types/entities'

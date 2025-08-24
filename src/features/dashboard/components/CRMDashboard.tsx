@@ -5,9 +5,9 @@ import { SimpleActivityFeed } from './SimpleActivityFeed'
 import { OpportunityKanban } from './OpportunityKanban'
 import { DashboardSkeleton } from './DashboardSkeleton'
 import { EmptyState } from './EmptyState'
-import { useDashboardFilters } from '@/hooks/useDashboardFilters'
-import { useDashboardData } from '@/hooks/useDashboardData'
-import { useDashboardLoading } from '@/hooks/useDashboardLoading'
+import { useDashboardFilters } from '../hooks/useDashboardFilters'
+import { useDashboardData } from '../hooks/useDashboardData'
+import { useDashboardLoading } from '../hooks/useDashboardLoading'
 
 export const CRMDashboard: React.FC = () => {
   // Use custom hooks for all logic

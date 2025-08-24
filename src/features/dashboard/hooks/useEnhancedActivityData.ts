@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 import { parseISO } from 'date-fns'
 import { useOrganizations } from '@/hooks/useOrganizations'
 import { useContacts } from '@/hooks/useContacts'
-import { useOpportunities } from '@/hooks/useOpportunities'
-import { useInteractions } from '@/hooks/useInteractions'
+import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities'
+import { useInteractions } from '@/features/interactions/hooks/useInteractions'
 import { useProducts } from '@/hooks/useProducts'
 
 export interface ActivityItem {

@@ -1,6 +1,6 @@
 import { Building2 } from 'lucide-react'
 import { organizationSchema, type OrganizationFormData, FOOD_SERVICE_SEGMENTS, type FoodServiceSegment } from '@/types/organization.types'
-import type { CoreFormLayoutProps, SelectOption } from '@/components/forms/CoreFormLayout'
+import type { CoreFormLayoutProps, SelectOption } from '@/components/shared/forms/forms/CoreFormLayout'
 
 // Priority configuration for Principal CRM
 const priorityOptions: SelectOption[] = [
@@ -183,7 +183,7 @@ export function createOrganizationFormConfig(
     
     contextualSections: [
       {
-        condition: (values) => values.is_principal && Boolean(initialData && 'id' in initialData && initialData.id),
+        condition: (values: OrganizationFormData) => values.is_principal && Boolean(initialData && 'id' in initialData && initialData.id),
         section: {
           id: 'advocacy-summary',
           title: 'Contact Advocacy Summary',

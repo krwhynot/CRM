@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { SidebarTrigger } from "@/components/ui/sidebar"
-import { UserMenu } from "@/components/auth/UserMenu"
+import { UserMenu } from "@/features/auth/components/UserMenu"
 
 export function Header() {
   return (

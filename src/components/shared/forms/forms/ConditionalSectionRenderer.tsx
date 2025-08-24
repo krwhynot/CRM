@@ -1,4 +1,3 @@
-import React from 'react'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { FormSectionComponent } from './FormSectionComponent'
 import type { FormSection } from '@/hooks/useFormLayout'
@@ -15,7 +14,6 @@ interface ConditionalSectionRendererProps<T extends FieldValues> {
 }
 
 export function ConditionalSectionRenderer<T extends FieldValues>({
-  condition,
   section,
   shouldShow,
   form,

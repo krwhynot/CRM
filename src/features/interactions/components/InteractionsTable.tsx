@@ -7,7 +7,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
-import { useInteractionsTableState } from '@/hooks/useInteractionsTableState'
+import { useInteractionsTableState } from '../hooks/useInteractionsTableState'
 import { InteractionTableHeader } from './table/InteractionTableHeader'
 import { InteractionTableRow } from './table/InteractionTableRow'
 import type { InteractionWithRelations } from '@/types/entities'

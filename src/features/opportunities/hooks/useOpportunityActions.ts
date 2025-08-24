@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { toast } from '@/lib/toast-styles'
-import { useCreateOpportunity, useUpdateOpportunity, useDeleteOpportunity } from '@/hooks/useOpportunities'
+import { useCreateOpportunity, useUpdateOpportunity, useDeleteOpportunity } from './useOpportunities'
 import { FormDataTransformer } from '@/lib/form-resolver'
 import type { Opportunity, OpportunityUpdate } from '@/types/entities'
 

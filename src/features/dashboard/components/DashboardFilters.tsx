@@ -1,10 +1,9 @@
-import React from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Filter } from "lucide-react"
-import { useDashboardFiltersState } from '@/hooks/useDashboardFiltersState'
-import { useDashboardFiltersData } from '@/hooks/useDashboardFiltersData'
-import { useDashboardFiltersStyle } from '@/hooks/useDashboardFiltersStyle'
+import { useDashboardFiltersState } from '../hooks/useDashboardFiltersState'
+import { useDashboardFiltersData } from '../hooks/useDashboardFiltersData'
+import { useDashboardFiltersStyle } from '../hooks/useDashboardFiltersStyle'
 import { PrincipalFilter } from './dashboard-filters/PrincipalFilter'
 import { ProductFilter } from './dashboard-filters/ProductFilter'
 import { WeeksFilter } from './dashboard-filters/WeeksFilter'

@@ -5,12 +5,12 @@ import { Progress } from '@/components/ui/progress'
 import { Building, Users, DollarSign, Calendar, FileText } from 'lucide-react'
 import { useOpportunityWizard } from '@/hooks/useOpportunityWizard'
 import { useOpportunityForm } from '@/hooks/useOpportunityForm'
-import { WizardNavigation } from '@/components/opportunities/WizardNavigation'
-import { WizardStepBasicInfo } from '@/components/opportunities/WizardStepBasicInfo'
-import { WizardStepOrganization } from '@/components/opportunities/WizardStepOrganization'
-import { WizardStepDetails } from '@/components/opportunities/WizardStepDetails'
-import { WizardStepFinancial } from '@/components/opportunities/WizardStepFinancial'
-import { WizardStepTimeline } from '@/components/opportunities/WizardStepTimeline'
+import { WizardNavigation } from './WizardNavigation'
+import { WizardStepBasicInfo } from './WizardStepBasicInfo'
+import { WizardStepOrganization } from './WizardStepOrganization'
+import { WizardStepDetails } from './WizardStepDetails'
+import { WizardStepFinancial } from './WizardStepFinancial'
+import { WizardStepTimeline } from './WizardStepTimeline'
 
 interface OpportunityWizardProps {
   onSubmit: (data: OpportunityFormData) => void | Promise<void>

@@ -5,10 +5,11 @@ import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { ActivityItem } from './ActivityItem'
 import type { InteractionWithRelations } from '@/types/entities'
+import type { ActivityItem as ActivityItemType } from '@/features/dashboard/hooks/useEnhancedActivityData'
 
 interface ActivityGroupProps {
   groupKey: string
-  activities: InteractionWithRelations[]
+  activities: ActivityItemType[]
   onActivityClick?: (activity: InteractionWithRelations) => void
 }
 

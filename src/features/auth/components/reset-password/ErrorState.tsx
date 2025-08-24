@@ -16,7 +16,7 @@ interface ErrorStateProps {
   hasValidToken: boolean
 }
 
-export const ErrorState: React.FC<ErrorStateProps> = ({ authData, hasValidToken }) => {
+export const ErrorState: React.FC<ErrorStateProps> = ({ authData }) => {
   const navigate = useNavigate()
   
   let errorTitle = "Invalid Reset Link"

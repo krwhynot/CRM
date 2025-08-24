@@ -1,4 +1,4 @@
-import { ProgressiveDetails } from '@/components/forms'
+import { ProgressiveDetails } from '@/components/shared/forms/forms'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
 import { productSchema, type ProductFormData } from '@/types/validation'
 import { createTypeSafeResolver } from '@/lib/form-resolver'
-import { useOrganizations } from '@/hooks/useOrganizations'
+import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
 import { PRODUCT_CATEGORIES } from '@/constants/product.constants'
 
 interface ProductFormProps {

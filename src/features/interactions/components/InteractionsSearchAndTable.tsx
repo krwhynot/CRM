@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
-import { InteractionsTable } from '@/components/interactions/InteractionsTable'
+import { InteractionsTable } from './InteractionsTable'
 import type { InteractionWithRelations } from '@/types/entities'
 
 interface InteractionsSearchAndTableProps {

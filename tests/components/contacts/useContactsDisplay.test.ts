@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react'
-import { useContactsDisplay } from '@/hooks/useContactsDisplay'
+import { useContactsDisplay } from '@/features/contacts/hooks/useContactsDisplay'
 
 describe('useContactsDisplay', () => {
   const contactIds = ['1', '2', '3']

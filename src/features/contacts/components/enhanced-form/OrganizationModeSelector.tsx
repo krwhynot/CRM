@@ -3,11 +3,20 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { ProgressiveDetails } from '@/components/forms'
+import { ProgressiveDetails } from '@/components/shared/forms/forms'
 import { Building2 } from 'lucide-react'
 import type { UseFormReturn } from 'react-hook-form'
 import type { ContactFormData } from '@/types/contact.types'
-import type { OrganizationMode } from '@/hooks/useEnhancedContactFormState'
+import type { OrganizationMode } from '@/features/contacts/hooks/useEnhancedContactFormState'
+
+interface NewOrganizationData {
+  name: string
+  type: 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor'
+  phone: string
+  email: string
+  website: string
+  notes: string
+}
 
 interface OrganizationModeSelectorProps {
   form: UseFormReturn<ContactFormData>
@@ -22,7 +31,7 @@ interface OrganizationModeSelectorProps {
     website: string
     notes: string
   }
-  updateNewOrgField: (field: string, value: string) => void
+  updateNewOrgField: (field: keyof NewOrganizationData, value: string) => void
   loading: boolean
 }
 

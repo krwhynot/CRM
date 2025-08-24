@@ -7,7 +7,7 @@ import { StatusIndicator } from "@/components/ui/status-indicator"
 import { OPPORTUNITY_CONTEXTS, OPPORTUNITY_STAGES } from '@/constants/opportunity.constants'
 import type { UseFormReturn } from 'react-hook-form'
 import type { OpportunityFormData } from '@/types/opportunity.types'
-import type { Organization, Contact } from '@/hooks/useOrganizations'
+import type { Organization, Contact } from '@/features/organizations/hooks/useOrganizations'
 
 interface OpportunityBasicFieldsProps {
   form: UseFormReturn<OpportunityFormData>

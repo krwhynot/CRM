@@ -4,11 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { useActivityFiltering } from '@/hooks/useActivityFiltering'
-import { useActivityRealTime } from '@/hooks/useActivityRealTime'
-import { ActivityGroup } from '@/components/activity/ActivityGroup'
-import { ActivityFeedSkeleton } from '@/components/activity/ActivityFeedSkeleton'
-import { ActivityFiltersComponent } from '@/components/activity/ActivityFilters'
+import { useActivityFiltering } from '@/features/dashboard/hooks/useActivityFiltering'
+import { useActivityRealTime } from '@/features/dashboard/hooks/useActivityRealTime'
+import { ActivityGroup } from '@/features/dashboard/components/activity/ActivityGroup'
+import { ActivityFeedSkeleton } from '@/features/dashboard/components/activity/ActivityFeedSkeleton'
+import { ActivityFiltersComponent } from '@/features/dashboard/components/activity/ActivityFilters'
 import { sortActivityGroups } from '@/lib/activity-utils'
 import type { InteractionWithRelations } from '@/types/entities'
 
@@ -21,8 +21,10 @@ export interface ActivityFeedProps {
   enableRealTime?: boolean
 }
 
+import type { ActivityItem } from '@/features/dashboard/hooks/useEnhancedActivityData'
+
 // Re-export types for backward compatibility
-export type { ActivityFilters } from '@/hooks/useActivityFiltering'
+export type { UseActivityFilteringReturn } from '@/features/dashboard/hooks/useActivityFiltering'
 
 export const ActivityFeed: React.FC<ActivityFeedProps> = ({
   limit = 50,
@@ -33,7 +35,13 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
 }) => {
   // Use extracted hooks for state management
   const realTimeData = useActivityRealTime({ limit, enableRealTime })
-  const filtering = useActivityFiltering({ activities: realTimeData.activities })
+  const {
+    selectedType,
+    selectedPriority,
+    setSelectedType,
+    setSelectedPriority,
+    filteredItems
+  } = useActivityFiltering(realTimeData.activities || [], limit)
   
   if (realTimeData.error) {
     return (
@@ -57,7 +65,7 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
               Activity Feed
               {!realTimeData.isLoading && (
                 <Badge variant="secondary" className="text-xs">
-                  {filtering.totalFilteredActivities}
+                  {filteredItems.length}
                 </Badge>
               )}
             </CardTitle>
@@ -68,10 +76,10 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
           
           <div className="flex items-center gap-2">
             <ActivityFiltersComponent
-              filters={filtering.filters}
-              setFilters={filtering.setFilters}
-              hasActiveFilters={filtering.hasActiveFilters}
-              clearFilters={filtering.clearFilters}
+              selectedType={selectedType}
+              setSelectedType={setSelectedType}
+              selectedPriority={selectedPriority}
+              setSelectedPriority={setSelectedPriority}
               showFilters={showFilters}
             />
             <Button
@@ -90,12 +98,12 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
       <CardContent>
         {realTimeData.isLoading ? (
           <ActivityFeedSkeleton />
-        ) : filtering.totalFilteredActivities === 0 ? (
+        ) : filteredItems.length === 0 ? (
           <div className="text-center py-8">
             <Clock className="w-12 h-12 text-gray-300 mx-auto mb-4" />
             <p className="text-gray-500 font-medium">No recent activities</p>
             <p className="text-sm text-gray-400 mt-1">
-              {filtering.hasActiveFilters 
+              {selectedType !== 'all' || selectedPriority !== 'all'
                 ? 'Try adjusting your filters to see more activities.'
                 : 'Activities will appear here as they are created.'
               }
@@ -103,8 +111,16 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
           </div>
         ) : (
           <div className="space-y-4">
-            {sortActivityGroups(Object.entries(filtering.filteredAndGroupedActivities))
-              .map(([groupKey, groupActivities]) => (
+            {sortActivityGroups(Object.entries(
+              filteredItems.reduce((acc, item) => {
+                const group = new Date(item.timestamp).toDateString();
+                if (!acc[group]) {
+                  acc[group] = [];
+                }
+                acc[group].push(item);
+                return acc;
+              }, {} as Record<string, ActivityItem[]>),
+            )).map(([groupKey, groupActivities]) => (
                 <div key={groupKey}>
                   <ActivityGroup
                     groupKey={groupKey}

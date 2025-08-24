@@ -16,7 +16,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { OrganizationForm } from '@/components/organizations/OrganizationForm'
+import { OrganizationForm } from './OrganizationForm'
 import type { Organization } from '@/types/entities'
 
 interface OrganizationDialogsProps {

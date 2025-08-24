@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import { useContactsFiltering } from '@/hooks/useContactsFiltering'
+import { useContactsFiltering } from '@/features/contacts/hooks/useContactsFiltering'
 import type { ContactWithOrganization } from '@/types/entities'
 
 const mockContacts: ContactWithOrganization[] = [
@@ -46,8 +46,9 @@ const mockContacts: ContactWithOrganization[] = [
       parent_organization_id: null,
       priority: 'High',
       segment: 'A',
-      linkedin_url: null,
-      primary_contact_id: null
+      primary_manager_name: null,
+      search_tsv: null,
+      secondary_manager_name: null
     },
     department: 'Sales',
     created_at: new Date().toISOString(), // Recent
@@ -59,7 +60,7 @@ const mockContacts: ContactWithOrganization[] = [
     created_by: '',
     updated_by: '',
     deleted_at: null,
-    is_active: true
+    search_tsv: null
   },
   {
     id: '2',
@@ -102,8 +103,9 @@ const mockContacts: ContactWithOrganization[] = [
       parent_organization_id: null,
       priority: 'Medium',
       segment: 'B',
-      linkedin_url: null,
-      primary_contact_id: null
+      primary_manager_name: null,
+      search_tsv: null,
+      secondary_manager_name: null
     },
     department: 'Operations',
     created_at: '2023-01-01T00:00:00Z', // Old
@@ -115,7 +117,8 @@ const mockContacts: ContactWithOrganization[] = [
     created_by: '',
     updated_by: '',
     deleted_at: null,
-    is_active: true
+    phone: null,
+    search_tsv: null
   }
 ]
 

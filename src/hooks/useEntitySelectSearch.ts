@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import type { EntityOption } from '@/components/forms/EntitySelect'
+import type { EntityOption } from '@/components/shared/forms/forms/EntitySelect'
 
 export const useEntitySelectSearch = (options: EntityOption[]) => {
   const [searchTerm, setSearchTerm] = useState('')

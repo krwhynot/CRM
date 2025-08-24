@@ -13,7 +13,7 @@ export { QueryErrorBoundary } from './feedback/error-boundaries/QueryErrorBounda
 export { ExportAction } from './export/ExportAction'
 export { ExportConfiguration } from './export/ExportConfiguration'
 export { ExportError } from './export/ExportError'
-export { ExportProgress } from './export/ExportProgress'
+export { ExportProgressComponent as ExportProgress } from './export/ExportProgress'
 export { ExportResults } from './export/ExportResults'
 
 // Generic Components

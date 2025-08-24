@@ -10,8 +10,7 @@ interface ContactClassificationFieldsProps {
 }
 
 export const ContactClassificationFields: React.FC<ContactClassificationFieldsProps> = ({ 
-  form, 
-  loading 
+  form 
 }) => {
   return (
     <>

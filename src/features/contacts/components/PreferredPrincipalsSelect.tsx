@@ -5,7 +5,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { useOrganizations } from '@/hooks/useOrganizations'
+import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
+import type { Organization } from '@/types/entities'
 // Organization type imported directly where needed
 
 interface PreferredPrincipalsSelectProps {
@@ -30,12 +31,12 @@ export function PreferredPrincipalsSelect({
   })
 
   // Filter principals based on search query
-  const filteredPrincipals = allOrganizations.filter((org) =>
+  const filteredPrincipals = allOrganizations.filter((org: Organization) =>
     org.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   // Get selected principals for display
-  const selectedPrincipals = allOrganizations.filter((org) =>
+  const selectedPrincipals = allOrganizations.filter((org: Organization) =>
     value.includes(org.id)
   )
 
@@ -63,7 +64,7 @@ export function PreferredPrincipalsSelect({
       {/* Selected Principals Display */}
       {selectedPrincipals.length > 0 && (
         <div className="flex flex-wrap gap-2">
-          {selectedPrincipals.map((principal) => (
+          {selectedPrincipals.map((principal: Organization) => (
             <Badge
               key={principal.id}
               variant="secondary"
@@ -131,7 +132,7 @@ export function PreferredPrincipalsSelect({
               </CommandEmpty>
               {filteredPrincipals.length > 0 && (
                 <CommandGroup>
-                  {filteredPrincipals.map((principal) => {
+                  {filteredPrincipals.map((principal: Organization) => {
                     const isSelected = value.includes(principal.id)
                     return (
                       <CommandItem

@@ -4,7 +4,7 @@ import {
   useCreateOrganization, 
   useUpdateOrganization, 
   useDeleteOrganization 
-} from '@/hooks/useOrganizations'
+} from './useOrganizations'
 import type { Organization } from '@/types/entities'
 
 export const useOrganizationsPageActions = (

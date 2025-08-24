@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react'
-import { CRMDashboard } from '@/components/dashboard/CRMDashboard'
+import { CRMDashboard } from '@/features/dashboard/components/CRMDashboard'
 import { vi } from 'vitest'
 
 // Mock all the dependencies
-vi.mock('@/hooks/useDashboardFilters', () => ({
+vi.mock('@/features/dashboard/hooks/useDashboardFilters', () => ({
   useDashboardFilters: () => ({
     filters: { principal: 'all', product: 'all', weeks: 'Last 4 Weeks' },
     debouncedFilters: { principal: 'all', product: 'all', weeks: 'Last 4 Weeks' },
@@ -12,7 +12,7 @@ vi.mock('@/hooks/useDashboardFilters', () => ({
   })
 }))
 
-vi.mock('@/hooks/useDashboardData', () => ({
+vi.mock('@/features/dashboard/hooks/useDashboardData', () => ({
   useDashboardData: () => ({
     principals: [
       { id: 'p1', name: 'Principal 1', company: 'Company 1' },
@@ -53,7 +53,7 @@ vi.mock('@/hooks/useDashboardData', () => ({
   })
 }))
 
-vi.mock('@/hooks/useDashboardLoading', () => ({
+vi.mock('@/features/dashboard/hooks/useDashboardLoading', () => ({
   useDashboardLoading: () => ({
     isInitialLoad: false,
     showEmptyState: false
@@ -61,7 +61,7 @@ vi.mock('@/hooks/useDashboardLoading', () => ({
 }))
 
 // Mock child components to focus on integration logic
-vi.mock('@/components/dashboard/DashboardFilters', () => ({
+vi.mock('@/features/dashboard/components/DashboardFilters', () => ({
   DashboardFilters: ({ filters, onFiltersChange, isLoading }: any) => (
     <div data-testid="dashboard-filters">
       <div data-testid="filters-state">{JSON.stringify(filters)}</div>
@@ -73,7 +73,7 @@ vi.mock('@/components/dashboard/DashboardFilters', () => ({
   )
 }))
 
-vi.mock('@/components/dashboard/DashboardCharts', () => ({
+vi.mock('@/features/dashboard/components/DashboardCharts', () => ({
   DashboardCharts: ({ opportunityChartData, interactionChartData, isLoading }: any) => (
     <div data-testid="dashboard-charts">
       <div data-testid="opportunity-data-count">{opportunityChartData.length}</div>
@@ -83,7 +83,7 @@ vi.mock('@/components/dashboard/DashboardCharts', () => ({
   )
 }))
 
-vi.mock('@/components/dashboard/OpportunityKanban', () => ({
+vi.mock('@/features/dashboard/components/OpportunityKanban', () => ({
   OpportunityKanban: ({ opportunities, loading }: any) => (
     <div data-testid="opportunity-kanban">
       <div data-testid="opportunities-count">{opportunities.length}</div>
@@ -92,7 +92,7 @@ vi.mock('@/components/dashboard/OpportunityKanban', () => ({
   )
 }))
 
-vi.mock('@/components/dashboard/SimpleActivityFeed', () => ({
+vi.mock('@/features/dashboard/components/SimpleActivityFeed', () => ({
   SimpleActivityFeed: ({ activities, loading }: any) => (
     <div data-testid="activity-feed">
       <div data-testid="activities-count">{activities.length}</div>
@@ -138,7 +138,7 @@ describe('CRMDashboard Integration', () => {
 
   it('should handle loading states correctly', () => {
     // Mock loading state
-    const mockUseDashboardFilters = require('@/hooks/useDashboardFilters').useDashboardFilters as ReturnType<typeof vi.fn>
+    const mockUseDashboardFilters = require('@/features/dashboard/hooks/useDashboardFilters').useDashboardFilters as ReturnType<typeof vi.fn>
     mockUseDashboardFilters.mockReturnValue({
       filters: { principal: 'all', product: 'all', weeks: 'Last 4 Weeks' },
       debouncedFilters: { principal: 'all', product: 'all', weeks: 'Last 4 Weeks' },
@@ -157,7 +157,7 @@ describe('CRMDashboard Integration', () => {
 
 describe('CRMDashboard Initial Load', () => {
   it('should show skeleton during initial load', () => {
-    const mockUseDashboardLoading = require('@/hooks/useDashboardLoading').useDashboardLoading as ReturnType<typeof vi.fn>
+    const mockUseDashboardLoading = require('@/features/dashboard/hooks/useDashboardLoading').useDashboardLoading as ReturnType<typeof vi.fn>
     mockUseDashboardLoading.mockReturnValue({
       isInitialLoad: true,
       showEmptyState: false
@@ -173,7 +173,7 @@ describe('CRMDashboard Initial Load', () => {
 
 describe('CRMDashboard Empty State', () => {
   it('should show empty state when appropriate', () => {
-    const mockUseDashboardLoading = require('@/hooks/useDashboardLoading').useDashboardLoading as ReturnType<typeof vi.fn>
+    const mockUseDashboardLoading = require('@/features/dashboard/hooks/useDashboardLoading').useDashboardLoading as ReturnType<typeof vi.fn>
     mockUseDashboardLoading.mockReturnValue({
       isInitialLoad: false,
       showEmptyState: true

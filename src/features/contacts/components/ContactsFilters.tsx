@@ -1,9 +1,8 @@
-import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { FilterType } from '@/hooks/useContactsFiltering'
+import type { FilterType } from '@/features/contacts/hooks/useContactsFiltering'
 
 interface FilterPill {
   key: FilterType

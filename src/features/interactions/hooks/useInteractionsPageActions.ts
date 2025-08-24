@@ -4,7 +4,7 @@ import {
   useCreateInteraction, 
   useUpdateInteraction, 
   useDeleteInteraction 
-} from '@/hooks/useInteractions'
+} from './useInteractions'
 import type { InteractionWithRelations, InteractionUpdate } from '@/types/entities'
 import { FormDataTransformer } from '@/lib/form-resolver'
 

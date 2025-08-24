@@ -8,8 +8,8 @@ import { useInteractionsByOpportunity } from '@/features/interactions/hooks/useI
 import { useOpportunitiesPageState } from '@/features/opportunities/hooks/useOpportunitiesPageState'
 import { useOpportunityActions } from '@/features/opportunities/hooks/useOpportunityActions'
 import { useInteractionActions } from '@/features/interactions/hooks/useInteractionActions'
-import { OpportunityDetailCard } from '@/components/opportunities-page/OpportunityDetailCard'
-import { OpportunityDialogs } from '@/components/opportunities-page/OpportunityDialogs'
+import { OpportunityDetailCard } from '@/features/opportunities/components/OpportunityDetailCard'
+import { OpportunityDialogs } from '@/features/opportunities/components/OpportunityDialogs'
 
 function OpportunitiesPage() {
   const navigate = useNavigate()

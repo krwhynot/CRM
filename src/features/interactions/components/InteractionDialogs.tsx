@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { InteractionForm } from '@/components/interactions/InteractionForm'
+import { InteractionForm } from './InteractionForm'
 import { FormDataTransformer } from '@/lib/form-resolver'
 import type { InteractionWithRelations } from '@/types/entities'
 

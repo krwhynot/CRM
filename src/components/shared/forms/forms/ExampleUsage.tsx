@@ -23,10 +23,17 @@ export function ExampleOrganizationForm({
   
   return (
     <CoreFormLayout
-      {...formConfig}
+      title={formConfig.title}
+      icon={formConfig.icon}
+      formSchema={formConfig.formSchema}
       onSubmit={onSubmit}
+      initialData={initialData}
       loading={loading}
       submitLabel={submitLabel}
+      entityType={formConfig.entityType}
+      coreSections={formConfig.coreSections}
+      optionalSections={formConfig.optionalSections}
+      contextualSections={formConfig.contextualSections}
     />
   )
 }

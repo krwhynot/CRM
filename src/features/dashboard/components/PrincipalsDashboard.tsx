@@ -3,9 +3,9 @@ import { PrincipalCardsGrid } from './PrincipalCardsGrid'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatusIndicator } from "@/components/ui/status-indicator"
 import { Button } from '@/components/ui/button'
-import { usePrincipals } from '@/hooks/useOrganizations'
-import { useOpportunities } from '@/hooks/useOpportunities'
-import { useInteractions } from '@/hooks/useInteractions'
+import { usePrincipals } from '@/features/organizations/hooks/useOrganizations'
+import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities'
+import { useInteractions } from '@/features/interactions/hooks/useInteractions'
 import { Plus, TrendingUp, Users, Activity } from 'lucide-react'
 
 interface DashboardStats {

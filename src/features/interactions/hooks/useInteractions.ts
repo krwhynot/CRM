@@ -7,7 +7,7 @@ import type {
   InteractionWithRelations,
   OpportunityInsert 
 } from '@/types/entities'
-import { opportunityKeys } from './useOpportunities'
+import { opportunityKeys } from '@/features/opportunities/hooks/useOpportunities'
 
 // Query key factory
 export const interactionKeys = {

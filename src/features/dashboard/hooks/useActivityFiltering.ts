@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import type { ActivityItem } from './useEnhancedActivityData'
 
-interface UseActivityFilteringReturn {
+export interface UseActivityFilteringReturn {
   selectedType: string
   selectedPriority: string
   setSelectedType: (type: string) => void
