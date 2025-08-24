@@ -1,5 +1,5 @@
 import React from 'react'
-import { EntitySelect, type EntitySelectProps } from '../../EntitySelect'
+import { EntitySelect, type EntitySelectProps } from '@/components/forms/EntitySelect'
 import { transformOrganizations } from '@/lib/entity-transformers'
 
 export interface OrganizationSelectProps extends Omit<EntitySelectProps, 'options'> {

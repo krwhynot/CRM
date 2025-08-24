@@ -11,6 +11,8 @@ The KitchenPantry CRM is built with a modern, scalable architecture designed for
 - **State Management**: TanStack Query (server) + Zustand (client)
 - **Authentication**: Supabase Auth with Row Level Security
 - **Deployment**: Vercel (Frontend) + Supabase (Backend)
+- **Architecture**: Feature-based organization with automated safeguards
+- **Performance**: Optimized caching, virtualization, and debouncing patterns
 
 ### System Requirements
 - **Node.js**: 18+ 
@@ -396,6 +398,65 @@ jobs:
           vercel-args: '--prod'
 ```
 
+## Performance Optimization
+
+### Performance Tools & Utilities
+
+The CRM includes comprehensive performance optimization tools:
+
+#### Query Optimizations (`/src/lib/query-optimizations.ts`)
+```typescript
+// Optimized query client for CRM workload
+const queryClient = createOptimizedQueryClient()
+
+// Batch operations for related data
+const results = useBatchOptimizedQueries([
+  { queryKey: ['organizations'], queryFn: fetchOrganizations },
+  { queryKey: ['contacts'], queryFn: fetchContacts }
+])
+
+// Smart prefetching for workflows
+const { prefetchRelatedData } = usePrefetchRelatedData()
+prefetchRelatedData('organization', organizationId)
+```
+
+#### Component Optimizations (`/src/lib/performance-optimizations.ts`)
+```typescript
+// Virtual scrolling for large datasets
+const { visibleItems } = useVirtualScrolling(items, 50, 400)
+
+// Debounced search with caching
+const { results } = useCachedSearch(searchFunction, query)
+
+// Optimized form submissions
+const { handleSubmit, isSubmitting } = useOptimizedFormSubmit(submitFn)
+```
+
+#### Performance Analysis
+```bash
+# Run performance analysis
+npm run optimize:performance
+
+# Bundle analysis
+npm run analyze
+
+# Performance validation
+npm run validate:performance
+```
+
+### State Management Optimization
+
+#### Server State (TanStack Query)
+- Aggressive caching (5min stale time, 30min cache time)
+- Request deduplication and batching
+- Background refetching optimization
+- Optimistic updates with rollback
+
+#### Client State (Zustand)  
+- Granular subscriptions prevent unnecessary re-renders
+- Lightweight state management for UI preferences
+- Local state persistence where appropriate
+
 ## Performance Monitoring
 
 ### Key Metrics to Monitor
@@ -467,11 +528,18 @@ ANALYZE interactions;
 - Verify all environment variables are set
 - Check TypeScript compilation errors
 - Ensure all dependencies are installed
+- Run `npm run validate` before deployment
 
 **Mobile/Responsive Issues**
 - Test on actual devices
 - Use browser dev tools to simulate viewports
 - Check touch target sizes (minimum 44px)
+
+**Architecture Issues**
+- Run `npm run lint:architecture` to validate structure
+- Check component organization in feature directories
+- Verify state management patterns (TanStack Query vs Zustand)
+- Use development assistant: `npm run dev:assist analyze`
 
 ### Debug Mode
 ```typescript

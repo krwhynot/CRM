@@ -169,6 +169,79 @@ export * from './activity'
 4. **Documentation**: Document component purpose and usage patterns
 5. **Consistency**: Follow established patterns for similar components
 
+## Automated Enforcement
+
+### 🔒 **ESLint Rules**
+Our architectural safeguards automatically enforce component organization:
+
+```javascript
+// .eslintrc.cjs
+rules: {
+  'crm-architecture/enforce-feature-boundaries': 'error',
+  'no-restricted-imports': ['error', {
+    patterns: [
+      {
+        group: ['@/features/*/components/*'],
+        message: 'Import feature components from feature index or relative paths'
+      }
+    ]
+  }]
+}
+```
+
+### 🛠️ **Development Tools**
+Use the development assistant to generate properly organized components:
+
+```bash
+# Creates component in correct feature directory
+npm run dev:assist create component ContactForm contacts
+
+# Creates shared component in correct location
+npm run dev:assist create component DataTable --shared
+```
+
+### ✅ **Validation Scripts**
+- `npm run lint:architecture` - Validates component organization
+- `scripts/validate-architecture.js` - Comprehensive structure validation
+
+## Performance Considerations
+
+### 🎯 **Component Optimization**
+Feature components can leverage performance optimizations:
+
+```typescript
+// Use performance utilities from /src/lib/performance-optimizations.ts
+import { useVirtualScrolling, useDebounce } from '@/lib/performance-optimizations'
+
+export function ContactsTable({ contacts }) {
+  const { visibleItems } = useVirtualScrolling(contacts, 50, 400)
+  
+  return (
+    <div>
+      {visibleItems.items.map(contact => (
+        <ContactRow key={contact.id} contact={contact} />
+      ))}
+    </div>
+  )
+}
+```
+
+### ⚡ **State Management Integration**
+Components should follow state separation patterns:
+
+```typescript
+// Feature component with proper state separation
+import { useContacts } from '@/features/contacts/hooks'  // Server state
+import { useContactsView } from '@/stores'  // Client state
+
+export function ContactsPage() {
+  const { data: contacts } = useContacts()  // TanStack Query
+  const { viewMode } = useContactsView()    // Zustand
+  
+  return <ContactsTable contacts={contacts} viewMode={viewMode} />
+}
+```
+
 ## Code Review Checklist
 
 When reviewing PRs with new components:
@@ -178,6 +251,9 @@ When reviewing PRs with new components:
 - [ ] Is the component exported from the appropriate index.ts?
 - [ ] Does the component follow naming conventions?
 - [ ] Is the component properly typed?
+- [ ] Does it follow state management patterns (TanStack Query vs Zustand)?
+- [ ] Are performance optimizations applied where appropriate?
+- [ ] Does it pass `npm run lint:architecture`?
 - [ ] Are there tests for the component?
 
 ## Common Pitfalls
@@ -193,6 +269,9 @@ Stick to the established import conventions for better maintainability.
 
 ### 4. Missing Index Exports
 Always update index.ts files when moving components.
+
+### 5. Ignoring State Boundaries
+Don't mix server data (TanStack Query) with client state (Zustand) in components.
 
 ## Getting Help
 
@@ -212,5 +291,5 @@ This document should be updated when:
 
 ---
 
-*Last updated: January 2025*
+*Last updated: January 2025 - Post-architectural refactoring*
 *Next review: Quarterly with architecture team*

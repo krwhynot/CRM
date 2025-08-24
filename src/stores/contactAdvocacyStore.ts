@@ -4,28 +4,46 @@
  * Manages client-side UI state for contact advocacy relationship management.
  * Server data is handled via TanStack Query hooks in useContactAdvocacy.ts.
  * 
- * Key Features:
+ * ✅ ARCHITECTURE: Pure client-side state only
  * - UI filters and search state
- * - Selected relationship tracking
+ * - Selected relationship ID tracking (not full objects)
  * - Form state management
  * - Client-side preferences
+ * 
+ * ❌ DOES NOT STORE: Server data, relationship objects, or computed values
  */
 
 import { create } from 'zustand'
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
-import type { ContactAdvocacyRelationship, AdvocacyFilters } from '@/features/contacts/hooks/useContactAdvocacy'
+import { 
+  BaseClientState, 
+  ClientStateStore, 
+  CreateClientFilters, 
+  validateClientState 
+} from '@/lib/state-type-safety'
 
 // UI View modes for advocacy management
 export type AdvocacyViewMode = 'list' | 'cards' | 'table'
 export type AdvocacySortBy = 'name' | 'strength' | 'computed_score' | 'date'
 export type AdvocacySortOrder = 'asc' | 'desc'
 
-export interface ContactAdvocacyUIState {
-  // Selected relationship for detail view/editing
-  selectedRelationship: ContactAdvocacyRelationship | null
+// Client-side filter interface using type-safe pattern
+export type ClientAdvocacyFilters = CreateClientFilters<{
+  contact_id?: string
+  principal_organization_id?: string
+  advocacy_strength_min?: number
+  advocacy_strength_max?: number
+  relationship_type?: string | string[]
+  search?: string
+  computed_score_min?: number
+}>
+
+export interface ContactAdvocacyUIState extends BaseClientState {
+  // Selected relationship ID only (not full server object)
+  selectedRelationshipId: string | null
   
   // UI Filters and Search (client-side state)
-  filters: AdvocacyFilters
+  filters: ClientAdvocacyFilters
   searchQuery: string
   
   // View preferences
@@ -39,21 +57,20 @@ export interface ContactAdvocacyUIState {
   formMode: 'create' | 'edit' | null
   editingRelationshipId: string | null
   
-  // UI preferences
-  preferences: {
+  // UI preferences (extends base preferences)
+  preferences: BaseClientState['preferences'] & {
     defaultViewMode: AdvocacyViewMode
     cardsPerPage: number
     showComputedScores: boolean
-    autoRefreshEnabled: boolean
   }
   
   // Client-side actions
-  actions: {
-    // Selection Management
-    setSelectedRelationship: (relationship: ContactAdvocacyRelationship | null) => void
+  actions: BaseClientState['actions'] & {
+    // Selection Management (ID-based, not object-based)
+    setSelectedRelationshipId: (relationshipId: string | null) => void
     
     // Search and Filtering
-    setFilters: (filters: AdvocacyFilters) => void
+    setFilters: (filters: ClientAdvocacyFilters) => void
     setSearchQuery: (query: string) => void
     clearFilters: () => void
     
@@ -77,7 +94,7 @@ export interface ContactAdvocacyUIState {
 
 // Initial client-side state
 const initialUIState: Omit<ContactAdvocacyUIState, 'actions'> = {
-  selectedRelationship: null,
+  selectedRelationshipId: null,
   filters: {},
   searchQuery: '',
   viewMode: 'list',
@@ -91,7 +108,7 @@ const initialUIState: Omit<ContactAdvocacyUIState, 'actions'> = {
     defaultViewMode: 'list',
     cardsPerPage: 12,
     showComputedScores: true,
-    autoRefreshEnabled: true
+    autoRefresh: true
   }
 }
 
@@ -102,13 +119,13 @@ export const useContactAdvocacyStore = create<ContactAdvocacyUIState>()(
         ...initialUIState,
         
         actions: {
-          // Selection Management
-          setSelectedRelationship: (relationship: ContactAdvocacyRelationship | null) => {
-            set({ selectedRelationship: relationship })
+          // Selection Management (ID-based)
+          setSelectedRelationshipId: (relationshipId: string | null) => {
+            set({ selectedRelationshipId: relationshipId })
           },
           
           // Search and Filtering
-          setFilters: (filters: AdvocacyFilters) => {
+          setFilters: (filters: ClientAdvocacyFilters) => {
             set({ filters })
           },
 
@@ -161,8 +178,11 @@ export const useContactAdvocacyStore = create<ContactAdvocacyUIState>()(
             })
           },
           
-          // Preferences
+          // Preferences (with type safety validation)
           updatePreferences: (preferences: Partial<ContactAdvocacyUIState['preferences']>) => {
+            if (process.env.NODE_ENV === 'development') {
+              validateClientState(preferences, 'contact-advocacy-ui-store')
+            }
             set(state => ({
               preferences: { ...state.preferences, ...preferences }
             }))
@@ -171,6 +191,9 @@ export const useContactAdvocacyStore = create<ContactAdvocacyUIState>()(
           // Utility
           reset: () => {
             set(initialUIState)
+            if (process.env.NODE_ENV === 'development') {
+              validateClientState(initialUIState, 'contact-advocacy-ui-store')
+            }
           }
         }
       })),
@@ -196,8 +219,8 @@ export const useContactAdvocacyStore = create<ContactAdvocacyUIState>()(
 export const useAdvocacySelection = () => {
   const store = useContactAdvocacyStore()
   return {
-    selectedRelationship: store.selectedRelationship,
-    setSelectedRelationship: store.actions.setSelectedRelationship
+    selectedRelationshipId: store.selectedRelationshipId,
+    setSelectedRelationshipId: store.actions.setSelectedRelationshipId
   }
 }
 

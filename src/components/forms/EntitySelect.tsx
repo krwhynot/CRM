@@ -88,6 +88,3 @@ export function EntitySelect({
   )
 }
 
-// Re-export specialized entity selectors
-export { OrganizationSelect, ContactSelect, ProductSelect } from './entity-select/specialized'
-export type { OrganizationSelectProps, ContactSelectProps, ProductSelectProps } from './entity-select/specialized'

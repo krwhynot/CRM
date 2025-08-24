@@ -12,10 +12,7 @@ export {
 } from './CoreFormLayout'
 
 export { 
-  EntitySelect, 
-  OrganizationSelect, 
-  ContactSelect, 
-  ProductSelect 
+  EntitySelect 
 } from './EntitySelect'
 
 export { 
@@ -42,10 +39,7 @@ export type {
 
 export type { 
   EntityOption,
-  EntitySelectProps,
-  OrganizationSelectProps,
-  ContactSelectProps,
-  ProductSelectProps
+  EntitySelectProps
 } from './EntitySelect'
 
 export type {

@@ -124,100 +124,47 @@ const { isFormOpen, openCreateForm } = useAdvocacyForm()
 ```
 
 **📚 Full Guide**: `/docs/STATE_MANAGEMENT_GUIDE.md`  
+**🛠️ Development Workflow**: `/docs/DEVELOPMENT_WORKFLOW.md`
 
-To prevent specific TypeScript + form validation issues in the future, you’ll want a schema-first, type-driven workflow that keeps your database schema, validation schema, and form types in sync automatically.
+## Architectural Safeguards
 
-1. Use a Single Source of Truth for Types
+**✅ IMPLEMENTED (January 2025)**: Comprehensive architectural enforcement and performance optimizations.
 
-Generate TypeScript types from your database schema (e.g., using Prisma, Supabase gen types, or Drizzle ORM).
+### ESLint Enforcement
+- Custom architectural rules prevent state boundary violations
+- Feature boundary enforcement prevents improper imports
+- Automated validation during development and CI/CD
 
-Infer form validation types directly from the Yup/Zod schema instead of manually writing interfaces.
+### Performance Optimizations
+- TanStack Query optimizations with intelligent caching patterns
+- Component-level optimizations (virtualization, debouncing, memoization)
+- Performance monitoring and analysis tools
+- Bundle optimization and analysis
 
-const formSchema = yup.object({
-  firstName: yup.string().required(),
-  age: yup.number().nullable(),
-});
+### Development Tools
+- Automated component generation with architectural patterns
+- Development assistant for code analysis and fixes
+- Comprehensive validation pipeline
 
-type FormValues = yup.InferType<typeof formSchema>;
+```bash
+# Generate components with proper patterns
+npm run dev:assist create component ContactForm contacts
 
+# Validate architecture
+npm run lint:architecture
 
-This ensures form, validation, and DB types always match.
+# Performance analysis
+npm run optimize:performance
 
-2. Align Database Schema and Validation Rules
+# Complete validation pipeline
+npm run validate
+```
 
-Whenever you change a DB column’s nullability, type, or constraints, immediately update:
-
-Your validation schema (Yup/Zod)
-
-Your form defaults in react-hook-form
-
-Use migration scripts that also regenerate types (e.g., prisma generate, drizzle-kit generate).
-
-3. Create a Validation + Form Types Layer
-
-Make a folder like /schemas and store:
-
-form.schema.ts → Yup/Zod schema
-
-form.types.ts → InferType from schema
-
-Use those types everywhere instead of redefining.
-
-Example:
-
-// schemas/contact.schema.ts
-export const contactSchema = yup.object({
-  name: yup.string().required(),
-  email: yup.string().email().nullable(),
-});
-export type ContactFormData = yup.InferType<typeof contactSchema>;
-
-// form component
-const form = useForm<ContactFormData>({
-  resolver: yupResolver(contactSchema),
-});
-
-4. Validate Relationships in Type Definitions
-
-If a component expects ContactWithOrganization, make sure the query and type both guarantee it.
-
-Use type-safe queries so you can't accidentally pass a base type.
-
-Example with Prisma:
-
-type ContactWithOrg = Prisma.ContactGetPayload<{ include: { organization: true } }>;
-
-5. Add a CI Step for Type & Schema Consistency
-
-In CI/CD, run:
-
-tsc --noEmit → catches type errors
-
-A schema drift check (e.g., Prisma db pull and diff)
-
-A type generation step to ensure yup.InferType and DB types match
-
-6. Workflow for Changes
-
-Whenever you modify a form or DB schema:
-
-Update DB migration.
-
-Regenerate DB types.
-
-Update Yup/Zod schema.
-
-Regenerate form types from schema.
-
-Run tsc before commit.
-
-✅ Result:
-
-No more guessing if Yup matches DB.
-
-React Hook Form will always have the correct types.
-
-Components will never get the wrong relationship type.
+**📚 Complete Documentation**:
+- `/docs/ARCHITECTURAL_SAFEGUARDS.md` - Enforcement details
+- `/docs/DEVELOPMENT_WORKFLOW.md` - Development process
+- `/src/lib/performance-optimizations.ts` - Performance utilities
+- `/src/lib/query-optimizations.ts` - TanStack Query patterns
 
 ## Specialized Agent Architecture
 

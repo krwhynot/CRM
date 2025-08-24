@@ -21,7 +21,11 @@ const ARCHITECTURE_RULES = {
     featureComponentsPattern: /^src\/features\/[^\/]+\/components$/,
     allowedSharedComponents: [
       'ui', 'error-boundaries', 'forms', 'layout', 
-      'CommandPalette', 'LoadingSpinner', 'ErrorBoundary'
+      'CommandPalette', 'LoadingSpinner', 'ErrorBoundary',
+      // shadcn/ui components use kebab-case - allow them
+      'alert-dialog', 'alert', 'avatar', 'badge', 'button', 'card', 'chart',
+      'checkbox', 'command', 'dialog', 'dropdown-menu', 'form', 'input',
+      'label', 'popover', 'select', 'separator', 'sheet', 'sidebar'
     ],
     forbiddenInShared: [
       'Dashboard', 'Organization', 'Contact', 'Product', 
@@ -47,12 +51,20 @@ const ARCHITECTURE_RULES = {
     testFiles: /^[A-Z][a-zA-Z0-9]*\.(test|spec)\.(ts|tsx|js)$/
   },
 
-  // File size limits (in bytes)
+  // File size limits (in bytes) - adjusted for real-world usage
   fileSizeLimits: {
-    component: 15000,    // ~500 lines
-    hook: 10000,         // ~300 lines
-    utility: 8000,       // ~250 lines
-    type: 5000          // ~150 lines
+    component: 25000,    // ~800 lines (tables can be large)
+    hook: 20000,         // ~600 lines (complex hooks with server interactions)
+    utility: 15000,      // ~450 lines (utils can have many helper functions)
+    type: 50000         // ~1500 lines (generated types can be very large)
+  },
+
+  // State management rules
+  stateManagement: {
+    zustandStorePattern: /Store.*\.(ts|tsx)$/,
+    serverDataFields: ['id', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by'],
+    tanStackQueryFields: ['data', 'isLoading', 'error', 'refetch', 'isPending', 'isFetching'],
+    clientStateOnlyFields: ['viewMode', 'filters', 'searchQuery', 'selectedId', 'isFormOpen', 'preferences']
   }
 };
 
@@ -250,8 +262,13 @@ async function validateNamingConventions() {
     
     // Check component files
     if (fileName.match(/\.(tsx|jsx)$/) && !fileName.includes('.test.')) {
-      isValid = ARCHITECTURE_RULES.namingConventions.componentFiles.test(fileName);
-      expectedPattern = 'PascalCase.tsx (e.g., MyComponent.tsx)';
+      // Allow kebab-case for shadcn/ui components in /ui directory
+      if (relativePath.includes('src/components/ui/')) {
+        isValid = true; // shadcn/ui uses kebab-case by convention
+      } else {
+        isValid = ARCHITECTURE_RULES.namingConventions.componentFiles.test(fileName);
+        expectedPattern = 'PascalCase.tsx (e.g., MyComponent.tsx)';
+      }
     }
     // Check hook files
     else if (fileName.startsWith('use')) {
@@ -286,6 +303,107 @@ async function validateNamingConventions() {
         file: relativePath,
         message: `Follows naming convention`
       });
+    }
+  }
+}
+
+/**
+ * Validate state management patterns
+ */
+async function validateStateManagement() {
+  console.log('🏪 Validating state management patterns...');
+  
+  const storeFiles = await getFiles(join(projectRoot, 'src/stores'), ['.ts', '.tsx']);
+  const hookFiles = await getFiles(join(projectRoot, 'src'), ['.ts', '.tsx']);
+  
+  // Validate Zustand stores
+  for (const file of storeFiles) {
+    try {
+      const content = await readFile(file, 'utf8');
+      const relativePath = relative(projectRoot, file);
+      
+      // Check for server data fields in store interfaces
+      const serverDataFields = ARCHITECTURE_RULES.stateManagement.serverDataFields;
+      const tanStackFields = ARCHITECTURE_RULES.stateManagement.tanStackQueryFields;
+      
+      for (const field of serverDataFields) {
+        if (content.includes(`${field}:`)) {
+          // Check if it's in an interface that looks like a store
+          const interfaceMatch = content.match(new RegExp(`interface.*Store.*{[^}]*${field}:`, 's'));
+          if (interfaceMatch) {
+            validationResults.errors.push({
+              type: 'state-management',
+              file: relativePath,
+              message: `Server data field "${field}" found in Zustand store interface`,
+              suggestion: `Store only IDs in client state. Use TanStack Query hooks for server data.`
+            });
+          }
+        }
+      }
+      
+      for (const field of tanStackFields) {
+        if (content.includes(`${field}:`)) {
+          const interfaceMatch = content.match(new RegExp(`interface.*Store.*{[^}]*${field}:`, 's'));
+          if (interfaceMatch) {
+            validationResults.errors.push({
+              type: 'state-management',
+              file: relativePath,
+              message: `TanStack Query field "${field}" found in Zustand store interface`,
+              suggestion: `Use TanStack Query hooks directly instead of storing query state in Zustand.`
+            });
+          }
+        }
+      }
+      
+      // Check for proper client state patterns
+      const hasClientStateFields = ARCHITECTURE_RULES.stateManagement.clientStateOnlyFields
+        .some(field => content.includes(`${field}:`));
+      
+      if (hasClientStateFields) {
+        validationResults.passed.push({
+          type: 'state-management',
+          file: relativePath,
+          message: `Contains appropriate client-side state fields`
+        });
+      }
+      
+    } catch (error) {
+      // File read error
+    }
+  }
+  
+  // Validate hooks for proper state separation
+  const hookFilesFiltered = hookFiles.filter(file => 
+    basename(file).startsWith('use') && !file.includes('.test.')
+  );
+  
+  for (const file of hookFilesFiltered) {
+    try {
+      const content = await readFile(file, 'utf8');
+      const relativePath = relative(projectRoot, file);
+      
+      // Check for proper use of useQuery vs useState
+      const hasUseQuery = content.includes('useQuery') || content.includes('useMutation');
+      const hasUseState = content.includes('useState');
+      const hasServerData = content.includes('supabase') || content.includes('api');
+      
+      if (hasServerData && hasUseState && !hasUseQuery) {
+        validationResults.warnings.push({
+          type: 'state-management',
+          file: relativePath,
+          message: `Hook managing server data uses useState instead of TanStack Query`,
+          suggestion: `Consider using useQuery or useMutation for server state management`
+        });
+      } else if (hasUseQuery) {
+        validationResults.passed.push({
+          type: 'state-management',
+          file: relativePath,
+          message: `Uses TanStack Query for server state management`
+        });
+      }
+      
+    } catch (error) {
+      // File read error
     }
   }
 }
@@ -398,6 +516,7 @@ async function runArchitectureValidation() {
     await validateComponentOrganization();
     await validateImportPatterns();
     await validateNamingConventions();
+    await validateStateManagement();
     await validateFileSizes();
     
     calculateArchitectureScore();

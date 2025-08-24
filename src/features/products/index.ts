@@ -5,6 +5,7 @@ export { ProductRow } from './components/ProductRow'
 export { ProductsFilters } from './components/ProductsFilters'
 export { ProductActions } from './components/ProductActions'
 export { ProductBadges } from './components/ProductBadges'
+export { ProductSelect, type ProductSelectProps } from './components/ProductSelect'
 
 // Hooks
 export { useProducts } from './hooks/useProducts'

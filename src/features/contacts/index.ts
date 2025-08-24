@@ -7,6 +7,7 @@ export { ContactsFilters } from './components/ContactsFilters'
 export { ContactActions } from './components/ContactActions'
 export { ContactBadges } from './components/ContactBadges'
 export { PreferredPrincipalsSelect } from './components/PreferredPrincipalsSelect'
+export { ContactSelect, type ContactSelectProps } from './components/ContactSelect'
 
 // Hooks
 export { useContacts } from './hooks/useContacts'

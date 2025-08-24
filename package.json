@@ -21,7 +21,9 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx}\"",
     "analyze": "npm run build && npx vite-bundle-visualizer",
     "validate:architecture": "node scripts/validate-architecture.js",
+    "lint:architecture": "./scripts/lint-architecture.sh",
     "validate:performance": "./scripts/performance-monitor.sh",
+    "optimize:performance": "node scripts/optimize-performance.js",
     "quality-gates": "./scripts/run-quality-gates.sh",
     "dev:setup": "./scripts/dev-setup.sh",
     "dev:assist": "./scripts/dev-assist.sh",
@@ -53,7 +55,12 @@
     "test:mcp-playwright:local": "MCP_TARGET=local playwright test --config=tests/mcp-playwright/playwright.config.js",
     "test:mcp-playwright:ui": "MCP_TARGET=stg playwright test --config=tests/mcp-playwright/playwright.config.js --ui",
     "test:mcp-playwright:debug": "MCP_TARGET=local playwright test --config=tests/mcp-playwright/playwright.config.js --debug",
-    "test:mcp-playwright:report": "playwright show-report test-results/mcp-playwright-report"
+    "test:mcp-playwright:report": "playwright show-report test-results/mcp-playwright-report",
+    "test:architecture": "vitest run tests/architecture",
+    "test:architecture:state": "vitest run tests/architecture/state-boundaries.test.ts",
+    "test:architecture:components": "vitest run tests/architecture/component-placement.test.ts",
+    "test:architecture:performance": "vitest run tests/architecture/performance-patterns.test.ts",
+    "test:architecture:eslint": "vitest run tests/architecture/eslint-rules.test.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -104,6 +111,8 @@
     "@playwright/test": "^1.54.2",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.0.0",
+    "@types/eslint": "^9.6.1",
+    "@types/glob": "^8.1.0",
     "@types/node": "^24.3.0",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",

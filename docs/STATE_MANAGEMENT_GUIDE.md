@@ -156,24 +156,115 @@ function ContactAdvocacyPage() {
 - Lightweight client state management
 - Direct state updates without reducers
 
+## Architectural Safeguards
+
+### 🔒 **ESLint Rules**
+Custom architectural enforcement prevents common violations:
+
+```javascript
+// .eslintrc.cjs enforces these patterns
+rules: {
+  'crm-architecture/no-server-data-in-stores': 'error',
+  'crm-architecture/prefer-tanstack-query': 'error',
+  'crm-architecture/enforce-feature-boundaries': 'error'
+}
+```
+
+### 🔍 **TypeScript Constraints**
+Branded types enforce state boundaries:
+
+```typescript
+// Client state types prevent server data mixing
+type ClientUIState = {
+  viewMode: 'list' | 'grid'
+  isFormOpen: boolean
+} & Brand<'client-state'>
+
+type ServerEntity = {
+  id: string
+  created_at: string
+  updated_at: string
+} & Brand<'server-entity'>
+```
+
+### 🛠️ **Development Tools**
+- `npm run lint:architecture` - Validates architectural patterns
+- `scripts/validate-architecture.js` - Comprehensive state management validation
+- `scripts/dev-assistant.js` - Generates components with correct patterns
+
+## Performance Optimizations
+
+### ⚡ **Query Optimizations**
+The `/src/lib/query-optimizations.ts` provides:
+
+```typescript
+// Optimized query client with CRM-specific settings
+const queryClient = createOptimizedQueryClient()
+
+// Batch queries for related data
+const results = useBatchOptimizedQueries([
+  { queryKey: ['organizations'], queryFn: fetchOrganizations },
+  { queryKey: ['contacts'], queryFn: fetchContacts }
+])
+
+// Smart prefetching for CRM workflows  
+const { prefetchRelatedData } = usePrefetchRelatedData()
+```
+
+### 🎯 **Component Optimizations**
+The `/src/lib/performance-optimizations.ts` provides:
+
+```typescript
+// Debounced search with caching
+const { results } = useCachedSearch(searchFunction, query)
+
+// Virtual scrolling for large datasets
+const { visibleItems } = useVirtualScrolling(items, itemHeight, containerHeight)
+
+// Optimized form submissions
+const { handleSubmit, isSubmitting } = useOptimizedFormSubmit(submitFn)
+```
+
 ## Migration Checklist
 
 When adding new features:
 
 - [ ] **Server data**: Use TanStack Query hooks in `/src/features/*/hooks/`
 - [ ] **Client state**: Use Zustand stores in `/src/stores/`
-- [ ] **Query keys**: Follow consistent naming patterns
+- [ ] **Query keys**: Follow consistent naming patterns from `query-optimizations.ts`
 - [ ] **Error handling**: Use TanStack Query error boundaries
 - [ ] **Loading states**: Use TanStack Query loading states
-- [ ] **Optimistic updates**: Implement via TanStack Query mutations
-- [ ] **Cache invalidation**: Use TanStack Query's invalidation patterns
+- [ ] **Optimistic updates**: Implement via `useOptimisticMutation`
+- [ ] **Cache invalidation**: Use smart invalidation patterns
+- [ ] **Performance**: Apply relevant optimizations from performance libraries
+- [ ] **Validation**: Run `npm run lint:architecture` before committing
+
+## Development Workflow
+
+### 🚀 **Creating Components**
+```bash
+# Use the dev assistant for consistent patterns
+npm run dev:assist create component ContactTable contacts
+npm run dev:assist create hook useContactAdvocacy contacts
+npm run dev:assist create store advocacyUIStore
+```
+
+### ✅ **Validation Pipeline**
+```bash
+# Comprehensive architecture validation
+npm run validate:architecture
+npm run lint:architecture
+npm run quality-gates
+```
 
 ## Support
 
 For questions about this architecture:
 1. Review existing implementations in `/src/features/organizations/hooks/`
-2. Check TanStack Query docs: https://tanstack.com/query/latest
-3. Check Zustand docs: https://docs.pmnd.rs/zustand/getting-started/introduction
+2. Check architectural safeguards in `/docs/ARCHITECTURAL_SAFEGUARDS.md`
+3. Use development tools: `npm run dev:assist help`
+4. TanStack Query docs: https://tanstack.com/query/latest
+5. Zustand docs: https://docs.pmnd.rs/zustand/getting-started/introduction
 
 ---
-*Last updated: January 2025*
+*Last updated: January 2025 - Post-architectural refactoring*

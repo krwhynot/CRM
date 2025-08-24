@@ -8,6 +8,7 @@ export { OrganizationBadges } from './components/OrganizationBadges'
 export { OrganizationDialogs } from './components/OrganizationDialogs'
 export { OrganizationsDataDisplay } from './components/OrganizationsDataDisplay'
 export { OrganizationsPageHeader } from './components/OrganizationsPageHeader'
+export { OrganizationSelect, type OrganizationSelectProps } from './components/OrganizationSelect'
 
 // Hooks
 export { useOrganizations, useRefreshOrganizations } from './hooks/useOrganizations'
