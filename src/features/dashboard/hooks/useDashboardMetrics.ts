@@ -1,9 +1,6 @@
 import { useMemo } from 'react'
-import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
-import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities'
-import { useContacts } from '@/features/contacts/hooks/useContacts'
-import { useInteractions } from '@/features/interactions/hooks/useInteractions'
-import { useProducts } from '@/features/products/hooks/useProducts'
+import { useQuery } from '@tanstack/react-query'
+import { supabase } from '@/lib/supabase'
 import type { InteractionType } from '@/types/entities'
 import { 
   createDbStageRecord, 
@@ -14,7 +11,218 @@ import {
 // HELPER FUNCTIONS
 // ============================================================================
 
-// Helper functions imported from opportunity-stage-mapping
+// Database response type for the RPC function
+interface DatabaseMetricsResponse {
+  total_organizations: number
+  total_contacts: number
+  total_opportunities: number
+  total_interactions: number
+  total_products: number
+  principals_count: number
+  distributors_count: number
+  active_opportunities: number
+  total_pipeline_value: number
+  active_pipeline_value: number
+  conversion_rate: number
+  average_opportunity_value: number
+  recent_interactions: number
+  this_week_interactions: number
+  this_month_interactions: number
+  avg_interactions_per_opportunity: number
+  principals_with_active_opportunities: number
+  avg_opportunities_per_principal: number
+  last_activity_date: string | null
+  opportunities_by_stage: Record<string, number> | null
+  opportunity_values_by_stage: Record<string, number> | null
+  interactions_by_type: Record<string, number> | null
+  top_principals_by_value: Array<{
+    id: string
+    name: string
+    totalValue: number
+    opportunityCount: number
+  }> | null
+}
+
+// Transform database response to match existing interface
+function transformDatabaseMetrics(data: DatabaseMetricsResponse | undefined): Omit<DashboardMetrics, 'isLoading' | 'error' | 'lastUpdated' | 'dataFreshness'> {
+  if (!data) {
+    return {
+      // Core entity metrics
+      totalOrganizations: 0,
+      totalPrincipals: 0,
+      totalDistributors: 0,
+      totalContacts: 0,
+      totalProducts: 0,
+      totalOpportunities: 0,
+      activeOpportunities: 0,
+      
+      // Financial metrics
+      totalPipelineValue: 0,
+      activePipelineValue: 0,
+      conversionRate: 0,
+      averageOpportunityValue: 0,
+      
+      // Breakdown metrics
+      opportunitiesByStage: createDbStageRecord(0),
+      opportunityValuesByStage: createDbStageRecord(0),
+      principalsByPriority: {} as Record<PriorityLevel, number>,
+      interactionsByType: {} as Record<InteractionType, number>,
+      
+      // Principal-specific metrics
+      principalsWithActiveOpportunities: 0,
+      avgOpportunitiesPerPrincipal: 0,
+      topPrincipalsByValue: [],
+      
+      // Interaction & activity metrics
+      totalInteractions: 0,
+      recentInteractions: 0,
+      thisWeekInteractions: 0,
+      thisMonthInteractions: 0,
+      avgInteractionsPerOpportunity: 0,
+      interactionsRequiringFollowUp: 0,
+      lastActivityDate: null,
+      
+      // Growth and trends
+      growthMetrics: {
+        organizationsGrowth: 0,
+        contactsGrowth: 0,
+        opportunitiesGrowth: 0,
+        pipelineValueGrowth: 0,
+        interactionsGrowth: 0,
+        principalsGrowth: 0,
+        distributorsGrowth: 0
+      },
+      
+      // Detailed metric objects
+      opportunityMetrics: {
+        totalPipelineValue: 0,
+        activePipelineValue: 0,
+        conversionRate: 0,
+        averageValue: 0,
+        byStage: createDbStageRecord(0),
+        stageValues: createDbStageRecord(0)
+      },
+      principalMetrics: {
+        byPriority: {} as Record<PriorityLevel, number>,
+        withActiveOpportunities: 0,
+        averageOpportunitiesPerPrincipal: 0,
+        topByPipelineValue: []
+      },
+      interactionMetrics: {
+        total: 0,
+        recentCount: 0,
+        thisWeekCount: 0,
+        thisMonthCount: 0,
+        averagePerOpportunity: 0,
+        followUpRequired: 0,
+        lastActivityDate: null,
+        byType: {} as Record<InteractionType, number>
+      }
+    }
+  }
+
+  // Transform stage breakdowns, ensuring all stages are present
+  const opportunitiesByStage = createDbStageRecord(0)
+  const opportunityValuesByStage = createDbStageRecord(0)
+  
+  if (data.opportunities_by_stage) {
+    Object.keys(data.opportunities_by_stage).forEach(stage => {
+      if (stage in opportunitiesByStage) {
+        opportunitiesByStage[stage as OpportunityStage] = data.opportunities_by_stage![stage] || 0
+      }
+    })
+  }
+  
+  if (data.opportunity_values_by_stage) {
+    Object.keys(data.opportunity_values_by_stage).forEach(stage => {
+      if (stage in opportunityValuesByStage) {
+        opportunityValuesByStage[stage as OpportunityStage] = data.opportunity_values_by_stage![stage] || 0
+      }
+    })
+  }
+
+  // Transform interactions by type
+  const interactionsByType: Record<InteractionType, number> = {} as Record<InteractionType, number>
+  if (data.interactions_by_type) {
+    Object.keys(data.interactions_by_type).forEach(type => {
+      interactionsByType[type as InteractionType] = data.interactions_by_type![type] || 0
+    })
+  }
+
+  return {
+    // Core entity metrics
+    totalOrganizations: data.total_organizations || 0,
+    totalPrincipals: data.principals_count || 0,
+    totalDistributors: data.distributors_count || 0,
+    totalContacts: data.total_contacts || 0,
+    totalProducts: data.total_products || 0,
+    totalOpportunities: data.total_opportunities || 0,
+    activeOpportunities: data.active_opportunities || 0,
+    
+    // Financial metrics
+    totalPipelineValue: data.total_pipeline_value || 0,
+    activePipelineValue: data.active_pipeline_value || 0,
+    conversionRate: data.conversion_rate || 0,
+    averageOpportunityValue: data.average_opportunity_value || 0,
+    
+    // Breakdown metrics
+    opportunitiesByStage,
+    opportunityValuesByStage,
+    principalsByPriority: {} as Record<PriorityLevel, number>, // Placeholder for now
+    interactionsByType,
+    
+    // Principal-specific metrics
+    principalsWithActiveOpportunities: data.principals_with_active_opportunities || 0,
+    avgOpportunitiesPerPrincipal: data.avg_opportunities_per_principal || 0,
+    topPrincipalsByValue: data.top_principals_by_value || [],
+    
+    // Interaction & activity metrics
+    totalInteractions: data.total_interactions || 0,
+    recentInteractions: data.recent_interactions || 0,
+    thisWeekInteractions: data.this_week_interactions || 0,
+    thisMonthInteractions: data.this_month_interactions || 0,
+    avgInteractionsPerOpportunity: data.avg_interactions_per_opportunity || 0,
+    interactionsRequiringFollowUp: 0, // Placeholder - not calculated in DB function yet
+    lastActivityDate: data.last_activity_date ? new Date(data.last_activity_date) : null,
+    
+    // Growth and trends (placeholder for now)
+    growthMetrics: {
+      organizationsGrowth: 0,
+      contactsGrowth: 0,
+      opportunitiesGrowth: 0,
+      pipelineValueGrowth: 0,
+      interactionsGrowth: 0,
+      principalsGrowth: 0,
+      distributorsGrowth: 0
+    },
+    
+    // Detailed metric objects
+    opportunityMetrics: {
+      totalPipelineValue: data.total_pipeline_value || 0,
+      activePipelineValue: data.active_pipeline_value || 0,
+      conversionRate: data.conversion_rate || 0,
+      averageValue: data.average_opportunity_value || 0,
+      byStage: opportunitiesByStage,
+      stageValues: opportunityValuesByStage
+    },
+    principalMetrics: {
+      byPriority: {} as Record<PriorityLevel, number>, // Placeholder for now
+      withActiveOpportunities: data.principals_with_active_opportunities || 0,
+      averageOpportunitiesPerPrincipal: data.avg_opportunities_per_principal || 0,
+      topByPipelineValue: data.top_principals_by_value || []
+    },
+    interactionMetrics: {
+      total: data.total_interactions || 0,
+      recentCount: data.recent_interactions || 0,
+      thisWeekCount: data.this_week_interactions || 0,
+      thisMonthCount: data.this_month_interactions || 0,
+      averagePerOpportunity: data.avg_interactions_per_opportunity || 0,
+      followUpRequired: 0, // Placeholder - not calculated in DB function yet
+      lastActivityDate: data.last_activity_date ? new Date(data.last_activity_date) : null,
+      byType: interactionsByType
+    }
+  }
+}
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -148,301 +356,72 @@ export interface DashboardMetricsOptions {
 // ============================================================================
 
 /**
- * Comprehensive dashboard metrics hook that calculates all KPIs and business intelligence metrics
- * for the KitchenPantry CRM system.
+ * Optimized dashboard metrics hook using server-side aggregation for maximum performance.
+ * Replaces heavy client-side calculations with efficient database queries.
  */
-export function useDashboardMetrics(_options: DashboardMetricsOptions = {}): DashboardMetrics {
-  // Options parameter reserved for future use (filters, date ranges, etc.)
-
+export function useDashboardMetrics(options: DashboardMetricsOptions = {}): DashboardMetrics {
   // ============================================================================
-  // DATA FETCHING
+  // SERVER-SIDE DATA FETCHING
   // ============================================================================
 
-  // Fetch all entity data using existing hooks
-  const organizationsQuery = useOrganizations()
-  const contactsQuery = useContacts()
-  const productsQuery = useProducts()
-  const opportunitiesQuery = useOpportunities()
-  const interactionsQuery = useInteractions()
-
-  // Calculate derived data from organizations
-  const principals = useMemo(() => 
-    organizationsQuery.data?.filter((org) => org.type === 'principal') || []
-  , [organizationsQuery.data])
-  
-  const distributors = useMemo(() =>
-    organizationsQuery.data?.filter((org) => org.type === 'distributor') || []
-  , [organizationsQuery.data])
-  
-  const activeOpportunities = useMemo(() =>
-    opportunitiesQuery.data?.filter((opp) => opp.stage !== 'Closed - Won' && opp.stage !== 'Closed - Lost') || []
-  , [opportunitiesQuery.data])
-
-  // ============================================================================
-  // LOADING AND ERROR STATES
-  // ============================================================================
-
-  const isLoading = useMemo(() => {
-    return (
-      organizationsQuery.isLoading ||
-      contactsQuery.isLoading ||
-      opportunitiesQuery.isLoading ||
-      interactionsQuery.isLoading ||
-      productsQuery.isLoading
-    )
-  }, [
-    organizationsQuery.isLoading,
-    contactsQuery.isLoading,
-    opportunitiesQuery.isLoading,
-    interactionsQuery.isLoading,
-    productsQuery.isLoading
-  ])
-
-  const error = useMemo(() => {
-    const errors = [
-      organizationsQuery.error,
-      contactsQuery.error,
-      opportunitiesQuery.error,
-      interactionsQuery.error,
-      productsQuery.error
-    ].filter(Boolean) as Error[]
-
-    if (errors.length > 0) {
-      return new Error(`Multiple data fetch errors: ${errors.map(e => e.message).join(', ')}`)
-    }
-    return null
-  }, [
-    organizationsQuery.error,
-    contactsQuery.error,
-    opportunitiesQuery.error,
-    interactionsQuery.error,
-    productsQuery.error
-  ])
+  const query = useQuery<DatabaseMetricsResponse, Error>({
+    queryKey: ['dashboard', 'metrics', options.filters],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_dashboard_metrics' as any, {
+        p_principal_ids: options.filters?.principalIds || null,
+        p_date_from: options.filters?.dateRange?.start || null,
+        p_date_to: options.filters?.dateRange?.end || null
+      })
+      if (error) {
+        console.error('Dashboard metrics RPC error:', error)
+        throw error
+      }
+      // The RPC returns an array with a single object
+      return Array.isArray(data) ? data[0] : data
+    },
+    staleTime: 2 * 60 * 1000, // 2 minutes for dashboard data
+    gcTime: 10 * 60 * 1000,   // 10 minutes cache
+    retry: (failureCount, error) => {
+      // Don't retry on 4xx errors
+      if (error && 'status' in error && typeof error.status === 'number' && error.status >= 400 && error.status < 500) {
+        return false
+      }
+      return failureCount < 3
+    },
+  })
 
   // ============================================================================
   // DATA FRESHNESS TRACKING
   // ============================================================================
 
-  const dataFreshness = useMemo(() => ({
-    organizations: organizationsQuery.dataUpdatedAt ? new Date(organizationsQuery.dataUpdatedAt) : null,
-    opportunities: opportunitiesQuery.dataUpdatedAt ? new Date(opportunitiesQuery.dataUpdatedAt) : null,
-    contacts: contactsQuery.dataUpdatedAt ? new Date(contactsQuery.dataUpdatedAt) : null,
-    interactions: interactionsQuery.dataUpdatedAt ? new Date(interactionsQuery.dataUpdatedAt) : null,
-    products: productsQuery.dataUpdatedAt ? new Date(productsQuery.dataUpdatedAt) : null
-  }), [
-    organizationsQuery.dataUpdatedAt,
-    opportunitiesQuery.dataUpdatedAt,
-    contactsQuery.dataUpdatedAt,
-    interactionsQuery.dataUpdatedAt,
-    productsQuery.dataUpdatedAt
-  ])
+  const dataFreshness = useMemo(() => {
+    const timestamp = query.dataUpdatedAt ? new Date(query.dataUpdatedAt) : null
+    return {
+      organizations: timestamp,
+      opportunities: timestamp,
+      contacts: timestamp,
+      interactions: timestamp,
+      products: timestamp
+    }
+  }, [query.dataUpdatedAt])
 
   const lastUpdated = useMemo(() => {
-    const timestamps = Object.values(dataFreshness).filter(Boolean) as Date[]
-    return timestamps.length > 0 ? new Date(Math.max(...timestamps.map(d => d.getTime()))) : null
-  }, [dataFreshness])
+    return query.dataUpdatedAt ? new Date(query.dataUpdatedAt) : null
+  }, [query.dataUpdatedAt])
 
   // ============================================================================
-  // CORE METRICS CALCULATIONS
-  // ============================================================================
-
-  // Basic entity counts
-  const totalOrganizations = organizationsQuery.data?.length || 0
-  const totalPrincipals = principals.length
-  const totalDistributors = distributors.length
-  const totalContacts = contactsQuery.data?.length || 0
-  const totalProducts = productsQuery.data?.length || 0
-  const totalOpportunities = opportunitiesQuery.data?.length || 0
-  const activeOpportunitiesCount = activeOpportunities.length
-
-  // Detailed metrics calculations using memoization for performance
-  const opportunityMetrics = useMemo(() => {
-    if (!opportunitiesQuery.data) return {
-      totalPipelineValue: 0,
-      activePipelineValue: 0,
-      conversionRate: 0,
-      averageValue: 0,
-      byStage: createDbStageRecord(0),
-      stageValues: createDbStageRecord(0)
-    } as OpportunityMetrics
-
-    // Simple calculations
-    const total = opportunitiesQuery.data.reduce((sum: number, opp) => sum + (opp.estimated_value || 0), 0)
-    const activeTotal = activeOpportunities.reduce((sum: number, opp) => sum + (opp.estimated_value || 0), 0)
-    const won = opportunitiesQuery.data.filter((opp) => opp.stage === 'Closed - Won').length
-    const totalClosed = opportunitiesQuery.data.filter((opp) => opp.stage === 'Closed - Won' || opp.stage === 'Closed - Lost').length
-    
-    // Calculate stage breakdowns
-    const stageCounts = createDbStageRecord(0)
-    const stageValues = createDbStageRecord(0)
-    
-    opportunitiesQuery.data.forEach((opp) => {
-      stageCounts[opp.stage] += 1
-      stageValues[opp.stage] += (opp.estimated_value || 0)
-    })
-    
-    return {
-      totalPipelineValue: total,
-      activePipelineValue: activeTotal,
-      conversionRate: totalClosed > 0 ? (won / totalClosed) * 100 : 0,
-      averageValue: opportunitiesQuery.data.length > 0 ? total / opportunitiesQuery.data.length : 0,
-      byStage: stageCounts,
-      stageValues: stageValues
-    }
-  }, [opportunitiesQuery.data, activeOpportunities])
-
-  const principalMetrics = useMemo(() => {
-    if (!principals.length || !opportunitiesQuery.data) return {
-      byPriority: {} as Record<PriorityLevel, number>,
-      withActiveOpportunities: 0,
-      averageOpportunitiesPerPrincipal: 0,
-      topByPipelineValue: []
-    } as PrincipalMetrics
-
-    // Simple calculations
-    const withActive = principals.filter(p => 
-      activeOpportunities.some(opp => opp.organization_id === p.id)
-    ).length
-
-    return {
-      byPriority: {} as Record<PriorityLevel, number>,
-      withActiveOpportunities: withActive,
-      averageOpportunitiesPerPrincipal: principals.length > 0 ? totalOpportunities / principals.length : 0,
-      topByPipelineValue: []
-    }
-  }, [principals, opportunitiesQuery.data, activeOpportunities, totalOpportunities])
-
-  const interactionMetrics = useMemo(() => {
-    if (!interactionsQuery.data) return {
-      total: 0,
-      recentCount: 0,
-      thisWeekCount: 0,
-      thisMonthCount: 0,
-      averagePerOpportunity: 0,
-      followUpRequired: 0,
-      lastActivityDate: null,
-      byType: {} as Record<InteractionType, number>
-    } as InteractionMetrics
-
-    const now = new Date()
-    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-    const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
-
-    const recentInteractions = interactionsQuery.data.filter(i => 
-      i.interaction_date && new Date(i.interaction_date) >= weekAgo
-    )
-    
-    const thisWeekInteractions = interactionsQuery.data.filter(i =>
-      i.interaction_date && new Date(i.interaction_date) >= weekAgo
-    )
-
-    const thisMonthInteractions = interactionsQuery.data.filter(i =>
-      i.interaction_date && new Date(i.interaction_date) >= monthAgo
-    )
-
-    return {
-      total: interactionsQuery.data.length,
-      recentCount: recentInteractions.length,
-      thisWeekCount: thisWeekInteractions.length,
-      thisMonthCount: thisMonthInteractions.length,
-      averagePerOpportunity: totalOpportunities > 0 ? interactionsQuery.data.length / totalOpportunities : 0,
-      followUpRequired: 0,
-      lastActivityDate: interactionsQuery.data.length > 0 ? 
-        new Date(Math.max(...interactionsQuery.data
-          .filter(i => i.interaction_date)
-          .map(i => new Date(i.interaction_date!).getTime())
-        )) : null,
-      byType: {} as Record<InteractionType, number>
-    }
-  }, [interactionsQuery.data, totalOpportunities])
-
-  // ============================================================================
-  // GROWTH METRICS CALCULATIONS
-  // ============================================================================
-
-  const growthMetrics = useMemo(() => {
-    // Simplified growth metrics - placeholder for now
-    return {
-      organizationsGrowth: 0,
-      contactsGrowth: 0,
-      opportunitiesGrowth: 0,
-      pipelineValueGrowth: 0,
-      interactionsGrowth: 0,
-      principalsGrowth: 0,
-      distributorsGrowth: 0
-    } as GrowthMetrics
-  }, [])
-
-  // ============================================================================
-  // RETURN COMPREHENSIVE METRICS OBJECT
+  // TRANSFORM AND RETURN METRICS
   // ============================================================================
 
   return useMemo(() => ({
-    // Core entity metrics
-    totalOrganizations,
-    totalPrincipals,
-    totalDistributors,
-    totalContacts,
-    totalProducts,
-    totalOpportunities,
-    activeOpportunities: activeOpportunitiesCount,
-
-    // Financial metrics
-    totalPipelineValue: opportunityMetrics.totalPipelineValue || 0,
-    activePipelineValue: opportunityMetrics.activePipelineValue || 0,
-    conversionRate: opportunityMetrics.conversionRate || 0,
-    averageOpportunityValue: opportunityMetrics.averageValue || 0,
-
-    // Breakdown metrics
-    opportunitiesByStage: opportunityMetrics.byStage || createDbStageRecord(0),
-    opportunityValuesByStage: opportunityMetrics.stageValues || createDbStageRecord(0),
-    principalsByPriority: principalMetrics.byPriority || {},
-    interactionsByType: interactionMetrics.byType || {},
-
-    // Principal-specific metrics
-    principalsWithActiveOpportunities: principalMetrics.withActiveOpportunities || 0,
-    avgOpportunitiesPerPrincipal: principalMetrics.averageOpportunitiesPerPrincipal || 0,
-    topPrincipalsByValue: principalMetrics.topByPipelineValue || [],
-
-    // Interaction & activity metrics
-    totalInteractions: interactionMetrics.total || 0,
-    recentInteractions: interactionMetrics.recentCount || 0,
-    thisWeekInteractions: interactionMetrics.thisWeekCount || 0,
-    thisMonthInteractions: interactionMetrics.thisMonthCount || 0,
-    avgInteractionsPerOpportunity: interactionMetrics.averagePerOpportunity || 0,
-    interactionsRequiringFollowUp: interactionMetrics.followUpRequired || 0,
-    lastActivityDate: interactionMetrics.lastActivityDate,
-
-    // Growth and trends
-    growthMetrics,
-
-    // Detailed metric objects for advanced usage
-    opportunityMetrics,
-    principalMetrics,
-    interactionMetrics,
-
+    ...transformDatabaseMetrics(query.data),
+    
     // Loading and error states
-    isLoading,
-    error,
+    isLoading: query.isLoading,
+    error: query.error,
     lastUpdated,
     dataFreshness
-  }), [
-    totalOrganizations,
-    totalPrincipals,
-    totalDistributors,
-    totalContacts,
-    totalProducts,
-    totalOpportunities,
-    activeOpportunitiesCount,
-    opportunityMetrics,
-    principalMetrics,
-    interactionMetrics,
-    growthMetrics,
-    isLoading,
-    error,
-    lastUpdated,
-    dataFreshness
-  ])
+  }), [query.data, query.isLoading, query.error, lastUpdated, dataFreshness])
 }
 
 // ============================================================================
@@ -450,53 +429,70 @@ export function useDashboardMetrics(_options: DashboardMetricsOptions = {}): Das
 // ============================================================================
 
 /**
- * Hook for opportunity-specific metrics only
+ * Hook for opportunity-specific metrics only - now optimized with server-side aggregation
  */
 export function useOpportunityMetrics(filters?: MetricsFilters) {
-  const { opportunityMetrics } = useDashboardMetrics({ filters })
-  return opportunityMetrics
+  const { opportunityMetrics, isLoading, error } = useDashboardMetrics({ filters })
+  return {
+    ...opportunityMetrics,
+    isLoading,
+    error
+  }
 }
 
 /**
- * Hook for principal-specific metrics only
+ * Hook for principal-specific metrics only - now optimized with server-side aggregation
  */
 export function usePrincipalMetrics(filters?: MetricsFilters) {
-  const { principalMetrics } = useDashboardMetrics({ filters })
-  return principalMetrics
+  const { principalMetrics, isLoading, error } = useDashboardMetrics({ filters })
+  return {
+    ...principalMetrics,
+    isLoading,
+    error
+  }
 }
 
 /**
- * Hook for interaction-specific metrics only
+ * Hook for interaction-specific metrics only - now optimized with server-side aggregation
  */
 export function useInteractionMetrics(filters?: MetricsFilters) {
-  const { interactionMetrics } = useDashboardMetrics({ filters })
-  return interactionMetrics
+  const { interactionMetrics, isLoading, error } = useDashboardMetrics({ filters })
+  return {
+    ...interactionMetrics,
+    isLoading,
+    error
+  }
 }
 
 /**
  * Hook for real-time activity metrics with shorter cache time
+ * Now uses optimized server-side aggregation instead of client-side filtering
  */
 export function useRealTimeActivityMetrics() {
-  const { 
-    totalInteractions,
-    recentInteractions,
-    thisWeekInteractions,
-    lastActivityDate,
-    interactionsRequiringFollowUp,
-    isLoading,
-    error 
-  } = useDashboardMetrics({ 
-    includeGrowthMetrics: false 
+  // Use optimized metrics with shorter cache time for real-time data
+  const query = useQuery<DatabaseMetricsResponse, Error>({
+    queryKey: ['dashboard', 'real-time-metrics'],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_dashboard_metrics' as any)
+      if (error) {
+        console.error('Real-time metrics RPC error:', error)
+        throw error
+      }
+      return Array.isArray(data) ? data[0] : data
+    },
+    staleTime: 30 * 1000, // 30 seconds for real-time data
+    gcTime: 2 * 60 * 1000, // 2 minutes cache
+    refetchInterval: 60 * 1000, // Auto-refresh every minute
   })
 
   return {
-    totalInteractions,
-    recentInteractions,
-    thisWeekInteractions,
-    lastActivityDate,
-    interactionsRequiringFollowUp,
-    isLoading,
-    error
+    totalInteractions: query.data?.total_interactions || 0,
+    recentInteractions: query.data?.recent_interactions || 0,
+    thisWeekInteractions: query.data?.this_week_interactions || 0,
+    lastActivityDate: query.data?.last_activity_date ? new Date(query.data.last_activity_date) : null,
+    interactionsRequiringFollowUp: 0, // Placeholder for now
+    isLoading: query.isLoading,
+    error: query.error
   }
 }
 
