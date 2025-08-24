@@ -3,7 +3,7 @@ import { ChevronDown, ChevronRight } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { ActivityItem } from './ActivityItem'
+import { ActivityItemComponent } from '../activity-enhanced/ActivityItemComponent'
 import type { InteractionWithRelations } from '@/types/entities'
 import type { ActivityItem as ActivityItemType } from '@/features/dashboard/hooks/useEnhancedActivityData'
 
@@ -15,8 +15,7 @@ interface ActivityGroupProps {
 
 export const ActivityGroup: React.FC<ActivityGroupProps> = ({ 
   groupKey, 
-  activities, 
-  onActivityClick 
+  activities
 }) => {
   const [isOpen, setIsOpen] = useState(true)
   
@@ -43,10 +42,12 @@ export const ActivityGroup: React.FC<ActivityGroupProps> = ({
       
       <CollapsibleContent className="space-y-2">
         {activities.map((activity) => (
-          <ActivityItem
+          <ActivityItemComponent
             key={activity.id}
-            activity={activity}
-            onClick={onActivityClick}
+            item={activity}
+            useNewStyle={false}
+            formatTimestamp={(timestamp) => timestamp.toLocaleDateString()}
+            getPriorityColor={(priority) => priority === 'high' ? 'red' : 'blue'}
           />
         ))}
       </CollapsibleContent>

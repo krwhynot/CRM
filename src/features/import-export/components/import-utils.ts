@@ -27,7 +27,6 @@ export {
   formatImportResults
 } from './validation'
 
-import type { Database } from '@/lib/database.types'
 import { CsvRow, ParsedOrganization, ParsedContact, parseContactName, detectSegment, determineOrganizationType, normalizePriority } from './csv-parser'
 import { FIELD_MAPPINGS, findBestMatch, generateImportNotes } from './field-mapping'
 

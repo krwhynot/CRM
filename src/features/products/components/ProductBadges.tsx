@@ -24,7 +24,7 @@ export const ProductBadges: React.FC<ProductBadgesProps> = ({
   const categoryBadge = getCategoryBadge(category)
   const valueBadge = getValueBadge(price)
   const freshnessBadge = getFreshnessBadge(shelfLifeDays)
-  const availabilityBadge = getAvailabilityBadge(inStock, lowStock)
+  const availabilityBadge = getAvailabilityBadge(inStock || null, lowStock || null)
 
   return (
     <div className={`flex flex-wrap gap-1 ${className}`}>

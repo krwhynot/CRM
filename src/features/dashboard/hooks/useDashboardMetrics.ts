@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
-import { useOrganizations } from './useOrganizations'
-import { useOpportunities } from './useOpportunities'
-import { useContacts } from './useContacts'
-import { useInteractions } from './useInteractions'
-import { useProducts } from './useProducts'
+import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
+import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities'
+import { useContacts } from '@/features/contacts/hooks/useContacts'
+import { useInteractions } from '@/features/interactions/hooks/useInteractions'
+import { useProducts } from '@/features/products/hooks/useProducts'
 import type { InteractionType } from '@/types/entities'
 import { 
   createDbStageRecord, 
@@ -167,15 +167,15 @@ export function useDashboardMetrics(_options: DashboardMetricsOptions = {}): Das
 
   // Calculate derived data from organizations
   const principals = useMemo(() => 
-    organizationsQuery.data?.filter(org => org.type === 'principal') || []
+    organizationsQuery.data?.filter((org) => org.type === 'principal') || []
   , [organizationsQuery.data])
   
   const distributors = useMemo(() =>
-    organizationsQuery.data?.filter(org => org.type === 'distributor') || []
+    organizationsQuery.data?.filter((org) => org.type === 'distributor') || []
   , [organizationsQuery.data])
   
   const activeOpportunities = useMemo(() =>
-    opportunitiesQuery.data?.filter(opp => opp.stage !== 'Closed - Won' && opp.stage !== 'Closed - Lost') || []
+    opportunitiesQuery.data?.filter((opp) => opp.stage !== 'Closed - Won' && opp.stage !== 'Closed - Lost') || []
   , [opportunitiesQuery.data])
 
   // ============================================================================
@@ -267,16 +267,16 @@ export function useDashboardMetrics(_options: DashboardMetricsOptions = {}): Das
     } as OpportunityMetrics
 
     // Simple calculations
-    const total = opportunitiesQuery.data.reduce((sum, opp) => sum + (opp.estimated_value || 0), 0)
-    const activeTotal = activeOpportunities.reduce((sum, opp) => sum + (opp.estimated_value || 0), 0)
-    const won = opportunitiesQuery.data.filter(opp => opp.stage === 'Closed - Won').length
-    const totalClosed = opportunitiesQuery.data.filter(opp => opp.stage === 'Closed - Won' || opp.stage === 'Closed - Lost').length
+    const total = opportunitiesQuery.data.reduce((sum: number, opp) => sum + (opp.estimated_value || 0), 0)
+    const activeTotal = activeOpportunities.reduce((sum: number, opp) => sum + (opp.estimated_value || 0), 0)
+    const won = opportunitiesQuery.data.filter((opp) => opp.stage === 'Closed - Won').length
+    const totalClosed = opportunitiesQuery.data.filter((opp) => opp.stage === 'Closed - Won' || opp.stage === 'Closed - Lost').length
     
     // Calculate stage breakdowns
     const stageCounts = createDbStageRecord(0)
     const stageValues = createDbStageRecord(0)
     
-    opportunitiesQuery.data.forEach(opp => {
+    opportunitiesQuery.data.forEach((opp) => {
       stageCounts[opp.stage] += 1
       stageValues[opp.stage] += (opp.estimated_value || 0)
     })

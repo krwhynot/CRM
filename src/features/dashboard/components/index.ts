@@ -10,6 +10,12 @@ export { PrincipalCardsGrid } from './PrincipalCardsGrid'
 export { PrincipalsDashboard } from './PrincipalsDashboard'
 export { ActivityFeed } from './ActivityFeed'
 
+// Chart Components (organized in subdirectory)
+export * from './charts'
+
+// Activity Components (organized in subdirectory)
+export * from './activity'
+
 // Export types for TypeScript usage
 export type {
   DashboardPriority,

@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import type { Database } from '@/lib/database.types'
-import type { TransformedOrganizationRow } from './useFileUpload'
+import type { TransformedOrganizationRow } from '@/hooks/useFileUpload'
 
 type OrganizationInsert = Database['public']['Tables']['organizations']['Insert']
 

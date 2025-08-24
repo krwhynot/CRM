@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Target, Activity } from 'lucide-react'
-import { useChartStyling } from '@/hooks/useChartStyling'
+import { useChartStyling } from '../../hooks/useChartStyling'
 
 interface DualChartsEmptyProps {
   className?: string

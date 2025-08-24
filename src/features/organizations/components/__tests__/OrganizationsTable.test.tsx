@@ -1,15 +1,16 @@
-import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { OrganizationsTable } from '../OrganizationsTable'
 import type { Organization } from '@/types/entities'
 
+import { vi } from 'vitest'
+
 // Mock the custom hooks
-jest.mock('@/features/organizations/hooks/useOrganizationsFiltering', () => ({
+vi.mock('@/features/organizations/hooks/useOrganizationsFiltering', () => ({
   useOrganizationsFiltering: (organizations: Organization[]) => ({
     activeFilter: 'all',
-    setActiveFilter: jest.fn(),
+    setActiveFilter: vi.fn(),
     searchTerm: '',
-    setSearchTerm: jest.fn(),
+    setSearchTerm: vi.fn(),
     filteredOrganizations: organizations,
     filterPills: [
       { key: 'all', label: 'All', count: organizations.length },
@@ -19,15 +20,15 @@ jest.mock('@/features/organizations/hooks/useOrganizationsFiltering', () => ({
   })
 }))
 
-jest.mock('@/features/organizations/hooks/useOrganizationsDisplay', () => ({
+vi.mock('@/features/organizations/hooks/useOrganizationsDisplay', () => ({
   useOrganizationsDisplay: () => ({
-    toggleRowExpansion: jest.fn(),
-    isRowExpanded: jest.fn(() => false)
+    toggleRowExpansion: vi.fn(),
+    isRowExpanded: vi.fn(() => false)
   })
 }))
 
 // Mock the child components
-jest.mock('../OrganizationsFilters', () => ({
+vi.mock('../OrganizationsFilters', () => ({
   OrganizationsFilters: ({ totalOrganizations, filteredCount }: any) => (
     <div data-testid="organizations-filters">
       <span>Total: {totalOrganizations}</span>
@@ -36,7 +37,7 @@ jest.mock('../OrganizationsFilters', () => ({
   )
 }))
 
-jest.mock('../OrganizationRow', () => ({
+vi.mock('../OrganizationRow', () => ({
   OrganizationRow: ({ organization, onEdit, onView, onContact }: any) => (
     <tr data-testid={`organization-row-${organization.id}`}>
       <td>{organization.name}</td>
@@ -78,7 +79,7 @@ const mockOrganizations: Organization[] = [
 
 describe('OrganizationsTable', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('should render loading state', () => {
@@ -108,7 +109,7 @@ describe('OrganizationsTable', () => {
   })
 
   it('should call onEdit when edit button is clicked', () => {
-    const onEdit = jest.fn()
+    const onEdit = vi.fn()
     
     render(
       <OrganizationsTable 
@@ -124,7 +125,7 @@ describe('OrganizationsTable', () => {
   })
 
   it('should call onView when view button is clicked', () => {
-    const onView = jest.fn()
+    const onView = vi.fn()
     
     render(
       <OrganizationsTable 
@@ -140,7 +141,7 @@ describe('OrganizationsTable', () => {
   })
 
   it('should call onContact when contact button is clicked', () => {
-    const onContact = jest.fn()
+    const onContact = vi.fn()
     
     render(
       <OrganizationsTable 

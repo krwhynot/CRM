@@ -1,4 +1,3 @@
-import React from 'react'
 import { useInteractions, useInteractionStats } from '@/features/interactions/hooks/useInteractions'
 import { useInteractionsPageState } from '@/features/interactions/hooks/useInteractionsPageState'
 import { useInteractionsPageActions } from '@/features/interactions/hooks/useInteractionsPageActions'

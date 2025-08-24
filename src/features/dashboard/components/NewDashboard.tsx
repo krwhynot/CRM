@@ -3,8 +3,8 @@ import { DashboardFilters } from './DashboardFilters'
 import type { FilterState } from '@/types/dashboard'
 import { DualLineCharts, DualLineChartsEmpty } from './DualLineCharts'
 import { EnhancedActivityFeed } from './EnhancedActivityFeed'
-import { StatsCards } from '@/components/shared/stats-cards'
-import { generateWeekRanges, aggregateOpportunitiesByWeek, aggregateInteractionsByWeek } from '@/lib/date-utils'
+import { StatsCards } from '@/components/StatsCards'
+import { generateWeekRanges } from '@/lib/date-utils'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
 import { useContacts } from '@/features/contacts/hooks/useContacts'
 import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities'
@@ -35,14 +35,15 @@ export function NewDashboard() {
   const principals = useMemo(() => {
     return organizations
       .filter(org => org.type === 'principal')
-      .map(org => ({ id: org.id, name: org.name }))
+      .map(org => ({ id: org.id, name: org.name, company: org.name }))
   }, [organizations])
 
   const productOptions = useMemo(() => {
     return products.map(product => ({
       id: product.id,
       name: product.name,
-      category: product.category
+      category: product.category,
+      principalId: product.principal_id || ''
     }))
   }, [products])
 

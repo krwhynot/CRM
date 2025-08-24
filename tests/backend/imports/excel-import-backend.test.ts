@@ -5,7 +5,7 @@
  * batch processing, and error handling for the KitchenPantry CRM system.
  */
 
-import { describe, test, expect, beforeAll, afterAll, beforeEach } from 'vitest'
+import { describe, test, expect, beforeAll, afterAll } from 'vitest'
 
 describe('Excel Import Backend Validation Tests', () => {
   let testDataIds: { table: string; ids: string[] }[] = []

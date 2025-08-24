@@ -3,7 +3,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { ProgressiveDetails } from '@/components/shared/forms/forms'
+import { ProgressiveDetails } from '@/components/forms'
 import { Building2 } from 'lucide-react'
 import type { UseFormReturn } from 'react-hook-form'
 import type { ContactFormData } from '@/types/contact.types'

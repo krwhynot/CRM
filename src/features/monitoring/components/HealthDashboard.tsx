@@ -4,7 +4,6 @@
  * Real-time monitoring dashboard for system health and performance metrics
  */
 
-import React from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useHealthStatus } from '@/lib/monitoring'

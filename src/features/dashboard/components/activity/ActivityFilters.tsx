@@ -3,7 +3,7 @@ import { X, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import type { InteractionType } from '@/types/entities'
-import type { ActivityFilters } from '@/hooks/useActivityFiltering'
+import type { ActivityFilters } from '../../hooks/useActivityFiltering'
 import { ACTIVITY_CONFIG } from './ActivityConfig'
 
 interface ActivityFiltersProps {
@@ -40,7 +40,7 @@ export const ActivityFiltersComponent: React.FC<ActivityFiltersProps> = ({
     if (setSelectedType) {
       setSelectedType(value)
     } else if (setFilters) {
-      setFilters(prev => ({ ...prev, type: value as InteractionType | 'all' }))
+      setFilters((prev: ActivityFilters) => ({ ...prev, type: value as InteractionType | 'all' }))
     }
   }
 
@@ -97,7 +97,7 @@ export const ActivityFiltersComponent: React.FC<ActivityFiltersProps> = ({
         {filters?.dateRange && (
           <Select
             value={filters.dateRange || 'all'}
-            onValueChange={(value) => setFilters && setFilters(prev => ({ ...prev, dateRange: value as ActivityFilters['dateRange'] }))}
+            onValueChange={(value) => setFilters && setFilters((prev: ActivityFilters) => ({ ...prev, dateRange: value as ActivityFilters['dateRange'] }))}
           >
             <SelectTrigger className="w-32">
               <SelectValue placeholder="Date Range" />

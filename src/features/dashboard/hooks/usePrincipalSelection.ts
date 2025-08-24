@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import type { OpportunityFormData } from '@/types/opportunity.types'
-import type { Organization } from '@/hooks/useOrganizations'
+import type { Organization } from '@/types/entities'
 
 interface UsePrincipalSelectionReturn {
   selectedPrincipals: string[]

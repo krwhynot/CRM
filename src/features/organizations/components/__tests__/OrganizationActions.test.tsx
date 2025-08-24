@@ -1,5 +1,5 @@
-import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { vi } from 'vitest'
 import { OrganizationActions } from '../OrganizationActions'
 import type { Organization } from '@/types/entities'
 
@@ -15,7 +15,7 @@ const mockOrganization: Organization = {
 
 describe('OrganizationActions', () => {
   it('should render view button when onView is provided', () => {
-    const onView = jest.fn()
+    const onView = vi.fn()
 
     render(
       <OrganizationActions
@@ -32,7 +32,7 @@ describe('OrganizationActions', () => {
   })
 
   it('should render contact button when onContact is provided and phone exists', () => {
-    const onContact = jest.fn()
+    const onContact = vi.fn()
 
     render(
       <OrganizationActions
@@ -49,7 +49,7 @@ describe('OrganizationActions', () => {
   })
 
   it('should not render contact button when phone is missing', () => {
-    const onContact = jest.fn()
+    const onContact = vi.fn()
     const orgWithoutPhone = { ...mockOrganization, phone: undefined }
 
     render(
@@ -63,7 +63,7 @@ describe('OrganizationActions', () => {
   })
 
   it('should render edit button when onEdit is provided', () => {
-    const onEdit = jest.fn()
+    const onEdit = vi.fn()
 
     render(
       <OrganizationActions
@@ -80,9 +80,9 @@ describe('OrganizationActions', () => {
   })
 
   it('should render all action buttons when all handlers are provided', () => {
-    const onView = jest.fn()
-    const onContact = jest.fn()
-    const onEdit = jest.fn()
+    const onView = vi.fn()
+    const onContact = vi.fn()
+    const onEdit = vi.fn()
 
     render(
       <OrganizationActions
@@ -111,7 +111,7 @@ describe('OrganizationActions', () => {
 
   it('should not call onDelete when onDelete prop is not provided', () => {
     // This test ensures we're not using onDelete accidentally
-    const onEdit = jest.fn()
+    const onEdit = vi.fn()
 
     render(
       <OrganizationActions
@@ -126,7 +126,7 @@ describe('OrganizationActions', () => {
   })
 
   it('should handle organization with empty phone string', () => {
-    const onContact = jest.fn()
+    const onContact = vi.fn()
     const orgWithEmptyPhone = { ...mockOrganization, phone: '' }
 
     render(

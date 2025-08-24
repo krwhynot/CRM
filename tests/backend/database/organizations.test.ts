@@ -6,7 +6,6 @@
  */
 
 import { describe, test, expect, beforeEach, afterEach } from 'vitest'
-import { v4 as uuidv4 } from 'uuid'
 
 describe('Organizations Database Operations', () => {
   let testOrgIds: string[] = []

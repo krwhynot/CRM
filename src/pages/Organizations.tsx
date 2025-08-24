@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { 
   useOrganizations, 
   useRefreshOrganizations,
@@ -10,7 +10,7 @@ import {
   OrganizationsDataDisplay,
   OrganizationDialogs
 } from '@/features/organizations'
-import { OrganizationsErrorBoundary } from '@/components/shared/feedback/error-boundaries/QueryErrorBoundary'
+import { OrganizationsErrorBoundary } from '@/components/error-boundaries/QueryErrorBoundary'
 import { cn } from '@/lib/utils'
 
 function OrganizationsPage() {

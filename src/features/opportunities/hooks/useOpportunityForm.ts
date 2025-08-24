@@ -3,8 +3,8 @@ import { useMemo } from 'react'
 import { opportunitySchema, type OpportunityFormData } from '@/types/opportunity.types'
 import { createTypeSafeResolver } from '@/lib/form-resolver'
 import { DEFAULT_OPPORTUNITY_STAGE } from '@/lib/opportunity-stage-mapping'
-import { useOrganizations } from '@/hooks/useOrganizations'
-import { useContacts } from '@/hooks/useContacts'
+import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
+import { useContacts } from '@/features/contacts/hooks/useContacts'
 
 interface UseOpportunityFormProps {
   preselectedOrganization?: string
@@ -19,6 +19,7 @@ export interface UseOpportunityFormReturn {
   watch: ReturnType<typeof useForm<OpportunityFormData>>['watch']
   trigger: ReturnType<typeof useForm<OpportunityFormData>>['trigger']
   formState: ReturnType<typeof useForm<OpportunityFormData>>['formState']
+  errors: ReturnType<typeof useForm<OpportunityFormData>>['formState']['errors']
   
   // Derived data
   organizations: ReturnType<typeof useOrganizations>['data']
@@ -68,7 +69,7 @@ export const useOpportunityForm = ({
   // Filter contacts by selected organization
   const filteredContacts = useMemo(() => {
     return selectedOrganization 
-      ? contacts.filter(contact => contact.organization_id === selectedOrganization)
+      ? contacts.filter((contact) => contact.organization_id === selectedOrganization)
       : contacts
   }, [selectedOrganization, contacts])
 
@@ -109,6 +110,7 @@ export const useOpportunityForm = ({
     watch: form.watch,
     trigger: form.trigger,
     formState: form.formState,
+    errors: form.formState.errors,
     
     // Derived data
     organizations,

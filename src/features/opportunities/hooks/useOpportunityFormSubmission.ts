@@ -4,7 +4,7 @@ import { toast } from '@/lib/toast-styles'
 import type { OpportunityFormData } from '@/types/opportunity.types'
 import type { OpportunityInsert } from '@/types/entities'
 import type { Database } from '@/lib/database.types'
-import type { Organization } from '@/hooks/useOrganizations'
+import type { Organization } from '@/types/entities'
 
 interface UseOpportunityFormSubmissionReturn {
   handleSubmit: (data: OpportunityFormData) => Promise<void>

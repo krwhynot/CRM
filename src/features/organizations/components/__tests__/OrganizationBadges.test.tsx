@@ -1,9 +1,10 @@
-import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { OrganizationBadges } from '../OrganizationBadges'
 
+import { vi } from 'vitest'
+
 // Mock the useOrganizationsBadges hook
-jest.mock('@/features/organizations/hooks/useOrganizationsBadges', () => ({
+vi.mock('@/features/organizations/hooks/useOrganizationsBadges', () => ({
   useOrganizationsBadges: () => ({
     getPriorityBadge: (priority: string | null) => ({
       className: 'priority-badge',

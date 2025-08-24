@@ -2,8 +2,8 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Activity } from 'lucide-react'
 import { ChartTooltip } from './ChartTooltip'
-import { useChartStyling } from '@/hooks/useChartStyling'
-import type { ChartDataPoint } from '@/hooks/useChartData'
+import { useChartStyling } from '../../hooks/useChartStyling'
+import type { ChartDataPoint } from '../../hooks/useChartData'
 
 interface InteractionsChartProps {
   data: ChartDataPoint[]

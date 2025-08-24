@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { WizardStep, StepStatus } from '@/hooks/useOpportunityWizard'
+import type { WizardStep, StepStatus } from '../hooks/useOpportunityWizard'
 
 interface WizardNavigationProps {
   steps: readonly WizardStep[]

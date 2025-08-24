@@ -1,4 +1,4 @@
-import { ActivityFeed } from "@/components/dashboard/ActivityFeed"
+import { ActivityFeed } from "./ActivityFeed"
 import {
   Card,
   CardContent,

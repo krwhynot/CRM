@@ -1,4 +1,4 @@
-import type { EntityOption } from '@/components/shared/forms/forms/EntitySelect'
+import type { EntityOption } from '@/components/forms/EntitySelect'
 
 export const transformOrganizations = (organizations: Array<{
   id: string

@@ -1,6 +1,12 @@
 import { useState, useMemo } from 'react'
 import type { ActivityItem } from './useEnhancedActivityData'
 
+export interface ActivityFilters {
+  type?: string
+  priority?: string
+  dateRange?: string
+}
+
 export interface UseActivityFilteringReturn {
   selectedType: string
   selectedPriority: string

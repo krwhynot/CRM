@@ -7,9 +7,11 @@ import { useInteractionTimelineState } from '../hooks/useInteractionTimelineStat
 import { useInteractionTimelineData } from '../hooks/useInteractionTimelineData'
 import { useInteractionTimelineActions } from '../hooks/useInteractionTimelineActions'
 import { useInteractionIconMapping } from '../hooks/useInteractionIconMapping'
-import { TimelineHeader } from './timeline/TimelineHeader'
-import { TimelineEmptyState } from './timeline/TimelineEmptyState'
-import { TimelineItems } from './timeline/TimelineItems'
+import { 
+  TimelineHeader,
+  TimelineEmptyState,
+  TimelineItems 
+} from './timeline'
 
 
 // Interface following error prevention rules
@@ -40,7 +42,7 @@ export const InteractionTimeline = forwardRef<HTMLDivElement, InteractionTimelin
   }, ref) => {
     
     const { showAllInteractions, expandedItems, handleToggleExpand, handleToggleShowAll } = 
-      useInteractionTimelineState(ref)
+      useInteractionTimelineState()
     
     const { displayedInteractions, hasMore, remaining } = 
       useInteractionTimelineData({ interactions, showAllInteractions })

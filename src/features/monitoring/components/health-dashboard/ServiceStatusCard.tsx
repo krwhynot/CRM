@@ -1,6 +1,6 @@
 import React from 'react'
 import { Badge } from '@/components/ui/badge'
-import { useHealthStatusFormatting } from '@/hooks/useHealthStatusFormatting'
+import { useHealthStatusFormatting } from '../../hooks/useHealthStatusFormatting'
 
 interface ServiceStatusCardProps {
   icon: React.ReactElement

@@ -1,4 +1,4 @@
-import { ProgressiveDetails } from '@/components/shared/forms/forms'
+import { ProgressiveDetails } from '@/components/forms'
 import { Form } from '@/components/ui/form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { type ContactFormData } from '@/types/contact.types'

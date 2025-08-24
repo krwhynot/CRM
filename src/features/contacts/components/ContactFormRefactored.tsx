@@ -6,9 +6,9 @@ import {
   FormTextarea, 
   FormCheckbox,
   ProgressiveDetails 
-} from '@/components/shared/forms/forms'
-import { FormCard } from '@/components/shared/forms/forms/FormCard'
-import { FormSubmitButton } from '@/components/shared/forms/forms/FormSubmitButton'
+} from '@/components/forms'
+import { FormCard } from '@/components/forms/FormCard'
+import { FormSubmitButton } from '@/components/forms/FormSubmitButton'
 import { contactSchema, CONTACT_ROLES } from '@/types/contact.types'
 import { ContactFormInterface, createContactFormInterfaceDefaults } from '@/types/forms/form-interfaces'
 import { createTypeSafeResolver } from '@/lib/form-resolver'

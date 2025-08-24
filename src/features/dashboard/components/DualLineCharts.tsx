@@ -1,7 +1,9 @@
 import { useChartData } from '../hooks/useChartData'
-import { ChartLoadingSkeleton } from './charts/ChartLoadingSkeleton'
-import { OpportunitiesChart } from './charts/OpportunitiesChart'
-import { InteractionsChart } from './charts/InteractionsChart'
+import { 
+  ChartLoadingSkeleton,
+  OpportunitiesChart,
+  InteractionsChart 
+} from './charts'
 import type { WeeklyData } from '@/lib/date-utils'
 
 interface DualLineChartsProps {

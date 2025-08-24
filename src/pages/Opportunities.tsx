@@ -1,4 +1,3 @@
-import React from 'react'
 import { Button } from '@/components/ui/button'
 import { OpportunitiesTable } from '@/features/opportunities/components/OpportunitiesTable'
 import { Target, Users } from 'lucide-react'

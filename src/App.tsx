@@ -7,7 +7,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { Layout } from '@/layout/components/Layout'
 import { AuthPage, ResetPasswordPage, AuthCallbackHandler } from '@/features/auth'
-import { CommandPalette } from '@/components/shared/command-palette'
+import { CommandPalette } from '@/components/CommandPalette'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { setupPerformanceMonitoring } from '@/lib/performance'
 

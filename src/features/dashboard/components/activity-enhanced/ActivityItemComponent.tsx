@@ -13,7 +13,7 @@ import {
   Clock,
   RefreshCw
 } from 'lucide-react'
-import type { ActivityItem } from '@/hooks/useEnhancedActivityData'
+import type { ActivityItem } from '../../hooks/useEnhancedActivityData'
 
 const ACTIVITY_ICONS = {
   opportunity: Target,

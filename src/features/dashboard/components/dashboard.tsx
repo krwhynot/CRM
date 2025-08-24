@@ -1,6 +1,6 @@
-import { DashboardHeader } from "@/components/dashboard-header"
-import { QuickActions } from "@/components/quick-actions"
-import { CRMDashboard } from "@/components/dashboard/CRMDashboard"
+import { DashboardHeader } from "./dashboard-header"
+import { QuickActions } from "@/components/QuickActions"
+import { CRMDashboard } from "./CRMDashboard"
 
 export function Dashboard() {
   return (

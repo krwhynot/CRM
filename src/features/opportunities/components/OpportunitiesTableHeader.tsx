@@ -4,7 +4,6 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { SortField, SortDirection } from '@/features/opportunities/hooks/useOpportunitiesSorting'
-import type { OpportunityWithLastActivity } from '@/types/opportunity.types'
 
 interface SortableHeaderProps {
   field: SortField

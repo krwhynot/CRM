@@ -1,6 +1,5 @@
 import React from 'react'
-import { ProductRowMain } from './product-row/ProductRowMain'
-import { ProductRowDetails } from './product-row/ProductRowDetails'
+import { ProductRowMain, ProductRowDetails } from './product-row'
 import type { Product, ProductWithPrincipal } from '@/types/entities'
 
 interface ProductRowProps {

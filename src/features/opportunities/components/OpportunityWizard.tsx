@@ -1,10 +1,9 @@
-import React from 'react'
 import type { OpportunityFormData } from '@/types/opportunity.types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Building, Users, DollarSign, Calendar, FileText } from 'lucide-react'
-import { useOpportunityWizard } from '@/hooks/useOpportunityWizard'
-import { useOpportunityForm } from '@/hooks/useOpportunityForm'
+import { useOpportunityWizard } from '../hooks/useOpportunityWizard'
+import { useOpportunityForm } from '../hooks/useOpportunityForm'
 import { WizardNavigation } from './WizardNavigation'
 import { WizardStepBasicInfo } from './WizardStepBasicInfo'
 import { WizardStepOrganization } from './WizardStepOrganization'
@@ -55,10 +54,10 @@ export function OpportunityWizard({
       case 2:
         return (
           <WizardStepOrganization
-            organizations={form.organizations}
-            filteredContacts={form.filteredContacts}
+            organizations={form.organizations || []}
+            filteredContacts={form.filteredContacts || []}
             selectedOrganization={form.selectedOrganization}
-            contactValue={form.watchedValues.contact_id}
+            contactValue={form.watchedValues.contact_id || null}
             setValue={form.setValue}
             errors={form.errors}
             loading={loading}
@@ -92,7 +91,7 @@ export function OpportunityWizard({
           <WizardStepTimeline
             register={form.register}
             setValue={form.setValue}
-            opportunityContextValue={form.watchedValues.opportunity_context}
+            opportunityContextValue={form.watchedValues.opportunity_context || null}
             errors={form.errors}
             loading={loading}
           />
@@ -120,8 +119,16 @@ export function OpportunityWizard({
         <WizardNavigation
           steps={STEPS}
           currentStep={wizard.currentStep}
-          onStepClick={wizard.handleStepClick}
-          getStepValidation={form.getStepValidation}
+          progress={wizard.progress}
+          getStepStatus={wizard.getStepStatus}
+          onStepClick={(step: number) => wizard.handleStepClick(step, form.validateStepsRange)}
+          onPrevious={wizard.handlePrevious}
+          onNext={() => wizard.handleNext(() => form.getStepValidation(wizard.currentStep))}
+          onCancel={onCancel}
+          onSubmit={() => {}} // This will be handled by the form submit
+          isFirstStep={wizard.isFirstStep}
+          isLastStep={wizard.isLastStep}
+          loading={loading}
         />
 
         {/* Step Content */}
@@ -166,7 +173,7 @@ export function OpportunityWizard({
                 <button
                   type="button"
                   className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-                  onClick={() => wizard.handleNext(form.getStepValidation)}
+                  onClick={() => wizard.handleNext(() => form.getStepValidation(wizard.currentStep))}
                   disabled={loading}
                 >
                   Next

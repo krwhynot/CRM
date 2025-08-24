@@ -6,7 +6,6 @@ import {
   useDeleteInteraction 
 } from './useInteractions'
 import type { InteractionWithRelations, InteractionUpdate } from '@/types/entities'
-import { FormDataTransformer } from '@/lib/form-resolver'
 
 export const useInteractionsPageActions = (
   closeCreateDialog: () => void,

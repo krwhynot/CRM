@@ -1,8 +1,8 @@
-import { DashboardHeader } from "@/components/dashboard-header"
-import { ChartCard } from "@/components/chart-card"
-import { QuickActions } from "@/components/quick-actions"
-import { StatsCards } from "@/components/stats-cards"
-import { ActivityFeed } from "@/components/dashboard/ActivityFeed"
+import { DashboardHeader } from "./dashboard-header"
+import { ChartCard } from "@/components/ChartCard"
+import { QuickActions } from "@/components/QuickActions"
+import { StatsCards } from "@/components/StatsCards"
+import { ActivityFeed } from "./ActivityFeed"
 import type { InteractionWithRelations } from "@/types/entities"
 
 /**
@@ -91,7 +91,7 @@ export function MinimalActivityDashboard() {
         limit={50}
         showFilters={true}
         enableRealTime={true}
-        onActivityClick={(activity) => {
+        onActivityClick={(activity: InteractionWithRelations) => {
           console.log('Navigate to activity:', activity.id)
         }}
       />

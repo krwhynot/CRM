@@ -6,9 +6,11 @@ import { useContacts } from '@/features/contacts/hooks/useContacts'
 import { useMultiPrincipalFormState } from '@/features/dashboard/hooks/useMultiPrincipalFormState'
 import { usePrincipalSelection } from '@/features/dashboard/hooks/usePrincipalSelection'
 import { useOpportunityFormSubmission } from '../hooks/useOpportunityFormSubmission'
-import { OpportunityBasicFields } from './multi-principal-form/OpportunityBasicFields'
-import { PrincipalSelector } from './multi-principal-form/PrincipalSelector'
-import { OpportunityFormActions } from './multi-principal-form/OpportunityFormActions'
+import { 
+  OpportunityBasicFields,
+  PrincipalSelector,
+  OpportunityFormActions 
+} from './multi-principal-form'
 
 interface SimpleMultiPrincipalFormProps {
   onSuccess?: (opportunityId: string) => void
