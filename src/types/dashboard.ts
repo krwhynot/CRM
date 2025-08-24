@@ -56,3 +56,29 @@ export interface ActivityItem {
   principalName: string
   productName?: string
 }
+
+// Hook return types for better TypeScript support
+export interface UseDashboardFiltersReturn {
+  filters: FilterState
+  debouncedFilters: FilterState
+  isLoading: boolean
+  handleFiltersChange: (newFilters: FilterState) => void
+}
+
+export interface UseDashboardDataReturn {
+  // Source data
+  opportunities: Opportunity[]
+  principals: Principal[]
+  products: Product[]
+  
+  // Processed data
+  filteredOpportunities: Opportunity[]
+  opportunityChartData: ChartDataPoint[]
+  interactionChartData: ChartDataPoint[]
+  activityItems: ActivityItem[]
+}
+
+export interface UseDashboardLoadingReturn {
+  isInitialLoad: boolean
+  showEmptyState: boolean
+}

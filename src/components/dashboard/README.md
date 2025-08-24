@@ -1,8 +1,22 @@
 # Dashboard Components
 
-This directory contains specialized dashboard components for the KitchenPantry CRM analytics and reporting system.
+This directory contains the refactored CRM dashboard components following the Single Responsibility Principle.
 
-## Components Overview
+## Architecture Overview
+
+### Main Component
+- **CRMDashboard.tsx** - Main dashboard component that orchestrates all dashboard functionality using custom hooks and child components (refactored from 241 lines to 97 lines)
+
+### Custom Hooks (NEW - Extracted Logic)
+- **useDashboardFilters** - Manages filter state, debouncing, and loading simulation
+- **useDashboardData** - Handles data processing, filtering, and chart data generation  
+- **useDashboardLoading** - Manages initial loading states and empty state logic
+
+### Reusable UI Components
+- **ChartCard.tsx** - Reusable wrapper component for individual charts
+- **DashboardCharts.tsx** - Container component for the chart grid layout
+
+## Legacy Components
 
 ### PrincipalCard
 
