@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
 import { opportunitySchema, type OpportunityFormData } from '@/types/opportunity.types'
-import { createTypeSafeResolver } from '@/lib/form-resolver'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
 import { useContacts } from '@/features/contacts/hooks/useContacts'
 import { DB_STAGES, DEFAULT_OPPORTUNITY_STAGE } from '@/lib/opportunity-stage-mapping'
@@ -38,7 +38,7 @@ export function OpportunityForm({
   const { data: contacts = [] } = useContacts()
   
   const form = useForm<OpportunityFormData>({
-    resolver: createTypeSafeResolver<OpportunityFormData>(opportunitySchema),
+    resolver: yupResolver(opportunitySchema),
     defaultValues: {
       name: initialData?.name || '',
       organization_id: preselectedOrganization || initialData?.organization_id || '',

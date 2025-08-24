@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { opportunitySchema, type OpportunityFormData } from '@/types/opportunity.types'
-import { createTypeSafeResolver } from '@/lib/form-resolver'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { DEFAULT_OPPORTUNITY_STAGE } from '@/lib/opportunity-stage-mapping'
 
 interface UseMultiPrincipalFormStateReturn {
@@ -12,7 +12,7 @@ export const useMultiPrincipalFormState = (
   preselectedOrganization?: string
 ): UseMultiPrincipalFormStateReturn => {
   const form = useForm<OpportunityFormData>({
-    resolver: createTypeSafeResolver<OpportunityFormData>(opportunitySchema),
+    resolver: yupResolver(opportunitySchema),
     defaultValues: {
       name: '',
       organization_id: preselectedOrganization || '',

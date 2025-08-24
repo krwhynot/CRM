@@ -7,7 +7,7 @@ export * from './database.types'
 export * from './utils'
 
 // Form & Validation
-export * from './form-resolver'
+export * from './form-data-transformer'
 export * from './form-transforms'
 export * from './advocacyValidation'
 
@@ -33,4 +33,4 @@ export * from './query-debug'
 export * from './toast-styles'
 
 // Development & Quality
-export * from './typescript-guardian'
+// typescript-guardian removed - replaced with standard yupResolver

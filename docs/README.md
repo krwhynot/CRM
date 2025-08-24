@@ -46,8 +46,16 @@ Live system documentation:
 
 ### 📊 Testing & Quality
 Quality assurance and testing documentation:
-- **[Quality Gates](QUALITY_GATES_DOCUMENTATION.md)** - Development quality standards
+- **[Comprehensive Testing Strategy](COMPREHENSIVE_TESTING_STRATEGY.md)** - Testing framework and approach
 - **[Testing Reports](testing/)** - Comprehensive test results and reports
+- **[Quality Gates](CI_CD_QUALITY_GATES.md)** - Development quality standards
+
+### 📈 Reports & Analysis
+Project status, performance, and implementation reports:
+- **[Status Reports](reports/)** - Implementation progress and analysis reports
+- **[Performance Reports](reports/PERFORMANCE_OPTIMIZATION_REPORT.md)** - System performance analysis
+- **[Architectural Analysis](reports/ARCHITECTURAL_REFACTORING_SUMMARY.md)** - Code organization and refactoring
+- **[Deployment Status](deployment/DEPLOYMENT-STATUS.md)** - Production deployment tracking
 
 ### 🚀 Production & Deployment
 Live system documentation:

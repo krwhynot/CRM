@@ -42,6 +42,24 @@ npm run docs:validate     # Validate documentation links and formatting
 # Maintenance commands
 npm run clean             # Clean build artifacts
 npm run fresh             # Clean install (removes node_modules)
+
+# Testing commands
+npm run test              # Run all MCP tests
+npm run test:auth         # Test authentication flows
+npm run test:crud         # Test CRUD operations
+npm run test:dashboard    # Test dashboard functionality
+npm run test:mobile       # Test mobile optimization
+npm run test:backend      # Run backend/database tests (Vitest)
+npm run test:backend:coverage  # Backend tests with coverage
+npm run test:performance  # Performance tests
+npm run test:security     # Security validation tests
+npm run test:architecture # Architecture validation tests
+
+# Single test execution
+npm run test:architecture:state      # Run state boundary tests only
+npm run test:architecture:components # Run component placement tests only
+npm run test:architecture:performance # Run performance pattern tests only
+npm run test:architecture:eslint    # Run ESLint architectural rules tests only
 ```
 
 
@@ -49,18 +67,47 @@ npm run fresh             # Clean install (removes node_modules)
 
 ### Core Technologies
 - **React 18** with TypeScript in strict mode
-- **Vite** as build tool with `@vitejs/plugin-react`
+- **Vite** as build tool with `@vitejs/plugin-react` and bundle optimization
+- **Supabase** for database, authentication, and real-time features
 - **shadcn/ui** component library with "new-york" style
 - **Tailwind CSS** with CSS variables and "slate" base color
 - **Radix UI** primitives for accessibility
+- **TanStack Query** for server state management
+- **Zustand** for client UI state management
 
-### File Structure
-- `src/components/` - Shared React components (UI primitives, forms, global components)
-- `src/components/ui/` - shadcn/ui components
-- `src/features/` - Feature-based component organization (dashboard, contacts, etc.)
-- `src/hooks/` - Custom React hooks
-- `src/lib/` - Utilities and shared functions
-- `docs/` - Architecture and development documentation
+### File Structure & Feature Organization
+The codebase follows a **feature-based architecture** with clear separation of concerns:
+
+```
+src/
+├── features/              # Feature modules (core business logic)
+│   ├── auth/             # Authentication (login, signup, session management)
+│   ├── contacts/         # Contact management (CRUD, filtering, forms)
+│   ├── dashboard/        # Main dashboard (metrics, activity feeds, charts)
+│   ├── import-export/    # CSV/Excel data import/export functionality
+│   ├── interactions/     # Customer interaction tracking and timeline
+│   ├── monitoring/       # System health monitoring and performance
+│   ├── opportunities/    # Sales opportunity management and pipeline
+│   ├── organizations/    # Company/business entity management
+│   └── products/         # Product catalog and inventory
+├── components/           # Shared UI components
+│   ├── ui/              # shadcn/ui primitives
+│   ├── forms/           # Reusable form components and patterns
+│   └── [other shared]/  # Global components (Command Palette, etc.)
+├── lib/                 # Utilities and shared functions
+│   ├── supabase.ts      # Database client configuration
+│   ├── query-optimizations.ts # TanStack Query patterns
+│   └── [other utils]/   # Performance, validation, formatting
+├── stores/              # Zustand stores for client UI state
+├── types/               # TypeScript type definitions
+└── hooks/               # Shared custom React hooks
+```
+
+**Each feature module** (`src/features/*`) contains:
+- `components/` - Feature-specific React components
+- `hooks/` - Feature-specific custom hooks (TanStack Query integration)
+- `types/` - Feature-specific TypeScript types
+- `index.ts` - Public API exports
 
 **Component Organization**: Follow feature-based architecture with clear separation between shared and feature-specific components. See [`/docs/COMPONENT_ORGANIZATION_GUIDELINES.md`](/docs/COMPONENT_ORGANIZATION_GUIDELINES.md) for detailed guidelines.
 
@@ -95,7 +142,11 @@ The system is built around 5 core entities:
 5. **Relationship-Centric**: Model data around relationships, track engagement quality over quantity
 6. **State Separation**: Use TanStack Query for server data, Zustand for client UI state only
 
-- WHENEVER POSSIBLE USE A SUB AGENT
+**Critical Development Practices:**
+- **Use Sub-Agents**: Leverage specialized MCP agents whenever possible for focused tasks
+- **Import Alias**: Use `@/*` path alias for all imports (`@/components`, `@/lib`, `@/features`)
+- **Supabase Client**: Import from `@/lib/supabase` - pre-configured with proper auth settings
+- **Bundle Optimization**: Vite config includes code splitting and tree-shaking optimizations
 
 ## State Management Architecture
 
@@ -184,13 +235,24 @@ This project follows a 14-agent specialized architecture with MCP tools:
 4. **Weeks 13-16**: Production readiness and deployment
 
 ## Available MCP Tools
-- `supabase`: Database operations, migrations, auth
-- `shadcn-ui`: UI component library
-- `magicuidesign`: UI components and effects
-- `postgres`: Database analysis and optimization
-- `knowledge-graph`: Memory and relationship mapping
-- `playwright`: Browser automation and testing
+**Database & Infrastructure:**
+- `supabase`: Database operations, migrations, auth, logs, advisors
+- `postgres`: Database analysis and optimization, health checks, query performance
+
+**Frontend Development:**
+- `shadcn-ui`: UI component library access and demos
+- `magicuidesign`: Special effects, text animations, buttons, backgrounds
+- `playwright`: Browser automation, testing, screenshots, UI interaction (MCP tool only - no full installation)
+
+**Development & Deployment:**
 - `vercel`: Deployment and hosting
+- `github`: Repository management, issues, pull requests
+- `filesystem`: File operations, directory management
+
+**Documentation & Research:**
+- `Context7`: Up-to-date library documentation
+- `exa`: Web search and content extraction
+- `knowledge-graph`: Memory and relationship mapping
 
 ### MCP Tool Response Size Limits
 ⚠️ **Important**: All MCP tools have a **25,000 token response limit**. Always use pagination, filtering, and limit parameters to prevent errors.
@@ -264,11 +326,27 @@ See `/docs/MCP_TOOL_REFERENCE_GUIDE.md` for comprehensive usage guidelines.
 - **Production URL**: https://crm.kjrcloud.com - Live with Excel import functionality
 
 ### Quality Gates & Testing
-- Run `npm run validate` before committing changes
-- Use `./scripts/run-quality-gates.sh` for comprehensive validation
-- Playwright tests available for E2E testing (`@playwright/test`)
-- Mobile optimization tests in `/tests/mobile-optimization-*.spec.js`
-- Database health validation with `/scripts/validate-database-health.js`
+**Before Committing:**
+- `npm run validate` - Complete validation pipeline (type-check + lint + build)
+- `./scripts/run-quality-gates.sh` - 6-stage comprehensive validation
+
+**Test Categories:**
+- `npm run test:mcp` - MCP tests (auth, CRUD, dashboard, mobile)
+- `npm run test:backend` - Vitest backend tests (database, performance, security)
+- `npm run test:architecture` - Architecture validation (state boundaries, component placement)
+
+**Testing Infrastructure:**
+- **Backend Testing**: Vitest for unit/integration tests
+- **E2E Testing**: Playwright MCP tool only (no full Playwright installation)
+- **Production Monitoring**: `/scripts/production-monitor.sh`
+
+#### Quality Gates (run-quality-gates.sh)
+1. **TypeScript Compilation** - Strict type checking
+2. **Code Linting** - ESLint validation with custom architectural rules
+3. **Component Architecture** - Health score validation (80%+ required)
+4. **Build & Bundle Analysis** - Build success + bundle size (<3MB)
+5. **Performance Baseline** - Performance monitoring completion
+6. **Mobile Optimization** - Mobile-first responsive design validation
 
 ### MCP Tool Development Guidelines
 When working with MCP tools in this project:

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
 import { productSchema, type ProductFormData } from '@/types/validation'
-import { createTypeSafeResolver } from '@/lib/form-resolver'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
 import { PRODUCT_CATEGORIES } from '@/constants/product.constants'
 
@@ -28,7 +28,7 @@ export function ProductForm({
   const principalOrganizations = organizations.filter(org => org.type === 'principal')
   
   const form = useForm<ProductFormData>({
-    resolver: createTypeSafeResolver<ProductFormData>(productSchema),
+    resolver: yupResolver(productSchema),
     defaultValues: {
       name: initialData?.name || '',
       sku: initialData?.sku || '',

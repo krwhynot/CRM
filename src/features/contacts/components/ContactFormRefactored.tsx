@@ -9,15 +9,14 @@ import {
 } from '@/components/forms'
 import { FormCard } from '@/components/forms/FormCard'
 import { FormSubmitButton } from '@/components/forms/FormSubmitButton'
-import { contactSchema, CONTACT_ROLES } from '@/types/contact.types'
-import { ContactFormInterface, createContactFormInterfaceDefaults } from '@/types/forms/form-interfaces'
-import { createTypeSafeResolver } from '@/lib/form-resolver'
+import { contactSchema, CONTACT_ROLES, type ContactFormData } from '@/types/contact.types'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
 import { PreferredPrincipalsSelect } from './PreferredPrincipalsSelect'
 
 interface ContactFormProps {
-  onSubmit: (data: ContactFormInterface) => void
-  initialData?: Partial<ContactFormInterface>
+  onSubmit: (data: ContactFormData) => void
+  initialData?: Partial<ContactFormData>
   loading?: boolean
   submitLabel?: string
   preselectedOrganization?: string
@@ -32,16 +31,25 @@ export function ContactFormRefactored({
 }: ContactFormProps) {
   const { data: organizations = [] } = useOrganizations()
   
-  // Use the TypeScript-safe default values factory
-  const defaultValues = createContactFormInterfaceDefaults(
-    preselectedOrganization,
-    initialData
-  )
-
-  // Create type-safe form with proper control
-  const form = useForm<ContactFormInterface>({
-    resolver: createTypeSafeResolver<ContactFormInterface>(contactSchema),
-    defaultValues,
+  const form = useForm<ContactFormData>({
+    resolver: yupResolver(contactSchema),
+    defaultValues: {
+      first_name: initialData?.first_name || '',
+      last_name: initialData?.last_name || '',
+      organization_id: preselectedOrganization || initialData?.organization_id || '',
+      purchase_influence: initialData?.purchase_influence || 'Unknown',
+      decision_authority: initialData?.decision_authority || 'Gatekeeper',
+      role: initialData?.role || null,
+      email: initialData?.email || null,
+      title: initialData?.title || null,
+      department: initialData?.department || null,
+      phone: initialData?.phone || null,
+      mobile_phone: initialData?.mobile_phone || null,
+      linkedin_url: initialData?.linkedin_url || null,
+      is_primary_contact: initialData?.is_primary_contact || false,
+      notes: initialData?.notes || null,
+      preferred_principals: initialData?.preferred_principals || []
+    }
   })
 
   // Prepare organization options

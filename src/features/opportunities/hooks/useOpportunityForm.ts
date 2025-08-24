@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { useMemo } from 'react'
 import { opportunitySchema, type OpportunityFormData } from '@/types/opportunity.types'
-import { createTypeSafeResolver } from '@/lib/form-resolver'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { DEFAULT_OPPORTUNITY_STAGE } from '@/lib/opportunity-stage-mapping'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
 import { useContacts } from '@/features/contacts/hooks/useContacts'
@@ -41,7 +41,7 @@ export const useOpportunityForm = ({
   const { data: contacts = [] } = useContacts()
 
   const form = useForm<OpportunityFormData>({
-    resolver: createTypeSafeResolver<OpportunityFormData>(opportunitySchema),
+    resolver: yupResolver(opportunitySchema),
     mode: 'onBlur',
     defaultValues: {
       name: '',

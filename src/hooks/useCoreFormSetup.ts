@@ -1,5 +1,5 @@
 import { useForm, FieldValues, DefaultValues } from 'react-hook-form'
-import { createTypeSafeResolver } from '@/lib/form-resolver'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useFormLayout } from '@/hooks/useFormLayout'
 import * as yup from 'yup'
 import type { FormSection, ConditionalSection } from '@/hooks/useFormLayout'
@@ -26,7 +26,7 @@ export function useCoreFormSetup<T extends FieldValues>({
   onSubmit
 }: CoreFormSetupProps<T>) {
   const form = useForm<T>({
-    resolver: createTypeSafeResolver<T>(formSchema),
+    resolver: yupResolver(formSchema),
     defaultValues: initialData as DefaultValues<T>
   })
   

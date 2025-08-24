@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { contactSchema, type ContactFormData } from '@/types/contact.types'
-import { createTypeSafeResolver } from '@/lib/form-resolver'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 export type OrganizationMode = 'existing' | 'new'
 
@@ -20,7 +20,7 @@ export const useEnhancedContactFormState = (
   )
   
   const form = useForm<ContactFormData>({
-    resolver: createTypeSafeResolver<ContactFormData>(contactSchema),
+    resolver: yupResolver(contactSchema),
     defaultValues: {
       first_name: initialData?.first_name || '',
       last_name: initialData?.last_name || '',

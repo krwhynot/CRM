@@ -8,7 +8,7 @@ import { ButtonNew } from '@/components/ui/new/Button'
 import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
 import { organizationSchema, FOOD_SERVICE_SEGMENTS, type OrganizationFormData } from '@/types/organization.types'
-import { createTypeSafeResolver } from '@/lib/form-resolver'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { deriveOrganizationFlags } from '@/lib/organization-utils'
 
 interface OrganizationFormProps {
@@ -28,7 +28,7 @@ export function OrganizationForm({
   const USE_NEW_STYLE = localStorage.getItem('useNewStyle') === 'true';
   
   const form = useForm<OrganizationFormData>({
-    resolver: createTypeSafeResolver<OrganizationFormData>(organizationSchema),
+    resolver: yupResolver(organizationSchema),
     defaultValues: {
       name: initialData?.name || '',
       type: initialData?.type || 'customer',

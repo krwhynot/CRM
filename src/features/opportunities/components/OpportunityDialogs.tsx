@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
 import { OpportunityForm } from './OpportunityForm'
 import { InteractionForm } from '@/features/interactions/components/InteractionForm'
-import { FormDataTransformer } from '@/lib/form-resolver'
+import { FormDataTransformer } from '@/lib/form-data-transformer'
 import type { Opportunity, InteractionWithRelations } from '@/types/entities'
 import type { InteractionFormData } from '@/types/interaction.types'
 

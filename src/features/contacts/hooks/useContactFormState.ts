@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { contactSchema, type ContactFormData } from '@/types/contact.types'
-import { createTypeSafeResolver } from '@/lib/form-resolver'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 interface UseContactFormStateProps {
   initialData?: Partial<ContactFormData>
@@ -20,7 +20,7 @@ export const useContactFormState = ({
 }: UseContactFormStateProps): UseContactFormStateReturn => {
   
   const form = useForm<ContactFormData>({
-    resolver: createTypeSafeResolver<ContactFormData>(contactSchema),
+    resolver: yupResolver(contactSchema),
     defaultValues: {
       first_name: initialData?.first_name || '',
       last_name: initialData?.last_name || '',

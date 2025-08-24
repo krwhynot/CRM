@@ -7,7 +7,7 @@ import { PageHeader } from '@/components/ui/new/PageHeader'
 import { useContacts, useCreateContactWithOrganization, useUpdateContact, useDeleteContact } from '@/features/contacts/hooks/useContacts'
 import { Plus } from 'lucide-react'
 import type { Contact, ContactUpdate } from '@/types/entities'
-import { FormDataTransformer } from '@/lib/form-resolver'
+import { FormDataTransformer } from '@/lib/form-data-transformer'
 import {
   Dialog,
   DialogContent,

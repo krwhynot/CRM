@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
 import { interactionSchema, type InteractionFormData, type InteractionType } from '@/types/interaction.types'
-import { createTypeSafeResolver } from '@/lib/form-resolver'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities'
 import { INTERACTION_TYPES } from '@/constants/interaction.constants'
 
@@ -30,7 +30,7 @@ export function InteractionForm({
   const { data: opportunities = [] } = useOpportunities()
   
   const form = useForm<InteractionFormData>({
-    resolver: createTypeSafeResolver<InteractionFormData>(interactionSchema),
+    resolver: yupResolver(interactionSchema),
     defaultValues: {
       subject: initialData?.subject || '',
       type: initialData?.type || 'call',

@@ -124,12 +124,23 @@ npx tsc --noEmit   # Type checking
 
 ## 📚 Documentation
 
-- **[User Guide](docs/USER_GUIDE.md)** - Complete Sales Manager guide
-- **[Technical Guide](docs/TECHNICAL_GUIDE.md)** - Developer documentation  
-- **[Database Schema](docs/database.md)** - Entity relationships and design
-- **[Deployment Guide](docs/DEPLOYMENT.md)** - Production deployment instructions
-- **[Architecture Guide](docs/CRM_AGENT_ARCHITECTURE.md)** - System architecture details
-- **[Coding Rules](docs/Coding_Rules.md)** - Development guidelines and patterns
+### 📖 Essential Documentation
+- **[Complete Documentation Index](docs/)** - Full documentation navigation
+- **[User Guide](docs/USER_GUIDE.md)** - Complete Sales Manager workflows  
+- **[Technical Guide](docs/TECHNICAL_GUIDE.md)** - Developer reference and API docs
+- **[Contributing Guide](CONTRIBUTING.md)** - Development setup and workflow
+- **[Changelog](CHANGELOG.md)** - Version history and notable changes
+
+### 🏗️ Architecture & Development
+- **[Architecture Guide](docs/architecture/overview.md)** - System design and decisions
+- **[Database Schema](docs/DATABASE_SCHEMA.md)** - Complete database design
+- **[Coding Rules](docs/Coding_Rules.md)** - 10 essential development rules
+- **[State Management Guide](docs/STATE_MANAGEMENT_GUIDE.md)** - Client/server state patterns
+
+### 🚀 Production & Deployment
+- **[Production Deployment Guide](docs/PRODUCTION_DEPLOYMENT_GUIDE.md)** - Complete deployment process
+- **[Performance Guide](docs/guides/performance.md)** - Database and frontend optimization
+- **[Testing Reports](docs/testing/)** - Comprehensive validation results
 
 ## 🤝 Contributing
 
