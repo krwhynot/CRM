@@ -5,7 +5,7 @@ import {
   useUpdateOrganization, 
   useDeleteOrganization 
 } from './useOrganizations'
-import type { Organization } from '@/types/entities'
+import type { Organization, OrganizationInsert, OrganizationUpdate } from '@/types/entities'
 
 export const useOrganizationsPageActions = (
   closeCreateDialog: () => void,
@@ -16,7 +16,7 @@ export const useOrganizationsPageActions = (
   const updateOrganizationMutation = useUpdateOrganization()
   const deleteOrganizationMutation = useDeleteOrganization()
 
-  const handleCreate = useCallback(async (data: any) => {
+  const handleCreate = useCallback(async (data: OrganizationInsert) => {
     try {
       console.log('🔍 Form data received:', data)
       
@@ -27,7 +27,7 @@ export const useOrganizationsPageActions = (
         throw new Error('Organization type is required but missing from form data')
       }
       
-      await createOrganizationMutation.mutateAsync(dbData as any)
+      await createOrganizationMutation.mutateAsync(dbData)
       closeCreateDialog()
       toast.success('Organization created successfully!')
     } catch (error) {
@@ -36,11 +36,11 @@ export const useOrganizationsPageActions = (
     }
   }, [createOrganizationMutation, closeCreateDialog])
 
-  const handleUpdate = useCallback(async (selectedOrganization: Organization, data: any) => {
+  const handleUpdate = useCallback(async (selectedOrganization: Organization, data: OrganizationUpdate) => {
     try {
       await updateOrganizationMutation.mutateAsync({
         id: selectedOrganization.id,
-        updates: data as any
+        updates: data
       })
       closeEditDialog()
       toast.success('Organization updated successfully!')

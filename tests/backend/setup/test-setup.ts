@@ -11,8 +11,16 @@ import { vi, beforeAll, afterAll, beforeEach, expect } from 'vitest'
 import '@testing-library/jest-dom'
 
 // Test environment configuration
-const TEST_SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://ixitjldcdvbazvjsnkao.supabase.co'
-const TEST_SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4aXRqbGRjZHZiYXp2anNua2FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ5Mjg0MjEsImV4cCI6MjA3MDUwNDQyMX0.8h5jXRcT96R34m0MU7PVbgzJPpGvf5azgQd2wo5AB2Q'
+const TEST_SUPABASE_URL = process.env.VITE_SUPABASE_URL
+const TEST_SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY
+
+if (!TEST_SUPABASE_URL || !TEST_SUPABASE_ANON_KEY) {
+  throw new Error(
+    '🚨 SECURITY: Test environment requires VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.\n' +
+    'Please ensure these are set in your .env.local file or CI/CD environment.\n' +
+    'Never use hardcoded credentials - see .env.example for setup instructions.'
+  )
+}
 
 // Create test Supabase client
 export const testSupabase = createClient<Database>(TEST_SUPABASE_URL, TEST_SUPABASE_ANON_KEY, {

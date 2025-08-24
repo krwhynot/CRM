@@ -9,8 +9,18 @@ import fs from 'fs'
 import path from 'path'
 
 const PRODUCTION_URL = 'https://crm.kjrcloud.com'
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://ixitjldcdvbazvjsnkao.supabase.co'
-const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4aXRqbGRjZHZiYXp2anNua2FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ5Mjg0MjEsImV4cCI6MjA3MDUwNDQyMX0.8h5jXRcT96R34m0MU7PVbgzJPpGvf5azgQd2wo5AB2Q'
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL
+const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY
+
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  console.error('🚨 SECURITY ERROR: Missing required environment variables')
+  console.error('Production deployment validation requires:')
+  console.error('  - VITE_SUPABASE_URL: Your Supabase project URL')
+  console.error('  - VITE_SUPABASE_ANON_KEY: Your Supabase anonymous key')
+  console.error('Please set these in your environment or .env.local file.')
+  console.error('Never use hardcoded credentials in scripts!')
+  process.exit(1)
+}
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 

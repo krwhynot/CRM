@@ -5,7 +5,7 @@ import {
   useUpdateInteraction, 
   useDeleteInteraction 
 } from './useInteractions'
-import type { InteractionWithRelations, InteractionUpdate } from '@/types/entities'
+import type { InteractionInsert, InteractionWithRelations, InteractionUpdate } from '@/types/entities'
 
 export const useInteractionsPageActions = (
   closeCreateDialog: () => void,
@@ -15,13 +15,13 @@ export const useInteractionsPageActions = (
   const updateInteractionMutation = useUpdateInteraction()
   const deleteInteractionMutation = useDeleteInteraction()
 
-  const handleCreate = useCallback(async (data: any) => {
+  const handleCreate = useCallback(async (data: InteractionInsert) => {
     try {
-      const interactionData = {
+      const interactionData: InteractionInsert = {
         ...data,
         follow_up_date: data.follow_up_date && typeof data.follow_up_date === 'string' && data.follow_up_date.trim() !== '' ? data.follow_up_date : null,
         follow_up_required: Boolean(data.follow_up_required)
-      } as any
+      }
       
       console.log('Submitting interaction data:', interactionData)
       await createInteractionMutation.mutateAsync(interactionData)

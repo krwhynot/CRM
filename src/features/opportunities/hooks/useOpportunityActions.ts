@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { toast } from '@/lib/toast-styles'
 import { useCreateOpportunity, useUpdateOpportunity, useDeleteOpportunity } from './useOpportunities'
-import type { Opportunity, OpportunityUpdate } from '@/types/entities'
+import type { Opportunity, OpportunityInsert, OpportunityUpdate } from '@/types/entities'
 
 interface UseOpportunityActionsReturn {
   // Mutations
@@ -20,9 +20,9 @@ export const useOpportunityActions = (): UseOpportunityActionsReturn => {
   const updateOpportunityMutation = useUpdateOpportunity()
   const deleteOpportunityMutation = useDeleteOpportunity()
 
-  const handleCreateOpportunity = useCallback(async (data: any, onSuccess: () => void) => {
+  const handleCreateOpportunity = useCallback(async (data: OpportunityInsert, onSuccess: () => void) => {
     try {
-      await createOpportunityMutation.mutateAsync(data as any)
+      await createOpportunityMutation.mutateAsync(data)
       onSuccess()
       toast.success('Opportunity created successfully!')
     } catch (error) {

@@ -6,7 +6,7 @@ import { ProductForm } from '@/features/products/components/ProductForm'
 import { PageHeader } from '@/components/ui/new/PageHeader'
 import { useProducts, useCreateProduct, useUpdateProduct, useDeleteProduct } from '@/features/products/hooks/useProducts'
 import { Plus } from 'lucide-react'
-import type { Product, ProductUpdate } from '@/types/entities'
+import type { Product, ProductInsert, ProductUpdate } from '@/types/entities'
 import {
   Dialog,
   DialogContent,
@@ -66,7 +66,7 @@ function ProductsPage() {
               <ProductForm 
               onSubmit={async (data) => {
                 try {
-                  await createProductMutation.mutateAsync(data as any)
+                  await createProductMutation.mutateAsync(data as ProductInsert)
                   setIsCreateDialogOpen(false)
                   toast.success('Product created successfully!')
                 } catch (error) {

@@ -17,7 +17,7 @@ export const DEFAULT_CONTACTS: ContactWithOrganization[] = [
     organization: {
       id: '1',
       name: '040 KITCHEN INC',
-      type: 'customer' as any,
+      type: 'customer',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       description: null,
@@ -74,7 +74,7 @@ export const DEFAULT_CONTACTS: ContactWithOrganization[] = [
     organization: {
       id: '2',
       name: '2D RESTAURANT GROUP',
-      type: 'customer' as any,
+      type: 'customer',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       description: null,
@@ -132,7 +132,7 @@ export const DEFAULT_CONTACTS: ContactWithOrganization[] = [
     organization: {
       id: '3',
       name: 'ACME FOOD DISTRIBUTORS',
-      type: 'distributor' as any,
+      type: 'distributor',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       description: null,

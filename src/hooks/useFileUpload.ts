@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import Papa from 'papaparse'
+import type { Database } from '@/lib/database.types'
 
 export interface CsvRow {
   [key: string]: string
@@ -154,7 +155,7 @@ export const useFileUpload = (): UseFileUploadReturn => {
             if (errors.length === 0) {
               const transformedRow: TransformedOrganizationRow = {
                 name: '',
-                type: 'customer' as any,
+                type: 'customer',
                 priority: 'C',
                 segment: 'General',
                 website: null,
@@ -175,13 +176,13 @@ export const useFileUpload = (): UseFileUploadReturn => {
                 const value = row[excelCol]?.trim()
                 if (dbField in transformedRow && value) {
                   if (dbField === 'type') {
-                    transformedRow.type = value as any
+                    transformedRow.type = value as Database['public']['Enums']['organization_type']
                   } else if (dbField === 'is_active') {
                     transformedRow.is_active = Boolean(value)
                   } else {
                     const key = dbField as keyof TransformedOrganizationRow
                     if (key in transformedRow) {
-                      ;(transformedRow as any)[key] = value
+                      ;(transformedRow as Record<string, any>)[key] = value
                     }
                   }
                 }
@@ -200,9 +201,9 @@ export const useFileUpload = (): UseFileUploadReturn => {
               // Determine organization type
               if (row['distributor']?.toLowerCase().includes('distributor') || 
                   row['segment']?.toLowerCase().includes('distributor')) {
-                transformedRow.type = 'distributor' as any
+                transformedRow.type = 'distributor'
               } else {
-                transformedRow.type = 'customer' as any
+                transformedRow.type = 'customer'
               }
 
               // Set defaults

@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { toast } from '@/lib/toast-styles'
 import { useCreateInteraction, useUpdateInteraction, useDeleteInteraction } from './useInteractions'
-import type { InteractionWithRelations } from '@/types/entities'
+import type { InteractionInsert, InteractionWithRelations } from '@/types/entities'
 import type { InteractionFormData } from '@/types/interaction.types'
 
 interface UseInteractionActionsReturn {
@@ -25,17 +25,17 @@ export const useInteractionActions = (): UseInteractionActionsReturn => {
   const handleCreateInteraction = useCallback(async (data: InteractionFormData, selectedOpportunityId: string, onSuccess: () => void) => {
     try {
       // Map form data to database format
-      const interactionData = {
+      const interactionData: Omit<InteractionInsert, 'created_by' | 'updated_by'> = {
         opportunity_id: selectedOpportunityId,
         interaction_date: data.interaction_date,
         subject: data.subject,
-        type: data.type as any,
+        type: data.type,
         description: data.notes || null, // Map notes to description
         follow_up_required: data.follow_up_required || false,
         follow_up_date: data.follow_up_date || null
       }
       
-      await createInteractionMutation.mutateAsync(interactionData as any)
+      await createInteractionMutation.mutateAsync(interactionData)
       onSuccess()
       toast.success('Activity logged successfully!')
     } catch (error) {
@@ -49,7 +49,7 @@ export const useInteractionActions = (): UseInteractionActionsReturn => {
       const updateData = {
         interaction_date: data.interaction_date,
         subject: data.subject,
-        type: data.type as any,
+        type: data.type,
         description: data.notes || null, // Map notes to description
         follow_up_required: data.follow_up_required || false,
         follow_up_date: data.follow_up_date || null

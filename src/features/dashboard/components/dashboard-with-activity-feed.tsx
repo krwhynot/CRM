@@ -1,7 +1,7 @@
 import { DashboardHeader } from "./dashboard-header"
-import { ChartCard } from "@/components/ChartCard"
-import { QuickActions } from "@/components/QuickActions"
-import { StatsCards } from "@/components/StatsCards"
+import { DashboardCharts } from "./DashboardCharts"
+import { QuickActions } from "./QuickActions"
+import { StatsCards } from "./StatsCards"
 import { ActivityFeed } from "./ActivityFeed"
 import type { InteractionWithRelations } from "@/types/entities"
 
@@ -37,9 +37,13 @@ export function DashboardWithActivityFeed() {
           <StatsCards />
         </div>
 
-        {/* Chart Card */}
+        {/* Dashboard Charts */}
         <div className="mb-6">
-          <ChartCard />
+          <DashboardCharts 
+            opportunityChartData={[]}
+            interactionChartData={[]}
+            isLoading={false}
+          />
         </div>
 
         {/* Activity Feed - Real-time activity tracking */}

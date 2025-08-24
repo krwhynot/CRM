@@ -55,11 +55,14 @@ npm run fresh             # Clean install (removes node_modules)
 - **Radix UI** primitives for accessibility
 
 ### File Structure
-- `src/components/` - React components (dashboard, forms, UI components)
+- `src/components/` - Shared React components (UI primitives, forms, global components)
 - `src/components/ui/` - shadcn/ui components
+- `src/features/` - Feature-based component organization (dashboard, contacts, etc.)
 - `src/hooks/` - Custom React hooks
 - `src/lib/` - Utilities and shared functions
 - `docs/` - Architecture and development documentation
+
+**Component Organization**: Follow feature-based architecture with clear separation between shared and feature-specific components. See [`/docs/COMPONENT_ORGANIZATION_GUIDELINES.md`](/docs/COMPONENT_ORGANIZATION_GUIDELINES.md) for detailed guidelines.
 
 ### Key Design Patterns
 

@@ -1,5 +1,5 @@
 import { DashboardHeader } from "./dashboard-header"
-import { QuickActions } from "@/components/QuickActions"
+import { QuickActions } from "./QuickActions"
 import { CRMDashboard } from "./CRMDashboard"
 
 export function Dashboard() {

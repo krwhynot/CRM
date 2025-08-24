@@ -10,6 +10,11 @@ export { PrincipalCardsGrid } from './PrincipalCardsGrid'
 export { PrincipalsDashboard } from './PrincipalsDashboard'
 export { ActivityFeed } from './ActivityFeed'
 
+// Dashboard-specific components (moved from shared components)
+export { ChartCard } from './ChartCard'
+export { QuickActions } from './QuickActions'
+export { StatsCards } from './StatsCards'
+
 // Chart Components (organized in subdirectory)
 export * from './charts'
 
