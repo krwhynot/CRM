@@ -15,15 +15,26 @@ export function LoadingSpinner({ className, size = 'md', text }: LoadingSpinnerP
   }
 
   return (
-    <div className="flex flex-col items-center justify-center p-8 space-y-2">
-      <Loader2 className={cn(
-        'animate-spin border-mfb-green text-mfb-green',
-        sizeClasses[size],
-        className
-      )} />
+    <div 
+      className="flex flex-col items-center justify-center p-8 space-y-2"
+      role="status"
+      aria-live="polite"
+      aria-label={text || "Loading content"}
+    >
+      <Loader2 
+        className={cn(
+          'animate-spin border-mfb-green text-mfb-green',
+          sizeClasses[size],
+          className
+        )} 
+        aria-hidden="true"
+      />
       {text && (
-        <p className="text-mfb-olive/60 font-nunito text-sm">{text}</p>
+        <p className="text-mfb-olive/60 font-nunito text-sm" aria-live="polite">
+          {text}
+        </p>
       )}
+      <span className="sr-only">Loading, please wait</span>
     </div>
   )
 }
