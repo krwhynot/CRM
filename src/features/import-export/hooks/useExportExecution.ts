@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
+import { isFeatureEnabled } from '@/lib/feature-flags'
 import type { ExportOptions } from './useExportConfiguration'
 
 export interface ExportProgress {
@@ -49,6 +50,50 @@ export const useExportExecution = (exportOptions: ExportOptions): UseExportExecu
     }).join('\n')
 
     return `${csvHeaders}\n${csvRows}`
+  }, [exportOptions.selectedFields])
+
+  // Generate XLSX content using SheetJS
+  const generateXLSX = useCallback((data: any[], XLSX: any): string => {
+    if (data.length === 0) {
+      // Create empty workbook with headers only
+      const headers = exportOptions.selectedFields
+      const worksheet = XLSX.utils.json_to_sheet([])
+      XLSX.utils.sheet_add_aoa(worksheet, [headers])
+      const workbook = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Export')
+      return XLSX.write(workbook, { type: 'binary', bookType: 'xlsx' })
+    }
+
+    // Transform data to ensure proper field mapping
+    const transformedData = data.map(row => {
+      const transformedRow: Record<string, any> = {}
+      exportOptions.selectedFields.forEach(field => {
+        const value = row[field]
+        // Handle null/undefined values
+        if (value === null || value === undefined) {
+          transformedRow[field] = ''
+        } else if (typeof value === 'object') {
+          // Handle JSON objects by converting to string
+          transformedRow[field] = JSON.stringify(value)
+        } else {
+          transformedRow[field] = value
+        }
+      })
+      return transformedRow
+    })
+
+    // Create worksheet and workbook
+    const worksheet = XLSX.utils.json_to_sheet(transformedData)
+    
+    // Set column widths for better readability
+    const columnWidths = exportOptions.selectedFields.map(field => ({ wch: 20 }))
+    worksheet['!cols'] = columnWidths
+    
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Export')
+    
+    // Write as binary string
+    return XLSX.write(workbook, { type: 'binary', bookType: 'xlsx' })
   }, [exportOptions.selectedFields])
 
   // Execute export
@@ -131,16 +176,36 @@ export const useExportExecution = (exportOptions: ExportOptions): UseExportExecu
         content = generateCSV(allData)
         mimeType = 'text/csv'
         fileExtension = 'csv'
+      } else if (exportOptions.format === 'xlsx' && isFeatureEnabled('xlsxExport')) {
+        // Dynamic import to avoid bundle bloat
+        const XLSX = await import('xlsx')
+        content = generateXLSX(allData, XLSX.default)
+        mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        fileExtension = 'xlsx'
       } else {
-        // For now, export as CSV even for XLSX option
-        // TODO: Implement proper XLSX export using SheetJS or similar
+        // Fallback to CSV for XLSX when feature is disabled
+        // User will be notified via UI that CSV is being used instead
         content = generateCSV(allData)
         mimeType = 'text/csv'
         fileExtension = 'csv'
+        
+        console.log('XLSX export requested but feature disabled, falling back to CSV')
       }
 
       // Download file
-      const blob = new Blob([content], { type: `${mimeType};charset=utf-8;` })
+      let blob: Blob
+      if (fileExtension === 'xlsx') {
+        // Convert binary string to array buffer for XLSX
+        const buffer = new ArrayBuffer(content.length)
+        const view = new Uint8Array(buffer)
+        for (let i = 0; i < content.length; i++) {
+          view[i] = content.charCodeAt(i) & 0xFF
+        }
+        blob = new Blob([buffer], { type: mimeType })
+      } else {
+        // Standard text blob for CSV
+        blob = new Blob([content], { type: `${mimeType};charset=utf-8;` })
+      }
       const link = document.createElement('a')
       const url = URL.createObjectURL(blob)
       

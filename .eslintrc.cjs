@@ -29,6 +29,12 @@ module.exports = {
     // Console usage warning - prevents console statements in production
     'no-console': 'warn',
     
+    // Technical Debt Management Rules
+    'no-warning-comments': ['warn', {
+      'terms': ['TODO', 'FIXME', 'HACK'],
+      'location': 'anywhere'
+    }],
+    
     // React 18 JSX Transform - disable unnecessary React import requirement
     'react/react-in-jsx-scope': 'off',
     'react/jsx-uses-react': 'off',

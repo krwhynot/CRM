@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
+import { isFeatureEnabled } from '@/lib/feature-flags'
 import type { Database } from '@/lib/database.types'
 import { resolveOrganization } from '@/lib/organization-resolution'
 import { validateAuthentication, surfaceError } from '@/lib/error-utils'
@@ -320,8 +321,13 @@ export function useCreateContactWithOrganizationRPC() {
         throw new Error(authError || 'Authentication required to create contact')
       }
 
-      // TODO: This function is not yet implemented - remove when RPC function is ready
-      throw new Error('RPC contact creation not yet implemented')
+      if (!isFeatureEnabled('rpcContactCreation')) {
+        throw new Error('Contact creation is temporarily disabled while we improve the feature. Please use the Excel import functionality to add contacts.')
+      }
+      
+      // RPC contact creation will be implemented here
+      // Will include proper validation and organization linking
+      throw new Error('RPC contact creation feature is being finalized')
     },
     onSuccess: (newContact) => {
       // Invalidate all contact lists

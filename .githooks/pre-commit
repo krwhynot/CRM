@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# Pre-commit hook for technical debt management
+# This hook runs before each commit to check for new technical debt
+
+echo "🔍 Running technical debt checks..."
+
+# Check for new TODO comments without GitHub issues
+NEW_TODOS=$(git diff --cached --name-only | xargs grep -l "TODO\|FIXME\|HACK" 2>/dev/null || true)
+
+if [ ! -z "$NEW_TODOS" ]; then
+  echo "⚠️  New technical debt detected in staged files:"
+  echo "$NEW_TODOS" | while read file; do
+    echo "  📄 $file"
+    git diff --cached "$file" | grep -E "^\+.*TODO|^\+.*FIXME|^\+.*HACK" | head -3 | sed 's/^+/    /'
+  done
+  
+  echo ""
+  echo "📋 Please ensure all TODO comments:"
+  echo "  1. Link to GitHub issues: // TODO [#123]: Description"
+  echo "  2. Are tracked in docs/technical-debt/registry.md"
+  echo "  3. Have feature flags if they affect user functionality"
+  echo ""
+  echo "To bypass this check: git commit --no-verify"
+  echo "To create GitHub issues: node scripts/create-technical-debt-issues.js"
+  echo ""
+  
+  # Don't block commit, just warn
+  # exit 1
+fi
+
+# Run ESLint on staged files
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx)$' || true)
+
+if [ ! -z "$STAGED_FILES" ]; then
+  echo "🔧 Running ESLint on staged files..."
+  
+  # Only check staged TypeScript files
+  npm run lint -- $STAGED_FILES --quiet --format=compact || {
+    echo "❌ ESLint found issues. Please fix them before committing."
+    echo "   You can auto-fix some issues with: npm run lint -- --fix"
+    exit 1
+  }
+fi
+
+# Check feature flags configuration
+if [ -f "src/lib/feature-flags.ts" ]; then
+  TBD_COUNT=$(grep -c "githubIssue: \"#TBD\"" src/lib/feature-flags.ts || echo "0")
+  if [ "$TBD_COUNT" -gt "0" ]; then
+    echo "⚠️  $TBD_COUNT feature flags still have '#TBD' GitHub issues"
+    echo "   Consider creating proper GitHub issues for tracking"
+  fi
+fi
+
+echo "✅ Technical debt checks completed"

@@ -1,6 +1,7 @@
 import React from 'react'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Calendar, Clock, AlertCircle } from 'lucide-react'
 import { InteractionActionsDropdown } from './InteractionActionsDropdown'
 import { useInteractionFormatting } from '../../hooks/useInteractionFormatting'
@@ -12,6 +13,9 @@ interface InteractionTableRowProps {
   onEdit?: (interaction: InteractionWithRelations) => void
   onDelete?: (interaction: InteractionWithRelations) => void
   onView?: (interaction: InteractionWithRelations) => void
+  isSelected?: boolean
+  onToggleSelection?: () => void
+  showSelection?: boolean
 }
 
 export const InteractionTableRow: React.FC<InteractionTableRowProps> = ({
@@ -19,12 +23,24 @@ export const InteractionTableRow: React.FC<InteractionTableRowProps> = ({
   showOrganization,
   onEdit,
   onDelete,
-  onView
+  onView,
+  isSelected = false,
+  onToggleSelection,
+  showSelection = false
 }) => {
   const { getTypeColor, formatType, formatDate, formatDuration, isFollowUpOverdue } = useInteractionFormatting()
 
   return (
-    <TableRow>
+    <TableRow className={isSelected ? "bg-blue-50" : ""}>
+      {showSelection && (
+        <TableCell className="w-12">
+          <Checkbox
+            checked={isSelected}
+            onCheckedChange={onToggleSelection}
+            aria-label={`Select interaction ${interaction.subject}`}
+          />
+        </TableCell>
+      )}
       <TableCell className="font-medium">
         <div>
           <div className="font-semibold flex items-center">

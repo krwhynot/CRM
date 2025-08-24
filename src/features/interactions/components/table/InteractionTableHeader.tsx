@@ -1,8 +1,11 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { QuickActionsBar } from '@/components/ui/new/QuickActionsBar'
-import { Plus, Search } from 'lucide-react'
+import { Plus, Search, Info } from 'lucide-react'
+import { FEATURE_FLAGS, isFeatureEnabled, getFeatureMessage } from '@/lib/feature-flags'
 
 interface InteractionTableHeaderProps {
   searchTerm: string
@@ -10,6 +13,8 @@ interface InteractionTableHeaderProps {
   onAddNew?: () => void
   loading?: boolean
   useNewStyle: boolean
+  selectedCount?: number
+  onBulkAction?: (action: string) => void
 }
 
 export const InteractionTableHeader: React.FC<InteractionTableHeaderProps> = ({
@@ -17,7 +22,9 @@ export const InteractionTableHeader: React.FC<InteractionTableHeaderProps> = ({
   onSearchChange,
   onAddNew,
   loading = false,
-  useNewStyle
+  useNewStyle,
+  selectedCount = 0,
+  onBulkAction
 }) => {
   return (
     <div className="space-y-4">
@@ -42,14 +49,23 @@ export const InteractionTableHeader: React.FC<InteractionTableHeaderProps> = ({
 
       {/* Quick Actions Bar - only show with new styling */}
       {useNewStyle && (
-        <QuickActionsBar
-          onQuickAdd={onAddNew}
-          selectedCount={0} // TODO: Implement selection state
-          onBulkAction={(action: string) => {
-            console.log('Bulk action selected:', action);
-            // TODO: Implement bulk operations
-          }}
-        />
+        <>
+          {isFeatureEnabled('bulkOperations') ? (
+            <QuickActionsBar
+              onQuickAdd={onAddNew}
+              selectedCount={selectedCount}
+              onBulkAction={onBulkAction}
+            />
+          ) : (
+            <Alert>
+              <Info className="h-4 w-4" />
+              <AlertDescription className="flex items-center justify-between">
+                <span>{getFeatureMessage('bulkOperations')}</span>
+                <Badge variant="secondary">Coming Soon</Badge>
+              </AlertDescription>
+            </Alert>
+          )}
+        </>
       )}
     </div>
   )
