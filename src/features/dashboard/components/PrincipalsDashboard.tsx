@@ -90,11 +90,13 @@ export function PrincipalsDashboard() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {isLoading ? '...' : stats.totalPrincipals}
+            <div className="text-2xl font-bold" role="status" aria-live="polite">
+              {isLoading ? <span>Loading...</span> : stats.totalPrincipals}
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <StatusIndicator variant="success" size="sm">{isLoading ? '...' : stats.activePrincipals} Active</StatusIndicator>
+              <StatusIndicator variant="success" size="sm" role="status" aria-live="polite">
+                {isLoading ? <span>Loading...</span> : stats.activePrincipals} Active
+              </StatusIndicator>
             </div>
           </CardContent>
         </Card>
@@ -105,8 +107,8 @@ export function PrincipalsDashboard() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {isLoading ? '...' : stats.totalOpportunities}
+            <div className="text-2xl font-bold" role="status" aria-live="polite">
+              {isLoading ? <span>Loading...</span> : stats.totalOpportunities}
             </div>
             <p className="text-xs text-muted-foreground">
               Across all principals
@@ -120,8 +122,8 @@ export function PrincipalsDashboard() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {isLoading ? '...' : `$${stats.totalEstimatedValue.toLocaleString()}`}
+            <div className="text-2xl font-bold" role="status" aria-live="polite">
+              {isLoading ? <span>Loading...</span> : `$${stats.totalEstimatedValue.toLocaleString()}`}
             </div>
             <p className="text-xs text-muted-foreground">
               Pipeline value
@@ -135,8 +137,8 @@ export function PrincipalsDashboard() {
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {isLoading ? '...' : stats.totalInteractions}
+            <div className="text-2xl font-bold" role="status" aria-live="polite">
+              {isLoading ? <span>Loading...</span> : stats.totalInteractions}
             </div>
             <p className="text-xs text-muted-foreground">
               All principal activities
@@ -180,8 +182,8 @@ export function PrincipalsDashboard() {
       <div>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold">Principal Organizations</h2>
-          <p className="text-sm text-muted-foreground">
-            {isLoading ? 'Loading...' : `${stats.totalPrincipals} principal${stats.totalPrincipals !== 1 ? 's' : ''}`}
+          <p className="text-sm text-muted-foreground" role="status" aria-live="polite">
+            {isLoading ? <span>Loading...</span> : `${stats.totalPrincipals} principal${stats.totalPrincipals !== 1 ? 's' : ''}`}
           </p>
         </div>
         

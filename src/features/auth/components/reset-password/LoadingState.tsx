@@ -14,13 +14,14 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
 }) => {
   return (
     <div className={`min-h-screen flex items-center justify-center ${bgClassName} py-12 px-4 sm:px-6 lg:px-8`}>
-      <Card className="w-full max-w-md mx-auto">
+      <Card className="w-full max-w-md mx-auto" role="status" aria-live="polite">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">{title}</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl font-bold" aria-label={`Loading: ${title}`}>{title}</CardTitle>
+          <CardDescription aria-live="polite">
             {description}
           </CardDescription>
         </CardHeader>
+        <span className="sr-only">Please wait while we {description.toLowerCase()}</span>
       </Card>
     </div>
   )

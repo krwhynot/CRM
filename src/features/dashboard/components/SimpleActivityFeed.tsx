@@ -51,18 +51,19 @@ export const SimpleActivityFeed = React.memo(({ activities, loading, className }
         <CardHeader>
           <CardTitle>Activity Feed</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent role="status" aria-live="polite" aria-label="Loading activity feed">
           <div className="space-y-4">
             {Array.from({ length: 5 }).map((_, index) => (
               <div key={index} className="flex items-center space-x-3 animate-pulse">
-                <div className="w-6 h-6 bg-muted rounded-full"></div>
+                <div className="w-6 h-6 bg-muted rounded-full" aria-hidden="true"></div>
                 <div className="flex-1 space-y-1">
-                  <div className="h-4 bg-muted rounded w-3/4"></div>
-                  <div className="h-3 bg-muted rounded w-1/2"></div>
+                  <div className="h-4 bg-muted rounded w-3/4" aria-hidden="true"></div>
+                  <div className="h-3 bg-muted rounded w-1/2" aria-hidden="true"></div>
                 </div>
               </div>
             ))}
           </div>
+          <span className="sr-only">Loading activities, please wait</span>
         </CardContent>
       </Card>
     )
@@ -131,14 +132,17 @@ export const SimpleActivityFeed = React.memo(({ activities, loading, className }
             ))}
             
             {hasMore && (
-              <div className="flex justify-center pt-4">
+              <div className="flex justify-center pt-4" aria-busy={loadingMore}>
                 <Button
                   variant="outline"
                   onClick={handleLoadMore}
                   disabled={loadingMore}
                   className="w-full max-w-xs"
+                  aria-live="polite"
                 >
-                  {loadingMore ? 'Loading...' : 'Load More Activities'}
+                  <span role="status">
+                    {loadingMore ? 'Loading...' : 'Load More Activities'}
+                  </span>
                 </Button>
               </div>
             )}

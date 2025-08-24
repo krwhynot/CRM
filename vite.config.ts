@@ -4,7 +4,7 @@ import path from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     visualizer({ 
@@ -13,6 +13,10 @@ export default defineConfig({
       gzipSize: true 
     })
   ],
+  esbuild: {
+    // Drop all console statements in production builds only
+    drop: mode === 'production' ? ['console'] : [],
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -40,4 +44,4 @@ export default defineConfig({
     // Optimize chunk size
     chunkSizeWarningLimit: 1000,
   },
-})
+}))

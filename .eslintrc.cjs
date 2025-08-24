@@ -26,6 +26,9 @@ module.exports = {
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
     
+    // Console usage warning - prevents console statements in production
+    'no-console': 'warn',
+    
     // React 18 JSX Transform - disable unnecessary React import requirement
     'react/react-in-jsx-scope': 'off',
     'react/jsx-uses-react': 'off',
