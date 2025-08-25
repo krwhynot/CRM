@@ -112,36 +112,155 @@ export function TemplateMatchingImport() {
     return null
   }
 
-  // File upload handler
+  // Helper functions for smart row detection (from useFileUpload)
+  const hasContent = useCallback((row: string[]): boolean => {
+    return row.some(cell => cell && cell.trim().length > 0)
+  }, [])
+
+  const findDataStartRow = useCallback((allRows: string[][]): number => {
+    // Look for the actual header row (not just first content)
+    for (let i = 0; i < Math.min(allRows.length, 10); i++) {
+      const row = allRows[i]
+      const nonEmptyCount = row.filter(cell => cell && cell.trim()).length
+      
+      if (nonEmptyCount > 3) {
+        // Check if this row contains Excel formulas (skip these)
+        const hasFormulas = row.some(cell => cell && cell.startsWith('='))
+        // Check if this row contains business terms that indicate headers
+        const hasBusinessTerms = row.some(cell => 
+          cell && (
+            cell.toLowerCase().includes('organization') ||
+            cell.toLowerCase().includes('priority') ||
+            cell.toLowerCase().includes('segment') ||
+            cell.toLowerCase().includes('manager') ||
+            cell.toLowerCase().includes('phone') ||
+            cell.toLowerCase().includes('address') ||
+            cell.toLowerCase().includes('email')
+          )
+        )
+        
+        if (!hasFormulas && hasBusinessTerms) {
+          return i
+        }
+      }
+    }
+    
+    // Fallback to first content row
+    for (let i = 0; i < allRows.length; i++) {
+      if (hasContent(allRows[i])) {
+        return i
+      }
+    }
+    return 0
+  }, [hasContent])
+
+  // Clean and filter headers
+  const cleanHeaders = useCallback((rawHeaders: string[]): string[] => {
+    return rawHeaders
+      .map(header => {
+        if (!header || header.trim() === '') return null
+        // Clean multi-line headers and special characters
+        return header
+          .replace(/\n/g, ' ')  // Replace newlines with spaces
+          .replace(/\r/g, ' ')  // Replace carriage returns
+          .replace(/\s+/g, ' ') // Normalize multiple spaces to single space
+          .trim()
+      })
+      .filter(header => {
+        // Remove empty headers and auto-generated numeric headers
+        return header && 
+               header !== '' && 
+               !header.match(/^_\d+$/) && // Remove _1, _2, _3 etc.
+               header.length > 0
+      }) as string[]
+  }, [])
+
+  // File upload handler with smart parsing
   const handleFileUpload = useCallback(async (file: File) => {
     setError(null)
     
     try {
-      // Parse CSV
       const Papa = (await import('papaparse')).default
       
-      Papa.parse<Record<string, string>>(file, {
-        header: true,
-        skipEmptyLines: true,
-        transformHeader: (header: string) => header.toLowerCase().trim(),
-        complete: async (results) => {
-          const headers = results.meta.fields || []
-          const rows = results.data
-          
-          const parsed: ParsedData = {
-            headers,
-            rows,
-            validRows: [], // Will be populated after mapping
-            invalidRows: []
+      // First pass: Read without headers to find data start
+      Papa.parse<string[]>(file, {
+        header: false,
+        skipEmptyLines: false, // Keep empty lines for analysis
+        complete: (firstPass) => {
+          try {
+            const allRows = firstPass.data
+            const dataStartIndex = findDataStartRow(allRows)
+            
+            if (dataStartIndex >= allRows.length) {
+              setError('No data found in CSV file. Please check your file contains valid data.')
+              return
+            }
+
+            // Get header row and clean it
+            const rawHeaderRow = allRows[dataStartIndex]
+            const cleanedHeaders = cleanHeaders(rawHeaderRow)
+            
+            if (cleanedHeaders.length === 0) {
+              setError('No valid column headers found. Please check your CSV file format.')
+              return
+            }
+
+            // Create cleaned CSV content for second pass
+            const dataRows = allRows.slice(dataStartIndex + 1)
+            const csvContent = [
+              cleanedHeaders.join(','),
+              ...dataRows
+                .filter(row => hasContent(row))
+                .map(row => {
+                  // Only take the columns that correspond to our cleaned headers
+                  const cleanedRow = row.slice(0, rawHeaderRow.length)
+                    .filter((_, index) => {
+                      const header = rawHeaderRow[index]
+                      return header && header.trim() !== '' && !header.match(/^_\d+$/)
+                    })
+                  return cleanedRow.map(cell => `"${(cell || '').replace(/"/g, '""')}"`).join(',')
+                })
+            ].join('\n')
+            
+            // Second pass: Parse cleaned CSV with headers
+            const blob = new Blob([csvContent], { type: 'text/csv' })
+            const tempFile = new File([blob], file.name, { type: 'text/csv' })
+            
+            Papa.parse<Record<string, string>>(tempFile, {
+              header: true,
+              skipEmptyLines: true,
+              complete: async (results) => {
+                try {
+                  const headers = results.meta.fields || []
+                  const rows = results.data.filter(row => 
+                    Object.values(row).some(value => value && value.trim().length > 0)
+                  )
+                  
+                  const parsed: ParsedData = {
+                    headers,
+                    rows,
+                    validRows: [], // Will be populated after mapping
+                    invalidRows: []
+                  }
+                  
+                  setParsedData(parsed)
+                  
+                  // Generate AI field mappings
+                  const mappings = await generateAIMappings(headers, rows)
+                  setFieldMappings(mappings)
+                  
+                  setCurrentState('mapping')
+                } catch (error) {
+                  setError('Failed to process CSV data. Please check the file format.')
+                }
+              },
+              error: (error) => {
+                setError(`CSV parsing error: ${error.message}`)
+              }
+            })
+          } catch (error) {
+            setError('Failed to analyze CSV structure. Please check the file format.')
           }
-          
-          setParsedData(parsed)
-          
-          // Generate AI field mappings
-          const mappings = await generateAIMappings(headers, rows)
-          setFieldMappings(mappings)
-          
-          setCurrentState('mapping')
         },
         error: (error) => {
           setError(`CSV parsing error: ${error.message}`)
@@ -150,7 +269,7 @@ export function TemplateMatchingImport() {
     } catch (error) {
       setError('Failed to process file. Please try again.')
     }
-  }, [generateAIMappings])
+  }, [generateAIMappings, findDataStartRow, hasContent, cleanHeaders])
 
   // File input handlers
   const handleBrowseClick = () => fileInputRef.current?.click()
@@ -243,29 +362,40 @@ export function TemplateMatchingImport() {
     resetImport()
   }
 
-  // Get confidence badge styling
-  const getConfidenceBadge = (confidence: number) => {
-    if (confidence >= 85) return 'bg-green-100 text-green-800 border-green-200'
-    if (confidence >= 70) return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-    return 'bg-red-50 text-red-700 border-red-200'
-  }
+  // Template .badge styling - removed as it's now inline
 
-  // Step indicator component
+  // Step indicator component matching template .step-indicator
   const StepIndicator = () => (
     <div className="flex items-center gap-2 mb-8 text-sm">
-      <span className={currentState === 'upload' ? 'text-green-600 font-medium' : currentState !== 'upload' ? 'text-green-600' : 'text-gray-500'}>
+      <span className={`flex items-center gap-2 ${
+        currentState === 'upload' ? 'text-emerald-500 font-medium' : 
+        ['mapping', 'preview', 'importing', 'complete'].includes(currentState) ? 'text-emerald-500' : 
+        'text-gray-500'
+      }`}>
         1. Upload {['mapping', 'preview', 'importing', 'complete'].includes(currentState) && '✓'}
       </span>
       <span className="text-gray-400">›</span>
-      <span className={currentState === 'mapping' ? 'text-green-600 font-medium' : ['preview', 'importing', 'complete'].includes(currentState) ? 'text-green-600' : 'text-gray-500'}>
+      <span className={`flex items-center gap-2 ${
+        currentState === 'mapping' ? 'text-emerald-500 font-medium' : 
+        ['preview', 'importing', 'complete'].includes(currentState) ? 'text-emerald-500' : 
+        'text-gray-500'
+      }`}>
         2. Map Fields {['preview', 'importing', 'complete'].includes(currentState) && '✓'}
       </span>
       <span className="text-gray-400">›</span>
-      <span className={currentState === 'preview' ? 'text-green-600 font-medium' : ['importing', 'complete'].includes(currentState) ? 'text-green-600' : 'text-gray-500'}>
+      <span className={`flex items-center gap-2 ${
+        currentState === 'preview' ? 'text-emerald-500 font-medium' : 
+        ['importing', 'complete'].includes(currentState) ? 'text-emerald-500' : 
+        'text-gray-500'
+      }`}>
         3. Review {['importing', 'complete'].includes(currentState) && '✓'}
       </span>
       <span className="text-gray-400">›</span>
-      <span className={currentState === 'importing' ? 'text-green-600 font-medium' : currentState === 'complete' ? 'text-green-600' : 'text-gray-500'}>
+      <span className={`flex items-center gap-2 ${
+        currentState === 'importing' ? 'text-emerald-500 font-medium' : 
+        currentState === 'complete' ? 'text-emerald-500' : 
+        'text-gray-500'
+      }`}>
         4. Import {currentState === 'complete' && '✓'}
       </span>
     </div>
@@ -283,69 +413,59 @@ export function TemplateMatchingImport() {
         </Alert>
       )}
 
-      {/* STATE 1: UPLOAD */}
+      {/* STATE 1: UPLOAD - Template .card */}
       {currentState === 'upload' && (
         <div className="border border-gray-200 rounded-lg bg-white">
-          <div className="p-6 border-b border-gray-200">
-            <div className="flex items-center gap-2">
-              <span className="text-lg">📊</span>
-              <h3 className="text-base font-semibold">Organizations + Contacts</h3>
-              <span className="px-2 py-0.5 text-xs font-medium border border-gray-200 rounded bg-white">Enhanced</span>
+          {/* Template .card-header */}
+          <div className="px-6 py-5 border-b border-gray-200">
+            <div className="flex items-center gap-2 text-base font-semibold">
+              <span>📊</span>
+              Organizations + Contacts
+              <span className="px-2 py-0.5 text-xs font-medium border border-gray-200 rounded bg-white inline-block">Enhanced</span>
             </div>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-sm text-gray-500 mt-1">
               Import organizations and their contacts from a single CSV file. 
               Supports multiple contacts per organization with smart field mapping.
             </p>
           </div>
+          {/* Template .card-content */}
           <div className="p-6">
-            <div 
-              className="border-2 border-dashed border-gray-200 rounded-lg p-12 text-center bg-gray-50"
-              onDrop={handleDrop}
-              onDragOver={(e) => e.preventDefault()}
+            <Button 
+              onClick={handleBrowseClick} 
+              className="w-full justify-center bg-emerald-500 hover:bg-emerald-600 text-white py-2 px-4 rounded-md text-sm font-medium inline-flex items-center gap-2"
             >
-              <div className="space-y-4">
-                <div className="text-4xl">⬆️</div>
-                <div>
-                  <h4 className="font-medium text-gray-900">Upload CSV File</h4>
-                  <p className="text-sm text-gray-600 mt-1">Drag and drop or click to browse</p>
-                </div>
-                <div className="flex gap-3 justify-center">
-                  <Button onClick={handleBrowseClick} className="bg-green-600 hover:bg-green-700">
-                    <span className="mr-2">⬆</span> Import Organizations + Contacts
-                  </Button>
-                  <Button variant="outline" onClick={downloadTemplate}>
-                    Download Template
-                  </Button>
-                </div>
-              </div>
-            </div>
+              <span>⬆</span> Import Organizations + Contacts
+            </Button>
           </div>
         </div>
       )}
 
-      {/* STATE 2: FIELD MAPPING */}
+      {/* STATE 2: FIELD MAPPING - Template .card */}
       {currentState === 'mapping' && (
         <div className="border border-gray-200 rounded-lg bg-white">
-          <div className="p-6 border-b border-gray-200">
-            <h3 className="text-base font-semibold">Field Mapping</h3>
-            <p className="text-sm text-gray-600 mt-1">We've detected your CSV columns. Confirm or adjust the mapping below.</p>
+          {/* Template .card-header */}
+          <div className="px-6 py-5 border-b border-gray-200">
+            <div className="text-base font-semibold">Field Mapping</div>
+            <p className="text-sm text-gray-500 mt-1">We've detected your CSV columns. Confirm or adjust the mapping below.</p>
           </div>
+          {/* Template .card-content */}
           <div className="p-6">
+            {/* Template .table */}
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-gray-50">
-                  <th className="text-left p-3 text-xs font-medium text-gray-500 uppercase border-b border-gray-200">CSV Column</th>
-                  <th className="text-left p-3 text-xs font-medium text-gray-500 uppercase border-b border-gray-200">Maps To</th>
-                  <th className="text-left p-3 text-xs font-medium text-gray-500 uppercase border-b border-gray-200">Confidence</th>
+                <tr>
+                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase bg-gray-50 border-b border-gray-200">CSV Column</th>
+                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase bg-gray-50 border-b border-gray-200">Maps To</th>
+                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase bg-gray-50 border-b border-gray-200">Confidence</th>
                 </tr>
               </thead>
               <tbody>
                 {fieldMappings.map((mapping, idx) => (
-                  <tr key={mapping.csvColumn} className="border-b border-gray-100">
-                    <td className="p-3 text-sm font-medium">{mapping.csvColumn}</td>
-                    <td className="p-3">
+                  <tr key={mapping.csvColumn}>
+                    <td className="py-3 px-3 text-sm font-medium border-b border-gray-100">{mapping.csvColumn}</td>
+                    <td className="py-3 px-3 border-b border-gray-100">
                       <Select value={mapping.mapsTo || 'skip'} onValueChange={(value) => updateFieldMapping(mapping.csvColumn, value === 'skip' ? null : value)}>
-                        <SelectTrigger className="min-w-48">
+                        <SelectTrigger className="py-2 px-3 border border-gray-200 rounded-md bg-white text-sm min-w-[200px]">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -357,8 +477,12 @@ export function TemplateMatchingImport() {
                         </SelectContent>
                       </Select>
                     </td>
-                    <td className="p-3">
-                      <span className={`px-2 py-0.5 text-xs font-medium rounded border ${getConfidenceBadge(mapping.confidence)}`}>
+                    <td className="py-3 px-3 border-b border-gray-100">
+                      <span className={`py-0.5 px-2 text-xs font-medium rounded border inline-block ${
+                        mapping.confidence >= 85 ? 'bg-green-100 text-green-800' :
+                        mapping.confidence >= 45 ? 'bg-yellow-100 text-amber-700' :
+                        'bg-gray-100 text-gray-600'
+                      }`}>
                         {mapping.confidence}%
                       </span>
                     </td>
@@ -367,35 +491,40 @@ export function TemplateMatchingImport() {
               </tbody>
             </table>
           </div>
-          <div className="flex justify-between p-4 border-t border-gray-200">
-            <Button variant="outline" onClick={() => setCurrentState('upload')}>Back</Button>
-            <Button onClick={proceedToPreview} className="bg-green-600 hover:bg-green-700">Continue to Review</Button>
+          {/* Template .card-footer */}
+          <div className="px-6 py-4 border-t border-gray-200 flex justify-between">
+            <Button variant="outline" onClick={() => setCurrentState('upload')} className="py-2 px-4 border border-gray-200 bg-white text-gray-700 rounded-md text-sm font-medium">Back</Button>
+            <Button onClick={proceedToPreview} className="py-2 px-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm font-medium">Continue to Review</Button>
           </div>
         </div>
       )}
 
-      {/* STATE 3: PREVIEW */}
+      {/* STATE 3: PREVIEW - Template .card */}
       {currentState === 'preview' && parsedData && (
         <div className="border border-gray-200 rounded-lg bg-white">
-          <div className="p-6 border-b border-gray-200">
-            <h3 className="text-base font-semibold">Preview</h3>
-            <p className="text-sm text-gray-600 mt-1">First 5 records from your file</p>
+          {/* Template .card-header */}
+          <div className="px-6 py-5 border-b border-gray-200">
+            <div className="text-base font-semibold">Preview</div>
+            <p className="text-sm text-gray-500 mt-1">First 5 records from your file</p>
           </div>
+          {/* Template .card-content */}
           <div className="p-6">
-            <div className="flex gap-3 p-4 border border-gray-200 rounded-md bg-gray-50 mb-4">
-              <Info className="h-4 w-4 text-green-600 mt-0.5" />
-              <div className="text-sm">
+            {/* Template .alert */}
+            <div className="p-4 border border-gray-200 rounded-md bg-gray-50 mb-4 flex gap-3 text-sm">
+              <span className="text-emerald-500">ℹ</span>
+              <div>
                 <strong>Summary:</strong> {parsedData.rows.length} new organizations will be created
               </div>
             </div>
             
+            {/* Template .table */}
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-gray-50">
-                  <th className="text-left p-3 text-xs font-medium text-gray-500 uppercase border-b border-gray-200">Status</th>
-                  <th className="text-left p-3 text-xs font-medium text-gray-500 uppercase border-b border-gray-200">Organization</th>
-                  <th className="text-left p-3 text-xs font-medium text-gray-500 uppercase border-b border-gray-200">Contact</th>
-                  <th className="text-left p-3 text-xs font-medium text-gray-500 uppercase border-b border-gray-200">Action</th>
+                <tr>
+                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase bg-gray-50 border-b border-gray-200">Status</th>
+                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase bg-gray-50 border-b border-gray-200">Organization</th>
+                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase bg-gray-50 border-b border-gray-200">Contact</th>
+                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase bg-gray-50 border-b border-gray-200">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -404,14 +533,14 @@ export function TemplateMatchingImport() {
                   const contactName = fieldMappings.find(m => m.mapsTo === 'contact_name')?.csvColumn
                   
                   return (
-                    <tr key={idx} className="border-b border-gray-100">
-                      <td className="p-3">
-                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    <tr key={idx}>
+                      <td className="py-3 px-3 text-sm border-b border-gray-100">
+                        <span className="inline-block w-4 h-4 leading-4 text-center text-xs text-emerald-500">✓</span>
                       </td>
-                      <td className="p-3 text-sm">{orgName ? row[orgName] : 'Unnamed'}</td>
-                      <td className="p-3 text-sm">{contactName ? row[contactName] || '-' : '-'}</td>
-                      <td className="p-3">
-                        <span className="px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800 rounded border border-green-200">Create</span>
+                      <td className="py-3 px-3 text-sm border-b border-gray-100">{orgName ? row[orgName] : 'Unnamed'}</td>
+                      <td className="py-3 px-3 text-sm border-b border-gray-100">{contactName ? row[contactName] || '-' : '-'}</td>
+                      <td className="py-3 px-3 border-b border-gray-100">
+                        <span className="py-0.5 px-2 text-xs font-medium bg-green-100 text-green-800 rounded border inline-block">Create</span>
                       </td>
                     </tr>
                   )
@@ -419,47 +548,54 @@ export function TemplateMatchingImport() {
               </tbody>
             </table>
           </div>
-          <div className="flex justify-between p-4 border-t border-gray-200">
-            <Button variant="outline" onClick={() => setCurrentState('mapping')}>Back to Mapping</Button>
-            <Button onClick={startImport} className="bg-green-600 hover:bg-green-700">
+          {/* Template .card-footer */}
+          <div className="px-6 py-4 border-t border-gray-200 flex justify-between">
+            <Button variant="outline" onClick={() => setCurrentState('mapping')} className="py-2 px-4 border border-gray-200 bg-white text-gray-700 rounded-md text-sm font-medium">Back to Mapping</Button>
+            <Button onClick={startImport} className="py-2 px-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm font-medium">
               Import {parsedData.rows.length} Records
             </Button>
           </div>
         </div>
       )}
 
-      {/* STATE 4: IMPORTING */}
+      {/* STATE 4: IMPORTING - Template .card */}
       {currentState === 'importing' && (
         <div className="border border-gray-200 rounded-lg bg-white">
-          <div className="p-12">
-            <div className="space-y-4">
-              <div className="flex justify-between text-sm text-gray-600">
+          {/* Template .card-content */}
+          <div className="p-6">
+            {/* Template .progress-container */}
+            <div className="mb-4">
+              <div className="flex justify-between text-sm text-gray-500 mb-2">
                 <span>Creating organizations...</span>
                 <span>{importState.importProgress}%</span>
               </div>
-              <Progress value={importState.importProgress} className="h-2" />
-              <p className="text-sm text-gray-600">
-                Processing your data...
-              </p>
+              {/* Template .progress-bar */}
+              <div className="h-2 bg-gray-200 rounded overflow-hidden">
+                <div className="h-full bg-emerald-500" style={{width: `${importState.importProgress}%`}}></div>
+              </div>
             </div>
+            <p className="text-sm text-gray-500">
+              Processing your data...
+            </p>
           </div>
         </div>
       )}
 
-      {/* STATE 5: COMPLETE */}
+      {/* STATE 5: COMPLETE - Template .card */}
       {currentState === 'complete' && (
         <div className="border border-gray-200 rounded-lg bg-white">
+          {/* Template .card-content with centered styling */}
           <div className="p-12 text-center">
             <div className="text-5xl mb-4">✓</div>
             <h2 className="text-xl font-semibold mb-2">Import Complete</h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-500 mb-6">
               Successfully imported {importState.importResult?.imported || 0} organizations
             </p>
             <div className="flex gap-3 justify-center">
-              <Button variant="outline" onClick={() => window.location.href = '/organizations'}>
+              <Button variant="outline" onClick={() => window.location.href = '/organizations'} className="py-2 px-4 border border-gray-200 bg-white text-gray-700 rounded-md text-sm font-medium">
                 View Organizations
               </Button>
-              <Button onClick={resetWizard} className="bg-green-600 hover:bg-green-700">
+              <Button onClick={resetWizard} className="py-2 px-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm font-medium">
                 Import More
               </Button>
             </div>
