@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Import Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f9fafb;
+            padding: 20px;
+            color: #111827;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .wireframe-section {
+            margin-bottom: 60px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 24px;
+        }
+        
+        .section-label {
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+        
+        /* Header */
+        .page-header {
+            margin-bottom: 24px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .page-description {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        /* Step Indicator */
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 32px;
+            font-size: 14px;
+        }
+        
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .step.active {
+            color: #10b981;
+            font-weight: 500;
+        }
+        
+        .step.inactive {
+            color: #6b7280;
+        }
+        
+        .chevron {
+            color: #9ca3af;
+        }
+        
+        /* Cards */
+        .card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: white;
+            margin-bottom: 24px;
+        }
+        
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .card-description {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        
+        .card-content {
+            padding: 24px;
+        }
+        
+        .card-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: white;
+            border: 1px solid #e5e7eb;
+            color: #374151;
+        }
+        
+        .btn-full {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        /* Badge */
+        .badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .badge-outline {
+            border: 1px solid #e5e7eb;
+            background: white;
+        }
+        
+        .badge-green {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .badge-yellow {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .badge-gray {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+        
+        /* Tables */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table th {
+            text-align: left;
+            padding: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+            text-transform: uppercase;
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .table td {
+            padding: 12px;
+            font-size: 14px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        /* Select */
+        .select {
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            background: white;
+            font-size: 14px;
+            min-width: 200px;
+        }
+        
+        /* Alert */
+        .alert {
+            padding: 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            background: #f9fafb;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+            font-size: 14px;
+        }
+        
+        .alert-icon {
+            color: #10b981;
+        }
+        
+        /* Progress */
+        .progress-container {
+            margin-bottom: 16px;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #10b981;
+            width: 65%;
+        }
+        
+        /* Icons (text placeholders) */
+        .icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            line-height: 16px;
+            text-align: center;
+            font-size: 12px;
+        }
+        
+        .icon-check {
+            color: #10b981;
+        }
+        
+        .icon-x {
+            color: #ef4444;
+        }
+        
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed #e5e7eb;
+            border-radius: 8px;
+            padding: 48px;
+            text-align: center;
+            background: #fafafa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- State 1: Initial Upload -->
+        <div class="wireframe-section">
+            <div class="section-label">STATE 1: UPLOAD</div>
+            
+            <div class="page-header">
+                <h1 class="page-title">
+                    <span>📤</span> Import/Export
+                </h1>
+                <p class="page-description">Import organizations and contacts from CSV files or export your data</p>
+            </div>
+            
+            <div class="step-indicator">
+                <span class="step active">1. Upload</span>
+                <span class="chevron">›</span>
+                <span class="step inactive">2. Map Fields</span>
+                <span class="chevron">›</span>
+                <span class="step inactive">3. Review</span>
+                <span class="chevron">›</span>
+                <span class="step inactive">4. Import</span>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>📊</span>
+                        Organizations + Contacts
+                        <span class="badge badge-outline">Enhanced</span>
+                    </div>
+                    <p class="card-description">
+                        Import organizations and their contacts from a single CSV file. 
+                        Supports multiple contacts per organization with smart field mapping.
+                    </p>
+                </div>
+                <div class="card-content">
+                    <button class="btn btn-primary btn-full">
+                        <span>⬆</span> Import Organizations + Contacts
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- State 2: Field Mapping -->
+        <div class="wireframe-section">
+            <div class="section-label">STATE 2: FIELD MAPPING</div>
+            
+            <div class="page-header">
+                <h1 class="page-title">
+                    <span>📤</span> Import/Export
+                </h1>
+                <p class="page-description">Import organizations and contacts from CSV files or export your data</p>
+            </div>
+            
+            <div class="step-indicator">
+                <span class="step active">1. Upload ✓</span>
+                <span class="chevron">›</span>
+                <span class="step active">2. Map Fields</span>
+                <span class="chevron">›</span>
+                <span class="step inactive">3. Review</span>
+                <span class="chevron">›</span>
+                <span class="step inactive">4. Import</span>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Field Mapping</div>
+                    <p class="card-description">We've detected your CSV columns. Confirm or adjust the mapping below.</p>
+                </div>
+                <div class="card-content">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>CSV Column</th>
+                                <th>Maps To</th>
+                                <th>Confidence</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Customer Name</strong></td>
+                                <td>
+                                    <select class="select">
+                                        <option>Organization Name</option>
+                                        <option>Skip this field</option>
+                                    </select>
+                                </td>
+                                <td><span class="badge badge-green">95%</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Address</strong></td>
+                                <td>
+                                    <select class="select">
+                                        <option>Address Line 1</option>
+                                        <option>Address Line 2</option>
+                                        <option>Skip this field</option>
+                                    </select>
+                                </td>
+                                <td><span class="badge badge-green">88%</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Attendee Name</strong></td>
+                                <td>
+                                    <select class="select">
+                                        <option>Contact: Full Name</option>
+                                        <option>Contact: First Name</option>
+                                        <option>Skip this field</option>
+                                    </select>
+                                </td>
+                                <td><span class="badge badge-green">92%</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Attendee Email</strong></td>
+                                <td>
+                                    <select class="select">
+                                        <option>Contact: Email</option>
+                                        <option>Organization Email</option>
+                                        <option>Skip this field</option>
+                                    </select>
+                                </td>
+                                <td><span class="badge badge-green">100%</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Booth Name</strong></td>
+                                <td>
+                                    <select class="select">
+                                        <option>Import Notes</option>
+                                        <option>Organization Type</option>
+                                        <option>Skip this field</option>
+                                    </select>
+                                </td>
+                                <td><span class="badge badge-yellow">45%</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-secondary">Back</button>
+                    <button class="btn btn-primary">Continue to Review</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- State 3: Preview -->
+        <div class="wireframe-section">
+            <div class="section-label">STATE 3: PREVIEW</div>
+            
+            <div class="page-header">
+                <h1 class="page-title">
+                    <span>📤</span> Import/Export
+                </h1>
+                <p class="page-description">Import organizations and contacts from CSV files or export your data</p>
+            </div>
+            
+            <div class="step-indicator">
+                <span class="step active">1. Upload ✓</span>
+                <span class="chevron">›</span>
+                <span class="step active">2. Map Fields ✓</span>
+                <span class="chevron">›</span>
+                <span class="step active">3. Review</span>
+                <span class="chevron">›</span>
+                <span class="step inactive">4. Import</span>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Preview</div>
+                    <p class="card-description">First 5 records from your file</p>
+                </div>
+                <div class="card-content">
+                    <div class="alert">
+                        <span class="alert-icon">ℹ</span>
+                        <div>
+                            <strong>Summary:</strong> 77 new organizations, 3 duplicates will be skipped, 65 contacts will be created
+                        </div>
+                    </div>
+                    
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Organization</th>
+                                <th>Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="icon icon-check">✓</span></td>
+                                <td>Independence Village of Ames</td>
+                                <td>Jeffrey Schoening</td>
+                                <td><span class="badge badge-green">Create</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="icon icon-check">✓</span></td>
+                                <td>ABBVIE AP30</td>
+                                <td>Jovani Gomez</td>
+                                <td><span class="badge badge-green">Create</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="icon icon-x">✗</span></td>
+                                <td>ACARATH MONTESSORI</td>
+                                <td>Kristin Addison</td>
+                                <td><span class="badge badge-gray">Skip</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="icon icon-check">✓</span></td>
+                                <td>Ami-Gos Tacos</td>
+                                <td>-</td>
+                                <td><span class="badge badge-green">Create</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="icon icon-check">✓</span></td>
+                                <td>Angry Octopus</td>
+                                <td>Frank Colonna</td>
+                                <td><span class="badge badge-green">Create</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-secondary">Back to Mapping</button>
+                    <button class="btn btn-primary">Import 77 Records</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- State 4: Progress -->
+        <div class="wireframe-section">
+            <div class="section-label">STATE 4: IMPORTING</div>
+            
+            <div class="page-header">
+                <h1 class="page-title">
+                    <span>📤</span> Import/Export
+                </h1>
+                <p class="page-description">Import organizations and contacts from CSV files or export your data</p>
+            </div>
+            
+            <div class="step-indicator">
+                <span class="step active">1. Upload ✓</span>
+                <span class="chevron">›</span>
+                <span class="step active">2. Map Fields ✓</span>
+                <span class="chevron">›</span>
+                <span class="step active">3. Review ✓</span>
+                <span class="chevron">›</span>
+                <span class="step active">4. Import</span>
+            </div>
+            
+            <div class="card">
+                <div class="card-content">
+                    <div class="progress-container">
+                        <div class="progress-header">
+                            <span>Creating organizations...</span>
+                            <span>65%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+                    <p style="font-size: 14px; color: #6b7280;">
+                        Processing batch 3 of 4...
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- State 5: Complete -->
+        <div class="wireframe-section">
+            <div class="section-label">STATE 5: COMPLETE</div>
+            
+            <div class="page-header">
+                <h1 class="page-title">
+                    <span>📤</span> Import/Export
+                </h1>
+                <p class="page-description">Import organizations and contacts from CSV files or export your data</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-content" style="text-align: center; padding: 48px;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">✓</div>
+                    <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 8px;">Import Complete</h2>
+                    <p style="color: #6b7280; margin-bottom: 24px;">
+                        Successfully imported 77 organizations and 65 contacts
+                    </p>
+                    <div style="display: flex; gap: 12px; justify-content: center;">
+                        <button class="btn btn-secondary">View Organizations</button>
+                        <button class="btn btn-primary">Import More</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -114,7 +114,22 @@ export const useFileUpload = (): UseFileUploadReturn => {
     return errors
   }, [])
 
-  // Parse CSV file
+  // Helper function to detect if a row has meaningful content
+  const hasContent = useCallback((row: string[]): boolean => {
+    return row.some(cell => cell && cell.trim().length > 0)
+  }, [])
+
+  // Helper function to find first data row
+  const findDataStartRow = useCallback((allRows: string[][]): number => {
+    for (let i = 0; i < allRows.length; i++) {
+      if (hasContent(allRows[i])) {
+        return i
+      }
+    }
+    return 0 // If no content found, start from beginning
+  }, [hasContent])
+
+  // Parse CSV file with smart row skipping
   const parseCSV = useCallback((file: File) => {
     setUploadState(prev => ({
       ...prev,
@@ -123,14 +138,47 @@ export const useFileUpload = (): UseFileUploadReturn => {
       error: null,
     }))
 
-    Papa.parse<CsvRow>(file, {
-      header: true,
-      skipEmptyLines: true,
-      transformHeader: (header: string) => header.toLowerCase().trim(),
-      complete: (results: Papa.ParseResult<CsvRow>) => {
+    // First pass: Read without headers to find data start
+    Papa.parse<string[]>(file, {
+      header: false,
+      skipEmptyLines: false, // Keep empty lines for analysis
+      complete: (firstPass: Papa.ParseResult<string[]>) => {
         try {
-          const headers = results.meta.fields || []
-          const rows = results.data
+          const allRows = firstPass.data
+          const dataStartIndex = findDataStartRow(allRows)
+          
+          if (dataStartIndex >= allRows.length) {
+            setUploadState(prev => ({
+              ...prev,
+              isUploading: false,
+              error: 'No data found in CSV file. Please check your file contains valid data.',
+            }))
+            return
+          }
+
+          // Second pass: Parse with headers starting from data row
+          const headerRow = allRows[dataStartIndex]
+          const dataRows = allRows.slice(dataStartIndex + 1)
+          
+          // Convert back to CSV format for Papa.parse with headers
+          const csvContent = [
+            headerRow.join(','),
+            ...dataRows.map(row => row.join(','))
+          ].join('\n')
+          
+          const blob = new Blob([csvContent], { type: 'text/csv' })
+          const tempFile = new File([blob], file.name, { type: 'text/csv' })
+          
+          Papa.parse<CsvRow>(tempFile, {
+            header: true,
+            skipEmptyLines: true,
+            transformHeader: (header: string) => header.toLowerCase().trim(),
+            complete: (results: Papa.ParseResult<CsvRow>) => {
+              try {
+                const headers = results.meta.fields || []
+                const rows = results.data.filter(row => 
+                  Object.values(row).some(value => value && value.trim().length > 0)
+                )
 
           // Check for required columns
           const missingRequired = EXPECTED_COLUMNS.required.filter(
@@ -235,11 +283,27 @@ export const useFileUpload = (): UseFileUploadReturn => {
             uploadProgress: 100,
             parsedData,
           }))
+              } catch (error) {
+                setUploadState(prev => ({
+                  ...prev,
+                  isUploading: false,
+                  error: 'Failed to parse CSV file. Please check the file format.',
+                }))
+              }
+            },
+            error: (error: Error) => {
+              setUploadState(prev => ({
+                ...prev,
+                isUploading: false,
+                error: `CSV parsing error: ${error.message}`,
+              }))
+            },
+          })
         } catch (error) {
           setUploadState(prev => ({
             ...prev,
             isUploading: false,
-            error: 'Failed to parse CSV file. Please check the file format.',
+            error: 'Failed to analyze CSV structure. Please check the file format.',
           }))
         }
       },
@@ -251,7 +315,7 @@ export const useFileUpload = (): UseFileUploadReturn => {
         }))
       },
     })
-  }, [validateRow])
+  }, [validateRow, findDataStartRow])
 
   // File selection handler
   const handleFileSelect = useCallback((file: File) => {
