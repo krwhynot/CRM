@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/new/CardCompact"
 import { Target, Building2, User, Package } from "lucide-react"
 import { useOrganizations } from "@/features/organizations/hooks/useOrganizations"
+import { safeGetString } from '@/lib/secure-storage'
 import { useContacts } from "@/features/contacts/hooks/useContacts"
 import { useOpportunities } from "@/features/opportunities/hooks/useOpportunities"
 import { useProducts } from "@/features/products/hooks/useProducts"
@@ -27,7 +28,7 @@ function RecentlyAddedCard() {
   const { data: products = [], isLoading: prodLoading } = useProducts()
 
   // Feature flag for new MFB compact styling (default: enabled, opt-out with 'false')
-  const USE_NEW_STYLE = localStorage.getItem('useNewStyle') !== 'false';
+  const USE_NEW_STYLE = safeGetString('useNewStyle', 'true') !== 'false';
 
   const isLoading = orgLoading || contactLoading || oppLoading || prodLoading
 

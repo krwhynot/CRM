@@ -10,10 +10,11 @@ import { useContacts } from '@/features/contacts/hooks/useContacts'
 import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities'
 import { useInteractions } from '@/features/interactions/hooks/useInteractions'
 import { useProducts } from '@/features/products/hooks/useProducts'
+import { safeGetString } from '@/lib/secure-storage'
 
 export function NewDashboard() {
   // Feature flag for new MFB compact styling
-  const USE_NEW_STYLE = localStorage.getItem('useNewStyle') !== 'false'
+  const USE_NEW_STYLE = safeGetString('useNewStyle', 'true') !== 'false'
 
   // Filter state
   const [filters, setFilters] = useState<FilterState>({

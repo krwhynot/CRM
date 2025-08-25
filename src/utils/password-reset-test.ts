@@ -4,6 +4,7 @@
  */
 
 import { forceCleanState } from './url-hash-recovery'
+import { safeSetString } from '@/lib/secure-storage'
 
 // Example usage in browser console:
 // testPasswordResetUrl()
@@ -29,7 +30,7 @@ export function simulateServerRedirectLoss() {
   const hash = window.location.hash
   if (hash) {
     // Store hash in sessionStorage (simulating preservation)
-    sessionStorage.setItem('supabase_auth_hash', hash)
+    safeSetString('supabase_auth_hash', hash, 'sessionStorage')
     
     // Remove hash from URL (simulating server redirect)
     window.history.replaceState({}, '', window.location.pathname)

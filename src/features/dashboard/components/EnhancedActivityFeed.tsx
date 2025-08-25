@@ -8,6 +8,7 @@ import { useActivityFormatting } from '../hooks/useActivityFormatting'
 import { ActivitySkeleton } from './activity-enhanced/ActivitySkeleton'
 import { ActivityFilters } from './activity-enhanced/ActivityFilters'
 import { ActivityItemComponent } from './activity-enhanced/ActivityItemComponent'
+import { safeGetString } from '@/lib/secure-storage'
 
 // Re-export ActivityItem type for consumers
 export type { ActivityItem } from '../hooks/useEnhancedActivityData'
@@ -28,7 +29,7 @@ export function EnhancedActivityFeed({
   const [refreshKey, setRefreshKey] = useState(0)
 
   // Feature flag for new MFB compact styling
-  const USE_NEW_STYLE = localStorage.getItem('useNewStyle') !== 'false'
+  const USE_NEW_STYLE = safeGetString('useNewStyle', 'true') !== 'false'
 
   // Custom hooks
   const { activityItems, isLoading } = useEnhancedActivityData(refreshKey)

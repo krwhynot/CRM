@@ -2,6 +2,7 @@ import { TrendingUp, TrendingDown, Users, Target, MessageSquare, Building2 } fro
 import { useDashboardMetrics } from "@/features/dashboard/hooks/useDashboardMetrics"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
+import { safeGetString } from '@/lib/secure-storage'
 
 import {
   Card,
@@ -20,7 +21,7 @@ export function StatsCards() {
   const metrics = useDashboardMetrics()
   
   // Feature flag for new MFB compact styling (default: enabled, opt-out with 'false')
-  const USE_NEW_STYLE = localStorage.getItem('useNewStyle') !== 'false';
+  const USE_NEW_STYLE = safeGetString('useNewStyle', 'true') !== 'false';
 
   if (metrics.isLoading) {
     return (

@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { safeGetString } from '@/lib/secure-storage'
 
 interface UseDualLineChartsStyleReturn {
   useNewStyle: boolean
@@ -12,7 +13,7 @@ interface UseDualLineChartsStyleReturn {
 export const useDualLineChartsStyle = (): UseDualLineChartsStyleReturn => {
   
   const useNewStyle = useMemo(() => 
-    localStorage.getItem('useNewStyle') !== 'false', 
+    safeGetString('useNewStyle', 'true') !== 'false', 
     []
   )
 

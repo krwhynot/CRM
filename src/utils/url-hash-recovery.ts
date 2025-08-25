@@ -3,6 +3,8 @@
  * server redirects might cause loss of hash fragments
  */
 
+import { safeGetString, safeSetString, safeRemoveItem } from '@/lib/secure-storage'
+
 const HASH_STORAGE_KEY = 'supabase_auth_hash'
 
 /**
@@ -10,11 +12,11 @@ const HASH_STORAGE_KEY = 'supabase_auth_hash'
  */
 export function preserveUrlHash() {
   if (typeof window !== 'undefined' && window.location.hash) {
-    try {
-      sessionStorage.setItem(HASH_STORAGE_KEY, window.location.hash)
+    const success = safeSetString(HASH_STORAGE_KEY, window.location.hash, 'sessionStorage')
+    if (success) {
       console.log('URL hash preserved:', window.location.hash)
-    } catch (error) {
-      console.warn('Failed to preserve URL hash:', error)
+    } else {
+      console.warn('Failed to preserve URL hash - sessionStorage not available')
     }
   }
 }
@@ -25,27 +27,23 @@ export function preserveUrlHash() {
  */
 export function restoreUrlHash(): boolean {
   if (typeof window !== 'undefined') {
-    try {
-      const preservedHash = sessionStorage.getItem(HASH_STORAGE_KEY)
-      if (preservedHash && !window.location.hash) {
-        // Check if we're on a page that should handle auth callbacks
-        const currentPath = window.location.pathname
-        const validAuthPaths = ['/reset-password', '/login', '/forgot-password', '/']
-        
-        if (validAuthPaths.includes(currentPath)) {
-          // Only restore if current URL doesn't have a hash and we're on a valid auth page
-          window.location.hash = preservedHash
-          sessionStorage.removeItem(HASH_STORAGE_KEY)
-          console.log('URL hash restored:', preservedHash)
-          return true
-        } else {
-          // Clear hash if we're on a non-auth page
-          sessionStorage.removeItem(HASH_STORAGE_KEY)
-          console.log('Cleared preserved hash for non-auth page:', currentPath)
-        }
+    const preservedHash = safeGetString(HASH_STORAGE_KEY, '', 'sessionStorage')
+    if (preservedHash && !window.location.hash) {
+      // Check if we're on a page that should handle auth callbacks
+      const currentPath = window.location.pathname
+      const validAuthPaths = ['/reset-password', '/login', '/forgot-password', '/']
+      
+      if (validAuthPaths.includes(currentPath)) {
+        // Only restore if current URL doesn't have a hash and we're on a valid auth page
+        window.location.hash = preservedHash
+        safeRemoveItem(HASH_STORAGE_KEY, 'sessionStorage')
+        console.log('URL hash restored:', preservedHash)
+        return true
+      } else {
+        // Clear hash if we're on a non-auth page
+        safeRemoveItem(HASH_STORAGE_KEY, 'sessionStorage')
+        console.log('Cleared preserved hash for non-auth page:', currentPath)
       }
-    } catch (error) {
-      console.warn('Failed to restore URL hash:', error)
     }
   }
   return false
@@ -56,11 +54,7 @@ export function restoreUrlHash(): boolean {
  */
 export function clearPreservedHash() {
   if (typeof window !== 'undefined') {
-    try {
-      sessionStorage.removeItem(HASH_STORAGE_KEY)
-    } catch (error) {
-      console.warn('Failed to clear preserved hash:', error)
-    }
+    safeRemoveItem(HASH_STORAGE_KEY, 'sessionStorage')
   }
 }
 
@@ -69,11 +63,7 @@ export function clearPreservedHash() {
  */
 export function hasPreservedHash(): boolean {
   if (typeof window !== 'undefined') {
-    try {
-      return !!sessionStorage.getItem(HASH_STORAGE_KEY)
-    } catch (error) {
-      return false
-    }
+    return !!safeGetString(HASH_STORAGE_KEY, '', 'sessionStorage')
   }
   return false
 }
@@ -83,18 +73,19 @@ export function hasPreservedHash(): boolean {
  */
 export function forceCleanState() {
   if (typeof window !== 'undefined') {
-    try {
-      // Clear stored hash
-      sessionStorage.removeItem(HASH_STORAGE_KEY)
-      
-      // Clear current URL hash if it exists
-      if (window.location.hash) {
+    // Clear stored hash
+    safeRemoveItem(HASH_STORAGE_KEY, 'sessionStorage')
+    
+    // Clear current URL hash if it exists
+    if (window.location.hash) {
+      try {
         window.history.replaceState({}, '', window.location.pathname + window.location.search)
+        console.log('Forced clean state - all hashes cleared')
+      } catch (error) {
+        console.warn('Failed to clear URL hash:', error)
       }
-      
-      console.log('Forced clean state - all hashes cleared')
-    } catch (error) {
-      console.warn('Failed to force clean state:', error)
+    } else {
+      console.log('Forced clean state - storage cleared')
     }
   }
 }

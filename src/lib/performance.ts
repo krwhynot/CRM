@@ -1,19 +1,35 @@
 import { onCLS, onINP, onFCP, onLCP, onTTFB, type CLSMetric, type INPMetric, type FCPMetric, type LCPMetric, type TTFBMetric } from 'web-vitals'
+import { safeGetJSON, safeSetJSON } from '@/lib/secure-storage'
 
 type WebVitalsMetric = CLSMetric | INPMetric | FCPMetric | LCPMetric | TTFBMetric
+
+interface PerformanceMetric {
+  name: string
+  value: number
+  timestamp: number
+}
 
 function sendToAnalytics(metric: WebVitalsMetric) {
   // Log performance metrics to console (can be extended to send to analytics service)
   console.log(`Performance: ${metric.name}: ${metric.value}ms`)
   
-  // Store metrics in localStorage for debugging
-  const perfMetrics = JSON.parse(localStorage.getItem('perfMetrics') || '[]')
-  perfMetrics.push({
+  // Store metrics in localStorage for debugging - now with safe JSON handling
+  const perfMetrics = safeGetJSON<PerformanceMetric[]>('perfMetrics', [])
+  
+  const newMetric: PerformanceMetric = {
     name: metric.name,
     value: metric.value,
     timestamp: Date.now()
-  })
-  localStorage.setItem('perfMetrics', JSON.stringify(perfMetrics.slice(-50))) // Keep last 50 metrics
+  }
+  
+  perfMetrics.push(newMetric)
+  
+  // Keep last 50 metrics and store safely
+  const success = safeSetJSON('perfMetrics', perfMetrics.slice(-50))
+  
+  if (!success) {
+    console.warn('Failed to store performance metrics - localStorage may be full or disabled')
+  }
 }
 
 export function setupPerformanceMonitoring() {

@@ -8,6 +8,7 @@ import { ButtonNew } from '@/components/ui/new/Button'
 import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
 import { organizationSchema, FOOD_SERVICE_SEGMENTS, type OrganizationFormData } from '@/types/organization.types'
+import { safeGetString } from '@/lib/secure-storage'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { deriveOrganizationFlags } from '@/lib/organization-utils'
 
@@ -25,7 +26,7 @@ export function OrganizationForm({
   submitLabel = 'Save Organization'
 }: OrganizationFormProps) {
   // Feature flag for new MFB styling
-  const USE_NEW_STYLE = localStorage.getItem('useNewStyle') === 'true';
+  const USE_NEW_STYLE = safeGetString('useNewStyle', 'false') === 'true';
   
   const form = useForm<OrganizationFormData>({
     resolver: yupResolver(organizationSchema),

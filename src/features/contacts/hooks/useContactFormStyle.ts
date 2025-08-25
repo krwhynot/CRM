@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { safeGetString } from '@/lib/secure-storage'
 
 interface UseContactFormStyleReturn {
   useNewStyle: boolean
@@ -8,7 +9,7 @@ interface UseContactFormStyleReturn {
 export const useContactFormStyle = (): UseContactFormStyleReturn => {
   
   const useNewStyle = useMemo(() => 
-    localStorage.getItem('useNewStyle') === 'true', 
+    safeGetString('useNewStyle', 'false') === 'true', 
     []
   )
 

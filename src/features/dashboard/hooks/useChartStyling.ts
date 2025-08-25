@@ -1,5 +1,7 @@
+import { safeGetString } from '@/lib/secure-storage'
+
 export function useChartStyling() {
-  const useNewStyle = localStorage.getItem('useNewStyle') !== 'false'
+  const useNewStyle = safeGetString('useNewStyle', 'true') !== 'false'
   
   return {
     useNewStyle,

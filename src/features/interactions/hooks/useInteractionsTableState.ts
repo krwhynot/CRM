@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from 'react'
 import type { InteractionWithRelations } from '@/types/entities'
+import { safeGetString } from '@/lib/secure-storage'
 
 interface UseInteractionsTableStateReturn {
   searchTerm: string
@@ -24,7 +25,7 @@ export const useInteractionsTableState = (
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   
   // Feature flag for new MFB compact styling (default: enabled, opt-out with 'false')
-  const useNewStyle = localStorage.getItem('useNewStyle') !== 'false'
+  const useNewStyle = safeGetString('useNewStyle', 'true') !== 'false'
 
   const filteredInteractions = useMemo(() => {
     if (!searchTerm) return interactions
