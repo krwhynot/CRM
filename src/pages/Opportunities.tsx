@@ -3,31 +3,18 @@ import { OpportunitiesTable } from '@/features/opportunities/components/Opportun
 import { Target, Users } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities'
-import { useInteractionsByOpportunity } from '@/features/interactions/hooks/useInteractions'
 import { useOpportunitiesPageState } from '@/features/opportunities/hooks/useOpportunitiesPageState'
 import { useOpportunityActions } from '@/features/opportunities/hooks/useOpportunityActions'
 import { useInteractionActions } from '@/features/interactions/hooks/useInteractionActions'
-import { OpportunityDetailCard } from '@/features/opportunities/components/OpportunityDetailCard'
 import { OpportunityDialogs } from '@/features/opportunities/components/OpportunityDialogs'
 
 function OpportunitiesPage() {
   const navigate = useNavigate()
   
-  // Data hooks
-  const { data: opportunities = [], isLoading } = useOpportunities()
-  
   // Custom hooks
   const pageState = useOpportunitiesPageState()
   const opportunityActions = useOpportunityActions()
   const interactionActions = useInteractionActions()
-  
-  // Timeline data
-  const { data: opportunityInteractions = [], isLoading: interactionsLoading } = useInteractionsByOpportunity(pageState.selectedOpportunityId || '')
-  
-  // Find selected opportunity
-  const selectedOpportunity = pageState.selectedOpportunityId 
-    ? opportunities.find(opp => opp.id === pageState.selectedOpportunityId) 
-    : null
 
   return (
     <div className="space-y-6">
@@ -83,31 +70,19 @@ function OpportunitiesPage() {
         </div>
       </div>
 
-      {/* Opportunity Detail View with Timeline */}
-      {selectedOpportunity && (
-        <OpportunityDetailCard
-          opportunity={selectedOpportunity}
-          interactions={opportunityInteractions}
-          interactionsLoading={interactionsLoading}
-          onClose={pageState.handleCloseOpportunityDetail}
-          onAddInteraction={pageState.handleAddInteraction}
-          onEditInteraction={pageState.handleEditInteraction}
-          onDeleteInteraction={interactionActions.handleDeleteInteraction}
-          onInteractionItemClick={interactionActions.handleInteractionItemClick}
-        />
-      )}
-
-      {/* Opportunities Table */}
-      {isLoading ? (
-        <div className="text-center py-8 font-nunito text-mfb-green bg-white rounded-lg border shadow-sm p-12">Loading opportunities...</div>
-      ) : (
-        <OpportunitiesTable 
-          onEdit={pageState.handleEditOpportunity}
-          onDelete={opportunityActions.handleDeleteOpportunity}
-          onView={pageState.handleViewOpportunity}
-          onAddNew={() => pageState.setIsCreateDialogOpen(true)}
-        />
-      )}
+      {/* Opportunities Table with Inline Details */}
+      <OpportunitiesTable 
+        onEdit={pageState.handleEditOpportunity}
+        onDelete={opportunityActions.handleDeleteOpportunity}
+        onAddNew={() => pageState.setIsCreateDialogOpen(true)}
+        onAddInteraction={(opportunityId) => {
+          pageState.setSelectedOpportunityId(opportunityId)
+          pageState.handleAddInteraction()
+        }}
+        onEditInteraction={pageState.handleEditInteraction}
+        onDeleteInteraction={interactionActions.handleDeleteInteraction}
+        onInteractionItemClick={interactionActions.handleInteractionItemClick}
+      />
     </div>
   )
 }

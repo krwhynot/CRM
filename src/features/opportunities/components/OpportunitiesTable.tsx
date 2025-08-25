@@ -12,8 +12,9 @@ import { useOpportunitiesSearch } from '../hooks/useOpportunitiesSearch'
 import { useOpportunitiesSelection } from '../hooks/useOpportunitiesSelection'
 import { useOpportunitiesSorting } from '../hooks/useOpportunitiesSorting'
 import { useOpportunitiesFormatting } from '../hooks/useOpportunitiesFormatting'
+import { useOpportunitiesDisplay } from '../hooks/useOpportunitiesDisplay'
 import { OpportunitiesTableHeader } from './OpportunitiesTableHeader'
-import { OpportunitiesTableRow } from './OpportunitiesTableRow'
+import { OpportunityRow } from './OpportunityRow'
 import type { OpportunityFilters } from '@/types/entities'
 import type { OpportunityWithLastActivity } from '@/types/opportunity.types'
 
@@ -23,6 +24,12 @@ interface OpportunitiesTableProps {
   onDelete?: (opportunity: OpportunityWithLastActivity) => void
   onView?: (opportunity: OpportunityWithLastActivity) => void
   onAddNew?: () => void
+  
+  // Interaction handlers for inline details
+  onAddInteraction?: (opportunityId: string) => void
+  onEditInteraction?: (interaction: any) => void
+  onDeleteInteraction?: (interaction: any) => void
+  onInteractionItemClick?: (interaction: any) => void
 }
 
 export function OpportunitiesTable({ 
@@ -30,7 +37,11 @@ export function OpportunitiesTable({
   onEdit, 
   onDelete, 
   onView,
-  onAddNew
+  onAddNew,
+  onAddInteraction,
+  onEditInteraction,
+  onDeleteInteraction,
+  onInteractionItemClick
 }: OpportunitiesTableProps) {
   const { data: opportunities = [], isLoading } = useOpportunitiesWithLastActivity(filters)
 
@@ -41,6 +52,10 @@ export function OpportunitiesTable({
   const { sortField, sortDirection, handleSort, sortedOpportunities } = useOpportunitiesSorting(filteredOpportunities)
   
   const { getStageConfig, formatCurrency, formatActivityType } = useOpportunitiesFormatting()
+  
+  const { toggleRowExpansion, isRowExpanded } = useOpportunitiesDisplay(
+    sortedOpportunities.map(opp => opp.id)
+  )
 
   if (isLoading) {
     return (
@@ -125,17 +140,25 @@ export function OpportunitiesTable({
                 </TableRow>
               ) : (
                 sortedOpportunities.map((opportunity) => (
-                  <OpportunitiesTableRow
+                  <OpportunityRow
                     key={opportunity.id}
                     opportunity={opportunity}
                     isSelected={selectedItems.has(opportunity.id)}
                     onSelect={handleSelectItem}
                     onEdit={onEdit}
                     onDelete={onDelete}
-                    onView={onView}
                     getStageConfig={getStageConfig}
                     formatCurrency={formatCurrency}
                     formatActivityType={formatActivityType}
+                    isExpanded={isRowExpanded(opportunity.id)}
+                    onToggleExpansion={() => toggleRowExpansion(opportunity.id)}
+                    // For now, pass empty/loading states - will be improved later
+                    interactions={[]}
+                    interactionsLoading={false}
+                    onAddInteraction={() => onAddInteraction?.(opportunity.id)}
+                    onEditInteraction={onEditInteraction}
+                    onDeleteInteraction={onDeleteInteraction}
+                    onInteractionItemClick={onInteractionItemClick}
                   />
                 ))
               )}

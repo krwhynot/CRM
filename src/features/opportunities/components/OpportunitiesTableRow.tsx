@@ -4,6 +4,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn, formatTimeAgo, isOpportunityStalled, getStalledDays } from '@/lib/utils'
 import { OpportunitiesTableActions } from './OpportunitiesTableActions'
+import { ChevronDown, ChevronRight } from 'lucide-react'
 import type { OpportunityWithLastActivity } from '@/types/opportunity.types'
 
 interface OpportunitiesTableRowProps {
@@ -16,6 +17,7 @@ interface OpportunitiesTableRowProps {
   getStageConfig: (stage: string) => { dot: string; position: number }
   formatCurrency: (value: number | null) => string
   formatActivityType: (type: string | null) => string
+  isExpanded?: boolean
 }
 
 export const OpportunitiesTableRow: React.FC<OpportunitiesTableRowProps> = ({
@@ -27,7 +29,8 @@ export const OpportunitiesTableRow: React.FC<OpportunitiesTableRowProps> = ({
   onView,
   getStageConfig,
   formatCurrency,
-  formatActivityType
+  formatActivityType,
+  isExpanded = false
 }) => {
   const stalled = isOpportunityStalled(opportunity.stage_updated_at || null, opportunity.created_at || '')
   const stalledDays = stalled ? getStalledDays(opportunity.stage_updated_at || null, opportunity.created_at || '') : 0
@@ -36,16 +39,35 @@ export const OpportunitiesTableRow: React.FC<OpportunitiesTableRowProps> = ({
   return (
     <TableRow 
       key={opportunity.id}
-      className="h-[52px] hover:bg-gray-50 transition-colors duration-150 border-b border-gray-100"
+      className={cn(
+        "h-[52px] hover:bg-gray-50 transition-colors duration-150 border-b border-gray-100 cursor-pointer",
+        isExpanded && "bg-blue-50 hover:bg-blue-50 border-blue-200"
+      )}
       onClick={() => onView?.(opportunity)}
     >
-      {/* Checkbox */}
+      {/* Expansion Icon + Checkbox */}
       <TableCell className="px-6 py-2.5" onClick={(e) => e.stopPropagation()}>
-        <Checkbox
-          checked={isSelected}
-          onCheckedChange={(checked) => onSelect(opportunity.id, !!checked)}
-          aria-label={`Select ${opportunity.name}`}
-        />
+        <div className="flex items-center gap-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              onView?.(opportunity)
+            }}
+            className="text-gray-400 hover:text-gray-600 transition-colors"
+            aria-label={isExpanded ? "Collapse details" : "Expand details"}
+          >
+            {isExpanded ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronRight className="h-4 w-4" />
+            )}
+          </button>
+          <Checkbox
+            checked={isSelected}
+            onCheckedChange={(checked) => onSelect(opportunity.id, !!checked)}
+            aria-label={`Select ${opportunity.name}`}
+          />
+        </div>
       </TableCell>
       
       {/* Company / Opportunity */}
