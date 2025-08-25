@@ -14,7 +14,7 @@ import {
   MessageSquare,
   Plus
 } from 'lucide-react'
-import { cn, formatCurrency, formatDate } from '@/lib/utils'
+import { cn, formatDate } from '@/lib/utils'
 import type { OpportunityWithRelations, InteractionWithRelations } from '@/types/entities'
 
 interface OpportunityRowDetailsProps {
@@ -36,6 +36,14 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
   onDeleteInteraction,
   onInteractionItemClick
 }) => {
+  // Format currency utility function
+  const formatCurrency = (value: number | null): string => {
+    if (!value) return 'N/A'
+    if (value >= 1000000) return `$${(value/1000000).toFixed(1)}M`
+    if (value >= 1000) return `$${(value/1000).toFixed(0)}K`
+    return `$${value.toLocaleString()}`
+  }
+
   // Get stage color configuration
   const getStageColor = (stage: string) => {
     const stageColors: Record<string, string> = {
