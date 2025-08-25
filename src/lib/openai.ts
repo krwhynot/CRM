@@ -9,11 +9,23 @@ import {
   type DuplicateDetectionResponseType
 } from "./aiSchemas";
 
-// Initialize OpenAI client
-const client = new OpenAI({ 
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true // Enable browser usage for client-side React app
-});
+// Lazy initialization of OpenAI client
+let client: OpenAI | null = null;
+
+function getOpenAIClient(): OpenAI {
+  if (!client && import.meta.env.VITE_OPENAI_API_KEY) {
+    client = new OpenAI({ 
+      apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+      dangerouslyAllowBrowser: true // Enable browser usage for client-side React app
+    });
+  }
+  
+  if (!client) {
+    throw new Error('OpenAI API key not configured');
+  }
+  
+  return client;
+}
 
 // Configuration constants
 const CONF_HIGH = 0.85; // Auto-apply threshold
@@ -86,8 +98,14 @@ Analyze the headers and sample data to suggest the best field mappings.`
     }
   ];
 
+  // Check if OpenAI is available first
+  if (!isOpenAIAvailable()) {
+    throw new Error('AI field mapping unavailable - OpenAI API key not configured');
+  }
+
   try {
-    const response = await client.chat.completions.create({
+    const openaiClient = getOpenAIClient();
+    const response = await openaiClient.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: prompt,
       response_format: zodResponseFormat(FieldMappingResponse, "FieldMappingResponse"),
@@ -140,8 +158,14 @@ Check each row for data quality issues and provide specific feedback.`
     }
   ];
 
+  // Check if OpenAI is available first
+  if (!isOpenAIAvailable()) {
+    throw new Error('AI validation unavailable - OpenAI API key not configured');
+  }
+
   try {
-    const response = await client.chat.completions.create({
+    const openaiClient = getOpenAIClient();
+    const response = await openaiClient.chat.completions.create({
       model: "gpt-3.5-turbo", 
       messages: prompt,
       response_format: zodResponseFormat(BatchValidationResponse, "BatchValidationResponse"),
@@ -194,8 +218,14 @@ Group similar organizations and suggest how to handle each duplicate group.`
     }
   ];
 
+  // Check if OpenAI is available first
+  if (!isOpenAIAvailable()) {
+    throw new Error('AI duplicate detection unavailable - OpenAI API key not configured');
+  }
+
   try {
-    const response = await client.chat.completions.create({
+    const openaiClient = getOpenAIClient();
+    const response = await openaiClient.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: prompt, 
       response_format: zodResponseFormat(DuplicateDetectionResponse, "DuplicateDetectionResponse"),
