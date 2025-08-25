@@ -27,6 +27,16 @@ const STAGES: Array<{ value: OpportunityStageDB; display: string }> = DB_STAGES.
   display: stage
 }))
 
+// Opportunity statuses for select dropdown
+const STATUSES: Array<{ value: string; display: string }> = [
+  { value: 'Active', display: 'Active' },
+  { value: 'On Hold', display: 'On Hold' },
+  { value: 'Nurturing', display: 'Nurturing' },
+  { value: 'Qualified', display: 'Qualified' },
+  { value: 'Closed - Won', display: 'Closed - Won' },
+  { value: 'Closed - Lost', display: 'Closed - Lost' }
+]
+
 export function OpportunityForm({ 
   onSubmit, 
   initialData, 
@@ -44,6 +54,7 @@ export function OpportunityForm({
       organization_id: preselectedOrganization || initialData?.organization_id || '',
       estimated_value: initialData?.estimated_value || 0,
       stage: initialData?.stage || DEFAULT_OPPORTUNITY_STAGE,
+      status: initialData?.status || 'Active',
       contact_id: initialData?.contact_id || null,
       estimated_close_date: initialData?.estimated_close_date || null,
       description: initialData?.description || null,
@@ -107,6 +118,21 @@ export function OpportunityForm({
                   <SelectContent>
                     {STAGES.map((stage) => (
                       <SelectItem key={stage.value} value={stage.value}>{stage.display}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )} />
+
+            <FormField control={form.control} name="status" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status *</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl><SelectTrigger className="h-11"><SelectValue /></SelectTrigger></FormControl>
+                  <SelectContent>
+                    {STATUSES.map((status) => (
+                      <SelectItem key={status.value} value={status.value}>{status.display}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>

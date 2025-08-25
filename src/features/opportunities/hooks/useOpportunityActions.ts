@@ -20,9 +20,28 @@ export const useOpportunityActions = (): UseOpportunityActionsReturn => {
   const updateOpportunityMutation = useUpdateOpportunity()
   const deleteOpportunityMutation = useDeleteOpportunity()
 
-  const handleCreateOpportunity = useCallback(async (data: OpportunityInsert, onSuccess: () => void) => {
+  const handleCreateOpportunity = useCallback(async (data: any, onSuccess: () => void) => {
     try {
-      await createOpportunityMutation.mutateAsync(data)
+      // Transform form data to database format (following interaction pattern)
+      const opportunityData: Omit<OpportunityInsert, 'created_by' | 'updated_by'> = {
+        name: data.name,
+        organization_id: data.organization_id,
+        estimated_value: data.estimated_value || null,
+        stage: data.stage,
+        status: 'Active', // Add missing required field with default
+        contact_id: data.contact_id || null,
+        estimated_close_date: data.estimated_close_date || null,
+        description: data.description || null,
+        notes: data.notes || null,
+        // Optional fields with proper null handling
+        priority: data.priority || null,
+        probability: data.probability || null,
+        opportunity_context: data.opportunity_context || null,
+        principal_organization_id: data.principal_id || null,
+        // Remove non-database fields: principals, auto_generated_name
+      }
+      
+      await createOpportunityMutation.mutateAsync(opportunityData)
       onSuccess()
       toast.success('Opportunity created successfully!')
     } catch (error) {

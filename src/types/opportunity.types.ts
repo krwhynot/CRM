@@ -51,6 +51,10 @@ export const opportunitySchema = yup.object({
     .required('Stage is required')
     .default(DEFAULT_OPPORTUNITY_STAGE),
 
+  status: yup.string()
+    .oneOf(['Active', 'On Hold', 'Closed - Won', 'Closed - Lost', 'Nurturing', 'Qualified'], 'Invalid opportunity status')
+    .default('Active'),
+
   // OPTIONAL FIELDS with transforms
   contact_id: yup.string()
     .uuid('Invalid contact ID')
