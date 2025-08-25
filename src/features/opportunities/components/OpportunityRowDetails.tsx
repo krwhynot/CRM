@@ -14,7 +14,7 @@ import {
   MessageSquare,
   Plus
 } from 'lucide-react'
-import { cn, formatDate } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import type { OpportunityWithRelations, InteractionWithRelations } from '@/types/entities'
 
 interface OpportunityRowDetailsProps {
@@ -42,6 +42,17 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
     if (value >= 1000000) return `$${(value/1000000).toFixed(1)}M`
     if (value >= 1000) return `$${(value/1000).toFixed(0)}K`
     return `$${value.toLocaleString()}`
+  }
+
+  // Format date utility function
+  const formatDate = (dateString: string): string => {
+    if (!dateString) return 'Not set'
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    })
   }
 
   // Get stage color configuration
