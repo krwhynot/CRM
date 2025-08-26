@@ -64,7 +64,7 @@ export function SimpleTable<T extends { id: string }>({
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto w-full">
         <Table>
           <TableHeader>
             <TableRow className="bg-gray-50">

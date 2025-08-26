@@ -1,6 +1,6 @@
 import React from 'react'
 import { TableCell } from '@/components/ui/table'
-import { Star, Mail, Phone } from 'lucide-react'
+import { Star, Phone } from 'lucide-react'
 import { ContactBadges } from '../ContactBadges'
 import type { ContactWithOrganization } from '@/types/entities'
 
@@ -54,12 +54,7 @@ export const ContactBasicInfo: React.FC<ContactBasicInfoProps> = ({
         <div className="flex items-center gap-2">
           {primaryContactInfo ? (
             <>
-              {contact.email && primaryContactInfo === contact.email && (
-                <Mail className="h-4 w-4 text-gray-500" />
-              )}
-              {(contact.phone || contact.mobile_phone) && primaryContactInfo !== contact.email && (
-                <Phone className="h-4 w-4 text-gray-500" />
-              )}
+              <Phone className="h-4 w-4 text-gray-500" />
               <span className="text-sm text-gray-600 font-mono">
                 {primaryContactInfo}
               </span>

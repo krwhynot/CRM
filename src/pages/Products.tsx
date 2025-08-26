@@ -44,7 +44,7 @@ function ProductsPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-7xl mx-auto p-6 space-y-8">
       <div className="flex items-center justify-between">
         <PageHeader 
           title="Manage Products"

@@ -10,9 +10,10 @@ export const useContactRowState = (
   contact: ContactWithOrganization
 ): UseContactRowStateReturn => {
   const getPrimaryContactInfo = (contact: ContactWithOrganization): string | null => {
-    if (contact.email) return contact.email
+    // Prioritize phone numbers over email for main display
     if (contact.phone) return contact.phone
     if (contact.mobile_phone) return contact.mobile_phone
+    // Email is now only shown in expanded details
     return null
   }
 

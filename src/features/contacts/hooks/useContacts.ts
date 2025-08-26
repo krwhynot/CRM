@@ -494,3 +494,48 @@ export function useSetPrimaryContact() {
     },
   })
 }
+
+// Hook to refresh contacts data
+export const useRefreshContacts = () => {
+  const queryClient = useQueryClient()
+  
+  return () => {
+    queryClient.invalidateQueries({ queryKey: contactKeys.all })
+  }
+}
+
+// Hook to prepare form data for editing
+export const useContactFormData = (contact: Contact | null) => {
+  if (!contact) {
+    return { initialData: {} }
+  }
+
+  const initialData = {
+    // Basic fields
+    first_name: contact.first_name || '',
+    last_name: contact.last_name || '', 
+    title: contact.title || '',
+    email: contact.email || '',
+    phone: contact.phone || '',
+    mobile_phone: contact.mobile_phone || '',
+    
+    // Organization fields
+    organization_id: contact.organization_id || '',
+    
+    // Additional fields
+    notes: contact.notes || '',
+    is_primary_contact: contact.is_primary_contact || false,
+    linkedin_profile: contact.linkedin_profile || '',
+    department: contact.department || '',
+    
+    // Address fields if they exist
+    address_line_1: (contact as any).address_line_1 || '',
+    address_line_2: (contact as any).address_line_2 || '',
+    city: (contact as any).city || '',
+    state_province: (contact as any).state_province || '',
+    postal_code: (contact as any).postal_code || '',
+    country: (contact as any).country || ''
+  }
+
+  return { initialData }
+}
