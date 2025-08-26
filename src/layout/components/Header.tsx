@@ -17,7 +17,7 @@ export function Header() {
     <header className="h-[60px] bg-gradient-to-r from-white to-primary-50 border-b-2 border-primary-400 flex items-center justify-between px-6 shrink-0 shadow-[0_2px_8px_rgba(141,198,63,0.15)]">
       <div className="flex items-center gap-4">
         {/* Mobile menu toggle - hidden on larger screens since we use fixed sidebar */}
-        <SidebarTrigger className="md:hidden -ml-1" />
+        <SidebarTrigger className="-ml-1" />
         
         {/* MFB Branding */}
         <div className="flex items-center gap-2">

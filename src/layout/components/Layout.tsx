@@ -13,7 +13,7 @@ export function Layout({ children }: LayoutProps) {
       <AppSidebar />
       <SidebarInset>
         <Header />
-        <main className="flex-1 overflow-auto p-6">
+        <main className="flex-1 overflow-auto px-4 py-6">
           {children}
         </main>
       </SidebarInset>

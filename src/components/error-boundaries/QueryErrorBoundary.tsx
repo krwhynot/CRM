@@ -183,3 +183,55 @@ export const OrganizationsErrorBoundary: React.FC<{ children: React.ReactNode }>
     </QueryErrorBoundary>
   )
 }
+
+// Wrapper component for Contacts error handling
+export const ContactsErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const ContactsErrorFallback: React.FC<ErrorFallbackProps> = ({ error, resetErrorBoundary }) => (
+    <Card className="w-full mt-6">
+      <CardHeader>
+        <div className="flex items-center gap-2 text-red-600">
+          <AlertTriangle className="h-5 w-5" />
+          <CardTitle>Contacts Loading Error</CardTitle>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <p className="text-gray-600">
+          Failed to load contacts data. This could be due to:
+        </p>
+        <ul className="list-disc list-inside text-sm text-gray-500 space-y-1">
+          <li>Network connectivity issues</li>
+          <li>Database connection problems</li>
+          <li>Authentication token expiry</li>
+          <li>Server maintenance</li>
+        </ul>
+        <div className="bg-red-50 p-3 rounded border border-red-200">
+          <p className="text-sm text-red-700 font-medium">Error: {error.message}</p>
+        </div>
+        <div className="flex gap-2">
+          <Button 
+            onClick={resetErrorBoundary}
+            className="flex items-center gap-2"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Retry Loading
+          </Button>
+          <Button 
+            variant="outline" 
+            onClick={() => {
+              // Clear all query cache and reload
+              window.location.reload()
+            }}
+          >
+            Hard Refresh
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  )
+
+  return (
+    <QueryErrorBoundary fallback={ContactsErrorFallback}>
+      {children}
+    </QueryErrorBoundary>
+  )
+}

@@ -1,11 +1,4 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { SimpleTable } from '@/components/ui/simple-table'
 import { ProductsFilters } from './ProductsFilters'
 import { ProductRow } from './ProductRow'
 import { useProductsFiltering } from '../hooks/useProductsFiltering'
@@ -47,16 +40,27 @@ export function ProductsTable({
     products.map(product => product.id)
   )
 
-  if (loading) {
-    return (
-      <div className="space-y-4">
-        <div className="animate-pulse space-y-2">
-          <div className="h-8 bg-gray-200 rounded" />
-          <div className="h-16 bg-gray-200 rounded" />
-        </div>
-      </div>
-    )
-  }
+  const headers = [
+    { label: '', className: 'w-12' },
+    { label: 'Product', className: 'min-w-[220px]' },
+    { label: 'Price', className: 'min-w-[90px] text-right' },
+    { label: 'Principal', className: 'min-w-[110px]' },
+    { label: 'Brand', className: 'min-w-[90px]' },
+    { label: 'Actions', className: 'text-center min-w-[110px]' }
+  ]
+
+  const renderProductRow = (product: ProductWithPrincipal, isExpanded: boolean, onToggle: () => void) => (
+    <ProductRow
+      key={product.id}
+      product={product}
+      isExpanded={isRowExpanded(product.id)}
+      onToggleExpansion={() => toggleRowExpansion(product.id)}
+      onEdit={onEdit}
+      onDelete={onDelete}
+      onView={onView}
+      onContactSupplier={onContactSupplier}
+    />
+  )
 
   return (
     <div className="space-y-4">
@@ -73,51 +77,15 @@ export function ProductsTable({
       />
 
       {/* Table Container */}
-      <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-gray-50/80">
-                <TableHead className="w-12"></TableHead>
-                <TableHead className="font-semibold text-gray-700 min-w-[250px]">Product</TableHead>
-                <TableHead className="font-semibold text-gray-700 min-w-[100px] text-right">Price</TableHead>
-                <TableHead className="font-semibold text-gray-700 min-w-[120px]">Principal</TableHead>
-                <TableHead className="font-semibold text-gray-700 min-w-[100px]">Brand</TableHead>
-                <TableHead className="font-semibold text-gray-700 text-center min-w-[120px]">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredProducts.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-12">
-                    <div className="space-y-3">
-                      <div className="text-lg font-medium text-gray-500">
-                        {activeFilter !== 'all' ? 'No products match your criteria' : 'No products found'}
-                      </div>
-                      <div className="text-sm text-gray-400">
-                        {activeFilter !== 'all' ? 'Try adjusting your filters' : 'Get started by adding your first product'}
-                      </div>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filteredProducts.map((product) => (
-                  <ProductRow
-                    key={product.id}
-                    product={product}
-                    isExpanded={isRowExpanded(product.id)}
-                    onToggleExpansion={() => toggleRowExpansion(product.id)}
-                    onEdit={onEdit}
-                    onDelete={onDelete}
-                    onView={onView}
-                    onContactSupplier={onContactSupplier}
-                  />
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
+      <SimpleTable
+        data={filteredProducts}
+        loading={loading}
+        headers={headers}
+        renderRow={renderProductRow}
+        emptyMessage={activeFilter !== 'all' ? 'No products match your criteria' : 'No products found'}
+        emptySubtext={activeFilter !== 'all' ? 'Try adjusting your filters' : 'Get started by adding your first product'}
+        colSpan={6}
+      />
 
       {/* Results Summary */}
       {filteredProducts.length > 0 && (

@@ -1,11 +1,4 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { SimpleTable } from '@/components/ui/simple-table'
 import { OrganizationsFilters } from './OrganizationsFilters'
 import { OrganizationRow } from './OrganizationRow'
 import { useOrganizationsFiltering } from '@/features/organizations/hooks/useOrganizationsFiltering'
@@ -104,6 +97,21 @@ export function OrganizationsTable({
     )
   }
 
+  const headers = ['', 'Organization', 'Phone', 'Managers', 'Location', 'Actions']
+  
+  const renderOrganizationRow = (organization: Organization, isExpanded: boolean, onToggle: () => void) => (
+    <OrganizationRow
+      key={organization.id}
+      organization={organization}
+      isExpanded={isRowExpanded(organization.id)}
+      onToggleExpansion={() => toggleRowExpansion(organization.id)}
+      onEdit={onEdit}
+      onDelete={onDelete}
+      onView={onView}
+      onContact={onContact}
+    />
+  )
+
   return (
     <div className="space-y-4">
       {/* Filters Component */}
@@ -119,51 +127,15 @@ export function OrganizationsTable({
       />
 
       {/* Table Container */}
-      <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-gray-50/80">
-                <TableHead className="w-12"></TableHead>
-                <TableHead className="font-semibold text-gray-700 min-w-[200px]">Organization</TableHead>
-                <TableHead className="font-semibold text-gray-700 min-w-[120px]">Phone</TableHead>
-                <TableHead className="font-semibold text-gray-700 min-w-[150px]">Managers</TableHead>
-                <TableHead className="font-semibold text-gray-700 min-w-[120px]">Location</TableHead>
-                <TableHead className="font-semibold text-gray-700 text-center min-w-[120px]">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredOrganizations.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-12">
-                    <div className="space-y-3">
-                      <div className="text-lg font-medium text-gray-500">
-                        {activeFilter !== 'all' ? 'No organizations match your criteria' : 'No organizations found'}
-                      </div>
-                      <div className="text-sm text-gray-400">
-                        {activeFilter !== 'all' ? 'Try adjusting your filters' : 'Get started by adding your first organization'}
-                      </div>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filteredOrganizations.map((organization) => (
-                  <OrganizationRow
-                    key={organization.id}
-                    organization={organization}
-                    isExpanded={isRowExpanded(organization.id)}
-                    onToggleExpansion={() => toggleRowExpansion(organization.id)}
-                    onEdit={onEdit}
-                    onDelete={onDelete}
-                    onView={onView}
-                    onContact={onContact}
-                  />
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
+      <SimpleTable
+        data={filteredOrganizations}
+        loading={loading}
+        headers={headers}
+        renderRow={renderOrganizationRow}
+        emptyMessage={activeFilter !== 'all' ? 'No organizations match your criteria' : 'No organizations found'}
+        emptySubtext={activeFilter !== 'all' ? 'Try adjusting your filters' : 'Get started by adding your first organization'}
+        colSpan={6}
+      />
 
       {/* Results Summary */}
       {filteredOrganizations.length > 0 && (

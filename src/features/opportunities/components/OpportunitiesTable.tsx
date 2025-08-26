@@ -1,19 +1,12 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from '@/components/ui/table'
+import { SimpleTable } from '@/components/ui/simple-table'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Plus, Search } from 'lucide-react'
 import { useOpportunitiesWithLastActivity } from '../hooks/useOpportunities'
 import { useOpportunitiesSearch } from '../hooks/useOpportunitiesSearch'
 import { useOpportunitiesSelection } from '../hooks/useOpportunitiesSelection'
 import { useOpportunitiesSorting } from '../hooks/useOpportunitiesSorting'
 import { useOpportunitiesFormatting } from '../hooks/useOpportunitiesFormatting'
 import { useOpportunitiesDisplay } from '../hooks/useOpportunitiesDisplay'
-import { OpportunitiesTableHeader } from './OpportunitiesTableHeader'
+import { OpportunitiesFilters } from './OpportunitiesFilters'
 import { OpportunityRow } from './OpportunityRow'
 import type { OpportunityFilters } from '@/types/entities'
 import type { OpportunityWithLastActivity } from '@/types/opportunity.types'
@@ -57,115 +50,96 @@ export function OpportunitiesTable({
     sortedOpportunities.map(opp => opp.id)
   )
 
-  if (isLoading) {
-    return (
-      <div className="space-y-4">
-        {/* Search bar */}
-        <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <Search className="h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Search opportunities..."
-              className="w-64"
-              disabled
-            />
-          </div>
-          {onAddNew && (
-            <Button disabled>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Opportunity
-            </Button>
-          )}
-        </div>
-        
-        {/* Loading state */}
-        <div className="border rounded-lg bg-white shadow-sm">
-          <div className="p-8 text-center text-gray-500">
-            Loading opportunities...
-          </div>
-        </div>
-      </div>
-    )
-  }
+  // Configure headers with sorting and selection support
+  const headers = [
+    { 
+      label: '', 
+      className: 'w-[40px] px-6 py-3',
+      isCheckbox: true
+    },
+    { 
+      label: 'Company / Opportunity', 
+      className: 'w-[35%] px-6 py-3 text-xs',
+      sortable: true,
+      sortField: 'company'
+    },
+    { 
+      label: 'Stage', 
+      className: 'w-[20%] px-6 py-3 text-xs',
+      sortable: true,
+      sortField: 'stage'
+    },
+    { 
+      label: 'Value / Probability', 
+      className: 'w-[15%] px-6 py-3 text-xs text-right',
+      sortable: true,
+      sortField: 'value'
+    },
+    { 
+      label: 'Last Interaction', 
+      className: 'w-[20%] px-6 py-3 text-xs text-right',
+      sortable: true,
+      sortField: 'last_activity'
+    },
+    { 
+      label: 'Actions', 
+      className: 'w-[10%] px-6 py-3 text-xs text-right'
+    }
+  ]
+
+  const renderOpportunityRow = (opportunity: OpportunityWithLastActivity, isExpanded: boolean, onToggle: () => void) => (
+    <OpportunityRow
+      key={opportunity.id}
+      opportunity={opportunity}
+      isSelected={selectedItems.has(opportunity.id)}
+      onSelect={handleSelectItem}
+      onEdit={onEdit}
+      onDelete={onDelete}
+      getStageConfig={getStageConfig}
+      formatCurrency={formatCurrency}
+      formatActivityType={formatActivityType}
+      isExpanded={isRowExpanded(opportunity.id)}
+      onToggleExpansion={() => toggleRowExpansion(opportunity.id)}
+      // For now, pass empty/loading states - will be improved later
+      interactions={[]}
+      interactionsLoading={false}
+      onAddInteraction={() => onAddInteraction?.(opportunity.id)}
+      onEditInteraction={onEditInteraction}
+      onDeleteInteraction={onDeleteInteraction}
+      onInteractionItemClick={onInteractionItemClick}
+    />
+  )
+
+  const emptyMessage = searchTerm ? 'No opportunities match your search.' : 'No opportunities yet'
+  const emptySubtext = searchTerm ? 'Try adjusting your search terms' : 'Get started by adding your first opportunity'
 
   return (
     <div className="space-y-4">
-      {/* Search bar */}
-      <div className="flex justify-between items-center">
-        <div className="flex items-center space-x-2">
-          <Search className="h-4 w-4 text-gray-400" />
-          <Input
-            placeholder="Search opportunities..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-64"
-          />
-        </div>
-        {onAddNew && (
-          <Button onClick={onAddNew}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Opportunity
-          </Button>
-        )}
-      </div>
+      {/* Filters */}
+      <OpportunitiesFilters
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        onAddNew={onAddNew}
+        totalOpportunities={opportunities.length}
+        filteredCount={sortedOpportunities.length}
+      />
 
       {/* Table */}
-      <div className="border rounded-lg bg-white shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <Table>
-            <OpportunitiesTableHeader
-              sortField={sortField}
-              sortDirection={sortDirection}
-              onSort={handleSort}
-              selectedCount={selectedItems.size}
-              totalCount={sortedOpportunities.length}
-              onSelectAll={(checked) => handleSelectAll(checked, sortedOpportunities)}
-            />
-            
-            <TableBody>
-              {sortedOpportunities.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                    {searchTerm ? 'No opportunities match your search.' : (
-                      <div className="space-y-2">
-                        <div>No opportunities yet</div>
-                        {onAddNew && (
-                          <Button variant="outline" onClick={onAddNew} className="mt-2">
-                            Add First Opportunity
-                          </Button>
-                        )}
-                      </div>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ) : (
-                sortedOpportunities.map((opportunity) => (
-                  <OpportunityRow
-                    key={opportunity.id}
-                    opportunity={opportunity}
-                    isSelected={selectedItems.has(opportunity.id)}
-                    onSelect={handleSelectItem}
-                    onEdit={onEdit}
-                    onDelete={onDelete}
-                    getStageConfig={getStageConfig}
-                    formatCurrency={formatCurrency}
-                    formatActivityType={formatActivityType}
-                    isExpanded={isRowExpanded(opportunity.id)}
-                    onToggleExpansion={() => toggleRowExpansion(opportunity.id)}
-                    // For now, pass empty/loading states - will be improved later
-                    interactions={[]}
-                    interactionsLoading={false}
-                    onAddInteraction={() => onAddInteraction?.(opportunity.id)}
-                    onEditInteraction={onEditInteraction}
-                    onDeleteInteraction={onDeleteInteraction}
-                    onInteractionItemClick={onInteractionItemClick}
-                  />
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
+      <SimpleTable
+        data={sortedOpportunities}
+        loading={isLoading}
+        headers={headers}
+        renderRow={renderOpportunityRow}
+        emptyMessage={emptyMessage}
+        emptySubtext={emptySubtext}
+        colSpan={6}
+        sortField={sortField}
+        sortDirection={sortDirection}
+        onSort={handleSort}
+        selectedCount={selectedItems.size}
+        totalCount={sortedOpportunities.length}
+        onSelectAll={(checked) => handleSelectAll(checked, sortedOpportunities)}
+      />
     </div>
   )
 }
