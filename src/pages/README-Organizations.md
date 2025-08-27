@@ -239,3 +239,507 @@ if (loading) {
 - [x] Storybook stories for component variants
 - [x] Development guidelines and coding standards
 - [x] Architecture decision records (ADRs) for major decisions
+
+---
+
+## 🏢 Master Page Template
+
+```typescript
+/**
+ * ORGANIZATIONS PAGE TEMPLATE
+ * File location: src/pages/Organizations/index.tsx
+ */
+
+import React, { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+
+// Layout Components (Required)
+import { PageLayout } from '@/components/layout/PageLayout'
+import { PageHeader } from '@/components/ui/PageHeader'
+import { FilterBar } from '@/components/ui/FilterBar'
+import { ContentArea } from '@/components/ui/ContentArea'
+
+// UI Components (Required)
+import { SimpleTable } from '@/components/ui/simple-table'
+import { SearchInput } from '@/components/ui/SearchInput'
+import { Button } from '@/components/ui/Button'
+import { Badge } from '@/components/ui/Badge'
+import { EmptyState } from '@/components/ui/EmptyState'
+import { LoadingState } from '@/components/ui/LoadingState'
+import { ErrorState } from '@/components/ui/ErrorState'
+
+// Icons (Consistent set)
+import { 
+  Plus, 
+  Search, 
+  Filter, 
+  Download, 
+  RefreshCw,
+  ChevronRight 
+} from 'lucide-react'
+
+// Feature Components
+import { OrganizationsFilters } from '@/features/organizations/components/OrganizationsFilters'
+import { OrganizationRow } from '@/features/organizations/components/OrganizationRow'
+import { OrganizationDialogs } from '@/features/organizations/components/OrganizationDialogs'
+import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
+
+/**
+ * ORGANIZATIONS PAGE COMPONENT
+ */
+export function OrganizationsPage() {
+  const navigate = useNavigate()
+  
+  // State Management
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedItems, setSelectedItems] = useState<string[]>([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list')
+  
+  // Data Fetching
+  const { data: organizations, isLoading, error, refetch } = useOrganizations({
+    page: currentPage, 
+    search: searchTerm 
+  })
+  
+  // Responsive Detection
+  const isMobile = window.innerWidth < 1024
+  const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024
+  const isDesktop = window.innerWidth >= 1024
+  
+  // Handlers
+  const handleAdd = () => navigate('/organizations/new')
+  const handleRowClick = (org: Organization) => navigate(`/organizations/${org.id}`)
+  const handleExport = () => {
+    console.log('Exporting organizations...')
+  }
+  
+  // Table Headers
+  const headers = [
+    'Organization',
+    'Type', 
+    'Location',
+    'Status',
+    'Contacts',
+    'Actions'
+  ]
+  
+  // Main Render
+  return (
+    <PageLayout>
+      <PageHeader
+        title="Organizations"
+        subtitle="Manage customer accounts and distributor relationships efficiently"
+        primaryAction={
+          <Button size="lg" onClick={handleAdd}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Organization
+          </Button>
+        }
+        secondaryActions={
+          <>
+            <Button variant="outline" onClick={handleExport}>
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+            <Button variant="ghost" onClick={() => refetch()}>
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+          </>
+        }
+      />
+      
+      <OrganizationsFilters />
+      
+      <ContentArea>
+        <SimpleTable
+          data={organizations || []}
+          loading={isLoading}
+          headers={headers}
+          renderRow={(organization, isExpanded, onToggle) => (
+            <OrganizationRow
+              key={organization.id}
+              organization={organization}
+              isExpanded={isExpanded}
+              onToggle={onToggle}
+              onClick={() => handleRowClick(organization)}
+            />
+          )}
+          emptyMessage="No organizations found"
+          emptySubtext="Get started by adding your first organization"
+        />
+      </ContentArea>
+      
+      <OrganizationDialogs />
+    </PageLayout>
+  )
+}
+```
+
+---
+
+## 🎨 CSS/Tailwind Standards
+
+```css
+/**
+ * ORGANIZATIONS PAGE STYLES
+ * Add to: src/styles/organizations.css
+ */
+
+:root {
+  /* Organization-specific colors */
+  --org-primary: #2563EB;
+  --org-customer: #10B981;
+  --org-distributor: #F59E0B;
+  --org-principal: #8B5CF6;
+  
+  /* Status colors */
+  --org-active: #10B981;
+  --org-inactive: #DC2626;
+  --org-pending: #F59E0B;
+  
+  /* Layout dimensions */
+  --org-card-height: 100px;
+  --org-row-height: 64px;
+  --org-logo-size: 48px;
+}
+
+/* Organization-specific utility classes */
+.org-card {
+  min-height: var(--org-card-height);
+  transition: all var(--transition-normal);
+}
+
+.org-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.org-type-customer {
+  color: var(--org-customer);
+}
+
+.org-type-distributor {
+  color: var(--org-distributor);
+}
+
+.org-type-principal {
+  color: var(--org-principal);
+}
+
+.org-status-active {
+  color: var(--org-active);
+}
+
+.org-status-inactive {
+  color: var(--org-inactive);
+}
+
+.org-status-pending {
+  color: var(--org-pending);
+}
+```
+
+---
+
+## 🧩 Required Component Templates
+
+### OrganizationRow Component
+```typescript
+/**
+ * ORGANIZATION ROW COMPONENT
+ * File: src/features/organizations/components/OrganizationRow.tsx
+ */
+import { TableRow, TableCell } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+import { MoreHorizontal, Building2, MapPin, Users } from 'lucide-react'
+
+interface OrganizationRowProps {
+  organization: Organization
+  isExpanded: boolean
+  onToggle: () => void
+  onClick: () => void
+}
+
+export function OrganizationRow({ organization, isExpanded, onToggle, onClick }: OrganizationRowProps) {
+  const getTypeColor = (type: string) => {
+    switch (type.toLowerCase()) {
+      case 'customer': return 'org-type-customer'
+      case 'distributor': return 'org-type-distributor' 
+      case 'principal': return 'org-type-principal'
+      default: return 'text-gray-600'
+    }
+  }
+  
+  return (
+    <TableRow className="cursor-pointer hover:bg-gray-50" onClick={onClick}>
+      <TableCell>
+        <div className="flex items-center gap-3">
+          <Avatar className="h-10 w-10">
+            <AvatarImage src={organization.logoUrl} />
+            <AvatarFallback>
+              <Building2 className="h-5 w-5 text-gray-600" />
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <div className="font-medium">{organization.name}</div>
+            <div className="text-sm text-gray-500">{organization.industry}</div>
+          </div>
+        </div>
+      </TableCell>
+      <TableCell>
+        <Badge 
+          variant="outline" 
+          className={getTypeColor(organization.type)}
+        >
+          {organization.type}
+        </Badge>
+      </TableCell>
+      <TableCell>
+        <div className="flex items-center gap-1">
+          <MapPin className="h-3 w-3 text-gray-400" />
+          <span>{organization.city}, {organization.state}</span>
+        </div>
+      </TableCell>
+      <TableCell>
+        <Badge 
+          variant={organization.isActive ? 'default' : 'secondary'}
+          className={organization.isActive ? 'org-status-active' : 'org-status-inactive'}
+        >
+          {organization.isActive ? 'Active' : 'Inactive'}
+        </Badge>
+      </TableCell>
+      <TableCell>
+        <div className="flex items-center gap-1">
+          <Users className="h-3 w-3 text-gray-400" />
+          <span className="text-sm">{organization.contactCount || 0}</span>
+        </div>
+      </TableCell>
+      <TableCell>
+        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); /* Handle actions */ }}>
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </TableCell>
+    </TableRow>
+  )
+}
+```
+
+---
+
+## 📱 Responsive Breakpoint Mixins
+
+```scss
+/**
+ * ORGANIZATIONS PAGE RESPONSIVE MIXINS
+ * File: src/styles/organizations-responsive.scss
+ */
+
+// Organization-specific responsive behavior
+@mixin org-mobile {
+  @media (max-width: 767px) {
+    .org-table {
+      display: none;
+    }
+    
+    .org-cards {
+      display: block;
+    }
+    
+    .org-filters {
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .org-header-actions {
+      flex-direction: column;
+      gap: 8px;
+    }
+    @content;
+  }
+}
+
+@mixin org-tablet {
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .org-row {
+      font-size: 14px;
+    }
+    
+    .org-secondary-actions {
+      display: none;
+    }
+    
+    .org-mobile-menu {
+      display: block;
+    }
+    @content;
+  }
+}
+
+@mixin org-desktop {
+  @media (min-width: 1024px) {
+    .org-table {
+      display: table;
+    }
+    
+    .org-cards {
+      display: none;
+    }
+    
+    .org-filters {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+    
+    .org-header-actions {
+      flex-direction: row;
+      gap: 12px;
+    }
+    @content;
+  }
+}
+
+// Usage Example
+.organizations-page {
+  @include org-mobile {
+    padding: 16px;
+  }
+  
+  @include org-tablet {
+    padding: 20px;
+  }
+  
+  @include org-desktop {
+    padding: 24px;
+  }
+}
+```
+
+---
+
+## 🚀 Quick Start Commands
+
+```bash
+# Create new organization component from template
+cp src/templates/OrganizationTemplate.tsx src/features/organizations/components/NewOrganization.tsx
+
+# Run development server
+npm run dev
+
+# Type checking
+npm run type-check
+
+# Run tests
+npm run test
+
+# Build for production
+npm run build
+
+# Check bundle size
+npm run analyze
+
+# Format code
+npm run format
+
+# Lint code
+npm run lint
+
+# Run organization-specific tests
+npm run test:organizations
+```
+
+---
+
+## 📐 Grid System Reference
+
+```css
+/**
+ * ORGANIZATIONS PAGE GRID CLASSES
+ */
+
+/* Mobile First Grid */
+.org-grid-1 { grid-template-columns: repeat(1, 1fr); }
+.org-grid-2 { grid-template-columns: repeat(2, 1fr); }
+
+/* Tablet Overrides */
+@media (min-width: 768px) {
+  .md\:org-grid-1 { grid-template-columns: repeat(1, 1fr); }
+  .md\:org-grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .md\:org-grid-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Desktop Overrides */
+@media (min-width: 1024px) {
+  .lg\:org-grid-1 { grid-template-columns: repeat(1, 1fr); }
+  .lg\:org-grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .lg\:org-grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .lg\:org-grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .lg\:org-grid-5 { grid-template-columns: repeat(5, 1fr); }
+  .lg\:org-grid-6 { grid-template-columns: repeat(6, 1fr); }
+}
+
+/* Organization Table Specific */
+.org-table-columns {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr 1.5fr 1fr 0.8fr 0.5fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+@media (max-width: 1023px) {
+  .org-table-columns {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+}
+```
+
+---
+
+## 📚 Additional Resources
+
+### Documentation Links
+- [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [TanStack Query Documentation](https://tanstack.com/query/latest)
+- [React Hook Form](https://react-hook-form.com/)
+- [Radix UI Components](https://www.radix-ui.com/)
+- [Lucide Icons](https://lucide.dev/icons/)
+
+### Design Resources
+- [Apple Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/ipad)
+- [Material Design 3](https://m3.material.io/)
+- [Figma iOS/iPadOS UI Kit](https://www.figma.com/community/file/809487622678629513)
+
+### Testing Tools
+- [iPad Simulator](https://developer.apple.com/documentation/xcode/running-your-app-in-the-simulator)
+- [Chrome DevTools Device Mode](https://developer.chrome.com/docs/devtools/device-mode/)
+- [BrowserStack](https://www.browserstack.com/)
+- [Lighthouse](https://developers.google.com/web/tools/lighthouse)
+
+---
+
+## 📝 Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.0 | Aug 2025 | Initial organizations page documentation following master template | Team |
+| | | | |
+
+---
+
+## 🤝 Contributing
+
+To propose changes to these standards:
+1. Create a branch: `organizations-docs-[change-name]`
+2. Update this document with your proposed changes
+3. Add examples and justification
+4. Submit PR for team review
+5. Requires 2 approvals to merge
+
+---
+
+*End of Organizations Page Documentation*

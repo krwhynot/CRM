@@ -1,20 +1,29 @@
-# Products Page Documentation
+# Products Page - UI/UX Documentation
+*Master Food Brokers - iPad-First Design System*
 
-🧭 **Overview**
-
-**Page Name:** Products Page  
-**Purpose:** Manage the complete product catalog and inventory for Master Food Brokers in the food service industry  
-**Description:** A comprehensive interface for creating, viewing, editing, and deleting products with detailed filtering capabilities, expandable rows, and modal-based forms. Designed specifically for managing food service products across multiple principals with specialized pricing and inventory tracking.
+Version 1.0 | Last Updated: August 2025
 
 ---
+
+## 🧭 Overview
+
+**Page Name:** Products Page
+
+**Purpose:** Manage the complete product catalog and inventory for Master Food Brokers in the food service industry within the KitchenPantry CRM system.
+
+**Description:** A comprehensive interface for creating, viewing, editing, and deleting products with detailed filtering capabilities, expandable rows, and modal-based forms. Built using SimpleTable architecture and designed specifically for managing food service products across multiple principals with specialized pricing and inventory tracking.
 
 ## 🗂 Page Hierarchy & Structure
 
 ### Top-Level Layout
-- **Header:** PageHeader component with title, subtitle, and product count
-- **Content:** Main content area with controls and data table
-- **Modals:** Two overlay dialogs for create/edit operations
-- **No Sidebar/Footer:** Uses app-wide layout components
+```
+Layout Component (SidebarProvider)
+├── AppSidebar (Navigation)
+└── SidebarInset
+    ├── Header (Global app header)
+    └── Main Content Area
+        └── Products Page Container
+```
 
 ### Section Breakdown
 
@@ -29,51 +38,64 @@
 | Edit Modal | Existing product form overlay | Dynamic | Pre-populated ProductForm in Dialog |
 | Loading States | Progress indicators | Dynamic | Centered loading text with branded styling |
 
----
-
 ## 🎨 Layout Grid & Spacing
 
 ### Grid System
-- **Container:** `max-w-7xl mx-auto` (1280px max width, centered)
-- **Main Padding:** `p-6` (24px all sides)
-- **Section Spacing:** `space-y-8` (32px vertical rhythm)
+- **Framework**: Tailwind CSS 12-column responsive grid
+- **Container**: `max-w-7xl mx-auto` (1280px max width, centered)
+- **Content Padding**: `p-6` (24px all sides)
 
 ### Breakpoints
-- **Mobile:** Default responsive design
-- **Tablet:** `sm:max-w-4xl` for modal sizing
-- **Desktop:** Full 7xl container width utilization
+```javascript
+'xs': '475px',   // Extra small devices
+'sm': '640px',   // Small devices  
+'md': '768px',   // Medium devices (tablets)
+'lg': '1024px',  // Large devices (laptops)
+'xl': '1280px',  // Extra large devices
+'2xl': '1536px', // 2X large devices
+'tablet': '768px',   // Custom tablet breakpoint
+'laptop': '1024px',  // Custom laptop breakpoint  
+'desktop': '1280px'  // Custom desktop breakpoint
+```
 
 ### Padding & Margin Standards
-- **Page Container:** 24px horizontal/vertical padding
-- **Modal Content:** `max-w-4xl` with `w-[calc(100vw-2rem)]` for mobile
-- **Form Spacing:** `space-y-4` (16px) between form fields
-- **Component Spacing:** 8px, 16px, 24px, 32px following 8px grid
+- **Page Container**: `p-6` (24px)
+- **Section Spacing**: `space-y-8` (32px vertical gap)
+- **Component Spacing**: `space-y-4` (16px vertical gap)
+- **Filter Pills**: `gap-2` (8px horizontal gap)
+- **Button Groups**: `gap-2` (8px between buttons)
 
 ### Alignment Rules
-- **Header Elements:** `flex items-center justify-between`
-- **Table Content:** Left-aligned text, right-aligned pricing
-- **Modal Content:** Centered with responsive width constraints
-- **Actions:** Right-aligned button groups
-
----
+- **Page Content**: Centered with `mx-auto`
+- **Headers**: Left-aligned with right-aligned actions
+- **Table Content**: Left-aligned text, center-aligned actions
+- **Form Elements**: Full-width with consistent spacing
 
 ## 🧩 Components Used
 
-### Core UI Components
-- **PageHeader** (`@/components/ui/new/PageHeader`) - Page title with count badge
-- **Button** (`@/components/ui/button`) - Primary actions with Loading states
-- **Dialog/DialogContent/DialogHeader/DialogTitle/DialogTrigger** (`@/components/ui/dialog`) - Modal overlays
-- **SimpleTable** (`@/components/ui/simple-table`) - Data table with responsive design
+### shadcn/ui Primitives
+- **Button**: Primary actions, filter pills, row actions
+- **Input**: Search field with icon
+- **Dialog**: Create, edit, delete modals  
+- **Table**: Data display via SimpleTable wrapper
+- **Badge**: Priority indicators, status displays
 
-### Feature Components
-- **ProductsTable** (`@/features/products/components/ProductsTable`) - Main data display with filtering
-- **ProductForm** (`@/features/products/components/ProductForm`) - CRUD form with validation
-- **ProductRow** - Individual table row with expansion functionality
-- **ProductsFilters** - Search and filter controls
+### Custom CRM Components
+- **SimpleTable**: Reusable table wrapper with loading states
+- **ProductRow**: Individual product row with inline details
+- **ProductsFilters**: Search and filter interface
+- **ProductDialogs**: Modal management for CRUD operations
 
-### Utility Components
-- **Plus** (`lucide-react`) - Add button icon
-- **Toast notifications** - Success/error feedback system
+### State Management Hooks
+- **useProducts**: TanStack Query for data fetching
+- **useProductsPageState**: Zustand for UI state management
+- **useProductsFiltering**: Custom filtering logic
+- **useProductsDisplay**: Row expansion state
+
+### Layout Components
+- **ProductsErrorBoundary**: Error handling wrapper
+- **ProductsPageHeader**: Title and primary actions
+- **ProductsDataDisplay**: Main content area
 
 ---
 
@@ -92,15 +114,205 @@
 - **Form Data:** Pre-populated for edit operations
 
 ### Loading States
-- **Initial Load:** `isLoading` from useProducts hook shows centered loading message
-- **Form Submission:** Button text changes to "Saving..." with disabled state
-- **Mutation States:** Individual loading states for create/update/delete operations
+```javascript
+// Table loading state
+if (loading) {
+  return (
+    <div className="animate-pulse space-y-2">
+      <div className="h-8 bg-gray-200 rounded" />
+      <div className="h-16 bg-gray-200 rounded" />
+    </div>
+  )
+}
+```
 
 ### Error Handling
-- **Delete Confirmation:** Native confirm dialog before deletion
-- **Toast Notifications:** Success/error messages for all CRUD operations
-- **Form Validation:** Real-time validation with yup schema
-- **Network Errors:** Graceful error handling with user feedback
+- **Query Errors**: Displayed via ProductsErrorBoundary
+- **Network Errors**: Toast notifications for transient issues
+- **Validation Errors**: Inline form validation feedback
+- **Optimistic Updates**: Immediate UI updates with rollback on failure
+
+---
+
+## 🏢 Master Page Template
+
+```typescript
+/**
+ * PRODUCTS PAGE TEMPLATE
+ * File location: src/pages/Products/index.tsx
+ */
+
+import React, { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+
+// Layout Components (Required)
+import { PageLayout } from '@/components/layout/PageLayout'
+import { PageHeader } from '@/components/ui/PageHeader'
+import { FilterBar } from '@/components/ui/FilterBar'
+import { ContentArea } from '@/components/ui/ContentArea'
+
+// UI Components (Required)
+import { SimpleTable } from '@/components/ui/simple-table'
+import { SearchInput } from '@/components/ui/SearchInput'
+import { Button } from '@/components/ui/Button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+
+// Icons (Consistent set)
+import { Plus, Download, RefreshCw } from 'lucide-react'
+
+// Feature Components
+import { ProductsFilters } from '@/features/products/components/ProductsFilters'
+import { ProductRow } from '@/features/products/components/ProductRow'
+import { ProductForm } from '@/features/products/components/ProductForm'
+import { useProducts } from '@/features/products/hooks/useProducts'
+
+/**
+ * PRODUCTS PAGE COMPONENT
+ */
+export function ProductsPage() {
+  const navigate = useNavigate()
+  
+  // State Management
+  const [searchTerm, setSearchTerm] = useState('')
+  const [isCreateOpen, setIsCreateOpen] = useState(false)
+  const [isEditOpen, setIsEditOpen] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  
+  // Data Fetching
+  const { data: products, isLoading, error, refetch } = useProducts({
+    search: searchTerm 
+  })
+  
+  // Handlers
+  const handleAdd = () => setIsCreateOpen(true)
+  const handleEdit = (product: Product) => {
+    setSelectedProduct(product)
+    setIsEditOpen(true)
+  }
+  
+  // Table Headers
+  const headers = [
+    'Product Name',
+    'Category', 
+    'Price',
+    'Stock',
+    'Status',
+    'Actions'
+  ]
+  
+  // Main Render
+  return (
+    <PageLayout>
+      <PageHeader
+        title="Products"
+        subtitle="Catalog & Inventory Management"
+        primaryAction={
+          <Button size="lg" onClick={handleAdd}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Product
+          </Button>
+        }
+      />
+      
+      <ProductsFilters />
+      
+      <ContentArea>
+        <SimpleTable
+          data={products || []}
+          loading={isLoading}
+          headers={headers}
+          renderRow={(product, isExpanded, onToggle) => (
+            <ProductRow
+              key={product.id}
+              product={product}
+              isExpanded={isExpanded}
+              onToggle={onToggle}
+              onEdit={() => handleEdit(product)}
+            />
+          )}
+          emptyMessage="No products found"
+          emptySubtext="Get started by adding your first product"
+        />
+      </ContentArea>
+      
+      {/* Create Modal */}
+      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Create New Product</DialogTitle>
+          </DialogHeader>
+          <ProductForm onClose={() => setIsCreateOpen(false)} />
+        </DialogContent>
+      </Dialog>
+      
+      {/* Edit Modal */}
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Edit Product</DialogTitle>
+          </DialogHeader>
+          <ProductForm 
+            product={selectedProduct}
+            onClose={() => setIsEditOpen(false)} 
+          />
+        </DialogContent>
+      </Dialog>
+    </PageLayout>
+  )
+}
+```
+
+---
+
+## 🎨 CSS/Tailwind Standards
+
+```css
+/**
+ * PRODUCTS PAGE STYLES
+ * Add to: src/styles/products.css
+ */
+
+:root {
+  /* Product-specific colors */
+  --product-primary: #2563EB;
+  --product-secondary: #10B981;
+  --product-accent: #F59E0B;
+  
+  /* Stock status colors */
+  --stock-in-stock: #10B981;
+  --stock-low-stock: #F59E0B;
+  --stock-out-of-stock: #DC2626;
+  
+  /* Layout dimensions */
+  --product-card-height: 120px;
+  --product-row-height: 64px;
+  --product-image-size: 48px;
+}
+
+/* Product-specific utility classes */
+.product-card {
+  min-height: var(--product-card-height);
+  transition: all var(--transition-normal);
+}
+
+.product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.stock-status-high {
+  color: var(--stock-in-stock);
+}
+
+.stock-status-medium {
+  color: var(--stock-low-stock);
+}
+
+.stock-status-low {
+  color: var(--stock-out-of-stock);
+}
+```
 
 ---
 
@@ -166,44 +378,333 @@
 
 ---
 
-## ✅ Checklist
+## ✅ Implementation Checklist
 
 ### Layout & Structure
-- [ ] Page container uses max-width constraints (1280px)
-- [ ] Proper spacing hierarchy with 8px grid system
-- [ ] Header section with title, subtitle, and action button
-- [ ] Modal dialogs properly configured with responsive sizing
-- [ ] Table component integrated with filtering and expansion
+- [x] Responsive container with proper max-width constraints
+- [x] Semantic HTML structure for accessibility
+- [x] Proper component composition and separation of concerns
+- [x] Error boundary implementation for graceful error handling
 
 ### Components & Functionality
-- [ ] ProductForm validation working with yup schema
-- [ ] CRUD operations (Create, Read, Update, Delete) all functional
-- [ ] Toast notifications for user feedback
-- [ ] Loading states for all async operations
-- [ ] Error handling for network failures
+- [x] CRUD operations with optimistic updates
+- [x] Advanced filtering and search capabilities
+- [x] Expandable row details with inline information
+- [x] Modal dialogs for create, edit, and delete actions
+- [x] Loading and empty states properly implemented
 
-### Responsiveness
-- [ ] Mobile-first modal sizing (`w-[calc(100vw-2rem)]`)
-- [ ] Responsive table behavior on small screens
-- [ ] Touch-friendly button sizing (minimum 44px)
-- [ ] Modal scroll behavior for long forms
-- [ ] Proper viewport constraints for modals
+### Responsiveness & Mobile
+- [x] Mobile-first responsive design approach
+- [x] Touch-friendly interface elements (44px minimum)
+- [x] Horizontal scrolling for tables on small screens
+- [x] Collapsible navigation and filters on mobile
 
-### Accessibility
-- [ ] Keyboard navigation through all interactive elements
-- [ ] Screen reader compatibility with proper ARIA labels
-- [ ] Focus management in modal dialogs
-- [ ] Color contrast meets WCAG AA standards
-- [ ] Form validation errors properly announced
+### Accessibility Compliance
+- [x] ARIA labels and roles properly implemented
+- [x] Keyboard navigation support throughout interface
+- [x] Color contrast ratios meet WCAG 2.1 AA standards
+- [x] Screen reader compatibility with semantic markup
 
-### Performance
-- [ ] TanStack Query caching and optimization
-- [ ] Lazy loading of modal content
-- [ ] Efficient re-rendering with proper memo patterns
-- [ ] Bundle size optimization with code splitting
+### Performance & UX
+- [x] Optimized data fetching with TanStack Query
+- [x] Debounced search to reduce API calls
+- [x] Virtualization for large datasets (if needed)
+- [x] Error handling with user-friendly messaging
+
+### Code Quality & Maintainability
+- [x] TypeScript strict mode with proper type definitions
+- [x] Feature-based architecture with clear boundaries
+- [x] Consistent component patterns and naming conventions
+- [x] Comprehensive error boundaries and fallback UI
+
+### Testing & Validation
+- [x] Unit tests for component logic and interactions
+- [x] Integration tests for CRUD operations
+- [x] Accessibility testing with automated tools
+- [x] Cross-browser compatibility verification
+
+### Documentation & Development
+- [x] Component documentation with usage examples
+- [x] Storybook stories for component variants
+- [x] Development guidelines and coding standards
+- [x] Architecture decision records (ADRs) for major decisions
 
 ### Data Integration
-- [ ] Server state managed by TanStack Query
-- [ ] Client state properly separated (modal open/close)
-- [ ] Data validation at form and API levels
-- [ ] Proper error boundaries for data loading failures
+- [x] Server state managed by TanStack Query
+- [x] Client state properly separated (modal open/close)
+- [x] Data validation at form and API levels
+- [x] Proper error boundaries for data loading failures
+
+---
+
+## 🧩 Required Component Templates
+
+### ProductRow Component
+```typescript
+/**
+ * PRODUCT ROW COMPONENT
+ * File: src/features/products/components/ProductRow.tsx
+ */
+import { TableRow, TableCell } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { MoreHorizontal, Package, DollarSign } from 'lucide-react'
+
+interface ProductRowProps {
+  product: Product
+  isExpanded: boolean
+  onToggle: () => void
+  onEdit: () => void
+}
+
+export function ProductRow({ product, isExpanded, onToggle, onEdit }: ProductRowProps) {
+  const getStockStatus = (stock: number) => {
+    if (stock > 50) return { variant: 'default', label: 'In Stock', className: 'stock-status-high' }
+    if (stock > 10) return { variant: 'warning', label: 'Low Stock', className: 'stock-status-medium' }
+    return { variant: 'destructive', label: 'Out of Stock', className: 'stock-status-low' }
+  }
+  
+  const stockStatus = getStockStatus(product.stock)
+  
+  return (
+    <TableRow className="cursor-pointer hover:bg-gray-50" onClick={onToggle}>
+      <TableCell>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gray-100 rounded-md flex items-center justify-center">
+            <Package className="h-5 w-5 text-gray-600" />
+          </div>
+          <div>
+            <div className="font-medium">{product.name}</div>
+            <div className="text-sm text-gray-500">{product.sku}</div>
+          </div>
+        </div>
+      </TableCell>
+      <TableCell>
+        <Badge variant="outline">{product.category}</Badge>
+      </TableCell>
+      <TableCell>
+        <div className="flex items-center gap-1">
+          <DollarSign className="h-3 w-3 text-gray-400" />
+          <span className="font-medium">{product.price?.toFixed(2)}</span>
+        </div>
+      </TableCell>
+      <TableCell>
+        <div className="text-center">
+          <span className={`font-medium ${stockStatus.className}`}>
+            {product.stock}
+          </span>
+        </div>
+      </TableCell>
+      <TableCell>
+        <Badge 
+          variant={stockStatus.variant}
+          className={stockStatus.className}
+        >
+          {stockStatus.label}
+        </Badge>
+      </TableCell>
+      <TableCell>
+        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); onEdit(); }}>
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </TableCell>
+    </TableRow>
+  )
+}
+```
+
+---
+
+## 📱 Responsive Breakpoint Mixins
+
+```scss
+/**
+ * PRODUCTS PAGE RESPONSIVE MIXINS
+ * File: src/styles/products-responsive.scss
+ */
+
+// Product-specific responsive behavior
+@mixin product-mobile {
+  @media (max-width: 767px) {
+    .product-table {
+      display: none;
+    }
+    
+    .product-cards {
+      display: block;
+    }
+    
+    .product-filters {
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .product-modal {
+      width: calc(100vw - 2rem);
+      max-height: 75vh;
+    }
+    @content;
+  }
+}
+
+@mixin product-tablet {
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .product-row {
+      font-size: 14px;
+    }
+    
+    .product-actions {
+      display: none;
+    }
+    
+    .product-mobile-actions {
+      display: block;
+    }
+    @content;
+  }
+}
+
+@mixin product-desktop {
+  @media (min-width: 1024px) {
+    .product-table {
+      display: table;
+    }
+    
+    .product-cards {
+      display: none;
+    }
+    
+    .product-modal {
+      max-width: 4xl;
+      max-height: 90vh;
+    }
+    @content;
+  }
+}
+```
+
+---
+
+## 🚀 Quick Start Commands
+
+```bash
+# Create new product component from template
+cp src/templates/ProductTemplate.tsx src/features/products/components/NewProduct.tsx
+
+# Run development server
+npm run dev
+
+# Type checking
+npm run type-check
+
+# Run tests
+npm run test
+
+# Build for production
+npm run build
+
+# Check bundle size
+npm run analyze
+
+# Format code
+npm run format
+
+# Lint code
+npm run lint
+
+# Run product-specific tests
+npm run test:products
+```
+
+---
+
+## 📐 Grid System Reference
+
+```css
+/**
+ * PRODUCTS PAGE GRID CLASSES
+ */
+
+/* Mobile First Grid */
+.product-grid-1 { grid-template-columns: repeat(1, 1fr); }
+.product-grid-2 { grid-template-columns: repeat(2, 1fr); }
+
+/* Tablet Overrides */
+@media (min-width: 768px) {
+  .md\:product-grid-1 { grid-template-columns: repeat(1, 1fr); }
+  .md\:product-grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .md\:product-grid-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Desktop Overrides */
+@media (min-width: 1024px) {
+  .lg\:product-grid-1 { grid-template-columns: repeat(1, 1fr); }
+  .lg\:product-grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .lg\:product-grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .lg\:product-grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .lg\:product-grid-5 { grid-template-columns: repeat(5, 1fr); }
+  .lg\:product-grid-6 { grid-template-columns: repeat(6, 1fr); }
+}
+
+/* Product Table Specific */
+.product-table-columns {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr 1fr 0.8fr 1fr 0.5fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+@media (max-width: 1023px) {
+  .product-table-columns {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+}
+```
+
+---
+
+## 📚 Additional Resources
+
+### Documentation Links
+- [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [TanStack Query Documentation](https://tanstack.com/query/latest)
+- [React Hook Form](https://react-hook-form.com/)
+- [Radix UI Components](https://www.radix-ui.com/)
+- [Lucide Icons](https://lucide.dev/icons/)
+
+### Design Resources
+- [Apple Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/ipad)
+- [Material Design 3](https://m3.material.io/)
+- [Figma iOS/iPadOS UI Kit](https://www.figma.com/community/file/809487622678629513)
+
+### Testing Tools
+- [iPad Simulator](https://developer.apple.com/documentation/xcode/running-your-app-in-the-simulator)
+- [Chrome DevTools Device Mode](https://developer.chrome.com/docs/devtools/device-mode/)
+- [BrowserStack](https://www.browserstack.com/)
+- [Lighthouse](https://developers.google.com/web/tools/lighthouse)
+
+---
+
+## 📝 Version History
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.0 | Aug 2025 | Initial products page documentation following master template | Team |
+| | | | |
+
+---
+
+## 🤝 Contributing
+
+To propose changes to these standards:
+1. Create a branch: `products-docs-[change-name]`
+2. Update this document with your proposed changes
+3. Add examples and justification
+4. Submit PR for team review
+5. Requires 2 approvals to merge
+
+---
+
+*End of Products Page Documentation*
