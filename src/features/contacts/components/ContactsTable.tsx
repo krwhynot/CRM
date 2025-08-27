@@ -82,7 +82,6 @@ export function ContactsTable({
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         filterPills={filterPills}
-        onAddNew={onAddNew}
         totalContacts={contacts.length}
         filteredCount={filteredContacts.length}
       />

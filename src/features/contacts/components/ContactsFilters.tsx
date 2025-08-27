@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Search, Plus } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { FilterType } from '@/features/contacts/hooks/useContactsFiltering'
 
@@ -16,7 +16,6 @@ interface ContactsFiltersProps {
   searchTerm: string
   onSearchChange: (term: string) => void
   filterPills: FilterPill[]
-  onAddNew?: () => void
   totalContacts: number
   filteredCount: number
 }
@@ -27,29 +26,20 @@ export const ContactsFilters: React.FC<ContactsFiltersProps> = ({
   searchTerm,
   onSearchChange,
   filterPills,
-  onAddNew,
   totalContacts,
   filteredCount
 }) => {
   return (
-    <div className="space-y-4">
-      {/* Header with Add New button */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-semibold text-gray-900">Contacts</h2>
-          <p className="text-sm text-gray-600 mt-1">
-            {filteredCount === totalContacts 
-              ? `${totalContacts} contacts` 
-              : `${filteredCount} of ${totalContacts} contacts`
-            }
-          </p>
-        </div>
-        {onAddNew && (
-          <Button onClick={onAddNew} className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            Add Contact
-          </Button>
-        )}
+    <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 space-y-4">
+      {/* Header */}
+      <div>
+        <h2 className="text-2xl font-semibold text-gray-900">Contacts</h2>
+        <p className="text-sm text-gray-600 mt-1">
+          {filteredCount === totalContacts 
+            ? `${totalContacts} contacts` 
+            : `${filteredCount} of ${totalContacts} contacts`
+          }
+        </p>
       </div>
 
       {/* Search Bar */}
