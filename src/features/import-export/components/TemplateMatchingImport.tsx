@@ -18,21 +18,43 @@ interface FieldMapping {
   confidence: number
 }
 
-// Available CRM fields
+// Available CRM fields - organized by priority
 const CRM_FIELDS = [
+  // REQUIRED FIELDS (must be mapped)
   { value: 'name', label: 'Organization Name' },
+  { value: 'type', label: 'Organization Type (customer/distributor/etc.)' },
+  { value: 'priority', label: 'Priority Level (A/B/C/D)' },
+  { value: 'segment', label: 'Business Segment' },
+  
+  // CONTACT INFORMATION
+  { value: 'phone', label: 'Phone' },
+  { value: 'email', label: 'Email' },
+  { value: 'website', label: 'Website' },
+  
+  // ADDRESS FIELDS
   { value: 'address_line_1', label: 'Address Line 1' },
   { value: 'address_line_2', label: 'Address Line 2' },
   { value: 'city', label: 'City' },
   { value: 'state_province', label: 'State/Province' },
   { value: 'postal_code', label: 'ZIP/Postal Code' },
-  { value: 'phone', label: 'Phone' },
-  { value: 'email', label: 'Email' },
-  { value: 'website', label: 'Website' },
-  { value: 'notes', label: 'Notes' },
+  { value: 'country', label: 'Country' },
+  
+  // MANAGER FIELDS
+  { value: 'primary_manager_name', label: 'Primary Manager' },
+  { value: 'secondary_manager_name', label: 'Secondary Manager' },
+  
+  // CONTACT PERSON FIELDS
   { value: 'contact_name', label: 'Contact: Full Name' },
   { value: 'contact_email', label: 'Contact: Email' },
+  { value: 'contact_phone', label: 'Contact: Phone' },
+  { value: 'contact_title', label: 'Contact: Job Title' },
+  
+  // OPTIONAL FIELDS
+  { value: 'is_active', label: 'Active Status (true/false)' },
+  { value: 'notes', label: 'Notes' },
   { value: 'import_notes', label: 'Import Notes' },
+  
+  // UTILITY
   { value: 'skip', label: 'Skip this field' }
 ]
 
@@ -575,8 +597,16 @@ export function TemplateMatchingImport() {
               </div>
             </div>
             <p className="text-sm text-gray-500">
-              Processing your data...
+              Processing your data with duplicate detection and conflict resolution...
             </p>
+            {importState.error && (
+              <Alert className="mt-4 border-red-200 bg-red-50">
+                <X className="h-4 w-4 text-red-500" />
+                <AlertDescription className="text-red-700">
+                  <strong>Import Error:</strong> {importState.error}
+                </AlertDescription>
+              </Alert>
+            )}
           </div>
         </div>
       )}
@@ -586,11 +616,51 @@ export function TemplateMatchingImport() {
         <div className="border border-gray-200 rounded-lg bg-white">
           {/* Template .card-content with centered styling */}
           <div className="p-12 text-center">
-            <div className="text-5xl mb-4">✓</div>
-            <h2 className="text-xl font-semibold mb-2">Import Complete</h2>
-            <p className="text-gray-500 mb-6">
-              Successfully imported {importState.importResult?.imported || 0} organizations
-            </p>
+            <div className="text-5xl mb-4">
+              {importState.importResult?.success ? '✓' : '⚠️'}
+            </div>
+            <h2 className="text-xl font-semibold mb-2">
+              {importState.importResult?.success ? 'Import Complete' : 'Import Completed with Issues'}
+            </h2>
+            <div className="mb-6">
+              <div className="space-y-2">
+                <p className="text-gray-500">
+                  {importState.importResult?.message || 'Import completed'}
+                </p>
+                
+                {/* Skipped Records Section */}
+                {importState.importResult?.skipped && importState.importResult.skipped > 0 && (
+                  <details className="text-left max-w-md mx-auto">
+                    <summary className="cursor-pointer text-orange-600 text-sm font-medium">
+                      View Skipped Organizations ({importState.importResult.skipped} already exist)
+                    </summary>
+                    <div className="mt-2 p-3 bg-orange-50 rounded border max-h-32 overflow-y-auto">
+                      {importState.importResult.skippedRecords?.map((record, idx) => (
+                        <div key={idx} className="text-xs text-orange-700 mb-1">
+                          <span className="font-medium">{record.name}</span> ({record.type}) - Row {record.rowIndex}
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+                )}
+
+                {/* Error Details Section */}
+                {importState.importResult?.errors && importState.importResult.errors.length > 0 && (
+                  <details className="text-left max-w-md mx-auto">
+                    <summary className="cursor-pointer text-red-600 text-sm font-medium">
+                      View Error Details ({importState.importResult.errors.length} errors)
+                    </summary>
+                    <div className="mt-2 p-3 bg-red-50 rounded border max-h-32 overflow-y-auto">
+                      {importState.importResult.errors.map((err, idx) => (
+                        <div key={idx} className="text-xs text-red-700 mb-1">
+                          <span className="font-medium">Row {err.row}:</span> {err.error}
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+                )}
+              </div>
+            </div>
             <div className="flex gap-3 justify-center">
               <Button variant="outline" onClick={() => window.location.href = '/organizations'} className="py-2 px-4 border border-gray-200 bg-white text-gray-700 rounded-md text-sm font-medium">
                 View Organizations

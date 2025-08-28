@@ -10,17 +10,17 @@ export const FieldMapping = z.object({
     "is_active","contact_name","contact_email","contact_phone","contact_title"
   ]).nullable(), // null => unknown/skip
   confidence: z.number().min(0).max(1),
-  alternatives: z.array(z.string()).optional(),
-  reason: z.string().optional() // Why this mapping was suggested
+  alternatives: z.array(z.string()).nullable(),
+  reason: z.string().nullable() // Why this mapping was suggested
 });
 
 // Full response from OpenAI field mapping
 export const FieldMappingResponse = z.object({
   entityType: z.enum(["organization","contact","distributor","product","unknown"]),
   mappings: z.array(FieldMapping),
-  headerRowIndex: z.number().min(0).optional(), // if headers start at row N
-  confidence: z.number().min(0).max(1).optional(), // overall confidence
-  notes: z.string().optional() // any additional context
+  headerRowIndex: z.number().min(0).nullable(), // if headers start at row N
+  confidence: z.number().min(0).max(1).nullable(), // overall confidence
+  notes: z.string().nullable() // any additional context
 });
 
 // Validation issue for a specific row
@@ -28,7 +28,7 @@ export const ValidationIssue = z.object({
   field: z.string(),
   issue: z.string(),
   severity: z.enum(["error", "warning", "info"]),
-  suggestion: z.string().optional()
+  suggestion: z.string().nullable()
 });
 
 // Row validation response
@@ -36,7 +36,7 @@ export const RowValidation = z.object({
   rowIndex: z.number(),
   isValid: z.boolean(),
   issues: z.array(ValidationIssue),
-  confidence: z.number().min(0).max(1).optional()
+  confidence: z.number().min(0).max(1).nullable()
 });
 
 // Batch validation response
@@ -48,7 +48,7 @@ export const BatchValidationResponse = z.object({
     errorRows: z.number(),
     warningRows: z.number()
   }),
-  overallQuality: z.number().min(0).max(1).optional()
+  overallQuality: z.number().min(0).max(1).nullable()
 });
 
 // Duplicate detection response

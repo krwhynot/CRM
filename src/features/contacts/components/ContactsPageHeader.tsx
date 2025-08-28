@@ -24,7 +24,10 @@ export const ContactsPageHeader: React.FC<ContactsPageHeaderProps> = ({
       />
       <Button 
         onClick={onAddClick}
-        className="ml-6"
+        className={cn(
+          "btn-primary ml-6",
+          useNewStyle && "shadow hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+        )}
       >
         <Plus className="h-4 w-4 mr-2" />
         Add Contact

@@ -13,6 +13,7 @@ import '@testing-library/jest-dom'
 // Test environment configuration
 const TEST_SUPABASE_URL = process.env.VITE_SUPABASE_URL
 const TEST_SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY
+const TEST_SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 
 if (!TEST_SUPABASE_URL || !TEST_SUPABASE_ANON_KEY) {
   throw new Error(
@@ -22,8 +23,11 @@ if (!TEST_SUPABASE_URL || !TEST_SUPABASE_ANON_KEY) {
   )
 }
 
-// Create test Supabase client
-export const testSupabase = createClient<Database>(TEST_SUPABASE_URL, TEST_SUPABASE_ANON_KEY, {
+// Create test Supabase clients - service role for backend tests, anon for frontend tests
+const useServiceRole = TEST_SUPABASE_SERVICE_ROLE_KEY && process.env.NODE_ENV === 'test'
+const testKey = useServiceRole ? TEST_SUPABASE_SERVICE_ROLE_KEY : TEST_SUPABASE_ANON_KEY
+
+export const testSupabase = createClient<Database>(TEST_SUPABASE_URL, testKey, {
   auth: {
     autoRefreshToken: false,
     persistSession: false,
@@ -33,6 +37,32 @@ export const testSupabase = createClient<Database>(TEST_SUPABASE_URL, TEST_SUPAB
     schema: 'public'
   }
 })
+
+// Also create an anon client for RLS testing
+export const testSupabaseAnon = createClient<Database>(TEST_SUPABASE_URL, TEST_SUPABASE_ANON_KEY, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false,
+    detectSessionInUrl: false
+  },
+  db: {
+    schema: 'public'
+  }
+})
+
+console.log(
+  useServiceRole
+    ? '🔑 Using service role key for backend tests (bypasses RLS)'
+    : '👤 Using anonymous key for tests (respects RLS policies)'
+)
+
+// Show authentication status for troubleshooting
+if (!useServiceRole) {
+  console.log('📋 To fix authentication issues:')
+  console.log('1. Add SUPABASE_SERVICE_ROLE_KEY to .env.local for backend tests')
+  console.log('2. Or ensure test users exist in your Supabase auth system')
+  console.log('3. Run: ./scripts/test-auth-validation.sh for detailed guidance')
+}
 
 // Test user credentials
 export const TEST_USER_EMAIL = 'test@kitchenpantrycrm.com'
@@ -165,6 +195,17 @@ export class TestAuth {
   private static currentUser: any = null
 
   static async loginAsTestUser() {
+    // If using service role key, skip authentication as it bypasses RLS
+    if (useServiceRole) {
+      const mockUser = { id: 'service-role-user', email: 'service@test.com' }
+      this.currentUser = mockUser
+      console.log('🔑 Using service role - skipping authentication')
+      return {
+        user: mockUser,
+        session: { access_token: 'service-role', user: mockUser }
+      }
+    }
+
     try {
       const { data, error } = await testSupabase.auth.signInWithPassword({
         email: TEST_USER_EMAIL,
@@ -173,6 +214,10 @@ export class TestAuth {
 
       if (error) {
         console.warn(`⚠️  Test user authentication failed: ${error.message}`)
+        console.log('📋 To fix authentication issues:')
+        console.log('1. Add SUPABASE_SERVICE_ROLE_KEY to .env.local for backend tests')
+        console.log('2. Or ensure test users exist in your Supabase auth system')
+        
         // Return mock user for testing purposes
         return {
           user: { id: 'test-user-id', email: TEST_USER_EMAIL },
@@ -274,16 +319,20 @@ beforeEach(() => {
 // Using `var` in the global declaration is a common workaround for this type of error
 declare global {
   var testSupabase: typeof testSupabase
+  var testSupabaseAnon: typeof testSupabaseAnon
   var testConfig: typeof testConfig
   var TestCleanup: typeof TestCleanup
   var PerformanceMonitor: typeof PerformanceMonitor
   var TestAuth: typeof TestAuth
+  var useServiceRole: boolean
 }
 
 Object.assign(globalThis, {
   testSupabase,
+  testSupabaseAnon,
   testConfig,
   TestCleanup,
   PerformanceMonitor,
-  TestAuth
+  TestAuth,
+  useServiceRole
 })

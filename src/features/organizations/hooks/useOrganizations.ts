@@ -20,7 +20,6 @@ export const organizationKeys = {
       ...filters,
       // Sort array filters for consistency
       type: Array.isArray(filters.type) ? [...filters.type].sort() : filters.type,
-      size: Array.isArray(filters.size) ? [...filters.size].sort() : filters.size,
     } : undefined
     return [...organizationKeys.lists(), { filters: normalizedFilters }] as const
   },
@@ -51,7 +50,6 @@ export function useOrganizations(filters?: OrganizationFilters) {
           id,
           name,
           type,
-          size,
           segment,
           priority,
           phone,
@@ -64,8 +62,6 @@ export function useOrganizations(filters?: OrganizationFilters) {
           is_active,
           is_principal,
           is_distributor,
-          annual_revenue,
-          employee_count,
           notes,
           created_at,
           updated_at
@@ -83,13 +79,6 @@ export function useOrganizations(filters?: OrganizationFilters) {
         }
       }
 
-      if (filters?.size) {
-        if (Array.isArray(filters.size)) {
-          query = query.in('size', filters.size)
-        } else {
-          query = query.eq('size', filters.size)
-        }
-      }
 
       if (filters?.segment) {
         query = query.ilike('segment', `%${filters.segment}%`)
@@ -168,7 +157,6 @@ export function useOrganization(id: string) {
           id,
           name,
           type,
-          size,
           segment,
           priority,
           phone,
@@ -183,8 +171,6 @@ export function useOrganization(id: string) {
           is_active,
           is_principal,
           is_distributor,
-          annual_revenue,
-          employee_count,
           notes,
           created_at,
           updated_at

@@ -615,15 +615,13 @@ export type Database = {
         Row: {
           address_line_1: string | null
           address_line_2: string | null
-          annual_revenue: number | null
           city: string | null
           country: string | null
           created_at: string | null
-          created_by: string | null
+          created_by: string
           deleted_at: string | null
           description: string | null
           email: string | null
-          employee_count: number | null
           id: string
           import_notes: string | null
           industry: string | null
@@ -640,7 +638,6 @@ export type Database = {
           search_tsv: unknown | null
           secondary_manager_name: string | null
           segment: string
-          size: Database["public"]["Enums"]["organization_size"] | null
           state_province: string | null
           type: Database["public"]["Enums"]["organization_type"]
           updated_at: string | null
@@ -650,15 +647,13 @@ export type Database = {
         Insert: {
           address_line_1?: string | null
           address_line_2?: string | null
-          annual_revenue?: number | null
           city?: string | null
           country?: string | null
           created_at?: string | null
-          created_by?: string | null
+          created_by: string
           deleted_at?: string | null
           description?: string | null
           email?: string | null
-          employee_count?: number | null
           id?: string
           import_notes?: string | null
           industry?: string | null
@@ -675,7 +670,6 @@ export type Database = {
           search_tsv?: unknown | null
           secondary_manager_name?: string | null
           segment?: string
-          size?: Database["public"]["Enums"]["organization_size"] | null
           state_province?: string | null
           type: Database["public"]["Enums"]["organization_type"]
           updated_at?: string | null
@@ -685,15 +679,13 @@ export type Database = {
         Update: {
           address_line_1?: string | null
           address_line_2?: string | null
-          annual_revenue?: number | null
           city?: string | null
           country?: string | null
           created_at?: string | null
-          created_by?: string | null
+          created_by?: string
           deleted_at?: string | null
           description?: string | null
           email?: string | null
-          employee_count?: number | null
           id?: string
           import_notes?: string | null
           industry?: string | null
@@ -710,7 +702,6 @@ export type Database = {
           search_tsv?: unknown | null
           secondary_manager_name?: string | null
           segment?: string
-          size?: Database["public"]["Enums"]["organization_size"] | null
           state_province?: string | null
           type?: Database["public"]["Enums"]["organization_type"]
           updated_at?: string | null
@@ -1275,7 +1266,6 @@ export type Database = {
         | "Closed - Lost"
         | "Nurturing"
         | "Qualified"
-      organization_size: "small" | "medium" | "large" | "enterprise"
       organization_type:
         | "customer"
         | "principal"
@@ -1461,7 +1451,6 @@ export const Constants = {
         "Nurturing",
         "Qualified",
       ],
-      organization_size: ["small", "medium", "large", "enterprise"],
       organization_type: [
         "customer",
         "principal",

@@ -1,9 +1,11 @@
 import React from 'react'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { OrganizationBadges } from '../OrganizationBadges'
 import { OrganizationActions } from '../OrganizationActions'
+import { cn } from '@/lib/utils'
 import type { Organization } from '@/types/entities'
 
 interface OrganizationRowMainProps {
@@ -14,6 +16,8 @@ interface OrganizationRowMainProps {
   onDelete?: (organization: Organization) => void
   onView?: (organization: Organization) => void
   onContact?: (organization: Organization) => void
+  isSelected?: boolean
+  onSelect?: () => void
 }
 
 const EmptyCell = () => (
@@ -27,7 +31,9 @@ export const OrganizationRowMain: React.FC<OrganizationRowMainProps> = ({
   onEdit,
   onDelete,
   onView,
-  onContact
+  onContact,
+  isSelected = false,
+  onSelect
 }) => {
   const formatLocation = () => {
     if (organization.city && organization.state_province) {
@@ -56,7 +62,17 @@ export const OrganizationRowMain: React.FC<OrganizationRowMainProps> = ({
   )
 
   return (
-    <TableRow className="hover:bg-gray-50 transition-colors duration-200 group">
+    <TableRow className={cn(
+      "hover:bg-gray-50 transition-colors duration-200 group",
+      isSelected && "bg-blue-50 hover:bg-blue-100"
+    )}>
+      <TableCell className="py-4">
+        <Checkbox
+          checked={isSelected}
+          onCheckedChange={onSelect}
+          aria-label={`Select ${organization.name}`}
+        />
+      </TableCell>
       <TableCell className="py-4">
         <Button 
           variant="ghost" 

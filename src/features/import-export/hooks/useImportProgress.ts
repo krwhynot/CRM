@@ -5,12 +5,21 @@ import type { TransformedOrganizationRow } from '@/hooks/useFileUpload'
 
 type OrganizationInsert = Database['public']['Tables']['organizations']['Insert']
 
+export interface SkippedRecord {
+  name: string
+  type: string
+  reason: string
+  rowIndex: number
+}
+
 export interface ImportResult {
   success: boolean
   message: string
   imported: number
   failed: number
+  skipped: number
   errors: Array<{ row: number; error: string }>
+  skippedRecords: SkippedRecord[]
 }
 
 interface UseImportProgressState {
@@ -34,6 +43,32 @@ export const useImportProgress = (): UseImportProgressReturn => {
     error: null,
   })
 
+  // Check for existing organizations to avoid duplicates
+  const checkExistingOrganizations = async (rows: TransformedOrganizationRow[]) => {
+    const namePairs = rows.map(row => ({ name: row.name, type: row.type }))
+    
+    const { data: existingOrgs, error } = await supabase
+      .from('organizations')
+      .select('name, type')
+      .in('name', rows.map(row => row.name))
+      .is('deleted_at', null)
+    
+    if (error) {
+      console.error('Error checking existing organizations:', error)
+      throw error
+    }
+
+    const existingSet = new Set(
+      existingOrgs?.map(org => `${org.name}|${org.type}`) || []
+    )
+
+    return namePairs.map((pair, index) => ({
+      ...pair,
+      index,
+      exists: existingSet.has(`${pair.name}|${pair.type}`)
+    }))
+  }
+
   // Import organizations with batch processing
   const importOrganizations = useCallback(async (validRows: TransformedOrganizationRow[]) => {
     setImportState(prev => ({
@@ -45,11 +80,34 @@ export const useImportProgress = (): UseImportProgressReturn => {
     }))
 
     try {
+      // First, check which organizations already exist
+      const existenceCheck = await checkExistingOrganizations(validRows)
+      
+      // Separate new records from existing ones
+      const newRecords: TransformedOrganizationRow[] = []
+      const skippedRecords: SkippedRecord[] = []
+      
+      existenceCheck.forEach((check) => {
+        if (check.exists) {
+          skippedRecords.push({
+            name: check.name,
+            type: check.type,
+            reason: 'Organization already exists',
+            rowIndex: check.index + 1
+          })
+        } else {
+          newRecords.push(validRows[check.index])
+        }
+      })
+
+      console.log(`Pre-import analysis: ${newRecords.length} new, ${skippedRecords.length} existing`)
+
+      // Process only new records in batches
       const batchSize = 50
       const batches = []
       
-      for (let i = 0; i < validRows.length; i += batchSize) {
-        batches.push(validRows.slice(i, i + batchSize))
+      for (let i = 0; i < newRecords.length; i += batchSize) {
+        batches.push(newRecords.slice(i, i + batchSize))
       }
 
       let imported = 0
@@ -93,10 +151,18 @@ export const useImportProgress = (): UseImportProgressReturn => {
 
           if (error) {
             console.error('Batch import error:', error)
+            const errorDetail = `Code: ${error.code || 'unknown'}, Message: ${error.message || 'unknown error'}`
+            if (error.details) {
+              console.error('Error details:', error.details)
+            }
+            if (error.hint) {
+              console.error('Error hint:', error.hint)
+            }
+            
             failed += batch.length
             errors.push({
               row: batchIndex * batchSize + 1,
-              error: `Batch ${batchIndex + 1} failed: ${error.message}`
+              error: `Batch ${batchIndex + 1} failed: ${errorDetail}`
             })
           } else {
             imported += batch.length
@@ -117,12 +183,12 @@ export const useImportProgress = (): UseImportProgressReturn => {
 
       const result: ImportResult = {
         success: failed === 0,
-        message: failed === 0 
-          ? `Successfully imported ${imported} organizations` 
-          : `Imported ${imported} organizations, ${failed} failed`,
+        message: `Import complete: ${imported} imported, ${skippedRecords.length} skipped${failed > 0 ? `, ${failed} failed` : ''}`,
         imported,
         failed,
-        errors
+        skipped: skippedRecords.length,
+        errors,
+        skippedRecords
       }
 
       setImportState(prev => ({

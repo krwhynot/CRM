@@ -101,21 +101,6 @@ export const organizationSchema = yup.object({
     .nullable()
     .transform(FormTransforms.nullableString),
   
-  size: yup.string()
-    .oneOf(['small', 'medium', 'large', 'enterprise'] as const, 'Invalid organization size')
-    .nullable()
-    .transform(FormTransforms.nullableString),
-  
-  annual_revenue: yup.number()
-    .positive('Annual revenue must be positive')
-    .nullable()
-    .transform(FormTransforms.nullableNumber),
-  
-  employee_count: yup.number()
-    .integer('Employee count must be a whole number')
-    .positive('Employee count must be positive')
-    .nullable()
-    .transform(FormTransforms.nullableNumber),
   
   notes: yup.string()
     .max(500, 'Notes must be 500 characters or less')
@@ -133,7 +118,6 @@ export interface OrganizationFilters {
   segment?: string | string[]
   is_principal?: boolean
   is_distributor?: boolean
-  size?: Database['public']['Enums']['organization_size'] | Database['public']['Enums']['organization_size'][]
   is_active?: boolean
   search?: string
 }

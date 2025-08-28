@@ -1,10 +1,12 @@
 import React from 'react'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { ProductBadges } from '../ProductBadges'
 import { ProductActions } from '../ProductActions'
 import { formatPrice } from '@/lib/product-formatters'
+import { cn } from '@/lib/utils'
 import type { Product, ProductWithPrincipal } from '@/types/entities'
 
 interface ProductRowMainProps {
@@ -15,6 +17,8 @@ interface ProductRowMainProps {
   onDelete?: (product: Product) => void
   onView?: (product: Product) => void
   onContactSupplier?: (product: Product) => void
+  isSelected?: boolean
+  onSelect?: () => void
 }
 
 const EmptyCell = () => (
@@ -28,10 +32,22 @@ export const ProductRowMain: React.FC<ProductRowMainProps> = ({
   onEdit,
   onDelete,
   onView,
-  onContactSupplier
+  onContactSupplier,
+  isSelected = false,
+  onSelect
 }) => {
   return (
-    <TableRow className="hover:bg-gray-50 transition-colors duration-200 group">
+    <TableRow className={cn(
+      "hover:bg-gray-50 transition-colors duration-200 group",
+      isSelected && "bg-blue-50 hover:bg-blue-100"
+    )}>
+      <TableCell className="py-4">
+        <Checkbox
+          checked={isSelected}
+          onCheckedChange={onSelect}
+          aria-label={`Select ${product.name}`}
+        />
+      </TableCell>
       <TableCell className="py-4">
         <Button 
           variant="ghost" 

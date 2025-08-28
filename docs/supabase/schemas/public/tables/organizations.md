@@ -17,8 +17,6 @@
 | state_province | text | YES | | |
 | postal_code | text | YES | | |
 | country | text | YES | 'US'::text | |
-| annual_revenue | numeric(15,2) | YES | | |
-| employee_count | integer | YES | | |
 | industry | text | YES | | |
 | parent_organization_id | uuid | YES | | |
 | created_at | timestamptz | YES | now() | |
@@ -26,7 +24,6 @@
 | created_by | uuid | NO | | |
 | updated_by | uuid | YES | | |
 | deleted_at | timestamptz | YES | | |
-| size | organization_size | YES | | |
 | notes | text | YES | | |
 | is_active | boolean | YES | true | |
 | is_principal | boolean | YES | false | TRUE if this organization is a Principal (manufacturer/supplier) |

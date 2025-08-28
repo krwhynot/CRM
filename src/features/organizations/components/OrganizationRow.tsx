@@ -11,6 +11,8 @@ interface OrganizationRowProps {
   onDelete?: (organization: Organization) => void
   onView?: (organization: Organization) => void
   onContact?: (organization: Organization) => void
+  isSelected?: boolean
+  onSelect?: () => void
 }
 
 
@@ -21,7 +23,9 @@ export const OrganizationRow: React.FC<OrganizationRowProps> = ({
   onEdit,
   onDelete,
   onView,
-  onContact
+  onContact,
+  isSelected,
+  onSelect
 }) => {
   return (
     <>
@@ -33,6 +37,8 @@ export const OrganizationRow: React.FC<OrganizationRowProps> = ({
         onDelete={onDelete}
         onView={onView}
         onContact={onContact}
+        isSelected={isSelected}
+        onSelect={onSelect}
       />
       
       {isExpanded && (

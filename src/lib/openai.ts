@@ -62,7 +62,7 @@ const CRM_FIELD_CONTEXT = {
 };
 
 /**
- * Smart field mapping using OpenAI GPT-3.5-turbo
+ * Smart field mapping using OpenAI GPT-4o with structured outputs
  */
 export async function suggestFieldMappings(
   headers: string[], 
@@ -106,7 +106,7 @@ Analyze the headers and sample data to suggest the best field mappings.`
   try {
     const openaiClient = getOpenAIClient();
     const response = await openaiClient.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-2024-08-06",
       messages: prompt,
       response_format: zodResponseFormat(FieldMappingResponse, "FieldMappingResponse"),
       temperature: 0, // Deterministic responses
@@ -166,7 +166,7 @@ Check each row for data quality issues and provide specific feedback.`
   try {
     const openaiClient = getOpenAIClient();
     const response = await openaiClient.chat.completions.create({
-      model: "gpt-3.5-turbo", 
+      model: "gpt-4o-2024-08-06", 
       messages: prompt,
       response_format: zodResponseFormat(BatchValidationResponse, "BatchValidationResponse"),
       temperature: 0,
@@ -226,7 +226,7 @@ Group similar organizations and suggest how to handle each duplicate group.`
   try {
     const openaiClient = getOpenAIClient();
     const response = await openaiClient.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-2024-08-06",
       messages: prompt, 
       response_format: zodResponseFormat(DuplicateDetectionResponse, "DuplicateDetectionResponse"),
       temperature: 0,

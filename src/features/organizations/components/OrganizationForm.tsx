@@ -48,8 +48,6 @@ export function OrganizationForm({
       postal_code: initialData?.postal_code || null,
       country: initialData?.country || null,
       industry: initialData?.industry || null,
-      annual_revenue: initialData?.annual_revenue || null,
-      employee_count: initialData?.employee_count || null,
       notes: initialData?.notes || null
     }
   })

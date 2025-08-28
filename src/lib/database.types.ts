@@ -756,7 +756,6 @@ export type Database = {
         Row: {
           address_line_1: string | null
           address_line_2: string | null
-          annual_revenue: number | null
           city: string | null
           country: string | null
           created_at: string | null
@@ -764,7 +763,6 @@ export type Database = {
           deleted_at: string | null
           description: string | null
           email: string | null
-          employee_count: number | null
           id: string
           import_notes: string | null
           industry: string | null
@@ -781,7 +779,6 @@ export type Database = {
           search_tsv: unknown | null
           secondary_manager_name: string | null
           segment: string
-          size: Database["public"]["Enums"]["organization_size"] | null
           state_province: string | null
           type: Database["public"]["Enums"]["organization_type"]
           updated_at: string | null
@@ -791,7 +788,6 @@ export type Database = {
         Insert: {
           address_line_1?: string | null
           address_line_2?: string | null
-          annual_revenue?: number | null
           city?: string | null
           country?: string | null
           created_at?: string | null
@@ -799,7 +795,6 @@ export type Database = {
           deleted_at?: string | null
           description?: string | null
           email?: string | null
-          employee_count?: number | null
           id?: string
           import_notes?: string | null
           industry?: string | null
@@ -816,7 +811,6 @@ export type Database = {
           search_tsv?: unknown | null
           secondary_manager_name?: string | null
           segment?: string
-          size?: Database["public"]["Enums"]["organization_size"] | null
           state_province?: string | null
           type: Database["public"]["Enums"]["organization_type"]
           updated_at?: string | null
@@ -826,7 +820,6 @@ export type Database = {
         Update: {
           address_line_1?: string | null
           address_line_2?: string | null
-          annual_revenue?: number | null
           city?: string | null
           country?: string | null
           created_at?: string | null
@@ -834,7 +827,6 @@ export type Database = {
           deleted_at?: string | null
           description?: string | null
           email?: string | null
-          employee_count?: number | null
           id?: string
           import_notes?: string | null
           industry?: string | null
@@ -851,7 +843,6 @@ export type Database = {
           search_tsv?: unknown | null
           secondary_manager_name?: string | null
           segment?: string
-          size?: Database["public"]["Enums"]["organization_size"] | null
           state_province?: string | null
           type?: Database["public"]["Enums"]["organization_type"]
           updated_at?: string | null
@@ -1437,7 +1428,245 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      analyze_principal_advocacy_network: {
+        Args: { target_principal_id: string }
+        Returns: {
+          avg_influence: number
+          contact_count: number
+          network_strength_score: number
+          organization_id: string
+          organization_name: string
+          strong_advocates: number
+          total_advocacy_strength: number
+        }[]
+      }
+      check_ui_readiness_for_legacy_removal: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          check_name: string
+          details: string
+          status: string
+        }[]
+      }
+      citext: {
+        Args: { "": boolean } | { "": string } | { "": unknown }
+        Returns: string
+      }
+      citext_hash: {
+        Args: { "": string }
+        Returns: number
+      }
+      citextin: {
+        Args: { "": unknown }
+        Returns: string
+      }
+      citextout: {
+        Args: { "": string }
+        Returns: unknown
+      }
+      citextrecv: {
+        Args: { "": unknown }
+        Returns: string
+      }
+      citextsend: {
+        Args: { "": string }
+        Returns: string
+      }
+      create_contact_with_org: {
+        Args: {
+          p_contact_data: Json
+          p_org_data: Json
+          p_org_name: string
+          p_org_type: string
+        }
+        Returns: {
+          contact_data: Json
+          contact_id: string
+          is_new_organization: boolean
+          organization_data: Json
+          organization_id: string
+        }[]
+      }
+      get_contact_advocacy_profile: {
+        Args: { target_contact_id: string }
+        Returns: {
+          advocacy_notes: string
+          advocacy_strength: number
+          combined_influence_score: number
+          decision_authority: number
+          principal_id: string
+          principal_name: string
+          purchase_influence: number
+          relationship_type: string
+        }[]
+      }
+      get_dashboard_metrics: {
+        Args: {
+          p_date_from?: string
+          p_date_to?: string
+          p_principal_ids?: string[]
+        }
+        Returns: {
+          active_opportunities: number
+          active_pipeline_value: number
+          average_opportunity_value: number
+          avg_interactions_per_opportunity: number
+          avg_opportunities_per_principal: number
+          conversion_rate: number
+          distributors_count: number
+          interactions_by_type: Json
+          last_activity_date: string
+          opportunities_by_stage: Json
+          opportunity_values_by_stage: Json
+          principals_count: number
+          principals_with_active_opportunities: number
+          recent_interactions: number
+          this_month_interactions: number
+          this_week_interactions: number
+          top_principals_by_value: Json
+          total_contacts: number
+          total_interactions: number
+          total_opportunities: number
+          total_organizations: number
+          total_pipeline_value: number
+          total_products: number
+        }[]
+      }
+      get_enum_display_info: {
+        Args: { enum_type: string; enum_value: string }
+        Returns: {
+          description: string
+          display_name: string
+          sort_order: number
+        }[]
+      }
+      get_principal_advocacy_summary: {
+        Args: { target_principal_id: string }
+        Returns: {
+          avg_advocacy_strength: number
+          contact_count: number
+          organization_count: number
+          strong_advocates: number
+          total_advocates: number
+        }[]
+      }
+      hypopg: {
+        Args: Record<PropertyKey, never>
+        Returns: Record<string, unknown>[]
+      }
+      hypopg_create_index: {
+        Args: { sql_order: string }
+        Returns: Record<string, unknown>[]
+      }
+      hypopg_drop_index: {
+        Args: { indexid: unknown }
+        Returns: boolean
+      }
+      hypopg_get_indexdef: {
+        Args: { indexid: unknown }
+        Returns: string
+      }
+      hypopg_hidden_indexes: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          indexid: unknown
+        }[]
+      }
+      hypopg_hide_index: {
+        Args: { indexid: unknown }
+        Returns: boolean
+      }
+      hypopg_relation_size: {
+        Args: { indexid: unknown }
+        Returns: number
+      }
+      hypopg_reset: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      hypopg_reset_index: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      hypopg_unhide_all_indexes: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      hypopg_unhide_index: {
+        Args: { indexid: unknown }
+        Returns: boolean
+      }
+      principal_advocacy_schema_health_check: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          avg_row_size: number
+          index_count: number
+          recommendations: string
+          row_count: number
+          table_name: string
+        }[]
+      }
+      refresh_dashboard_summary_concurrent: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      refresh_dashboard_summary_regular: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      refresh_dashboard_view: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      remove_legacy_opportunity_columns: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      user_has_org_access: {
+        Args: { org_id: string } | { org_id: string; user_id: string }
+        Returns: boolean
+      }
+      user_is_admin: {
+        Args: Record<PropertyKey, never> | { user_id: string }
+        Returns: boolean
+      }
+      validate_enum_governance: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          enum_type: string
+          enum_values: string
+          lookup_table_exists: boolean
+          recommendation: string
+          values_in_sync: boolean
+        }[]
+      }
+      validate_founding_interaction_timing: {
+        Args: {
+          p_founding_interaction_id: string
+          p_opportunity_created_at: string
+        }
+        Returns: boolean
+      }
+      validate_principal_type: {
+        Args: { org_type: Database["public"]["Enums"]["organization_type"] }
+        Returns: boolean
+      }
+      validate_priority_value_alignment: {
+        Args: {
+          estimated_value: number
+          priority: Database["public"]["Enums"]["priority_level"]
+        }
+        Returns: boolean
+      }
+      validate_schema_migration_success: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          check_name: string
+          details: string
+          status: string
+          validation_category: string
+        }[]
+      }
     }
     Enums: {
       contact_role:
@@ -1467,6 +1696,12 @@ export type Database = {
         | "Demo Scheduled"
         | "Closed - Won"
         | "Closed - Lost"
+        | "lead"
+        | "qualified"
+        | "proposal"
+        | "negotiation"
+        | "closed_won"
+        | "closed_lost"
       opportunity_status:
         | "Active"
         | "On Hold"
@@ -1474,7 +1709,12 @@ export type Database = {
         | "Closed - Lost"
         | "Nurturing"
         | "Qualified"
-      organization_size: "small" | "medium" | "large" | "enterprise"
+        | "active"
+        | "on_hold"
+        | "nurturing"
+        | "qualified"
+        | "closed_won"
+        | "closed_lost"
       organization_type:
         | "customer"
         | "principal"
@@ -1651,6 +1891,12 @@ export const Constants = {
         "Demo Scheduled",
         "Closed - Won",
         "Closed - Lost",
+        "lead",
+        "qualified",
+        "proposal",
+        "negotiation",
+        "closed_won",
+        "closed_lost",
       ],
       opportunity_status: [
         "Active",
@@ -1659,8 +1905,13 @@ export const Constants = {
         "Closed - Lost",
         "Nurturing",
         "Qualified",
+        "active",
+        "on_hold",
+        "nurturing",
+        "qualified",
+        "closed_won",
+        "closed_lost",
       ],
-      organization_size: ["small", "medium", "large", "enterprise"],
       organization_type: [
         "customer",
         "principal",
@@ -1686,9 +1937,3 @@ export const Constants = {
     },
   },
 } as const
-
-// Helper types for Principal CRM specific values
-export type PurchaseInfluenceLevel = 'High' | 'Medium' | 'Low' | 'Unknown'
-export type DecisionAuthorityRole = 'Decision Maker' | 'Influencer' | 'End User' | 'Gatekeeper'
-export type OrganizationPriority = 'A' | 'B' | 'C' | 'D'
-export type OpportunityContext = 'Site Visit' | 'Food Show' | 'New Product Interest' | 'Follow-up' | 'Demo Request' | 'Sampling' | 'Custom'

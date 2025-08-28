@@ -1,8 +1,13 @@
+import { useState } from 'react'
 import { SimpleTable } from '@/components/ui/simple-table'
 import { ProductsFilters } from './ProductsFilters'
 import { ProductRow } from './ProductRow'
+import { BulkActionsToolbar } from '@/features/organizations/components/BulkActionsToolbar'
+import { BulkDeleteDialog } from '@/features/organizations/components/BulkDeleteDialog'
 import { useProductsFiltering } from '../hooks/useProductsFiltering'
 import { useProductsDisplay } from '../hooks/useProductsDisplay'
+import { useDeleteProduct } from '../hooks/useProducts'
+import { toast } from '@/lib/toast-styles'
 import type { Product, ProductWithPrincipal } from '@/types/entities'
 
 interface ProductsTableProps {
@@ -26,6 +31,14 @@ export function ProductsTable({
   onContactSupplier,
   onAddNew 
 }: ProductsTableProps) {
+  // Selection state management
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  // Hooks
+  const deleteProduct = useDeleteProduct()
+
   // Extract business logic to custom hooks
   const {
     activeFilter,
@@ -40,8 +53,90 @@ export function ProductsTable({
     products.map(product => product.id)
   )
 
+  // Selection management functions
+  const handleSelectAllFromToolbar = () => {
+    setSelectedIds(filteredProducts.map(product => product.id))
+  }
+
+  const handleSelectNoneFromToolbar = () => {
+    setSelectedIds([])
+  }
+
+  const handleRowSelect = (productId: string) => {
+    setSelectedIds(prev => 
+      prev.includes(productId)
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    )
+  }
+
+  const handleClearSelection = () => {
+    setSelectedIds([])
+  }
+
+  const handleBulkDelete = () => {
+    setDeleteDialogOpen(true)
+  }
+
+  // Get selected products for dialog
+  const selectedProducts = products.filter(product => selectedIds.includes(product.id))
+
+  const handleConfirmDelete = async () => {
+    if (selectedIds.length === 0) return
+    
+    setIsDeleting(true)
+    const results = []
+    let successCount = 0
+    let errorCount = 0
+    
+    try {
+      // Process deletions sequentially for maximum safety
+      for (const productId of selectedIds) {
+        try {
+          await deleteProduct.mutateAsync(productId)
+          results.push({ id: productId, status: 'success' })
+          successCount++
+        } catch (error) {
+          console.error(`Failed to delete product ${productId}:`, error)
+          results.push({ 
+            id: productId, 
+            status: 'error', 
+            error: error instanceof Error ? error.message : 'Unknown error' 
+          })
+          errorCount++
+        }
+      }
+
+      // Show results to user
+      if (successCount > 0 && errorCount === 0) {
+        toast.success(`Successfully archived ${successCount} product${successCount !== 1 ? 's' : ''}`)
+      } else if (successCount > 0 && errorCount > 0) {
+        toast.warning(`Archived ${successCount} products, but ${errorCount} failed`)
+      } else if (errorCount > 0) {
+        toast.error(`Failed to archive ${errorCount} product${errorCount !== 1 ? 's' : ''}`)
+      }
+
+      // Clear selection if any operations succeeded
+      if (successCount > 0) {
+        const successfulIds = results
+          .filter(r => r.status === 'success')
+          .map(r => r.id)
+        
+        setSelectedIds(prev => prev.filter(id => !successfulIds.includes(id)))
+      }
+      
+    } catch (error) {
+      console.error('Unexpected error during bulk delete:', error)
+      toast.error('An unexpected error occurred during bulk deletion')
+    } finally {
+      setIsDeleting(false)
+      setDeleteDialogOpen(false)
+    }
+  }
+
+  // Headers configuration for SimpleTable
   const headers = [
-    { label: '', className: 'w-12' },
+    { label: '', isCheckbox: true },
     { label: 'Product', className: 'min-w-[220px]' },
     { label: 'Price', className: 'min-w-[90px] text-right' },
     { label: 'Principal', className: 'min-w-[110px]' },
@@ -59,6 +154,8 @@ export function ProductsTable({
       onDelete={onDelete}
       onView={onView}
       onContactSupplier={onContactSupplier}
+      isSelected={selectedIds.includes(product.id)}
+      onSelect={() => handleRowSelect(product.id)}
     />
   )
 
@@ -76,6 +173,16 @@ export function ProductsTable({
         filteredCount={filteredProducts.length}
       />
 
+      {/* Bulk Actions Toolbar */}
+      <BulkActionsToolbar
+        selectedCount={selectedIds.length}
+        totalCount={filteredProducts.length}
+        onBulkDelete={handleBulkDelete}
+        onClearSelection={handleClearSelection}
+        onSelectAll={handleSelectAllFromToolbar}
+        onSelectNone={handleSelectNoneFromToolbar}
+      />
+
       {/* Table Container */}
       <SimpleTable
         data={filteredProducts}
@@ -84,7 +191,16 @@ export function ProductsTable({
         renderRow={renderProductRow}
         emptyMessage={activeFilter !== 'all' ? 'No products match your criteria' : 'No products found'}
         emptySubtext={activeFilter !== 'all' ? 'Try adjusting your filters' : 'Get started by adding your first product'}
-        colSpan={6}
+        colSpan={7}
+        selectedCount={selectedIds.length}
+        totalCount={filteredProducts.length}
+        onSelectAll={(checked) => {
+          if (checked) {
+            setSelectedIds(filteredProducts.map(product => product.id))
+          } else {
+            setSelectedIds([])
+          }
+        }}
       />
 
       {/* Results Summary */}
@@ -98,6 +214,15 @@ export function ProductsTable({
           </span>
         </div>
       )}
+
+      {/* Bulk Delete Dialog */}
+      <BulkDeleteDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        organizations={selectedProducts}
+        onConfirm={handleConfirmDelete}
+        isDeleting={isDeleting}
+      />
     </div>
   )
 }

@@ -42,22 +42,10 @@ export function ContactsTable({
     isRowExpanded
   } = useContactsDisplay(contacts.map(c => c.id))
 
-  // Generate dynamic headers based on showOrganization - optimized widths to prevent cutoff
-  const baseHeaders = [
-    { label: '', className: 'w-12' },
-    { label: 'Contact', className: 'min-w-[160px]' }
-  ]
-  
-  if (showOrganization) {
-    baseHeaders.push({ label: 'Organization', className: 'min-w-[120px]' })
-  }
-  
-  baseHeaders.push(
-    { label: 'Position', className: 'min-w-[100px]' },
-    { label: 'Primary Contact', className: 'min-w-[180px]' },
-    { label: 'Status', className: 'text-center min-w-[90px]' },
-    { label: 'Quick Actions', className: 'text-center min-w-[100px]' }
-  )
+  // Generate dynamic headers based on showOrganization - flexible responsive layout
+  const headers = showOrganization 
+    ? ['', 'Contact', 'Organization', 'Position', 'Primary Contact', 'Status', 'Quick Actions']
+    : ['', 'Contact', 'Position', 'Primary Contact', 'Status', 'Quick Actions']
 
   const renderContactRow = (contact: ContactWithOrganization, isExpanded: boolean, onToggle: () => void) => (
     <ContactRow
@@ -90,7 +78,7 @@ export function ContactsTable({
       <SimpleTable
         data={filteredContacts}
         loading={loading}
-        headers={baseHeaders}
+        headers={headers}
         renderRow={renderContactRow}
         emptyMessage={activeFilter !== 'all' ? 'No contacts match your criteria' : 'No contacts found'}
         emptySubtext={activeFilter !== 'all' ? 'Try adjusting your filters' : 'Get started by adding your first contact'}

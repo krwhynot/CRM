@@ -55,11 +55,6 @@
 - closed_won
 - closed_lost
 
-## organization_size
-- small
-- medium
-- large
-- enterprise
 
 ## organization_type
 - customer

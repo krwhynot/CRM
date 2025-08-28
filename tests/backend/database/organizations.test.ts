@@ -40,9 +40,6 @@ describe('Organizations Database Operations', () => {
         postal_code: '90210',
         country: 'United States',
         industry: 'Food Service',
-        size: 'medium' as const,
-        annual_revenue: 1000000.00,
-        employee_count: 50,
         is_active: true
       }
 
@@ -459,24 +456,6 @@ describe('Organizations Database Operations', () => {
       testOrgIds.push(result1.data.id, result2.data.id)
     })
 
-    test('should validate decimal precision for annual_revenue', async () => {
-      const orgData = {
-        name: 'Revenue Test Organization',
-        type: 'customer' as const,
-        annual_revenue: 999999999999999.99 // Maximum precision
-      }
-
-      const result = await testSupabase
-        .from('organizations')
-        .insert(orgData)
-        .select()
-        .single()
-
-      expect(result.error).toBeNull()
-      expect(result.data.annual_revenue).toBe(999999999999999.99)
-
-      testOrgIds.push(result.data.id)
-    })
 
     test('should handle null values for optional fields', async () => {
       const orgData = {
@@ -486,8 +465,6 @@ describe('Organizations Database Operations', () => {
         phone: null,
         email: null,
         website: null,
-        annual_revenue: null,
-        employee_count: null
       }
 
       const result = await testSupabase

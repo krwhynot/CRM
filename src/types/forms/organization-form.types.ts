@@ -35,9 +35,6 @@ export const defaultOrganizationFormValues: OrganizationFormData = {
   postal_code: null,
   country: null,
   industry: null,
-  size: null,
-  annual_revenue: null,
-  employee_count: null,
   notes: null
 }
 

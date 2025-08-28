@@ -26,8 +26,7 @@
 - **Confidence:** 95%
 - **Details:** Successfully updated organization record with:
   - String fields (name, description, contact info)
-  - Enum fields (type, size)
-  - Numeric fields (annual_revenue, employee_count)
+  - Enum fields (type)
   - Boolean fields (is_active)
   - Timestamp fields (updated_at)
 - **Verification:** All field updates persisted correctly
