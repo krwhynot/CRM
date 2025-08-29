@@ -25,4 +25,3 @@ export { useEnhancedContactFormState } from './hooks/useEnhancedContactFormState
 export { useContactsPageState } from './hooks/useContactsPageState'
 export { useContactsPageActions } from './hooks/useContactsPageActions'
 export { useContactFormData } from './hooks/useContacts'
-export { useContactsPageStyle } from './hooks/useContactsPageStyle'

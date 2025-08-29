@@ -2,7 +2,6 @@ import { TrendingUp, TrendingDown, Users, Target, MessageSquare, Building2 } fro
 import { useDashboardMetrics } from "@/features/dashboard/hooks/useDashboardMetrics"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
-import { safeGetString } from '@/lib/secure-storage'
 
 import {
   Card,
@@ -10,18 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  CardCompact,
-  CardCompactContent,
-  CardCompactHeader,
-  CardCompactTitle,
-} from "@/components/ui/new/CardCompact"
 
 export function StatsCards() {
   const metrics = useDashboardMetrics()
-  
-  // Feature flag for new MFB compact styling (default: enabled, opt-out with 'false')
-  const USE_NEW_STYLE = safeGetString('useNewStyle', 'true') !== 'false';
 
   if (metrics.isLoading) {
     return (
@@ -101,52 +91,41 @@ export function StatsCards() {
 
   return (
     <>
-      {stats.map((stat, index) => {
-        // Feature flag wrapper pattern - prevents breaking changes
-        const CardWrapper = USE_NEW_STYLE ? CardCompact : Card;
-        const HeaderWrapper = USE_NEW_STYLE ? CardCompactHeader : CardHeader;
-        const TitleWrapper = USE_NEW_STYLE ? CardCompactTitle : CardTitle;
-        const ContentWrapper = USE_NEW_STYLE ? CardCompactContent : CardContent;
-
-        return (
-          <CardWrapper key={index} className="hover:shadow-md transition-shadow">
-            <HeaderWrapper className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <TitleWrapper className="text-sm font-medium">
-                {stat.title}
-              </TitleWrapper>
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
-            </HeaderWrapper>
-            <ContentWrapper>
-              <div className={cn(
-                "text-2xl font-bold",
-                USE_NEW_STYLE && "text-[hsl(var(--primary))]"
-              )}>
-                {stat.value}
-              </div>
-              <p className="text-xs text-muted-foreground mb-2">
-                {stat.subtitle}
-              </p>
-              <p className="text-xs text-muted-foreground flex items-center">
-                {stat.changeType === "increase" ? (
-                  <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
-                ) : (
-                  <TrendingDown className="h-3 w-3 mr-1 text-red-500" />
-                )}
-                <span
-                  className={
-                    stat.changeType === "increase"
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }
-                >
-                  {stat.change}
-                </span>
-                <span className="ml-1">from last month</span>
-              </p>
-            </ContentWrapper>
-          </CardWrapper>
-        );
-      })}
+      {stats.map((stat, index) => (
+        <Card key={index} className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              {stat.title}
+            </CardTitle>
+            <stat.icon className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-primary">
+              {stat.value}
+            </div>
+            <p className="text-xs text-muted-foreground mb-2">
+              {stat.subtitle}
+            </p>
+            <p className="text-xs text-muted-foreground flex items-center">
+              {stat.changeType === "increase" ? (
+                <TrendingUp className="h-3 w-3 mr-1 text-success" />
+              ) : (
+                <TrendingDown className="h-3 w-3 mr-1 text-destructive" />
+              )}
+              <span
+                className={
+                  stat.changeType === "increase"
+                    ? "text-success"
+                    : "text-destructive"
+                }
+              >
+                {stat.change}
+              </span>
+              <span className="ml-1">from last month</span>
+            </p>
+          </CardContent>
+        </Card>
+      ))}
     </>
   )
 }

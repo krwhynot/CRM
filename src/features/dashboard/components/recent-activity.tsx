@@ -5,15 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  CardCompact,
-  CardCompactContent,
-  CardCompactHeader,
-  CardCompactTitle,
-} from "@/components/ui/new/CardCompact"
 import { Target, Building2, User, Package } from "lucide-react"
 import { useOrganizations } from "@/features/organizations/hooks/useOrganizations"
-import { safeGetString } from '@/lib/secure-storage'
 import { useContacts } from "@/features/contacts/hooks/useContacts"
 import { useOpportunities } from "@/features/opportunities/hooks/useOpportunities"
 import { useProducts } from "@/features/products/hooks/useProducts"
@@ -27,29 +20,21 @@ function RecentlyAddedCard() {
   const { data: opportunities = [], isLoading: oppLoading } = useOpportunities()
   const { data: products = [], isLoading: prodLoading } = useProducts()
 
-  // Feature flag for new MFB compact styling (default: enabled, opt-out with 'false')
-  const USE_NEW_STYLE = safeGetString('useNewStyle', 'true') !== 'false';
-
   const isLoading = orgLoading || contactLoading || oppLoading || prodLoading
-
-  const CardWrapper = USE_NEW_STYLE ? CardCompact : Card;
-  const HeaderWrapper = USE_NEW_STYLE ? CardCompactHeader : CardHeader;
-  const TitleWrapper = USE_NEW_STYLE ? CardCompactTitle : CardTitle;
-  const ContentWrapper = USE_NEW_STYLE ? CardCompactContent : CardContent;
 
   if (isLoading) {
     return (
-      <CardWrapper className="hover:shadow-md transition-shadow">
-        <HeaderWrapper className="pb-3">
-          <TitleWrapper className="text-sm font-semibold flex items-center gap-2">
+      <Card className="hover:shadow-md transition-shadow">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-semibold flex items-center gap-2">
             <Target className="h-4 w-4" />
             Recently Added
-          </TitleWrapper>
-        </HeaderWrapper>
-        <ContentWrapper>
-          <div className={USE_NEW_STYLE ? "space-y-compact" : "space-y-3"}>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
             {[...Array(4)].map((_, index) => (
-              <div key={index} className={USE_NEW_STYLE ? "flex items-start gap-2 p-1" : "flex items-start gap-3 p-2"}>
+              <div key={index} className="flex items-start gap-3 p-2">
                 <Skeleton className="h-4 w-4 mt-0.5" />
                 <div className="flex-1 min-w-0">
                   <Skeleton className="h-4 w-32 mb-1" />
@@ -59,8 +44,8 @@ function RecentlyAddedCard() {
               </div>
             ))}
           </div>
-        </ContentWrapper>
-      </CardWrapper>
+        </CardContent>
+      </Card>
     )
   }
 
@@ -129,27 +114,27 @@ function RecentlyAddedCard() {
   }
 
   return (
-    <CardWrapper className="hover:shadow-md transition-shadow">
-      <HeaderWrapper className="pb-3">
-        <TitleWrapper className="text-sm font-semibold flex items-center gap-2">
+    <Card className="hover:shadow-md transition-shadow">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-sm font-semibold flex items-center gap-2">
           <Target className="h-4 w-4" />
           Recently Added
-        </TitleWrapper>
-      </HeaderWrapper>
-      <ContentWrapper>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
         {recentItems.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <Target className="h-8 w-8 mx-auto mb-2 opacity-50" />
             <p>No recent additions</p>
           </div>
         ) : (
-          <div className={`${USE_NEW_STYLE ? "space-y-compact max-h-60" : "space-y-3 max-h-64"} overflow-y-auto`}>
+          <div className="space-y-3 max-h-64 overflow-y-auto">
             {recentItems.map((item, index) => (
-              <div key={index} className={`flex items-start ${USE_NEW_STYLE ? "gap-2 p-1.5" : "gap-3 p-2"} rounded-lg hover:bg-muted/50 cursor-pointer transition-colors`}>
+              <div key={index} className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
                 <item.icon className="h-4 w-4 mt-0.5 text-muted-foreground" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <p className={`text-sm truncate ${USE_NEW_STYLE ? "font-semibold text-[hsl(var(--foreground))]" : "font-medium"}`}>{item.name}</p>
+                    <p className="text-sm truncate font-medium">{item.name}</p>
                     <Badge variant={getStatusBadgeVariant(item.status)} className="text-xs">
                       {item.status.replace('_', ' ')}
                     </Badge>
@@ -163,8 +148,8 @@ function RecentlyAddedCard() {
             ))}
           </div>
         )}
-      </ContentWrapper>
-    </CardWrapper>
+      </CardContent>
+    </Card>
   )
 }
 
