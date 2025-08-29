@@ -194,7 +194,6 @@ export function OpportunitiesTable({
       <OpportunitiesFilters
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
-        onAddNew={onAddNew}
         totalOpportunities={opportunities.length}
         filteredCount={sortedOpportunities.length}
       />

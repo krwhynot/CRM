@@ -4,10 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Plus } from 'lucide-react'
 import { OpportunityForm } from './OpportunityForm'
 import { InteractionForm } from '@/features/interactions/components/InteractionForm'
 import { FormDataTransformer } from '@/lib/form-data-transformer'
@@ -64,12 +61,6 @@ export const OpportunityDialogs: React.FC<OpportunityDialogsProps> = ({
     <>
       {/* Create Opportunity Dialog */}
       <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-        <DialogTrigger asChild>
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Opportunity
-          </Button>
-        </DialogTrigger>
         <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
           <DialogHeader>
             <DialogTitle>Create New Opportunity</DialogTitle>

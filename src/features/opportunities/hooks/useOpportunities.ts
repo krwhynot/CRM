@@ -340,6 +340,9 @@ export function useCreateOpportunity() {
       queryClient.invalidateQueries({ queryKey: opportunityKeys.pipeline() })
       queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'active'] })
       
+      // Invalidate opportunities with activity data (used by OpportunitiesTable)
+      queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'with-activity'] })
+      
       // Add the new opportunity to the cache
       queryClient.setQueryData(opportunityKeys.detail(newOpportunity.id), newOpportunity)
     },
@@ -394,6 +397,9 @@ export function useUpdateOpportunity() {
       
       queryClient.invalidateQueries({ queryKey: opportunityKeys.pipeline() })
       queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'active'] })
+      
+      // Invalidate opportunities with activity data (used by OpportunitiesTable)
+      queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'with-activity'] })
       
       // Update the specific opportunity in the cache
       queryClient.setQueryData(opportunityKeys.detail(updatedOpportunity.id), updatedOpportunity)
@@ -462,6 +468,9 @@ export function useAdvanceOpportunityStage() {
       queryClient.invalidateQueries({ queryKey: opportunityKeys.pipeline() })
       queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'active'] })
       
+      // Invalidate opportunities with activity data (used by OpportunitiesTable)
+      queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'with-activity'] })
+      
       // Update the specific opportunity in the cache
       queryClient.setQueryData(opportunityKeys.detail(updatedOpportunity.id), updatedOpportunity)
     },
@@ -503,6 +512,9 @@ export function useDeleteOpportunity() {
       
       queryClient.invalidateQueries({ queryKey: opportunityKeys.pipeline() })
       queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'active'] })
+      
+      // Invalidate opportunities with activity data (used by OpportunitiesTable)
+      queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'with-activity'] })
       
       // Remove from individual cache
       queryClient.removeQueries({ queryKey: opportunityKeys.detail(deletedOpportunity.id) })

@@ -212,10 +212,11 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
                   <InteractionTimeline
                     interactions={interactions}
                     loading={interactionsLoading}
-                    onEdit={onEditInteraction}
-                    onDelete={onDeleteInteraction}
+                    onEditInteraction={onEditInteraction}
+                    onDeleteInteraction={onDeleteInteraction}
                     onItemClick={onInteractionItemClick}
-                    compact={true}
+                    onAddNew={onAddInteraction}
+                    opportunityId={opportunity.id}
                   />
                 </div>
               </div>

@@ -15,7 +15,6 @@ import {
   Package, 
   Target, 
   Home,
-  MessageSquare,
   Upload
 } from 'lucide-react'
 
@@ -25,7 +24,6 @@ const menuItems = [
   { title: 'Contacts', url: '/contacts', icon: Users },
   { title: 'Products', url: '/products', icon: Package },
   { title: 'Opportunities', url: '/opportunities', icon: Target },
-  { title: 'Interactions', url: '/interactions', icon: MessageSquare },
   { title: 'Import/Export', url: '/import-export', icon: Upload },
 ]
 

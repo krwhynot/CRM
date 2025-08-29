@@ -1,15 +1,17 @@
-import { Button } from '@/components/ui/button'
 import { OpportunitiesTable } from '@/features/opportunities/components/OpportunitiesTable'
-import { Target, Users } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
 import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities'
 import { useOpportunitiesPageState } from '@/features/opportunities/hooks/useOpportunitiesPageState'
 import { useOpportunityActions } from '@/features/opportunities/hooks/useOpportunityActions'
 import { useInteractionActions } from '@/features/interactions/hooks/useInteractionActions'
 import { OpportunityDialogs } from '@/features/opportunities/components/OpportunityDialogs'
+import { OpportunitiesPageHeader } from '@/features/opportunities/components/OpportunitiesPageHeader'
+import { useOpportunitiesPageStyle } from '@/features/opportunities/hooks/useOpportunitiesPageStyle'
+import { OpportunitiesErrorBoundary } from '@/components/error-boundaries/QueryErrorBoundary'
+import { cn } from '@/lib/utils'
 
 function OpportunitiesPage() {
-  const navigate = useNavigate()
+  const { data: opportunities = [] } = useOpportunities()
+  const { USE_NEW_STYLE } = useOpportunitiesPageStyle()
   
   // Custom hooks
   const pageState = useOpportunitiesPageState()
@@ -17,26 +19,14 @@ function OpportunitiesPage() {
   const interactionActions = useInteractionActions()
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold font-nunito text-mfb-olive mb-6 flex items-center gap-2">
-            <Target className="h-8 w-8 text-mfb-green" />
-            Opportunities
-          </h1>
-          <p className="text-lg text-mfb-olive/70 font-nunito">
-            Track and manage your sales pipeline and deals
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={() => navigate('/opportunities/new-multi-principal')}
-            className="flex items-center gap-2"
-          >
-            <Users className="h-4 w-4" />
-            Multi-Principal
-          </Button>
+    <OpportunitiesErrorBoundary>
+      <div className={cn("min-h-screen", USE_NEW_STYLE && "bg-[var(--mfb-cream)]")}>
+        <div className={cn("max-w-7xl mx-auto p-6", USE_NEW_STYLE ? "space-y-8" : "space-y-6")}>
+          <OpportunitiesPageHeader
+            opportunitiesCount={opportunities.length}
+            onAddClick={() => pageState.setIsCreateDialogOpen(true)}
+            useNewStyle={USE_NEW_STYLE}
+          />
           
           <OpportunityDialogs
             isCreateDialogOpen={pageState.isCreateDialogOpen}
@@ -67,23 +57,23 @@ function OpportunitiesPage() {
             createInteractionLoading={interactionActions.createInteractionMutation.isPending}
             updateInteractionLoading={interactionActions.updateInteractionMutation.isPending}
           />
+
+          {/* Opportunities Table with Inline Details */}
+          <OpportunitiesTable 
+            onEdit={pageState.handleEditOpportunity}
+            onDelete={opportunityActions.handleDeleteOpportunity}
+            onAddNew={() => pageState.setIsCreateDialogOpen(true)}
+            onAddInteraction={(opportunityId) => {
+              pageState.setSelectedOpportunityId(opportunityId)
+              pageState.handleAddInteraction()
+            }}
+            onEditInteraction={pageState.handleEditInteraction}
+            onDeleteInteraction={interactionActions.handleDeleteInteraction}
+            onInteractionItemClick={interactionActions.handleInteractionItemClick}
+          />
         </div>
       </div>
-
-      {/* Opportunities Table with Inline Details */}
-      <OpportunitiesTable 
-        onEdit={pageState.handleEditOpportunity}
-        onDelete={opportunityActions.handleDeleteOpportunity}
-        onAddNew={() => pageState.setIsCreateDialogOpen(true)}
-        onAddInteraction={(opportunityId) => {
-          pageState.setSelectedOpportunityId(opportunityId)
-          pageState.handleAddInteraction()
-        }}
-        onEditInteraction={pageState.handleEditInteraction}
-        onDeleteInteraction={interactionActions.handleDeleteInteraction}
-        onInteractionItemClick={interactionActions.handleInteractionItemClick}
-      />
-    </div>
+    </OpportunitiesErrorBoundary>
   )
 }
 

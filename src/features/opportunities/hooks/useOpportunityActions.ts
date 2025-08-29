@@ -44,9 +44,15 @@ export const useOpportunityActions = (): UseOpportunityActionsReturn => {
       await createOpportunityMutation.mutateAsync(opportunityData)
       onSuccess()
       toast.success('Opportunity created successfully!')
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to create opportunity:', error)
-      toast.error('Failed to create opportunity. Please try again.')
+      
+      // Handle specific constraint violation errors
+      if (error?.code === '23505' && error?.message?.includes('uq_opp_org_name_active')) {
+        toast.error('An opportunity with this name already exists for the selected organization. Please choose a different name.')
+      } else {
+        toast.error('Failed to create opportunity. Please try again.')
+      }
     }
   }, [createOpportunityMutation])
 
@@ -61,9 +67,15 @@ export const useOpportunityActions = (): UseOpportunityActionsReturn => {
       })
       onSuccess()
       toast.success('Opportunity updated successfully!')
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to update opportunity:', error)
-      toast.error('Failed to update opportunity. Please try again.')
+      
+      // Handle specific constraint violation errors
+      if (error?.code === '23505' && error?.message?.includes('uq_opp_org_name_active')) {
+        toast.error('An opportunity with this name already exists for the selected organization. Please choose a different name.')
+      } else {
+        toast.error('Failed to update opportunity. Please try again.')
+      }
     }
   }, [updateOpportunityMutation])
 
