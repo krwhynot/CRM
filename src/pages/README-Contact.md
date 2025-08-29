@@ -13,6 +13,8 @@ Version 1.0 | Last Updated: August 2025
 
 **Description:** The Contacts page serves as the primary interface for managing individual contacts within the CRM system. It provides a data-rich SimpleTable view with expandable row details, multi-criteria filtering, full-text search, and streamlined CRUD operations through modal dialogs. The page is optimized for iPad-first responsive design and supports real-time data updates following the Master Food Brokers design standards.
 
+> **Note**: This documentation describes the UI/UX patterns for the Contacts page. For implementation details, see the actual component files in `/src/features/contacts/`.
+
 ## 🗂 Page Hierarchy & Structure
 
 ### Top-Level Layout
@@ -195,126 +197,25 @@ if (loading) {
 
 ---
 
-## 🏢 Master Page Template
+## 🏢 Page Structure Overview
 
-```typescript
-/**
- * CONTACTS PAGE TEMPLATE
- * File location: src/pages/Contacts/index.tsx
- */
+The Contacts page follows the standard CRM page template with these key components:
 
-import React, { useState, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+- **PageLayout**: Main container with sidebar navigation
+- **PageHeader**: Title, subtitle, and primary actions (Add Contact button)
+- **ContactsFilters**: Search and filtering interface
+- **SimpleTable**: Data display with expandable rows
+- **ContactsDialogs**: Modal forms for CRUD operations
 
-// Layout Components (Required)
-import { PageLayout } from '@/components/layout/PageLayout'
-import { PageHeader } from '@/components/ui/PageHeader'
-import { FilterBar } from '@/components/ui/FilterBar'
-import { ContentArea } from '@/components/ui/ContentArea'
+### Key Features:
+- Real-time data fetching with TanStack Query
+- Responsive design with mobile-first approach
+- Expandable table rows for detailed contact information
+- Organization relationship links
+- Optimistic UI updates with error handling
+- Advanced filtering and search capabilities
 
-// UI Components (Required)
-import { SimpleTable } from '@/components/ui/simple-table'
-import { SearchInput } from '@/components/ui/SearchInput'
-import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
-import { EmptyState } from '@/components/ui/EmptyState'
-import { LoadingState } from '@/components/ui/LoadingState'
-import { ErrorState } from '@/components/ui/ErrorState'
-
-// Icons (Consistent set)
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Download, 
-  RefreshCw,
-  ChevronRight 
-} from 'lucide-react'
-
-// Feature Components
-import { ContactsFilters } from '@/features/contacts/components/ContactsFilters'
-import { ContactRow } from '@/features/contacts/components/ContactRow'
-import { ContactsDialogs } from '@/features/contacts/components/ContactsDialogs'
-import { useContacts } from '@/features/contacts/hooks/useContacts'
-
-/**
- * CONTACTS PAGE COMPONENT
- */
-export function ContactsPage() {
-  const navigate = useNavigate()
-  
-  // State Management
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedItems, setSelectedItems] = useState<string[]>([])
-  const [currentPage, setCurrentPage] = useState(1)
-  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list')
-  
-  // Data Fetching
-  const { data: contacts, isLoading, error, refetch } = useContacts({
-    page: currentPage, 
-    search: searchTerm 
-  })
-  
-  // Responsive Detection
-  const isMobile = window.innerWidth < 1024
-  const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024
-  const isDesktop = window.innerWidth >= 1024
-  
-  // Handlers
-  const handleAdd = () => navigate('/contacts/new')
-  const handleRowClick = (contact: Contact) => navigate(`/contacts/${contact.id}`)
-  
-  // Table Headers
-  const headers = [
-    'Name',
-    'Organization', 
-    'Email',
-    'Phone',
-    'Status',
-    'Actions'
-  ]
-  
-  // Main Render
-  return (
-    <PageLayout>
-      <PageHeader
-        title="Contacts"
-        subtitle="Manage customer relationships efficiently"
-        primaryAction={
-          <Button size="lg" onClick={handleAdd}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Contact
-          </Button>
-        }
-      />
-      
-      <ContactsFilters />
-      
-      <ContentArea>
-        <SimpleTable
-          data={contacts || []}
-          loading={isLoading}
-          headers={headers}
-          renderRow={(contact, isExpanded, onToggle) => (
-            <ContactRow
-              key={contact.id}
-              contact={contact}
-              isExpanded={isExpanded}
-              onToggle={onToggle}
-              onClick={() => handleRowClick(contact)}
-            />
-          )}
-          emptyMessage="No contacts found"
-          emptySubtext="Get started by adding your first contact"
-        />
-      </ContentArea>
-      
-      <ContactsDialogs />
-    </PageLayout>
-  )
-}
-```
+> For actual implementation details, refer to `/src/pages/Contacts.tsx` and related components in `/src/features/contacts/`.
 
 ---
 
@@ -372,79 +273,17 @@ export function ContactsPage() {
 ## 🧩 Required Component Templates
 
 ### ContactRow Component
-```typescript
-/**
- * CONTACT ROW COMPONENT
- * File: src/features/contacts/components/ContactRow.tsx
- */
-import { TableRow, TableCell } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
-import { MoreHorizontal, Mail, Phone } from 'lucide-react'
 
-interface ContactRowProps {
-  contact: Contact
-  isExpanded: boolean
-  onToggle: () => void
-  onClick: () => void
-}
+The ContactRow component displays individual contact data in table format with:
 
-export function ContactRow({ contact, isExpanded, onToggle, onClick }: ContactRowProps) {
-  return (
-    <TableRow className="cursor-pointer hover:bg-gray-50" onClick={onClick}>
-      <TableCell>
-        <div className="flex items-center gap-3">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={contact.avatar} />
-            <AvatarFallback>
-              {contact.firstName?.[0]}{contact.lastName?.[0]}
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <div className="font-medium">
-              {contact.firstName} {contact.lastName}
-            </div>
-            <div className="text-sm text-gray-500">
-              {contact.title}
-            </div>
-          </div>
-        </div>
-      </TableCell>
-      <TableCell>
-        <div className="font-medium text-blue-600 hover:underline">
-          {contact.organization?.name}
-        </div>
-      </TableCell>
-      <TableCell>
-        <div className="flex items-center gap-1">
-          <Mail className="h-3 w-3 text-gray-400" />
-          {contact.email}
-        </div>
-      </TableCell>
-      <TableCell>
-        <div className="flex items-center gap-1">
-          <Phone className="h-3 w-3 text-gray-400" />
-          {contact.phone}
-        </div>
-      </TableCell>
-      <TableCell>
-        <Badge 
-          variant={contact.isActive ? 'default' : 'secondary'}
-          className={contact.isActive ? 'contact-status-active' : 'contact-status-inactive'}
-        >
-          {contact.isActive ? 'Active' : 'Inactive'}
-        </Badge>
-      </TableCell>
-      <TableCell>
-        <Button variant="ghost" size="sm">
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </TableCell>
-    </TableRow>
-  )
-}
-```
+- **Contact Info**: Avatar with initials, full name, and job title
+- **Organization Link**: Clickable organization name (blue, underlined on hover)
+- **Email**: Contact email address with mail icon
+- **Phone**: Contact phone number with phone icon
+- **Status Badge**: Active/inactive status indicator
+- **Actions**: More options menu for row actions
+
+> Implementation: `/src/features/contacts/components/ContactRow.tsx`
 
 ---
 

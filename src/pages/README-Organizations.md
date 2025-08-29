@@ -8,6 +8,8 @@
 
 **Description**: A comprehensive CRUD interface for managing organizations with advanced filtering, search capabilities, inline editing, and expandable row details. Designed specifically for Master Food Brokers to track relationships between customers, distributors, and principals in the food service ecosystem.
 
+> **Note**: This documentation describes the UI/UX patterns for the Organizations page. For implementation details, see the actual component files in `/src/features/organizations/`.
+
 ## 🗂 Page Hierarchy & Structure
 
 ### Top-Level Layout
@@ -242,140 +244,24 @@ if (loading) {
 
 ---
 
-## 🏢 Master Page Template
+## 🏢 Page Structure Overview
 
-```typescript
-/**
- * ORGANIZATIONS PAGE TEMPLATE
- * File location: src/pages/Organizations/index.tsx
- */
+The Organizations page follows the standard CRM page template with these key components:
 
-import React, { useState, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+- **PageLayout**: Main container with sidebar navigation
+- **PageHeader**: Title, subtitle, and primary actions (Add Organization button)
+- **OrganizationsFilters**: Search and filtering interface
+- **SimpleTable**: Data display with expandable rows
+- **OrganizationDialogs**: Modal forms for CRUD operations
 
-// Layout Components (Required)
-import { PageLayout } from '@/components/layout/PageLayout'
-import { PageHeader } from '@/components/ui/PageHeader'
-import { FilterBar } from '@/components/ui/FilterBar'
-import { ContentArea } from '@/components/ui/ContentArea'
+### Key Features:
+- Real-time data fetching with TanStack Query
+- Responsive design with mobile-first approach  
+- Expandable table rows for detailed information
+- Optimistic UI updates with error handling
+- Advanced filtering and search capabilities
 
-// UI Components (Required)
-import { SimpleTable } from '@/components/ui/simple-table'
-import { SearchInput } from '@/components/ui/SearchInput'
-import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
-import { EmptyState } from '@/components/ui/EmptyState'
-import { LoadingState } from '@/components/ui/LoadingState'
-import { ErrorState } from '@/components/ui/ErrorState'
-
-// Icons (Consistent set)
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Download, 
-  RefreshCw,
-  ChevronRight 
-} from 'lucide-react'
-
-// Feature Components
-import { OrganizationsFilters } from '@/features/organizations/components/OrganizationsFilters'
-import { OrganizationRow } from '@/features/organizations/components/OrganizationRow'
-import { OrganizationDialogs } from '@/features/organizations/components/OrganizationDialogs'
-import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
-
-/**
- * ORGANIZATIONS PAGE COMPONENT
- */
-export function OrganizationsPage() {
-  const navigate = useNavigate()
-  
-  // State Management
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedItems, setSelectedItems] = useState<string[]>([])
-  const [currentPage, setCurrentPage] = useState(1)
-  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list')
-  
-  // Data Fetching
-  const { data: organizations, isLoading, error, refetch } = useOrganizations({
-    page: currentPage, 
-    search: searchTerm 
-  })
-  
-  // Responsive Detection
-  const isMobile = window.innerWidth < 1024
-  const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024
-  const isDesktop = window.innerWidth >= 1024
-  
-  // Handlers
-  const handleAdd = () => navigate('/organizations/new')
-  const handleRowClick = (org: Organization) => navigate(`/organizations/${org.id}`)
-  const handleExport = () => {
-    console.log('Exporting organizations...')
-  }
-  
-  // Table Headers
-  const headers = [
-    'Organization',
-    'Type', 
-    'Location',
-    'Status',
-    'Contacts',
-    'Actions'
-  ]
-  
-  // Main Render
-  return (
-    <PageLayout>
-      <PageHeader
-        title="Organizations"
-        subtitle="Manage customer accounts and distributor relationships efficiently"
-        primaryAction={
-          <Button size="lg" onClick={handleAdd}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Organization
-          </Button>
-        }
-        secondaryActions={
-          <>
-            <Button variant="outline" onClick={handleExport}>
-              <Download className="h-4 w-4 mr-2" />
-              Export
-            </Button>
-            <Button variant="ghost" onClick={() => refetch()}>
-              <RefreshCw className="h-4 w-4" />
-            </Button>
-          </>
-        }
-      />
-      
-      <OrganizationsFilters />
-      
-      <ContentArea>
-        <SimpleTable
-          data={organizations || []}
-          loading={isLoading}
-          headers={headers}
-          renderRow={(organization, isExpanded, onToggle) => (
-            <OrganizationRow
-              key={organization.id}
-              organization={organization}
-              isExpanded={isExpanded}
-              onToggle={onToggle}
-              onClick={() => handleRowClick(organization)}
-            />
-          )}
-          emptyMessage="No organizations found"
-          emptySubtext="Get started by adding your first organization"
-        />
-      </ContentArea>
-      
-      <OrganizationDialogs />
-    </PageLayout>
-  )
-}
-```
+> For actual implementation details, refer to `/src/pages/Organizations.tsx` and related components in `/src/features/organizations/`.
 
 ---
 
@@ -446,87 +332,17 @@ export function OrganizationsPage() {
 ## 🧩 Required Component Templates
 
 ### OrganizationRow Component
-```typescript
-/**
- * ORGANIZATION ROW COMPONENT
- * File: src/features/organizations/components/OrganizationRow.tsx
- */
-import { TableRow, TableCell } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
-import { MoreHorizontal, Building2, MapPin, Users } from 'lucide-react'
 
-interface OrganizationRowProps {
-  organization: Organization
-  isExpanded: boolean
-  onToggle: () => void
-  onClick: () => void
-}
+The OrganizationRow component displays individual organization data in table format with:
 
-export function OrganizationRow({ organization, isExpanded, onToggle, onClick }: OrganizationRowProps) {
-  const getTypeColor = (type: string) => {
-    switch (type.toLowerCase()) {
-      case 'customer': return 'org-type-customer'
-      case 'distributor': return 'org-type-distributor' 
-      case 'principal': return 'org-type-principal'
-      default: return 'text-gray-600'
-    }
-  }
-  
-  return (
-    <TableRow className="cursor-pointer hover:bg-gray-50" onClick={onClick}>
-      <TableCell>
-        <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10">
-            <AvatarImage src={organization.logoUrl} />
-            <AvatarFallback>
-              <Building2 className="h-5 w-5 text-gray-600" />
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <div className="font-medium">{organization.name}</div>
-            <div className="text-sm text-gray-500">{organization.industry}</div>
-          </div>
-        </div>
-      </TableCell>
-      <TableCell>
-        <Badge 
-          variant="outline" 
-          className={getTypeColor(organization.type)}
-        >
-          {organization.type}
-        </Badge>
-      </TableCell>
-      <TableCell>
-        <div className="flex items-center gap-1">
-          <MapPin className="h-3 w-3 text-gray-400" />
-          <span>{organization.city}, {organization.state}</span>
-        </div>
-      </TableCell>
-      <TableCell>
-        <Badge 
-          variant={organization.isActive ? 'default' : 'secondary'}
-          className={organization.isActive ? 'org-status-active' : 'org-status-inactive'}
-        >
-          {organization.isActive ? 'Active' : 'Inactive'}
-        </Badge>
-      </TableCell>
-      <TableCell>
-        <div className="flex items-center gap-1">
-          <Users className="h-3 w-3 text-gray-400" />
-          <span className="text-sm">{organization.contactCount || 0}</span>
-        </div>
-      </TableCell>
-      <TableCell>
-        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); /* Handle actions */ }}>
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </TableCell>
-    </TableRow>
-  )
-}
-```
+- **Organization Info**: Avatar/logo, name, and industry
+- **Type Badge**: Color-coded organization type (Customer/Distributor/Principal)
+- **Location**: City and state with map pin icon
+- **Status Badge**: Active/inactive status indicator
+- **Contact Count**: Number of associated contacts
+- **Actions**: More options menu for row actions
+
+> Implementation: `/src/features/organizations/components/OrganizationRow.tsx`
 
 ---
 

@@ -17,7 +17,7 @@ export { useSidebar } from './useSidebar'
 export { useNavigationCounts } from './useNavigationCounts'
 
 // Utility Hooks
-export { useDebounce } from './useDebounce'
+// useDebounce moved to @/lib/performance-optimizations
 
 // Dashboard & Health Hooks
 export { useHealthDashboardState } from './useHealthDashboardState'

@@ -58,13 +58,14 @@ import type { Opportunity, Contact } from '@/types'
 ```typescript
 // ✅ GOOD: Use barrel exports for cleaner imports
 import { ChartCard, ErrorBoundary, CommandPalette } from '@/components'
-import { useCoreFormSetup, useDebounce, useMobile } from '@/hooks'
+import { useCoreFormSetup, useMobile } from '@/hooks'
+import { useDebounce } from '@/lib/performance-optimizations'
 import { supabase, dateUtils, formUtils } from '@/lib'
 
 // ❌ AVOID: Long individual import paths
 import { ChartCard } from '@/components/shared/charts/chart-card'
 import { useCoreFormSetup } from '@/hooks/useCoreFormSetup'
-import { useDebounce } from '@/hooks/useDebounce'
+import { useDebounce } from '@/lib/performance-optimizations'
 ```
 
 ### 3. Cross-Feature Import Guidelines

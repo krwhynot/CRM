@@ -13,6 +13,8 @@ Version 1.0 | Last Updated: August 2025
 
 **Description:** A comprehensive interface for creating, viewing, editing, and deleting products with detailed filtering capabilities, expandable rows, and modal-based forms. Built using SimpleTable architecture and designed specifically for managing food service products across multiple principals with specialized pricing and inventory tracking.
 
+> **Note**: This documentation describes the UI/UX patterns for the Products page. For implementation details, see the actual component files in `/src/features/products/`.
+
 ## 🗂 Page Hierarchy & Structure
 
 ### Top-Level Layout
@@ -134,134 +136,25 @@ if (loading) {
 
 ---
 
-## 🏢 Master Page Template
+## 🏢 Page Structure Overview
 
-```typescript
-/**
- * PRODUCTS PAGE TEMPLATE
- * File location: src/pages/Products/index.tsx
- */
+The Products page follows the standard CRM page template with these key components:
 
-import React, { useState, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+- **PageLayout**: Main container with sidebar navigation
+- **PageHeader**: Title, subtitle, and primary actions (Add Product button)
+- **ProductsFilters**: Search and filtering interface
+- **SimpleTable**: Data display with expandable rows
+- **Product Modals**: Create and Edit modals with ProductForm
 
-// Layout Components (Required)
-import { PageLayout } from '@/components/layout/PageLayout'
-import { PageHeader } from '@/components/ui/PageHeader'
-import { FilterBar } from '@/components/ui/FilterBar'
-import { ContentArea } from '@/components/ui/ContentArea'
+### Key Features:
+- Real-time data fetching with TanStack Query
+- Responsive design with mobile-first approach
+- Modal-based CRUD operations (Create/Edit)
+- Stock status indicators with color coding
+- Category-based filtering and organization
+- Optimistic UI updates with error handling
 
-// UI Components (Required)
-import { SimpleTable } from '@/components/ui/simple-table'
-import { SearchInput } from '@/components/ui/SearchInput'
-import { Button } from '@/components/ui/Button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-
-// Icons (Consistent set)
-import { Plus, Download, RefreshCw } from 'lucide-react'
-
-// Feature Components
-import { ProductsFilters } from '@/features/products/components/ProductsFilters'
-import { ProductRow } from '@/features/products/components/ProductRow'
-import { ProductForm } from '@/features/products/components/ProductForm'
-import { useProducts } from '@/features/products/hooks/useProducts'
-
-/**
- * PRODUCTS PAGE COMPONENT
- */
-export function ProductsPage() {
-  const navigate = useNavigate()
-  
-  // State Management
-  const [searchTerm, setSearchTerm] = useState('')
-  const [isCreateOpen, setIsCreateOpen] = useState(false)
-  const [isEditOpen, setIsEditOpen] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
-  
-  // Data Fetching
-  const { data: products, isLoading, error, refetch } = useProducts({
-    search: searchTerm 
-  })
-  
-  // Handlers
-  const handleAdd = () => setIsCreateOpen(true)
-  const handleEdit = (product: Product) => {
-    setSelectedProduct(product)
-    setIsEditOpen(true)
-  }
-  
-  // Table Headers
-  const headers = [
-    'Product Name',
-    'Category', 
-    'Price',
-    'Stock',
-    'Status',
-    'Actions'
-  ]
-  
-  // Main Render
-  return (
-    <PageLayout>
-      <PageHeader
-        title="Products"
-        subtitle="Catalog & Inventory Management"
-        primaryAction={
-          <Button size="lg" onClick={handleAdd}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Product
-          </Button>
-        }
-      />
-      
-      <ProductsFilters />
-      
-      <ContentArea>
-        <SimpleTable
-          data={products || []}
-          loading={isLoading}
-          headers={headers}
-          renderRow={(product, isExpanded, onToggle) => (
-            <ProductRow
-              key={product.id}
-              product={product}
-              isExpanded={isExpanded}
-              onToggle={onToggle}
-              onEdit={() => handleEdit(product)}
-            />
-          )}
-          emptyMessage="No products found"
-          emptySubtext="Get started by adding your first product"
-        />
-      </ContentArea>
-      
-      {/* Create Modal */}
-      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="max-w-4xl">
-          <DialogHeader>
-            <DialogTitle>Create New Product</DialogTitle>
-          </DialogHeader>
-          <ProductForm onClose={() => setIsCreateOpen(false)} />
-        </DialogContent>
-      </Dialog>
-      
-      {/* Edit Modal */}
-      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <DialogContent className="max-w-4xl">
-          <DialogHeader>
-            <DialogTitle>Edit Product</DialogTitle>
-          </DialogHeader>
-          <ProductForm 
-            product={selectedProduct}
-            onClose={() => setIsEditOpen(false)} 
-          />
-        </DialogContent>
-      </Dialog>
-    </PageLayout>
-  )
-}
-```
+> For actual implementation details, refer to `/src/pages/Products.tsx` and related components in `/src/features/products/`.
 
 ---
 
@@ -440,78 +333,17 @@ export function ProductsPage() {
 ## 🧩 Required Component Templates
 
 ### ProductRow Component
-```typescript
-/**
- * PRODUCT ROW COMPONENT
- * File: src/features/products/components/ProductRow.tsx
- */
-import { TableRow, TableCell } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { MoreHorizontal, Package, DollarSign } from 'lucide-react'
 
-interface ProductRowProps {
-  product: Product
-  isExpanded: boolean
-  onToggle: () => void
-  onEdit: () => void
-}
+The ProductRow component displays individual product data in table format with:
 
-export function ProductRow({ product, isExpanded, onToggle, onEdit }: ProductRowProps) {
-  const getStockStatus = (stock: number) => {
-    if (stock > 50) return { variant: 'default', label: 'In Stock', className: 'stock-status-high' }
-    if (stock > 10) return { variant: 'warning', label: 'Low Stock', className: 'stock-status-medium' }
-    return { variant: 'destructive', label: 'Out of Stock', className: 'stock-status-low' }
-  }
-  
-  const stockStatus = getStockStatus(product.stock)
-  
-  return (
-    <TableRow className="cursor-pointer hover:bg-gray-50" onClick={onToggle}>
-      <TableCell>
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-100 rounded-md flex items-center justify-center">
-            <Package className="h-5 w-5 text-gray-600" />
-          </div>
-          <div>
-            <div className="font-medium">{product.name}</div>
-            <div className="text-sm text-gray-500">{product.sku}</div>
-          </div>
-        </div>
-      </TableCell>
-      <TableCell>
-        <Badge variant="outline">{product.category}</Badge>
-      </TableCell>
-      <TableCell>
-        <div className="flex items-center gap-1">
-          <DollarSign className="h-3 w-3 text-gray-400" />
-          <span className="font-medium">{product.price?.toFixed(2)}</span>
-        </div>
-      </TableCell>
-      <TableCell>
-        <div className="text-center">
-          <span className={`font-medium ${stockStatus.className}`}>
-            {product.stock}
-          </span>
-        </div>
-      </TableCell>
-      <TableCell>
-        <Badge 
-          variant={stockStatus.variant}
-          className={stockStatus.className}
-        >
-          {stockStatus.label}
-        </Badge>
-      </TableCell>
-      <TableCell>
-        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); onEdit(); }}>
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </TableCell>
-    </TableRow>
-  )
-}
-```
+- **Product Info**: Package icon placeholder, product name, and SKU
+- **Category Badge**: Outlined category indicator
+- **Price**: Dollar sign icon with formatted price display
+- **Stock Count**: Numeric stock level with color-coded status
+- **Stock Status Badge**: Color-coded status (In Stock/Low Stock/Out of Stock)
+- **Actions**: More options menu for row actions (Edit)
+
+> Implementation: `/src/features/products/components/ProductRow.tsx`
 
 ---
 

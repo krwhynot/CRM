@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useDebounce } from '@/hooks/useDebounce'
+import { useDebounce } from '@/lib/performance-optimizations'
 import { FilterState } from '@/types/dashboard'
 
 export const useDashboardFiltersState = (

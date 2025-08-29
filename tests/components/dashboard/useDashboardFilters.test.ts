@@ -4,7 +4,7 @@ import { FilterState } from '@/types/dashboard'
 import { vi } from 'vitest'
 
 // Mock the useDebounce hook
-vi.mock('@/hooks/useDebounce', () => ({
+vi.mock('@/lib/performance-optimizations', () => ({
   useDebounce: vi.fn((value) => value)
 }))
 
@@ -64,7 +64,7 @@ describe('useDashboardFilters', () => {
   })
 
   it('should provide debounced filters', () => {
-    const mockUseDebounce = require('@/hooks/useDebounce').useDebounce as ReturnType<typeof vi.fn>
+    const mockUseDebounce = require('@/lib/performance-optimizations').useDebounce as ReturnType<typeof vi.fn>
     const mockDebouncedValue = { principal: 'debounced', product: 'debounced', weeks: 'debounced' }
     mockUseDebounce.mockReturnValue(mockDebouncedValue)
     

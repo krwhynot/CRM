@@ -3,7 +3,7 @@
  * Provides optimized patterns for CRM component rendering and data fetching
  */
 
-import { useMemo, useCallback, useRef, useEffect } from 'react'
+import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 
 // Debounce utility for search inputs and API calls
 export function useDebounce<T>(value: T, delay: number): T {
@@ -248,5 +248,3 @@ export function useCachedSearch<T>(
   return { results, isLoading }
 }
 
-// Import fix
-import React, { useState } from 'react'
