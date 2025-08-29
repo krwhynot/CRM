@@ -219,7 +219,7 @@ npm run validate
 
 ## Specialized Agent Architecture
 
-This project follows a 14-agent specialized architecture with MCP tools:
+This project follows a specialized agent architecture with MCP tools:
 
 ### Primary Development Agents
 - **Database & Schema Architect**: Schema design using Supabase + PostgreSQL

@@ -1,19 +1,17 @@
 import { useState } from 'react'
 import { toast } from '@/lib/toast-styles'
-import { Button } from '@/components/ui/button'
 import { ProductsTable } from '@/features/products/components/ProductsTable'
 import { ProductForm } from '@/features/products/components/ProductForm'
-import { PageHeader } from '@/components/ui/new/PageHeader'
 import { useProducts, useCreateProduct, useUpdateProduct, useDeleteProduct } from '@/features/products/hooks/useProducts'
-import { Plus } from 'lucide-react'
+import { ProductManagementTemplate } from '@/components/templates/EntityManagementTemplate'
 import type { Product, ProductInsert, ProductUpdate } from '@/types/entities'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+  DialogScrollableContent
+} from '@/components/ui/StandardDialog'
 
 function ProductsPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
@@ -44,74 +42,10 @@ function ProductsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-8">
-      <div className="flex items-center justify-between">
-        <PageHeader 
-          title="Manage Products"
-          subtitle="Catalog & Inventory"
-          count={products.length}
-        />
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="ml-6">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Product
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
-            <DialogHeader>
-              <DialogTitle>Create New Product</DialogTitle>
-            </DialogHeader>
-            <div className="max-h-[75vh] overflow-y-auto pr-2">
-              <ProductForm 
-              onSubmit={async (data) => {
-                try {
-                  await createProductMutation.mutateAsync(data as ProductInsert)
-                  setIsCreateDialogOpen(false)
-                  toast.success('Product created successfully!')
-                } catch (error) {
-                  console.error('Failed to create product:', error)
-                  toast.error('Failed to create product. Please try again.')
-                }
-              }}
-              loading={createProductMutation.isPending}
-            />
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* Edit Product Dialog */}
-        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
-            <DialogHeader>
-              <DialogTitle>Edit Product</DialogTitle>
-            </DialogHeader>
-            <div className="max-h-[75vh] overflow-y-auto pr-2">
-              {editingProduct && (
-                <ProductForm 
-                initialData={editingProduct}
-                onSubmit={async (data) => {
-                  try {
-                    await updateProductMutation.mutateAsync({
-                      id: editingProduct.id,
-                      updates: data as ProductUpdate
-                    })
-                    setIsEditDialogOpen(false)
-                    setEditingProduct(null)
-                    toast.success('Product updated successfully!')
-                  } catch (error) {
-                    console.error('Failed to update product:', error)
-                    toast.error('Failed to update product. Please try again.')
-                  }
-                }}
-                loading={updateProductMutation.isPending}
-                />
-              )}
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-
+    <ProductManagementTemplate
+      entityCount={products.length}
+      onAddClick={() => setIsCreateDialogOpen(true)}
+    >
       {/* Products Table */}
       {isLoading ? (
         <div className="text-center py-8 font-nunito text-mfb-green bg-white rounded-lg border shadow-sm p-12">Loading products...</div>
@@ -122,7 +56,62 @@ function ProductsPage() {
           onDelete={handleDelete}
         />
       )}
-    </div>
+
+      {/* Create Product Dialog */}
+      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Product</DialogTitle>
+          </DialogHeader>
+          <DialogScrollableContent>
+            <ProductForm 
+            onSubmit={async (data) => {
+              try {
+                await createProductMutation.mutateAsync(data as ProductInsert)
+                setIsCreateDialogOpen(false)
+                toast.success('Product created successfully!')
+              } catch (error) {
+                console.error('Failed to create product:', error)
+                toast.error('Failed to create product. Please try again.')
+              }
+            }}
+            loading={createProductMutation.isPending}
+          />
+          </DialogScrollableContent>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Product Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Product</DialogTitle>
+          </DialogHeader>
+          <DialogScrollableContent>
+            {editingProduct && (
+              <ProductForm 
+              initialData={editingProduct}
+              onSubmit={async (data) => {
+                try {
+                  await updateProductMutation.mutateAsync({
+                    id: editingProduct.id,
+                    updates: data as ProductUpdate
+                  })
+                  setIsEditDialogOpen(false)
+                  setEditingProduct(null)
+                  toast.success('Product updated successfully!')
+                } catch (error) {
+                  console.error('Failed to update product:', error)
+                  toast.error('Failed to update product. Please try again.')
+                }
+              }}
+              loading={updateProductMutation.isPending}
+              />
+            )}
+          </DialogScrollableContent>
+        </DialogContent>
+      </Dialog>
+    </ProductManagementTemplate>
   )
 }
 

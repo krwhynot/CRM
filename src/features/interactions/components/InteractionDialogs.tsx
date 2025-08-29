@@ -36,11 +36,11 @@ export const InteractionDialogs: React.FC<InteractionDialogsProps> = ({
     <>
       {/* Create Interaction Dialog */}
       <Dialog open={isCreateDialogOpen} onOpenChange={onCreateDialogChange}>
-        <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
+        <DialogContent className="max-w-4xl w-full max-h-screen overflow-hidden">
           <DialogHeader>
             <DialogTitle>Create New Interaction</DialogTitle>
           </DialogHeader>
-          <div className="max-h-[75vh] overflow-y-auto pr-2">
+          <div className="max-h-[calc(80vh-8rem)] overflow-y-auto pr-2">
             <InteractionForm 
               onSubmit={onCreateSubmit}
               loading={isCreating}
@@ -51,11 +51,11 @@ export const InteractionDialogs: React.FC<InteractionDialogsProps> = ({
 
       {/* Edit Interaction Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={onEditDialogChange}>
-        <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
+        <DialogContent className="max-w-4xl w-full max-h-screen overflow-hidden">
           <DialogHeader>
             <DialogTitle>Edit Interaction</DialogTitle>
           </DialogHeader>
-          <div className="max-h-[75vh] overflow-y-auto pr-2">
+          <div className="max-h-[calc(80vh-8rem)] overflow-y-auto pr-2">
             {editingInteraction && (
               <InteractionForm 
                 initialData={FormDataTransformer.toFormData(editingInteraction)}

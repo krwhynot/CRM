@@ -20,14 +20,16 @@ export function surfaceError(err: unknown): string {
   // Type guard for database errors
   const dbError = err as DatabaseError
   
-  // Log the full error structure for debugging
-  console.error('DB ERROR DETAILS', {
-    code: dbError?.code,
-    message: dbError?.message,
-    details: dbError?.details,
-    hint: dbError?.hint,
-    status: dbError?.status
-  })
+  // Log the full error structure for debugging (development only)
+  if (process.env.NODE_ENV === 'development') {
+    console.error('DB ERROR DETAILS', {
+      code: dbError?.code,
+      message: dbError?.message,
+      details: dbError?.details,
+      hint: dbError?.hint,
+      status: dbError?.status
+    })
+  }
 
   // Return user-friendly error message
   if (dbError?.code === '23505') {

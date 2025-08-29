@@ -29,19 +29,21 @@ export function debugQueryState(queryKey: any[], hookName: string, data: any, qu
     fetchStatus: queryState.fetchStatus
   }
 
-  console.log(`🔍 [${hookName}] Query State:`, debugInfo)
-  
-  // Warn about potential issues
-  if (queryState.isError) {
-    console.warn(`⚠️  [${hookName}] Query failed:`, queryState.error)
-  }
-  
-  if (Array.isArray(data) && data.length === 0 && !queryState.isLoading) {
-    console.warn(`⚠️  [${hookName}] Query returned empty array - potential data issue`)
-  }
-  
-  if (queryState.dataUpdatedAt && Date.now() - queryState.dataUpdatedAt > 5 * 60 * 1000) {
-    console.warn(`⚠️  [${hookName}] Data is stale (${Math.round((Date.now() - queryState.dataUpdatedAt) / 1000 / 60)} minutes old)`)
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`🔍 [${hookName}] Query State:`, debugInfo)
+    
+    // Warn about potential issues
+    if (queryState.isError) {
+      console.warn(`⚠️  [${hookName}] Query failed:`, queryState.error)
+    }
+    
+    if (Array.isArray(data) && data.length === 0 && !queryState.isLoading) {
+      console.warn(`⚠️  [${hookName}] Query returned empty array - potential data issue`)
+    }
+    
+    if (queryState.dataUpdatedAt && Date.now() - queryState.dataUpdatedAt > 5 * 60 * 1000) {
+      console.warn(`⚠️  [${hookName}] Data is stale (${Math.round((Date.now() - queryState.dataUpdatedAt) / 1000 / 60)} minutes old)`)
+    }
   }
 
   return debugInfo
@@ -51,8 +53,6 @@ export function debugQueryState(queryKey: any[], hookName: string, data: any, qu
  * Compare query states between different components/pages
  */
 export function compareQueryStates(state1: QueryDebugInfo, state2: QueryDebugInfo, component1: string, component2: string) {
-  console.log(`🔀 Comparing query states: ${component1} vs ${component2}`)
-  
   // Compare basic metrics
   const comparison = {
     dataCount: {
@@ -73,15 +73,18 @@ export function compareQueryStates(state1: QueryDebugInfo, state2: QueryDebugInf
     }
   }
   
-  console.table(comparison)
-  
-  // Flag inconsistencies
-  if (state1.data?.count !== state2.data?.count) {
-    console.error(`❌ DATA INCONSISTENCY: ${component1} has ${state1.data?.count} items, ${component2} has ${state2.data?.count} items`)
-  }
-  
-  if (state1.isError !== state2.isError) {
-    console.error(`❌ ERROR STATE MISMATCH: ${component1} error=${state1.isError}, ${component2} error=${state2.isError}`)
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`🔀 Comparing query states: ${component1} vs ${component2}`)
+    console.table(comparison)
+    
+    // Flag inconsistencies
+    if (state1.data?.count !== state2.data?.count) {
+      console.error(`❌ DATA INCONSISTENCY: ${component1} has ${state1.data?.count} items, ${component2} has ${state2.data?.count} items`)
+    }
+    
+    if (state1.isError !== state2.isError) {
+      console.error(`❌ ERROR STATE MISMATCH: ${component1} error=${state1.isError}, ${component2} error=${state2.isError}`)
+    }
   }
   
   return comparison
@@ -100,20 +103,22 @@ export function monitorQueryCache(queryClient: any, keyPattern: string[] = ['org
     )
   )
   
-  console.log(`📊 Query Cache Analysis for pattern [${keyPattern.join(', ')}]:`)
-  console.log(`Total queries in cache: ${queries.length}`)
-  console.log(`Matching queries: ${matchingQueries.length}`)
-  
-  matchingQueries.forEach((query: any, index: number) => {
-    console.log(`Query ${index + 1}:`, {
-      key: query.queryKey,
-      state: query.state.status,
-      dataCount: Array.isArray(query.state.data) ? query.state.data.length : 'non-array',
-      lastUpdated: new Date(query.state.dataUpdatedAt).toLocaleTimeString(),
-      isStale: query.isStale(),
-      isInactive: query.isInactive()
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`📊 Query Cache Analysis for pattern [${keyPattern.join(', ')}]:`)
+    console.log(`Total queries in cache: ${queries.length}`)
+    console.log(`Matching queries: ${matchingQueries.length}`)
+    
+    matchingQueries.forEach((query: any, index: number) => {
+      console.log(`Query ${index + 1}:`, {
+        key: query.queryKey,
+        state: query.state.status,
+        dataCount: Array.isArray(query.state.data) ? query.state.data.length : 'non-array',
+        lastUpdated: new Date(query.state.dataUpdatedAt).toLocaleTimeString(),
+        isStale: query.isStale(),
+        isInactive: query.isInactive()
+      })
     })
-  })
+  }
   
   return matchingQueries
 }
@@ -122,19 +127,21 @@ export function monitorQueryCache(queryClient: any, keyPattern: string[] = ['org
  * Log network request details for debugging
  */
 export function logNetworkRequest(url: string, method: string, payload?: any, response?: any, error?: any) {
-  const timestamp = new Date().toISOString()
-  
-  if (error) {
-    console.error(`🌐 [${timestamp}] ${method} ${url} FAILED:`, {
-      error: error.message,
-      status: error.status,
-      payload
-    })
-  } else {
-    console.log(`🌐 [${timestamp}] ${method} ${url} SUCCESS:`, {
-      responseSize: response ? (Array.isArray(response) ? response.length : 'non-array') : 'unknown',
-      payload
-    })
+  if (process.env.NODE_ENV === 'development') {
+    const timestamp = new Date().toISOString()
+    
+    if (error) {
+      console.error(`🌐 [${timestamp}] ${method} ${url} FAILED:`, {
+        error: error.message,
+        status: error.status,
+        payload
+      })
+    } else {
+      console.log(`🌐 [${timestamp}] ${method} ${url} SUCCESS:`, {
+        responseSize: response ? (Array.isArray(response) ? response.length : 'non-array') : 'unknown',
+        payload
+      })
+    }
   }
 }
 
@@ -148,7 +155,9 @@ export function measureQueryPerformance(operationName: string) {
     end: () => {
       const endTime = performance.now()
       const duration = endTime - startTime
-      console.log(`⏱️  [${operationName}] took ${duration.toFixed(2)}ms`)
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`⏱️  [${operationName}] took ${duration.toFixed(2)}ms`)
+      }
       return duration
     }
   }

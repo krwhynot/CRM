@@ -11,9 +11,9 @@ export const priorityIndicatorVariants = cva(
         critical: "bg-red-100 border-red-400 text-red-800",
       },
       size: {
-        sm: "w-6 h-6 min-w-[44px] min-h-[44px] p-2",
-        default: "w-8 h-8 min-w-[48px] min-h-[48px] p-3",
-        lg: "w-10 h-10 min-w-[52px] min-h-[52px] p-4",
+        sm: "w-6 h-6 min-w-11 min-h-11 p-2",
+        default: "w-8 h-8 min-w-12 min-h-12 p-3",
+        lg: "w-10 h-10 min-w-14 min-h-14 p-4",
       },
     },
     defaultVariants: {

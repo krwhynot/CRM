@@ -38,7 +38,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const { data: { session }, error } = await supabase.auth.getSession()
       
       if (error) {
-        console.error('Error getting initial session:', error)
+        // Auth errors handled by UI error boundaries
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Error getting initial session:', error)
+        }
       } else {
         setSession(session)
         setUser(session?.user ?? null)

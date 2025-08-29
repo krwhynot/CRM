@@ -7,49 +7,49 @@ interface OpportunityKanbanProps {
   loading?: boolean
 }
 
-// Elevated Stage Colors - Dark Headers / Light Cards
+// Elevated Stage Colors - Using CSS Variables
 const ELEVATED_STAGE_COLORS = {
   'New Lead': {
-    dark: '#6B7280',   // Header - dark gray
-    light: '#F3F4F6',  // Cards - light gray
-    text: '#111827',
-    border: '#D1D5DB'
+    dark: 'hsl(var(--muted-foreground))',
+    light: 'hsl(var(--muted))',
+    text: 'hsl(var(--foreground))',
+    border: 'hsl(var(--border))'
   },
   'Initial Outreach': {
-    dark: '#1E40AF',   // Header - dark blue
-    light: '#DBEAFE',  // Cards - light blue
-    text: '#1E40AF',
-    border: '#93C5FD'
+    dark: 'hsl(var(--primary))',
+    light: 'hsl(var(--primary) / 0.1)',
+    text: 'hsl(var(--primary))',
+    border: 'hsl(var(--primary) / 0.3)'
   },
   'Sample/Visit Offered': {
-    dark: '#3730A3',   // Header - dark indigo
-    light: '#E0E7FF',  // Cards - light indigo
-    text: '#3730A3',
-    border: '#C7D2FE'
+    dark: 'hsl(var(--chart-2))',
+    light: 'hsl(var(--chart-2) / 0.1)',
+    text: 'hsl(var(--chart-2))',
+    border: 'hsl(var(--chart-2) / 0.3)'
   },
   'Awaiting Response': {
-    dark: '#D97706',   // Header - dark amber
-    light: '#FEF3C7',  // Cards - light amber
-    text: '#78350F',
-    border: '#FDE047'
+    dark: 'hsl(var(--chart-3))',
+    light: 'hsl(var(--chart-3) / 0.1)',
+    text: 'hsl(var(--chart-3))',
+    border: 'hsl(var(--chart-3) / 0.3)'
   },
   'Feedback Logged': {
-    dark: '#EA580C',   // Header - dark orange
-    light: '#FED7AA',  // Cards - light orange
-    text: '#7C2D12',
-    border: '#FDBA74'
+    dark: 'hsl(var(--chart-4))',
+    light: 'hsl(var(--chart-4) / 0.1)',
+    text: 'hsl(var(--chart-4))',
+    border: 'hsl(var(--chart-4) / 0.3)'
   },
   'Demo Scheduled': {
-    dark: '#65A30D',   // Header - dark lime
-    light: '#D9F99D',  // Cards - light lime
-    text: '#365314',
-    border: '#BEF264'
+    dark: 'hsl(var(--chart-5))',
+    light: 'hsl(var(--chart-5) / 0.1)',
+    text: 'hsl(var(--chart-5))',
+    border: 'hsl(var(--chart-5) / 0.3)'
   },
   'Closed - Won': {
-    dark: '#059669',   // Header - dark green
-    light: '#86EFAC',  // Cards - light green
-    text: '#14532D',
-    border: '#4ADE80'
+    dark: 'hsl(var(--chart-1))',
+    light: 'hsl(var(--chart-1) / 0.1)',
+    text: 'hsl(var(--chart-1))',
+    border: 'hsl(var(--chart-1) / 0.3)'
   }
 }
 
@@ -105,16 +105,16 @@ export const OpportunityKanban: React.FC<OpportunityKanbanProps> = ({
     <div className="kanban-section">
       {/* Section Header */}
       <div className="flex justify-between items-center mb-2">
-        <h3 className="text-sm font-semibold text-gray-700">
+        <h3 className="text-sm font-semibold text-foreground">
           Sales Pipeline ({totalOpportunities} opportunities)
         </h3>
-        <button className="text-xs text-gray-500 hover:text-gray-700">
+        <button className="text-xs text-muted-foreground hover:text-foreground">
           Expand ↕
         </button>
       </div>
 
       {/* Compact Pipeline Container */}
-      <div className="h-[250px] border border-gray-200 rounded-lg bg-gray-50 p-2 shadow-sm overflow-hidden">
+      <div className="h-[250px] border border-border rounded-lg bg-muted/30 p-2 shadow-sm overflow-hidden">
         <div className="flex gap-1 h-full">
             {STAGE_ORDER.map((stage) => {
               const stageOpportunities = opportunitiesByStage[stage] || []
@@ -124,7 +124,7 @@ export const OpportunityKanban: React.FC<OpportunityKanbanProps> = ({
               return (
                 <div
                   key={stage}
-                  className="flex-1 min-w-[130px] flex flex-col bg-white rounded border overflow-hidden"
+                  className="flex-1 min-w-[130px] flex flex-col bg-card rounded border overflow-hidden"
                   style={{
                     borderColor: colors.border
                   }}
@@ -176,7 +176,7 @@ export const OpportunityKanban: React.FC<OpportunityKanbanProps> = ({
                     
                     {/* Empty State */}
                     {stageOpportunities.length === 0 && (
-                      <div className="text-[10px] text-gray-400 text-center py-4">
+                      <div className="text-[10px] text-muted-foreground text-center py-4">
                         No opportunities
                       </div>
                     )}

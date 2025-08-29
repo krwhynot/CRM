@@ -69,7 +69,6 @@ export class QueryErrorBoundary extends React.Component<Props, State> {
   }
 
   static getDerivedStateFromError(error: Error): State {
-    console.error('🚨 [QueryErrorBoundary] Caught error:', error)
     return {
       hasError: true,
       error
@@ -77,20 +76,20 @@ export class QueryErrorBoundary extends React.Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('🚨 [QueryErrorBoundary] Component stack trace:', errorInfo.componentStack)
-    
-    // Log additional context for debugging
-    console.error('🚨 [QueryErrorBoundary] Error details:', {
-      message: error.message,
-      stack: error.stack,
-      name: error.name,
-      timestamp: new Date().toISOString()
-    })
+    // Error boundary logging kept for production debugging
+    if (process.env.NODE_ENV === 'development') {
+      console.error('🚨 [QueryErrorBoundary] Caught error:', error)
+      console.error('🚨 [QueryErrorBoundary] Component stack trace:', errorInfo.componentStack)
+      console.error('🚨 [QueryErrorBoundary] Error details:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+        timestamp: new Date().toISOString()
+      })
+    }
   }
 
   resetErrorBoundary = () => {
-    console.log('🔄 [QueryErrorBoundary] Resetting error boundary')
-    
     this.setState({
       hasError: false,
       error: null
@@ -104,7 +103,6 @@ export class QueryErrorBoundary extends React.Component<Props, State> {
     // Auto-reset after 30 seconds if error persists
     this.resetTimeoutId = window.setTimeout(() => {
       if (this.state.hasError) {
-        console.log('🔄 [QueryErrorBoundary] Auto-resetting after timeout')
         this.resetErrorBoundary()
       }
     }, 30000)

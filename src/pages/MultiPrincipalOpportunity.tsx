@@ -4,6 +4,7 @@ import { ArrowLeft, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { SimpleMultiPrincipalForm } from '@/features/opportunities/components/SimpleMultiPrincipalForm'
+import { PageContainer } from '@/components/layout'
 
 function MultiPrincipalOpportunityPage() {
   const navigate = useNavigate()
@@ -18,7 +19,7 @@ function MultiPrincipalOpportunityPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -26,17 +27,18 @@ function MultiPrincipalOpportunityPage() {
             variant="ghost"
             size="sm"
             onClick={handleCancel}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 focus-ring"
+            aria-label="Go back to opportunities page"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Back to Opportunities
           </Button>
           <div>
-            <h1 className="text-3xl font-bold font-nunito text-mfb-olive mb-6 flex items-center gap-2">
-              <Users className="h-8 w-8 text-mfb-green" />
+            <h1 className="text-display mb-6 flex items-center gap-2">
+              <Users className="h-8 w-8 text-primary" />
               New Multi-Principal Opportunity
             </h1>
-            <p className="text-lg text-mfb-olive/70 font-nunito">
+            <p className="text-subtitle">
               Create opportunities with multiple principals and complex participant relationships
             </p>
           </div>
@@ -79,7 +81,7 @@ function MultiPrincipalOpportunityPage() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   )
 }
 

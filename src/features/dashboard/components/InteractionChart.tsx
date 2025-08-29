@@ -11,7 +11,7 @@ interface InteractionChartProps {
 const chartConfig = {
   interactions: {
     label: "Interactions",
-    color: "#10B981", // Green color as specified
+    color: "hsl(var(--chart-1))",
   },
 }
 
@@ -56,16 +56,16 @@ export const InteractionChart = React.memo(({ data, loading }: InteractionChartP
           <XAxis 
             dataKey="week" 
             tick={{ fontSize: 12 }}
-            tickLine={{ stroke: '#e5e7eb' }}
-            axisLine={{ stroke: '#e5e7eb' }}
+            tickLine={{ stroke: 'hsl(var(--border))' }}
+            axisLine={{ stroke: 'hsl(var(--border))' }}
             angle={-45}
             textAnchor="end"
             height={80}
           />
           <YAxis 
             tick={{ fontSize: 12 }}
-            tickLine={{ stroke: '#e5e7eb' }}
-            axisLine={{ stroke: '#e5e7eb' }}
+            tickLine={{ stroke: 'hsl(var(--border))' }}
+            axisLine={{ stroke: 'hsl(var(--border))' }}
             domain={['dataMin', 'dataMax']}
             allowDecimals={false}
           />
@@ -84,7 +84,7 @@ export const InteractionChart = React.memo(({ data, loading }: InteractionChartP
               r: 6, 
               stroke: chartConfig.interactions.color,
               strokeWidth: 2,
-              fill: '#ffffff'
+              fill: 'hsl(var(--background))'
             }}
             // Smooth curves as specified
             strokeDasharray={0}

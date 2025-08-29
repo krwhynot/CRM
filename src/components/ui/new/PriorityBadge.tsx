@@ -9,32 +9,32 @@ export interface PriorityBadgeProps {
 export function PriorityBadge({ priority, showIcon = true, className, ...props }: PriorityBadgeProps) {
   const styles = {
     'A+': {
-      bg: 'bg-[var(--priority-critical-bg)]',
-      text: 'text-[var(--priority-critical-text)] font-bold',
+      bg: 'bg-priority-critical-bg',
+      text: 'text-priority-critical-text font-bold',
       icon: '🔴',
       label: 'Critical'
     },
     'A': {
-      bg: 'bg-[var(--priority-high-bg)]', 
-      text: 'text-[var(--priority-high-text)] font-semibold',
+      bg: 'bg-priority-high-bg', 
+      text: 'text-priority-high-text font-semibold',
       icon: '🟠',
       label: 'High'
     },
     'B': {
-      bg: 'bg-[var(--priority-medium-bg)]',
-      text: 'text-[var(--priority-medium-text)]',
+      bg: 'bg-priority-medium-bg',
+      text: 'text-priority-medium-text',
       icon: '🟡', 
       label: 'Medium'
     },
     'C': {
-      bg: 'bg-[var(--priority-low-bg)]',
-      text: 'text-[var(--priority-low-text)]',
+      bg: 'bg-priority-low-bg',
+      text: 'text-priority-low-text',
       icon: '⚪',
       label: 'Low'
     },
     'D': {
-      bg: 'bg-[var(--priority-minimal-bg)]',
-      text: 'text-[var(--priority-minimal-text)]',
+      bg: 'bg-priority-minimal-bg',
+      text: 'text-priority-minimal-text',
       icon: '⚪',
       label: 'Minimal'
     }

@@ -11,23 +11,24 @@ import {
 import { Input } from "@/components/ui/input"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { UserMenu } from "@/features/auth/components/UserMenu"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export function Header() {
   return (
-    <header className="h-[60px] bg-gradient-to-r from-white to-primary-50 border-b-2 border-primary-400 flex items-center justify-between px-6 shrink-0 shadow-[0_2px_8px_rgba(141,198,63,0.15)]">
+    <header className="h-[60px] bg-gradient-to-r from-background to-primary-50 border-b-2 border-primary-400 flex items-center justify-between px-6 shrink-0" style={{ boxShadow: 'var(--header-shadow)' }}>
       <div className="flex items-center gap-4">
         {/* Mobile menu toggle - hidden on larger screens since we use fixed sidebar */}
         <SidebarTrigger className="-ml-1" />
         
         {/* MFB Branding */}
         <div className="flex items-center gap-2">
-          <span className="bg-primary text-white px-2 py-1 rounded text-sm font-bold italic">
+          <span className="bg-primary text-primary-foreground px-2 py-1 rounded text-sm font-bold italic">
             MFB
           </span>
           <span className="text-primary-600 font-semibold">
             Master Food Brokers, Inc.
           </span>
-          <span className="text-gray-400 text-xs italic ml-2 hidden sm:inline">
+          <span className="text-muted-foreground text-xs italic ml-2 hidden sm:inline">
             "Partnering with Excellence"
           </span>
         </div>
@@ -38,16 +39,17 @@ export function Header() {
           <Input
             type="search"
             placeholder="Search..."
-            className="w-[200px] lg:w-[300px] rounded-lg bg-white pl-8 border-gray-200"
+            className="w-[200px] lg:w-[300px] rounded-lg bg-background pl-8 border-border"
           />
         </div>
       </div>
       
       <div className="flex items-center gap-4">
+        <ThemeToggle />
         <UserMenu />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon" className="w-9 h-9 rounded-full border-gray-200 hover:bg-primary-100 hover:border-primary-300 hover:text-primary-600">
+            <Button variant="outline" size="icon" className="w-9 h-9 rounded-full border-border hover:bg-primary-100 hover:border-primary-400 hover:text-primary-600">
               <Bell className="h-4 w-4" />
               <span className="sr-only">Toggle notifications</span>
             </Button>

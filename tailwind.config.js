@@ -36,6 +36,10 @@ module.exports = {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          50: "hsl(var(--primary-50))",
+          100: "hsl(var(--primary-100))",
+          400: "hsl(var(--primary-400))",
+          600: "hsl(var(--primary-600))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -44,6 +48,23 @@ module.exports = {
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
+          hover: "hsl(var(--destructive)) / 0.9",
+          active: "hsl(var(--destructive)) / 0.8",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+          hover: "hsl(var(--success)) / 0.9",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+          hover: "hsl(var(--warning)) / 0.9",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
+          hover: "hsl(var(--info)) / 0.9",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -72,12 +93,45 @@ module.exports = {
           ring: "hsl(var(--sidebar-ring))",
         },
         'mfb': {
-          'green': '#7CB342',
-          'green-hover': '#6BA132',
-          'clay': '#EA580C',
-          'cream': '#FEFEF9',
-          'sage': '#F0FDF4',
-          'olive': '#1F2937',
+          'green': 'var(--mfb-green)',
+          'green-hover': 'var(--mfb-green-hover)',
+          'green-light': 'var(--mfb-green-light)',
+          'green-focus': 'var(--mfb-green-focus)',
+          'clay': 'var(--mfb-clay)',
+          'clay-hover': 'var(--mfb-clay-hover)',
+          'cream': 'var(--mfb-cream)',
+          'sage': 'var(--mfb-sage)',
+          'sage-tint': 'var(--mfb-sage-tint)',
+          'olive': 'var(--mfb-olive)',
+          'olive-light': 'var(--mfb-olive-light)',
+          'olive-lighter': 'var(--mfb-olive-lighter)',
+          'white': 'var(--mfb-white)',
+          'success': 'var(--mfb-success)',
+          'warning': 'var(--mfb-warning)',
+          'danger': 'var(--mfb-danger)',
+          'info': 'var(--mfb-info)',
+        },
+        'priority': {
+          'critical': {
+            'bg': 'var(--priority-critical-bg)',
+            'text': 'var(--priority-critical-text)',
+          },
+          'high': {
+            'bg': 'var(--priority-high-bg)',
+            'text': 'var(--priority-high-text)',
+          },
+          'medium': {
+            'bg': 'var(--priority-medium-bg)',
+            'text': 'var(--priority-medium-text)',
+          },
+          'low': {
+            'bg': 'var(--priority-low-bg)',
+            'text': 'var(--priority-low-text)',
+          },
+          'minimal': {
+            'bg': 'var(--priority-minimal-bg)',
+            'text': 'var(--priority-minimal-text)',
+          },
         },
       },
       fontFamily: {

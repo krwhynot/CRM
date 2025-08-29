@@ -5,7 +5,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
+  DialogScrollableContent
+} from '@/components/ui/StandardDialog'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -57,32 +58,32 @@ export const ContactsDialogs: React.FC<ContactsDialogsProps> = ({
     <>
       {/* Create Dialog */}
       <Dialog open={isCreateDialogOpen} onOpenChange={onCreateDialogChange}>
-        <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Create New Contact</DialogTitle>
             <DialogDescription>
               Add a new contact to your CRM system. Fill in the contact details below.
             </DialogDescription>
           </DialogHeader>
-          <div className="max-h-[75vh] overflow-y-auto pr-2">
+          <DialogScrollableContent>
             <EnhancedContactForm 
               onSubmit={onCreateSubmit}
               loading={isCreating}
             />
-          </div>
+          </DialogScrollableContent>
         </DialogContent>
       </Dialog>
 
       {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={onEditDialogChange}>
-        <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Contact</DialogTitle>
             <DialogDescription>
               Update the contact information below.
             </DialogDescription>
           </DialogHeader>
-          <div className="max-h-[75vh] overflow-y-auto pr-2">
+          <DialogScrollableContent>
             {selectedContact && (
               <EnhancedContactForm
                 initialData={FormDataTransformer.toFormData(selectedContact)}
@@ -90,7 +91,7 @@ export const ContactsDialogs: React.FC<ContactsDialogsProps> = ({
                 loading={isUpdating}
               />
             )}
-          </div>
+          </DialogScrollableContent>
         </DialogContent>
       </Dialog>
 
@@ -110,7 +111,7 @@ export const ContactsDialogs: React.FC<ContactsDialogsProps> = ({
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => selectedContact && onDeleteConfirm(selectedContact)}
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-destructive hover:bg-destructive-hover text-destructive-foreground"
               disabled={isDeleting}
             >
               {isDeleting ? 'Deleting...' : 'Delete Contact'}

@@ -4,11 +4,9 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ButtonNew } from '@/components/ui/new/Button'
 import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
 import { organizationSchema, FOOD_SERVICE_SEGMENTS, type OrganizationFormData } from '@/types/organization.types'
-import { safeGetString } from '@/lib/secure-storage'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { deriveOrganizationFlags } from '@/lib/organization-utils'
 
@@ -25,8 +23,6 @@ export function OrganizationForm({
   loading = false,
   submitLabel = 'Save Organization'
 }: OrganizationFormProps) {
-  // Feature flag for new MFB styling
-  const USE_NEW_STYLE = safeGetString('useNewStyle', 'false') === 'true';
   
   const form = useForm<OrganizationFormData>({
     resolver: yupResolver(organizationSchema),
@@ -143,15 +139,9 @@ export function OrganizationForm({
               </div>
             </ProgressiveDetails>
 
-            {USE_NEW_STYLE ? (
-              <ButtonNew type="submit" disabled={loading} className="w-full">
-                {loading ? 'Saving...' : submitLabel}
-              </ButtonNew>
-            ) : (
-              <Button type="submit" disabled={loading} className="w-full h-11">
-                {loading ? 'Saving...' : submitLabel}
-              </Button>
-            )}
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading ? 'Saving...' : submitLabel}
+            </Button>
           </form>
         </Form>
       </CardContent>

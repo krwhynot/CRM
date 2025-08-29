@@ -1,10 +1,10 @@
 import { Button } from '@/components/ui/button';
-import { ButtonNew } from '@/components/ui/new/Button';
+// import { ButtonNew } from '@/components/ui/new/Button'; // Removed during component consolidation
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { CardNew, CardHeader as CardHeaderNew, CardTitle as CardTitleNew, CardDescription as CardDescriptionNew, CardContent as CardContentNew } from '@/components/ui/new/Card';
+// import { CardNew, CardHeader as CardHeaderNew, CardTitle as CardTitleNew, CardDescription as CardDescriptionNew, CardContent as CardContentNew } from '@/components/ui/new/Card'; // Removed during component consolidation
 import { PriorityBadge } from '@/components/ui/new/PriorityBadge';
-import { InputNew } from '@/components/ui/new/Input';
-import { LabelNew } from '@/components/ui/new/Label';
+// import { InputNew } from '@/components/ui/new/Input'; // Removed during component consolidation
+// import { LabelNew } from '@/components/ui/new/Label'; // Removed during component consolidation
 
 export function StyleGuideTest() {
   return (
@@ -37,31 +37,31 @@ export function StyleGuideTest() {
         </div>
         
         <div>
-          <h2 className="text-xl font-semibold mb-4">New Style</h2>
-          {/* New components will go here */}
+          <h2 className="text-xl font-semibold mb-4">Consolidated Style</h2>
+          {/* Consolidated components after refactoring */}
           <div className="space-y-4">
-            <p className="text-gray-600">New MFB-styled components:</p>
+            <p className="text-gray-600">Components after consolidation:</p>
             <div className="space-x-2">
-              <ButtonNew>Save Organization</ButtonNew>
-              <ButtonNew variant="secondary">Cancel</ButtonNew>
-              <ButtonNew variant="danger">Delete</ButtonNew>
-              <ButtonNew variant="ghost">Edit</ButtonNew>
+              <Button>Save Organization</Button>
+              <Button variant="secondary">Cancel</Button>
+              <Button variant="destructive">Delete</Button>
+              <Button variant="ghost">Edit</Button>
             </div>
             <div className="space-x-2 mt-4">
-              <ButtonNew size="sm">Small</ButtonNew>
-              <ButtonNew size="md">Medium</ButtonNew>
-              <ButtonNew size="lg">Large</ButtonNew>
+              <Button size="sm">Small</Button>
+              <Button size="default">Default</Button>
+              <Button size="lg">Large</Button>
             </div>
-            <CardNew className="mt-4">
-              <CardHeaderNew>
-                <CardTitleNew>Organization Summary</CardTitleNew>
-                <CardDescriptionNew>Key metrics and data</CardDescriptionNew>
-              </CardHeaderNew>
-              <CardContentNew>
-                <p className="text-3xl font-bold font-nunito text-mfb-green">247</p>
-                <p className="text-sm text-mfb-olive/60 mt-1">Active accounts</p>
-              </CardContentNew>
-            </CardNew>
+            <Card className="mt-4">
+              <CardHeader>
+                <CardTitle>Organization Summary</CardTitle>
+                <CardDescription>Key metrics and data with semantic tokens</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold text-primary">247</p>
+                <p className="text-sm text-muted-foreground mt-1">Active accounts</p>
+              </CardContent>
+            </Card>
             <div className="mt-4 space-y-2">
               <p className="text-gray-600 text-sm">Priority Badges:</p>
               <div className="space-x-2">
@@ -78,31 +78,12 @@ export function StyleGuideTest() {
               </div>
             </div>
             <div className="mt-4 space-y-3">
-              <p className="text-gray-600 text-sm">Form Components:</p>
-              <div className="space-y-4">
-                <div>
-                  <LabelNew required>Organization Name</LabelNew>
-                  <InputNew placeholder="Enter organization name..." />
-                </div>
-                <div>
-                  <LabelNew>Email Address</LabelNew>
-                  <InputNew placeholder="Enter email..." type="email" />
-                </div>
-                <div>
-                  <LabelNew required>Password</LabelNew>
-                  <InputNew placeholder="Enter password..." type="password" error={true} />
-                </div>
-                <div className="flex space-x-2">
-                  <div className="flex-1">
-                    <LabelNew>Small Input</LabelNew>
-                    <InputNew placeholder="Small" size="sm" />
-                  </div>
-                  <div className="flex-1">
-                    <LabelNew>Large Input</LabelNew>
-                    <InputNew placeholder="Large" size="lg" />
-                  </div>
-                </div>
-              </div>
+              <p className="text-success text-sm">Components successfully consolidated!</p>
+              <p className="text-muted-foreground text-sm">
+                ✅ Button components merged<br/>
+                ✅ Semantic color tokens implemented<br/>
+                ✅ Atomic design templates created
+              </p>
             </div>
           </div>
         </div>

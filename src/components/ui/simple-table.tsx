@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   Table,
   TableBody,
@@ -80,7 +81,7 @@ export function SimpleTable<T extends { id: string }>({
                       <Checkbox
                         checked={selectedCount === totalCount && totalCount > 0}
                         onCheckedChange={onSelectAll}
-                        aria-label="Select all"
+                        aria-label={config.label || "Select all"}
                       />
                     </TableHead>
                   )

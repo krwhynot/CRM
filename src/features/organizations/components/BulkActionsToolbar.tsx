@@ -52,7 +52,7 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
             variant="ghost"
             size="sm"
             onClick={onSelectAll}
-            className="text-blue-700 hover:bg-blue-100 hover:text-blue-900 min-h-[44px] sm:min-h-[32px] touch-manipulation"
+            className="text-blue-700 hover:bg-blue-100 hover:text-blue-900 h-11 sm:h-8 touch-manipulation"
           >
             <CheckSquare className="h-4 w-4 mr-2" />
             <span className="hidden xs:inline">Select All ({totalCount})</span>
@@ -65,7 +65,7 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
             variant="ghost"
             size="sm"
             onClick={onSelectNone}
-            className="text-blue-700 hover:bg-blue-100 hover:text-blue-900 min-h-[44px] sm:min-h-[32px] touch-manipulation"
+            className="text-blue-700 hover:bg-blue-100 hover:text-blue-900 h-11 sm:h-8 touch-manipulation"
           >
             <Square className="h-4 w-4 mr-2" />
             <span className="hidden xs:inline">Select None</span>
@@ -79,7 +79,7 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
           variant="outline"
           size="sm"
           onClick={onBulkDelete}
-          className="text-red-700 border-red-200 hover:bg-red-50 hover:border-red-300 min-h-[44px] sm:min-h-[32px] touch-manipulation flex-1 sm:flex-none"
+          className="text-red-700 border-red-200 hover:bg-red-50 hover:border-red-300 h-11 sm:h-8 touch-manipulation flex-1 sm:flex-none"
         >
           <Trash2 className="h-4 w-4 mr-2" />
           <span className="hidden xs:inline">Delete Selected</span>

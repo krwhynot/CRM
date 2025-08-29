@@ -9,7 +9,7 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <SidebarProvider>
+    <SidebarProvider data-app-shell>
       <AppSidebar />
       <SidebarInset>
         <Header />

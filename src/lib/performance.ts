@@ -10,9 +10,6 @@ interface PerformanceMetric {
 }
 
 function sendToAnalytics(metric: WebVitalsMetric) {
-  // Log performance metrics to console (can be extended to send to analytics service)
-  console.log(`Performance: ${metric.name}: ${metric.value}ms`)
-  
   // Store metrics in localStorage for debugging - now with safe JSON handling
   const perfMetrics = safeGetJSON<PerformanceMetric[]>('perfMetrics', [])
   
@@ -27,8 +24,12 @@ function sendToAnalytics(metric: WebVitalsMetric) {
   // Keep last 50 metrics and store safely
   const success = safeSetJSON('perfMetrics', perfMetrics.slice(-50))
   
-  if (!success) {
-    console.warn('Failed to store performance metrics - localStorage may be full or disabled')
+  // Development-only performance logging
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`Performance: ${metric.name}: ${metric.value}ms`)
+    if (!success) {
+      console.warn('Failed to store performance metrics - localStorage may be full or disabled')
+    }
   }
 }
 

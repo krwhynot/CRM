@@ -23,7 +23,7 @@ export function InteractionsChart({ data, maxValue }: InteractionsChartProps) {
     <Card className={`${cardClassName} hover:shadow-lg transition-shadow`}>
       <CardHeader className={headerClassName}>
         <CardTitle className={`flex items-center gap-2 ${titleClassName}`}>
-          <Activity className="h-5 w-5" style={{color: "#EA580C"}} />
+          <Activity className="h-5 w-5 text-primary" />
           Interactions per Week
         </CardTitle>
         <p className={`text-sm text-muted-foreground ${subtitleClassName}`}>
@@ -56,17 +56,17 @@ export function InteractionsChart({ data, maxValue }: InteractionsChartProps) {
               <Line
                 type="monotone"
                 dataKey="interactions"
-                stroke="#EA580C"
+                stroke="hsl(var(--primary))"
                 strokeWidth={3}
                 dot={{ 
-                  fill: "#EA580C", 
+                  fill: "hsl(var(--primary))", 
                   strokeWidth: 2, 
                   stroke: "hsl(var(--background))",
                   r: 4
                 }}
                 activeDot={{ 
                   r: 6, 
-                  fill: "#EA580C",
+                  fill: "hsl(var(--primary))",
                   stroke: "hsl(var(--background))",
                   strokeWidth: 2
                 }}

@@ -120,7 +120,9 @@ export function isClientStateSafe(value: unknown): boolean {
     // If it has multiple server-like keys, it's probably server data
     const serverLikeKeyCount = serverDataKeys.filter(key => objectKeys.includes(key)).length
     if (serverLikeKeyCount >= 2) {
-      console.warn('⚠️ Attempting to store server-like object in client state:', value)
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('⚠️ Attempting to store server-like object in client state:', value)
+      }
       return false
     }
     

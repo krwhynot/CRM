@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { AuthProvider, useAuth } from '@/contexts/AuthContext'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { ThemeProvider } from '@/components/theme-provider'
 import { Layout } from '@/layout/components/Layout'
 import { AuthPage, ResetPasswordPage, AuthCallbackHandler } from '@/features/auth'
 import { CommandPalette } from '@/components/CommandPalette'
@@ -55,7 +56,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <TooltipProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <TooltipProvider>
           <Router>
             <AuthCallbackHandler>
             <CommandPalette open={commandPaletteOpen} setOpen={setCommandPaletteOpen} />
@@ -145,7 +147,8 @@ function App() {
             <Toaster />
             <ReactQueryDevtools initialIsOpen={false} />
           </Router>
-        </TooltipProvider>
+          </TooltipProvider>
+        </ThemeProvider>
       </AuthProvider>
     </QueryClientProvider>
   )

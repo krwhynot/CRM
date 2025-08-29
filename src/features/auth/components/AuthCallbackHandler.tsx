@@ -34,11 +34,13 @@ export function AuthCallbackHandler({ children }: AuthCallbackHandlerProps) {
         return
       }
 
-      console.log('AuthCallbackHandler: Processing auth callback')
-      console.log('Location:', window.location.href)
-      console.log('Hash:', hash)
-      console.log('Search:', search)
-      console.log('Hash restored from storage:', hashRestored)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('AuthCallbackHandler: Processing auth callback')
+        console.log('Location:', window.location.href)
+        console.log('Hash:', hash)
+        console.log('Search:', search)
+        console.log('Hash restored from storage:', hashRestored)
+      }
 
       setIsProcessing(true)
 
@@ -60,10 +62,14 @@ export function AuthCallbackHandler({ children }: AuthCallbackHandlerProps) {
         const refreshToken = authParams.get('refresh_token')
         const error = authParams.get('error')
         
-        console.log('Auth params:', { type, accessToken: !!accessToken, error })
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Auth params:', { type, accessToken: !!accessToken, error })
+        }
 
         if (error) {
-          console.log('Auth error detected:', error)
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Auth error detected:', error)
+          }
           // Clear any preserved hash to prevent infinite loops with test data
           clearPreservedHash()
           // Let the specific page handle the error
@@ -73,12 +79,16 @@ export function AuthCallbackHandler({ children }: AuthCallbackHandlerProps) {
         // Handle different types of auth callbacks
         switch (type) {
           case 'recovery':
-            console.log('Password recovery detected')
+            if (process.env.NODE_ENV === 'development') {
+              console.log('Password recovery detected')
+            }
             // The ResetPasswordPage will handle this
             break
             
           case 'signup':
-            console.log('Email confirmation detected')
+            if (process.env.NODE_ENV === 'development') {
+              console.log('Email confirmation detected')
+            }
             if (accessToken && refreshToken) {
               const { error: sessionError } = await supabase.auth.setSession({
                 access_token: accessToken,
@@ -94,13 +104,17 @@ export function AuthCallbackHandler({ children }: AuthCallbackHandlerProps) {
             break
             
           case 'invite':
-            console.log('Team invite detected')
+            if (process.env.NODE_ENV === 'development') {
+              console.log('Team invite detected')
+            }
             // Handle team invites if applicable
             break
             
           default:
             if (accessToken && refreshToken) {
-              console.log('Generic auth token detected, setting session')
+              if (process.env.NODE_ENV === 'development') {
+                console.log('Generic auth token detected, setting session')
+              }
               const { error: sessionError } = await supabase.auth.setSession({
                 access_token: accessToken,
                 refresh_token: refreshToken,
@@ -115,7 +129,9 @@ export function AuthCallbackHandler({ children }: AuthCallbackHandlerProps) {
             break
         }
       } catch (err) {
-        console.error('AuthCallbackHandler: Error processing auth callback:', err)
+        if (process.env.NODE_ENV === 'development') {
+          console.error('AuthCallbackHandler: Error processing auth callback:', err)
+        }
       } finally {
         // Clear any preserved hash after processing
         clearPreservedHash()

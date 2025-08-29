@@ -37,21 +37,19 @@ export const CRMDashboard: React.FC = () => {
   if (showEmptyState) {
     return (
       <div className="flex flex-1 flex-col">
-        <div className="flex-1 overflow-auto p-6">
-          <DashboardFilters
-            filters={filters}
-            onFiltersChange={handleFiltersChange}
-            principals={principals}
-            products={products}
-            isLoading={isLoading}
+        <DashboardFilters
+          filters={filters}
+          onFiltersChange={handleFiltersChange}
+          principals={principals}
+          products={products}
+          isLoading={isLoading}
+        />
+        <div className="mt-6">
+          <EmptyState
+            type="dashboard"
+            title="Select a principal to view their activity"
+            description="Choose a principal from the filters above to see their opportunities, interactions, and activity trends over time."
           />
-          <div className="mt-6">
-            <EmptyState
-              type="dashboard"
-              title="Select a principal to view their activity"
-              description="Choose a principal from the filters above to see their opportunities, interactions, and activity trends over time."
-            />
-          </div>
         </div>
       </div>
     )
@@ -59,7 +57,6 @@ export const CRMDashboard: React.FC = () => {
   
   return (
     <div className="flex flex-1 flex-col">
-      <div className="flex-1 overflow-auto p-6 space-y-6">
         {/* Filters - Sticky top bar */}
         <DashboardFilters
           filters={filters}
@@ -89,7 +86,6 @@ export const CRMDashboard: React.FC = () => {
           loading={isLoading}
           className="w-full"
         />
-      </div>
     </div>
   )
 }

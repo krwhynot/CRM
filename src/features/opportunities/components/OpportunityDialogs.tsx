@@ -8,6 +8,7 @@ import {
 import { OpportunityForm } from './OpportunityForm'
 import { InteractionForm } from '@/features/interactions/components/InteractionForm'
 import { FormDataTransformer } from '@/lib/form-data-transformer'
+import { COPY } from '@/lib/copy'
 import type { Opportunity, InteractionWithRelations } from '@/types/entities'
 import type { InteractionFormData } from '@/types/interaction.types'
 
@@ -61,11 +62,11 @@ export const OpportunityDialogs: React.FC<OpportunityDialogsProps> = ({
     <>
       {/* Create Opportunity Dialog */}
       <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-        <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
+        <DialogContent className="max-w-4xl w-full max-h-screen overflow-hidden">
           <DialogHeader>
             <DialogTitle>Create New Opportunity</DialogTitle>
           </DialogHeader>
-          <div className="max-h-[75vh] overflow-y-auto pr-2">
+          <div className="max-h-[calc(80vh-8rem)] overflow-y-auto pr-2">
             <OpportunityForm 
               onSubmit={onCreateOpportunity}
               loading={createLoading}
@@ -76,11 +77,11 @@ export const OpportunityDialogs: React.FC<OpportunityDialogsProps> = ({
 
       {/* Edit Opportunity Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
+        <DialogContent className="max-w-4xl w-full max-h-screen overflow-hidden">
           <DialogHeader>
             <DialogTitle>Edit Opportunity</DialogTitle>
           </DialogHeader>
-          <div className="max-h-[75vh] overflow-y-auto pr-2">
+          <div className="max-h-[calc(80vh-8rem)] overflow-y-auto pr-2">
             {editingOpportunity && (
               <OpportunityForm 
                 initialData={FormDataTransformer.toFormData(editingOpportunity)}
@@ -94,13 +95,13 @@ export const OpportunityDialogs: React.FC<OpportunityDialogsProps> = ({
 
       {/* Add/Edit Interaction Dialog */}
       <Dialog open={isInteractionDialogOpen} onOpenChange={setIsInteractionDialogOpen}>
-        <DialogContent className="max-w-md w-[calc(100vw-2rem)] sm:max-w-md max-h-[90vh] overflow-hidden">
+        <DialogContent className="max-w-md w-full max-h-screen overflow-hidden">
           <DialogHeader>
             <DialogTitle>
-              {editingInteraction ? 'Edit Activity' : 'Log New Activity'}
+              {editingInteraction ? COPY.DIALOGS.EDIT_ACTIVITY : COPY.DIALOGS.LOG_ACTIVITY}
             </DialogTitle>
           </DialogHeader>
-          <div className="max-h-[75vh] overflow-y-auto pr-2">
+          <div className="max-h-[calc(80vh-8rem)] overflow-y-auto pr-2">
             <InteractionForm 
               onSubmit={editingInteraction ? onUpdateInteraction : onCreateInteraction}
               initialData={editingInteraction ? {
@@ -115,7 +116,7 @@ export const OpportunityDialogs: React.FC<OpportunityDialogsProps> = ({
               } : undefined}
               defaultOpportunityId={!editingInteraction ? selectedOpportunityId || undefined : undefined}
               loading={editingInteraction ? updateInteractionLoading : createInteractionLoading}
-              submitLabel={editingInteraction ? 'Update Activity' : 'Log Activity'}
+              submitLabel={editingInteraction ? COPY.BUTTONS.UPDATE : COPY.BUTTONS.LOG_ACTIVITY}
             />
           </div>
         </DialogContent>

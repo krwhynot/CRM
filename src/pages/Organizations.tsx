@@ -5,18 +5,15 @@ import {
   useOrganizationsPageState,
   useOrganizationsPageActions,
   useOrganizationFormData,
-  useOrganizationsPageStyle,
-  OrganizationsPageHeader,
   OrganizationsDataDisplay,
   OrganizationDialogs
 } from '@/features/organizations'
 import { OrganizationsErrorBoundary } from '@/components/error-boundaries/QueryErrorBoundary'
-import { cn } from '@/lib/utils'
+import { OrganizationManagementTemplate } from '@/components/templates/EntityManagementTemplate'
 
 function OrganizationsPage() {
   const { data: organizations = [], isLoading, error, isError } = useOrganizations()
   const refreshOrganizations = useRefreshOrganizations()
-  const { USE_NEW_STYLE } = useOrganizationsPageStyle()
   
   const {
     isCreateDialogOpen,
@@ -54,43 +51,38 @@ function OrganizationsPage() {
 
   return (
     <OrganizationsErrorBoundary>
-      <div className={cn("min-h-screen", USE_NEW_STYLE && "bg-[var(--mfb-cream)]")}>
-        <div className={cn("max-w-7xl mx-auto p-6", USE_NEW_STYLE && "space-y-8")}>
-          <OrganizationsPageHeader
-            organizationsCount={organizations.length}
-            onAddClick={openCreateDialog}
-            useNewStyle={USE_NEW_STYLE}
-          />
-          
-          <OrganizationsDataDisplay
-            isLoading={isLoading}
-            isError={isError}
-            error={error}
-            organizations={organizations}
-            onEdit={openEditDialog}
-            onDelete={openDeleteDialog}
-            onRefresh={refreshOrganizations}
-          />
-          
-          <OrganizationDialogs
-            isCreateDialogOpen={isCreateDialogOpen}
-            isEditDialogOpen={isEditDialogOpen}
-            isDeleteDialogOpen={isDeleteDialogOpen}
-            selectedOrganization={selectedOrganization}
-            editFormInitialData={editFormInitialData}
-            onCreateSubmit={handleCreate}
-            onEditSubmit={handleUpdate}
-            onDeleteConfirm={handleDelete}
-            onCreateDialogChange={closeCreateDialog}
-            onEditDialogChange={closeEditDialog}
-            onDeleteDialogChange={closeDeleteDialog}
-            onDeleteCancel={closeDeleteDialog}
-            isCreating={isCreating}
-            isUpdating={isUpdating}
-            isDeleting={isDeleting}
-          />
-        </div>
-      </div>
+      <OrganizationManagementTemplate
+        entityCount={organizations.length}
+        onAddClick={openCreateDialog}
+      >
+        <OrganizationsDataDisplay
+          isLoading={isLoading}
+          isError={isError}
+          error={error}
+          organizations={organizations}
+          onEdit={openEditDialog}
+          onDelete={openDeleteDialog}
+          onRefresh={refreshOrganizations}
+        />
+        
+        <OrganizationDialogs
+          isCreateDialogOpen={isCreateDialogOpen}
+          isEditDialogOpen={isEditDialogOpen}
+          isDeleteDialogOpen={isDeleteDialogOpen}
+          selectedOrganization={selectedOrganization}
+          editFormInitialData={editFormInitialData}
+          onCreateSubmit={handleCreate}
+          onEditSubmit={handleUpdate}
+          onDeleteConfirm={handleDelete}
+          onCreateDialogChange={closeCreateDialog}
+          onEditDialogChange={closeEditDialog}
+          onDeleteDialogChange={closeDeleteDialog}
+          onDeleteCancel={closeDeleteDialog}
+          isCreating={isCreating}
+          isUpdating={isUpdating}
+          isDeleting={isDeleting}
+        />
+      </OrganizationManagementTemplate>
     </OrganizationsErrorBoundary>
   )
 }

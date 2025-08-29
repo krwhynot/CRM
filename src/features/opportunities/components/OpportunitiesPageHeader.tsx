@@ -2,19 +2,16 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { PageHeader } from '@/components/ui/new/PageHeader'
 import { Plus, Users, Target } from 'lucide-react'
-import { cn } from '@/lib/utils'
 import { useNavigate } from 'react-router-dom'
 
 interface OpportunitiesPageHeaderProps {
   opportunitiesCount: number
   onAddClick: () => void
-  useNewStyle: boolean
 }
 
 export const OpportunitiesPageHeader: React.FC<OpportunitiesPageHeaderProps> = ({
   opportunitiesCount,
-  onAddClick,
-  useNewStyle
+  onAddClick
 }) => {
   const navigate = useNavigate()
 
@@ -40,10 +37,7 @@ export const OpportunitiesPageHeader: React.FC<OpportunitiesPageHeaderProps> = (
         
         <Button 
           onClick={onAddClick}
-          className={cn(
-            "btn-primary ml-2",
-            useNewStyle && "shadow hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
-          )}
+          className="ml-2"
         >
           <Plus className="h-4 w-4 mr-2" />
           Add Opportunity

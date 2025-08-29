@@ -581,7 +581,7 @@ export function ContactsTable({
                         <TableRow className="border-b-2 border-gray-100">
                           <TableCell 
                             colSpan={showOrganization ? 7 : 6} 
-                            className="bg-[--mfb-sage-tint] border-l-4 border-[--mfb-green] p-6 transition-all duration-300 ease-out"
+                            className="bg-mfb-sage-tint border-l-4 border-mfb-green p-6 transition-all duration-300 ease-out"
                           >
                             <div className="space-y-6">
                               {/* Contact Methods - Full Width */}

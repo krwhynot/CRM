@@ -1,3 +1,4 @@
+import React from 'react'
 import { Badge } from '@/components/ui/badge'
 import { useContactsBadges } from '@/features/contacts/hooks/useContactsBadges'
 import type { ContactWithOrganization } from '@/types/entities'

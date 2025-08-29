@@ -184,7 +184,7 @@ export function OrganizationsTable({
 
   // Headers configuration for SimpleTable
   const headers = [
-    { label: '', isCheckbox: true },
+    { label: 'Select all organizations', isCheckbox: true },
     '',
     'Organization', 
     'Phone', 

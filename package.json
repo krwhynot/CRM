@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 20",
+    "ui:scan": "git grep -nE '(\\[[^\\]]+\\]|#[0-9a-fA-F]{3,8})' -- ':!*.svg' src || true",
     "preview": "vite preview",
     "docs:lint": "markdownlint docs/**/*.md --config .config/markdownlint.json",
     "docs:links": "markdown-link-check docs/**/*.md",
@@ -58,7 +59,11 @@
     "debt:report": "node scripts/technical-debt-monitor.js report",
     "debt:validate": "node scripts/technical-debt-monitor.js validate",
     "debt:issues": "node scripts/create-technical-debt-issues.js",
-    "hooks:install": "cp .githooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit"
+    "hooks:install": "cp .githooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
+    "lint:ui": "eslint src --ext ts,tsx --max-warnings 0 --config .eslintrc.cjs",
+    "test:ui-compliance": "npm run lint:ui",
+    "test:visual": "playwright test tests/visual-regression/ui-compliance.spec.js",
+    "test:visual:update": "playwright test tests/visual-regression/ui-compliance.spec.js --update-snapshots"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -109,6 +114,7 @@
     "zustand": "^5.0.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.55.0",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.0.0",
     "@types/eslint": "^9.6.1",
@@ -126,6 +132,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "eslint-plugin-tailwindcss": "^3.18.2",
     "jsdom": "^26.1.0",
     "markdown-link-check": "^3.13.7",
     "markdownlint-cli": "^0.45.0",

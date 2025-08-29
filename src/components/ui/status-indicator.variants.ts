@@ -13,9 +13,9 @@ export const statusIndicatorVariants = cva(
         outline: "text-foreground border border-input hover:bg-accent hover:text-accent-foreground",
       },
       size: {
-        sm: "min-h-[44px] px-3 py-2 text-xs min-w-[44px]",
-        default: "min-h-[48px] px-4 py-2 text-sm min-w-[48px]",
-        lg: "min-h-[52px] px-5 py-3 text-base min-w-[52px]",
+        sm: "h-11 px-3 py-2 text-xs min-w-11",
+        default: "h-12 px-4 py-2 text-sm min-w-12",
+        lg: "h-14 px-5 py-3 text-base min-w-14",
       },
     },
     defaultVariants: {

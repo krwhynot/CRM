@@ -59,14 +59,14 @@ export const OrganizationDialogs: React.FC<OrganizationDialogsProps> = ({
     <>
       {/* Create Dialog */}
       <Dialog open={isCreateDialogOpen} onOpenChange={onCreateDialogChange}>
-        <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
+        <DialogContent className="max-w-4xl w-full max-h-screen overflow-hidden">
           <DialogHeader>
             <DialogTitle>Create New Organization</DialogTitle>
             <DialogDescription>
               Add a new organization to your CRM system with contact and business information.
             </DialogDescription>
           </DialogHeader>
-          <div className="max-h-[75vh] overflow-y-auto pr-2">
+          <div className="max-h-[calc(80vh-8rem)] overflow-y-auto pr-2">
             <OrganizationForm 
               onSubmit={onCreateSubmit}
               loading={isCreating}
@@ -77,14 +77,14 @@ export const OrganizationDialogs: React.FC<OrganizationDialogsProps> = ({
 
       {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={onEditDialogChange}>
-        <DialogContent className="max-w-4xl w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-hidden">
+        <DialogContent className="max-w-4xl w-full max-h-screen overflow-hidden">
           <DialogHeader>
             <DialogTitle>Edit Organization</DialogTitle>
             <DialogDescription>
               Update organization information and business details.
             </DialogDescription>
           </DialogHeader>
-          <div className="max-h-[75vh] overflow-y-auto pr-2">
+          <div className="max-h-[calc(80vh-8rem)] overflow-y-auto pr-2">
             {selectedOrganization && (
               <OrganizationForm
                 initialData={editFormInitialData}
@@ -112,7 +112,7 @@ export const OrganizationDialogs: React.FC<OrganizationDialogsProps> = ({
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => selectedOrganization && onDeleteConfirm(selectedOrganization)}
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-destructive hover:bg-destructive-hover text-destructive-foreground"
               disabled={isDeleting}
             >
               {isDeleting ? 'Deleting...' : 'Delete Organization'}

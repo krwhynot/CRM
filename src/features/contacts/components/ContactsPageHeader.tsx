@@ -2,18 +2,15 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { PageHeader } from '@/components/ui/new/PageHeader'
 import { Plus } from 'lucide-react'
-import { cn } from '@/lib/utils'
 
 interface ContactsPageHeaderProps {
   contactsCount: number
   onAddClick: () => void
-  useNewStyle: boolean
 }
 
 export const ContactsPageHeader: React.FC<ContactsPageHeaderProps> = ({
   contactsCount,
-  onAddClick,
-  useNewStyle
+  onAddClick
 }) => {
   return (
     <div className="flex items-center justify-between">
@@ -24,10 +21,7 @@ export const ContactsPageHeader: React.FC<ContactsPageHeaderProps> = ({
       />
       <Button 
         onClick={onAddClick}
-        className={cn(
-          "btn-primary ml-6",
-          useNewStyle && "shadow hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
-        )}
+        className="ml-6"
       >
         <Plus className="h-4 w-4 mr-2" />
         Add Contact

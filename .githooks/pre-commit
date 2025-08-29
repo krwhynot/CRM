@@ -41,6 +41,17 @@ if [ ! -z "$STAGED_FILES" ]; then
     echo "   You can auto-fix some issues with: npm run lint -- --fix"
     exit 1
   }
+  
+  # Run UI/UX compliance checks specifically
+  echo "🎨 Running UI/UX compliance checks..."
+  npm run lint:ui -- $STAGED_FILES --quiet --format=compact || {
+    echo "❌ UI/UX compliance issues found. Common fixes:"
+    echo "   • Replace bg-[var(--mfb-cream)] with bg-mfb-cream"
+    echo "   • Replace text-[var(--mfb-green)] with text-mfb-green"  
+    echo "   • Replace calc() expressions with standardized spacing"
+    echo "   • Replace vh units with standard height tokens"
+    exit 1
+  }
 fi
 
 # Check feature flags configuration
