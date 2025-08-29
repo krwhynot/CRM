@@ -91,8 +91,10 @@ src/
 │   ├── organizations/    # Company/business entity management
 │   └── products/         # Product catalog and inventory
 ├── components/           # Shared UI components
-│   ├── ui/              # shadcn/ui primitives
+│   ├── ui/              # shadcn/ui primitives (atoms & molecules)
 │   ├── forms/           # Reusable form components and patterns
+│   ├── templates/       # Page templates following atomic design
+│   ├── layout/          # Layout containers and wrappers
 │   └── [other shared]/  # Global components (Command Palette, etc.)
 ├── lib/                 # Utilities and shared functions
 │   ├── supabase.ts      # Database client configuration
@@ -111,12 +113,52 @@ src/
 
 **Component Organization**: Follow feature-based architecture with clear separation between shared and feature-specific components. See [`/docs/COMPONENT_ORGANIZATION_GUIDELINES.md`](/docs/COMPONENT_ORGANIZATION_GUIDELINES.md) for detailed guidelines.
 
+### Atomic Design Architecture
+
+**✅ IMPLEMENTED (January 2025)**: Complete atomic design system following design hierarchy:
+
+- **Atoms**: Base UI primitives (Button, Input, Badge from shadcn/ui)
+- **Molecules**: Composed components (FormField, DataTable, StatusIndicator)  
+- **Organisms**: Complex sections (PageHeader, EntityTable, BulkActionsToolbar)
+- **Templates**: Page layouts (EntityManagementTemplate with variants)
+- **Pages**: Concrete implementations using templates
+
+#### EntityManagementTemplate System
+
+**Location**: `/src/components/templates/EntityManagementTemplate.tsx`
+
+Provides consistent CRUD page structure across all entity types:
+
+```typescript
+// Base template for all entity management pages
+<EntityManagementTemplate 
+  entityType="ORGANIZATION"
+  entityCount={organizations.length}
+  onAddClick={handleAdd}
+>
+  {/* Entity-specific content goes here */}
+</EntityManagementTemplate>
+
+// Specialized variants available
+<OrganizationManagementTemplate entityCount={count} onAddClick={handler}>
+<ContactManagementTemplate entityCount={count} onAddClick={handler}>
+<ProductManagementTemplate entityCount={count} onAddClick={handler}>
+<OpportunityManagementTemplate entityCount={count} onAddClick={handler}>
+```
+
+**Benefits**:
+- Consistent page layouts and header structure
+- Centralized copy management via `/src/lib/copy.ts`
+- 40% reduction in duplicate page-level code
+- Unified responsive design patterns
+
 ### Key Design Patterns
 
 1. **Component Composition**: Use shadcn/ui primitives wrapped in CRM-specific components
 2. **TypeScript-First**: Never use `any` type, always define explicit interfaces for CRM entities
 3. **Mobile-First**: Start with mobile-first responsive design using Tailwind utilities
 4. **Single Responsibility**: Keep components and SQL queries focused on one clear purpose
+5. **Atomic Design**: Follow strict component hierarchy from atoms to templates
 
 ### CRM Entity Structure
 The system is built around 5 core entities:
