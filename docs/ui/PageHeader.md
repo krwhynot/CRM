@@ -144,19 +144,23 @@ interface PageHeaderBackButton {
 
 ## Migration Guide
 
-### From Feature-Specific Headers
+### From Manual Headers
 
-**Before (deprecated - direct import):**
+**Before (manual header implementation):**
 ```tsx
-import { ContactsPageHeader } from '@/features/contacts/components/ContactsPageHeader'
-
-<ContactsPageHeader 
-  contactsCount={contacts.length}
-  onAddClick={handleAdd}
-/>
+<div className="flex items-center justify-between">
+  <div>
+    <h1 className="text-2xl font-semibold tracking-tight">Manage Contacts</h1>
+    <p className="text-sm text-muted-foreground">Professional Network & Relationships</p>
+  </div>
+  <Button onClick={handleAdd}>
+    <Plus className="h-4 w-4 mr-2" />
+    Add Contact
+  </Button>
+</div>
 ```
 
-**After (recommended):**
+**After (PageHeader component):**
 ```tsx
 import { PageHeader } from '@/components/ui/new/PageHeader'
 
@@ -176,9 +180,9 @@ import { PageHeader } from '@/components/ui/new/PageHeader'
 />
 ```
 
-### From Manual Headers
+### Alternative Manual Implementation
 
-**Before:**
+**Before (verbose manual implementation):**
 ```tsx
 <div className="flex items-center justify-between">
   <div>
@@ -192,7 +196,7 @@ import { PageHeader } from '@/components/ui/new/PageHeader'
 </div>
 ```
 
-**After:**
+**After (PageHeader component):**
 ```tsx
 <PageHeader
   title="Products"
