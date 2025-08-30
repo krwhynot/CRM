@@ -1,3 +1,4 @@
+import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
@@ -27,7 +28,7 @@ export const ContactsFilters: React.FC<ContactsFiltersProps> = ({
   onSearchChange,
   filterPills,
   totalContacts,
-  filteredCount
+  filteredCount,
 }) => {
   return (
     <div className="space-y-4 rounded-lg border border-border bg-card p-6 shadow-sm">
@@ -35,10 +36,9 @@ export const ContactsFilters: React.FC<ContactsFiltersProps> = ({
       <div>
         <h2 className="text-2xl font-semibold text-card-foreground">Contacts</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          {filteredCount === totalContacts 
-            ? `${totalContacts} contacts` 
-            : `${filteredCount} of ${totalContacts} contacts`
-          }
+          {filteredCount === totalContacts
+            ? `${totalContacts} contacts`
+            : `${filteredCount} of ${totalContacts} contacts`}
         </p>
       </div>
 
@@ -65,16 +65,16 @@ export const ContactsFilters: React.FC<ContactsFiltersProps> = ({
             className={cn(
               'flex items-center gap-1 transition-colors',
               activeFilter === pill.key
-                ? 'bg-blue-600 text-white hover:bg-blue-700'
+                ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
             {pill.label}
-            <span 
+            <span
               className={cn(
                 'ml-1 px-1.5 py-0.5 rounded-full text-xs font-medium',
                 activeFilter === pill.key
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-primary/80 text-primary-foreground'
                   : 'bg-muted text-muted-foreground'
               )}
             >

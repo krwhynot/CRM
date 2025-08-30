@@ -36,6 +36,13 @@ module.exports = {
       rules: {
         'no-console': 'off' // Allow console statements in debug utilities
       }
+    },
+    {
+      files: ['src/components/ui/alert.tsx', 'src/components/ui/sidebar.tsx', 'src/components/ui/chart.tsx'],
+      rules: {
+        'tailwindcss/no-arbitrary-value': 'off', // Allow essential arbitrary values for component functionality
+        'no-console': 'warn' // Allow console statements in chart utility for debugging
+      }
     }
   ],
   parser: '@typescript-eslint/parser',

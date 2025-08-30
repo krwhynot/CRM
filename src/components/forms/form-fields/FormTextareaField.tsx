@@ -21,7 +21,7 @@ export function FormTextareaField<TFieldValues extends FieldValues>({
   rows = 3,
   disabled = false,
   className,
-  required = false
+  required = false,
 }: FormTextareaFieldProps<TFieldValues>) {
   return (
     <FormField
@@ -30,7 +30,7 @@ export function FormTextareaField<TFieldValues extends FieldValues>({
       render={({ field }) => (
         <FormItem>
           <FormLabel>
-            {label} {required && <span className="text-red-500">*</span>}
+            {label} {required && <span className="text-destructive">*</span>}
           </FormLabel>
           <FormControl>
             <Textarea

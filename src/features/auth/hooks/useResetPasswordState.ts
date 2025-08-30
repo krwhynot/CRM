@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 
@@ -20,7 +20,7 @@ interface UseResetPasswordStateReturn {
 
 export const useResetPasswordState = (): UseResetPasswordStateReturn => {
   const navigate = useNavigate()
-  
+
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -63,7 +63,7 @@ export const useResetPasswordState = (): UseResetPasswordStateReturn => {
 
     try {
       const { error } = await supabase.auth.updateUser({
-        password: password
+        password: password,
       })
 
       if (error) {
@@ -94,6 +94,6 @@ export const useResetPasswordState = (): UseResetPasswordStateReturn => {
     error,
     success,
     validatePassword,
-    handleSubmit
+    handleSubmit,
   }
 }

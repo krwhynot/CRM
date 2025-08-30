@@ -22,7 +22,7 @@ export function FormInputField<TFieldValues extends FieldValues>({
   placeholder,
   disabled = false,
   className,
-  required = false
+  required = false,
 }: FormInputFieldProps<TFieldValues>) {
   return (
     <FormField
@@ -31,7 +31,7 @@ export function FormInputField<TFieldValues extends FieldValues>({
       render={({ field }) => (
         <FormItem>
           <FormLabel>
-            {label} {required && <span className="text-red-500">*</span>}
+            {label} {required && <span className="text-destructive">*</span>}
           </FormLabel>
           <FormControl>
             <Input
@@ -39,7 +39,7 @@ export function FormInputField<TFieldValues extends FieldValues>({
               type={type}
               placeholder={placeholder}
               disabled={disabled}
-              className={cn("h-11", className)}
+              className={cn('h-11', className)}
             />
           </FormControl>
           <FormMessage />

@@ -20,16 +20,16 @@ export interface CoreFormLayoutProps<T extends FieldValues> {
   icon: React.ComponentType<{ className?: string }>
   formSchema: yup.ObjectSchema<T>
   onSubmit: (data: T) => void | Promise<void>
-  
+
   // Data and state
   initialData?: Partial<T>
   loading?: boolean
   submitLabel?: string
-  
+
   // Layout configuration
-  entityType: 'organization' | 'contact' | 'product' | 'opportunity' | 'activity'
+  entityType: 'organization' | 'contact' | 'product' | 'opportunity' | 'interaction'
   showAdvancedOptions?: boolean
-  
+
   // Sections configuration
   coreSections: FormSection<T>[]
   optionalSections?: FormSection<T>[]
@@ -37,7 +37,12 @@ export interface CoreFormLayoutProps<T extends FieldValues> {
 }
 
 // Re-export types from hook for backward compatibility
-export type { FormSection, ConditionalSection, SelectOption, FormFieldConfig } from '@/hooks/useFormLayout'
+export type {
+  FormSection,
+  ConditionalSection,
+  SelectOption,
+  FormFieldConfig,
+} from '@/hooks/useFormLayout'
 
 export function CoreFormLayout<T extends FieldValues>({
   title,
@@ -51,7 +56,7 @@ export function CoreFormLayout<T extends FieldValues>({
   showAdvancedOptions = false,
   coreSections,
   optionalSections = [],
-  contextualSections = []
+  contextualSections = [],
 }: CoreFormLayoutProps<T>) {
   const { form, formLayout, handleSubmit } = useCoreFormSetup({
     formSchema,
@@ -61,21 +66,16 @@ export function CoreFormLayout<T extends FieldValues>({
     coreSections,
     optionalSections,
     contextualSections,
-    onSubmit
+    onSubmit,
   })
-  
+
   return (
     <Card className="mx-auto w-full max-w-4xl rounded-lg border bg-white shadow-sm">
-      <FormHeader 
-        title={title}
-        icon={icon}
-        isEdit={Boolean(initialData)}
-      />
-      
+      <FormHeader title={title} icon={icon} isEdit={Boolean(initialData)} />
+
       <CardContent className="space-y-8 p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-            
             <CoreSectionsRenderer
               sections={coreSections}
               form={form}
@@ -84,7 +84,7 @@ export function CoreFormLayout<T extends FieldValues>({
               getLayoutClass={formLayout.getLayoutClass}
               getSectionClassName={formLayout.getSectionClassName}
             />
-            
+
             <ContextualSectionsRenderer
               sections={contextualSections}
               form={form}
@@ -94,7 +94,7 @@ export function CoreFormLayout<T extends FieldValues>({
               getLayoutClass={formLayout.getLayoutClass}
               getSectionClassName={formLayout.getSectionClassName}
             />
-            
+
             <OptionalSectionsRenderer
               sections={optionalSections}
               form={form}
@@ -105,19 +105,14 @@ export function CoreFormLayout<T extends FieldValues>({
               getLayoutClass={formLayout.getLayoutClass}
               getSectionClassName={formLayout.getSectionClassName}
             />
-            
-            <FormNotesSection
-              form={form}
-              loading={loading}
-              entityType={entityType}
-            />
-            
+
+            <FormNotesSection form={form} loading={loading} entityType={entityType} />
+
             <FormSubmitActions
               loading={loading}
               submitLabel={submitLabel}
               hasInitialData={Boolean(initialData)}
             />
-            
           </form>
         </Form>
       </CardContent>

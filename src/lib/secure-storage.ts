@@ -1,7 +1,7 @@
 /**
  * Secure localStorage/sessionStorage wrapper
  * Addresses localStorage security concerns based on 2025 best practices
- * 
+ *
  * Security features:
  * - Safe JSON parsing with try-catch blocks
  * - Graceful error handling for quota/security errors
@@ -34,11 +34,7 @@ function isStorageAvailable(type: StorageType): boolean {
  * @param type Storage type (localStorage or sessionStorage)
  * @returns Parsed data or fallback value
  */
-export function safeGetJSON<T>(
-  key: string, 
-  fallback: T, 
-  type: StorageType = 'localStorage'
-): T {
+export function safeGetJSON<T>(key: string, fallback: T, type: StorageType = 'localStorage'): T {
   try {
     if (!isStorageAvailable(type)) {
       console.warn(`${type} not available, using fallback for key: ${key}`)
@@ -47,19 +43,19 @@ export function safeGetJSON<T>(
 
     const storage = type === 'localStorage' ? localStorage : sessionStorage
     const item = storage.getItem(key)
-    
+
     if (!item) {
       return fallback
     }
 
     const parsed = JSON.parse(item)
-    
+
     // Additional type safety check for arrays
     if (Array.isArray(fallback) && !Array.isArray(parsed)) {
       console.warn(`Expected array for key ${key}, got ${typeof parsed}. Using fallback.`)
       return fallback
     }
-    
+
     return parsed
   } catch (error) {
     console.warn(`Failed to parse JSON from ${type} for key ${key}:`, error)
@@ -75,8 +71,8 @@ export function safeGetJSON<T>(
  * @returns Success status
  */
 export function safeSetJSON(
-  key: string, 
-  value: any, 
+  key: string,
+  value: unknown,
   type: StorageType = 'localStorage'
 ): boolean {
   try {
@@ -113,8 +109,8 @@ export function safeSetJSON(
  * @returns String value or fallback
  */
 export function safeGetString(
-  key: string, 
-  fallback: string, 
+  key: string,
+  fallback: string,
   type: StorageType = 'localStorage'
 ): string {
   try {
@@ -125,7 +121,7 @@ export function safeGetString(
 
     const storage = type === 'localStorage' ? localStorage : sessionStorage
     const item = storage.getItem(key)
-    
+
     return item !== null ? item : fallback
   } catch (error) {
     console.warn(`Failed to get string from ${type} for key ${key}:`, error)
@@ -141,8 +137,8 @@ export function safeGetString(
  * @returns Success status
  */
 export function safeSetString(
-  key: string, 
-  value: string, 
+  key: string,
+  value: string,
   type: StorageType = 'localStorage'
 ): boolean {
   try {
@@ -176,10 +172,7 @@ export function safeSetString(
  * @param type Storage type (localStorage or sessionStorage)
  * @returns Success status
  */
-export function safeRemoveItem(
-  key: string, 
-  type: StorageType = 'localStorage'
-): boolean {
+export function safeRemoveItem(key: string, type: StorageType = 'localStorage'): boolean {
   try {
     if (!isStorageAvailable(type)) {
       console.warn(`${type} not available, cannot remove key: ${key}`)
@@ -210,7 +203,7 @@ export function getStorageInfo(type: StorageType = 'localStorage'): {
 
     const storage = type === 'localStorage' ? localStorage : sessionStorage
     let estimatedSize = 0
-    
+
     for (let i = 0; i < storage.length; i++) {
       const key = storage.key(i)
       if (key) {
@@ -218,11 +211,11 @@ export function getStorageInfo(type: StorageType = 'localStorage'): {
         estimatedSize += key.length + (value?.length || 0)
       }
     }
-    
+
     return {
       available: true,
       itemCount: storage.length,
-      estimatedSize
+      estimatedSize,
     }
   } catch (error) {
     console.error(`Failed to get storage info for ${type}:`, error)

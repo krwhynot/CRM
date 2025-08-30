@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 
 interface SignUpFormData {
@@ -23,7 +23,7 @@ export function useSignUpForm() {
     showPassword: false,
     showConfirmPassword: false,
     error: null,
-    success: null
+    success: null,
   })
 
   const validatePassword = (password: string) => {
@@ -37,19 +37,19 @@ export function useSignUpForm() {
   }
 
   const updateField = (field: keyof SignUpFormState, value: string | boolean) => {
-    setFormState(prev => ({ ...prev, [field]: value }))
+    setFormState((prev) => ({ ...prev, [field]: value }))
   }
 
   const clearMessages = () => {
-    setFormState(prev => ({ ...prev, error: null, success: null }))
+    setFormState((prev) => ({ ...prev, error: null, success: null }))
   }
 
   const setError = (error: string) => {
-    setFormState(prev => ({ ...prev, error, success: null }))
+    setFormState((prev) => ({ ...prev, error, success: null }))
   }
 
   const setSuccess = (success: string) => {
-    setFormState(prev => ({ ...prev, success, error: null }))
+    setFormState((prev) => ({ ...prev, success, error: null }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -73,7 +73,7 @@ export function useSignUpForm() {
     }
 
     const { error: signUpError } = await signUp(formState.email, formState.password)
-    
+
     if (signUpError) {
       setError(signUpError.message)
     } else {
@@ -86,6 +86,6 @@ export function useSignUpForm() {
     loading,
     updateField,
     handleSubmit,
-    validatePassword
+    validatePassword,
   }
 }

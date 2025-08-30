@@ -30,10 +30,10 @@ export interface DataTableProps<T> {
 
 /**
  * DataTable - Unified table component for the CRM system
- * 
+ *
  * A generic, accessible table component that consolidates all table functionality
  * with TypeScript generics, responsive design, and comprehensive accessibility support.
- * 
+ *
  * @example Basic Usage
  * <DataTable
  *   data={organizations}
@@ -41,7 +41,7 @@ export interface DataTableProps<T> {
  *   rowKey={(row) => row.id}
  *   onRowClick={handleRowClick}
  * />
- * 
+ *
  * @example With Loading State
  * <DataTable
  *   data={[]}
@@ -49,7 +49,7 @@ export interface DataTableProps<T> {
  *   loading={true}
  *   rowKey={(row) => row.id}
  * />
- * 
+ *
  * @example With Custom Empty State
  * <DataTable
  *   data={[]}
@@ -66,31 +66,31 @@ export function DataTable<T>({
   columns,
   loading = false,
   empty = {
-    title: "No data",
-    description: undefined
+    title: 'No data',
+    description: undefined,
   },
   rowKey,
-  onRowClick
+  onRowClick,
 }: DataTableProps<T>) {
   // Helper function to generate responsive column classes
   const getColumnClasses = (column: Column<T>): string => {
     if (!column.hidden) return column.className || ''
-    
+
     const hideClasses = []
     if (column.hidden.sm) hideClasses.push('hidden sm:table-cell')
-    if (column.hidden.md) hideClasses.push('hidden md:table-cell') 
+    if (column.hidden.md) hideClasses.push('hidden md:table-cell')
     if (column.hidden.lg) hideClasses.push('hidden lg:table-cell')
-    
+
     return cn(column.className, hideClasses.join(' '))
   }
 
   // Loading state with skeleton
   if (loading) {
     return (
-      <div 
+      <div
         className="overflow-hidden rounded-lg border bg-background"
-        role="status" 
-        aria-live="polite" 
+        role="status"
+        aria-live="polite"
         aria-label="Loading table data"
       >
         <div className="overflow-x-auto">
@@ -98,11 +98,11 @@ export function DataTable<T>({
             <thead className="sticky top-0 z-10">
               <tr className="border-b bg-muted/50">
                 {columns.map((column, index) => (
-                  <th 
+                  <th
                     key={index}
                     scope="col"
                     className={cn(
-                      "h-12 px-4 text-left align-middle font-medium text-muted-foreground",
+                      'h-12 px-4 text-left align-middle font-medium text-muted-foreground',
                       getColumnClasses(column)
                     )}
                   >
@@ -115,16 +115,20 @@ export function DataTable<T>({
               {Array.from({ length: 5 }, (_, rowIndex) => (
                 <tr key={rowIndex} className="border-b">
                   {columns.map((column, cellIndex) => (
-                    <td 
+                    <td
                       key={cellIndex}
-                      className={cn("px-4 py-3 align-middle", getColumnClasses(column))}
+                      className={cn('px-4 py-3 align-middle', getColumnClasses(column))}
                     >
-                      <Skeleton className={cn(
-                        "h-4",
-                        cellIndex === 0 ? "w-32" : // First column wider
-                        cellIndex === columns.length - 1 ? "w-16" : // Last column narrower  
-                        "w-24" // Middle columns medium
-                      )} />
+                      <Skeleton
+                        className={cn(
+                          'h-4',
+                          cellIndex === 0
+                            ? 'w-32' // First column wider
+                            : cellIndex === columns.length - 1
+                              ? 'w-16' // Last column narrower
+                              : 'w-24' // Middle columns medium
+                        )}
+                      />
                     </td>
                   ))}
                 </tr>
@@ -148,7 +152,7 @@ export function DataTable<T>({
                   key={index}
                   scope="col"
                   className={cn(
-                    "h-12 px-4 text-left align-middle font-medium text-muted-foreground",
+                    'h-12 px-4 text-left align-middle font-medium text-muted-foreground',
                     getColumnClasses(column)
                   )}
                 >
@@ -160,19 +164,12 @@ export function DataTable<T>({
           <tbody>
             {data.length === 0 ? (
               <tr>
-                <td 
-                  colSpan={columns.length} 
-                  className="px-4 py-16 text-center align-middle"
-                >
+                <td colSpan={columns.length} className="px-4 py-16 text-center align-middle">
                   <div className="flex flex-col items-center justify-center space-y-4">
                     <div className="space-y-2">
-                      <h3 className="text-lg font-semibold text-foreground">
-                        {empty.title}
-                      </h3>
+                      <h3 className="text-lg font-semibold text-foreground">{empty.title}</h3>
                       {empty.description && (
-                        <p className="text-sm text-muted-foreground">
-                          {empty.description}
-                        </p>
+                        <p className="text-sm text-muted-foreground">{empty.description}</p>
                       )}
                     </div>
                   </div>
@@ -183,12 +180,12 @@ export function DataTable<T>({
                 <tr
                   key={rowKey(row)}
                   className={cn(
-                    "border-b transition-colors hover:bg-muted/50",
-                    onRowClick && "cursor-pointer"
+                    'border-b transition-colors hover:bg-muted/50',
+                    onRowClick && 'cursor-pointer'
                   )}
                   onClick={onRowClick ? () => onRowClick(row) : undefined}
                   onKeyDown={
-                    onRowClick 
+                    onRowClick
                       ? (e) => {
                           if (e.key === 'Enter' || e.key === ' ') {
                             e.preventDefault()
@@ -198,18 +195,21 @@ export function DataTable<T>({
                       : undefined
                   }
                   tabIndex={onRowClick ? 0 : undefined}
-                  role={onRowClick ? "button" : undefined}
+                  role={onRowClick ? 'button' : undefined}
                   aria-label={onRowClick ? `Click to select row` : undefined}
                 >
                   {columns.map((column, index) => (
                     <td
                       key={index}
-                      className={cn("px-4 py-3 align-middle", getColumnClasses(column))}
+                      className={cn('px-4 py-3 align-middle', getColumnClasses(column))}
                     >
-                      {column.cell 
-                        ? column.cell(row) 
-                        : String((row as any)[column.key] || '')
-                      }
+                      {column.cell
+                        ? column.cell(row)
+                        : String(
+                            typeof column.key === 'string'
+                              ? (row as Record<string, unknown>)[column.key] || ''
+                              : (row as Record<string | symbol, unknown>)[column.key] || ''
+                          )}
                     </td>
                   ))}
                 </tr>

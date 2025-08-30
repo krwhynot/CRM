@@ -28,7 +28,8 @@ const DefaultErrorFallback: React.FC<ErrorFallbackProps> = ({ error, resetErrorB
     </CardHeader>
     <CardContent className="space-y-4 text-center">
       <p className="text-muted-foreground">
-        We encountered an error while loading this page. This might be due to a network issue or server problem.
+        We encountered an error while loading this page. This might be due to a network issue or
+        server problem.
       </p>
       <details className="rounded border bg-muted p-3 text-left text-sm text-muted-foreground">
         <summary className="mb-2 cursor-pointer font-medium">Error Details</summary>
@@ -38,17 +39,11 @@ const DefaultErrorFallback: React.FC<ErrorFallbackProps> = ({ error, resetErrorB
         </pre>
       </details>
       <div className="flex justify-center gap-2">
-        <Button 
-          onClick={resetErrorBoundary}
-          className="flex items-center gap-2"
-        >
+        <Button onClick={resetErrorBoundary} className="flex items-center gap-2">
           <RefreshCw className="size-4" />
           Try Again
         </Button>
-        <Button 
-          variant="outline" 
-          onClick={() => window.location.reload()}
-        >
+        <Button variant="outline" onClick={() => window.location.reload()}>
           Reload Page
         </Button>
       </div>
@@ -64,35 +59,32 @@ export class QueryErrorBoundary extends React.Component<Props, State> {
 
     this.state = {
       hasError: false,
-      error: null
+      error: null,
     }
   }
 
   static getDerivedStateFromError(error: Error): State {
     return {
       hasError: true,
-      error
+      error,
     }
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Error boundary logging kept for production debugging
+  componentDidCatch(error: Error, _errorInfo: React.ErrorInfo) {
+    // Error boundary logging for production debugging
     if (process.env.NODE_ENV === 'development') {
-      console.error('🚨 [QueryErrorBoundary] Caught error:', error)
-      console.error('🚨 [QueryErrorBoundary] Component stack trace:', errorInfo.componentStack)
-      console.error('🚨 [QueryErrorBoundary] Error details:', {
-        message: error.message,
-        stack: error.stack,
-        name: error.name,
-        timestamp: new Date().toISOString()
-      })
+      // Log error for debugging in development only
+      console.error('[QueryErrorBoundary] Error:', error.message, error.stack)
     }
+
+    // In production, errors should be logged to external service
+    // This is intentionally minimal to avoid console spam
   }
 
   resetErrorBoundary = () => {
     this.setState({
       hasError: false,
-      error: null
+      error: null,
     })
 
     // Clear any existing reset timeout
@@ -117,13 +109,8 @@ export class QueryErrorBoundary extends React.Component<Props, State> {
   render() {
     if (this.state.hasError && this.state.error) {
       const ErrorFallback = this.props.fallback || DefaultErrorFallback
-      
-      return (
-        <ErrorFallback 
-          error={this.state.error} 
-          resetErrorBoundary={this.resetErrorBoundary}
-        />
-      )
+
+      return <ErrorFallback error={this.state.error} resetErrorBoundary={this.resetErrorBoundary} />
     }
 
     return this.props.children
@@ -131,8 +118,13 @@ export class QueryErrorBoundary extends React.Component<Props, State> {
 }
 
 // Wrapper component for easier usage with specific error handling
-export const OrganizationsErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const OrganizationsErrorFallback: React.FC<ErrorFallbackProps> = ({ error, resetErrorBoundary }) => (
+export const OrganizationsErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const OrganizationsErrorFallback: React.FC<ErrorFallbackProps> = ({
+    error,
+    resetErrorBoundary,
+  }) => (
     <Card className="mt-6 w-full">
       <CardHeader>
         <div className="flex items-center gap-2 text-destructive">
@@ -154,15 +146,12 @@ export const OrganizationsErrorBoundary: React.FC<{ children: React.ReactNode }>
           <p className="text-sm font-medium text-destructive">Error: {error.message}</p>
         </div>
         <div className="flex gap-2">
-          <Button 
-            onClick={resetErrorBoundary}
-            className="flex items-center gap-2"
-          >
+          <Button onClick={resetErrorBoundary} className="flex items-center gap-2">
             <RefreshCw className="size-4" />
             Retry Loading
           </Button>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => {
               // Clear all query cache and reload
               window.location.reload()
@@ -175,11 +164,7 @@ export const OrganizationsErrorBoundary: React.FC<{ children: React.ReactNode }>
     </Card>
   )
 
-  return (
-    <QueryErrorBoundary fallback={OrganizationsErrorFallback}>
-      {children}
-    </QueryErrorBoundary>
-  )
+  return <QueryErrorBoundary fallback={OrganizationsErrorFallback}>{children}</QueryErrorBoundary>
 }
 
 // Wrapper component for Contacts error handling
@@ -187,16 +172,14 @@ export const ContactsErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
   const ContactsErrorFallback: React.FC<ErrorFallbackProps> = ({ error, resetErrorBoundary }) => (
     <Card className="mt-6 w-full">
       <CardHeader>
-        <div className="flex items-center gap-2 text-red-600">
+        <div className="flex items-center gap-2 text-destructive">
           <AlertTriangle className="size-5" />
           <CardTitle>Contacts Loading Error</CardTitle>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-gray-600">
-          Failed to load contacts data. This could be due to:
-        </p>
-        <ul className="list-inside list-disc space-y-1 text-sm text-gray-500">
+        <p className="text-muted-foreground">Failed to load contacts data. This could be due to:</p>
+        <ul className="list-inside list-disc space-y-1 text-sm text-muted-foreground">
           <li>Network connectivity issues</li>
           <li>Database connection problems</li>
           <li>Authentication token expiry</li>
@@ -206,15 +189,12 @@ export const ContactsErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
           <p className="text-sm font-medium text-destructive">Error: {error.message}</p>
         </div>
         <div className="flex gap-2">
-          <Button 
-            onClick={resetErrorBoundary}
-            className="flex items-center gap-2"
-          >
+          <Button onClick={resetErrorBoundary} className="flex items-center gap-2">
             <RefreshCw className="size-4" />
             Retry Loading
           </Button>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => {
               // Clear all query cache and reload
               window.location.reload()
@@ -227,28 +207,29 @@ export const ContactsErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
     </Card>
   )
 
-  return (
-    <QueryErrorBoundary fallback={ContactsErrorFallback}>
-      {children}
-    </QueryErrorBoundary>
-  )
+  return <QueryErrorBoundary fallback={ContactsErrorFallback}>{children}</QueryErrorBoundary>
 }
 
 // Wrapper component for Opportunities error handling
-export const OpportunitiesErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const OpportunitiesErrorFallback: React.FC<ErrorFallbackProps> = ({ error, resetErrorBoundary }) => (
+export const OpportunitiesErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const OpportunitiesErrorFallback: React.FC<ErrorFallbackProps> = ({
+    error,
+    resetErrorBoundary,
+  }) => (
     <Card className="mt-6 w-full">
       <CardHeader>
-        <div className="flex items-center gap-2 text-red-600">
+        <div className="flex items-center gap-2 text-destructive">
           <AlertTriangle className="size-5" />
           <CardTitle>Opportunities Loading Error</CardTitle>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           Failed to load opportunities data. This could be due to:
         </p>
-        <ul className="list-inside list-disc space-y-1 text-sm text-gray-500">
+        <ul className="list-inside list-disc space-y-1 text-sm text-muted-foreground">
           <li>Network connectivity issues</li>
           <li>Database connection problems</li>
           <li>Authentication token expiry</li>
@@ -258,15 +239,12 @@ export const OpportunitiesErrorBoundary: React.FC<{ children: React.ReactNode }>
           <p className="text-sm font-medium text-destructive">Error: {error.message}</p>
         </div>
         <div className="flex gap-2">
-          <Button 
-            onClick={resetErrorBoundary}
-            className="flex items-center gap-2"
-          >
+          <Button onClick={resetErrorBoundary} className="flex items-center gap-2">
             <RefreshCw className="size-4" />
             Retry Loading
           </Button>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => {
               // Clear all query cache and reload
               window.location.reload()
@@ -279,11 +257,7 @@ export const OpportunitiesErrorBoundary: React.FC<{ children: React.ReactNode }>
     </Card>
   )
 
-  return (
-    <QueryErrorBoundary fallback={OpportunitiesErrorFallback}>
-      {children}
-    </QueryErrorBoundary>
-  )
+  return <QueryErrorBoundary fallback={OpportunitiesErrorFallback}>{children}</QueryErrorBoundary>
 }
 
 // Wrapper component for Products error handling
@@ -291,16 +265,14 @@ export const ProductsErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
   const ProductsErrorFallback: React.FC<ErrorFallbackProps> = ({ error, resetErrorBoundary }) => (
     <Card className="mt-6 w-full">
       <CardHeader>
-        <div className="flex items-center gap-2 text-red-600">
+        <div className="flex items-center gap-2 text-destructive">
           <AlertTriangle className="size-5" />
           <CardTitle>Products Loading Error</CardTitle>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-gray-600">
-          Failed to load products data. This could be due to:
-        </p>
-        <ul className="list-inside list-disc space-y-1 text-sm text-gray-500">
+        <p className="text-muted-foreground">Failed to load products data. This could be due to:</p>
+        <ul className="list-inside list-disc space-y-1 text-sm text-muted-foreground">
           <li>Network connectivity issues</li>
           <li>Database connection problems</li>
           <li>Authentication token expiry</li>
@@ -310,15 +282,12 @@ export const ProductsErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
           <p className="text-sm font-medium text-destructive">Error: {error.message}</p>
         </div>
         <div className="flex gap-2">
-          <Button 
-            onClick={resetErrorBoundary}
-            className="flex items-center gap-2"
-          >
+          <Button onClick={resetErrorBoundary} className="flex items-center gap-2">
             <RefreshCw className="size-4" />
             Retry Loading
           </Button>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => {
               // Clear all query cache and reload
               window.location.reload()
@@ -331,9 +300,5 @@ export const ProductsErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
     </Card>
   )
 
-  return (
-    <QueryErrorBoundary fallback={ProductsErrorFallback}>
-      {children}
-    </QueryErrorBoundary>
-  )
+  return <QueryErrorBoundary fallback={ProductsErrorFallback}>{children}</QueryErrorBoundary>
 }

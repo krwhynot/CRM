@@ -7,29 +7,39 @@ import type { ActivityItem } from '@/features/dashboard/hooks/useEnhancedActivit
 /**
  * Groups activities by time periods (Today, Yesterday, This Week, etc.)
  */
-export function groupActivitiesByTime(activities: InteractionWithRelations[]): Record<string, InteractionWithRelations[]> {
-  return activities.reduce((groups, activity) => {
-    const groupKey = getTimeGroupLabel(activity.interaction_date)
-    if (!groups[groupKey]) {
-      groups[groupKey] = []
-    }
-    groups[groupKey].push(activity)
-    return groups
-  }, {} as Record<string, InteractionWithRelations[]>)
+export function groupActivitiesByTime(
+  activities: InteractionWithRelations[]
+): Record<string, InteractionWithRelations[]> {
+  return activities.reduce(
+    (groups, activity) => {
+      const groupKey = getTimeGroupLabel(activity.interaction_date)
+      if (!groups[groupKey]) {
+        groups[groupKey] = []
+      }
+      groups[groupKey].push(activity)
+      return groups
+    },
+    {} as Record<string, InteractionWithRelations[]>
+  )
 }
 
 /**
  * Groups activities by time periods for ActivityItems
  */
-export function groupActivityItemsByTime(activities: ActivityItem[]): Record<string, ActivityItem[]> {
-  return activities.reduce((groups, activity) => {
-    const groupKey = activity.timestamp.toDateString()
-    if (!groups[groupKey]) {
-      groups[groupKey] = []
-    }
-    groups[groupKey].push(activity)
-    return groups
-  }, {} as Record<string, ActivityItem[]>)
+export function groupActivityItemsByTime(
+  activities: ActivityItem[]
+): Record<string, ActivityItem[]> {
+  return activities.reduce(
+    (groups, activity) => {
+      const groupKey = activity.timestamp.toDateString()
+      if (!groups[groupKey]) {
+        groups[groupKey] = []
+      }
+      groups[groupKey].push(activity)
+      return groups
+    },
+    {} as Record<string, ActivityItem[]>
+  )
 }
 
 /**
@@ -37,14 +47,14 @@ export function groupActivityItemsByTime(activities: ActivityItem[]): Record<str
  */
 export function getTimeGroupLabel(date: string): string {
   const activityDate = parseISO(date)
-  
+
   if (isToday(activityDate)) return 'Today'
   if (isYesterday(activityDate)) return 'Yesterday'
-  
+
   const daysDiff = Math.floor((Date.now() - activityDate.getTime()) / (1000 * 60 * 60 * 24))
   if (daysDiff <= 7) return 'This Week'
   if (daysDiff <= 30) return 'This Month'
-  
+
   return 'Earlier'
 }
 
@@ -56,13 +66,13 @@ export function filterActivitiesByDateRange(
   dateRange: 'today' | 'yesterday' | 'week' | 'month' | 'all'
 ): InteractionWithRelations[] {
   if (dateRange === 'all') return activities
-  
+
   const now = new Date()
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-  
-  return activities.filter(activity => {
+
+  return activities.filter((activity) => {
     const activityDate = parseISO(activity.interaction_date)
-    
+
     switch (dateRange) {
       case 'today':
         return activityDate >= startOfToday
@@ -95,7 +105,7 @@ export function filterActivitiesByType(
   type: InteractionType | 'all'
 ): InteractionWithRelations[] {
   if (type === 'all') return activities
-  return activities.filter(activity => activity.type === type)
+  return activities.filter((activity) => activity.type === type)
 }
 
 /**
@@ -103,7 +113,7 @@ export function filterActivitiesByType(
  */
 export function buildActivityContext(activity: InteractionWithRelations): string[] {
   const contextInfo = []
-  
+
   if (activity.contact) {
     contextInfo.push(`${activity.contact.first_name} ${activity.contact.last_name}`)
   }
@@ -113,7 +123,7 @@ export function buildActivityContext(activity: InteractionWithRelations): string
   if (activity.opportunity) {
     contextInfo.push(`Opportunity: ${activity.opportunity.name}`)
   }
-  
+
   return contextInfo
 }
 
@@ -129,7 +139,7 @@ export function hasFollowUpRequired(activity: InteractionWithRelations): boolean
  */
 export function isFollowUpOverdue(activity: InteractionWithRelations): boolean {
   if (!activity.follow_up_required || !activity.follow_up_date) return false
-  
+
   const followUpDate = parseISO(activity.follow_up_date)
   return followUpDate < new Date()
 }
@@ -144,18 +154,18 @@ export function getActivityStats(activities: InteractionWithRelations[]) {
     withFollowUp: 0,
     overdueFollowUp: 0,
     today: 0,
-    thisWeek: 0
+    thisWeek: 0,
   }
-  
+
   const now = new Date()
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   const startOfWeek = new Date(startOfToday)
   startOfWeek.setDate(startOfWeek.getDate() - 7)
-  
-  activities.forEach(activity => {
+
+  activities.forEach((activity) => {
     // Count by type
     stats.byType[activity.type] = (stats.byType[activity.type] || 0) + 1
-    
+
     // Count follow-ups
     if (activity.follow_up_required) {
       stats.withFollowUp++
@@ -163,7 +173,7 @@ export function getActivityStats(activities: InteractionWithRelations[]) {
         stats.overdueFollowUp++
       }
     }
-    
+
     // Count by time period
     const activityDate = parseISO(activity.interaction_date)
     if (activityDate >= startOfToday) {
@@ -173,16 +183,14 @@ export function getActivityStats(activities: InteractionWithRelations[]) {
       stats.thisWeek++
     }
   })
-  
+
   return stats
 }
 
 /**
  * Sorts activity groups by priority (Today first, then Yesterday, etc.)
  */
-export function sortActivityGroups(groups: [string, InteractionWithRelations[]][]): [string, InteractionWithRelations[]][]
-export function sortActivityGroups(groups: [string, ActivityItem[]][]): [string, ActivityItem[]][]
-export function sortActivityGroups(groups: [string, any[]][]): [string, any[]][] {
+export function sortActivityGroups<T>(groups: [string, T[]][]): [string, T[]][] {
   const order = ['Today', 'Yesterday', 'This Week', 'This Month', 'Earlier']
   return groups.sort(([a], [b]) => order.indexOf(a) - order.indexOf(b))
 }
@@ -192,17 +200,17 @@ export function sortActivityGroups(groups: [string, any[]][]): [string, any[]][]
  */
 export function formatActivityDuration(durationMinutes?: number | null): string | null {
   if (!durationMinutes) return null
-  
+
   if (durationMinutes < 60) {
     return `${durationMinutes}m`
   }
-  
+
   const hours = Math.floor(durationMinutes / 60)
   const minutes = durationMinutes % 60
-  
+
   if (minutes === 0) {
     return `${hours}h`
   }
-  
+
   return `${hours}h ${minutes}m`
 }

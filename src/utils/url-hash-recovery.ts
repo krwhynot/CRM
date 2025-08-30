@@ -30,7 +30,7 @@ export function restoreUrlHash(): boolean {
       // Check if we're on a page that should handle auth callbacks
       const currentPath = window.location.pathname
       const validAuthPaths = ['/reset-password', '/login', '/forgot-password', '/']
-      
+
       if (validAuthPaths.includes(currentPath)) {
         // Only restore if current URL doesn't have a hash and we're on a valid auth page
         window.location.hash = preservedHash
@@ -71,7 +71,7 @@ export function forceCleanState() {
   if (typeof window !== 'undefined') {
     // Clear stored hash
     safeRemoveItem(HASH_STORAGE_KEY, 'sessionStorage')
-    
+
     // Clear current URL hash if it exists
     if (window.location.hash) {
       try {
@@ -79,7 +79,7 @@ export function forceCleanState() {
       } catch (error) {
         console.warn('Failed to clear URL hash:', error)
       }
-    } else {
     }
+    // Hash not found in storage - nothing to clear
   }
 }

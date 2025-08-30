@@ -1,6 +1,12 @@
 import { Control, FieldPath, FieldValues } from 'react-hook-form'
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 
 interface FormSelectFieldProps<TFieldValues extends FieldValues> {
@@ -18,11 +24,11 @@ export function FormSelectField<TFieldValues extends FieldValues>({
   control,
   name,
   label,
-  placeholder = "Select an option",
+  placeholder = 'Select an option',
   options,
   disabled = false,
   className,
-  required = false
+  required = false,
 }: FormSelectFieldProps<TFieldValues>) {
   return (
     <FormField
@@ -31,15 +37,11 @@ export function FormSelectField<TFieldValues extends FieldValues>({
       render={({ field }) => (
         <FormItem>
           <FormLabel>
-            {label} {required && <span className="text-red-500">*</span>}
+            {label} {required && <span className="text-destructive">*</span>}
           </FormLabel>
-          <Select 
-            onValueChange={field.onChange} 
-            value={field.value}
-            disabled={disabled}
-          >
+          <Select onValueChange={field.onChange} value={field.value} disabled={disabled}>
             <FormControl>
-              <SelectTrigger className={cn("h-11", className)}>
+              <SelectTrigger className={cn('h-11', className)}>
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
             </FormControl>

@@ -8,7 +8,7 @@ import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 // Debounce utility for search inputs and API calls
 export function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value)
-  const timeoutRef = useRef<NodeJS.Timeout>()
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>()
 
   useEffect(() => {
     if (timeoutRef.current) {
@@ -50,7 +50,7 @@ export function useVirtualScrolling<T>(
       endIndex,
       items: items.slice(startIndex, endIndex),
       totalHeight: items.length * itemHeight,
-      offsetY: startIndex * itemHeight
+      offsetY: startIndex * itemHeight,
     }
   }, [items, itemHeight, containerHeight, scrollTop, buffer])
 
@@ -61,13 +61,17 @@ export function useVirtualScrolling<T>(
   return {
     visibleItems,
     handleScroll,
-    setScrollTop
+    setScrollTop,
   }
 }
 
 // Optimized intersection observer for lazy loading
 export function useIntersectionObserver(
-  options: IntersectionObserverInit = {}
+  options: {
+    root?: Element | Document | null
+    rootMargin?: string
+    threshold?: number | number[]
+  } = {}
 ) {
   const [isIntersecting, setIsIntersecting] = useState(false)
   const targetRef = useRef<HTMLElement>(null)
@@ -111,11 +115,14 @@ export function useMemoizedQueryResult<T>(
   queryResult: { data?: T; isLoading: boolean; error: unknown },
   dependencies: unknown[] = []
 ) {
-  return useMemo(() => ({
-    data: queryResult.data,
-    isLoading: queryResult.isLoading,
-    error: queryResult.error
-  }), [queryResult.data, queryResult.isLoading, queryResult.error, ...dependencies])
+  return useMemo(
+    () => ({
+      data: queryResult.data,
+      isLoading: queryResult.isLoading,
+      error: queryResult.error,
+    }),
+    [queryResult.data, queryResult.isLoading, queryResult.error, JSON.stringify(dependencies)]
+  )
 }
 
 // Optimized form submission with loading state
@@ -127,22 +134,25 @@ export function useOptimizedFormSubmit<T>(
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<unknown>(null)
 
-  const handleSubmit = useCallback(async (data: T) => {
-    if (isSubmitting) return // Prevent double submission
+  const handleSubmit = useCallback(
+    async (data: T) => {
+      if (isSubmitting) return // Prevent double submission
 
-    setIsSubmitting(true)
-    setError(null)
+      setIsSubmitting(true)
+      setError(null)
 
-    try {
-      await submitFn(data)
-      onSuccess?.()
-    } catch (err) {
-      setError(err)
-      onError?.(err)
-    } finally {
-      setIsSubmitting(false)
-    }
-  }, [submitFn, onSuccess, onError, isSubmitting])
+      try {
+        await submitFn(data)
+        onSuccess?.()
+      } catch (err) {
+        setError(err)
+        onError?.(err)
+      } finally {
+        setIsSubmitting(false)
+      }
+    },
+    [submitFn, onSuccess, onError, isSubmitting]
+  )
 
   return {
     handleSubmit,
@@ -151,7 +161,7 @@ export function useOptimizedFormSubmit<T>(
     reset: useCallback(() => {
       setError(null)
       setIsSubmitting(false)
-    }, [])
+    }, []),
   }
 }
 
@@ -159,9 +169,9 @@ export function useOptimizedFormSubmit<T>(
 export const createFeatureLoader = <T extends React.ComponentType<Record<string, unknown>>>(
   loader: () => Promise<{ default: T }>
 ) => {
-  return React.lazy(() => 
-    loader().catch(() => ({ 
-      default: (() => React.createElement('div', {}, 'Error loading component')) as unknown as T
+  return React.lazy(() =>
+    loader().catch(() => ({
+      default: (() => React.createElement('div', {}, 'Error loading component')) as unknown as T,
     }))
   )
 }
@@ -176,11 +186,15 @@ export function usePerformanceMonitoring(componentName: string) {
     const renderTime = performance.now() - renderStartTime.current
 
     if (process.env.NODE_ENV === 'development') {
-      console.debug(`${componentName} rendered in ${renderTime.toFixed(2)}ms (render #${renderCount.current})`)
-      
+      console.debug(
+        `${componentName} rendered in ${renderTime.toFixed(2)}ms (render #${renderCount.current})`
+      )
+
       // Warn about excessive renders
       if (renderCount.current > 10 && renderTime > 16) {
-        console.warn(`⚠️ ${componentName} may have performance issues: ${renderCount.current} renders, ${renderTime.toFixed(2)}ms last render`)
+        console.warn(
+          `⚠️ ${componentName} may have performance issues: ${renderCount.current} renders, ${renderTime.toFixed(2)}ms last render`
+        )
       }
     }
 
@@ -198,7 +212,7 @@ export function usePerformanceMonitoring(componentName: string) {
     renderCount: renderCount.current,
     markRenderStart: () => {
       renderStartTime.current = performance.now()
-    }
+    },
   }
 }
 
@@ -247,4 +261,3 @@ export function useCachedSearch<T>(
 
   return { results, isLoading }
 }
-

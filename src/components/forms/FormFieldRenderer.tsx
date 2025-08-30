@@ -1,20 +1,20 @@
 import { FieldValues, UseFormReturn, Path, ControllerRenderProps } from 'react-hook-form'
-import { 
-  FormControl, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
   FormMessage,
-  FormDescription 
+  FormDescription,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -27,14 +27,14 @@ interface FormFieldRendererProps<T extends FieldValues> {
   className?: string
 }
 
-export function FormFieldRenderer<T extends FieldValues>({ 
-  field, 
-  form, 
-  loading, 
-  className 
+export function FormFieldRenderer<T extends FieldValues>({
+  field,
+  form,
+  loading,
+  className,
 }: FormFieldRendererProps<T>) {
   const { name, type, label, placeholder, description, required, options, tooltip } = field
-  
+
   return (
     <FormField
       control={form.control}
@@ -43,14 +43,10 @@ export function FormFieldRenderer<T extends FieldValues>({
         <FormItem className={className}>
           <FormLabel className="flex items-center gap-2 text-base">
             {label}
-            {required && <span className="text-red-500">*</span>}
-            {tooltip && (
-              <span className="ml-1 text-xs text-gray-500">
-                ({tooltip})
-              </span>
-            )}
+            {required && <span className="text-destructive">*</span>}
+            {tooltip && <span className="ml-1 text-xs text-gray-500">({tooltip})</span>}
           </FormLabel>
-          
+
           <FormControl>
             <FormControlRenderer<T>
               type={type}
@@ -60,13 +56,9 @@ export function FormFieldRenderer<T extends FieldValues>({
               options={options}
             />
           </FormControl>
-          
-          {description && (
-            <FormDescription className="text-sm">
-              {description}
-            </FormDescription>
-          )}
-          
+
+          {description && <FormDescription className="text-sm">{description}</FormDescription>}
+
           <FormMessage />
         </FormItem>
       )}
@@ -87,7 +79,7 @@ function FormControlRenderer<T extends FieldValues>({
   field,
   placeholder,
   loading,
-  options
+  options,
 }: FormControlRendererProps<T>) {
   switch (type) {
     case 'text':
@@ -106,7 +98,7 @@ function FormControlRenderer<T extends FieldValues>({
           {...field}
         />
       )
-      
+
     case 'textarea':
       return (
         <Textarea
@@ -119,14 +111,10 @@ function FormControlRenderer<T extends FieldValues>({
           {...field}
         />
       )
-      
+
     case 'select':
       return (
-        <Select 
-          onValueChange={field.onChange} 
-          defaultValue={field.value}
-          disabled={loading}
-        >
+        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={loading}>
           <SelectTrigger className="h-12 text-base">
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
@@ -138,9 +126,7 @@ function FormControlRenderer<T extends FieldValues>({
                   <div>
                     <div className="font-medium">{option.label}</div>
                     {option.description && (
-                      <div className="text-xs text-muted-foreground">
-                        {option.description}
-                      </div>
+                      <div className="text-xs text-muted-foreground">{option.description}</div>
                     )}
                   </div>
                 </div>
@@ -149,25 +135,13 @@ function FormControlRenderer<T extends FieldValues>({
           </SelectContent>
         </Select>
       )
-      
+
     case 'switch':
-      return (
-        <Switch
-          checked={field.value}
-          onCheckedChange={field.onChange}
-          disabled={loading}
-        />
-      )
-      
+      return <Switch checked={field.value} onCheckedChange={field.onChange} disabled={loading} />
+
     case 'checkbox':
-      return (
-        <Checkbox
-          checked={field.value}
-          onCheckedChange={field.onChange}
-          disabled={loading}
-        />
-      )
-      
+      return <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled={loading} />
+
     default:
       return (
         <Input

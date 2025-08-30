@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import Papa from 'papaparse'
 import type { Database } from '@/lib/database.types'
 
@@ -54,27 +54,27 @@ interface UseFileUploadReturn {
 
 // Field mappings (moved from component)
 const EXCEL_FIELD_MAPPINGS: Record<string, keyof TransformedOrganizationRow> = {
-  'organizations': 'name',
-  'priority-focus': 'priority', 
-  'segment': 'segment',
-  'distributor': 'type',
+  organizations: 'name',
+  'priority-focus': 'priority',
+  segment: 'segment',
+  distributor: 'type',
   'primary acct. manager': 'primary_manager_name',
   'secondary acct. manager': 'secondary_manager_name',
-  'linkedin': 'website',
-  'phone': 'phone',
+  linkedin: 'website',
+  phone: 'phone',
   'street address': 'address_line_1',
-  'city': 'city',
-  'state': 'state_province',
+  city: 'city',
+  state: 'state_province',
   'zip code': 'postal_code',
-  'notes': 'notes'
+  notes: 'notes',
 } as const
 
 const PRIORITY_VALUES = ['A', 'B', 'C', 'D'] as const
-type PriorityValue = typeof PRIORITY_VALUES[number]
+type PriorityValue = (typeof PRIORITY_VALUES)[number]
 
 const EXPECTED_COLUMNS = {
   required: ['organizations'],
-  optional: Object.keys(EXCEL_FIELD_MAPPINGS).filter(key => key !== 'organizations')
+  optional: Object.keys(EXCEL_FIELD_MAPPINGS).filter((key) => key !== 'organizations'),
 }
 
 export const useFileUpload = (): UseFileUploadReturn => {
@@ -116,249 +116,265 @@ export const useFileUpload = (): UseFileUploadReturn => {
 
   // Helper function to detect if a row has meaningful content
   const hasContent = useCallback((row: string[]): boolean => {
-    return row.some(cell => cell && cell.trim().length > 0)
+    return row.some((cell) => cell && cell.trim().length > 0)
   }, [])
 
   // Helper function to find first data row
-  const findDataStartRow = useCallback((allRows: string[][]): number => {
-    for (let i = 0; i < allRows.length; i++) {
-      if (hasContent(allRows[i])) {
-        return i
+  const findDataStartRow = useCallback(
+    (allRows: string[][]): number => {
+      for (let i = 0; i < allRows.length; i++) {
+        if (hasContent(allRows[i])) {
+          return i
+        }
       }
-    }
-    return 0 // If no content found, start from beginning
-  }, [hasContent])
+      return 0 // If no content found, start from beginning
+    },
+    [hasContent]
+  )
 
   // Parse CSV file with smart row skipping
-  const parseCSV = useCallback((file: File) => {
-    setUploadState(prev => ({
-      ...prev,
-      isUploading: true,
-      uploadProgress: 0,
-      error: null,
-    }))
+  const parseCSV = useCallback(
+    (file: File) => {
+      setUploadState((prev) => ({
+        ...prev,
+        isUploading: true,
+        uploadProgress: 0,
+        error: null,
+      }))
 
-    // First pass: Read without headers to find data start
-    Papa.parse<string[]>(file, {
-      header: false,
-      skipEmptyLines: false, // Keep empty lines for analysis
-      complete: (firstPass: Papa.ParseResult<string[]>) => {
-        try {
-          const allRows = firstPass.data
-          const dataStartIndex = findDataStartRow(allRows)
-          
-          if (dataStartIndex >= allRows.length) {
-            setUploadState(prev => ({
-              ...prev,
-              isUploading: false,
-              error: 'No data found in CSV file. Please check your file contains valid data.',
-            }))
-            return
-          }
+      // First pass: Read without headers to find data start
+      Papa.parse<string[]>(file, {
+        header: false,
+        skipEmptyLines: false, // Keep empty lines for analysis
+        complete: (firstPass: Papa.ParseResult<string[]>) => {
+          try {
+            const allRows = firstPass.data
+            const dataStartIndex = findDataStartRow(allRows)
 
-          // Second pass: Parse with headers starting from data row
-          const headerRow = allRows[dataStartIndex]
-          const dataRows = allRows.slice(dataStartIndex + 1)
-          
-          // Convert back to CSV format for Papa.parse with headers
-          const csvContent = [
-            headerRow.join(','),
-            ...dataRows.map(row => row.join(','))
-          ].join('\n')
-          
-          const blob = new Blob([csvContent], { type: 'text/csv' })
-          const tempFile = new File([blob], file.name, { type: 'text/csv' })
-          
-          Papa.parse<CsvRow>(tempFile, {
-            header: true,
-            skipEmptyLines: true,
-            transformHeader: (header: string) => header.toLowerCase().trim(),
-            complete: (results: Papa.ParseResult<CsvRow>) => {
-              try {
-                const headers = results.meta.fields || []
-                const rows = results.data.filter(row => 
-                  Object.values(row).some(value => value && value.trim().length > 0)
-                )
-
-          // Check for required columns
-          const missingRequired = EXPECTED_COLUMNS.required.filter(
-            col => !headers.includes(col)
-          )
-
-          if (missingRequired.length > 0) {
-            setUploadState(prev => ({
-              ...prev,
-              isUploading: false,
-              error: `Missing required column: ${missingRequired.join(', ')}. Your CSV must have a column named 'organizations' with organization names.`,
-            }))
-            return
-          }
-
-          // Validate and transform rows
-          const validRows: TransformedOrganizationRow[] = []
-          const invalidRows: Array<{ row: CsvRow; errors: string[] }> = []
-
-          rows.forEach((row) => {
-            const errors = validateRow(row)
-            if (errors.length === 0) {
-              const transformedRow: TransformedOrganizationRow = {
-                name: '',
-                type: 'customer',
-                priority: 'C',
-                segment: 'General',
-                website: null,
-                phone: null,
-                address_line_1: null,
-                city: null,
-                state_province: null,
-                postal_code: null,
-                country: null,
-                notes: null,
-                primary_manager_name: null,
-                secondary_manager_name: null,
-                is_active: true
-              }
-              
-              // Apply field mappings
-              Object.entries(EXCEL_FIELD_MAPPINGS).forEach(([excelCol, dbField]) => {
-                const value = row[excelCol]?.trim()
-                if (dbField in transformedRow && value) {
-                  if (dbField === 'type') {
-                    transformedRow.type = value as Database['public']['Enums']['organization_type']
-                  } else if (dbField === 'is_active') {
-                    transformedRow.is_active = Boolean(value)
-                  } else {
-                    const key = dbField as keyof TransformedOrganizationRow
-                    if (key in transformedRow) {
-                      (transformedRow as Record<string, any>)[key] = value
-                    }
-                  }
-                }
-              })
-
-              // Business logic transformations
-              if (transformedRow.priority) {
-                const upperPriority = (transformedRow.priority as string).toUpperCase()
-                transformedRow.priority = PRIORITY_VALUES.includes(upperPriority as PriorityValue) 
-                  ? upperPriority as PriorityValue 
-                  : 'C' as PriorityValue
-              } else {
-                transformedRow.priority = 'C' as PriorityValue
-              }
-
-              // Determine organization type
-              if (row['distributor']?.toLowerCase().includes('distributor') || 
-                  row['segment']?.toLowerCase().includes('distributor')) {
-                transformedRow.type = 'distributor'
-              } else {
-                transformedRow.type = 'customer'
-              }
-
-              // Set defaults
-              transformedRow.country = transformedRow.country || 'US'
-              transformedRow.segment = transformedRow.segment || 'General'
-
-              // Store unmapped data
-              const unmappedData = Object.entries(row)
-                .filter(([key]) => !Object.keys(EXCEL_FIELD_MAPPINGS).includes(key))
-                .filter(([, value]) => value && value.trim())
-                .map(([key, value]) => `${key}: ${value}`)
-                .join('; ')
-              
-              if (unmappedData) {
-                transformedRow.import_notes = unmappedData
-              }
-
-              validRows.push(transformedRow)
-            } else {
-              invalidRows.push({ row, errors })
-            }
-          })
-
-          const parsedData: ParsedData = { headers, rows, validRows, invalidRows }
-
-          setUploadState(prev => ({
-            ...prev,
-            isUploading: false,
-            uploadProgress: 100,
-            parsedData,
-          }))
-              } catch (error) {
-                setUploadState(prev => ({
-                  ...prev,
-                  isUploading: false,
-                  error: 'Failed to parse CSV file. Please check the file format.',
-                }))
-              }
-            },
-            error: (error: Error) => {
-              setUploadState(prev => ({
+            if (dataStartIndex >= allRows.length) {
+              setUploadState((prev) => ({
                 ...prev,
                 isUploading: false,
-                error: `CSV parsing error: ${error.message}`,
+                error: 'No data found in CSV file. Please check your file contains valid data.',
               }))
-            },
-          })
-        } catch (error) {
-          setUploadState(prev => ({
+              return
+            }
+
+            // Second pass: Parse with headers starting from data row
+            const headerRow = allRows[dataStartIndex]
+            const dataRows = allRows.slice(dataStartIndex + 1)
+
+            // Convert back to CSV format for Papa.parse with headers
+            const csvContent = [headerRow.join(','), ...dataRows.map((row) => row.join(','))].join(
+              '\n'
+            )
+
+            const blob = new Blob([csvContent], { type: 'text/csv' })
+            const tempFile = new File([blob], file.name, { type: 'text/csv' })
+
+            Papa.parse<CsvRow>(tempFile, {
+              header: true,
+              skipEmptyLines: true,
+              transformHeader: (header: string) => header.toLowerCase().trim(),
+              complete: (results: Papa.ParseResult<CsvRow>) => {
+                try {
+                  const headers = results.meta.fields || []
+                  const rows = results.data.filter((row) =>
+                    Object.values(row).some((value) => value && value.trim().length > 0)
+                  )
+
+                  // Check for required columns
+                  const missingRequired = EXPECTED_COLUMNS.required.filter(
+                    (col) => !headers.includes(col)
+                  )
+
+                  if (missingRequired.length > 0) {
+                    setUploadState((prev) => ({
+                      ...prev,
+                      isUploading: false,
+                      error: `Missing required column: ${missingRequired.join(', ')}. Your CSV must have a column named 'organizations' with organization names.`,
+                    }))
+                    return
+                  }
+
+                  // Validate and transform rows
+                  const validRows: TransformedOrganizationRow[] = []
+                  const invalidRows: Array<{ row: CsvRow; errors: string[] }> = []
+
+                  rows.forEach((row) => {
+                    const errors = validateRow(row)
+                    if (errors.length === 0) {
+                      const transformedRow: TransformedOrganizationRow = {
+                        name: '',
+                        type: 'customer',
+                        priority: 'C',
+                        segment: 'General',
+                        website: null,
+                        phone: null,
+                        address_line_1: null,
+                        city: null,
+                        state_province: null,
+                        postal_code: null,
+                        country: null,
+                        notes: null,
+                        primary_manager_name: null,
+                        secondary_manager_name: null,
+                        is_active: true,
+                      }
+
+                      // Apply field mappings
+                      Object.entries(EXCEL_FIELD_MAPPINGS).forEach(([excelCol, dbField]) => {
+                        const value = row[excelCol]?.trim()
+                        if (dbField in transformedRow && value) {
+                          if (dbField === 'type') {
+                            transformedRow.type =
+                              value as Database['public']['Enums']['organization_type']
+                          } else if (dbField === 'is_active') {
+                            transformedRow.is_active = Boolean(value)
+                          } else {
+                            const key = dbField as keyof TransformedOrganizationRow
+                            if (key in transformedRow) {
+                              ;(transformedRow as Record<string, any>)[key] = value
+                            }
+                          }
+                        }
+                      })
+
+                      // Business logic transformations
+                      if (transformedRow.priority) {
+                        const upperPriority = (transformedRow.priority as string).toUpperCase()
+                        transformedRow.priority = PRIORITY_VALUES.includes(
+                          upperPriority as PriorityValue
+                        )
+                          ? (upperPriority as PriorityValue)
+                          : ('C' as PriorityValue)
+                      } else {
+                        transformedRow.priority = 'C' as PriorityValue
+                      }
+
+                      // Determine organization type
+                      if (
+                        row['distributor']?.toLowerCase().includes('distributor') ||
+                        row['segment']?.toLowerCase().includes('distributor')
+                      ) {
+                        transformedRow.type = 'distributor'
+                      } else {
+                        transformedRow.type = 'customer'
+                      }
+
+                      // Set defaults
+                      transformedRow.country = transformedRow.country || 'US'
+                      transformedRow.segment = transformedRow.segment || 'General'
+
+                      // Store unmapped data
+                      const unmappedData = Object.entries(row)
+                        .filter(([key]) => !Object.keys(EXCEL_FIELD_MAPPINGS).includes(key))
+                        .filter(([, value]) => value && value.trim())
+                        .map(([key, value]) => `${key}: ${value}`)
+                        .join('; ')
+
+                      if (unmappedData) {
+                        transformedRow.import_notes = unmappedData
+                      }
+
+                      validRows.push(transformedRow)
+                    } else {
+                      invalidRows.push({ row, errors })
+                    }
+                  })
+
+                  const parsedData: ParsedData = { headers, rows, validRows, invalidRows }
+
+                  setUploadState((prev) => ({
+                    ...prev,
+                    isUploading: false,
+                    uploadProgress: 100,
+                    parsedData,
+                  }))
+                } catch (error) {
+                  setUploadState((prev) => ({
+                    ...prev,
+                    isUploading: false,
+                    error: 'Failed to parse CSV file. Please check the file format.',
+                  }))
+                }
+              },
+              error: (error: Error) => {
+                setUploadState((prev) => ({
+                  ...prev,
+                  isUploading: false,
+                  error: `CSV parsing error: ${error.message}`,
+                }))
+              },
+            })
+          } catch (error) {
+            setUploadState((prev) => ({
+              ...prev,
+              isUploading: false,
+              error: 'Failed to analyze CSV structure. Please check the file format.',
+            }))
+          }
+        },
+        error: (error: Error) => {
+          setUploadState((prev) => ({
             ...prev,
             isUploading: false,
-            error: 'Failed to analyze CSV structure. Please check the file format.',
+            error: `CSV parsing error: ${error.message}`,
           }))
-        }
-      },
-      error: (error: Error) => {
-        setUploadState(prev => ({
-          ...prev,
-          isUploading: false,
-          error: `CSV parsing error: ${error.message}`,
-        }))
-      },
-    })
-  }, [validateRow, findDataStartRow])
+        },
+      })
+    },
+    [validateRow, findDataStartRow]
+  )
 
   // File selection handler
-  const handleFileSelect = useCallback((file: File) => {
-    const error = validateFile(file)
-    if (error) {
-      setUploadState(prev => ({
+  const handleFileSelect = useCallback(
+    (file: File) => {
+      const error = validateFile(file)
+      if (error) {
+        setUploadState((prev) => ({
+          ...prev,
+          error,
+          file: null,
+          parsedData: null,
+        }))
+        return
+      }
+
+      setUploadState((prev) => ({
         ...prev,
-        error,
-        file: null,
+        file,
+        error: null,
         parsedData: null,
       }))
-      return
-    }
 
-    setUploadState(prev => ({
-      ...prev,
-      file,
-      error: null,
-      parsedData: null,
-    }))
-
-    parseCSV(file)
-  }, [validateFile, parseCSV])
+      parseCSV(file)
+    },
+    [validateFile, parseCSV]
+  )
 
   // Drag and drop handlers
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
-    setUploadState(prev => ({ ...prev, isDragOver: true }))
+    setUploadState((prev) => ({ ...prev, isDragOver: true }))
   }, [])
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault()
-    setUploadState(prev => ({ ...prev, isDragOver: false }))
+    setUploadState((prev) => ({ ...prev, isDragOver: false }))
   }, [])
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault()
-    setUploadState(prev => ({ ...prev, isDragOver: false }))
-    const files = Array.from(e.dataTransfer.files)
-    if (files.length > 0) {
-      handleFileSelect(files[0])
-    }
-  }, [handleFileSelect])
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault()
+      setUploadState((prev) => ({ ...prev, isDragOver: false }))
+      const files = Array.from(e.dataTransfer.files)
+      if (files.length > 0) {
+        handleFileSelect(files[0])
+      }
+    },
+    [handleFileSelect]
+  )
 
   // Reset handler
   const resetUpload = useCallback(() => {
@@ -377,35 +393,35 @@ export const useFileUpload = (): UseFileUploadReturn => {
     const headers = Object.keys(EXCEL_FIELD_MAPPINGS)
     const sampleData = [
       {
-        'organizations': 'Acme Food Distribution',
+        organizations: 'Acme Food Distribution',
         'priority-focus': 'A',
-        'segment': 'Casual Dining',
-        'distributor': '',
+        segment: 'Casual Dining',
+        distributor: '',
         'primary acct. manager': 'John Smith',
         'secondary acct. manager': 'Jane Doe',
-        'linkedin': 'https://linkedin.com/company/acmefood',
-        'phone': '555-0123',
+        linkedin: 'https://linkedin.com/company/acmefood',
+        phone: '555-0123',
         'street address': '123 Business Ave',
-        'city': 'Chicago',
-        'state': 'IL',
+        city: 'Chicago',
+        state: 'IL',
         'zip code': '60601',
-        'notes': 'Regional food distributor serving Chicago metro area'
+        notes: 'Regional food distributor serving Chicago metro area',
       },
       {
-        'organizations': 'Premium Ingredients Co',
+        organizations: 'Premium Ingredients Co',
         'priority-focus': 'B',
-        'segment': 'Distributor',
-        'distributor': 'Yes',
+        segment: 'Distributor',
+        distributor: 'Yes',
         'primary acct. manager': 'Mike Johnson',
         'secondary acct. manager': '',
-        'linkedin': 'https://linkedin.com/company/premiumingredients',
-        'phone': '555-0456',
+        linkedin: 'https://linkedin.com/company/premiumingredients',
+        phone: '555-0456',
         'street address': '456 Industrial Blvd',
-        'city': 'Milwaukee',
-        'state': 'WI',
+        city: 'Milwaukee',
+        state: 'WI',
         'zip code': '53202',
-        'notes': 'Specialty ingredient supplier - high volume distributor'
-      }
+        notes: 'Specialty ingredient supplier - high volume distributor',
+      },
     ]
 
     const csv = Papa.unparse({ fields: headers, data: sampleData })
@@ -427,6 +443,6 @@ export const useFileUpload = (): UseFileUploadReturn => {
     handleDragLeave,
     handleDrop,
     resetUpload,
-    downloadTemplate
+    downloadTemplate,
   }
 }

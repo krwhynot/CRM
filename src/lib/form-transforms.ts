@@ -1,6 +1,6 @@
 /**
  * Form Transform Utilities
- * 
+ *
  * Reusable transform functions for Yup schemas to handle common type conversion
  * patterns and prevent TypeScript type mismatches between forms and validation.
  */
@@ -132,9 +132,10 @@ export const normalizeUuid = (value: unknown): string | null => {
 export const conditionalTransform = <T, TValues = Record<string, unknown>>(
   condition: (allValues: TValues) => boolean,
   requiredTransform: (value: unknown) => T,
-  optionalTransform: (value: unknown) => T | null = ((value: unknown) => emptyStringToNull(value) as T | null)
+  optionalTransform: (value: unknown) => T | null = (value: unknown) =>
+    emptyStringToNull(value) as T | null
 ) => {
-  return function(this: { parent: TValues }, value: unknown) {
+  return function (this: { parent: TValues }, value: unknown) {
     const isRequired = condition(this.parent)
     return isRequired ? requiredTransform(value) : optionalTransform(value)
   }
@@ -146,7 +147,7 @@ export const conditionalTransform = <T, TValues = Record<string, unknown>>(
 export const FormTransforms = {
   // Standard nullable string field (most common)
   nullableString: emptyStringToNull,
-  
+
   // Required string field that trims whitespace
   requiredString: (value: unknown): string => {
     if (typeof value !== 'string' || value.trim() === '') {
@@ -154,30 +155,30 @@ export const FormTransforms = {
     }
     return value.trim()
   },
-  
+
   // Nullable number field
   nullableNumber: emptyStringToNullNumber,
-  
+
   // Nullable email field with normalization
   nullableEmail: normalizeEmail,
-  
+
   // Nullable phone field with normalization
   nullablePhone: normalizePhone,
-  
+
   // Nullable URL field
   nullableUrl: emptyStringToNullUrl,
-  
+
   // Array field that preserves empty arrays
   optionalArray: ensureArray,
-  
+
   // Array field that becomes null when empty
   nullableArray: emptyArrayToNull,
-  
+
   // Boolean field with string conversion
   booleanField: stringToBoolean,
-  
+
   // UUID field with validation
-  uuidField: normalizeUuid
+  uuidField: normalizeUuid,
 }
 
 /**
@@ -191,13 +192,14 @@ export const isTransformFunction = (value: unknown): value is Function => {
  * Development helper to log transform operations
  * Only active in development mode
  */
-export const debugTransform = (transformName: string, originalValue: unknown, transformedValue: unknown) => {
+export const debugTransform = (
+  _transformName: string,
+  _originalValue: unknown,
+  _transformedValue: unknown
+) => {
   if (process.env.NODE_ENV === 'development') {
-    console.log(`Transform [${transformName}]:`, {
-      original: originalValue,
-      transformed: transformedValue,
-      changed: originalValue !== transformedValue
-    })
+    // Transform debugging is handled silently
+    // Use browser dev tools for debugging if needed
   }
 }
 
