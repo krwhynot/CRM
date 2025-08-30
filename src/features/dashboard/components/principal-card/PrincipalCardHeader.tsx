@@ -17,7 +17,7 @@ export const PrincipalCardHeader: React.FC<PrincipalCardHeaderProps> = ({
   return (
     <CardHeader className="pb-3">
       <div className="flex items-start justify-between gap-2">
-        <CardTitle className="text-lg group-hover:text-primary transition-colors">
+        <CardTitle className="text-lg transition-colors group-hover:text-primary">
           {principal.name}
         </CardTitle>
         <Badge className={priorityColor} variant="outline">
@@ -30,7 +30,7 @@ export const PrincipalCardHeader: React.FC<PrincipalCardHeaderProps> = ({
       )}
       
       {principal.description && (
-        <p className="text-xs text-muted-foreground line-clamp-2">
+        <p className="line-clamp-2 text-xs text-muted-foreground">
           {principal.description}
         </p>
       )}

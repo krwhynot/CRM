@@ -1,13 +1,19 @@
 import { useState } from 'react'
-import { SimpleTable } from '@/components/ui/simple-table'
+import { DataTable, type DataTableColumn } from '@/components/ui/DataTable'
 import { ProductsFilters } from './ProductsFilters'
-import { ProductRow } from './ProductRow'
 import { BulkActionsToolbar } from '@/features/organizations/components/BulkActionsToolbar'
 import { BulkDeleteDialog } from '@/features/organizations/components/BulkDeleteDialog'
+import { ProductBadges } from './ProductBadges'
+import { ProductActions } from './ProductActions'
 import { useProductsFiltering } from '../hooks/useProductsFiltering'
 import { useProductsDisplay } from '../hooks/useProductsDisplay'
 import { useDeleteProduct } from '../hooks/useProducts'
 import { toast } from '@/lib/toast-styles'
+import { formatPrice } from '@/lib/product-formatters'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Button } from '@/components/ui/button'
+import { ChevronDown, ChevronRight } from 'lucide-react'
+import { ProductRowDetails } from './product-row/ProductRowDetails'
 import type { Product, ProductWithPrincipal } from '@/types/entities'
 
 interface ProductsTableProps {
@@ -134,30 +140,128 @@ export function ProductsTable({
     }
   }
 
-  // Headers configuration for SimpleTable
-  const headers = [
-    { label: '', isCheckbox: true },
-    { label: 'Product', className: 'min-w-56' },
-    { label: 'Price', className: 'min-w-20 text-right' },
-    { label: 'Principal', className: 'min-w-28' },
-    { label: 'Brand', className: 'min-w-20' },
-    { label: 'Actions', className: 'text-center min-w-28' }
-  ]
-
-  const renderProductRow = (product: ProductWithPrincipal, isExpanded: boolean, onToggle: () => void) => (
-    <ProductRow
-      key={product.id}
-      product={product}
-      isExpanded={isRowExpanded(product.id)}
-      onToggleExpansion={() => toggleRowExpansion(product.id)}
-      onEdit={onEdit}
-      onDelete={onDelete}
-      onView={onView}
-      onContactSupplier={onContactSupplier}
-      isSelected={selectedIds.includes(product.id)}
-      onSelect={() => handleRowSelect(product.id)}
-    />
+  // Helper component for empty cell display  
+  const EmptyCell = () => (
+    <span className="italic text-gray-400">Not provided</span>
   )
+
+  // Column definitions for DataTable
+  const productColumns: DataTableColumn<ProductWithPrincipal>[] = [
+    {
+      key: 'selection',
+      header: (
+        <Checkbox
+          checked={selectedIds.length > 0 && selectedIds.length === filteredProducts.length}
+          onCheckedChange={(checked) => {
+            if (checked) {
+              setSelectedIds(filteredProducts.map(product => product.id))
+            } else {
+              setSelectedIds([])
+            }
+          }}
+          aria-label="Select all products"
+        />
+      ),
+      cell: (product) => (
+        <Checkbox
+          checked={selectedIds.includes(product.id)}
+          onCheckedChange={() => handleRowSelect(product.id)}
+          aria-label={`Select ${product.name}`}
+        />
+      ),
+      className: "w-12"
+    },
+    {
+      key: 'expansion',
+      header: '',
+      cell: (product) => (
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => toggleRowExpansion(product.id)}
+          className="h-auto p-0 hover:bg-transparent"
+        >
+          {isRowExpanded(product.id) ? (
+            <ChevronDown className="size-4 text-gray-500" />
+          ) : (
+            <ChevronRight className="size-4 text-gray-500" />
+          )}
+        </Button>
+      ),
+      className: "w-8"
+    },
+    {
+      key: 'product',
+      header: 'Product',
+      cell: (product) => (
+        <div className="space-y-2">
+          <div className="text-base font-semibold text-gray-900">
+            {product.name || <EmptyCell />}
+          </div>
+          {product.sku && (
+            <div className="font-mono text-xs text-gray-500">
+              SKU: {product.sku}
+            </div>
+          )}
+          <ProductBadges
+            category={product.category}
+            price={product.list_price}
+            shelfLifeDays={product.shelf_life_days}
+            inStock={product.in_stock}
+            lowStock={product.low_stock}
+          />
+        </div>
+      ),
+      className: "font-medium min-w-56"
+    },
+    {
+      key: 'price',
+      header: 'Price',
+      cell: (product) => (
+        <div className="text-base font-semibold text-gray-900">
+          {formatPrice(product.list_price)}
+        </div>
+      ),
+      className: "text-right min-w-20",
+      hidden: { sm: true }
+    },
+    {
+      key: 'principal',
+      header: 'Principal',
+      cell: (product) => (
+        <div className="text-sm text-gray-700">
+          {product.principal_name || <EmptyCell />}
+        </div>
+      ),
+      className: "min-w-28",
+      hidden: { sm: true, md: true }
+    },
+    {
+      key: 'brand',
+      header: 'Brand',
+      cell: (product) => (
+        <div className="text-sm text-gray-700">
+          {product.brand || <EmptyCell />}
+        </div>
+      ),
+      className: "min-w-20",
+      hidden: { sm: true }
+    },
+    {
+      key: 'actions',
+      header: 'Actions',
+      cell: (product) => (
+        <ProductActions
+          product={product}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onView={onView}
+          onContactSupplier={onContactSupplier}
+        />
+      ),
+      className: "text-center min-w-28"
+    }
+  ]
 
   return (
     <div className="space-y-4">
@@ -183,29 +287,36 @@ export function ProductsTable({
         onSelectNone={handleSelectNoneFromToolbar}
       />
 
-      {/* Table Container */}
-      <SimpleTable
-        data={filteredProducts}
-        loading={loading}
-        headers={headers}
-        renderRow={renderProductRow}
-        emptyMessage={activeFilter !== 'all' ? 'No products match your criteria' : 'No products found'}
-        emptySubtext={activeFilter !== 'all' ? 'Try adjusting your filters' : 'Get started by adding your first product'}
-        colSpan={7}
-        selectedCount={selectedIds.length}
-        totalCount={filteredProducts.length}
-        onSelectAll={(checked) => {
-          if (checked) {
-            setSelectedIds(filteredProducts.map(product => product.id))
-          } else {
-            setSelectedIds([])
-          }
-        }}
-      />
+      {/* Table Container with Row Expansion */}
+      <div className="space-y-0">
+        <DataTable<ProductWithPrincipal>
+          data={filteredProducts}
+          columns={productColumns}
+          loading={loading}
+          rowKey={(product) => product.id}
+          empty={{
+            title: activeFilter !== 'all' ? 'No products match your criteria' : 'No products found',
+            description: activeFilter !== 'all' ? 'Try adjusting your filters' : 'Get started by adding your first product'
+          }}
+        />
+        
+        {/* Expanded Row Details */}
+        {filteredProducts
+          .filter((product) => isRowExpanded(product.id))
+          .map((product) => (
+            <div 
+              key={`${product.id}-details`} 
+              className="-mt-px border-x border-b border-l-4 border-l-mfb-green bg-mfb-sage-tint p-6 transition-all duration-300 ease-out"
+              style={{ marginTop: '-1px' }}
+            >
+              <ProductRowDetails product={product} />
+            </div>
+          ))}
+      </div>
 
       {/* Results Summary */}
       {filteredProducts.length > 0 && (
-        <div className="flex justify-between items-center text-sm text-gray-500 px-1">
+        <div className="flex items-center justify-between px-1 text-sm text-gray-500">
           <span>
             Showing {filteredProducts.length} of {products.length} products
           </span>

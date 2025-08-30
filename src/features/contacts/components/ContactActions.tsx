@@ -27,10 +27,10 @@ export const ContactActions: React.FC<ContactActionsProps> = ({
           variant={variant}
           size={size}
           onClick={() => onEdit(contact)}
-          className="h-8 w-8 p-0 hover:bg-blue-100 hover:text-blue-700"
+          className="size-8 p-0 hover:bg-blue-100 hover:text-blue-700"
           title="Edit Contact"
         >
-          <Pencil className="h-4 w-4" />
+          <Pencil className="size-4" />
         </Button>
       )}
       
@@ -39,10 +39,10 @@ export const ContactActions: React.FC<ContactActionsProps> = ({
           variant={variant}
           size={size}
           onClick={() => onContact(contact)}
-          className="h-8 w-8 p-0 hover:bg-green-100 hover:text-green-700"
+          className="size-8 p-0 hover:bg-green-100 hover:text-green-700"
           title="Contact Person"
         >
-          <Phone className="h-4 w-4" />
+          <Phone className="size-4" />
         </Button>
       )}
       
@@ -51,10 +51,10 @@ export const ContactActions: React.FC<ContactActionsProps> = ({
           variant={variant}
           size={size}
           onClick={() => onView(contact)}
-          className="h-8 w-8 p-0 hover:bg-gray-100 hover:text-gray-700"
+          className="size-8 p-0 hover:bg-gray-100 hover:text-gray-700"
           title="View Details"
         >
-          <Eye className="h-4 w-4" />
+          <Eye className="size-4" />
         </Button>
       )}
     </div>

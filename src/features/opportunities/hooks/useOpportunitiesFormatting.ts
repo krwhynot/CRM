@@ -14,13 +14,13 @@ interface UseOpportunitiesFormattingReturn {
 export const useOpportunitiesFormatting = (): UseOpportunitiesFormattingReturn => {
   const getStageConfig = useCallback((stage: string): StageConfig => {
     const configs: Record<string, StageConfig> = {
-      "New Lead": { dot: "bg-blue-500", position: 1 },
-      "Initial Outreach": { dot: "bg-purple-500", position: 2 },
-      "Sample/Visit Offered": { dot: "bg-yellow-500", position: 3 },
-      "Awaiting Response": { dot: "bg-orange-500", position: 4 },
-      "Feedback Logged": { dot: "bg-pink-500", position: 5 },
-      "Demo Scheduled": { dot: "bg-green-500", position: 6 },
-      "Closed - Won": { dot: "bg-emerald-500", position: 7 }
+      "New Lead": { dot: "bg-primary", position: 1 },
+      "Initial Outreach": { dot: "bg-accent", position: 2 },
+      "Sample/Visit Offered": { dot: "bg-warning", position: 3 },
+      "Awaiting Response": { dot: "bg-warning", position: 4 },
+      "Feedback Logged": { dot: "bg-info", position: 5 },
+      "Demo Scheduled": { dot: "bg-success", position: 6 },
+      "Closed - Won": { dot: "bg-success", position: 7 }
     }
     return configs[stage] || configs["New Lead"]
   }, [])

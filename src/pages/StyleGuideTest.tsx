@@ -14,10 +14,10 @@ export function StyleGuideTest() {
       
       <div className="grid grid-cols-2 gap-8">
         <div>
-          <h2 className="text-xl font-semibold mb-4">Current Style</h2>
+          <h2 className="mb-4 text-xl font-semibold">Current Style</h2>
           {/* Old components will go here */}
           <div className="space-y-4">
-            <p className="text-gray-600">Original components:</p>
+            <p className="text-muted-foreground">Original components:</p>
             <div className="space-x-2">
               <Button>Save Organization</Button>
               <Button variant="secondary">Cancel</Button>
@@ -31,24 +31,24 @@ export function StyleGuideTest() {
               </CardHeader>
               <CardContent>
                 <p className="text-3xl font-bold">247</p>
-                <p className="text-sm text-gray-500 mt-1">Active accounts</p>
+                <p className="mt-1 text-sm text-muted-foreground">Active accounts</p>
               </CardContent>
             </Card>
           </div>
         </div>
         
         <div>
-          <h2 className="text-xl font-semibold mb-4">Consolidated Style</h2>
+          <h2 className="mb-4 text-xl font-semibold">Consolidated Style</h2>
           {/* Consolidated components after refactoring */}
           <div className="space-y-4">
-            <p className="text-gray-600">Components after consolidation:</p>
+            <p className="text-muted-foreground">Components after consolidation:</p>
             <div className="space-x-2">
               <Button>Save Organization</Button>
               <Button variant="secondary">Cancel</Button>
               <Button variant="destructive">Delete</Button>
               <Button variant="ghost">Edit</Button>
             </div>
-            <div className="space-x-2 mt-4">
+            <div className="mt-4 space-x-2">
               <Button size="sm">Small</Button>
               <Button size="default">Default</Button>
               <Button size="lg">Large</Button>
@@ -60,11 +60,11 @@ export function StyleGuideTest() {
               </CardHeader>
               <CardContent>
                 <p className="text-3xl font-bold text-primary">247</p>
-                <p className="text-sm text-muted-foreground mt-1">Active accounts</p>
+                <p className="mt-1 text-sm text-muted-foreground">Active accounts</p>
               </CardContent>
             </Card>
             <div className="mt-4 space-y-2">
-              <p className="text-gray-600 text-sm">Priority Badges:</p>
+              <p className="text-sm text-muted-foreground">Priority Badges:</p>
               <div className="space-x-2">
                 <PriorityBadge priority="A+" />
                 <PriorityBadge priority="A" />
@@ -79,8 +79,8 @@ export function StyleGuideTest() {
               </div>
             </div>
             <div className="mt-4 space-y-3">
-              <p className="text-success text-sm">Components successfully consolidated!</p>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-sm text-success">Components successfully consolidated!</p>
+              <p className="text-sm text-muted-foreground">
                 ✅ Button components merged<br/>
                 ✅ Semantic color tokens implemented<br/>
                 ✅ Atomic design templates created

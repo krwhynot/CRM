@@ -9,14 +9,14 @@ interface ContactMethodsListProps {
 export const ContactMethodsList: React.FC<ContactMethodsListProps> = ({ contact }) => {
   return (
     <div className="space-y-2">
-      <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
-        <Phone className="h-4 w-4" />
+      <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground">
+        <Phone className="size-4" />
         Contact Methods
       </div>
-      <div className="text-sm text-gray-600 pl-6 space-y-1">
+      <div className="space-y-1 pl-6 text-sm text-muted-foreground">
         {contact.email && (
           <div className="flex items-center gap-2">
-            <Mail className="h-3 w-3" />
+            <Mail className="size-3" />
             <a href={`mailto:${contact.email}`} className="text-blue-600 hover:underline">
               {contact.email}
             </a>
@@ -24,7 +24,7 @@ export const ContactMethodsList: React.FC<ContactMethodsListProps> = ({ contact 
         )}
         {contact.phone && (
           <div className="flex items-center gap-2">
-            <Phone className="h-3 w-3" />
+            <Phone className="size-3" />
             <a href={`tel:${contact.phone}`} className="text-blue-600 hover:underline">
               {contact.phone}
             </a>
@@ -32,7 +32,7 @@ export const ContactMethodsList: React.FC<ContactMethodsListProps> = ({ contact 
         )}
         {contact.mobile_phone && (
           <div className="flex items-center gap-2">
-            <Smartphone className="h-3 w-3" />
+            <Smartphone className="size-3" />
             <a href={`tel:${contact.mobile_phone}`} className="text-blue-600 hover:underline">
               {contact.mobile_phone}
             </a>
@@ -40,7 +40,7 @@ export const ContactMethodsList: React.FC<ContactMethodsListProps> = ({ contact 
         )}
         {contact.linkedin_url && (
           <div className="flex items-center gap-2">
-            <ExternalLink className="h-3 w-3" />
+            <ExternalLink className="size-3" />
             <a href={contact.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
               LinkedIn Profile
             </a>

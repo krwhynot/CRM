@@ -27,7 +27,7 @@ export const ProductActions: React.FC<ProductActionsProps> = ({
           className="h-8 px-3 transition-colors duration-200"
           title="View product details"
         >
-          <Eye className="h-3 w-3" />
+          <Eye className="size-3" />
         </Button>
       )}
       {onContactSupplier && (
@@ -38,7 +38,7 @@ export const ProductActions: React.FC<ProductActionsProps> = ({
           className="h-8 px-3 transition-colors duration-200"
           title="Contact supplier"
         >
-          <Phone className="h-3 w-3" />
+          <Phone className="size-3" />
         </Button>
       )}
       {onEdit && (
@@ -49,7 +49,7 @@ export const ProductActions: React.FC<ProductActionsProps> = ({
           className="h-8 px-3 transition-colors duration-200"
           title="Edit product"
         >
-          <Pencil className="h-3 w-3" />
+          <Pencil className="size-3" />
         </Button>
       )}
     </div>

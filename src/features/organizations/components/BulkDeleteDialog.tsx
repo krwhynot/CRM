@@ -42,17 +42,17 @@ export const BulkDeleteDialog: React.FC<BulkDeleteDialogProps> = ({
       <div className="space-y-3">
         {organizations.length > 0 && (
           <div className="space-y-2">
-            <p className="font-medium text-sm">Organizations to be archived:</p>
-            <div className="max-h-32 overflow-y-auto bg-gray-50 rounded p-2">
-              <ul className="text-sm space-y-1">
+            <p className="text-sm font-medium">Organizations to be archived:</p>
+            <div className="max-h-32 overflow-y-auto rounded bg-gray-50 p-2">
+              <ul className="space-y-1 text-sm">
                 {organizations.slice(0, 5).map((org) => (
                   <li key={org.id} className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full flex-shrink-0" />
+                    <span className="size-1.5 shrink-0 rounded-full bg-gray-400" />
                     {org.name}
                   </li>
                 ))}
                 {organizations.length > 5 && (
-                  <li className="text-gray-600 italic">
+                  <li className="italic text-gray-600">
                     ...and {organizations.length - 5} more
                   </li>
                 )}
@@ -61,7 +61,7 @@ export const BulkDeleteDialog: React.FC<BulkDeleteDialogProps> = ({
           </div>
         )}
         
-        <p className="text-sm font-medium text-amber-700 bg-amber-50 p-2 rounded">
+        <p className="rounded bg-amber-50 p-2 text-sm font-medium text-amber-700">
           ⚠️ This action will soft-delete these organizations (they can be restored)
         </p>
       </div>

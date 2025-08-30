@@ -153,7 +153,7 @@ export function StandardDialog(props: StandardDialogProps) {
 
   // Regular dialog variant (default)
   const { footer, scroll = "content" } = props
-  const scrollClasses = scroll === "content" ? "max-h-[80vh] overflow-y-auto" : ""
+  const scrollClasses = scroll === "content" ? "max-h-dialog overflow-y-auto" : ""
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

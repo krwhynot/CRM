@@ -25,21 +25,21 @@ export const InteractionActionsDropdown: React.FC<InteractionActionsDropdownProp
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
+        <Button variant="ghost" className="size-8 p-0">
           <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-4 w-4" />
+          <MoreHorizontal className="size-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {onView && (
           <DropdownMenuItem onClick={() => onView(interaction)}>
-            <ExternalLink className="mr-2 h-4 w-4" />
+            <ExternalLink className="mr-2 size-4" />
             View Details
           </DropdownMenuItem>
         )}
         {onEdit && (
           <DropdownMenuItem onClick={() => onEdit(interaction)}>
-            <Pencil className="mr-2 h-4 w-4" />
+            <Pencil className="mr-2 size-4" />
             Edit
           </DropdownMenuItem>
         )}
@@ -48,7 +48,7 @@ export const InteractionActionsDropdown: React.FC<InteractionActionsDropdownProp
             onClick={() => onDelete(interaction)}
             className="text-red-600"
           >
-            <Trash2 className="mr-2 h-4 w-4" />
+            <Trash2 className="mr-2 size-4" />
             Delete
           </DropdownMenuItem>
         )}

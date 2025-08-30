@@ -43,7 +43,7 @@ export const InteractionTableRow: React.FC<InteractionTableRowProps> = ({
       )}
       <TableCell className="font-medium">
         <div>
-          <div className="font-semibold flex items-center">
+          <div className="flex items-center font-semibold">
             <span>{interaction.subject}</span>
           </div>
           {interaction.contact && (
@@ -70,7 +70,7 @@ export const InteractionTableRow: React.FC<InteractionTableRowProps> = ({
       </TableCell>
       <TableCell>
         <div className="flex items-center">
-          <Calendar className="h-4 w-4 mr-1 text-gray-400" />
+          <Calendar className="mr-1 size-4 text-gray-400" />
           <span className="text-sm">
             {formatDate(interaction.interaction_date)}
           </span>
@@ -78,7 +78,7 @@ export const InteractionTableRow: React.FC<InteractionTableRowProps> = ({
       </TableCell>
       <TableCell>
         <div className="flex items-center">
-          <Clock className="h-4 w-4 mr-1 text-gray-400" />
+          <Clock className="mr-1 size-4 text-gray-400" />
           <span className="text-sm">
             {formatDuration(interaction.duration_minutes)}
           </span>
@@ -93,11 +93,11 @@ export const InteractionTableRow: React.FC<InteractionTableRowProps> = ({
         {interaction.follow_up_required ? (
           <div className="flex items-center">
             {isFollowUpOverdue(interaction.follow_up_date) ? (
-              <AlertCircle className="h-4 w-4 mr-1 text-red-500" />
+              <AlertCircle className="mr-1 size-4 text-red-500" />
             ) : (
-              <Calendar className="h-4 w-4 mr-1 text-yellow-500" />
+              <Calendar className="mr-1 size-4 text-yellow-500" />
             )}
-            <span className={`text-sm ${isFollowUpOverdue(interaction.follow_up_date) ? 'text-red-600 font-medium' : ''}`}>
+            <span className={`text-sm ${isFollowUpOverdue(interaction.follow_up_date) ? 'font-medium text-red-600' : ''}`}>
               {interaction.follow_up_date ? formatDate(interaction.follow_up_date) : 'Pending'}
             </span>
           </div>

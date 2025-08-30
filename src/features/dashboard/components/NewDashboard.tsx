@@ -72,16 +72,16 @@ export function NewDashboard() {
     <div className={`flex-1 overflow-auto bg-gray-50 ${USE_NEW_STYLE ? "p-3 sm:p-4" : "p-4 sm:p-6"}`}>
       {/* Dashboard Content Header */}
       <div className={USE_NEW_STYLE ? "mb-3 sm:mb-4" : "mb-4 sm:mb-6"}>
-        <h1 className={`mb-1 ${USE_NEW_STYLE ? "text-lg sm:text-xl font-bold text-[hsl(var(--foreground))]" : "text-xl sm:text-2xl font-bold text-gray-900"}`}>
+        <h1 className={`mb-1 ${USE_NEW_STYLE ? "text-lg font-bold text-[hsl(var(--foreground))] sm:text-xl" : "text-xl font-bold text-gray-900 sm:text-2xl"}`}>
           📊 CRM ANALYTICS DASHBOARD
         </h1>
-        <p className={USE_NEW_STYLE ? "text-xs sm:text-sm text-muted-foreground" : "text-sm sm:text-base text-gray-600"}>
+        <p className={USE_NEW_STYLE ? "text-xs text-muted-foreground sm:text-sm" : "text-sm text-gray-600 sm:text-base"}>
           Welcome to Master Food Brokers CRM - Advanced Analytics & Insights
         </p>
       </div>
 
       {/* Stats Cards Grid */}
-      <div className={`${USE_NEW_STYLE ? "compact-grid mb-4" : "grid gap-4 grid-cols-1 sm:grid-cols-2 tablet:grid-cols-2 laptop:grid-cols-4 mb-6"}`}>
+      <div className={`${USE_NEW_STYLE ? "compact-grid mb-4" : "mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 tablet:grid-cols-2 laptop:grid-cols-4"}`}>
         <StatsCards />
       </div>
 
@@ -114,7 +114,7 @@ export function NewDashboard() {
       </div>
 
       {/* Activity Feed Section */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 xl:grid-cols-3">
         <div className="xl:col-span-2">
           <EnhancedActivityFeed 
             limit={15}
@@ -125,8 +125,8 @@ export function NewDashboard() {
         
         {/* Additional Stats or Quick Actions could go here */}
         <div className="space-y-4">
-          <div className="bg-white rounded-lg shadow-sm border p-4">
-            <h3 className="text-sm font-semibold mb-3 text-foreground">Quick Insights</h3>
+          <div className="rounded-lg border bg-white p-4 shadow-sm">
+            <h3 className="mb-3 text-sm font-semibold text-foreground">Quick Insights</h3>
             <div className="space-y-3 text-xs">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Total Organizations:</span>
@@ -148,7 +148,7 @@ export function NewDashboard() {
                 <span className="text-muted-foreground">Products Catalog:</span>
                 <span className="font-medium">{products.length}</span>
               </div>
-              <div className="border-t pt-2 mt-3">
+              <div className="mt-3 border-t pt-2">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Week Range:</span>
                   <span className="font-medium">{filters.weeks}</span>
@@ -158,8 +158,8 @@ export function NewDashboard() {
           </div>
 
           {filters.principal !== 'all' && (
-            <div className="bg-primary/5 rounded-lg border border-primary/20 p-4">
-              <h3 className="text-sm font-semibold mb-2 text-primary">Principal Filter Active</h3>
+            <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+              <h3 className="mb-2 text-sm font-semibold text-primary">Principal Filter Active</h3>
               <p className="text-xs text-muted-foreground">
                 Viewing data for: <strong>{principals.find(p => p.id === filters.principal)?.name}</strong>
               </p>
@@ -167,8 +167,8 @@ export function NewDashboard() {
           )}
 
           {filters.product !== 'all' && (
-            <div className="bg-secondary/5 rounded-lg border border-secondary/20 p-4">
-              <h3 className="text-sm font-semibold mb-2 text-secondary">Product Filter Active</h3>
+            <div className="rounded-lg border border-secondary/20 bg-secondary/5 p-4">
+              <h3 className="mb-2 text-sm font-semibold text-secondary">Product Filter Active</h3>
               <p className="text-xs text-muted-foreground">
                 Viewing data for: <strong>{productOptions.find(p => p.id === filters.product)?.name}</strong>
               </p>

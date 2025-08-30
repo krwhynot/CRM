@@ -19,7 +19,7 @@ export const ServiceStatusCard: React.FC<ServiceStatusCardProps> = ({
   const { getStatusIcon, getStatusColor } = useHealthStatusFormatting()
 
   return (
-    <div className="flex items-center space-x-3 p-3 border rounded-lg">
+    <div className="flex items-center space-x-3 rounded-lg border p-3">
       {icon}
       <div className="flex-1">
         <div className="flex items-center justify-between">

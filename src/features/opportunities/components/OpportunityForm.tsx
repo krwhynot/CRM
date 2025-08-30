@@ -73,7 +73,7 @@ export function OpportunityForm({
   const filteredContacts = contacts.filter(contact => contact.organization_id === watchedOrganization)
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="mx-auto w-full max-w-md">
       <CardHeader><CardTitle>{initialData ? 'Edit Opportunity' : 'Add Opportunity'}</CardTitle></CardHeader>
       <CardContent>
         <Form {...form}>
@@ -206,7 +206,7 @@ export function OpportunityForm({
               </div>
             </ProgressiveDetails>
 
-            <Button type="submit" disabled={loading} className="w-full h-11">
+            <Button type="submit" disabled={loading} className="h-11 w-full">
               {loading ? 'Saving...' : submitLabel}
             </Button>
           </form>

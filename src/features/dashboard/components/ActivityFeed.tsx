@@ -87,9 +87,9 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
               size="sm"
               onClick={realTimeData.handleRefresh}
               disabled={realTimeData.isRefreshing}
-              className="h-8 w-8 p-0"
+              className="size-8 p-0"
             >
-              <RefreshCw className={`w-4 h-4 ${realTimeData.isRefreshing ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`size-4 ${realTimeData.isRefreshing ? 'animate-spin' : ''}`} />
             </Button>
           </div>
         </div>
@@ -99,10 +99,10 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
         {realTimeData.isLoading ? (
           <ActivityFeedSkeleton />
         ) : filteredItems.length === 0 ? (
-          <div className="text-center py-8">
-            <Clock className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 font-medium">No recent activities</p>
-            <p className="text-sm text-gray-400 mt-1">
+          <div className="py-8 text-center">
+            <Clock className="mx-auto mb-4 size-12 text-gray-300" />
+            <p className="font-medium text-gray-500">No recent activities</p>
+            <p className="mt-1 text-sm text-gray-400">
               {selectedType !== 'all' || selectedPriority !== 'all'
                 ? 'Try adjusting your filters to see more activities.'
                 : 'Activities will appear here as they are created.'

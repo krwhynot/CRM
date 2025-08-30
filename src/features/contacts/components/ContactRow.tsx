@@ -37,8 +37,8 @@ export const ContactRow: React.FC<ContactRowProps> = ({
       {/* Main Row */}
       <TableRow 
         className={cn(
-          "hover:bg-gray-50/80 transition-colors border-b",
-          index % 2 === 0 ? "bg-white" : "bg-gray-50/30"
+          "hover:bg-muted/80 transition-colors border-b",
+          index % 2 === 0 ? "bg-card" : "bg-muted/30"
         )}
       >
         {/* Expand Toggle */}
@@ -47,11 +47,11 @@ export const ContactRow: React.FC<ContactRowProps> = ({
             variant="ghost"
             size="sm"
             onClick={() => onToggleExpansion(contact.id)}
-            className="h-8 w-8 p-0 hover:bg-gray-200"
+            className="size-8 p-0 hover:bg-muted"
           >
             {isExpanded ? 
-              <ChevronDown className="h-4 w-4 text-gray-500" /> : 
-              <ChevronRight className="h-4 w-4 text-gray-500" />
+              <ChevronDown className="size-4 text-muted-foreground" /> : 
+              <ChevronRight className="size-4 text-muted-foreground" />
             }
           </Button>
         </TableCell>

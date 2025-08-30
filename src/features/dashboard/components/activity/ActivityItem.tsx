@@ -23,27 +23,27 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity, onClick })
   
   return (
     <div
-      className={`flex items-start gap-3 p-3 rounded-lg border transition-colors ${
+      className={`flex items-start gap-3 rounded-lg border p-3 transition-colors ${
         onClick ? 'cursor-pointer hover:bg-gray-50' : ''
       }`}
       onClick={handleClick}
     >
       {/* Activity Icon */}
-      <div className={`flex-shrink-0 w-8 h-8 rounded-full ${config.lightColor} flex items-center justify-center`}>
-        <Icon className={`w-4 h-4 ${config.textColor}`} />
+      <div className={`size-8 shrink-0 rounded-full ${config.lightColor} flex items-center justify-center`}>
+        <Icon className={`size-4 ${config.textColor}`} />
       </div>
       
       {/* Activity Content */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between">
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 truncate">
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium text-gray-900">
               {activity.subject}
             </p>
             
             {/* Context Information */}
             {contextInfo.length > 0 && (
-              <div className="flex flex-wrap items-center gap-1 mt-1">
+              <div className="mt-1 flex flex-wrap items-center gap-1">
                 {contextInfo.map((info, index) => (
                   <React.Fragment key={index}>
                     <span className="text-xs text-gray-500">{info}</span>
@@ -57,13 +57,13 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity, onClick })
             
             {/* Description */}
             {activity.description && (
-              <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+              <p className="mt-1 line-clamp-2 text-xs text-gray-600">
                 {activity.description}
               </p>
             )}
             
             {/* Activity Metadata */}
-            <div className="flex items-center gap-2 mt-2">
+            <div className="mt-2 flex items-center gap-2">
               <Badge variant="secondary" className="text-xs">
                 {config.label}
               </Badge>
@@ -75,7 +75,7 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity, onClick })
               )}
               
               {activity.follow_up_required && (
-                <Badge variant="outline" className="text-xs text-yellow-700 border-yellow-300">
+                <Badge variant="outline" className="border-yellow-300 text-xs text-yellow-700">
                   Follow-up Required
                 </Badge>
               )}
@@ -83,7 +83,7 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity, onClick })
           </div>
           
           {/* Timestamp */}
-          <div className="flex-shrink-0 ml-2">
+          <div className="ml-2 shrink-0">
             <span className="text-xs text-gray-500">
               {formatDistanceToNow(parseISO(activity.interaction_date), { addSuffix: true })}
             </span>

@@ -78,7 +78,7 @@ export const EntityManagementTemplate: React.FC<EntityManagementTemplateProps> =
     type: 'button' as const,
     label: buttonLabel,
     onClick: onAddClick,
-    icon: <Plus className="h-4 w-4" />,
+    icon: <Plus className="size-4" />,
     'aria-label': `Create new ${COPY.ENTITIES[entityType].toLowerCase()}`
   })
 
@@ -88,10 +88,10 @@ export const EntityManagementTemplate: React.FC<EntityManagementTemplateProps> =
       {headerActions}
       <button
         onClick={onAddClick}
-        className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 focus-ring"
+        className="focus-ring inline-flex h-9 items-center justify-center gap-2 whitespace-nowrap rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
         aria-label={`Create new ${COPY.ENTITIES[entityType].toLowerCase()}`}
       >
-        <Plus className="h-4 w-4" />
+        <Plus className="size-4" />
         {buttonLabel}
       </button>
     </div>

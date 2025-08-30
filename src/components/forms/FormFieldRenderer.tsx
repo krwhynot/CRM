@@ -45,7 +45,7 @@ export function FormFieldRenderer<T extends FieldValues>({
             {label}
             {required && <span className="text-red-500">*</span>}
             {tooltip && (
-              <span className="text-xs text-gray-500 ml-1">
+              <span className="ml-1 text-xs text-gray-500">
                 ({tooltip})
               </span>
             )}
@@ -100,7 +100,7 @@ function FormControlRenderer<T extends FieldValues>({
           type={type}
           placeholder={placeholder}
           disabled={loading}
-          className="h-12 text-base px-4 rounded-md border border-gray-300 
+          className="h-12 rounded-md border border-gray-300 px-4 text-base 
                      focus:border-blue-500 focus:ring-2 focus:ring-blue-200
                      disabled:bg-gray-50 disabled:text-gray-500"
           {...field}
@@ -113,9 +113,9 @@ function FormControlRenderer<T extends FieldValues>({
           placeholder={placeholder}
           disabled={loading}
           rows={4}
-          className="text-base p-4 rounded-md border border-gray-300 
-                     focus:border-blue-500 focus:ring-2 focus:ring-blue-200
-                     resize-none"
+          className="resize-none rounded-md border border-gray-300 p-4 
+                     text-base focus:border-blue-500 focus:ring-2
+                     focus:ring-blue-200"
           {...field}
         />
       )
@@ -173,7 +173,7 @@ function FormControlRenderer<T extends FieldValues>({
         <Input
           placeholder={placeholder}
           disabled={loading}
-          className="h-12 text-base px-4 rounded-md border border-gray-300 
+          className="h-12 rounded-md border border-gray-300 px-4 text-base 
                      focus:border-blue-500 focus:ring-2 focus:ring-blue-200
                      disabled:bg-gray-50 disabled:text-gray-500"
           {...field}

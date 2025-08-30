@@ -65,10 +65,10 @@ export function EnhancedContactForm({
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="mx-auto w-full max-w-md">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <User className="h-5 w-5" />
+          <User className="size-5" />
           {initialData ? 'Edit Contact' : 'Add Contact'}
         </CardTitle>
       </CardHeader>
@@ -91,7 +91,7 @@ export function EnhancedContactForm({
 
             <ContactDetailsSection form={form} loading={loading} />
 
-            <Button type="submit" disabled={loading} className="w-full h-11">
+            <Button type="submit" disabled={loading} className="h-11 w-full">
               {loading ? 'Saving...' : submitLabel}
             </Button>
           </form>

@@ -54,11 +54,11 @@ export const SimpleActivityFeed = React.memo(({ activities, loading, className }
         <CardContent role="status" aria-live="polite" aria-label="Loading activity feed">
           <div className="space-y-4">
             {Array.from({ length: 5 }).map((_, index) => (
-              <div key={index} className="flex items-center space-x-3 animate-pulse">
-                <div className="w-6 h-6 bg-muted rounded-full" aria-hidden="true"></div>
+              <div key={index} className="flex animate-pulse items-center space-x-3">
+                <div className="size-6 rounded-full bg-muted" aria-hidden="true"></div>
                 <div className="flex-1 space-y-1">
-                  <div className="h-4 bg-muted rounded w-3/4" aria-hidden="true"></div>
-                  <div className="h-3 bg-muted rounded w-1/2" aria-hidden="true"></div>
+                  <div className="h-4 w-3/4 rounded bg-muted" aria-hidden="true"></div>
+                  <div className="h-3 w-1/2 rounded bg-muted" aria-hidden="true"></div>
                 </div>
               </div>
             ))}
@@ -76,9 +76,9 @@ export const SimpleActivityFeed = React.memo(({ activities, loading, className }
           <CardTitle>Activity Feed</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-muted-foreground">
+          <div className="py-8 text-center text-muted-foreground">
             <div className="text-sm">No activities to display</div>
-            <div className="text-xs mt-1">Select a principal to view their activity</div>
+            <div className="mt-1 text-xs">Select a principal to view their activity</div>
           </div>
         </CardContent>
       </Card>
@@ -99,17 +99,17 @@ export const SimpleActivityFeed = React.memo(({ activities, loading, className }
         <ScrollArea className="h-activity-feed w-full">
           <div className="space-y-4">
             {visibleActivities.map((activity) => (
-              <div key={activity.id} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
-                <div className="text-lg mt-0.5">
+              <div key={activity.id} className="flex items-start space-x-3 rounded-lg p-3 transition-colors hover:bg-muted/50">
+                <div className="mt-0.5 text-lg">
                   {getActivityIcon(activity.type)}
                 </div>
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-foreground">
                         {activity.title}
                       </p>
-                      <div className="flex items-center space-x-2 mt-1">
+                      <div className="mt-1 flex items-center space-x-2">
                         <p className="text-xs text-muted-foreground">
                           {activity.principalName}
                         </p>
@@ -123,7 +123,7 @@ export const SimpleActivityFeed = React.memo(({ activities, loading, className }
                         )}
                       </div>
                     </div>
-                    <div className="text-xs text-muted-foreground whitespace-nowrap ml-2">
+                    <div className="ml-2 whitespace-nowrap text-xs text-muted-foreground">
                       {getRelativeTime(activity.date)}
                     </div>
                   </div>

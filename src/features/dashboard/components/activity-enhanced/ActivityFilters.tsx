@@ -15,7 +15,7 @@ export const ActivityFilters: React.FC<ActivityFiltersProps> = ({
   if (!showFilters) return null
 
   return (
-    <div className="flex flex-wrap gap-2 mt-3">
+    <div className="mt-3 flex flex-wrap gap-2">
       <Button
         variant={selectedType === 'all' ? 'default' : 'outline'}
         size="sm"

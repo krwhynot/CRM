@@ -61,13 +61,13 @@ export interface BaseClientState {
 }
 
 // Type constraints to prevent server data in client stores
-export type EnsureClientOnly<T> = T extends { data: any } 
+export type EnsureClientOnly<T> = T extends { data: unknown } 
   ? never 
-  : T extends { isLoading: any } 
+  : T extends { isLoading: unknown } 
   ? never 
-  : T extends { error: any } 
+  : T extends { error: unknown } 
   ? never 
-  : T extends { refetch: any } 
+  : T extends { refetch: unknown } 
   ? never
   : T
 
@@ -75,13 +75,13 @@ export type EnsureClientOnly<T> = T extends { data: any }
 export type ExtractClientSafeProps<T> = Pick<T, {
   [K in keyof T]: T[K] extends Function 
     ? never 
-    : T[K] extends { __serverData: any }
+    : T[K] extends { __serverData: unknown }
     ? never
     : K
 }[keyof T]>
 
 // Type to ensure server hooks don't store client state
-export type EnsureServerOnly<T> = T extends { __clientState: any }
+export type EnsureServerOnly<T> = T extends { __clientState: unknown }
   ? never
   : T
 

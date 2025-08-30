@@ -20,10 +20,10 @@ export function OpportunitiesChart({ data, maxValue }: OpportunitiesChartProps) 
   } = useChartStyling()
   
   return (
-    <Card className={`${cardClassName} hover:shadow-lg transition-shadow`}>
+    <Card className={`${cardClassName} transition-shadow hover:shadow-lg`}>
       <CardHeader className={headerClassName}>
         <CardTitle className={`flex items-center gap-2 ${titleClassName}`}>
-          <Target className="h-5 w-5 text-primary" />
+          <Target className="size-5 text-primary" />
           Opportunities per Week
         </CardTitle>
         <p className={`text-sm text-muted-foreground ${subtitleClassName}`}>

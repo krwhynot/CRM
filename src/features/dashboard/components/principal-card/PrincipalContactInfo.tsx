@@ -12,7 +12,7 @@ export const PrincipalContactInfo: React.FC<PrincipalContactInfoProps> = ({ prin
   }
 
   return (
-    <div className="pt-2 border-t border-border/50">
+    <div className="border-t border-border/50 pt-2">
       <div className="space-y-1 text-xs text-muted-foreground">
         {principal.phone && (
           <p>📞 {principal.phone}</p>

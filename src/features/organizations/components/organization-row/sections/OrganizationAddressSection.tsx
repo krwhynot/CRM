@@ -7,7 +7,7 @@ interface OrganizationAddressSectionProps {
 }
 
 const EmptyCell = () => (
-  <span className="text-gray-400 italic">Not provided</span>
+  <span className="italic text-gray-400">Not provided</span>
 )
 
 export const OrganizationAddressSection: React.FC<OrganizationAddressSectionProps> = ({
@@ -16,10 +16,10 @@ export const OrganizationAddressSection: React.FC<OrganizationAddressSectionProp
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
-        <MapPin className="h-4 w-4" />
+        <MapPin className="size-4" />
         Address
       </div>
-      <div className="text-sm text-gray-600 pl-6">
+      <div className="pl-6 text-sm text-gray-600">
         {organization.address_line_1 ? (
           <>
             <div>{organization.address_line_1}</div>

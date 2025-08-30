@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback } from 'react'
 import { WizardStep } from '../components/SmartImportWizard'
 import { suggestFieldMappings, validateRowsWithAI, detectDuplicatesWithAI, isOpenAIAvailable } from '@/lib/openai'
 import { 
@@ -6,7 +6,7 @@ import {
   type BatchValidationResponseType,
   type DuplicateDetectionResponseType
 } from '@/lib/aiSchemas'
-import type { ParsedData, TransformedOrganizationRow } from '@/hooks/useFileUpload'
+import type { ParsedData } from '@/hooks/useFileUpload'
 
 // Enhanced field mapping with AI insights
 export interface SmartFieldMapping {
@@ -129,7 +129,6 @@ const initialState: SmartImportState = {
 
 export function useSmartImport(): UseSmartImportReturn {
   const [state, setState] = useState<SmartImportState>(initialState)
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Navigation actions
   const goToStep = useCallback((step: WizardStep) => {
@@ -180,10 +179,7 @@ export function useSmartImport(): UseSmartImportReturn {
               const headers = results.meta.fields || []
               const rows = results.data
 
-              // Check for required columns based on entity type
-              const requiredColumns = state.config.entityType === 'organization' 
-                ? ['organizations'] // or smart detection
-                : ['contact_name', 'contact_email']
+              // Check for required columns based on entity type (validation happens later)
 
               const parsedData: ParsedData = {
                 headers,

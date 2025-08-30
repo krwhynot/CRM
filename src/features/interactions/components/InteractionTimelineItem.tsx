@@ -72,7 +72,7 @@ const InteractionTimelineItemComponent = forwardRef<HTMLDivElement, InteractionT
           getInteractionTypeColor={getInteractionTypeColor}
         />
 
-        <div className="flex-1 min-w-0 space-y-2">
+        <div className="min-w-0 flex-1 space-y-2">
           <InteractionTimelineHeader
             interaction={interaction}
             isExpanded={isExpanded}

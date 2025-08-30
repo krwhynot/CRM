@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { ActivityItemComponent } from '../activity-enhanced/ActivityItemComponent'
+import { formatActivityTimestamp } from '@/lib/date-utils'
 import type { InteractionWithRelations } from '@/types/entities'
 import type { ActivityItem as ActivityItemType } from '@/features/dashboard/hooks/useEnhancedActivityData'
 
@@ -24,7 +25,7 @@ export const ActivityGroup: React.FC<ActivityGroupProps> = ({
       <CollapsibleTrigger asChild>
         <Button
           variant="ghost"
-          className="w-full justify-between p-2 h-auto font-medium text-left"
+          className="h-auto w-full justify-between p-2 text-left font-medium"
         >
           <div className="flex items-center gap-2">
             <span className="text-sm font-semibold text-gray-900">{groupKey}</span>
@@ -33,9 +34,9 @@ export const ActivityGroup: React.FC<ActivityGroupProps> = ({
             </Badge>
           </div>
           {isOpen ? (
-            <ChevronDown className="w-4 h-4" />
+            <ChevronDown className="size-4" />
           ) : (
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="size-4" />
           )}
         </Button>
       </CollapsibleTrigger>
@@ -46,7 +47,7 @@ export const ActivityGroup: React.FC<ActivityGroupProps> = ({
             key={activity.id}
             item={activity}
             useNewStyle={false}
-            formatTimestamp={(timestamp) => timestamp.toLocaleDateString()}
+            formatTimestamp={formatActivityTimestamp}
             getPriorityColor={(priority) => priority === 'high' ? 'red' : 'blue'}
           />
         ))}

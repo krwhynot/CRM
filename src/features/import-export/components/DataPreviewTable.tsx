@@ -53,19 +53,19 @@ export function DataPreviewTable({ parsedData }: DataPreviewTableProps) {
     <div className="space-y-4">
       {/* Summary Stats */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="text-center p-4 bg-blue-50 rounded-lg">
+        <div className="rounded-lg bg-blue-50 p-4 text-center">
           <div className="text-2xl font-bold text-blue-600">
             {parsedData.rows.length}
           </div>
           <div className="text-sm text-gray-600">Total Rows</div>
         </div>
-        <div className="text-center p-4 bg-green-50 rounded-lg">
+        <div className="rounded-lg bg-green-50 p-4 text-center">
           <div className="text-2xl font-bold text-green-600">
             {parsedData.validRows.length}
           </div>
           <div className="text-sm text-gray-600">Valid Rows</div>
         </div>
-        <div className="text-center p-4 bg-red-50 rounded-lg">
+        <div className="rounded-lg bg-red-50 p-4 text-center">
           <div className="text-2xl font-bold text-red-600">
             {parsedData.invalidRows.length}
           </div>
@@ -76,11 +76,11 @@ export function DataPreviewTable({ parsedData }: DataPreviewTableProps) {
       {/* Invalid Rows Table */}
       {parsedData.invalidRows.length > 0 && (
         <div className="space-y-2">
-          <h3 className="font-medium text-red-600 flex items-center gap-2">
-            <AlertCircle className="h-4 w-4" />
+          <h3 className="flex items-center gap-2 font-medium text-red-600">
+            <AlertCircle className="size-4" />
             Invalid Rows (Need Correction)
           </h3>
-          <div className="border rounded-lg overflow-hidden">
+          <div className="overflow-hidden rounded-lg border">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -111,7 +111,7 @@ export function DataPreviewTable({ parsedData }: DataPreviewTableProps) {
             </Table>
           </div>
           {parsedData.invalidRows.length > 10 && (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               Showing first 10 of {parsedData.invalidRows.length} invalid rows
             </p>
           )}
@@ -121,11 +121,11 @@ export function DataPreviewTable({ parsedData }: DataPreviewTableProps) {
       {/* Valid Rows Preview */}
       {parsedData.validRows.length > 0 && (
         <div className="space-y-2">
-          <h3 className="font-medium text-green-600 flex items-center gap-2">
-            <CheckCircle className="h-4 w-4" />
+          <h3 className="flex items-center gap-2 font-medium text-green-600">
+            <CheckCircle className="size-4" />
             Valid Rows Preview
           </h3>
-          <div className="border rounded-lg overflow-hidden">
+          <div className="overflow-hidden rounded-lg border">
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
@@ -161,7 +161,7 @@ export function DataPreviewTable({ parsedData }: DataPreviewTableProps) {
                             href={row.website} 
                             target="_blank" 
                             rel="noopener noreferrer" 
-                            className="text-blue-600 hover:underline text-xs"
+                            className="text-xs text-blue-600 hover:underline"
                           >
                             Website
                           </a>
@@ -183,7 +183,7 @@ export function DataPreviewTable({ parsedData }: DataPreviewTableProps) {
             </div>
           </div>
           {parsedData.validRows.length > 5 && (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               Showing first 5 of {parsedData.validRows.length} valid rows
             </p>
           )}

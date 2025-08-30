@@ -30,7 +30,7 @@ export const WizardStepFinancial: React.FC<WizardStepFinancialProps> = ({
             disabled={loading}
           />
           {errors.estimated_value && (
-            <p className="text-sm text-red-600 mt-1">{errors.estimated_value.message}</p>
+            <p className="mt-1 text-sm text-red-600">{errors.estimated_value.message}</p>
           )}
         </div>
 
@@ -48,7 +48,7 @@ export const WizardStepFinancial: React.FC<WizardStepFinancialProps> = ({
             disabled={loading}
           />
           {errors.probability && (
-            <p className="text-sm text-red-600 mt-1">{errors.probability.message}</p>
+            <p className="mt-1 text-sm text-red-600">{errors.probability.message}</p>
           )}
         </div>
       </div>
@@ -64,7 +64,7 @@ export const WizardStepFinancial: React.FC<WizardStepFinancialProps> = ({
           disabled={loading}
         />
         {errors.deal_owner && (
-          <p className="text-sm text-red-600 mt-1">{errors.deal_owner.message}</p>
+          <p className="mt-1 text-sm text-red-600">{errors.deal_owner.message}</p>
         )}
       </div>
     </div>

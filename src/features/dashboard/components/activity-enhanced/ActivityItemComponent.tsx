@@ -51,37 +51,37 @@ export const ActivityItemComponent: React.FC<ActivityItemProps> = ({
 
   return (
     <div 
-      className={`flex items-start gap-3 p-3 rounded-lg border border-border/50 hover:border-border hover:bg-muted/30 transition-colors cursor-pointer ${useNewStyle ? "p-2" : ""}`}
+      className={`flex cursor-pointer items-start gap-3 rounded-lg border border-border/50 p-3 transition-colors hover:border-border hover:bg-muted/30 ${useNewStyle ? "p-2" : ""}`}
     >
-      <div className={`flex-shrink-0 ${useNewStyle ? "mt-0.5" : "mt-1"}`}>
+      <div className={`shrink-0 ${useNewStyle ? "mt-0.5" : "mt-1"}`}>
         {InteractionIcon ? (
-          <InteractionIcon className="h-4 w-4 text-primary" />
+          <InteractionIcon className="size-4 text-primary" />
         ) : (
-          <IconComponent className="h-4 w-4 text-primary" />
+          <IconComponent className="size-4 text-primary" />
         )}
       </div>
       
-      <div className="flex-1 min-w-0">
-        <div className="flex items-start justify-between gap-2 mb-1">
-          <h4 className={`font-medium truncate ${useNewStyle ? "text-sm text-foreground" : "text-sm"}`}>
+      <div className="min-w-0 flex-1">
+        <div className="mb-1 flex items-start justify-between gap-2">
+          <h4 className={`truncate font-medium ${useNewStyle ? "text-sm text-foreground" : "text-sm"}`}>
             {item.title}
           </h4>
           {item.priority && (
             <Badge 
               variant="outline" 
-              className={`text-xs px-2 py-0 ${getPriorityColor(item.priority)}`}
+              className={`px-2 py-0 text-xs ${getPriorityColor(item.priority)}`}
             >
               {item.priority}
             </Badge>
           )}
         </div>
         
-        <p className="text-xs text-muted-foreground mb-1 line-clamp-2">
+        <p className="mb-1 line-clamp-2 text-xs text-muted-foreground">
           {item.description}
         </p>
         
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <Clock className="h-3 w-3" />
+          <Clock className="size-3" />
           <span>{formatTimestamp(item.timestamp)}</span>
           {item.status && (
             <>

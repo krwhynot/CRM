@@ -27,11 +27,11 @@ const quickActions = [
 
 export function QuickActions() {
   return (
-    <div className="bg-white border-b border-gray-200 px-6 py-4 flex gap-2 overflow-x-auto">
+    <div className="flex gap-2 overflow-x-auto border-b border-gray-200 bg-white px-6 py-4">
       {quickActions.map((action, index) => (
         <Button
           key={index}
-          className="bg-gradient-to-br from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white border-none rounded-md px-4 py-2 flex items-center gap-2 hover:-translate-y-0.5 transition-all duration-200 whitespace-nowrap"
+          className="from-primary-500 hover:to-primary-700 flex items-center gap-2 whitespace-nowrap rounded-md border-none bg-gradient-to-br to-primary-600 px-4 py-2 text-white transition-all duration-200 hover:-translate-y-0.5 hover:from-primary-600"
           style={{ 
             boxShadow: 'var(--quick-action-shadow)' 
           }}
@@ -41,9 +41,11 @@ export function QuickActions() {
           onMouseLeave={(e) => {
             e.currentTarget.style.boxShadow = 'var(--quick-action-shadow)'
           }}
-          onClick={() => console.log(`Creating new ${action.title}`)}
+          onClick={() => {
+            // TODO: Implement navigation to create forms
+          }}
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="size-4" />
           {action.title}
         </Button>
       ))}

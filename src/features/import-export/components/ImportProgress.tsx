@@ -44,7 +44,7 @@ export function ImportProgress({
           <Progress value={importProgress} className="w-full" />
         </div>
         <Alert>
-          <AlertCircle className="h-4 w-4" />
+          <AlertCircle className="size-4" />
           <AlertDescription>
             Import in progress. Please do not close this page.
           </AlertDescription>
@@ -58,9 +58,9 @@ export function ImportProgress({
       <div className="space-y-4 pt-4">
         <Alert variant={importResult.success ? "default" : "destructive"}>
           {importResult.success ? (
-            <CheckCircle className="h-4 w-4" />
+            <CheckCircle className="size-4" />
           ) : (
-            <AlertCircle className="h-4 w-4" />
+            <AlertCircle className="size-4" />
           )}
           <AlertDescription>
             {importResult.message}
@@ -69,13 +69,13 @@ export function ImportProgress({
 
         {/* Import Summary */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-4 bg-green-50 rounded-lg">
+          <div className="rounded-lg bg-green-50 p-4 text-center">
             <div className="text-2xl font-bold text-green-600">
               {importResult.imported}
             </div>
             <div className="text-sm text-gray-600">Imported</div>
           </div>
-          <div className="text-center p-4 bg-red-50 rounded-lg">
+          <div className="rounded-lg bg-red-50 p-4 text-center">
             <div className="text-2xl font-bold text-red-600">
               {importResult.failed}
             </div>
@@ -86,11 +86,11 @@ export function ImportProgress({
         {/* Error Details */}
         {importResult.errors.length > 0 && (
           <div className="space-y-2">
-            <h3 className="font-medium text-red-600 flex items-center gap-2">
-              <AlertCircle className="h-4 w-4" />
+            <h3 className="flex items-center gap-2 font-medium text-red-600">
+              <AlertCircle className="size-4" />
               Import Errors
             </h3>
-            <div className="border rounded-lg overflow-hidden max-h-40 overflow-y-auto">
+            <div className="max-h-40 overflow-hidden overflow-y-auto rounded-lg border">
               <div className="space-y-1 p-3">
                 {importResult.errors.map((error, index) => (
                   <div key={index} className="text-sm text-red-600">
@@ -124,11 +124,11 @@ export function ImportProgress({
           onClick={onImport}
           disabled={isImporting}
         >
-          <Upload className="h-4 w-4 mr-2" />
+          <Upload className="mr-2 size-4" />
           Import {validRowsCount} Organizations
         </Button>
         <Button variant="outline" onClick={onReset}>
-          <X className="h-4 w-4 mr-2" />
+          <X className="mr-2 size-4" />
           Cancel
         </Button>
       </div>

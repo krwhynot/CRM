@@ -22,7 +22,7 @@ interface ProductRowMainProps {
 }
 
 const EmptyCell = () => (
-  <span className="text-gray-400 italic">Not provided</span>
+  <span className="italic text-gray-400">Not provided</span>
 )
 
 export const ProductRowMain: React.FC<ProductRowMainProps> = ({
@@ -53,22 +53,22 @@ export const ProductRowMain: React.FC<ProductRowMainProps> = ({
           variant="ghost" 
           size="sm" 
           onClick={onToggleExpansion}
-          className="p-0 h-auto hover:bg-transparent"
+          className="h-auto p-0 hover:bg-transparent"
         >
           {isExpanded ? (
-            <ChevronDown className="h-4 w-4 text-gray-500" />
+            <ChevronDown className="size-4 text-gray-500" />
           ) : (
-            <ChevronRight className="h-4 w-4 text-gray-500" />
+            <ChevronRight className="size-4 text-gray-500" />
           )}
         </Button>
       </TableCell>
-      <TableCell className="font-medium py-4">
+      <TableCell className="py-4 font-medium">
         <div className="space-y-2">
           <div className="text-base font-semibold text-gray-900">
             {product.name || <EmptyCell />}
           </div>
           {product.sku && (
-            <div className="text-xs text-gray-500 font-mono">
+            <div className="font-mono text-xs text-gray-500">
               SKU: {product.sku}
             </div>
           )}

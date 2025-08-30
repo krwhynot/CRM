@@ -1,7 +1,6 @@
 import { TrendingUp, TrendingDown, Users, Target, MessageSquare, Building2 } from "lucide-react"
 import { useDashboardMetrics } from "@/features/dashboard/hooks/useDashboardMetrics"
 import { Skeleton } from "@/components/ui/skeleton"
-import { cn } from "@/lib/utils"
 
 import {
   Card,
@@ -17,14 +16,14 @@ export function StatsCards() {
     return (
       <>
         {[...Array(4)].map((_, index) => (
-          <Card key={index} className="hover:shadow-md transition-shadow">
+          <Card key={index} className="transition-shadow hover:shadow-md">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-4" />
+              <Skeleton className="size-4" />
             </CardHeader>
             <CardContent>
-              <Skeleton className="h-8 w-16 mb-2" />
-              <Skeleton className="h-3 w-32 mb-2" />
+              <Skeleton className="mb-2 h-8 w-16" />
+              <Skeleton className="mb-2 h-3 w-32" />
               <Skeleton className="h-3 w-24" />
             </CardContent>
           </Card>
@@ -92,25 +91,25 @@ export function StatsCards() {
   return (
     <>
       {stats.map((stat, index) => (
-        <Card key={index} className="hover:shadow-md transition-shadow">
+        <Card key={index} className="transition-shadow hover:shadow-md">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               {stat.title}
             </CardTitle>
-            <stat.icon className="h-4 w-4 text-muted-foreground" />
+            <stat.icon className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-primary">
               {stat.value}
             </div>
-            <p className="text-xs text-muted-foreground mb-2">
+            <p className="mb-2 text-xs text-muted-foreground">
               {stat.subtitle}
             </p>
-            <p className="text-xs text-muted-foreground flex items-center">
+            <p className="flex items-center text-xs text-muted-foreground">
               {stat.changeType === "increase" ? (
-                <TrendingUp className="h-3 w-3 mr-1 text-success" />
+                <TrendingUp className="mr-1 size-3 text-success" />
               ) : (
-                <TrendingDown className="h-3 w-3 mr-1 text-destructive" />
+                <TrendingDown className="mr-1 size-3 text-destructive" />
               )}
               <span
                 className={

@@ -27,7 +27,7 @@ export function HealthDashboard({ showDetails = false, refreshInterval = 60000 }
       <Card>
         <CardContent className="flex items-center justify-center py-8">
           <div className="flex items-center space-x-2">
-            <Clock className="h-4 w-4 animate-spin" />
+            <Clock className="size-4 animate-spin" />
             <span>Loading system health...</span>
           </div>
         </CardContent>
@@ -72,9 +72,9 @@ export function HealthStatusIndicator() {
   return (
     <div className="flex items-center space-x-2">
       {isHealthy ? (
-        <CheckCircle className="h-4 w-4 text-green-500" />
+        <CheckCircle className="size-4 text-green-500" />
       ) : (
-        <AlertCircle className="h-4 w-4 text-red-500" />
+        <AlertCircle className="size-4 text-red-500" />
       )}
       <span className="text-sm">{summary}</span>
     </div>

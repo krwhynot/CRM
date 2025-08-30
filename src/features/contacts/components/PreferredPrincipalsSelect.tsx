@@ -68,17 +68,17 @@ export function PreferredPrincipalsSelect({
             <Badge
               key={principal.id}
               variant="secondary"
-              className="pr-1.5 group"
+              className="group pr-1.5"
             >
               <span className="text-xs">{principal.name}</span>
               <button
                 type="button"
                 onClick={() => handleRemove(principal.id)}
                 disabled={disabled}
-                className="ml-1.5 rounded-full hover:bg-secondary-foreground/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="ml-1.5 rounded-full hover:bg-secondary-foreground/20 disabled:cursor-not-allowed disabled:opacity-50"
                 aria-label={`Remove ${principal.name}`}
               >
-                <X className="h-3 w-3" />
+                <X className="size-3" />
               </button>
             </Badge>
           ))}
@@ -116,7 +116,7 @@ export function PreferredPrincipalsSelect({
               ? '1 principal selected'
               : `${value.length} principals selected`
             }
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full p-0" align="start">

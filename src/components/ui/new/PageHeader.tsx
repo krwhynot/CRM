@@ -52,7 +52,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   const renderBackButton = () => {
     if (!backButton) return null
 
-    const buttonIcon = backButton.icon || <ArrowLeft className="h-4 w-4" />
+    const buttonIcon = backButton.icon || <ArrowLeft className="size-4" />
     const buttonLabel = backButton.label || "Back"
     const ariaLabel = backButton['aria-label'] || `Go back to previous page`
 
@@ -136,21 +136,21 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
       data-page-header
       className={`flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between ${className}`}
     >
-      <div className="flex items-start gap-3 min-w-0 flex-1">
+      <div className="flex min-w-0 flex-1 items-start gap-3">
         {renderBackButton()}
-        {icon && <div className="flex-shrink-0 mt-1">{icon}</div>}
+        {icon && <div className="mt-1 shrink-0">{icon}</div>}
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
             {displayMeta}
           </div>
           {displaySubtitle && (
-            <p className="text-sm text-muted-foreground mt-1">{displaySubtitle}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{displaySubtitle}</p>
           )}
         </div>
       </div>
       
-      <div className="flex-shrink-0 mt-2 sm:mt-0">
+      <div className="mt-2 shrink-0 sm:mt-0">
         {renderActions()}
       </div>
     </header>

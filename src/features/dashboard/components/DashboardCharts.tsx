@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import { ChartCard } from './ChartCard'
-import { OpportunityChart } from './OpportunityChart'
-import { InteractionChart } from './InteractionChart'
 import { ChartDataPoint } from '@/types/dashboard'
+import { ChartSkeleton } from './DashboardSkeleton'
+
+// Lazy load chart components to reduce initial bundle size
+const OpportunityChart = lazy(() => import('./OpportunityChart').then(module => ({ default: module.OpportunityChart })))
+const InteractionChart = lazy(() => import('./InteractionChart').then(module => ({ default: module.InteractionChart })))
 
 interface DashboardChartsProps {
   opportunityChartData: ChartDataPoint[]
@@ -16,7 +19,7 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
   isLoading
 }) => {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       {/* Opportunity Chart */}
       <ChartCard
         title="Opportunities"
@@ -26,7 +29,9 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
         emptyTitle="No opportunities found"
         emptyDescription="No opportunities match the selected filters"
       >
-        <OpportunityChart data={opportunityChartData} loading={false} />
+        <Suspense fallback={<ChartSkeleton />}>
+          <OpportunityChart data={opportunityChartData} loading={false} />
+        </Suspense>
       </ChartCard>
       
       {/* Activity Chart */}
@@ -38,7 +43,9 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
         emptyTitle="No activities found"
         emptyDescription="No activities match the selected filters"
       >
-        <InteractionChart data={interactionChartData} loading={false} />
+        <Suspense fallback={<ChartSkeleton />}>
+          <InteractionChart data={interactionChartData} loading={false} />
+        </Suspense>
       </ChartCard>
     </div>
   )

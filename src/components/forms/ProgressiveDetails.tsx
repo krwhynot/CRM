@@ -56,7 +56,7 @@ export function ProgressiveDetails({
       
       case 'subtle':
         return (
-          <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
+          <div className="mt-4 rounded-lg border border-gray-100 bg-gray-50 p-4">
             {children}
           </div>
         )

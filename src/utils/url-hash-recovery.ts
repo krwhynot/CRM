@@ -13,9 +13,7 @@ const HASH_STORAGE_KEY = 'supabase_auth_hash'
 export function preserveUrlHash() {
   if (typeof window !== 'undefined' && window.location.hash) {
     const success = safeSetString(HASH_STORAGE_KEY, window.location.hash, 'sessionStorage')
-    if (success) {
-      console.log('URL hash preserved:', window.location.hash)
-    } else {
+    if (!success) {
       console.warn('Failed to preserve URL hash - sessionStorage not available')
     }
   }
@@ -37,12 +35,10 @@ export function restoreUrlHash(): boolean {
         // Only restore if current URL doesn't have a hash and we're on a valid auth page
         window.location.hash = preservedHash
         safeRemoveItem(HASH_STORAGE_KEY, 'sessionStorage')
-        console.log('URL hash restored:', preservedHash)
         return true
       } else {
         // Clear hash if we're on a non-auth page
         safeRemoveItem(HASH_STORAGE_KEY, 'sessionStorage')
-        console.log('Cleared preserved hash for non-auth page:', currentPath)
       }
     }
   }
@@ -80,12 +76,10 @@ export function forceCleanState() {
     if (window.location.hash) {
       try {
         window.history.replaceState({}, '', window.location.pathname + window.location.search)
-        console.log('Forced clean state - all hashes cleared')
       } catch (error) {
         console.warn('Failed to clear URL hash:', error)
       }
     } else {
-      console.log('Forced clean state - storage cleared')
     }
   }
 }

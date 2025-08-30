@@ -25,7 +25,7 @@ export function ConditionalSectionRenderer<T extends FieldValues>({
   if (!shouldShow) return null
   
   return (
-    <div className="p-4 rounded-lg border-l-4 bg-blue-50 border-blue-400">
+    <div className="rounded-lg border-l-4 border-blue-400 bg-blue-50 p-4">
       <FormSectionComponent
         section={section}
         form={form}

@@ -30,21 +30,21 @@ export const OpportunitiesTableActions: React.FC<OpportunitiesTableActionsProps>
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-6 w-6 p-0 hover:bg-gray-100 rounded">
+        <Button variant="ghost" className="size-6 rounded p-0 hover:bg-gray-100">
           <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-3 w-3" />
+          <MoreHorizontal className="size-3" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {onView && (
           <DropdownMenuItem onClick={() => onView(opportunity)}>
-            <ExternalLink className="mr-2 h-4 w-4" />
+            <ExternalLink className="mr-2 size-4" />
             View Details
           </DropdownMenuItem>
         )}
         {onEdit && (
           <DropdownMenuItem onClick={() => onEdit(opportunity)}>
-            <Pencil className="mr-2 h-4 w-4" />
+            <Pencil className="mr-2 size-4" />
             Edit
           </DropdownMenuItem>
         )}
@@ -53,7 +53,7 @@ export const OpportunitiesTableActions: React.FC<OpportunitiesTableActionsProps>
             onClick={() => onDelete(opportunity)}
             className="text-red-600"
           >
-            <Trash2 className="mr-2 h-4 w-4" />
+            <Trash2 className="mr-2 size-4" />
             Delete
           </DropdownMenuItem>
         )}

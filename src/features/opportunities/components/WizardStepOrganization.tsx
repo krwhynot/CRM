@@ -55,7 +55,7 @@ export const WizardStepOrganization: React.FC<WizardStepOrganizationProps> = ({
           </SelectContent>
         </Select>
         {errors.organization_id && (
-          <p className="text-sm text-red-600 mt-1">{errors.organization_id.message}</p>
+          <p className="mt-1 text-sm text-red-600">{errors.organization_id.message}</p>
         )}
       </div>
 
@@ -81,7 +81,7 @@ export const WizardStepOrganization: React.FC<WizardStepOrganizationProps> = ({
           </SelectContent>
         </Select>
         {errors.contact_id && (
-          <p className="text-sm text-red-600 mt-1">{errors.contact_id.message}</p>
+          <p className="mt-1 text-sm text-red-600">{errors.contact_id.message}</p>
         )}
       </div>
     </div>

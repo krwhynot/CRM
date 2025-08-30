@@ -30,11 +30,11 @@ export const ContactsFilters: React.FC<ContactsFiltersProps> = ({
   filteredCount
 }) => {
   return (
-    <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 space-y-4">
+    <div className="space-y-4 rounded-lg border border-border bg-card p-6 shadow-sm">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-semibold text-gray-900">Contacts</h2>
-        <p className="text-sm text-gray-600 mt-1">
+        <h2 className="text-2xl font-semibold text-card-foreground">Contacts</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
           {filteredCount === totalContacts 
             ? `${totalContacts} contacts` 
             : `${filteredCount} of ${totalContacts} contacts`
@@ -44,13 +44,13 @@ export const ContactsFilters: React.FC<ContactsFiltersProps> = ({
 
       {/* Search Bar */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           type="text"
           placeholder="Search contacts by name, title, email, organization, or phone..."
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-10 pr-4 py-2 w-full"
+          className="w-full py-2 pl-10 pr-4"
         />
       </div>
 
@@ -66,7 +66,7 @@ export const ContactsFilters: React.FC<ContactsFiltersProps> = ({
               'flex items-center gap-1 transition-colors',
               activeFilter === pill.key
                 ? 'bg-blue-600 text-white hover:bg-blue-700'
-                : 'text-gray-600 hover:text-gray-900'
+                : 'text-muted-foreground hover:text-foreground'
             )}
           >
             {pill.label}
@@ -75,7 +75,7 @@ export const ContactsFilters: React.FC<ContactsFiltersProps> = ({
                 'ml-1 px-1.5 py-0.5 rounded-full text-xs font-medium',
                 activeFilter === pill.key
                   ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-700'
+                  : 'bg-muted text-muted-foreground'
               )}
             >
               {pill.count}

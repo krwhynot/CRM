@@ -31,8 +31,8 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+        <Button variant="ghost" className="relative size-8 rounded-full">
+          <Avatar className="size-8">
             <AvatarFallback className="text-xs">
               {getUserInitials(user.email || '')}
             </AvatarFallback>
@@ -52,16 +52,16 @@ export function UserMenu() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <User className="mr-2 h-4 w-4" />
+          <User className="mr-2 size-4" />
           <span>Profile</span>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Settings className="mr-2 h-4 w-4" />
+          <Settings className="mr-2 size-4" />
           <span>Settings</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut}>
-          <LogOut className="mr-2 h-4 w-4" />
+          <LogOut className="mr-2 size-4" />
           <span>Log out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

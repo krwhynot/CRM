@@ -48,46 +48,46 @@ export function CommandPalette({ open, setOpen }: CommandPaletteProps) {
         
         <CommandGroup heading="Navigation">
           <CommandItem onSelect={() => runCommand(() => navigate('/'))}>
-            <Search className="mr-2 h-4 w-4" />
+            <Search className="mr-2 size-4" />
             <span>Dashboard</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/organizations'))}>
-            <Building2 className="mr-2 h-4 w-4" />
+            <Building2 className="mr-2 size-4" />
             <span>Organizations</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/contacts'))}>
-            <Users className="mr-2 h-4 w-4" />
+            <Users className="mr-2 size-4" />
             <span>Contacts</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/opportunities'))}>
-            <Target className="mr-2 h-4 w-4" />
+            <Target className="mr-2 size-4" />
             <span>Opportunities</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/interactions'))}> {/* ui-audit: allow */}
-            <MessageSquare className="mr-2 h-4 w-4" />
+            <MessageSquare className="mr-2 size-4" />
             <span>Activities</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/products'))}>
-            <Package className="mr-2 h-4 w-4" />
+            <Package className="mr-2 size-4" />
             <span>Products</span>
           </CommandItem>
         </CommandGroup>
 
         <CommandGroup heading="Quick Actions">
           <CommandItem onSelect={() => runCommand(() => navigate('/organizations?action=create'))}>
-            <Building2 className="mr-2 h-4 w-4" />
+            <Building2 className="mr-2 size-4" />
             <span>{COPY.BUTTONS.ADD_ORGANIZATION}</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/contacts?action=create'))}>
-            <Users className="mr-2 h-4 w-4" />
+            <Users className="mr-2 size-4" />
             <span>{COPY.BUTTONS.ADD_CONTACT}</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/opportunities?action=create'))}>
-            <Target className="mr-2 h-4 w-4" />
+            <Target className="mr-2 size-4" />
             <span>{COPY.BUTTONS.ADD_OPPORTUNITY}</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/interactions?action=create'))}> {/* ui-audit: allow */}
-            <MessageSquare className="mr-2 h-4 w-4" />
+            <MessageSquare className="mr-2 size-4" />
             <span>{COPY.BUTTONS.LOG_ACTIVITY}</span>
           </CommandItem>
         </CommandGroup>

@@ -25,7 +25,7 @@ export const OpportunityBasicFields: React.FC<OpportunityBasicFieldsProps> = ({
       <FormField control={form.control} name="organization_id" render={({ field }) => (
         <FormItem>
           <FormLabel className="flex items-center gap-2">
-            <Building2 className="h-4 w-4" />
+            <Building2 className="size-4" />
             Customer Organization *
           </FormLabel>
           <Select onValueChange={field.onChange} value={field.value}>
@@ -37,7 +37,7 @@ export const OpportunityBasicFields: React.FC<OpportunityBasicFieldsProps> = ({
             <SelectContent>
               {organizations.map((org) => (
                 <SelectItem key={org.id} value={org.id}>
-                  <div className="flex items-center justify-between w-full">
+                  <div className="flex w-full items-center justify-between">
                     <span>{org.name}</span>
                     {org.type && (
                       <StatusIndicator variant="outline" size="sm">{org.type}</StatusIndicator>

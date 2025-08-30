@@ -29,21 +29,21 @@ export const SystemStatusOverview: React.FC<SystemStatusOverviewProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <ServiceStatusCard
-            icon={<Database className="h-6 w-6 text-blue-500" />}
+            icon={<Database className="size-6 text-blue-500" />}
             name="Database"
             status={status.database}
           />
           
           <ServiceStatusCard
-            icon={<Shield className="h-6 w-6 text-green-500" />}
+            icon={<Shield className="size-6 text-green-500" />}
             name="Authentication"
             status={status.auth}
           />
           
           <ServiceStatusCard
-            icon={<Zap className="h-6 w-6 text-purple-500" />}
+            icon={<Zap className="size-6 text-purple-500" />}
             name="API Endpoints"
             status={status.api}
           />

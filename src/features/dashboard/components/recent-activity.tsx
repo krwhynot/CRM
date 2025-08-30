@@ -24,10 +24,10 @@ function RecentlyAddedCard() {
 
   if (isLoading) {
     return (
-      <Card className="hover:shadow-md transition-shadow">
+      <Card className="transition-shadow hover:shadow-md">
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-semibold flex items-center gap-2">
-            <Target className="h-4 w-4" />
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+            <Target className="size-4" />
             Recently Added
           </CardTitle>
         </CardHeader>
@@ -35,10 +35,10 @@ function RecentlyAddedCard() {
           <div className="space-y-3">
             {[...Array(4)].map((_, index) => (
               <div key={index} className="flex items-start gap-3 p-2">
-                <Skeleton className="h-4 w-4 mt-0.5" />
-                <div className="flex-1 min-w-0">
-                  <Skeleton className="h-4 w-32 mb-1" />
-                  <Skeleton className="h-3 w-24 mb-1" />
+                <Skeleton className="mt-0.5 size-4" />
+                <div className="min-w-0 flex-1">
+                  <Skeleton className="mb-1 h-4 w-32" />
+                  <Skeleton className="mb-1 h-3 w-24" />
                   <Skeleton className="h-3 w-16" />
                 </div>
               </div>
@@ -114,27 +114,27 @@ function RecentlyAddedCard() {
   }
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="transition-shadow hover:shadow-md">
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-semibold flex items-center gap-2">
-          <Target className="h-4 w-4" />
+        <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+          <Target className="size-4" />
           Recently Added
         </CardTitle>
       </CardHeader>
       <CardContent>
         {recentItems.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <Target className="h-8 w-8 mx-auto mb-2 opacity-50" />
+          <div className="py-8 text-center text-muted-foreground">
+            <Target className="mx-auto mb-2 size-8 opacity-50" />
             <p>No recent additions</p>
           </div>
         ) : (
-          <div className="space-y-3 max-h-64 overflow-y-auto">
+          <div className="max-h-64 space-y-3 overflow-y-auto">
             {recentItems.map((item, index) => (
-              <div key={index} className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors">
-                <item.icon className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <p className="text-sm truncate font-medium">{item.name}</p>
+              <div key={index} className="flex cursor-pointer items-start gap-3 rounded-lg p-2 transition-colors hover:bg-muted/50">
+                <item.icon className="mt-0.5 size-4 text-muted-foreground" />
+                <div className="min-w-0 flex-1">
+                  <div className="mb-1 flex items-center gap-2">
+                    <p className="truncate text-sm font-medium">{item.name}</p>
                     <Badge variant={getStatusBadgeVariant(item.status)} className="text-xs">
                       {item.status.replace('_', ' ')}
                     </Badge>
@@ -155,7 +155,7 @@ function RecentlyAddedCard() {
 
 export function RecentActivity() {
   return (
-    <div className="grid gap-4 sm:gap-6 grid-cols-1 laptop:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 sm:gap-6 laptop:grid-cols-2">
       <ActivityFeed 
         limit={10} 
         showFilters={true} 

@@ -23,21 +23,21 @@ export const ActiveFiltersSummary: React.FC<ActiveFiltersSummaryProps> = ({
   }
 
   return (
-    <div className="mt-3 pt-3 border-t border-border/50">
-      <div className="flex flex-wrap gap-2 items-center text-xs text-muted-foreground">
+    <div className="mt-3 border-t border-border/50 pt-3">
+      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
         <span>Active filters:</span>
         {localFilters.principal !== 'all' && (
-          <span className="px-2 py-1 bg-primary/10 text-primary rounded-full">
+          <span className="rounded-full bg-primary/10 px-2 py-1 text-primary">
             Principal: {principals.find(p => p.id === localFilters.principal)?.name || localFilters.principal}
           </span>
         )}
         {localFilters.product !== 'all' && (
-          <span className="px-2 py-1 bg-primary/10 text-primary rounded-full">
+          <span className="rounded-full bg-primary/10 px-2 py-1 text-primary">
             Product: {filteredProducts.find(p => p.id === localFilters.product)?.name || localFilters.product}
           </span>
         )}
         {localFilters.weeks !== 'Last 4 Weeks' && (
-          <span className="px-2 py-1 bg-primary/10 text-primary rounded-full">
+          <span className="rounded-full bg-primary/10 px-2 py-1 text-primary">
             {localFilters.weeks}
           </span>
         )}

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import React from 'react'
 import { 
   useOrganizations, 
   useRefreshOrganizations,
@@ -39,15 +39,6 @@ function OrganizationsPage() {
   
   const { initialData: editFormInitialData } = useOrganizationFormData(selectedOrganization)
 
-  // Debug: Track Organizations page data state
-  useEffect(() => {
-    console.log('📄 [OrganizationsPage] Data state:', {
-      isLoading,
-      isError,
-      organizationsCount: organizations.length,
-      error: error?.message
-    })
-  }, [isLoading, isError, organizations.length, error])
 
   return (
     <OrganizationsErrorBoundary>

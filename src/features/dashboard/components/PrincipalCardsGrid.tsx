@@ -32,7 +32,7 @@ export function PrincipalCardsGrid({ className, maxItems }: PrincipalCardsGridPr
   // Handle loading state
   if (isLoading) {
     return (
-      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ${className || ''}`}>
+      <div className={`grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${className || ''}`}>
         {Array.from({ length: 8 }).map((_, index) => (
           <div key={index} className="space-y-4">
             <Skeleton className="h-48 w-full rounded-lg" />
@@ -50,7 +50,7 @@ export function PrincipalCardsGrid({ className, maxItems }: PrincipalCardsGridPr
           <CardContent className="p-6">
             <div className="text-red-800">
               <h3 className="font-semibold">Failed to load principal organizations</h3>
-              <p className="text-sm mt-1">Please try again later.</p>
+              <p className="mt-1 text-sm">Please try again later.</p>
               {error?.message && (
                 <div className="mt-2 text-xs text-red-600">
                   Error: {error.message}
@@ -67,11 +67,11 @@ export function PrincipalCardsGrid({ className, maxItems }: PrincipalCardsGridPr
   if (principals.length === 0) {
     return (
       <div className={`${className || ''}`}>
-        <div className="text-center py-12">
+        <div className="py-12 text-center">
           <h3 className="text-lg font-semibold text-muted-foreground">
             No Principal Organizations Found
           </h3>
-          <p className="text-sm text-muted-foreground mt-2">
+          <p className="mt-2 text-sm text-muted-foreground">
             Add principal organizations to see them displayed here.
           </p>
         </div>
@@ -106,7 +106,7 @@ export function PrincipalCardsGrid({ className, maxItems }: PrincipalCardsGridPr
   })
 
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ${className || ''}`}>
+    <div className={`grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${className || ''}`}>
       {sortedPrincipals.map((principal) => (
         <PrincipalCard
           key={principal.id}
@@ -117,7 +117,7 @@ export function PrincipalCardsGrid({ className, maxItems }: PrincipalCardsGridPr
       
       {maxItems && principals.length > maxItems && (
         <div className="col-span-full">
-          <div className="text-center py-4">
+          <div className="py-4 text-center">
             <p className="text-sm text-muted-foreground">
               Showing {maxItems} of {principals.length} principal organizations
             </p>

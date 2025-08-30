@@ -9,10 +9,10 @@ export function FormAlert({ type, message }: FormAlertProps) {
   const isError = type === 'error'
   
   return (
-    <div className={`flex items-center gap-2 p-3 text-sm rounded-md ${
+    <div className={`flex items-center gap-2 rounded-md p-3 text-sm ${
       isError 
-        ? 'text-red-600 bg-red-50 border border-red-200'
-        : 'text-green-600 bg-green-50 border border-green-200'
+        ? 'border border-red-200 bg-red-50 text-red-600'
+        : 'border border-green-200 bg-green-50 text-green-600'
     }`}>
       {isError ? <AlertCircle size={16} /> : <CheckCircle size={16} />}
       {message}

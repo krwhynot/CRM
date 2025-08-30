@@ -35,8 +35,8 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
   const navigate = useNavigate()
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md mx-auto">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+      <Card className="mx-auto w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Set New Password</CardTitle>
           <CardDescription>
@@ -47,7 +47,7 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             {error && (
-              <div className="flex items-center gap-2 p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+              <div className="flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-600">
                 <AlertCircle size={16} />
                 {error}
               </div>
@@ -77,9 +77,9 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
                   disabled={loading}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
+                    <EyeOff className="size-4" />
                   ) : (
-                    <Eye className="h-4 w-4" />
+                    <Eye className="size-4" />
                   )}
                 </Button>
               </div>
@@ -112,9 +112,9 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
                   disabled={loading}
                 >
                   {showConfirmPassword ? (
-                    <EyeOff className="h-4 w-4" />
+                    <EyeOff className="size-4" />
                   ) : (
-                    <Eye className="h-4 w-4" />
+                    <Eye className="size-4" />
                   )}
                 </Button>
               </div>

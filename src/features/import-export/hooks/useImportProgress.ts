@@ -100,7 +100,6 @@ export const useImportProgress = (): UseImportProgressReturn => {
         }
       })
 
-      console.log(`Pre-import analysis: ${newRecords.length} new, ${skippedRecords.length} existing`)
 
       // Process only new records in batches
       const batchSize = 50

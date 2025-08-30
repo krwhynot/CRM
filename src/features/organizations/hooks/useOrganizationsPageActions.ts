@@ -5,7 +5,7 @@ import {
   useUpdateOrganization, 
   useDeleteOrganization 
 } from './useOrganizations'
-import type { Organization, OrganizationUpdate } from '@/types/entities'
+import type { Organization } from '@/types/entities'
 import type { OrganizationFormInterface } from '@/types/forms/form-interfaces'
 
 export const useOrganizationsPageActions = (
@@ -19,10 +19,7 @@ export const useOrganizationsPageActions = (
 
   const handleCreate = useCallback(async (data: OrganizationFormInterface) => {
     try {
-      console.log('🔍 Form data received:', data)
-      
       const dbData = data
-      console.log('🚀 Sending to database:', dbData)
       
       if (!data.type) {
         throw new Error('Organization type is required but missing from form data')

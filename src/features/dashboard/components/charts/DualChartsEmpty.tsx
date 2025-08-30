@@ -10,22 +10,22 @@ export function DualChartsEmpty({ className }: DualChartsEmptyProps) {
   const { cardClassName, contentClassName } = useChartStyling()
   
   return (
-    <div className={`grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 ${className}`}>
+    <div className={`grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2 ${className}`}>
       <Card className={cardClassName}>
-        <CardContent className={`${contentClassName} flex flex-col items-center justify-center h-chart-lg`}>
-          <Target className="h-12 w-12 text-muted-foreground/30 mb-4" />
-          <h3 className="text-lg font-semibold mb-2">No Opportunity Data</h3>
-          <p className="text-sm text-muted-foreground text-center">
+        <CardContent className={`${contentClassName} flex h-chart-lg flex-col items-center justify-center`}>
+          <Target className="mb-4 size-12 text-muted-foreground/30" />
+          <h3 className="mb-2 text-lg font-semibold">No Opportunity Data</h3>
+          <p className="text-center text-sm text-muted-foreground">
             No opportunities found for the selected time period and filters.
           </p>
         </CardContent>
       </Card>
       
       <Card className={cardClassName}>
-        <CardContent className={`${contentClassName} flex flex-col items-center justify-center h-chart-lg`}>
-          <Activity className="h-12 w-12 text-muted-foreground/30 mb-4" />
-          <h3 className="text-lg font-semibold mb-2">No Activity Data</h3>
-          <p className="text-sm text-muted-foreground text-center">
+        <CardContent className={`${contentClassName} flex h-chart-lg flex-col items-center justify-center`}>
+          <Activity className="mb-4 size-12 text-muted-foreground/30" />
+          <h3 className="mb-2 text-lg font-semibold">No Activity Data</h3>
+          <p className="text-center text-sm text-muted-foreground">
             No activities found for the selected time period and filters.
           </p>
         </CardContent>

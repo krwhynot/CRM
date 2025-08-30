@@ -17,8 +17,8 @@ export const ProductFilter: React.FC<ProductFilterProps> = ({
   onFilterChange
 }) => {
   return (
-    <div className="flex items-center gap-2 min-w-0">
-      <Package className="h-4 w-4 text-muted-foreground shrink-0" />
+    <div className="flex min-w-0 items-center gap-2">
+      <Package className="size-4 shrink-0 text-muted-foreground" />
       <Select
         value={localFilters.product}
         onValueChange={(value) => onFilterChange('product', value)}
@@ -33,7 +33,7 @@ export const ProductFilter: React.FC<ProductFilterProps> = ({
             <SelectItem key={product.id} value={product.id}>
               {product.name}
               {product.category && (
-                <span className="text-xs text-muted-foreground ml-1">
+                <span className="ml-1 text-xs text-muted-foreground">
                   ({product.category})
                 </span>
               )}

@@ -1,3 +1,4 @@
+import React from 'react'
 import { describe, it, expect } from "vitest"
 import { render, screen } from "@testing-library/react"
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -5,31 +6,6 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import { ThemeProvider } from '@/components/theme-provider'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { PageContainer } from '@/components/layout'
-import { MemoryRouter } from 'react-router-dom'
-
-// Create a test wrapper with all providers including Router for Layout tests
-const TestWrapper = ({ children }: { children: React.ReactNode }) => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: { retry: false },
-      mutations: { retry: false },
-    },
-  })
-
-  return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-          <TooltipProvider>
-            <MemoryRouter>
-              {children}
-            </MemoryRouter>
-          </TooltipProvider>
-        </ThemeProvider>
-      </AuthProvider>
-    </QueryClientProvider>
-  )
-}
 
 // Simple wrapper without Router for theme testing
 const SimpleTestWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -145,8 +121,6 @@ describe("Global layout consistency", () => {
     const testElement = document.createElement('div')
     testElement.className = 'text-title'
     document.body.appendChild(testElement)
-    
-    const styles = getComputedStyle(testElement)
     
     // Check that our utility classes are being applied
     expect(testElement).toHaveClass('text-title')

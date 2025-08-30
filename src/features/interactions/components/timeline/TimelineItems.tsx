@@ -37,7 +37,7 @@ export const TimelineItems: React.FC<TimelineItemsProps> = ({
     <div className="space-y-6 pb-4 md:pb-0">
       <div className="relative">
         {/* Timeline line */}
-        <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200" />
+        <div className="absolute inset-y-0 left-4 w-0.5 bg-gray-200" />
         
         {/* Timeline items */}
         <div className="space-y-6">
@@ -59,20 +59,20 @@ export const TimelineItems: React.FC<TimelineItemsProps> = ({
 
       {/* Show More/Less Button */}
       {hasMore && (
-        <div className="text-center pt-4 border-t">
+        <div className="border-t pt-4 text-center">
           <Button
             variant="outline"
             onClick={onToggleShowAll}
-            className="w-full md:w-auto flex items-center gap-2"
+            className="flex w-full items-center gap-2 md:w-auto"
           >
             {showAllInteractions ? (
               <>
-                <ChevronUp className="h-4 w-4" />
+                <ChevronUp className="size-4" />
                 Show Less
               </>
             ) : (
               <>
-                <ChevronDown className="h-4 w-4" />
+                <ChevronDown className="size-4" />
                 Show {remaining} More Activities
               </>
             )}

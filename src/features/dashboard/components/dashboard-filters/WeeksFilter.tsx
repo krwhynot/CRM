@@ -17,8 +17,8 @@ export const WeeksFilter: React.FC<WeeksFilterProps> = ({
   onFilterChange
 }) => {
   return (
-    <div className="flex items-center gap-2 min-w-0">
-      <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
+    <div className="flex min-w-0 items-center gap-2">
+      <Calendar className="size-4 shrink-0 text-muted-foreground" />
       <Select
         value={localFilters.weeks}
         onValueChange={(value) => onFilterChange('weeks', value)}

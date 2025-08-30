@@ -28,10 +28,10 @@ export const ExportAction: React.FC<ExportActionProps> = ({
           className="w-full"
           disabled={exportOptions.selectedFields.length === 0}
         >
-          <Download className="h-4 w-4 mr-2" />
+          <Download className="mr-2 size-4" />
           Export Organizations ({exportOptions.format.toUpperCase()})
         </Button>
-        <p className="text-xs text-muted-foreground text-center mt-2">
+        <p className="mt-2 text-center text-xs text-muted-foreground">
           Export will include organizations with the selected fields and options
         </p>
       </CardContent>

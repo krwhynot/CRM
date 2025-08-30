@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { toast } from '@/lib/toast-styles'
 import { useCreateOpportunity, useUpdateOpportunity, useDeleteOpportunity } from './useOpportunities'
-import type { Opportunity, OpportunityInsert, OpportunityUpdate } from '@/types/entities'
+import type { Opportunity, OpportunityInsert, OpportunityUpdate, OpportunityFormData } from '@/types/entities'
 
 interface UseOpportunityActionsReturn {
   // Mutations
@@ -10,8 +10,8 @@ interface UseOpportunityActionsReturn {
   deleteOpportunityMutation: ReturnType<typeof useDeleteOpportunity>
   
   // Handlers
-  handleCreateOpportunity: (data: any, onSuccess: () => void) => Promise<void>
-  handleUpdateOpportunity: (data: any, opportunity: Opportunity, onSuccess: () => void) => Promise<void>
+  handleCreateOpportunity: (data: OpportunityFormData, onSuccess: () => void) => Promise<void>
+  handleUpdateOpportunity: (data: OpportunityFormData, opportunity: Opportunity, onSuccess: () => void) => Promise<void>
   handleDeleteOpportunity: (opportunity: Opportunity) => Promise<void>
 }
 
@@ -20,7 +20,7 @@ export const useOpportunityActions = (): UseOpportunityActionsReturn => {
   const updateOpportunityMutation = useUpdateOpportunity()
   const deleteOpportunityMutation = useDeleteOpportunity()
 
-  const handleCreateOpportunity = useCallback(async (data: any, onSuccess: () => void) => {
+  const handleCreateOpportunity = useCallback(async (data: OpportunityFormData, onSuccess: () => void) => {
     try {
       // Transform form data to database format (following interaction pattern)
       const opportunityData: Omit<OpportunityInsert, 'created_by' | 'updated_by'> = {
@@ -44,11 +44,14 @@ export const useOpportunityActions = (): UseOpportunityActionsReturn => {
       await createOpportunityMutation.mutateAsync(opportunityData)
       onSuccess()
       toast.success('Opportunity created successfully!')
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to create opportunity:', error)
       
       // Handle specific constraint violation errors
-      if (error?.code === '23505' && error?.message?.includes('uq_opp_org_name_active')) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      const errorCode = error && typeof error === 'object' && 'code' in error ? (error as { code: string }).code : null
+      
+      if (errorCode === '23505' && errorMessage.includes('uq_opp_org_name_active')) {
         toast.error('An opportunity with this name already exists for the selected organization. Please choose a different name.')
       } else {
         toast.error('Failed to create opportunity. Please try again.')
@@ -56,7 +59,7 @@ export const useOpportunityActions = (): UseOpportunityActionsReturn => {
     }
   }, [createOpportunityMutation])
 
-  const handleUpdateOpportunity = useCallback(async (data: any, opportunity: Opportunity, onSuccess: () => void) => {
+  const handleUpdateOpportunity = useCallback(async (data: OpportunityFormData, opportunity: Opportunity, onSuccess: () => void) => {
     try {
       // Transform form data to OpportunityUpdate by removing non-database fields
       const { principals: _principals, auto_generated_name: _auto_generated_name, ...updateData } = data
@@ -67,11 +70,14 @@ export const useOpportunityActions = (): UseOpportunityActionsReturn => {
       })
       onSuccess()
       toast.success('Opportunity updated successfully!')
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to update opportunity:', error)
       
       // Handle specific constraint violation errors
-      if (error?.code === '23505' && error?.message?.includes('uq_opp_org_name_active')) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      const errorCode = error && typeof error === 'object' && 'code' in error ? (error as { code: string }).code : null
+      
+      if (errorCode === '23505' && errorMessage.includes('uq_opp_org_name_active')) {
         toast.error('An opportunity with this name already exists for the selected organization. Please choose a different name.')
       } else {
         toast.error('Failed to update opportunity. Please try again.')

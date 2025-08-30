@@ -30,8 +30,8 @@ export const OpportunityDetailCard: React.FC<OpportunityDetailCardProps> = ({
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <div>
-          <CardTitle className="text-lg font-nunito">{opportunity.name}</CardTitle>
-          <p className="text-sm text-muted-foreground mt-1">
+          <CardTitle className="font-nunito text-lg">{opportunity.name}</CardTitle>
+          <p className="mt-1 text-sm text-muted-foreground">
             {opportunity.organization?.name}
           </p>
         </div>
@@ -39,9 +39,9 @@ export const OpportunityDetailCard: React.FC<OpportunityDetailCardProps> = ({
           variant="ghost"
           size="sm"
           onClick={onClose}
-          className="h-8 w-8 p-0"
+          className="size-8 p-0"
         >
-          <X className="h-4 w-4" />
+          <X className="size-4" />
         </Button>
       </CardHeader>
       
@@ -50,11 +50,11 @@ export const OpportunityDetailCard: React.FC<OpportunityDetailCardProps> = ({
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <label className="text-sm font-medium text-gray-700">Stage</label>
-            <p className="text-sm text-gray-900 mt-1">{opportunity.stage}</p>
+            <p className="mt-1 text-sm text-gray-900">{opportunity.stage}</p>
           </div>
           <div>
             <label className="text-sm font-medium text-gray-700">Value</label>
-            <p className="text-sm text-gray-900 mt-1">
+            <p className="mt-1 text-sm text-gray-900">
               {opportunity.estimated_value 
                 ? `$${opportunity.estimated_value.toLocaleString()}` 
                 : 'N/A'
@@ -63,13 +63,13 @@ export const OpportunityDetailCard: React.FC<OpportunityDetailCardProps> = ({
           </div>
           <div>
             <label className="text-sm font-medium text-gray-700">Probability</label>
-            <p className="text-sm text-gray-900 mt-1">
+            <p className="mt-1 text-sm text-gray-900">
               {opportunity.probability ? `${opportunity.probability}%` : 'N/A'}
             </p>
           </div>
           <div>
             <label className="text-sm font-medium text-gray-700">Close Date</label>
-            <p className="text-sm text-gray-900 mt-1">
+            <p className="mt-1 text-sm text-gray-900">
               {opportunity.estimated_close_date 
                 ? new Date(opportunity.estimated_close_date).toLocaleDateString()
                 : 'N/A'
@@ -80,9 +80,9 @@ export const OpportunityDetailCard: React.FC<OpportunityDetailCardProps> = ({
 
         {/* Contact Information */}
         {opportunity.contact && (
-          <div className="pt-2 border-t">
+          <div className="border-t pt-2">
             <label className="text-sm font-medium text-gray-700">Primary Contact</label>
-            <p className="text-sm text-gray-900 mt-1">
+            <p className="mt-1 text-sm text-gray-900">
               {opportunity.contact.first_name} {opportunity.contact.last_name}
               {opportunity.contact.title && (
                 <span className="text-gray-500"> • {opportunity.contact.title}</span>

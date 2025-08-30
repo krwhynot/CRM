@@ -46,9 +46,9 @@ export const InteractionTimelineHeader: React.FC<InteractionTimelineHeaderProps>
 }) => {
   return (
     <div className="flex items-start justify-between gap-2">
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
-          <h3 className="font-medium text-sm md:text-base text-gray-900 truncate">
+      <div className="min-w-0 flex-1">
+        <div className="mb-1 flex items-center gap-2">
+          <h3 className="truncate text-sm font-medium text-gray-900 md:text-base">
             {interaction.subject}
           </h3>
           <Badge 
@@ -58,7 +58,7 @@ export const InteractionTimelineHeader: React.FC<InteractionTimelineHeaderProps>
             {formattedType}
           </Badge>
           {interaction.follow_up_required && (
-            <Badge variant="outline" className="text-xs bg-yellow-50 text-yellow-700 border-yellow-200">
+            <Badge variant="outline" className="border-yellow-200 bg-yellow-50 text-xs text-yellow-700">
               Follow-up
             </Badge>
           )}
@@ -78,18 +78,18 @@ export const InteractionTimelineHeader: React.FC<InteractionTimelineHeaderProps>
         </div>
       </div>
 
-      <div className="flex items-center gap-1 flex-shrink-0">
+      <div className="flex shrink-0 items-center gap-1">
         <Button
           variant="ghost"
           size="sm"
           onClick={onToggleExpand}
-          className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
+          className="size-6 p-0 text-gray-400 hover:text-gray-600"
           aria-label={isExpanded ? 'Collapse details' : 'Expand details'}
         >
           {isExpanded ? (
-            <ChevronDown className="h-4 w-4" />
+            <ChevronDown className="size-4" />
           ) : (
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="size-4" />
           )}
         </Button>
 
@@ -98,20 +98,20 @@ export const InteractionTimelineHeader: React.FC<InteractionTimelineHeaderProps>
             <Button
               variant="ghost"
               size="sm"
-              className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
+              className="size-6 p-0 text-gray-400 hover:text-gray-600"
               aria-label="More actions"
             >
-              <MoreHorizontal className="h-4 w-4" />
+              <MoreHorizontal className="size-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={handleEdit}>
-              <Pencil className="h-4 w-4 mr-2" />
+              <Pencil className="mr-2 size-4" />
               Edit
             </DropdownMenuItem>
             {interaction.follow_up_required && (
               <DropdownMenuItem onClick={handleMarkComplete}>
-                <CheckCircle className="h-4 w-4 mr-2" />
+                <CheckCircle className="mr-2 size-4" />
                 Mark Complete
               </DropdownMenuItem>
             )}
@@ -120,7 +120,7 @@ export const InteractionTimelineHeader: React.FC<InteractionTimelineHeaderProps>
               onClick={handleDelete}
               className="text-red-600 focus:text-red-600"
             >
-              <Trash2 className="h-4 w-4 mr-2" />
+              <Trash2 className="mr-2 size-4" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

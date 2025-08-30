@@ -26,22 +26,22 @@ export const InteractionTimelineSkeleton = forwardRef<HTMLDivElement, Interactio
           <div className="space-y-6">
             <div className="relative">
               {/* Timeline line skeleton */}
-              <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200" />
+              <div className="absolute inset-y-0 left-4 w-0.5 bg-gray-200" />
               
               {/* Timeline items skeletons */}
               <div className="space-y-6">
                 {Array.from({ length: itemCount }).map((_, index) => (
                   <div key={index} className="relative flex gap-4">
                     {/* Timeline dot skeleton */}
-                    <div className="relative z-10 flex-shrink-0">
-                      <Skeleton className="w-8 h-8 rounded-full" />
+                    <div className="relative z-10 shrink-0">
+                      <Skeleton className="size-8 rounded-full" />
                     </div>
 
                     {/* Content skeleton */}
-                    <div className="flex-1 min-w-0 space-y-2">
+                    <div className="min-w-0 flex-1 space-y-2">
                       {/* Header skeleton */}
                       <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1 min-w-0 space-y-2">
+                        <div className="min-w-0 flex-1 space-y-2">
                           <div className="flex items-center gap-2">
                             <Skeleton className="h-4 w-40" />
                             <Skeleton className="h-5 w-16 rounded-full" />
@@ -62,9 +62,9 @@ export const InteractionTimelineSkeleton = forwardRef<HTMLDivElement, Interactio
                         </div>
 
                         {/* Actions skeleton */}
-                        <div className="flex items-center gap-1 flex-shrink-0">
-                          <Skeleton className="h-6 w-6 rounded" />
-                          <Skeleton className="h-6 w-6 rounded" />
+                        <div className="flex shrink-0 items-center gap-1">
+                          <Skeleton className="size-6 rounded" />
+                          <Skeleton className="size-6 rounded" />
                         </div>
                       </div>
 
@@ -80,8 +80,8 @@ export const InteractionTimelineSkeleton = forwardRef<HTMLDivElement, Interactio
             </div>
 
             {/* Show more button skeleton */}
-            <div className="text-center pt-4 border-t">
-              <Skeleton className="h-9 w-32 mx-auto md:mx-0" />
+            <div className="border-t pt-4 text-center">
+              <Skeleton className="mx-auto h-9 w-32 md:mx-0" />
             </div>
           </div>
         </CardContent>

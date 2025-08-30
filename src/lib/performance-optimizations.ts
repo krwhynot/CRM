@@ -156,12 +156,12 @@ export function useOptimizedFormSubmit<T>(
 }
 
 // Bundle splitting utilities for feature modules
-export const createFeatureLoader = <T extends React.ComponentType<any>>(
+export const createFeatureLoader = <T extends React.ComponentType<Record<string, unknown>>>(
   loader: () => Promise<{ default: T }>
 ) => {
   return React.lazy(() => 
     loader().catch(() => ({ 
-      default: (() => React.createElement('div', {}, 'Error loading component')) as any as T
+      default: (() => React.createElement('div', {}, 'Error loading component')) as unknown as T
     }))
   )
 }

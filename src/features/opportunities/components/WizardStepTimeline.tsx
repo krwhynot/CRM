@@ -43,7 +43,7 @@ export const WizardStepTimeline: React.FC<WizardStepTimelineProps> = ({
           disabled={loading}
         />
         {errors.estimated_close_date && (
-          <p className="text-sm text-red-600 mt-1">{errors.estimated_close_date.message}</p>
+          <p className="mt-1 text-sm text-red-600">{errors.estimated_close_date.message}</p>
         )}
       </div>
 
@@ -68,7 +68,7 @@ export const WizardStepTimeline: React.FC<WizardStepTimelineProps> = ({
           </SelectContent>
         </Select>
         {errors.opportunity_context && (
-          <p className="text-sm text-red-600 mt-1">{errors.opportunity_context.message}</p>
+          <p className="mt-1 text-sm text-red-600">{errors.opportunity_context.message}</p>
         )}
       </div>
 
@@ -84,7 +84,7 @@ export const WizardStepTimeline: React.FC<WizardStepTimelineProps> = ({
           rows={4}
         />
         {errors.notes && (
-          <p className="text-sm text-red-600 mt-1">{errors.notes.message}</p>
+          <p className="mt-1 text-sm text-red-600">{errors.notes.message}</p>
         )}
       </div>
     </div>

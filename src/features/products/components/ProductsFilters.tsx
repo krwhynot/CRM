@@ -37,8 +37,8 @@ export const ProductsFilters: React.FC<ProductsFiltersProps> = ({
       {/* Header with Add New button */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-semibold text-gray-900">Products</h2>
-          <p className="text-sm text-gray-600 mt-1">
+          <h2 className="text-2xl font-semibold text-card-foreground">Products</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
             {filteredCount === totalProducts 
               ? `${totalProducts} products` 
               : `${filteredCount} of ${totalProducts} products`
@@ -47,7 +47,7 @@ export const ProductsFilters: React.FC<ProductsFiltersProps> = ({
         </div>
         {onAddNew && (
           <Button onClick={onAddNew} className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
+            <Plus className="size-4" />
             Add Product
           </Button>
         )}
@@ -55,13 +55,13 @@ export const ProductsFilters: React.FC<ProductsFiltersProps> = ({
 
       {/* Search Bar */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
         <Input
           type="text"
           placeholder="Search products by name, SKU, category, brand, or principal..."
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-10 pr-4 py-2 w-full"
+          className="w-full py-2 pl-10 pr-4"
         />
       </div>
 
@@ -77,7 +77,7 @@ export const ProductsFilters: React.FC<ProductsFiltersProps> = ({
               'flex items-center gap-1 transition-colors',
               activeFilter === pill.key
                 ? 'bg-blue-600 text-white hover:bg-blue-700'
-                : 'text-gray-600 hover:text-gray-900'
+                : 'text-muted-foreground hover:text-foreground'
             )}
           >
             {pill.label}

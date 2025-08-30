@@ -32,7 +32,7 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
                   type="button"
                   variant="link"
                   size="sm"
-                  className="p-0 h-auto"
+                  className="h-auto p-0"
                   onClick={onToggleMode}
                   disabled={loading}
                 >

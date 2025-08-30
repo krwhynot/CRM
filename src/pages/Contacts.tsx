@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import React from 'react'
 import { 
   useContacts, 
   useRefreshContacts,
@@ -37,17 +37,8 @@ function ContactsPage() {
     isDeleting
   } = useContactsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
   
-  const { initialData: editFormInitialData } = useContactFormData(selectedContact)
+  const { initialData: _editFormInitialData } = useContactFormData(selectedContact)
 
-  // Debug: Track Contacts page data state
-  useEffect(() => {
-    console.log('📄 [ContactsPage] Data state:', {
-      isLoading,
-      isError,
-      contactsCount: contacts.length,
-      error: error?.message
-    })
-  }, [isLoading, isError, contacts.length, error])
 
   return (
     <ContactsErrorBoundary>

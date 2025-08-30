@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { QuickActionsBar } from '@/components/ui/new/QuickActionsBar'
 import { Plus, Search, Info } from 'lucide-react'
-import { FEATURE_FLAGS, isFeatureEnabled, getFeatureMessage } from '@/lib/feature-flags'
+import { isFeatureEnabled, getFeatureMessage } from '@/lib/feature-flags'
 
 interface InteractionTableHeaderProps {
   searchTerm: string
@@ -28,9 +28,9 @@ export const InteractionTableHeader: React.FC<InteractionTableHeaderProps> = ({
 }) => {
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <Search className="h-4 w-4 text-gray-400" />
+          <Search className="size-4 text-gray-400" />
           <Input
             placeholder="Search interactions..."
             value={searchTerm}
@@ -41,7 +41,7 @@ export const InteractionTableHeader: React.FC<InteractionTableHeaderProps> = ({
         </div>
         {onAddNew && (
           <Button onClick={onAddNew} disabled={loading}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="mr-2 size-4" />
             Add Interaction
           </Button>
         )}
@@ -58,7 +58,7 @@ export const InteractionTableHeader: React.FC<InteractionTableHeaderProps> = ({
             />
           ) : (
             <Alert>
-              <Info className="h-4 w-4" />
+              <Info className="size-4" />
               <AlertDescription className="flex items-center justify-between">
                 <span>{getFeatureMessage('bulkOperations')}</span>
                 <Badge variant="secondary">Coming Soon</Badge>

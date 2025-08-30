@@ -12,16 +12,16 @@ export function FormSubmitActions({
   hasInitialData 
 }: FormSubmitActionsProps) {
   return (
-    <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t">
+    <div className="flex flex-col gap-3 border-t pt-6 sm:flex-row">
       <Button 
         type="submit" 
         disabled={loading} 
-        className="h-12 text-base px-6 rounded-md font-medium
-                   focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex-1"
+        className="h-12 flex-1 rounded-md px-6 text-base
+                   font-medium focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
       >
         {loading ? (
           <div className="flex items-center gap-2">
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+            <div className="size-4 animate-spin rounded-full border-b-2 border-white"></div>
             Saving...
           </div>
         ) : (
@@ -33,8 +33,8 @@ export function FormSubmitActions({
         <Button 
           type="button" 
           variant="outline" 
-          className="h-12 text-base px-6 rounded-md font-medium
-                     focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="h-12 rounded-md px-6 text-base font-medium
+                     focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           onClick={() => window.history.back()}
         >
           Cancel

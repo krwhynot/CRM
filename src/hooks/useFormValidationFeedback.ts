@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
-import { useFormState, FieldErrors, FieldValues } from 'react-hook-form'
+import { useFormState, FieldErrors, FieldValues, Control } from 'react-hook-form'
 
 interface UseFormValidationFeedbackOptions {
   requiredFields?: string[]
-  warningValidations?: Record<string, (value: any) => string | null>
+  warningValidations?: Record<string, (value: unknown) => string | null>
 }
 
 export const useFormValidationFeedback = <T extends FieldValues>(
-  formControl: any,
+  formControl: Control<T>,
   options: UseFormValidationFeedbackOptions = {}
 ) => {
   const { requiredFields = [], warningValidations = {} } = options

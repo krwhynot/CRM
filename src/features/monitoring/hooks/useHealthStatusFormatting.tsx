@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { CheckCircle, AlertCircle, Clock } from 'lucide-react'
 
 interface UseHealthStatusFormattingReturn {
@@ -11,26 +11,26 @@ export const useHealthStatusFormatting = (): UseHealthStatusFormattingReturn => 
     getStatusIcon: (serviceStatus: string) => {
       switch (serviceStatus) {
         case 'healthy':
-          return <CheckCircle className="h-4 w-4 text-green-500" />
+          return <CheckCircle className="size-4 text-green-600" />
         case 'degraded':
-          return <AlertCircle className="h-4 w-4 text-yellow-500" />
+          return <AlertCircle className="size-4 text-yellow-600" />
         case 'down':
-          return <AlertCircle className="h-4 w-4 text-red-500" />
+          return <AlertCircle className="size-4 text-destructive" />
         default:
-          return <Clock className="h-4 w-4 text-gray-500" />
+          return <Clock className="size-4 text-muted-foreground" />
       }
     },
 
     getStatusColor: (serviceStatus: string) => {
       switch (serviceStatus) {
         case 'healthy':
-          return 'bg-green-100 text-green-800'
+          return 'bg-green-50 text-green-700'
         case 'degraded':
-          return 'bg-yellow-100 text-yellow-800'
+          return 'bg-yellow-50 text-yellow-700'
         case 'down':
-          return 'bg-red-100 text-red-800'
+          return 'bg-destructive/10 text-destructive'
         default:
-          return 'bg-gray-100 text-gray-800'
+          return 'bg-muted text-muted-foreground'
       }
     }
   }), [])

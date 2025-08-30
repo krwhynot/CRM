@@ -18,7 +18,7 @@ const chartConfig = {
 export const OpportunityChart = React.memo(({ data, loading }: OpportunityChartProps) => {
   if (loading) {
     return (
-      <div className="h-chart w-full animate-pulse bg-muted rounded-lg flex items-center justify-center">
+      <div className="flex h-chart w-full animate-pulse items-center justify-center rounded-lg bg-muted">
         <div className="text-muted-foreground">Loading chart...</div>
       </div>
     )
@@ -26,10 +26,10 @@ export const OpportunityChart = React.memo(({ data, loading }: OpportunityChartP
 
   if (!data || data.length === 0) {
     return (
-      <div className="h-chart w-full border border-dashed rounded-lg flex items-center justify-center">
+      <div className="flex h-chart w-full items-center justify-center rounded-lg border border-dashed">
         <div className="text-center text-muted-foreground">
           <div className="text-sm">No opportunity data available</div>
-          <div className="text-xs mt-1">Select filters to view activity</div>
+          <div className="mt-1 text-xs">Select filters to view activity</div>
         </div>
       </div>
     )
@@ -39,8 +39,8 @@ export const OpportunityChart = React.memo(({ data, loading }: OpportunityChartP
     if (active && payload && payload.length) {
       const data = payload[0]
       return (
-        <div className="bg-background border rounded-lg shadow-lg px-3 py-2">
-          <p className="font-medium text-sm">
+        <div className="rounded-lg border bg-background px-3 py-2 shadow-lg">
+          <p className="text-sm font-medium">
             {label}: {data.value} {data.value === 1 ? 'opportunity' : 'opportunities'}
           </p>
         </div>

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { 
   Clock, 
   MessageSquare, 
@@ -20,23 +20,23 @@ export const useInteractionIconMapping = (): UseInteractionIconMappingReturn => 
     getInteractionIcon: (type: string): React.ReactNode => {
       switch (type) {
         case 'email':
-          return <Mail className="h-4 w-4" />
+          return <Mail className="size-4" />
         case 'call':
-          return <Phone className="h-4 w-4" />
+          return <Phone className="size-4" />
         case 'meeting':
-          return <Users className="h-4 w-4" />
+          return <Users className="size-4" />
         case 'demo':
-          return <Calendar className="h-4 w-4" />
+          return <Calendar className="size-4" />
         case 'proposal':
         case 'contract_review':
-          return <FileText className="h-4 w-4" />
+          return <FileText className="size-4" />
         case 'follow_up':
-          return <Clock className="h-4 w-4" />
+          return <Clock className="size-4" />
         case 'trade_show':
         case 'site_visit':
-          return <Activity className="h-4 w-4" />
+          return <Activity className="size-4" />
         default:
-          return <MessageSquare className="h-4 w-4" />
+          return <MessageSquare className="size-4" />
       }
     },
 

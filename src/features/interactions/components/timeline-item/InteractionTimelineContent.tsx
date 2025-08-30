@@ -15,12 +15,12 @@ export const InteractionTimelineContent: React.FC<InteractionTimelineContentProp
     <>
       {/* Expandable content */}
       {isExpanded && (
-        <div className="space-y-3 pt-2 border-t border-gray-100">
+        <div className="space-y-3 border-t border-gray-100 pt-2">
           {/* Notes/Description */}
           {interaction.description && (
             <div className="text-sm">
               <span className="font-medium text-gray-700">Notes: </span>
-              <div className="text-gray-600 mt-1 whitespace-pre-wrap">
+              <div className="mt-1 whitespace-pre-wrap text-gray-600">
                 {interaction.description}
               </div>
             </div>
@@ -48,7 +48,7 @@ export const InteractionTimelineContent: React.FC<InteractionTimelineContentProp
 
       {/* Collapsed preview */}
       {!isExpanded && interaction.description && (
-        <p className="text-sm text-gray-600 line-clamp-2">
+        <p className="line-clamp-2 text-sm text-gray-600">
           {interaction.description}
         </p>
       )}

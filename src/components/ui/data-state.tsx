@@ -35,14 +35,14 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
 
   if (variant === 'table') {
     return (
-      <div className={cn("text-center py-16 bg-white rounded-lg border shadow-sm", className)} role="status" aria-live="polite">
+      <div className={cn("text-center py-16 bg-card rounded-lg border shadow-sm", className)} role="status" aria-live="polite">
         <div className="space-y-4">
           <div className="flex justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <Loader2 className="size-8 animate-spin text-primary" />
           </div>
           <div className="space-y-2">
-            <div className="font-semibold text-gray-700">{message}</div>
-            <div className="text-sm text-gray-500">{subtext}</div>
+            <div className="font-semibold text-card-foreground">{message}</div>
+            <div className="text-sm text-muted-foreground">{subtext}</div>
           </div>
         </div>
         <span className="sr-only">{message}</span>
@@ -51,14 +51,14 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
   }
 
   return (
-    <div className={cn("text-center py-12 bg-white rounded-lg border shadow-sm", className)} role="status" aria-live="polite">
+    <div className={cn("text-center py-12 bg-card rounded-lg border shadow-sm", className)} role="status" aria-live="polite">
       <div className="space-y-4">
         <div className="flex justify-center">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <Loader2 className="size-6 animate-spin text-primary" />
         </div>
         <div className="space-y-2">
-          <div className="font-semibold text-gray-700">{message}</div>
-          <div className="text-sm text-gray-500">{subtext}</div>
+          <div className="font-semibold text-card-foreground">{message}</div>
+          <div className="text-sm text-muted-foreground">{subtext}</div>
         </div>
       </div>
       <span className="sr-only">{message}</span>
@@ -83,15 +83,15 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
   variant = 'default',
   className
 }) => {
-  const iconColor = variant === 'destructive' ? 'text-red-500' : 
-                   variant === 'warning' ? 'text-orange-500' : 'text-gray-400'
+  const iconColor = variant === 'destructive' ? 'text-destructive' : 
+                   variant === 'warning' ? 'text-warning-foreground' : 'text-muted-foreground'
   
-  const titleColor = variant === 'destructive' ? 'text-red-700' : 
-                    variant === 'warning' ? 'text-orange-700' : 'text-gray-700'
+  const titleColor = variant === 'destructive' ? 'text-destructive' : 
+                    variant === 'warning' ? 'text-warning-foreground' : 'text-card-foreground'
 
   return (
-    <div className={cn("text-center py-12 bg-white rounded-lg border shadow-sm", className)} role="alert">
-      <div className="space-y-6 max-w-md mx-auto">
+    <div className={cn("text-center py-12 bg-card rounded-lg border shadow-sm", className)} role="alert">
+      <div className="mx-auto max-w-md space-y-6">
         <div className="flex justify-center">
           <AlertCircle className={cn("h-12 w-12", iconColor)} />
         </div>
@@ -99,7 +99,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
           <div className={cn("text-lg font-semibold", titleColor)}>
             {title}
           </div>
-          <div className="text-sm text-gray-500 leading-relaxed">
+          <div className="text-sm leading-relaxed text-muted-foreground">
             {message}
           </div>
         </div>
@@ -110,7 +110,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
               variant={variant === 'destructive' ? 'destructive' : 'outline'}
               className="mobile-touch-target"
             >
-              <RefreshCw className="h-4 w-4 mr-2" />
+              <RefreshCw className="mr-2 size-4" />
               {retryLabel}
             </Button>
           </div>
@@ -139,18 +139,18 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   className
 }) => {
   return (
-    <div className={cn("text-center py-16 bg-white rounded-lg border shadow-sm", className)}>
-      <div className="space-y-6 max-w-md mx-auto">
+    <div className={cn("text-center py-16 bg-card rounded-lg border shadow-sm", className)}>
+      <div className="mx-auto max-w-md space-y-6">
         {icon && (
-          <div className="flex justify-center text-gray-300">
+          <div className="flex justify-center text-muted">
             {icon}
           </div>
         )}
         <div className="space-y-2">
-          <div className="text-xl font-semibold text-gray-700">
+          <div className="text-xl font-semibold text-card-foreground">
             {title}
           </div>
-          <div className="text-sm text-gray-500 leading-relaxed">
+          <div className="text-sm leading-relaxed text-muted-foreground">
             {message}
           </div>
         </div>

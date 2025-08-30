@@ -1,4 +1,4 @@
-import { format, startOfWeek, endOfWeek, subWeeks, isWithinInterval, parseISO } from 'date-fns'
+import { format, startOfWeek, endOfWeek, subWeeks, isWithinInterval, parseISO, isToday, isYesterday, subDays } from 'date-fns'
 
 export interface WeeklyData {
   weekStart: Date
@@ -186,4 +186,19 @@ export function getWeekOffset(date: Date, referenceDate: Date = new Date()): num
   const diffInWeeks = Math.round(diffInMs / (7 * 24 * 60 * 60 * 1000))
   
   return diffInWeeks
+}
+
+/**
+ * Format timestamp for activity feeds with relative time
+ */
+export function formatActivityTimestamp(timestamp: Date): string {
+  if (isToday(timestamp)) {
+    return `Today, ${format(timestamp, 'h:mm a')}`
+  } else if (isYesterday(timestamp)) {
+    return `Yesterday, ${format(timestamp, 'h:mm a')}`
+  } else if (timestamp > subDays(new Date(), 7)) {
+    return format(timestamp, 'EEE, MMM d, h:mm a')
+  } else {
+    return format(timestamp, 'MMM d, yyyy, h:mm a')
+  }
 }

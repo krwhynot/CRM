@@ -28,7 +28,7 @@ export const PrincipalMetricsGrid: React.FC<PrincipalMetricsGridProps> = ({
           {isLoading ? (
             <Skeleton className="h-4 w-8" />
           ) : (
-            <p className="font-medium text-lg">{metrics.opportunityCount}</p>
+            <p className="text-lg font-medium">{metrics.opportunityCount}</p>
           )}
         </div>
         
@@ -37,7 +37,7 @@ export const PrincipalMetricsGrid: React.FC<PrincipalMetricsGridProps> = ({
           {isLoading ? (
             <Skeleton className="h-4 w-8" />
           ) : (
-            <p className="font-medium text-lg text-green-600">
+            <p className="text-lg font-medium text-green-600">
               {metrics.activeOpportunities}
             </p>
           )}
@@ -68,7 +68,7 @@ export const PrincipalMetricsGrid: React.FC<PrincipalMetricsGridProps> = ({
 
       {/* Last Activity */}
       <div className="space-y-1">
-        <span className="text-muted-foreground text-sm">Last Activity:</span>
+        <span className="text-sm text-muted-foreground">Last Activity:</span>
         {isLoading ? (
           <Skeleton className="h-4 w-24" />
         ) : metrics.lastActivity ? (

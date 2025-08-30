@@ -27,7 +27,7 @@ export function OptionalSectionsRenderer<T extends FieldValues>({
   if (sections.length === 0) return null
   
   return (
-    <div className="border-t border-gray-100 pt-6 space-y-6">
+    <div className="space-y-6 border-t border-gray-100 pt-6">
       <Button
         type="button"
         variant="outline"
@@ -38,7 +38,7 @@ export function OptionalSectionsRenderer<T extends FieldValues>({
       </Button>
       
       {showOptionalSections && (
-        <div className="space-y-6 mt-6 p-4 bg-gray-50 rounded-lg">
+        <div className="mt-6 space-y-6 rounded-lg bg-gray-50 p-4">
           {sections.map((section) => (
             <FormSectionComponent
               key={section.id}

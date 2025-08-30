@@ -38,23 +38,23 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
           variant="ghost"
           size="sm"
           onClick={onClearSelection}
-          className="h-8 w-8 sm:h-6 sm:w-6 p-0 text-blue-700 hover:text-blue-900 hover:bg-blue-100 touch-manipulation"
+          className="size-8 touch-manipulation p-0 text-blue-700 hover:bg-blue-100 hover:text-blue-900 sm:size-6"
         >
-          <X className="h-4 w-4 sm:h-3 sm:w-3" />
+          <X className="size-4 sm:size-3" />
           <span className="sr-only">Clear selection</span>
         </Button>
       </div>
       
-      <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+      <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
         {/* Quick selection buttons */}
         {selectedCount < totalCount && onSelectAll && (
           <Button
             variant="ghost"
             size="sm"
             onClick={onSelectAll}
-            className="text-blue-700 hover:bg-blue-100 hover:text-blue-900 h-11 sm:h-8 touch-manipulation"
+            className="h-11 touch-manipulation text-blue-700 hover:bg-blue-100 hover:text-blue-900 sm:h-8"
           >
-            <CheckSquare className="h-4 w-4 mr-2" />
+            <CheckSquare className="mr-2 size-4" />
             <span className="hidden xs:inline">Select All ({totalCount})</span>
             <span className="xs:hidden">All</span>
           </Button>
@@ -65,23 +65,23 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
             variant="ghost"
             size="sm"
             onClick={onSelectNone}
-            className="text-blue-700 hover:bg-blue-100 hover:text-blue-900 h-11 sm:h-8 touch-manipulation"
+            className="h-11 touch-manipulation text-blue-700 hover:bg-blue-100 hover:text-blue-900 sm:h-8"
           >
-            <Square className="h-4 w-4 mr-2" />
+            <Square className="mr-2 size-4" />
             <span className="hidden xs:inline">Select None</span>
             <span className="xs:hidden">None</span>
           </Button>
         )}
         
-        <div className="hidden sm:block w-px h-6 bg-blue-300 mx-1" />
+        <div className="mx-1 hidden h-6 w-px bg-blue-300 sm:block" />
         
         <Button
           variant="outline"
           size="sm"
           onClick={onBulkDelete}
-          className="text-red-700 border-red-200 hover:bg-red-50 hover:border-red-300 h-11 sm:h-8 touch-manipulation flex-1 sm:flex-none"
+          className="h-11 flex-1 touch-manipulation border-red-200 text-red-700 hover:border-red-300 hover:bg-red-50 sm:h-8 sm:flex-none"
         >
-          <Trash2 className="h-4 w-4 mr-2" />
+          <Trash2 className="mr-2 size-4" />
           <span className="hidden xs:inline">Delete Selected</span>
           <span className="xs:hidden">Delete</span>
         </Button>

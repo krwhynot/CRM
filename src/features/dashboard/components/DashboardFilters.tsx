@@ -38,17 +38,17 @@ export function DashboardFilters({
   const { USE_NEW_STYLE } = useDashboardFiltersStyle()
 
   return (
-    <Card className={`${USE_NEW_STYLE ? "shadow-sm border-primary/10" : "shadow-md"}`}>
+    <Card className={`${USE_NEW_STYLE ? "border-primary/10 shadow-sm" : "shadow-md"}`}>
       <CardContent className={`${USE_NEW_STYLE ? "p-4" : "p-6"}`}>
-        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+        <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
           {/* Header */}
           <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-            <Filter className="h-4 w-4" />
+            <Filter className="size-4" />
             <span>Filters</span>
           </div>
 
           {/* Filter Controls */}
-          <div className="flex flex-col sm:flex-row gap-3 flex-1">
+          <div className="flex flex-1 flex-col gap-3 sm:flex-row">
             <PrincipalFilter
               localFilters={localFilters}
               principals={principals}

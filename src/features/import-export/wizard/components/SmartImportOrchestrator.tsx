@@ -2,14 +2,14 @@ import React, { useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ArrowLeft, ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react'
-import { SmartImportWizard, getNextStep, getPreviousStep } from './SmartImportWizard'
+import { SmartImportWizard, getNextStep } from './SmartImportWizard'
 import { SmartUploadStep } from './SmartUploadStep'
 import { SmartFieldMapping } from './SmartFieldMapping'
 import { SmartPreviewStep } from './SmartPreviewStep'
 import { useSmartImport } from '../hooks/useSmartImport'
 import { useFileUpload } from '@/hooks/useFileUpload' // For template download
 import { Progress } from '@/components/ui/progress'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
 interface SmartImportOrchestratorProps {
@@ -161,7 +161,7 @@ export function SmartImportOrchestrator({
         {renderStepContent()}
 
         {/* Navigation Footer */}
-        <div className="flex items-center justify-between mt-8 pt-6 border-t">
+        <div className="mt-8 flex items-center justify-between border-t pt-6">
           
           {/* Left side - Previous button */}
           <div>
@@ -171,7 +171,7 @@ export function SmartImportOrchestrator({
                 onClick={handlePrevious}
                 className="h-12 px-6" // iPad touch-friendly
               >
-                <ArrowLeft className="w-4 h-4 mr-2" />
+                <ArrowLeft className="mr-2 size-4" />
                 Previous
               </Button>
             ) : (
@@ -180,24 +180,24 @@ export function SmartImportOrchestrator({
           </div>
 
           {/* Center - Status or warnings */}
-          <div className="flex-1 mx-4">
+          <div className="mx-4 flex-1">
             {state.error && (
               <Alert variant="destructive" className="mb-0">
-                <AlertCircle className="h-4 w-4" />
+                <AlertCircle className="size-4" />
                 <AlertDescription>{state.error}</AlertDescription>
               </Alert>
             )}
             
             {state.warnings.length > 0 && !state.error && (
-              <Alert className="border-amber-200 bg-amber-50 mb-0">
-                <AlertCircle className="h-4 w-4 text-amber-600" />
+              <Alert className="mb-0 border-amber-200 bg-amber-50">
+                <AlertCircle className="size-4 text-amber-600" />
                 <AlertDescription>
                   <div className="space-y-1">
                     {state.warnings.slice(0, 2).map((warning, idx) => (
-                      <div key={idx} className="text-amber-800 text-sm">{warning}</div>
+                      <div key={idx} className="text-sm text-amber-800">{warning}</div>
                     ))}
                     {state.warnings.length > 2 && (
-                      <div className="text-amber-700 text-xs">
+                      <div className="text-xs text-amber-700">
                         +{state.warnings.length - 2} more warnings
                       </div>
                     )}
@@ -227,7 +227,7 @@ export function SmartImportOrchestrator({
               >
                 {state.currentStep === 'preview' ? 'Start Import' : 'Next'}
                 {state.currentStep !== 'preview' && (
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  <ArrowRight className="ml-2 size-4" />
                 )}
               </Button>
             )}
@@ -256,19 +256,19 @@ function ImportProgressStep({
       {inProgress && (
         <Card>
           <CardContent className="p-8">
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
-                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <div className="space-y-4 text-center">
+              <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10">
+                <div className="size-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
               </div>
               
               <div>
                 <h3 className="text-lg font-semibold text-slate-900">Importing your data...</h3>
-                <p className="text-sm text-slate-600 mt-1">
+                <p className="mt-1 text-sm text-slate-600">
                   This may take a few moments depending on the size of your file
                 </p>
               </div>
 
-              <div className="w-full max-w-sm mx-auto space-y-2">
+              <div className="mx-auto w-full max-w-sm space-y-2">
                 <div className="flex justify-between text-sm text-slate-600">
                   <span>Progress</span>
                   <span>{progress}%</span>
@@ -282,7 +282,7 @@ function ImportProgressStep({
 
       {error && (
         <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
+          <AlertCircle className="size-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
@@ -292,9 +292,9 @@ function ImportProgressStep({
           <CardContent className="p-6">
             <div className="text-center">
               {result.success ? (
-                <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto mb-3" />
+                <CheckCircle2 className="mx-auto mb-3 size-12 text-green-500" />
               ) : (
-                <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
+                <AlertCircle className="mx-auto mb-3 size-12 text-red-500" />
               )}
               
               <h3 className="text-lg font-semibold text-slate-900">
@@ -314,7 +314,7 @@ function ImportProgressStep({
                     <summary className="cursor-pointer text-sm text-slate-600 hover:text-slate-800">
                       View errors ({result.errors.length})
                     </summary>
-                    <div className="mt-2 space-y-1 text-xs text-left">
+                    <div className="mt-2 space-y-1 text-left text-xs">
                       {result.errors.slice(0, 5).map((error: any, idx: number) => (
                         <div key={idx} className="text-red-600">
                           Row {error.row}: {error.error}
@@ -348,14 +348,14 @@ function ImportCompleteStep({
   onClose?: () => void
 }) {
   return (
-    <div className="text-center space-y-6">
-      <div className="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center">
-        <CheckCircle2 className="w-8 h-8 text-green-600" />
+    <div className="space-y-6 text-center">
+      <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-green-100">
+        <CheckCircle2 className="size-8 text-green-600" />
       </div>
 
       <div>
         <h2 className="text-2xl font-bold text-slate-900">Import Complete!</h2>
-        <p className="text-slate-600 mt-2">
+        <p className="mt-2 text-slate-600">
           Your data has been successfully imported into the CRM system.
         </p>
       </div>
@@ -377,7 +377,7 @@ function ImportCompleteStep({
         </Card>
       )}
 
-      <div className="flex flex-col sm:flex-row gap-3 justify-center">
+      <div className="flex flex-col justify-center gap-3 sm:flex-row">
         <Button onClick={onStartNew} className="h-12 px-6">
           Import Another File
         </Button>

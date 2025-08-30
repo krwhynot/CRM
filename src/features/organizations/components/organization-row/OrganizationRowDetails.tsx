@@ -17,7 +17,7 @@ export const OrganizationRowDetails: React.FC<OrganizationRowDetailsProps> = ({
     <TableRow className="border-b-2 border-gray-100">
       <TableCell 
         colSpan={6} 
-        className="bg-mfb-sage-tint border-l-4 border-mfb-green p-6 transition-all duration-300 ease-out"
+        className="border-l-4 border-mfb-green bg-mfb-sage-tint p-6 transition-all duration-300 ease-out"
       >
         <div className="space-y-6">
           <OrganizationAddressSection organization={organization} />

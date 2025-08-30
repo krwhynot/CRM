@@ -13,7 +13,7 @@ export const OpportunityFormActions: React.FC<OpportunityFormActionsProps> = ({
   isLoading
 }) => {
   return (
-    <div className="flex flex-col gap-4 pt-4 border-t">
+    <div className="flex flex-col gap-4 border-t pt-4">
       {!canSubmit && (
         <Alert>
           <AlertDescription>
@@ -30,7 +30,7 @@ export const OpportunityFormActions: React.FC<OpportunityFormActionsProps> = ({
       >
         {isLoading ? (
           <>
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            <Loader2 className="mr-2 size-4 animate-spin" />
             Creating...
           </>
         ) : (

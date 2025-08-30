@@ -8,7 +8,7 @@ interface SignUpFormLayoutProps {
 
 export function SignUpFormLayout({ children, footer }: SignUpFormLayoutProps) {
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="mx-auto w-full max-w-md">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
         <CardDescription>

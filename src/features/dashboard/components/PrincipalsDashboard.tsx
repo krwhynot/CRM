@@ -66,7 +66,7 @@ export function PrincipalsDashboard() {
   return (
     <div className="space-y-8 p-6">
       {/* Dashboard Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Principal Organizations</h1>
           <p className="text-muted-foreground">
@@ -76,18 +76,18 @@ export function PrincipalsDashboard() {
         
         <div className="flex items-center gap-2">
           <Button className="gap-2">
-            <Plus className="h-4 w-4" />
+            <Plus className="size-4" />
             Add Principal
           </Button>
         </div>
       </div>
 
       {/* Key Performance Indicators */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Principals</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <Users className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold" role="status" aria-live="polite">
@@ -104,7 +104,7 @@ export function PrincipalsDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Opportunities</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <TrendingUp className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold" role="status" aria-live="polite">
@@ -119,7 +119,7 @@ export function PrincipalsDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Est. Value</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <TrendingUp className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold" role="status" aria-live="polite">
@@ -134,7 +134,7 @@ export function PrincipalsDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Activities</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+            <Activity className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold" role="status" aria-live="polite">
@@ -153,7 +153,7 @@ export function PrincipalsDashboard() {
           <CardTitle className="text-lg">Priority System</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
             <div className="flex items-center gap-2">
               <StatusIndicator variant="destructive" size="sm">A+</StatusIndicator>
               <span className="text-sm">Enterprise</span>
@@ -163,7 +163,7 @@ export function PrincipalsDashboard() {
               <span className="text-sm">Large</span>
             </div>
             <div className="flex items-center gap-2">
-              <StatusIndicator variant="outline" size="sm" className="bg-yellow-100 text-yellow-800 border-yellow-300">B</StatusIndicator>
+              <StatusIndicator variant="outline" size="sm" className="border-yellow-300 bg-yellow-100 text-yellow-800">B</StatusIndicator>
               <span className="text-sm">Medium</span>
             </div>
             <div className="flex items-center gap-2">
@@ -180,7 +180,7 @@ export function PrincipalsDashboard() {
 
       {/* Principal Cards Grid */}
       <div>
-        <div className="flex items-center justify-between mb-6">
+        <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-semibold">Principal Organizations</h2>
           <p className="text-sm text-muted-foreground" role="status" aria-live="polite">
             {isLoading ? <span>Loading...</span> : `${stats.totalPrincipals} principal${stats.totalPrincipals !== 1 ? 's' : ''}`}

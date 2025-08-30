@@ -16,9 +16,10 @@ export const createOptimizedQueryClient = () => {
         cacheTime: 30 * 60 * 1000, // 30 minutes
         
         // Retry configuration optimized for CRM operations
-        retry: (failureCount, error: any) => {
+        retry: (failureCount: number, error: Error & { status?: number }) => {
           // Don't retry on authentication errors
-          if (error?.status === 401 || error?.status === 403) {
+          if ((error?.status !== undefined && error.status === 401) || 
+              (error?.status !== undefined && error.status === 403)) {
             return false
           }
           // Retry up to 3 times for other errors
@@ -34,9 +35,9 @@ export const createOptimizedQueryClient = () => {
       },
       mutations: {
         // Mutation retry configuration
-        retry: (failureCount, error: any) => {
+        retry: (failureCount: number, error: Error & { status?: number }) => {
           // Don't retry on client errors (4xx)
-          if (error?.status >= 400 && error?.status < 500) {
+          if (error?.status !== undefined && error.status >= 400 && error.status < 500) {
             return false
           }
           return failureCount < 2
@@ -82,15 +83,15 @@ export function useOptimizedInfiniteQuery<T>(
 }
 
 // Batch query optimization for related data
-export function useBatchOptimizedQueries<T extends Record<string, any>>(
+export function useBatchOptimizedQueries(
   queries: Array<{
     queryKey: readonly unknown[]
-    queryFn: () => Promise<any>
+    queryFn: () => Promise<unknown>
     enabled?: boolean
     staleTime?: number
   }>
 ) {
-  const queryClient = useQueryClient()
+  const _queryClient = useQueryClient()
   
   // Batch queries that can be combined
   const batchableQueries = queries.filter(q => q.enabled !== false)
@@ -114,7 +115,7 @@ export function useBatchOptimizedQueries<T extends Record<string, any>>(
       const key = `query_${index}`
       acc[key] = result.data
       return acc
-    }, {} as Record<string, any>)
+    }, {} as Record<string, unknown>)
     
     return {
       data,
@@ -189,7 +190,7 @@ export function usePrefetchRelatedData() {
     entityType: 'organization' | 'contact' | 'opportunity',
     entityId: string
   ) => {
-    const prefetchPromises: Promise<any>[] = []
+    const prefetchPromises: Promise<unknown>[] = []
     
     switch (entityType) {
       case 'organization':
@@ -214,12 +215,12 @@ export function usePrefetchRelatedData() {
         
       case 'contact':
         // Prefetch contact's organization
-        const contactData = queryClient.getQueryData<any>(['contacts', entityId])
+        const contactData = queryClient.getQueryData<{ organization_id?: string }>(['contacts', entityId])
         if (contactData?.organization_id) {
           prefetchPromises.push(
             queryClient.prefetchQuery({
               queryKey: ['organizations', contactData.organization_id],
-              queryFn: () => fetchOrganization(contactData.organization_id),
+              queryFn: () => fetchOrganization(contactData.organization_id!),
               staleTime: 5 * 60 * 1000
             })
           )
@@ -228,12 +229,12 @@ export function usePrefetchRelatedData() {
         
       case 'opportunity':
         // Prefetch opportunity's organization and contacts
-        const opportunityData = queryClient.getQueryData<any>(['opportunities', entityId])
+        const opportunityData = queryClient.getQueryData<{ organization_id?: string }>(['opportunities', entityId])
         if (opportunityData?.organization_id) {
           prefetchPromises.push(
             queryClient.prefetchQuery({
               queryKey: ['organizations', opportunityData.organization_id],
-              queryFn: () => fetchOrganization(opportunityData.organization_id),
+              queryFn: () => fetchOrganization(opportunityData.organization_id!),
               staleTime: 5 * 60 * 1000
             })
           )
@@ -306,9 +307,18 @@ export function useBackgroundSync() {
 }
 
 // Placeholder functions for demo - should be imported from actual API modules
-const fetchContacts = async (filters: any) => { /* Implementation */ }
-const fetchOpportunities = async (filters: any) => { /* Implementation */ }
-const fetchOrganization = async (id: string) => { /* Implementation */ }
+const fetchContacts = async (_filters: { organization_id?: string }): Promise<unknown> => { 
+  // Implementation - returns contact data
+  return Promise.resolve([])
+}
+const fetchOpportunities = async (_filters: { organization_id?: string }): Promise<unknown> => { 
+  // Implementation - returns opportunity data
+  return Promise.resolve([])
+}
+const fetchOrganization = async (_id: string): Promise<unknown> => { 
+  // Implementation - returns organization data
+  return Promise.resolve({})
+}
 
 // Export for use in main QueryClient setup
 export { useInfiniteQuery } from '@tanstack/react-query'

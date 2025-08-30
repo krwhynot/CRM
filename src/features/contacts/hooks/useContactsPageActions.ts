@@ -18,7 +18,6 @@ export const useContactsPageActions = (
 
   const handleCreate = useCallback(async (data: any) => {
     try {
-      console.log('🔍 Form data received:', data)
       
       await createContactMutation.mutateAsync(data)
       closeCreateDialog()

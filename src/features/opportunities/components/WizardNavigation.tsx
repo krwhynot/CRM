@@ -46,7 +46,7 @@ export const WizardNavigation: React.FC<WizardNavigationProps> = ({
       </div>
 
       {/* Step Navigation */}
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div className="flex space-x-4">
           {steps.map((step) => {
             const status = getStepStatus(step.id)
@@ -71,9 +71,9 @@ export const WizardNavigation: React.FC<WizardNavigationProps> = ({
                   status === 'upcoming' && 'bg-gray-300 text-gray-500'
                 )}>
                   {status === 'completed' ? (
-                    <Check className="h-4 w-4" />
+                    <Check className="size-4" />
                   ) : (
-                    <StepIcon className="h-4 w-4" />
+                    <StepIcon className="size-4" />
                   )}
                 </div>
                 <span className="hidden sm:inline">{step.title}</span>
@@ -84,7 +84,7 @@ export const WizardNavigation: React.FC<WizardNavigationProps> = ({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex justify-between items-center pt-4 border-t">
+      <div className="flex items-center justify-between border-t pt-4">
         <div className="flex space-x-2">
           <Button
             type="button"
@@ -101,7 +101,7 @@ export const WizardNavigation: React.FC<WizardNavigationProps> = ({
               onClick={onPrevious}
               disabled={loading}
             >
-              <ChevronLeft className="h-4 w-4 mr-2" />
+              <ChevronLeft className="mr-2 size-4" />
               Previous
             </Button>
           )}
@@ -113,7 +113,7 @@ export const WizardNavigation: React.FC<WizardNavigationProps> = ({
               type="submit"
               onClick={onSubmit}
               disabled={loading}
-              className="bg-green-600 hover:bg-green-700 text-white"
+              className="bg-green-600 text-white hover:bg-green-700"
             >
               {loading ? 'Creating...' : 'Create Opportunity'}
             </Button>
@@ -124,7 +124,7 @@ export const WizardNavigation: React.FC<WizardNavigationProps> = ({
               disabled={loading}
             >
               Next
-              <ChevronRight className="h-4 w-4 ml-2" />
+              <ChevronRight className="ml-2 size-4" />
             </Button>
           )}
         </div>

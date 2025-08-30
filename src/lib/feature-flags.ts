@@ -125,7 +125,7 @@ export function getDisabledFeatures(): Array<{
   flag: FeatureFlag
 }> {
   return Object.entries(FEATURE_FLAGS)
-    .filter(([_, flag]) => !flag.enabled)
+    .filter(([, flag]) => !flag.enabled)
     .map(([key, flag]) => ({ 
       key: key as keyof FeatureFlagsConfig, 
       flag 
@@ -140,7 +140,7 @@ export function getFeaturesByRelease(release: string): Array<{
   flag: FeatureFlag
 }> {
   return Object.entries(FEATURE_FLAGS)
-    .filter(([_, flag]) => flag.targetRelease === release)
+    .filter(([, flag]) => flag.targetRelease === release)
     .map(([key, flag]) => ({ 
       key: key as keyof FeatureFlagsConfig, 
       flag 

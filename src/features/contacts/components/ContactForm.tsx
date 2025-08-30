@@ -30,7 +30,7 @@ export function ContactForm({
   const { useNewStyle, inputClassName } = useContactFormStyle()
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="mx-auto w-full max-w-md">
       <CardHeader><CardTitle>{initialData ? 'Edit Contact' : 'Add Contact'}</CardTitle></CardHeader>
       <CardContent>
         <Form {...form}>

@@ -14,10 +14,10 @@ export const ProductStorageSection: React.FC<ProductStorageSectionProps> = ({ pr
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
-        <Package className="h-4 w-4" />
+        <Package className="size-4" />
         Storage Requirements
       </div>
-      <div className="text-sm text-gray-600 pl-6">
+      <div className="pl-6 text-sm text-gray-600">
         {product.storage_requirements}
       </div>
     </div>

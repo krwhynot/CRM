@@ -10,7 +10,7 @@ export function ChartLoadingSkeleton({ className }: ChartLoadingSkeletonProps) {
   const { cardClassName, headerClassName, contentClassName } = useChartStyling()
   
   return (
-    <div className={`grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 ${className}`}>
+    <div className={`grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2 ${className}`}>
       <Card className={cardClassName}>
         <CardHeader className={headerClassName}>
           <Skeleton className="h-5 w-32" />

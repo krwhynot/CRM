@@ -25,16 +25,16 @@ const ServiceDetailSection: React.FC<{
 }> = ({ icon, title, service, borderColor }) => {
   return (
     <div className={`border-l-4 ${borderColor} pl-4`}>
-      <h4 className="font-medium flex items-center space-x-2">
+      <h4 className="flex items-center space-x-2 font-medium">
         {icon}
         <span>{title}</span>
       </h4>
-      <div className="text-sm text-gray-600 mt-1">
+      <div className="mt-1 text-sm text-muted-foreground">
         <div>Status: {service.status}</div>
         <div>Response Time: {service.responseTime}ms</div>
         <div>Last Check: {new Date(service.timestamp).toLocaleTimeString()}</div>
         {service.details && (
-          <div className="text-yellow-600">Details: {service.details}</div>
+          <div className="text-warning-foreground">Details: {service.details}</div>
         )}
       </div>
     </div>
@@ -50,24 +50,24 @@ export const DetailedSystemInfo: React.FC<DetailedSystemInfoProps> = ({ status }
       <CardContent>
         <div className="space-y-4">
           <ServiceDetailSection
-            icon={<Database className="h-4 w-4" />}
+            icon={<Database className="size-4" />}
             title="Database Service"
             service={status.database}
-            borderColor="border-blue-500"
+            borderColor="border-primary"
           />
           
           <ServiceDetailSection
-            icon={<Shield className="h-4 w-4" />}
+            icon={<Shield className="size-4" />}
             title="Authentication Service"
             service={status.auth}
-            borderColor="border-green-500"
+            borderColor="border-success"
           />
           
           <ServiceDetailSection
-            icon={<Zap className="h-4 w-4" />}
+            icon={<Zap className="size-4" />}
             title="API Service"
             service={status.api}
-            borderColor="border-purple-500"
+            borderColor="border-accent"
           />
         </div>
       </CardContent>

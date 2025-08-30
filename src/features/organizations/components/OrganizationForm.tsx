@@ -56,7 +56,7 @@ export function OrganizationForm({
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="mx-auto w-full max-w-md">
       <CardHeader><CardTitle>{initialData ? 'Edit Organization' : 'Add Organization'}</CardTitle></CardHeader>
       <CardContent>
         <Form {...form}>
@@ -183,7 +183,7 @@ export function OrganizationForm({
               </div>
             </ProgressiveDetails>
 
-            <Button type="submit" disabled={loading} className="w-full focus-ring">
+            <Button type="submit" disabled={loading} className="focus-ring w-full">
               {loading ? 'Saving...' : submitLabel}
             </Button>
           </form>

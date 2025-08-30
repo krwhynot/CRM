@@ -1,6 +1,17 @@
 import * as React from "react"
-
 import { cn } from "@/lib/utils"
+
+/**
+ * @deprecated Table primitives are deprecated. Use DataTable component instead.
+ * These components will be removed in a future version.
+ * 
+ * Migration guide:
+ * 1. Replace Table, TableHeader, etc. with DataTable component
+ * 2. Define columns using Column<T> interface
+ * 3. Use DataTable props for loading, empty states, etc.
+ * 
+ * See /docs/ui/datatable-migration-guide.md for detailed migration steps.
+ */
 
 const Table = React.forwardRef<
   HTMLTableElement,

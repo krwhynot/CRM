@@ -2,11 +2,10 @@ import React, { useState, useCallback, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Progress } from '@/components/ui/progress'
-import { useFileUpload, type ParsedData } from '@/hooks/useFileUpload'
+import { type ParsedData } from '@/hooks/useFileUpload'
 import { useImportProgress } from '@/features/import-export/hooks/useImportProgress'
 import { suggestFieldMappings, isOpenAIAvailable } from '@/lib/openai'
-import { Info, CheckCircle2, X } from 'lucide-react'
+import { X } from 'lucide-react'
 
 // Import state matching the 5 wireframe states
 type ImportState = 'upload' | 'mapping' | 'preview' | 'importing' | 'complete'
@@ -67,7 +66,6 @@ export function TemplateMatchingImport() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Hooks
-  const { downloadTemplate } = useFileUpload()
   const { importState, importOrganizations, resetImport } = useImportProgress()
 
   // AI field mapping
@@ -301,13 +299,6 @@ export function TemplateMatchingImport() {
     if (file) handleFileUpload(file)
   }
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    const file = e.dataTransfer.files[0]
-    if (file && file.name.toLowerCase().endsWith('.csv')) {
-      handleFileUpload(file)
-    }
-  }
 
   // Mapping handlers
   const updateFieldMapping = (csvColumn: string, crmField: string | null) => {
@@ -388,35 +379,35 @@ export function TemplateMatchingImport() {
 
   // Step indicator component matching template .step-indicator
   const StepIndicator = () => (
-    <div className="flex items-center gap-2 mb-8 text-sm">
+    <div className="mb-8 flex items-center gap-2 text-sm">
       <span className={`flex items-center gap-2 ${
-        currentState === 'upload' ? 'text-emerald-500 font-medium' : 
-        ['mapping', 'preview', 'importing', 'complete'].includes(currentState) ? 'text-emerald-500' : 
-        'text-gray-500'
+        currentState === 'upload' ? 'font-medium text-success' : 
+        ['mapping', 'preview', 'importing', 'complete'].includes(currentState) ? 'text-success' : 
+        'text-muted-foreground'
       }`}>
         1. Upload {['mapping', 'preview', 'importing', 'complete'].includes(currentState) && '✓'}
       </span>
-      <span className="text-gray-400">›</span>
+      <span className="text-muted-foreground">›</span>
       <span className={`flex items-center gap-2 ${
-        currentState === 'mapping' ? 'text-emerald-500 font-medium' : 
-        ['preview', 'importing', 'complete'].includes(currentState) ? 'text-emerald-500' : 
-        'text-gray-500'
+        currentState === 'mapping' ? 'font-medium text-success' : 
+        ['preview', 'importing', 'complete'].includes(currentState) ? 'text-success' : 
+        'text-muted-foreground'
       }`}>
         2. Map Fields {['preview', 'importing', 'complete'].includes(currentState) && '✓'}
       </span>
-      <span className="text-gray-400">›</span>
+      <span className="text-muted-foreground">›</span>
       <span className={`flex items-center gap-2 ${
-        currentState === 'preview' ? 'text-emerald-500 font-medium' : 
-        ['importing', 'complete'].includes(currentState) ? 'text-emerald-500' : 
-        'text-gray-500'
+        currentState === 'preview' ? 'font-medium text-success' : 
+        ['importing', 'complete'].includes(currentState) ? 'text-success' : 
+        'text-muted-foreground'
       }`}>
         3. Review {['importing', 'complete'].includes(currentState) && '✓'}
       </span>
-      <span className="text-gray-400">›</span>
+      <span className="text-muted-foreground">›</span>
       <span className={`flex items-center gap-2 ${
-        currentState === 'importing' ? 'text-emerald-500 font-medium' : 
-        currentState === 'complete' ? 'text-emerald-500' : 
-        'text-gray-500'
+        currentState === 'importing' ? 'font-medium text-success' : 
+        currentState === 'complete' ? 'text-success' : 
+        'text-muted-foreground'
       }`}>
         4. Import {currentState === 'complete' && '✓'}
       </span>
@@ -437,15 +428,15 @@ export function TemplateMatchingImport() {
 
       {/* STATE 1: UPLOAD - Template .card */}
       {currentState === 'upload' && (
-        <div className="border border-gray-200 rounded-lg bg-white">
+        <div className="rounded-lg border border-border bg-card">
           {/* Template .card-header */}
-          <div className="px-6 py-5 border-b border-gray-200">
-            <div className="flex items-center gap-2 text-base font-semibold">
+          <div className="border-b border-border px-6 py-5">
+            <div className="flex items-center gap-2 text-base font-semibold text-card-foreground">
               <span>📊</span>
               Organizations + Contacts
-              <span className="px-2 py-0.5 text-xs font-medium border border-gray-200 rounded bg-white inline-block">Enhanced</span>
+              <span className="inline-block rounded border border-border bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">Enhanced</span>
             </div>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="mt-1 text-sm text-muted-foreground">
               Import organizations and their contacts from a single CSV file. 
               Supports multiple contacts per organization with smart field mapping.
             </p>
@@ -454,7 +445,7 @@ export function TemplateMatchingImport() {
           <div className="p-6">
             <Button 
               onClick={handleBrowseClick} 
-              className="w-full justify-center bg-emerald-500 hover:bg-emerald-600 text-white py-2 px-4 rounded-md text-sm font-medium inline-flex items-center gap-2"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-success px-4 py-2 text-sm font-medium text-success-foreground hover:bg-success/90"
             >
               <span>⬆</span> Import Organizations + Contacts
             </Button>
@@ -464,11 +455,11 @@ export function TemplateMatchingImport() {
 
       {/* STATE 2: FIELD MAPPING - Template .card */}
       {currentState === 'mapping' && (
-        <div className="border border-gray-200 rounded-lg bg-white">
+        <div className="rounded-lg border border-border bg-card">
           {/* Template .card-header */}
-          <div className="px-6 py-5 border-b border-gray-200">
-            <div className="text-base font-semibold">Field Mapping</div>
-            <p className="text-sm text-gray-500 mt-1">We've detected your CSV columns. Confirm or adjust the mapping below.</p>
+          <div className="border-b border-border px-6 py-5">
+            <div className="text-base font-semibold text-card-foreground">Field Mapping</div>
+            <p className="mt-1 text-sm text-muted-foreground">We've detected your CSV columns. Confirm or adjust the mapping below.</p>
           </div>
           {/* Template .card-content */}
           <div className="p-6">
@@ -476,18 +467,18 @@ export function TemplateMatchingImport() {
             <table className="w-full border-collapse">
               <thead>
                 <tr>
-                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase bg-gray-50 border-b border-gray-200">CSV Column</th>
-                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase bg-gray-50 border-b border-gray-200">Maps To</th>
-                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase bg-gray-50 border-b border-gray-200">Confidence</th>
+                  <th className="border-b border-border bg-muted p-3 text-left text-xs font-medium uppercase text-muted-foreground">CSV Column</th>
+                  <th className="border-b border-border bg-muted p-3 text-left text-xs font-medium uppercase text-muted-foreground">Maps To</th>
+                  <th className="border-b border-border bg-muted p-3 text-left text-xs font-medium uppercase text-muted-foreground">Confidence</th>
                 </tr>
               </thead>
               <tbody>
-                {fieldMappings.map((mapping, idx) => (
+                {fieldMappings.map((mapping, _idx) => (
                   <tr key={mapping.csvColumn}>
-                    <td className="py-3 px-3 text-sm font-medium border-b border-gray-100">{mapping.csvColumn}</td>
-                    <td className="py-3 px-3 border-b border-gray-100">
+                    <td className="border-b border-border p-3 text-sm font-medium">{mapping.csvColumn}</td>
+                    <td className="border-b border-border p-3">
                       <Select value={mapping.mapsTo || 'skip'} onValueChange={(value) => updateFieldMapping(mapping.csvColumn, value === 'skip' ? null : value)}>
-                        <SelectTrigger className="py-2 px-3 border border-gray-200 rounded-md bg-white text-sm min-w-[200px]">
+                        <SelectTrigger className="min-w-[200px] rounded-md border border-border bg-background px-3 py-2 text-sm">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -499,11 +490,11 @@ export function TemplateMatchingImport() {
                         </SelectContent>
                       </Select>
                     </td>
-                    <td className="py-3 px-3 border-b border-gray-100">
-                      <span className={`py-0.5 px-2 text-xs font-medium rounded border inline-block ${
-                        mapping.confidence >= 85 ? 'bg-green-100 text-green-800' :
-                        mapping.confidence >= 45 ? 'bg-yellow-100 text-amber-700' :
-                        'bg-gray-100 text-gray-600'
+                    <td className="border-b border-border p-3">
+                      <span className={`inline-block rounded border px-2 py-0.5 text-xs font-medium ${
+                        mapping.confidence >= 85 ? 'bg-success/10 text-success' :
+                        mapping.confidence >= 45 ? 'bg-warning/10 text-warning-foreground' :
+                        'bg-muted text-muted-foreground'
                       }`}>
                         {mapping.confidence}%
                       </span>
@@ -514,26 +505,26 @@ export function TemplateMatchingImport() {
             </table>
           </div>
           {/* Template .card-footer */}
-          <div className="px-6 py-4 border-t border-gray-200 flex justify-between">
-            <Button variant="outline" onClick={() => setCurrentState('upload')} className="py-2 px-4 border border-gray-200 bg-white text-gray-700 rounded-md text-sm font-medium">Back</Button>
-            <Button onClick={proceedToPreview} className="py-2 px-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm font-medium">Continue to Review</Button>
+          <div className="flex justify-between border-t border-border px-6 py-4">
+            <Button variant="outline" onClick={() => setCurrentState('upload')} className="rounded-md border border-border bg-background px-4 py-2 text-sm font-medium text-muted-foreground">Back</Button>
+            <Button onClick={proceedToPreview} className="rounded-md bg-success px-4 py-2 text-sm font-medium text-success-foreground hover:bg-success/90">Continue to Review</Button>
           </div>
         </div>
       )}
 
       {/* STATE 3: PREVIEW - Template .card */}
       {currentState === 'preview' && parsedData && (
-        <div className="border border-gray-200 rounded-lg bg-white">
+        <div className="rounded-lg border border-border bg-card">
           {/* Template .card-header */}
-          <div className="px-6 py-5 border-b border-gray-200">
+          <div className="border-b border-border px-6 py-5">
             <div className="text-base font-semibold">Preview</div>
-            <p className="text-sm text-gray-500 mt-1">First 5 records from your file</p>
+            <p className="mt-1 text-sm text-muted-foreground">First 5 records from your file</p>
           </div>
           {/* Template .card-content */}
           <div className="p-6">
             {/* Template .alert */}
-            <div className="p-4 border border-gray-200 rounded-md bg-gray-50 mb-4 flex gap-3 text-sm">
-              <span className="text-emerald-500">ℹ</span>
+            <div className="mb-4 flex gap-3 rounded-md border border-border bg-muted p-4 text-sm text-muted-foreground">
+              <span className="text-info">ℹ</span>
               <div>
                 <strong>Summary:</strong> {parsedData.rows.length} new organizations will be created
               </div>
@@ -543,10 +534,10 @@ export function TemplateMatchingImport() {
             <table className="w-full border-collapse">
               <thead>
                 <tr>
-                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase bg-gray-50 border-b border-gray-200">Status</th>
-                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase bg-gray-50 border-b border-gray-200">Organization</th>
-                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase bg-gray-50 border-b border-gray-200">Contact</th>
-                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase bg-gray-50 border-b border-gray-200">Action</th>
+                  <th className="border-b border-border bg-muted p-3 text-left text-xs font-medium uppercase text-muted-foreground">Status</th>
+                  <th className="border-b border-border bg-muted p-3 text-left text-xs font-medium uppercase text-muted-foreground">Organization</th>
+                  <th className="border-b border-border bg-muted p-3 text-left text-xs font-medium uppercase text-muted-foreground">Contact</th>
+                  <th className="border-b border-border bg-muted p-3 text-left text-xs font-medium uppercase text-muted-foreground">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -556,13 +547,13 @@ export function TemplateMatchingImport() {
                   
                   return (
                     <tr key={idx}>
-                      <td className="py-3 px-3 text-sm border-b border-gray-100">
-                        <span className="inline-block w-4 h-4 leading-4 text-center text-xs text-emerald-500">✓</span>
+                      <td className="border-b border-gray-100 p-3 text-sm">
+                        <span className="inline-block size-4 text-center text-xs leading-4 text-success">✓</span>
                       </td>
-                      <td className="py-3 px-3 text-sm border-b border-gray-100">{orgName ? row[orgName] : 'Unnamed'}</td>
-                      <td className="py-3 px-3 text-sm border-b border-gray-100">{contactName ? row[contactName] || '-' : '-'}</td>
-                      <td className="py-3 px-3 border-b border-gray-100">
-                        <span className="py-0.5 px-2 text-xs font-medium bg-green-100 text-green-800 rounded border inline-block">Create</span>
+                      <td className="border-b border-border p-3 text-sm">{orgName ? row[orgName] : 'Unnamed'}</td>
+                      <td className="border-b border-border p-3 text-sm">{contactName ? row[contactName] || '-' : '-'}</td>
+                      <td className="border-b border-border p-3">
+                        <span className="inline-block rounded border bg-success/10 px-2 py-0.5 text-xs font-medium text-success">Create</span>
                       </td>
                     </tr>
                   )
@@ -571,9 +562,9 @@ export function TemplateMatchingImport() {
             </table>
           </div>
           {/* Template .card-footer */}
-          <div className="px-6 py-4 border-t border-gray-200 flex justify-between">
-            <Button variant="outline" onClick={() => setCurrentState('mapping')} className="py-2 px-4 border border-gray-200 bg-white text-gray-700 rounded-md text-sm font-medium">Back to Mapping</Button>
-            <Button onClick={startImport} className="py-2 px-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm font-medium">
+          <div className="flex justify-between border-t border-border px-6 py-4">
+            <Button variant="outline" onClick={() => setCurrentState('mapping')} className="rounded-md border border-border bg-background px-4 py-2 text-sm font-medium text-muted-foreground">Back to Mapping</Button>
+            <Button onClick={startImport} className="rounded-md bg-success px-4 py-2 text-sm font-medium text-success-foreground hover:bg-success/90">
               Import {parsedData.rows.length} Records
             </Button>
           </div>
@@ -582,27 +573,27 @@ export function TemplateMatchingImport() {
 
       {/* STATE 4: IMPORTING - Template .card */}
       {currentState === 'importing' && (
-        <div className="border border-gray-200 rounded-lg bg-white">
+        <div className="rounded-lg border border-border bg-card">
           {/* Template .card-content */}
           <div className="p-6">
             {/* Template .progress-container */}
             <div className="mb-4">
-              <div className="flex justify-between text-sm text-gray-500 mb-2">
+              <div className="mb-2 flex justify-between text-sm text-muted-foreground">
                 <span>Creating organizations...</span>
                 <span>{importState.importProgress}%</span>
               </div>
               {/* Template .progress-bar */}
-              <div className="h-2 bg-gray-200 rounded overflow-hidden">
-                <div className="h-full bg-emerald-500" style={{width: `${importState.importProgress}%`}}></div>
+              <div className="h-2 overflow-hidden rounded bg-muted">
+                <div className="h-full bg-success" style={{width: `${importState.importProgress}%`}}></div>
               </div>
             </div>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               Processing your data with duplicate detection and conflict resolution...
             </p>
             {importState.error && (
-              <Alert className="mt-4 border-red-200 bg-red-50">
-                <X className="h-4 w-4 text-red-500" />
-                <AlertDescription className="text-red-700">
+              <Alert className="mt-4 border-destructive/20 bg-destructive/10">
+                <X className="size-4 text-destructive" />
+                <AlertDescription className="text-destructive">
                   <strong>Import Error:</strong> {importState.error}
                 </AlertDescription>
               </Alert>
@@ -613,30 +604,30 @@ export function TemplateMatchingImport() {
 
       {/* STATE 5: COMPLETE - Template .card */}
       {currentState === 'complete' && (
-        <div className="border border-gray-200 rounded-lg bg-white">
+        <div className="rounded-lg border border-border bg-card">
           {/* Template .card-content with centered styling */}
           <div className="p-12 text-center">
-            <div className="text-5xl mb-4">
+            <div className="mb-4 text-5xl">
               {importState.importResult?.success ? '✓' : '⚠️'}
             </div>
-            <h2 className="text-xl font-semibold mb-2">
+            <h2 className="mb-2 text-xl font-semibold">
               {importState.importResult?.success ? 'Import Complete' : 'Import Completed with Issues'}
             </h2>
             <div className="mb-6">
               <div className="space-y-2">
-                <p className="text-gray-500">
+                <p className="text-muted-foreground">
                   {importState.importResult?.message || 'Import completed'}
                 </p>
                 
                 {/* Skipped Records Section */}
                 {importState.importResult?.skipped && importState.importResult.skipped > 0 && (
-                  <details className="text-left max-w-md mx-auto">
-                    <summary className="cursor-pointer text-orange-600 text-sm font-medium">
+                  <details className="mx-auto max-w-md text-left">
+                    <summary className="cursor-pointer text-sm font-medium text-warning-foreground">
                       View Skipped Organizations ({importState.importResult.skipped} already exist)
                     </summary>
-                    <div className="mt-2 p-3 bg-orange-50 rounded border max-h-32 overflow-y-auto">
+                    <div className="mt-2 max-h-32 overflow-y-auto rounded border bg-warning/10 p-3">
                       {importState.importResult.skippedRecords?.map((record, idx) => (
-                        <div key={idx} className="text-xs text-orange-700 mb-1">
+                        <div key={idx} className="mb-1 text-xs text-warning-foreground">
                           <span className="font-medium">{record.name}</span> ({record.type}) - Row {record.rowIndex}
                         </div>
                       ))}
@@ -646,13 +637,13 @@ export function TemplateMatchingImport() {
 
                 {/* Error Details Section */}
                 {importState.importResult?.errors && importState.importResult.errors.length > 0 && (
-                  <details className="text-left max-w-md mx-auto">
-                    <summary className="cursor-pointer text-red-600 text-sm font-medium">
+                  <details className="mx-auto max-w-md text-left">
+                    <summary className="cursor-pointer text-sm font-medium text-destructive">
                       View Error Details ({importState.importResult.errors.length} errors)
                     </summary>
-                    <div className="mt-2 p-3 bg-red-50 rounded border max-h-32 overflow-y-auto">
+                    <div className="mt-2 max-h-32 overflow-y-auto rounded border bg-destructive/10 p-3">
                       {importState.importResult.errors.map((err, idx) => (
-                        <div key={idx} className="text-xs text-red-700 mb-1">
+                        <div key={idx} className="mb-1 text-xs text-destructive">
                           <span className="font-medium">Row {err.row}:</span> {err.error}
                         </div>
                       ))}
@@ -661,11 +652,11 @@ export function TemplateMatchingImport() {
                 )}
               </div>
             </div>
-            <div className="flex gap-3 justify-center">
-              <Button variant="outline" onClick={() => window.location.href = '/organizations'} className="py-2 px-4 border border-gray-200 bg-white text-gray-700 rounded-md text-sm font-medium">
+            <div className="flex justify-center gap-3">
+              <Button variant="outline" onClick={() => window.location.href = '/organizations'} className="rounded-md border border-border bg-background px-4 py-2 text-sm font-medium text-muted-foreground">
                 View Organizations
               </Button>
-              <Button onClick={resetWizard} className="py-2 px-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md text-sm font-medium">
+              <Button onClick={resetWizard} className="rounded-md bg-success px-4 py-2 text-sm font-medium text-success-foreground hover:bg-success/90">
                 Import More
               </Button>
             </div>

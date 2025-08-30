@@ -65,14 +65,14 @@ export function CoreFormLayout<T extends FieldValues>({
   })
   
   return (
-    <Card className="w-full max-w-4xl mx-auto bg-white rounded-lg border shadow-sm">
+    <Card className="mx-auto w-full max-w-4xl rounded-lg border bg-white shadow-sm">
       <FormHeader 
         title={title}
         icon={icon}
         isEdit={Boolean(initialData)}
       />
       
-      <CardContent className="p-6 space-y-8">
+      <CardContent className="space-y-8 p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
             

@@ -505,11 +505,24 @@ export const useRefreshContacts = () => {
   }
 }
 
+// Extended contact type for form data that may include additional fields
+type ContactWithFormFields = Contact & {
+  address_line_1?: string
+  address_line_2?: string
+  city?: string
+  state_province?: string
+  postal_code?: string
+  country?: string
+  linkedin_profile?: string
+}
+
 // Hook to prepare form data for editing
 export const useContactFormData = (contact: Contact | null) => {
   if (!contact) {
     return { initialData: {} }
   }
+
+  const extendedContact = contact as ContactWithFormFields
 
   const initialData = {
     // Basic fields
@@ -526,16 +539,16 @@ export const useContactFormData = (contact: Contact | null) => {
     // Additional fields
     notes: contact.notes || '',
     is_primary_contact: contact.is_primary_contact || false,
-    linkedin_profile: contact.linkedin_profile || '',
+    linkedin_profile: extendedContact.linkedin_profile || contact.linkedin_url || '',
     department: contact.department || '',
     
-    // Address fields if they exist
-    address_line_1: (contact as any).address_line_1 || '',
-    address_line_2: (contact as any).address_line_2 || '',
-    city: (contact as any).city || '',
-    state_province: (contact as any).state_province || '',
-    postal_code: (contact as any).postal_code || '',
-    country: (contact as any).country || ''
+    // Address fields (not in database yet, but form may expect them)
+    address_line_1: extendedContact.address_line_1 || '',
+    address_line_2: extendedContact.address_line_2 || '',
+    city: extendedContact.city || '',
+    state_province: extendedContact.state_province || '',
+    postal_code: extendedContact.postal_code || '',
+    country: extendedContact.country || ''
   }
 
   return { initialData }

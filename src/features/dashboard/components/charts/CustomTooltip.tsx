@@ -18,11 +18,11 @@ export const CustomTooltip: React.FC<CustomTooltipProps> = ({
     const value = chartType === 'opportunities' ? data.opportunities : data.activities
     
     return (
-      <div className="bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-lg p-3">
+      <div className="rounded-lg border border-border bg-background/95 p-3 shadow-lg backdrop-blur-sm">
         <p className="text-sm font-medium text-foreground">{weekRange}</p>
         <p className="text-sm text-muted-foreground">
           {chartType === 'opportunities' ? 'Opportunities' : 'Activities'}: 
-          <span className="font-semibold text-primary ml-1">{value}</span>
+          <span className="ml-1 font-semibold text-primary">{value}</span>
         </p>
       </div>
     )

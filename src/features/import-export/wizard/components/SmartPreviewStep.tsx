@@ -57,7 +57,7 @@ function DataPreviewTable({
   const previewRows = data.rows.slice(0, maxRows)
 
   return (
-    <div className="border rounded-lg overflow-hidden">
+    <div className="overflow-hidden rounded-lg border">
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
@@ -83,7 +83,7 @@ function DataPreviewTable({
                   <TableCell key={mapping.csvHeader} className="max-w-[200px]">
                     <div className="truncate" title={row[mapping.csvHeader]}>
                       {row[mapping.csvHeader] || (
-                        <span className="text-slate-400 italic">empty</span>
+                        <span className="italic text-slate-400">empty</span>
                       )}
                     </div>
                   </TableCell>
@@ -95,7 +95,7 @@ function DataPreviewTable({
       </div>
       
       {data.rows.length > maxRows && (
-        <div className="p-3 bg-slate-50 text-sm text-slate-600 text-center">
+        <div className="bg-slate-50 p-3 text-center text-sm text-slate-600">
           Showing {maxRows} of {data.rows.length} rows
         </div>
       )}
@@ -114,9 +114,9 @@ function ValidationResults({ results }: { results: BatchValidationResponseType }
 
   const getSeverityIcon = (severity: string) => {
     switch (severity) {
-      case 'error': return <X className="w-4 h-4 text-red-500" />
-      case 'warning': return <AlertTriangle className="w-4 h-4 text-yellow-500" />
-      default: return <Info className="w-4 h-4 text-blue-500" />
+      case 'error': return <X className="size-4 text-red-500" />
+      case 'warning': return <AlertTriangle className="size-4 text-yellow-500" />
+      default: return <Info className="size-4 text-blue-500" />
     }
   }
 
@@ -132,7 +132,7 @@ function ValidationResults({ results }: { results: BatchValidationResponseType }
     <div className="space-y-4">
       
       {/* Summary Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-slate-900">{results.summary.totalRows}</div>
@@ -162,7 +162,7 @@ function ValidationResults({ results }: { results: BatchValidationResponseType }
       {/* Quality Score */}
       {results.overallQuality && (
         <Alert className="border-blue-200 bg-blue-50">
-          <TrendingUp className="w-4 h-4 text-blue-600" />
+          <TrendingUp className="size-4 text-blue-600" />
           <AlertDescription>
             <strong>Data Quality Score: {Math.round(results.overallQuality * 100)}%</strong>
             {results.overallQuality >= 0.8 && " - Excellent data quality!"}
@@ -223,7 +223,7 @@ function ValidationResults({ results }: { results: BatchValidationResponseType }
                         <div className="flex-1 text-sm">
                           <span className="font-medium">{issue.field}:</span> {issue.issue}
                           {issue.suggestion && (
-                            <div className="text-slate-600 mt-1">
+                            <div className="mt-1 text-slate-600">
                               <strong>Suggestion:</strong> {issue.suggestion}
                             </div>
                           )}
@@ -239,8 +239,8 @@ function ValidationResults({ results }: { results: BatchValidationResponseType }
         ))}
         
         {filteredRows.length === 0 && (
-          <div className="text-center py-8">
-            <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto mb-3" />
+          <div className="py-8 text-center">
+            <CheckCircle2 className="mx-auto mb-3 size-12 text-green-500" />
             <h3 className="font-medium text-slate-900">No {selectedSeverity === 'all' ? '' : selectedSeverity} issues found</h3>
             <p className="text-sm text-slate-600">Your data looks good!</p>
           </div>
@@ -265,7 +265,7 @@ function DuplicateResults({ results }: { results: DuplicateDetectionResponseType
     <div className="space-y-4">
       
       {/* Summary */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-slate-900">{results.summary.totalRows}</div>
@@ -319,8 +319,8 @@ function DuplicateResults({ results }: { results: DuplicateDetectionResponseType
         ))}
         
         {results.duplicateGroups.length === 0 && (
-          <div className="text-center py-8">
-            <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto mb-3" />
+          <div className="py-8 text-center">
+            <CheckCircle2 className="mx-auto mb-3 size-12 text-green-500" />
             <h3 className="font-medium text-slate-900">No duplicates found</h3>
             <p className="text-sm text-slate-600">All rows appear to be unique!</p>
           </div>
@@ -344,8 +344,8 @@ export function SmartPreviewStep({
   
   if (!parsedData) {
     return (
-      <div className="text-center py-8">
-        <Database className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+      <div className="py-8 text-center">
+        <Database className="mx-auto mb-3 size-12 text-slate-400" />
         <p className="text-slate-600">No data to preview</p>
       </div>
     )
@@ -360,7 +360,7 @@ export function SmartPreviewStep({
     <div className={cn("space-y-6", className)}>
       
       {/* Overview Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-slate-900">{parsedData.rows.length}</div>
@@ -382,8 +382,8 @@ export function SmartPreviewStep({
         <Card>
           <CardContent className="p-4 text-center">
             <div className="flex items-center justify-center space-x-1">
-              <Users className="w-5 h-5 text-slate-500" />
-              <span className="text-sm text-slate-600 capitalize">{config.entityType}s</span>
+              <Users className="size-5 text-slate-500" />
+              <span className="text-sm capitalize text-slate-600">{config.entityType}s</span>
             </div>
           </CardContent>
         </Card>
@@ -393,7 +393,7 @@ export function SmartPreviewStep({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Eye className="w-5 h-5" />
+            <Eye className="size-5" />
             <span>Data Quality Check</span>
           </CardTitle>
           <CardDescription>
@@ -409,12 +409,12 @@ export function SmartPreviewStep({
             >
               {validationInProgress ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader2 className="mr-2 size-4 animate-spin" />
                   Validating...
                 </>
               ) : (
                 <>
-                  <CheckCircle2 className="w-4 h-4 mr-2" />
+                  <CheckCircle2 className="mr-2 size-4" />
                   Run AI Validation
                 </>
               )}
@@ -426,7 +426,7 @@ export function SmartPreviewStep({
               disabled={validationInProgress}
               className="h-12 px-6"
             >
-              <RefreshCw className="w-4 h-4 mr-2" />
+              <RefreshCw className="mr-2 size-4" />
               Check Duplicates
             </Button>
           </div>
@@ -490,9 +490,9 @@ export function SmartPreviewStep({
           ) : (
             <Card>
               <CardContent className="p-8 text-center">
-                <AlertTriangle className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+                <AlertTriangle className="mx-auto mb-3 size-12 text-slate-400" />
                 <h3 className="font-medium text-slate-900">No validation results</h3>
-                <p className="text-sm text-slate-600 mb-4">Run AI validation to check your data quality</p>
+                <p className="mb-4 text-sm text-slate-600">Run AI validation to check your data quality</p>
                 <Button onClick={onRunValidation}>Run Validation</Button>
               </CardContent>
             </Card>
@@ -505,9 +505,9 @@ export function SmartPreviewStep({
           ) : (
             <Card>
               <CardContent className="p-8 text-center">
-                <Users className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+                <Users className="mx-auto mb-3 size-12 text-slate-400" />
                 <h3 className="font-medium text-slate-900">No duplicate check results</h3>
-                <p className="text-sm text-slate-600 mb-4">Check for potential duplicates in your data</p>
+                <p className="mb-4 text-sm text-slate-600">Check for potential duplicates in your data</p>
                 <Button onClick={onCheckDuplicates}>Check Duplicates</Button>
               </CardContent>
             </Card>
@@ -527,7 +527,7 @@ export function SmartPreviewStep({
                 {fieldMappings.map((mapping) => (
                   <div 
                     key={mapping.csvHeader}
-                    className="flex items-center justify-between p-3 border rounded-lg"
+                    className="flex items-center justify-between rounded-lg border p-3"
                   >
                     <div className="space-y-1">
                       <div className="font-medium">{mapping.csvHeader}</div>
@@ -563,12 +563,12 @@ export function SmartPreviewStep({
           <AlertDescription className="flex items-center">
             {hasErrors ? (
               <>
-                <X className="w-4 h-4 mr-2 text-red-600" />
+                <X className="mr-2 size-4 text-red-600" />
                 Please fix validation errors before importing
               </>
             ) : (
               <>
-                <CheckCircle2 className="w-4 h-4 mr-2 text-green-600" />
+                <CheckCircle2 className="mr-2 size-4 text-green-600" />
                 Data looks good! Ready to proceed with import.
                 {hasWarnings && " Some warnings were found but won't block import."}
                 {hasDuplicates && ` ${duplicateResults?.summary.totalDuplicates} duplicates detected.`}

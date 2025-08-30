@@ -7,8 +7,7 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactNode } from 'react'
+import { QueryClient } from '@tanstack/react-query'
 
 // Import our refactored hooks
 import { useAdvocacyView, useAdvocacyForm } from '@/stores'
@@ -39,11 +38,6 @@ describe('State Management Architecture', () => {
     })
   })
 
-  const createWrapper = () => ({ children }: { children: ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  )
 
   describe('Client State Management (Zustand)', () => {
     it('should manage UI view state independently', () => {

@@ -24,28 +24,28 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
     switch (type) {
       case 'dashboard':
         return {
-          icon: <Building2 className="w-12 h-12 text-muted-foreground/50" />,
+          icon: <Building2 className="size-12 text-muted-foreground/50" />,
           title: title || 'Select a principal to view their activity',
           description: description || 'Choose a principal from the filter above to see opportunities, activities, and trends.',
           actionText: actionText || 'Browse Principals',
         }
       case 'chart':
         return {
-          icon: <TrendingUp className="w-8 h-8 text-muted-foreground/50" />,
+          icon: <TrendingUp className="size-8 text-muted-foreground/50" />,
           title: title || 'No data available',
           description: description || 'Select filters to view chart data.',
           actionText: actionText || 'Adjust Filters',
         }
       case 'activity':
         return {
-          icon: <Activity className="w-8 h-8 text-muted-foreground/50" />,
+          icon: <Activity className="size-8 text-muted-foreground/50" />,
           title: title || 'No activities to display',
           description: description || 'Activities will appear here as opportunities and interactions are created.', /* ui-audit: allow */
           actionText: actionText || 'Create Activity',
         }
       default:
         return {
-          icon: <Building2 className="w-12 h-12 text-muted-foreground/50" />,
+          icon: <Building2 className="size-12 text-muted-foreground/50" />,
           title: title || 'No data available',
           description: description || 'Data will appear here when available.',
           actionText: actionText || 'Refresh',
@@ -57,11 +57,11 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 
   if (type === 'chart') {
     return (
-      <div className={`h-chart w-full border border-dashed rounded-lg flex items-center justify-center ${className}`}>
+      <div className={`flex h-chart w-full items-center justify-center rounded-lg border border-dashed ${className}`}>
         <div className="text-center text-muted-foreground">
           {content.icon}
-          <div className="text-sm mt-2">{content.title}</div>
-          <div className="text-xs mt-1">{content.description}</div>
+          <div className="mt-2 text-sm">{content.title}</div>
+          <div className="mt-1 text-xs">{content.description}</div>
         </div>
       </div>
     )
@@ -73,14 +73,14 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         <CardTitle>Dashboard</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="text-center py-12">
-          <div className="flex justify-center mb-4">
+        <div className="py-12 text-center">
+          <div className="mb-4 flex justify-center">
             {content.icon}
           </div>
-          <h3 className="text-lg font-semibold text-foreground mb-2">
+          <h3 className="mb-2 text-lg font-semibold text-foreground">
             {content.title}
           </h3>
-          <p className="text-muted-foreground text-sm max-w-md mx-auto mb-6">
+          <p className="mx-auto mb-6 max-w-md text-sm text-muted-foreground">
             {content.description}
           </p>
           {onAction && (
@@ -99,11 +99,11 @@ export const ChartEmptyState: React.FC<{ title?: string; description?: string }>
   description = "Select filters to view activity" 
 }) => {
   return (
-    <div className="h-chart w-full border border-dashed rounded-lg flex items-center justify-center">
+    <div className="flex h-chart w-full items-center justify-center rounded-lg border border-dashed">
       <div className="text-center text-muted-foreground">
-        <TrendingUp className="w-8 h-8 mx-auto mb-2 text-muted-foreground/50" />
+        <TrendingUp className="mx-auto mb-2 size-8 text-muted-foreground/50" />
         <div className="text-sm">{title}</div>
-        <div className="text-xs mt-1">{description}</div>
+        <div className="mt-1 text-xs">{description}</div>
       </div>
     </div>
   )
@@ -114,10 +114,10 @@ export const ActivityEmptyState: React.FC<{ title?: string; description?: string
   description = "Select a principal to view their activity" 
 }) => {
   return (
-    <div className="text-center py-8 text-muted-foreground">
-      <Activity className="w-8 h-8 mx-auto mb-2 text-muted-foreground/50" />
+    <div className="py-8 text-center text-muted-foreground">
+      <Activity className="mx-auto mb-2 size-8 text-muted-foreground/50" />
       <div className="text-sm">{title}</div>
-      <div className="text-xs mt-1">{description}</div>
+      <div className="mt-1 text-xs">{description}</div>
     </div>
   )
 }

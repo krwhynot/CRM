@@ -3,8 +3,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import type { 
   Organization, 
-  OrganizationInsert, 
-  OrganizationUpdate, 
   OrganizationFilters 
 } from '@/types/entities'
 import type { OrganizationFormInterface } from '@/types/forms/form-interfaces'
@@ -32,18 +30,11 @@ export const organizationKeys = {
 
 // Hook to fetch all organizations with optional filtering
 export function useOrganizations(filters?: OrganizationFilters) {
-  // Debug: Track which component is calling this hook
-  React.useEffect(() => {
-    const stackTrace = new Error().stack
-    console.log('🏗️  [useOrganizations] Hook called from:', stackTrace?.split('\n')[3]?.trim())
-  }, [])
 
   const queryResult = useQuery({
     queryKey: organizationKeys.list(filters),
     queryFn: async () => {
       const timer = measureQueryPerformance('useOrganizations query')
-      console.log('🔍 [useOrganizations] Starting query with filters:', filters)
-      console.log('🗝️  [useOrganizations] Query key:', organizationKeys.list(filters))
       
       let query = supabase
         .from('organizations')
@@ -104,13 +95,9 @@ export function useOrganizations(filters?: OrganizationFilters) {
       const { data, error } = await query
 
       if (error) {
-        console.error('❌ [useOrganizations] Query failed:', error)
-        console.error('🔗 [useOrganizations] Query details:', { filters, query: query.toString() })
         throw error
       }
       
-      console.log('✅ [useOrganizations] Query successful, found', data?.length, 'organizations')
-      console.log('📊 [useOrganizations] Sample data:', data?.slice(0, 2))
       timer.end()
       return data as Organization[]
     },
@@ -135,7 +122,6 @@ export function useRefreshOrganizations() {
   const queryClient = useQueryClient()
 
   return React.useCallback(() => {
-    console.log('🔄 [useRefreshOrganizations] Invalidating all organization queries')
     
     // Invalidate all organization-related queries
     queryClient.invalidateQueries({ queryKey: organizationKeys.all })

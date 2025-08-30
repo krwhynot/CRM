@@ -23,7 +23,7 @@ export function OrganizationImporter() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Upload className="h-5 w-5 text-blue-600" />
+            <Upload className="size-5 text-blue-600" />
             Upload CSV File
           </CardTitle>
         </CardHeader>

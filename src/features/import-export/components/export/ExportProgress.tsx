@@ -16,7 +16,7 @@ export const ExportProgressComponent: React.FC<ExportProgressProps> = ({ exportP
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <FileSpreadsheet className="h-5 w-5 text-blue-600" />
+          <FileSpreadsheet className="size-5 text-blue-600" />
           Exporting Data
         </CardTitle>
       </CardHeader>
@@ -30,7 +30,7 @@ export const ExportProgressComponent: React.FC<ExportProgressProps> = ({ exportP
             <Progress value={exportProgress.progress} className="w-full" />
           </div>
           <Alert>
-            <AlertCircle className="h-4 w-4" />
+            <AlertCircle className="size-4" />
             <AlertDescription>
               Export in progress. Your file will download automatically when complete.
             </AlertDescription>

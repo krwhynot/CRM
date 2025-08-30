@@ -1,9 +1,8 @@
 import React from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { CheckCircle2, Circle, Upload, Map, Eye, Download, CheckCircle } from 'lucide-react'
+import { CheckCircle2, Upload, Map, Eye, Download, CheckCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 // Wizard step definitions
@@ -97,18 +96,18 @@ export function SmartImportWizard({
   return (
     <div className={cn("w-full max-w-4xl mx-auto p-4 space-y-6", className)}>
       {/* Header */}
-      <div className="text-center space-y-2">
+      <div className="space-y-2 text-center">
         <h1 className="text-2xl font-bold text-slate-900 md:text-3xl">
           {title}
         </h1>
-        <p className="text-slate-600 text-sm md:text-base max-w-2xl mx-auto">
+        <p className="mx-auto max-w-2xl text-sm text-slate-600 md:text-base">
           {subtitle}
         </p>
       </div>
 
       {/* Progress Bar - iPad optimized */}
       <div className="space-y-3">
-        <div className="flex justify-between text-xs text-slate-500 px-1">
+        <div className="flex justify-between px-1 text-xs text-slate-500">
           <span>Step {currentStepIndex + 1} of {STEP_ORDER.length}</span>
           <span>{Math.round(progress)}% complete</span>
         </div>
@@ -116,10 +115,10 @@ export function SmartImportWizard({
       </div>
 
       {/* Step Indicators - iPad touch-friendly */}
-      <Card className="bg-slate-50 border-slate-200">
+      <Card className="border-slate-200 bg-slate-50">
         <CardContent className="p-4">
           <div className="grid grid-cols-5 gap-2 md:gap-4">
-            {steps.map((step, index) => {
+            {steps.map((step, _index) => {
               const Icon = step.icon
               const isClickable = step.completed || step.current
               
@@ -145,9 +144,9 @@ export function SmartImportWizard({
                     !step.completed && !step.current && "bg-slate-300 text-slate-600"
                   )}>
                     {step.completed ? (
-                      <CheckCircle2 className="w-5 h-5" />
+                      <CheckCircle2 className="size-5" />
                     ) : (
-                      <Icon className="w-4 h-4" />
+                      <Icon className="size-4" />
                     )}
                   </div>
 
@@ -164,12 +163,12 @@ export function SmartImportWizard({
                     
                     {/* Status Badge - Only show for current/completed */}
                     {step.current && (
-                      <Badge variant="secondary" className="mt-1 text-xs bg-primary/10 text-primary">
+                      <Badge variant="secondary" className="mt-1 bg-primary/10 text-xs text-primary">
                         Current
                       </Badge>
                     )}
                     {step.completed && !step.current && (
-                      <Badge variant="secondary" className="mt-1 text-xs bg-green-100 text-green-700">
+                      <Badge variant="secondary" className="mt-1 bg-green-100 text-xs text-green-700">
                         Done
                       </Badge>
                     )}
@@ -186,7 +185,7 @@ export function SmartImportWizard({
         <CardHeader className="pb-4">
           <div className="flex items-center space-x-3">
             {/* Current Step Icon */}
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-primary-foreground">
+            <div className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
               {React.createElement(STEP_CONFIGS[currentStep].icon, { className: "w-5 h-5" })}
             </div>
             
@@ -209,7 +208,7 @@ export function SmartImportWizard({
 
       {/* Footer - Mobile/iPad optimized */}
       <div className="flex justify-center">
-        <div className="text-xs text-slate-500 text-center max-w-md">
+        <div className="max-w-md text-center text-xs text-slate-500">
           <p>AI-powered import with smart field mapping and data validation.</p>
           <p className="mt-1">Need help? Check our import guide or contact support.</p>
         </div>

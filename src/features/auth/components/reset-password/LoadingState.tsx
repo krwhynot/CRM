@@ -13,8 +13,8 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
   bgClassName = "bg-gray-50"
 }) => {
   return (
-    <div className={`min-h-screen flex items-center justify-center ${bgClassName} py-12 px-4 sm:px-6 lg:px-8`}>
-      <Card className="w-full max-w-md mx-auto" role="status" aria-live="polite">
+    <div className={`flex min-h-screen items-center justify-center ${bgClassName} px-4 py-12 sm:px-6 lg:px-8`}>
+      <Card className="mx-auto w-full max-w-md" role="status" aria-live="polite">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold" aria-label={`Loading: ${title}`}>{title}</CardTitle>
           <CardDescription aria-live="polite">

@@ -15,7 +15,7 @@ export interface ParsedData {
 
 export interface TransformedOrganizationRow {
   name: string
-  type: any // Database type
+  type: Database['public']['Enums']['organization_type']
   priority: 'A' | 'B' | 'C' | 'D'
   segment: string
   website: string | null
@@ -230,7 +230,7 @@ export const useFileUpload = (): UseFileUploadReturn => {
                   } else {
                     const key = dbField as keyof TransformedOrganizationRow
                     if (key in transformedRow) {
-                      ;(transformedRow as Record<string, any>)[key] = value
+                      (transformedRow as Record<string, any>)[key] = value
                     }
                   }
                 }

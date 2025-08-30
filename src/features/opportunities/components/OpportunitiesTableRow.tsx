@@ -53,13 +53,13 @@ export const OpportunitiesTableRow: React.FC<OpportunitiesTableRowProps> = ({
               e.stopPropagation()
               onView?.(opportunity)
             }}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 transition-colors hover:text-gray-600"
             aria-label={isExpanded ? "Collapse details" : "Expand details"}
           >
             {isExpanded ? (
-              <ChevronDown className="h-4 w-4" />
+              <ChevronDown className="size-4" />
             ) : (
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="size-4" />
             )}
           </button>
           <Checkbox
@@ -73,10 +73,10 @@ export const OpportunitiesTableRow: React.FC<OpportunitiesTableRowProps> = ({
       {/* Company / Opportunity */}
       <TableCell className="px-6 py-2.5">
         <div>
-          <div className="font-medium text-sm text-gray-900">
+          <div className="text-sm font-medium text-gray-900">
             {opportunity.organization?.name || 'No Organization'}
           </div>
-          <div className="text-xs text-gray-500 mt-0.5">
+          <div className="mt-0.5 text-xs text-gray-500">
             {opportunity.name} • {opportunity.interaction_count || 0} activities
           </div>
         </div>
@@ -93,7 +93,7 @@ export const OpportunitiesTableRow: React.FC<OpportunitiesTableRowProps> = ({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                  <span className="size-2 animate-pulse rounded-full bg-red-500"></span>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Stalled for {stalledDays} days</p>
@@ -110,7 +110,7 @@ export const OpportunitiesTableRow: React.FC<OpportunitiesTableRowProps> = ({
       {/* Value / Probability */}
       <TableCell className="px-6 py-2.5 text-right">
         <div>
-          <div className="font-medium text-sm">{formatCurrency(opportunity.estimated_value)}</div>
+          <div className="text-sm font-medium">{formatCurrency(opportunity.estimated_value)}</div>
           <div className="text-xs text-gray-500">
             {opportunity.probability ? `${opportunity.probability}% likely` : 'No probability'}
           </div>

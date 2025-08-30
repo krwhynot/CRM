@@ -16,7 +16,7 @@ export function LoadingSpinner({ className, size = 'md', text }: LoadingSpinnerP
 
   return (
     <div 
-      className="flex flex-col items-center justify-center p-8 space-y-2"
+      className="flex flex-col items-center justify-center space-y-2 p-8"
       role="status"
       aria-live="polite"
       aria-label={text || "Loading content"}

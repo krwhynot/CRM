@@ -32,9 +32,9 @@ export const FormValidationFeedback: React.FC<FormValidationFeedbackProps> = ({
   
   if (isSubmitting) {
     return (
-      <Alert className={cn("border-blue-200 bg-blue-50", className)}>
-        <Info className="h-4 w-4 text-blue-600" />
-        <AlertDescription className="text-blue-700">
+      <Alert className={cn("border-info/20 bg-info/10", className)}>
+        <Info className="size-4 text-info" />
+        <AlertDescription className="text-info-foreground">
           Submitting form... Please wait.
         </AlertDescription>
       </Alert>
@@ -43,9 +43,9 @@ export const FormValidationFeedback: React.FC<FormValidationFeedbackProps> = ({
 
   if (isValid && submitAttempted && !isSubmitting) {
     return (
-      <Alert className={cn("border-green-200 bg-green-50", className)}>
-        <CheckCircle2 className="h-4 w-4 text-green-600" />
-        <AlertDescription className="text-green-700">
+      <Alert className={cn("border-success/20 bg-success/10", className)}>
+        <CheckCircle2 className="size-4 text-success" />
+        <AlertDescription className="text-success">
           Form submitted successfully!
         </AlertDescription>
       </Alert>
@@ -54,9 +54,9 @@ export const FormValidationFeedback: React.FC<FormValidationFeedbackProps> = ({
 
   if (errorCount > 0) {
     return (
-      <Alert className={cn("border-red-200 bg-red-50", className)}>
-        <AlertCircle className="h-4 w-4 text-red-600" />
-        <AlertDescription className="text-red-700">
+      <Alert className={cn("border-destructive/20 bg-destructive/10", className)}>
+        <AlertCircle className="size-4 text-destructive" />
+        <AlertDescription className="text-destructive">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <span className="font-medium">
@@ -71,7 +71,7 @@ export const FormValidationFeedback: React.FC<FormValidationFeedbackProps> = ({
                 .filter(e => e.type !== 'warning' && e.type !== 'info')
                 .map((error, index) => (
                   <li key={index} className="flex items-start gap-1">
-                    <span className="text-red-500 mt-0.5">•</span>
+                    <span className="mt-0.5 text-destructive">•</span>
                     <span>
                       <span className="font-medium capitalize">{error.field.replace('_', ' ')}:</span>{' '}
                       {error.message}
@@ -87,15 +87,15 @@ export const FormValidationFeedback: React.FC<FormValidationFeedbackProps> = ({
 
   if (warningCount > 0) {
     return (
-      <Alert className={cn("border-orange-200 bg-orange-50", className)}>
-        <AlertTriangle className="h-4 w-4 text-orange-600" />
-        <AlertDescription className="text-orange-700">
+      <Alert className={cn("border-warning/20 bg-warning/10", className)}>
+        <AlertTriangle className="size-4 text-warning-foreground" />
+        <AlertDescription className="text-warning-foreground">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <span className="font-medium">
                 {warningCount === 1 ? '1 recommendation:' : `${warningCount} recommendations:`}
               </span>
-              <Badge variant="outline" className="text-xs border-orange-300 text-orange-700">
+              <Badge variant="outline" className="border-warning/30 text-xs text-warning-foreground">
                 Optional
               </Badge>
             </div>
@@ -104,7 +104,7 @@ export const FormValidationFeedback: React.FC<FormValidationFeedbackProps> = ({
                 .filter(e => e.type === 'warning')
                 .map((warning, index) => (
                   <li key={index} className="flex items-start gap-1">
-                    <span className="text-orange-500 mt-0.5">•</span>
+                    <span className="mt-0.5 text-warning-foreground">•</span>
                     <span>
                       <span className="font-medium capitalize">{warning.field.replace('_', ' ')}:</span>{' '}
                       {warning.message}
@@ -120,12 +120,12 @@ export const FormValidationFeedback: React.FC<FormValidationFeedbackProps> = ({
 
   if (isDirty && isValid) {
     return (
-      <Alert className={cn("border-green-200 bg-green-50", className)}>
-        <CheckCircle2 className="h-4 w-4 text-green-600" />
-        <AlertDescription className="text-green-700">
+      <Alert className={cn("border-success/20 bg-success/10", className)}>
+        <CheckCircle2 className="size-4 text-success" />
+        <AlertDescription className="text-success">
           <div className="flex items-center gap-2">
             <span>Form looks good! Ready to submit.</span>
-            <Badge variant="outline" className="text-xs border-green-300 text-green-700">
+            <Badge variant="outline" className="border-success/30 text-xs text-success">
               Valid
             </Badge>
           </div>
@@ -152,21 +152,21 @@ export const FieldValidationIndicator: React.FC<FieldValidationIndicatorProps> =
 }) => {
   if (isValidating) {
     return (
-      <div className={cn("flex items-center text-blue-500", className)}>
-        <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+      <div className={cn("flex items-center text-info", className)}>
+        <div className="size-4 animate-spin rounded-full border-2 border-info border-t-transparent" />
       </div>
     )
   }
 
   if (hasError) {
     return (
-      <AlertCircle className={cn("h-4 w-4 text-red-500", className)} />
+      <AlertCircle className={cn("h-4 w-4 text-destructive", className)} />
     )
   }
 
   if (isValid) {
     return (
-      <CheckCircle2 className={cn("h-4 w-4 text-green-500", className)} />
+      <CheckCircle2 className={cn("h-4 w-4 text-success", className)} />
     )
   }
 
@@ -191,22 +191,22 @@ export const FormProgressIndicator: React.FC<FormProgressIndicatorProps> = ({
 
   return (
     <div className={cn("space-y-2", className)}>
-      <div className="flex justify-between text-sm text-gray-600">
+      <div className="flex justify-between text-sm text-muted-foreground">
         <span>Form completion</span>
         <span>{Math.round(progress)}% complete</span>
       </div>
-      <div className="w-full bg-gray-200 rounded-full h-2">
+      <div className="h-2 w-full rounded-full bg-muted">
         <div 
           className={cn(
             "h-2 rounded-full transition-all duration-300",
-            requiredProgress === 100 ? "bg-green-500" : "bg-blue-500"
+            requiredProgress === 100 ? "bg-success" : "bg-primary"
           )}
           style={{ width: `${progress}%` }}
         />
       </div>
-      <div className="flex justify-between text-xs text-gray-500">
+      <div className="flex justify-between text-xs text-muted-foreground">
         <span>{validFields} of {totalFields} fields completed</span>
-        <span className={requiredProgress === 100 ? "text-green-600" : "text-orange-600"}>
+        <span className={requiredProgress === 100 ? "text-success" : "text-warning-foreground"}>
           {requiredFields} required
         </span>
       </div>

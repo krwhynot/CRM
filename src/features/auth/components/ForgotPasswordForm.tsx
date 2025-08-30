@@ -40,25 +40,25 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="mx-auto w-full max-w-md">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold">Reset Password</CardTitle>
         <CardDescription>
-          Enter your email address and we'll send you a link to reset your password
+          Enter your email address and we&apos;ll send you a link to reset your password
         </CardDescription>
       </CardHeader>
       
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           {error && (
-            <div className="flex items-center gap-2 p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+            <div className="flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-600">
               <AlertCircle size={16} />
               {error}
             </div>
           )}
           
           {success && (
-            <div className="flex items-center gap-2 p-3 text-sm text-green-600 bg-green-50 border border-green-200 rounded-md">
+            <div className="flex items-center gap-2 rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-600">
               <CheckCircle size={16} />
               {success}
             </div>

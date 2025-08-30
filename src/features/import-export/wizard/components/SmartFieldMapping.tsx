@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Loader2, CheckCircle2, AlertTriangle, X, Sparkles, Eye, HelpCircle } from 'lucide-react'
+import { Loader2, CheckCircle2, AlertTriangle, X, Sparkles, HelpCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { SmartFieldMapping } from '../hooks/useSmartImport'
 import { CONFIDENCE_THRESHOLDS } from '@/lib/openai'
@@ -119,13 +119,13 @@ function MappingRow({
     )}>
       
       {/* CSV Header */}
-      <div className="md:col-span-3 space-y-2">
+      <div className="space-y-2 md:col-span-3">
         <div className="flex items-center space-x-2">
-          <span className="font-medium text-slate-900 text-sm md:text-base">
+          <span className="text-sm font-medium text-slate-900 md:text-base">
             {mapping.csvHeader}
           </span>
           {mapping.aiSuggestion && (
-            <Sparkles className="w-4 h-4 text-amber-500" />
+            <Sparkles className="size-4 text-amber-500" />
           )}
         </div>
         <div className="flex flex-wrap gap-1">
@@ -134,7 +134,7 @@ function MappingRow({
           </Badge>
           {mapping.confidence > 0 && (
             <Badge className={confidenceBadge.className}>
-              <ConfidenceIcon className="w-3 h-3 mr-1" />
+              <ConfidenceIcon className="mr-1 size-3" />
               {confidenceBadge.label} ({Math.round(mapping.confidence * 100)}%)
             </Badge>
           )}
@@ -142,7 +142,7 @@ function MappingRow({
       </div>
 
       {/* CRM Field Selection */}
-      <div className="md:col-span-4 space-y-2">
+      <div className="space-y-2 md:col-span-4">
         <Select
           value={mapping.crmField || 'none'}
           onValueChange={(value) => onUpdateMapping(mapping.csvHeader, value === 'none' ? null : value)}
@@ -155,7 +155,7 @@ function MappingRow({
               <span className="text-slate-500">Skip this field</span>
             </SelectItem>
             <div className="py-1">
-              <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-2 py-1">
+              <div className="px-2 py-1 text-xs font-semibold uppercase tracking-wider text-slate-500">
                 Organization Fields
               </div>
               {CRM_FIELD_OPTIONS.organization.map((option) => (
@@ -168,7 +168,7 @@ function MappingRow({
               ))}
             </div>
             <div className="py-1">
-              <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-2 py-1">
+              <div className="px-2 py-1 text-xs font-semibold uppercase tracking-wider text-slate-500">
                 Contact Fields
               </div>
               {CRM_FIELD_OPTIONS.contact.map((option) => (
@@ -185,21 +185,21 @@ function MappingRow({
 
         {/* AI Suggestion Info */}
         {mapping.aiSuggestion && mapping.reason && (
-          <div className="text-xs text-slate-600 bg-slate-50 p-2 rounded border">
+          <div className="rounded border bg-slate-50 p-2 text-xs text-slate-600">
             <span className="font-medium">AI suggests:</span> {mapping.reason}
           </div>
         )}
       </div>
 
       {/* Actions */}
-      <div className="md:col-span-3 flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 md:col-span-3">
         {mapping.status === 'needs_review' && mapping.crmField && (
           <Button
             size="sm"
             onClick={() => onConfirmMapping(mapping.csvHeader)}
             className="h-10 px-4 text-sm" // iPad touch-friendly
           >
-            <CheckCircle2 className="w-4 h-4 mr-1" />
+            <CheckCircle2 className="mr-1 size-4" />
             Confirm
           </Button>
         )}
@@ -210,21 +210,21 @@ function MappingRow({
           onClick={() => onSkipField(mapping.csvHeader)}
           className="h-10 px-4 text-sm"
         >
-          <X className="w-4 h-4 mr-1" />
+          <X className="mr-1 size-4" />
           Skip
         </Button>
       </div>
 
       {/* Alternatives */}
       {mapping.alternatives.length > 0 && (
-        <div className="md:col-span-2 space-y-1">
+        <div className="space-y-1 md:col-span-2">
           <div className="text-xs font-medium text-slate-600">Alternatives:</div>
           {mapping.alternatives.slice(0, 2).map((alt, idx) => (
             <Button
               key={idx}
               size="sm"
               variant="ghost"
-              className="h-8 px-2 text-xs justify-start w-full"
+              className="h-8 w-full justify-start px-2 text-xs"
               onClick={() => onUpdateMapping(mapping.csvHeader, alt)}
             >
               {allFieldOptions.find(f => f.value === alt)?.label || alt}
@@ -261,12 +261,12 @@ export function SmartFieldMapping({
     <div className={cn("space-y-6", className)}>
       
       {/* AI Generation Header */}
-      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+      <Card className="border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <h3 className="text-lg font-semibold text-slate-900 flex items-center">
-                <Sparkles className="w-5 h-5 mr-2 text-amber-500" />
+              <h3 className="flex items-center text-lg font-semibold text-slate-900">
+                <Sparkles className="mr-2 size-5 text-amber-500" />
                 AI-Powered Field Mapping
               </h3>
               <p className="text-sm text-slate-600">
@@ -281,12 +281,12 @@ export function SmartFieldMapping({
             >
               {aiInProgress ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader2 className="mr-2 size-4 animate-spin" />
                   Analyzing...
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 mr-2" />
+                  <Sparkles className="mr-2 size-4" />
                   Generate AI Mappings
                 </>
               )}
@@ -299,7 +299,7 @@ export function SmartFieldMapping({
       {mappings.length > 0 && (
         <Card>
           <CardContent className="p-4">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
               <div className="text-center">
                 <div className="text-2xl font-bold text-slate-900">{stats.total}</div>
                 <div className="text-xs text-slate-600">Total Fields</div>
@@ -331,12 +331,12 @@ export function SmartFieldMapping({
           <AlertDescription className="flex items-center">
             {isComplete ? (
               <>
-                <CheckCircle2 className="w-4 h-4 mr-2 text-green-600" />
+                <CheckCircle2 className="mr-2 size-4 text-green-600" />
                 All fields are mapped! You can now proceed to preview your data.
               </>
             ) : (
               <>
-                <AlertTriangle className="w-4 h-4 mr-2 text-yellow-600" />
+                <AlertTriangle className="mr-2 size-4 text-yellow-600" />
                 {stats.needsReview} field{stats.needsReview !== 1 ? 's' : ''} still need{stats.needsReview === 1 ? 's' : ''} review before proceeding.
               </>
             )}
@@ -371,7 +371,7 @@ export function SmartFieldMapping({
       <Card className="bg-slate-50">
         <CardContent className="p-4">
           <div className="flex items-start space-x-3">
-            <HelpCircle className="w-5 h-5 text-slate-500 mt-0.5" />
+            <HelpCircle className="mt-0.5 size-5 text-slate-500" />
             <div className="space-y-2 text-sm text-slate-600">
               <p className="font-medium">Need help with field mapping?</p>
               <ul className="space-y-1 text-xs">

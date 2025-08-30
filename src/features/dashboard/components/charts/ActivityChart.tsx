@@ -20,10 +20,10 @@ export function ActivityChart({ data, maxValue }: ActivityChartProps) {
   } = useChartStyling()
   
   return (
-    <Card className={`${cardClassName} hover:shadow-lg transition-shadow`}>
+    <Card className={`${cardClassName} transition-shadow hover:shadow-lg`}>
       <CardHeader className={headerClassName}>
         <CardTitle className={`flex items-center gap-2 ${titleClassName}`}>
-          <Activity className="h-5 w-5 text-primary" />
+          <Activity className="size-5 text-primary" />
           Activity per Week
         </CardTitle>
         <p className={`text-sm text-muted-foreground ${subtitleClassName}`}>

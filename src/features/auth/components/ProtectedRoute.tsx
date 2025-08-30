@@ -12,10 +12,10 @@ export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-mfb-cream">
+      <div className="flex min-h-screen items-center justify-center bg-mfb-cream">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-mfb-green mx-auto"></div>
-          <p className="mt-4 text-mfb-olive/60 font-nunito">Loading Master Food Brokers CRM...</p>
+          <div className="mx-auto size-12 animate-spin rounded-full border-b-2 border-mfb-green"></div>
+          <p className="text-mfb-olive/60 mt-4 font-nunito">Loading Master Food Brokers CRM...</p>
         </div>
       </div>
     )

@@ -7,6 +7,37 @@ module.exports = {
     'plugin:tailwindcss/recommended',
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs', 'node_modules', 'docs', 'tests', 'tests.backup.*', '*.backup.*', 'backups', 'src/utils/password-reset-test.ts', 'src/lib/supabase.ts'],
+  overrides: [
+    {
+      files: ['src/components/ui/DataTable.tsx'],
+      rules: {
+        'no-restricted-syntax': 'off' // Allow internal DataTable usage without generics in the component itself
+      }
+    },
+    {
+      files: ['**/*.test.{ts,tsx}', '**/__tests__/**/*.{ts,tsx}', 'jest.setup.ts'],
+      env: {
+        jest: true
+      },
+      globals: {
+        'jest': 'readonly',
+        'expect': 'readonly',
+        'describe': 'readonly',
+        'it': 'readonly',
+        'test': 'readonly',
+        'beforeEach': 'readonly',
+        'beforeAll': 'readonly',
+        'afterEach': 'readonly',
+        'afterAll': 'readonly'
+      }
+    },
+    {
+      files: ['src/lib/query-debug.ts', 'src/lib/state-performance-monitor.ts', 'src/lib/monitoring.ts', 'src/lib/secure-storage.ts', 'src/lib/performance.ts', 'src/lib/error-utils.ts', 'src/lib/performance-optimizations.ts'],
+      rules: {
+        'no-console': 'off' // Allow console statements in debug utilities
+      }
+    }
+  ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
@@ -68,6 +99,10 @@ module.exports = {
         {
           group: ['@/components/ui/dialog', '@/components/ui/alert-dialog'],
           message: 'Use StandardDialog from @/components/ui/StandardDialog instead of raw dialog components for consistent UX patterns.'
+        },
+        {
+          group: ['@/components/ui/simple-table'],
+          message: 'Use DataTable from @/components/ui/DataTable instead of SimpleTable. SimpleTable is deprecated after DataTable unification migration.'
         },
       ]
     }],
@@ -149,6 +184,10 @@ module.exports = {
       {
         selector: "JSXAttribute[name.name='className'] Literal[value=/w-\\[calc\\(/]",
         message: 'Avoid calc() expressions in width classes. Use "w-full max-w-[96%]" or similar standard patterns instead.'
+      },
+      {
+        selector: "JSXOpeningElement[name.name='DataTable']:not([typeParameters])",
+        message: 'DataTable components should use TypeScript generics for type safety. Use DataTable<EntityType> instead of DataTable.'
       }
     ]
   },

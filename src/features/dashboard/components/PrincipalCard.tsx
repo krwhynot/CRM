@@ -36,7 +36,7 @@ export function PrincipalCard({ principal, className }: PrincipalCardProps) {
   // Handle error state
   if (hasError) {
     return (
-      <Card className={`hover:shadow-md transition-shadow border-red-200 ${className || ''}`}>
+      <Card className={`border-red-200 transition-shadow hover:shadow-md ${className || ''}`}>
         <PrincipalCardHeader
           principal={principal}
           priority={priority}
@@ -50,7 +50,7 @@ export function PrincipalCard({ principal, className }: PrincipalCardProps) {
   }
 
   return (
-    <Card className={`hover:shadow-md transition-shadow cursor-pointer group ${className || ''}`}>
+    <Card className={`group cursor-pointer transition-shadow hover:shadow-md ${className || ''}`}>
       <PrincipalCardHeader
         principal={principal}
         priority={priority}

@@ -72,7 +72,7 @@ export function SmartUploadStep({
   
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isDragOver, setIsDragOver] = React.useState(false)
-  const [uploadProgress, setUploadProgress] = React.useState(0)
+  const [uploadProgress, _setUploadProgress] = React.useState(0)
 
   // File drop handlers
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -124,10 +124,10 @@ export function SmartUploadStep({
       {/* Entity Type Selection */}
       <Card>
         <CardContent className="p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">
+          <h3 className="mb-4 text-lg font-semibold text-card-foreground">
             What type of data are you importing?
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {ENTITY_TYPE_OPTIONS.map((option) => (
               <button
                 key={option.value}
@@ -138,19 +138,19 @@ export function SmartUploadStep({
                   "hover:shadow-md active:scale-98",
                   config.entityType === option.value
                     ? "border-primary bg-primary/5"
-                    : "border-slate-200 hover:border-slate-300"
+                    : "border-border hover:border-border/80"
                 )}
               >
                 <div className="flex items-start space-x-3">
                   <span className="text-2xl">{option.icon}</span>
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
-                      <h4 className="font-semibold text-slate-900">{option.label}</h4>
+                      <h4 className="font-semibold text-card-foreground">{option.label}</h4>
                       {config.entityType === option.value && (
-                        <CheckCircle2 className="w-4 h-4 text-primary" />
+                        <CheckCircle2 className="size-4 text-primary" />
                       )}
                     </div>
-                    <p className="text-sm text-slate-600">{option.description}</p>
+                    <p className="text-sm text-muted-foreground">{option.description}</p>
                     <div className="flex flex-wrap gap-1">
                       {option.examples.map((example, idx) => (
                         <Badge key={idx} variant="secondary" className="text-xs">
@@ -191,7 +191,7 @@ export function SmartUploadStep({
                       "w-16 h-16 rounded-full flex items-center justify-center",
                       isDragOver ? "bg-primary text-white" : "bg-slate-100 text-slate-500"
                     )}>
-                      <Upload className="w-8 h-8" />
+                      <Upload className="size-8" />
                     </div>
                   </div>
                   
@@ -204,12 +204,12 @@ export function SmartUploadStep({
                     </p>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <div className="flex flex-col justify-center gap-3 sm:flex-row">
                     <Button 
                       onClick={handleBrowseClick}
                       className="h-12 px-6" // iPad touch-friendly
                     >
-                      <FileSpreadsheet className="w-4 h-4 mr-2" />
+                      <FileSpreadsheet className="mr-2 size-4" />
                       Browse Files
                     </Button>
                     
@@ -218,13 +218,13 @@ export function SmartUploadStep({
                       onClick={onDownloadTemplate}
                       className="h-12 px-6"
                     >
-                      <Download className="w-4 h-4 mr-2" />
+                      <Download className="mr-2 size-4" />
                       Download Template
                     </Button>
                   </div>
 
                   {/* File Requirements */}
-                  <div className="text-xs text-slate-500 pt-4">
+                  <div className="pt-4 text-xs text-slate-500">
                     <div className="flex items-center justify-center space-x-4 text-xs">
                       <span>Max {FILE_REQUIREMENTS.maxSize}</span>
                       <span>•</span>
@@ -241,8 +241,8 @@ export function SmartUploadStep({
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-3">
-                      <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                        <FileText className="w-5 h-5 text-green-600" />
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-green-100">
+                        <FileText className="size-5 text-green-600" />
                       </div>
                       <div className="space-y-1">
                         <h4 className="font-medium text-slate-900">{file.name}</h4>
@@ -250,7 +250,7 @@ export function SmartUploadStep({
                           {formatFileSize(file.size)} • {file.type || 'CSV file'}
                         </p>
                         <div className="flex items-center space-x-2">
-                          <CheckCircle2 className="w-4 h-4 text-green-600" />
+                          <CheckCircle2 className="size-4 text-green-600" />
                           <span className="text-sm text-green-700">File uploaded successfully</span>
                         </div>
                       </div>
@@ -260,9 +260,9 @@ export function SmartUploadStep({
                       variant="ghost"
                       size="sm"
                       onClick={onClearFile}
-                      className="h-8 w-8 p-0"
+                      className="size-8 p-0"
                     >
-                      <X className="w-4 h-4" />
+                      <X className="size-4" />
                     </Button>
                   </div>
                 </CardContent>
@@ -284,17 +284,17 @@ export function SmartUploadStep({
       </Card>
 
       {/* AI Enhancement Notice */}
-      <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
+      <Card className="border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50">
         <CardContent className="p-4">
           <div className="flex items-start space-x-3">
-            <Sparkles className="w-5 h-5 text-amber-500 mt-0.5" />
+            <Sparkles className="mt-0.5 size-5 text-amber-500" />
             <div>
               <h4 className="font-semibold text-slate-900">AI-Enhanced Import</h4>
-              <p className="text-sm text-slate-700 mt-1">
+              <p className="mt-1 text-sm text-slate-700">
                 After uploading, our AI will automatically suggest field mappings and validate your data 
                 to ensure the best import quality.
               </p>
-              <ul className="text-xs text-slate-600 mt-2 space-y-1">
+              <ul className="mt-2 space-y-1 text-xs text-slate-600">
                 <li>• Smart field detection (Company → Organization Name)</li>
                 <li>• Data quality validation and suggestions</li>
                 <li>• Duplicate detection and handling</li>
@@ -308,11 +308,11 @@ export function SmartUploadStep({
       {/* File Requirements Card */}
       <Card className="bg-slate-50">
         <CardContent className="p-4">
-          <h4 className="font-medium text-slate-900 mb-3">File Requirements</h4>
+          <h4 className="mb-3 font-medium text-slate-900">File Requirements</h4>
           <div className="space-y-2 text-sm text-slate-700">
             {FILE_REQUIREMENTS.requirements.map((req, idx) => (
               <div key={idx} className="flex items-center space-x-2">
-                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full" />
+                <div className="size-1.5 rounded-full bg-slate-400" />
                 <span>{req}</span>
               </div>
             ))}
@@ -323,7 +323,7 @@ export function SmartUploadStep({
       {/* Error Display */}
       {error && (
         <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
+          <AlertCircle className="size-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
@@ -331,7 +331,7 @@ export function SmartUploadStep({
       {/* Warnings Display */}
       {warnings.length > 0 && (
         <Alert className="border-amber-200 bg-amber-50">
-          <AlertCircle className="h-4 w-4 text-amber-600" />
+          <AlertCircle className="size-4 text-amber-600" />
           <AlertDescription>
             <div className="space-y-1">
               {warnings.map((warning, idx) => (

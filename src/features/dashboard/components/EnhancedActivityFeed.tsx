@@ -45,20 +45,20 @@ export function EnhancedActivityFeed({
   }
 
   return (
-    <Card className={`${USE_NEW_STYLE ? "shadow-sm border-primary/10" : "shadow-md"} ${className}`}>
+    <Card className={`${USE_NEW_STYLE ? "border-primary/10 shadow-sm" : "shadow-md"} ${className}`}>
       <CardHeader className={USE_NEW_STYLE ? "p-4 pb-3" : "p-6 pb-4"}>
         <div className="flex items-center justify-between">
           <CardTitle className={`flex items-center gap-2 ${USE_NEW_STYLE ? "text-base font-bold text-foreground" : "text-lg font-semibold"}`}>
-            <Activity className="h-5 w-5 text-primary" />
+            <Activity className="size-5 text-primary" />
             Recent Activity
           </CardTitle>
           <Button
             variant="ghost"
             size="sm"
             onClick={handleRefresh}
-            className="h-8 w-8 p-0"
+            className="size-8 p-0"
           >
-            <RefreshCw className="h-4 w-4" />
+            <RefreshCw className="size-4" />
           </Button>
         </div>
         
@@ -71,15 +71,15 @@ export function EnhancedActivityFeed({
 
       <CardContent className={USE_NEW_STYLE ? "p-4 pt-0" : "p-6 pt-0"}>
         {filteredItems.length === 0 ? (
-          <div className="text-center py-8">
-            <Activity className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
-            <h3 className="text-lg font-semibold text-foreground mb-2">No Recent Activity</h3>
+          <div className="py-8 text-center">
+            <Activity className="mx-auto mb-3 size-12 text-muted-foreground/30" />
+            <h3 className="mb-2 text-lg font-semibold text-foreground">No Recent Activity</h3>
             <p className="text-sm text-muted-foreground">
               No activities match your current filters.
             </p>
           </div>
         ) : (
-          <div className={`space-y-3 max-h-activity-feed overflow-y-auto ${USE_NEW_STYLE ? "pr-2" : "pr-3"}`}>
+          <div className={`max-h-activity-feed space-y-3 overflow-y-auto ${USE_NEW_STYLE ? "pr-2" : "pr-3"}`}>
             {filteredItems.map((item) => (
               <ActivityItemComponent
                 key={item.id}

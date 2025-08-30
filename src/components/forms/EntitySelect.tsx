@@ -63,7 +63,7 @@ export function EntitySelect({
         open={isOpen}
         onOpenChange={setIsOpen}
       >
-        <SelectTrigger className="h-12 text-base px-4 focus:ring-2 focus:ring-blue-200">
+        <SelectTrigger className="h-12 px-4 text-base focus:ring-2 focus:ring-blue-200">
           <SelectValue placeholder={placeholder}>
             {selectedOption?.name || placeholder}
           </SelectValue>

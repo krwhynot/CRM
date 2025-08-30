@@ -276,7 +276,7 @@ function ChartTooltipContent({
                       </span>
                     </div>
                     {item.value && (
-                      <span className="text-foreground font-mono font-medium tabular-nums">
+                      <span className="font-mono font-medium tabular-nums text-foreground">
                         {item.value.toLocaleString()}
                       </span>
                     )}
@@ -344,7 +344,7 @@ function ChartLegendContent({
               <itemConfig.icon />
             ) : (
               <div
-                className="h-2 w-2 shrink-0 rounded-[2px]"
+                className="size-2 shrink-0 rounded-[2px]"
                 style={{
                   backgroundColor: item.color,
                 }}

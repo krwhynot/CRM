@@ -17,7 +17,6 @@ import { create } from 'zustand'
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
 import { 
   BaseClientState, 
-  ClientStateStore, 
   CreateClientFilters, 
   validateClientState 
 } from '@/lib/state-type-safety'

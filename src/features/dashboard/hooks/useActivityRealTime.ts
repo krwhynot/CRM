@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRecentActivity } from '@/features/interactions/hooks/useInteractions'
+import type { InteractionWithRelations } from '@/types/interaction.types'
 
 interface UseActivityRealTimeProps {
   limit: number
@@ -8,10 +9,10 @@ interface UseActivityRealTimeProps {
 }
 
 interface UseActivityRealTimeReturn {
-  activities: any[] | undefined
+  activities: InteractionWithRelations[] | undefined
   isLoading: boolean
-  error: any
-  refetch: () => Promise<any>
+  error: Error | null
+  refetch: () => Promise<{ data: InteractionWithRelations[] | undefined }>
   isRefreshing: boolean
   handleRefresh: () => Promise<void>
 }

@@ -20,14 +20,14 @@ export const ExportResults: React.FC<ExportResultsProps> = ({
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <CheckCircle className="h-5 w-5 text-green-600" />
+          <CheckCircle className="size-5 text-green-600" />
           Export Completed
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <Alert>
-            <CheckCircle className="h-4 w-4" />
+            <CheckCircle className="size-4" />
             <AlertDescription>
               Successfully exported {exportProgress.recordsProcessed} organizations. 
               The file should have downloaded automatically.

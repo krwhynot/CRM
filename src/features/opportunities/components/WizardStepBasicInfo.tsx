@@ -28,7 +28,7 @@ export const WizardStepBasicInfo: React.FC<WizardStepBasicInfoProps> = ({
           disabled={loading}
         />
         {errors.name && (
-          <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>
+          <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
         )}
       </div>
       
@@ -44,7 +44,7 @@ export const WizardStepBasicInfo: React.FC<WizardStepBasicInfoProps> = ({
           rows={3}
         />
         {errors.description && (
-          <p className="text-sm text-red-600 mt-1">{errors.description.message}</p>
+          <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
         )}
       </div>
     </div>

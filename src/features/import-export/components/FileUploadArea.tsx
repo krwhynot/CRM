@@ -55,7 +55,7 @@ export function FileUploadArea({
       {/* Download Template Button */}
       <div className="flex justify-end">
         <Button variant="outline" size="sm" onClick={onDownloadTemplate}>
-          <Download className="h-4 w-4 mr-2" />
+          <Download className="mr-2 size-4" />
           Download Template
         </Button>
       </div>
@@ -74,8 +74,8 @@ export function FileUploadArea({
         onDrop={onDrop}
       >
         <div className="space-y-4">
-          <div className="mx-auto w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-            <FileSpreadsheet className="h-6 w-6 text-gray-600" />
+          <div className="mx-auto flex size-12 items-center justify-center rounded-lg bg-gray-100">
+            <FileSpreadsheet className="size-6 text-gray-600" />
           </div>
           
           {file ? (
@@ -83,11 +83,11 @@ export function FileUploadArea({
               <p className="text-sm font-medium text-green-700">
                 File selected: {file.name}
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 Size: {(file.size / 1024).toFixed(1)} KB
               </p>
               <Button variant="outline" size="sm" onClick={onReset}>
-                <X className="h-4 w-4 mr-2" />
+                <X className="mr-2 size-4" />
                 Remove File
               </Button>
             </div>
@@ -97,13 +97,13 @@ export function FileUploadArea({
                 Drag and drop your CSV file here, or{' '}
                 <button
                   type="button"
-                  className="text-blue-600 hover:text-blue-700 font-medium"
+                  className="font-medium text-blue-600 hover:text-blue-700"
                   onClick={handleBrowseClick}
                 >
                   browse to upload
                 </button>
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 Supports CSV files up to 5MB
               </p>
             </div>
@@ -134,7 +134,7 @@ export function FileUploadArea({
       {/* Error Display */}
       {error && (
         <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
+          <AlertCircle className="size-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}

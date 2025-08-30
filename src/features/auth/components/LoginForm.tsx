@@ -39,7 +39,7 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="mx-auto w-full max-w-md">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
         <CardDescription>
@@ -50,7 +50,7 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           {error && (
-            <div className="flex items-center gap-2 p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+            <div className="flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-600">
               <AlertCircle size={16} />
               {error}
             </div>
@@ -96,9 +96,9 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
                 disabled={loading}
               >
                 {showPassword ? (
-                  <EyeOff className="h-4 w-4" />
+                  <EyeOff className="size-4" />
                 ) : (
-                  <Eye className="h-4 w-4" />
+                  <Eye className="size-4" />
                 )}
               </Button>
             </div>
@@ -114,7 +114,7 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
             {loading ? 'Signing in...' : 'Sign In'}
           </Button>
           
-          <div className="text-center space-y-2">
+          <div className="space-y-2 text-center">
             {onForgotPassword && (
               <Button
                 type="button"
@@ -134,7 +134,7 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
                   type="button"
                   variant="link"
                   size="sm"
-                  className="p-0 h-auto"
+                  className="h-auto p-0"
                   onClick={onToggleMode}
                   disabled={loading}
                 >

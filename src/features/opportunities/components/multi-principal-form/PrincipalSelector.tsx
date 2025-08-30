@@ -57,9 +57,9 @@ export const PrincipalSelector: React.FC<PrincipalSelectorProps> = ({
                   <button
                     type="button"
                     onClick={() => onRemovePrincipal(principalId)}
-                    className="ml-1 hover:bg-gray-200 rounded-full p-0.5"
+                    className="ml-1 rounded-full p-0.5 hover:bg-gray-200"
                   >
-                    <X className="h-3 w-3" />
+                    <X className="size-3" />
                   </button>
                 </StatusIndicator>
               ) : null

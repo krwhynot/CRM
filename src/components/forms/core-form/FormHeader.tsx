@@ -9,9 +9,9 @@ interface FormHeaderProps {
 
 export function FormHeader({ title, icon: Icon, isEdit }: FormHeaderProps) {
   return (
-    <CardHeader className="p-6 border-b">
-      <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-3">
-        <Icon className="h-5 w-5" />
+    <CardHeader className="border-b p-6">
+      <CardTitle className="flex items-center gap-3 text-xl font-semibold text-gray-900">
+        <Icon className="size-5" />
         {isEdit ? `Edit ${title}` : `New ${title}`}
       </CardTitle>
     </CardHeader>

@@ -13,7 +13,7 @@ export const EntitySelectOptionsList: React.FC<EntitySelectOptionsListProps> = (
 }) => {
   if (options.length === 0) {
     return (
-      <div className="p-4 text-center text-gray-500 text-sm">
+      <div className="p-4 text-center text-sm text-gray-500">
         {emptyMessage}
       </div>
     )
@@ -25,12 +25,12 @@ export const EntitySelectOptionsList: React.FC<EntitySelectOptionsListProps> = (
         <SelectItem 
           key={option.id} 
           value={option.id}
-          className="h-12 px-4 cursor-pointer hover:bg-gray-50 focus:bg-blue-50"
+          className="h-12 cursor-pointer px-4 hover:bg-gray-50 focus:bg-blue-50"
         >
-          <div className="flex flex-col items-start w-full">
-            <span className="font-medium text-base">{option.name}</span>
+          <div className="flex w-full flex-col items-start">
+            <span className="text-base font-medium">{option.name}</span>
             {option.description && (
-              <span className="text-xs text-gray-500 mt-1">
+              <span className="mt-1 text-xs text-gray-500">
                 {option.description}
               </span>
             )}

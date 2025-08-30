@@ -23,7 +23,7 @@ export const ExportConfiguration: React.FC<ExportConfigurationProps> = ({
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Download className="h-5 w-5 text-green-600" />
+          <Download className="size-5 text-green-600" />
           Export Configuration
         </CardTitle>
         <CardDescription>
@@ -58,7 +58,7 @@ export const ExportConfiguration: React.FC<ExportConfigurationProps> = ({
             />
             <label
               htmlFor="include-inactive"
-              className="text-sm font-normal cursor-pointer"
+              className="cursor-pointer text-sm font-normal"
             >
               Include inactive organizations
             </label>
@@ -68,7 +68,7 @@ export const ExportConfiguration: React.FC<ExportConfigurationProps> = ({
         {/* Field Selection */}
         <div className="space-y-3">
           <label className="text-sm font-medium">Fields to Export</label>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
             {AVAILABLE_FIELDS.map(field => (
               <div key={field.id} className="flex items-center space-x-2">
                 <Checkbox
@@ -79,7 +79,7 @@ export const ExportConfiguration: React.FC<ExportConfigurationProps> = ({
                 />
                 <label
                   htmlFor={field.id}
-                  className={`text-sm cursor-pointer ${field.required ? 'font-medium text-gray-900' : 'font-normal'}`}
+                  className={`cursor-pointer text-sm ${field.required ? 'font-medium text-gray-900' : 'font-normal'}`}
                 >
                   {field.label}
                   {field.required && <Badge variant="secondary" className="ml-2 text-xs">Required</Badge>}
@@ -94,12 +94,12 @@ export const ExportConfiguration: React.FC<ExportConfigurationProps> = ({
 
         {/* Filters - Coming Soon */}
         <div className="space-y-3">
-          <label className="text-sm font-medium flex items-center gap-2">
-            <Filter className="h-4 w-4" />
+          <label className="flex items-center gap-2 text-sm font-medium">
+            <Filter className="size-4" />
             Filters
             <Badge variant="outline" className="text-xs">Coming Soon</Badge>
           </label>
-          <div className="p-4 border border-dashed rounded-lg text-center text-sm text-muted-foreground">
+          <div className="rounded-lg border border-dashed p-4 text-center text-sm text-muted-foreground">
             Advanced filtering options will be available in a future update
           </div>
         </div>

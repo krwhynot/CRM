@@ -11,7 +11,7 @@ interface ContactBasicInfoProps {
 }
 
 const EmptyCell = () => (
-  <span className="text-gray-400 italic text-sm">—</span>
+  <span className="text-sm italic text-muted-foreground">—</span>
 )
 
 export const ContactBasicInfo: React.FC<ContactBasicInfoProps> = ({
@@ -24,11 +24,11 @@ export const ContactBasicInfo: React.FC<ContactBasicInfoProps> = ({
       {/* Contact Name */}
       <TableCell className="font-semibold">
         <div className="flex items-center gap-2">
-          <div className="font-semibold text-gray-900 text-base">
+          <div className="text-base font-semibold text-foreground">
             {contact.first_name} {contact.last_name}
           </div>
           {contact.is_primary_contact && (
-            <Star className="h-4 w-4 text-yellow-500 fill-current" />
+            <Star className="size-4 fill-current text-yellow-500" />
           )}
         </div>
       </TableCell>
@@ -36,7 +36,7 @@ export const ContactBasicInfo: React.FC<ContactBasicInfoProps> = ({
       {/* Organization */}
       {showOrganization && (
         <TableCell>
-          <span className="text-gray-900">
+          <span className="text-foreground">
             {contact.organization?.name || <EmptyCell />}
           </span>
         </TableCell>
@@ -44,7 +44,7 @@ export const ContactBasicInfo: React.FC<ContactBasicInfoProps> = ({
 
       {/* Position */}
       <TableCell>
-        <span className="text-gray-900">
+        <span className="text-foreground">
           {contact.title || <EmptyCell />}
         </span>
       </TableCell>
@@ -54,8 +54,8 @@ export const ContactBasicInfo: React.FC<ContactBasicInfoProps> = ({
         <div className="flex items-center gap-2">
           {primaryContactInfo ? (
             <>
-              <Phone className="h-4 w-4 text-gray-500" />
-              <span className="text-sm text-gray-600 font-mono">
+              <Phone className="size-4 text-muted-foreground" />
+              <span className="font-mono text-sm text-muted-foreground">
                 {primaryContactInfo}
               </span>
             </>

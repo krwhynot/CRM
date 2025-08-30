@@ -18,7 +18,6 @@ export const useProductsPageActions = (
 
   const handleCreate = useCallback(async (data: ProductInsert) => {
     try {
-      console.log('🔍 Product form data received:', data)
       
       await createProductMutation.mutateAsync(data)
       closeCreateDialog()
@@ -31,7 +30,6 @@ export const useProductsPageActions = (
 
   const handleUpdate = useCallback(async (selectedProduct: Product, data: ProductUpdate) => {
     try {
-      console.log('🔍 Updating product:', selectedProduct.id, data)
       
       if (!selectedProduct?.id) {
         throw new Error('Product ID is required for update')
@@ -52,7 +50,6 @@ export const useProductsPageActions = (
 
   const handleDelete = useCallback(async (selectedProduct: Product) => {
     try {
-      console.log('🔍 Deleting product:', selectedProduct.id)
       
       if (!selectedProduct?.id) {
         throw new Error('Product ID is required for deletion')

@@ -28,12 +28,12 @@ export function DashboardWithActivityFeed() {
       <div className="flex-1 overflow-auto bg-gray-50 p-4 sm:p-6">
         {/* Dashboard Content Header */}
         <div className="mb-4 sm:mb-6">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">📊 DASHBOARD</h1>
-          <p className="text-sm sm:text-base text-gray-600">Welcome to Master Food Brokers CRM - Partnering with Excellence</p>
+          <h1 className="mb-1 text-xl font-bold text-gray-900 sm:text-2xl">📊 DASHBOARD</h1>
+          <p className="text-sm text-gray-600 sm:text-base">Welcome to Master Food Brokers CRM - Partnering with Excellence</p>
         </div>
         
         {/* Stats Cards Grid */}
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 tablet:grid-cols-2 laptop:grid-cols-4 mb-6">
+        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 tablet:grid-cols-2 laptop:grid-cols-4">
           <StatsCards />
         </div>
 
@@ -47,7 +47,7 @@ export function DashboardWithActivityFeed() {
         </div>
 
         {/* Activity Feed - Real-time activity tracking */}
-        <div className="grid gap-4 sm:gap-6 grid-cols-1 laptop:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6 laptop:grid-cols-2">
           {/* Main Activity Feed */}
           <div className="laptop:col-span-2">
             <ActivityFeed
@@ -61,7 +61,7 @@ export function DashboardWithActivityFeed() {
         </div>
 
         {/* Alternative Layout: Side-by-side Activity Views */}
-        <div className="mt-6 grid gap-4 sm:gap-6 grid-cols-1 laptop:grid-cols-2">
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:gap-6 laptop:grid-cols-2">
           {/* Recent Interactions Only */}
           <ActivityFeed
             limit={10}
@@ -88,8 +88,8 @@ export function DashboardWithActivityFeed() {
  */
 export function MinimalActivityDashboard() {
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Activity Dashboard</h1>
+    <div className="mx-auto max-w-4xl p-6">
+      <h1 className="mb-6 text-2xl font-bold">Activity Dashboard</h1>
       
       <ActivityFeed
         limit={50}

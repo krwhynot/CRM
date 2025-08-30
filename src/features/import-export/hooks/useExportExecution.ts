@@ -3,6 +3,21 @@ import { supabase } from '@/lib/supabase'
 import { isFeatureEnabled } from '@/lib/feature-flags'
 import type { ExportOptions } from './useExportConfiguration'
 
+// Type for export data record (based on organization fields)
+type ExportDataRecord = {
+  [key: string]: string | number | boolean | null | undefined
+}
+
+// Type for XLSX library interface
+interface XLSXLibrary {
+  utils: {
+    json_to_sheet: (data: ExportDataRecord[]) => unknown
+    book_new: () => unknown
+    book_append_sheet: (workbook: unknown, worksheet: unknown, sheetName: string) => void
+  }
+  write: (workbook: unknown, options: { type: string; bookType: string }) => string
+}
+
 export interface ExportProgress {
   isExporting: boolean
   progress: number
@@ -29,7 +44,7 @@ export const useExportExecution = (exportOptions: ExportOptions): UseExportExecu
   })
 
   // Generate CSV content
-  const generateCSV = useCallback((data: any[]) => {
+  const generateCSV = useCallback((data: ExportDataRecord[]) => {
     if (data.length === 0) return ''
 
     const headers = exportOptions.selectedFields
@@ -53,7 +68,7 @@ export const useExportExecution = (exportOptions: ExportOptions): UseExportExecu
   }, [exportOptions.selectedFields])
 
   // Generate XLSX content using SheetJS
-  const generateXLSX = useCallback((data: any[], XLSX: any): string => {
+  const generateXLSX = useCallback((data: ExportDataRecord[], XLSX: XLSXLibrary): string => {
     if (data.length === 0) {
       // Create empty workbook with headers only
       const headers = exportOptions.selectedFields
@@ -66,7 +81,7 @@ export const useExportExecution = (exportOptions: ExportOptions): UseExportExecu
 
     // Transform data to ensure proper field mapping
     const transformedData = data.map(row => {
-      const transformedRow: Record<string, any> = {}
+      const transformedRow: ExportDataRecord = {}
       exportOptions.selectedFields.forEach(field => {
         const value = row[field]
         // Handle null/undefined values
@@ -86,7 +101,7 @@ export const useExportExecution = (exportOptions: ExportOptions): UseExportExecu
     const worksheet = XLSX.utils.json_to_sheet(transformedData)
     
     // Set column widths for better readability
-    const columnWidths = exportOptions.selectedFields.map(field => ({ wch: 20 }))
+    const columnWidths = exportOptions.selectedFields.map(_field => ({ wch: 20 }))
     worksheet['!cols'] = columnWidths
     
     const workbook = XLSX.utils.book_new()
@@ -139,7 +154,7 @@ export const useExportExecution = (exportOptions: ExportOptions): UseExportExecu
 
       // Fetch data in batches
       const batchSize = 1000
-      const allData: any[] = []
+      const allData: ExportDataRecord[] = []
       let offset = 0
       let hasMore = true
 

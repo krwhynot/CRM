@@ -16,7 +16,7 @@ export function OpportunitiesFilters({
 }: OpportunitiesFiltersProps) {
   return (
     <div className="flex items-center space-x-2">
-      <Search className="h-4 w-4 text-gray-400" />
+      <Search className="size-4 text-gray-400" />
       <Input
         placeholder="Search opportunities..."
         value={searchTerm}

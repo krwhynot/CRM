@@ -29,7 +29,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <div className={`w-3 h-3 rounded-full ${colorClass}`}></div>
+          <div className={`size-3 rounded-full ${colorClass}`}></div>
           {title}
         </CardTitle>
       </CardHeader>

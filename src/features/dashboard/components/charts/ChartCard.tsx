@@ -25,7 +25,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({
   children
 }) => {
   return (
-    <Card className={`${cardClassName} hover:shadow-lg transition-shadow`}>
+    <Card className={`${cardClassName} transition-shadow hover:shadow-lg`}>
       <CardHeader className={headerClassName}>
         <CardTitle className={`flex items-center gap-2 ${titleClassName}`}>
           {icon}

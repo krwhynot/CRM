@@ -3,12 +3,23 @@
  * Helps track cache state, query behavior, and data flow issues
  */
 
+import type { QueryKey } from '@tanstack/react-query'
+
 export interface QueryDebugInfo {
-  queryKey: any[]
-  data?: any
+  queryKey: QueryKey
+  data?: unknown
   isLoading: boolean
   isError: boolean
-  error?: any
+  error?: Error | { message: string } | string
+  dataUpdatedAt: number
+  status: string
+  fetchStatus: string
+}
+
+interface QueryState {
+  isLoading: boolean
+  isError: boolean
+  error?: Error | { message: string }
   dataUpdatedAt: number
   status: string
   fetchStatus: string
@@ -17,13 +28,17 @@ export interface QueryDebugInfo {
 /**
  * Debug query state and cache behavior
  */
-export function debugQueryState(queryKey: any[], hookName: string, data: any, queryState: any) {
+export function debugQueryState(queryKey: QueryKey, hookName: string, data: unknown, queryState: QueryState) {
   const debugInfo: QueryDebugInfo = {
     queryKey,
     data: data ? { count: Array.isArray(data) ? data.length : 'non-array', sample: Array.isArray(data) ? data.slice(0, 2) : data } : null,
     isLoading: queryState.isLoading,
     isError: queryState.isError,
-    error: queryState.error?.message,
+    error: typeof queryState.error === 'object' && queryState.error && 'message' in queryState.error 
+      ? queryState.error.message 
+      : typeof queryState.error === 'string' 
+        ? queryState.error 
+        : queryState.error?.toString(),
     dataUpdatedAt: queryState.dataUpdatedAt,
     status: queryState.status,
     fetchStatus: queryState.fetchStatus
@@ -90,15 +105,28 @@ export function compareQueryStates(state1: QueryDebugInfo, state2: QueryDebugInf
   return comparison
 }
 
+import type { QueryClient } from '@tanstack/react-query'
+
+interface CacheQuery {
+  queryKey: QueryKey
+  state: {
+    status: string
+    data?: unknown
+    dataUpdatedAt: number
+  }
+  isStale(): boolean
+  isInactive(): boolean
+}
+
 /**
  * Monitor React Query cache for specific key patterns
  */
-export function monitorQueryCache(queryClient: any, keyPattern: string[] = ['organizations']) {
+export function monitorQueryCache(queryClient: QueryClient, keyPattern: string[] = ['organizations']) {
   const cache = queryClient.getQueryCache()
   const queries = cache.getAll()
   
-  const matchingQueries = queries.filter((query: any) => 
-    query.queryKey.some((key: any) => 
+  const matchingQueries = queries.filter((query: CacheQuery) => 
+    Array.isArray(query.queryKey) && query.queryKey.some((key: unknown) => 
       typeof key === 'string' && keyPattern.includes(key)
     )
   )
@@ -108,7 +136,7 @@ export function monitorQueryCache(queryClient: any, keyPattern: string[] = ['org
     console.log(`Total queries in cache: ${queries.length}`)
     console.log(`Matching queries: ${matchingQueries.length}`)
     
-    matchingQueries.forEach((query: any, index: number) => {
+    matchingQueries.forEach((query: CacheQuery, index: number) => {
       console.log(`Query ${index + 1}:`, {
         key: query.queryKey,
         state: query.state.status,
@@ -123,10 +151,21 @@ export function monitorQueryCache(queryClient: any, keyPattern: string[] = ['org
   return matchingQueries
 }
 
+interface NetworkError {
+  message: string
+  status?: number
+}
+
 /**
  * Log network request details for debugging
  */
-export function logNetworkRequest(url: string, method: string, payload?: any, response?: any, error?: any) {
+export function logNetworkRequest(
+  url: string, 
+  method: string, 
+  payload?: unknown, 
+  response?: unknown, 
+  error?: NetworkError
+) {
   if (process.env.NODE_ENV === 'development') {
     const timestamp = new Date().toISOString()
     

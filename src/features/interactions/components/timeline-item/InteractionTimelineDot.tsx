@@ -15,20 +15,20 @@ export const InteractionTimelineDot: React.FC<InteractionTimelineDotProps> = ({
   const colorClass = getInteractionTypeColor(type)
   
   return (
-    <div className="relative z-10 flex-shrink-0">
+    <div className="relative z-10 shrink-0">
       <div 
         className={cn(
-          'w-8 h-8 rounded-full border-2 bg-white flex items-center justify-center',
+          'w-8 h-8 rounded-full border-2 bg-background flex items-center justify-center',
           'shadow-sm group-hover:shadow-md transition-shadow',
-          colorClass.includes('blue') && 'border-blue-200',
-          colorClass.includes('green') && 'border-green-200',
-          colorClass.includes('purple') && 'border-purple-200',
-          colorClass.includes('orange') && 'border-orange-200',
-          colorClass.includes('red') && 'border-red-200',
-          colorClass.includes('yellow') && 'border-yellow-200',
-          colorClass.includes('pink') && 'border-pink-200',
-          colorClass.includes('indigo') && 'border-indigo-200',
-          !colorClass.match(/(blue|green|purple|orange|red|yellow|pink|indigo)/) && 'border-gray-200'
+          colorClass.includes('blue') && 'border-primary/20',
+          colorClass.includes('green') && 'border-success/20',
+          colorClass.includes('purple') && 'border-accent/20',
+          colorClass.includes('orange') && 'border-warning/20',
+          colorClass.includes('red') && 'border-destructive/20',
+          colorClass.includes('yellow') && 'border-warning/20',
+          colorClass.includes('pink') && 'border-accent/20',
+          colorClass.includes('indigo') && 'border-info/20',
+          !colorClass.match(/(blue|green|purple|orange|red|yellow|pink|indigo)/) && 'border-border'
         )}
       >
         {getInteractionIcon(type)}

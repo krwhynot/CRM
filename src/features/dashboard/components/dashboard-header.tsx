@@ -15,31 +15,31 @@ import { UserMenu } from "@/features/auth/components/UserMenu"
 
 export function DashboardHeader() {
   return (
-    <header className="h-header bg-gradient-to-r from-white to-primary-50 border-b-2 border-primary-400 flex items-center justify-between px-6 shrink-0" style={{ boxShadow: 'var(--dashboard-shadow)' }}>
+    <header className="flex h-header shrink-0 items-center justify-between border-b-2 border-primary-400 bg-gradient-to-r from-white to-primary-50 px-6" style={{ boxShadow: 'var(--dashboard-shadow)' }}>
       <div className="flex items-center gap-4">
         {/* Mobile menu toggle - hidden on larger screens since we use fixed sidebar */}
-        <SidebarTrigger className="md:hidden -ml-1" />
+        <SidebarTrigger className="-ml-1 md:hidden" />
         
         {/* MFB Branding */}
         <div className="flex items-center gap-2">
-          <span className="bg-primary text-white px-2 py-1 rounded text-sm font-bold italic">
+          <span className="rounded bg-primary px-2 py-1 text-sm font-bold italic text-white">
             MFB
           </span>
-          <span className="text-primary-600 font-semibold">
+          <span className="font-semibold text-primary-600">
             Master Food Brokers, Inc.
           </span>
-          <span className="text-gray-400 text-xs italic ml-2 hidden sm:inline">
+          <span className="ml-2 hidden text-xs italic text-gray-400 sm:inline">
             "Partnering with Excellence"
           </span>
         </div>
         
         {/* Search bar - hidden on mobile */}
         <div className="relative ml-4 hidden md:block">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
             placeholder="Search..."
-            className="w-search-sm lg:w-search-lg rounded-lg bg-white pl-8 border-gray-200"
+            className="w-search-sm rounded-lg border-gray-200 bg-white pl-8 lg:w-search-lg"
           />
         </div>
       </div>
@@ -48,8 +48,8 @@ export function DashboardHeader() {
         <UserMenu />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon" className="w-9 h-9 rounded-full border-gray-200 hover:bg-primary-100 hover:border-primary-300 hover:text-primary-600">
-              <Bell className="h-4 w-4" />
+            <Button variant="outline" size="icon" className="hover:border-primary-300 size-9 rounded-full border-gray-200 hover:bg-primary-100 hover:text-primary-600">
+              <Bell className="size-4" />
               <span className="sr-only">Toggle notifications</span>
             </Button>
           </DropdownMenuTrigger>

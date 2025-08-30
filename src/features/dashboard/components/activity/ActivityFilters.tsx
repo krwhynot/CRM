@@ -54,8 +54,8 @@ export const ActivityFiltersComponent: React.FC<ActivityFiltersProps> = ({
     <>
       {/* Filter Header */}
       <div className="flex items-center gap-2">
-        <Filter className="w-4 h-4 text-gray-500" />
-        <span className="text-sm text-gray-500 mr-2">Filter</span>
+        <Filter className="size-4 text-gray-500" />
+        <span className="mr-2 text-sm text-gray-500">Filter</span>
       </div>
 
       {/* Filter Controls */}
@@ -121,9 +121,9 @@ export const ActivityFiltersComponent: React.FC<ActivityFiltersProps> = ({
               if (setSelectedType) setSelectedType('all')
               if (setSelectedPriority) setSelectedPriority('all')
             }}
-            className="text-xs h-8 px-2"
+            className="h-8 px-2 text-xs"
           >
-            <X className="w-3 h-3 mr-1" />
+            <X className="mr-1 size-3" />
             Clear
           </Button>
         )}

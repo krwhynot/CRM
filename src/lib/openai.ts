@@ -9,6 +9,9 @@ import {
   type DuplicateDetectionResponseType
 } from "./aiSchemas";
 
+// Type for CSV row data
+type CSVRowData = Record<string, string | number | null | undefined>
+
 // Lazy initialization of OpenAI client
 let client: OpenAI | null = null;
 
@@ -66,7 +69,7 @@ const CRM_FIELD_CONTEXT = {
  */
 export async function suggestFieldMappings(
   headers: string[], 
-  sampleRows: Record<string, any>[],
+  sampleRows: CSVRowData[],
   entityType: 'organization' | 'contact' = 'organization'
 ): Promise<FieldMappingResponseType> {
   
@@ -126,7 +129,7 @@ Analyze the headers and sample data to suggest the best field mappings.`
  * Validate data quality using AI
  */
 export async function validateRowsWithAI(
-  rows: Record<string, any>[],
+  rows: CSVRowData[],
   fieldMappings: Record<string, string>,
   maxRows: number = 50
 ): Promise<BatchValidationResponseType> {
@@ -186,7 +189,7 @@ Check each row for data quality issues and provide specific feedback.`
  * Detect potential duplicates using AI
  */
 export async function detectDuplicatesWithAI(
-  rows: Record<string, any>[],
+  rows: CSVRowData[],
   maxRows: number = 100
 ): Promise<DuplicateDetectionResponseType> {
 

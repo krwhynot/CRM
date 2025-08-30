@@ -45,9 +45,9 @@ export const OrganizationModeSelector: React.FC<OrganizationModeSelectorProps> =
   loading
 }) => {
   return (
-    <div className="space-y-4 p-4 border rounded-lg">
+    <div className="space-y-4 rounded-lg border p-4">
       <div className="flex items-center gap-2 font-medium">
-        <Building2 className="h-4 w-4" />
+        <Building2 className="size-4" />
         Organization *
       </div>
       
@@ -88,7 +88,7 @@ export const OrganizationModeSelector: React.FC<OrganizationModeSelectorProps> =
             <Input 
               value={newOrgData.name}
               onChange={(e) => updateNewOrgField('name', e.target.value)}
-              className="h-11 mt-1"
+              className="mt-1 h-11"
               placeholder="Enter organization name"
               disabled={loading}
             />
@@ -101,7 +101,7 @@ export const OrganizationModeSelector: React.FC<OrganizationModeSelectorProps> =
                 updateNewOrgField('type', value)
               }
             >
-              <SelectTrigger className="h-11 mt-1">
+              <SelectTrigger className="mt-1 h-11">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -121,7 +121,7 @@ export const OrganizationModeSelector: React.FC<OrganizationModeSelectorProps> =
                 <Input 
                   value={newOrgData.phone}
                   onChange={(e) => updateNewOrgField('phone', e.target.value)}
-                  className="h-9 mt-1"
+                  className="mt-1 h-9"
                   placeholder="Organization phone"
                   disabled={loading}
                 />
@@ -131,7 +131,7 @@ export const OrganizationModeSelector: React.FC<OrganizationModeSelectorProps> =
                 <Input 
                   value={newOrgData.email}
                   onChange={(e) => updateNewOrgField('email', e.target.value)}
-                  className="h-9 mt-1"
+                  className="mt-1 h-9"
                   type="email"
                   placeholder="Organization email"
                   disabled={loading}
@@ -142,7 +142,7 @@ export const OrganizationModeSelector: React.FC<OrganizationModeSelectorProps> =
                 <Input 
                   value={newOrgData.website}
                   onChange={(e) => updateNewOrgField('website', e.target.value)}
-                  className="h-9 mt-1"
+                  className="mt-1 h-9"
                   placeholder="https://..."
                   disabled={loading}
                 />

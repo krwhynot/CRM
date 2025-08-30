@@ -10,7 +10,6 @@ import {
   Target, 
   Building2, 
   User, 
-  Phone, 
   MessageSquare,
   Plus
 } from 'lucide-react'
@@ -72,18 +71,18 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
 
   return (
     <TableRow>
-      <TableCell colSpan={6} className="p-0 border-b-0">
-        <div className="bg-gray-50 border-t border-gray-100">
-          <Card className="border-0 shadow-none bg-transparent">
+      <TableCell colSpan={6} className="border-b-0 p-0">
+        <div className="border-t border-gray-100 bg-gray-50">
+          <Card className="border-0 bg-transparent shadow-none">
             <CardContent className="p-6">
               {/* Opportunity Header */}
-              <div className="flex items-start justify-between mb-6">
+              <div className="mb-6 flex items-start justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                  <h3 className="mb-1 text-lg font-semibold text-gray-900">
                     {opportunity.name}
                   </h3>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Building2 className="h-4 w-4" />
+                    <Building2 className="size-4" />
                     {opportunity.organization?.name || 'No Organization'}
                   </div>
                 </div>
@@ -96,27 +95,27 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
               </div>
 
               {/* Opportunity Details Grid */}
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+              <div className="mb-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 {/* Estimated Value */}
-                <div className="bg-white rounded-lg p-4 border border-gray-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    <DollarSign className="h-4 w-4 text-green-600" />
+                <div className="rounded-lg border border-gray-200 bg-white p-4">
+                  <div className="mb-2 flex items-center gap-2">
+                    <DollarSign className="size-4 text-green-600" />
                     <span className="text-sm font-medium text-gray-700">Value</span>
                   </div>
                   <div className="text-xl font-bold text-gray-900">
                     {formatCurrency(opportunity.estimated_value || 0)}
                   </div>
                   {opportunity.probability && (
-                    <div className="text-sm text-gray-600 mt-1">
+                    <div className="mt-1 text-sm text-gray-600">
                       {opportunity.probability}% probability
                     </div>
                   )}
                 </div>
 
                 {/* Contact */}
-                <div className="bg-white rounded-lg p-4 border border-gray-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    <User className="h-4 w-4 text-blue-600" />
+                <div className="rounded-lg border border-gray-200 bg-white p-4">
+                  <div className="mb-2 flex items-center gap-2">
+                    <User className="size-4 text-blue-600" />
                     <span className="text-sm font-medium text-gray-700">Contact</span>
                   </div>
                   <div className="text-sm font-medium text-gray-900">
@@ -126,16 +125,16 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
                     }
                   </div>
                   {opportunity.contact?.email && (
-                    <div className="text-sm text-gray-600 mt-1">
+                    <div className="mt-1 text-sm text-gray-600">
                       {opportunity.contact.email}
                     </div>
                   )}
                 </div>
 
                 {/* Close Date */}
-                <div className="bg-white rounded-lg p-4 border border-gray-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    <CalendarDays className="h-4 w-4 text-purple-600" />
+                <div className="rounded-lg border border-gray-200 bg-white p-4">
+                  <div className="mb-2 flex items-center gap-2">
+                    <CalendarDays className="size-4 text-purple-600" />
                     <span className="text-sm font-medium text-gray-700">Close Date</span>
                   </div>
                   <div className="text-sm font-medium text-gray-900">
@@ -147,16 +146,16 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
                 </div>
 
                 {/* Next Action */}
-                <div className="bg-white rounded-lg p-4 border border-gray-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Target className="h-4 w-4 text-orange-600" />
+                <div className="rounded-lg border border-gray-200 bg-white p-4">
+                  <div className="mb-2 flex items-center gap-2">
+                    <Target className="size-4 text-orange-600" />
                     <span className="text-sm font-medium text-gray-700">Next Action</span>
                   </div>
                   <div className="text-sm font-medium text-gray-900">
                     {opportunity.next_action || 'No action set'}
                   </div>
                   {opportunity.next_action_date && (
-                    <div className="text-sm text-gray-600 mt-1">
+                    <div className="mt-1 text-sm text-gray-600">
                       {formatDate(opportunity.next_action_date)}
                     </div>
                   )}
@@ -166,20 +165,20 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
               {/* Description & Notes */}
               {(opportunity.description || opportunity.notes) && (
                 <>
-                  <div className="border-t border-gray-200 my-4"></div>
+                  <div className="my-4 border-t border-gray-200"></div>
                   <div className="grid gap-4 md:grid-cols-2">
                     {opportunity.description && (
                       <div>
-                        <h4 className="text-sm font-semibold text-gray-700 mb-2">Description</h4>
-                        <p className="text-sm text-gray-600 leading-relaxed">
+                        <h4 className="mb-2 text-sm font-semibold text-gray-700">Description</h4>
+                        <p className="text-sm leading-relaxed text-gray-600">
                           {opportunity.description}
                         </p>
                       </div>
                     )}
                     {opportunity.notes && (
                       <div>
-                        <h4 className="text-sm font-semibold text-gray-700 mb-2">Notes</h4>
-                        <p className="text-sm text-gray-600 leading-relaxed">
+                        <h4 className="mb-2 text-sm font-semibold text-gray-700">Notes</h4>
+                        <p className="text-sm leading-relaxed text-gray-600">
                           {opportunity.notes}
                         </p>
                       </div>
@@ -189,11 +188,11 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
               )}
 
               {/* Activity Timeline */}
-              <div className="border-t border-gray-200 my-6"></div>
+              <div className="my-6 border-t border-gray-200"></div>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-base font-semibold text-gray-900 flex items-center gap-2">
-                    <MessageSquare className="h-4 w-4" />
+                  <h4 className="flex items-center gap-2 text-base font-semibold text-gray-900">
+                    <MessageSquare className="size-4" />
                     Activity Timeline
                   </h4>
                   {onAddInteraction && (
@@ -202,13 +201,13 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
                       size="sm"
                       className="flex items-center gap-2"
                     >
-                      <Plus className="h-4 w-4" />
+                      <Plus className="size-4" />
                       Add Activity
                     </Button>
                   )}
                 </div>
                 
-                <div className="bg-white rounded-lg border border-gray-200 p-4">
+                <div className="rounded-lg border border-gray-200 bg-white p-4">
                   <InteractionTimeline
                     interactions={interactions}
                     loading={activitiesLoading}

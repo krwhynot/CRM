@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { SimpleTable } from '@/components/ui/simple-table'
+import { DataTable, type DataTableColumn } from '@/components/ui/DataTable'
 import { BulkActionsToolbar } from '@/features/organizations/components/BulkActionsToolbar'
 import { BulkDeleteDialog } from '@/features/organizations/components/BulkDeleteDialog'
 import { useOpportunitiesWithLastActivity, useDeleteOpportunity } from '../hooks/useOpportunities'
@@ -9,10 +9,17 @@ import { useOpportunitiesSorting } from '../hooks/useOpportunitiesSorting'
 import { useOpportunitiesFormatting } from '../hooks/useOpportunitiesFormatting'
 import { useOpportunitiesDisplay } from '../hooks/useOpportunitiesDisplay'
 import { OpportunitiesFilters } from './OpportunitiesFilters'
-import { OpportunityRow } from './OpportunityRow'
+import { OpportunitiesTableActions } from './OpportunitiesTableActions'
+import { OpportunityRowDetails } from './OpportunityRowDetails'
 import { toast } from '@/lib/toast-styles'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Button } from '@/components/ui/button'
+import { ChevronDown, ChevronRight } from 'lucide-react'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { cn, formatTimeAgo, isOpportunityStalled, getStalledDays } from '@/lib/utils'
 import type { OpportunityFilters } from '@/types/entities'
 import type { OpportunityWithLastActivity } from '@/types/opportunity.types'
+import type { Interaction } from '@/types/interaction.types'
 
 interface OpportunitiesTableProps {
   filters?: OpportunityFilters
@@ -22,18 +29,18 @@ interface OpportunitiesTableProps {
   onAddNew?: () => void
   
   // Activity handlers for inline details
-  onAddInteraction?: (opportunityId: string) => void /* ui-audit: allow */
-  onEditInteraction?: (interaction: any) => void /* ui-audit: allow */
-  onDeleteInteraction?: (interaction: any) => void /* ui-audit: allow */
-  onInteractionItemClick?: (interaction: any) => void /* ui-audit: allow */
+  onAddInteraction?: (opportunityId: string) => void
+  onEditInteraction?: (interaction: Interaction) => void
+  onDeleteInteraction?: (interaction: Interaction) => void
+  onInteractionItemClick?: (interaction: Interaction) => void
 }
 
 export function OpportunitiesTable({ 
   filters,
   onEdit, 
   onDelete, 
-  onView,
-  onAddNew,
+  onView: _onView, // Unused now - expansion handled internally
+  onAddNew: _onAddNew, // Unused in table - handled by parent
   onAddInteraction,
   onEditInteraction,
   onDeleteInteraction,
@@ -51,7 +58,7 @@ export function OpportunitiesTable({
   
   const { selectedItems, handleSelectAll, handleSelectItem, clearSelection } = useOpportunitiesSelection()
   
-  const { sortField, sortDirection, handleSort, sortedOpportunities } = useOpportunitiesSorting(filteredOpportunities)
+  const { sortField: _sortField, sortDirection: _sortDirection, handleSort: _handleSort, sortedOpportunities } = useOpportunitiesSorting(filteredOpportunities)
   
   const { getStageConfig, formatCurrency, formatActivityType } = useOpportunitiesFormatting()
   
@@ -125,65 +132,133 @@ export function OpportunitiesTable({
     }
   }
 
-  // Configure headers with sorting and selection support
-  const headers = [
-    { 
-      label: '', 
-      className: 'w-[40px] px-6 py-3',
-      isCheckbox: true
+  // Column definitions for DataTable
+  const opportunityColumns: DataTableColumn<OpportunityWithLastActivity>[] = [
+    {
+      key: 'selection',
+      header: (
+        <div className="flex items-center gap-2">
+          <Checkbox
+            checked={selectedItems.size > 0 && selectedItems.size === sortedOpportunities.length}
+            onCheckedChange={(checked) => handleSelectAll(!!checked, sortedOpportunities)}
+            aria-label="Select all opportunities"
+          />
+        </div>
+      ),
+      cell: (opportunity) => (
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => toggleRowExpansion(opportunity.id)}
+            className="h-auto p-0 text-gray-400 hover:bg-transparent hover:text-gray-600"
+            aria-label={isRowExpanded(opportunity.id) ? "Collapse details" : "Expand details"}
+          >
+            {isRowExpanded(opportunity.id) ? (
+              <ChevronDown className="size-4" />
+            ) : (
+              <ChevronRight className="size-4" />
+            )}
+          </Button>
+          <Checkbox
+            checked={selectedItems.has(opportunity.id)}
+            onCheckedChange={(checked) => handleSelectItem(opportunity.id, !!checked)}
+            aria-label={`Select ${opportunity.name}`}
+          />
+        </div>
+      ),
+      className: "w-[60px] px-6 py-3"
     },
-    { 
-      label: 'Company / Opportunity', 
-      className: 'w-[35%] px-6 py-3 text-xs',
-      sortable: true,
-      sortField: 'company'
+    {
+      key: 'company',
+      header: 'Company / Opportunity',
+      cell: (opportunity) => (
+        <div>
+          <div className="text-sm font-medium text-gray-900">
+            {opportunity.organization?.name || 'No Organization'}
+          </div>
+          <div className="mt-0.5 text-xs text-gray-500">
+            {opportunity.name} • {opportunity.interaction_count || 0} activities
+          </div>
+        </div>
+      ),
+      className: "w-[35%] px-6 py-3"
     },
-    { 
-      label: 'Stage', 
-      className: 'w-[20%] px-6 py-3 text-xs',
-      sortable: true,
-      sortField: 'stage'
+    {
+      key: 'stage',
+      header: 'Stage',
+      cell: (opportunity) => {
+        const stalled = isOpportunityStalled(opportunity.stage_updated_at || null, opportunity.created_at || '')
+        const stalledDays = stalled ? getStalledDays(opportunity.stage_updated_at || null, opportunity.created_at || '') : 0
+        const stageConfig = getStageConfig(opportunity.stage)
+        
+        return (
+          <div className="flex items-center gap-1.5">
+            <span className={cn("w-2 h-2 rounded-full", stageConfig.dot)}></span>
+            {stalled && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="size-2 animate-pulse rounded-full bg-red-500"></span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Stalled for {stalledDays} days</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+            <span className="text-sm font-medium">{opportunity.stage}</span>
+            <span className="text-xs text-gray-400">{stageConfig.position}/7</span>
+          </div>
+        )
+      },
+      className: "w-[20%] px-6 py-3",
+      hidden: { sm: true }
     },
-    { 
-      label: 'Value / Probability', 
-      className: 'w-[15%] px-6 py-3 text-xs text-right',
-      sortable: true,
-      sortField: 'value'
+    {
+      key: 'value',
+      header: 'Value / Probability',
+      cell: (opportunity) => (
+        <div>
+          <div className="text-sm font-medium">{formatCurrency(opportunity.estimated_value)}</div>
+          <div className="text-xs text-gray-500">
+            {opportunity.probability ? `${opportunity.probability}% likely` : 'No probability'}
+          </div>
+        </div>
+      ),
+      className: "w-[15%] px-6 py-3 text-right",
+      hidden: { sm: true, md: true }
     },
-    { 
-      label: 'Last Activity', 
-      className: 'w-[20%] px-6 py-3 text-xs text-right',
-      sortable: true,
-      sortField: 'last_activity'
+    {
+      key: 'last_activity',
+      header: 'Last Activity',
+      cell: (opportunity) => (
+        <div>
+          <div className="text-sm text-gray-900">
+            {formatTimeAgo(opportunity.last_activity_date || null)}
+          </div>
+          <div className="text-xs text-gray-500">
+            {formatActivityType(opportunity.last_activity_type || null)}
+          </div>
+        </div>
+      ),
+      className: "w-[20%] px-6 py-3 text-right",
+      hidden: { sm: true }
     },
-    { 
-      label: 'Actions', 
-      className: 'w-[10%] px-6 py-3 text-xs text-right'
+    {
+      key: 'actions',
+      header: 'Actions',
+      cell: (opportunity) => (
+        <OpportunitiesTableActions
+          opportunity={opportunity}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onView={() => toggleRowExpansion(opportunity.id)}
+        />
+      ),
+      className: "w-[10%] px-6 py-3 text-right"
     }
   ]
-
-  const renderOpportunityRow = (opportunity: OpportunityWithLastActivity, isExpanded: boolean, onToggle: () => void) => (
-    <OpportunityRow
-      key={opportunity.id}
-      opportunity={opportunity}
-      isSelected={selectedItems.has(opportunity.id)}
-      onSelect={handleSelectItem}
-      onEdit={onEdit}
-      onDelete={onDelete}
-      getStageConfig={getStageConfig}
-      formatCurrency={formatCurrency}
-      formatActivityType={formatActivityType}
-      isExpanded={isRowExpanded(opportunity.id)}
-      onToggleExpansion={() => toggleRowExpansion(opportunity.id)}
-      // For now, pass empty/loading states - will be improved later
-      interactions={[]}
-      activitiesLoading={false}
-      onAddInteraction={() => onAddInteraction?.(opportunity.id)}
-      onEditInteraction={onEditInteraction}
-      onDeleteInteraction={onDeleteInteraction}
-      onInteractionItemClick={onInteractionItemClick}
-    />
-  )
 
   const emptyMessage = searchTerm ? 'No opportunities match your search.' : 'No opportunities yet'
   const emptySubtext = searchTerm ? 'Try adjusting your search terms' : 'Get started by adding your first opportunity'
@@ -208,28 +283,46 @@ export function OpportunitiesTable({
         onSelectNone={handleSelectNoneFromToolbar}
       />
 
-      {/* Table */}
-      <SimpleTable
-        data={sortedOpportunities}
-        loading={isLoading}
-        headers={headers}
-        renderRow={renderOpportunityRow}
-        emptyMessage={emptyMessage}
-        emptySubtext={emptySubtext}
-        colSpan={6}
-        sortField={sortField}
-        sortDirection={sortDirection}
-        onSort={handleSort}
-        selectedCount={selectedItems.size}
-        totalCount={sortedOpportunities.length}
-        onSelectAll={(checked) => handleSelectAll(checked, sortedOpportunities)}
-      />
+      {/* Table Container with Row Expansion */}
+      <div className="space-y-0">
+        <DataTable<OpportunityWithLastActivity>
+          data={sortedOpportunities}
+          columns={opportunityColumns}
+          loading={isLoading}
+          rowKey={(opportunity) => opportunity.id}
+          empty={{
+            title: emptyMessage,
+            description: emptySubtext
+          }}
+        />
+        
+        {/* Expanded Row Details */}
+        {sortedOpportunities
+          .filter((opportunity) => isRowExpanded(opportunity.id))
+          .map((opportunity) => (
+            <div 
+              key={`${opportunity.id}-details`} 
+              className="-mt-px border-x border-b bg-gray-50/50 p-6"
+              style={{ marginTop: '-1px' }}
+            >
+              <OpportunityRowDetails
+                opportunity={opportunity}
+                interactions={[]} // For now, pass empty - will be improved later
+                activitiesLoading={false}
+                onAddInteraction={() => onAddInteraction?.(opportunity.id)}
+                onEditInteraction={onEditInteraction}
+                onDeleteInteraction={onDeleteInteraction}
+                onInteractionItemClick={onInteractionItemClick}
+              />
+            </div>
+          ))}
+      </div>
 
       {/* Bulk Delete Dialog */}
       <BulkDeleteDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
-        organizations={selectedOpportunities}
+        organizations={selectedOpportunities as any} // TODO: Create generic BulkDeleteDialog
         onConfirm={handleConfirmDelete}
         isDeleting={isDeleting}
       />

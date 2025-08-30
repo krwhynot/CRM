@@ -9,13 +9,13 @@ interface ContactProfessionalDetailsProps {
 
 export const ContactProfessionalDetails: React.FC<ContactProfessionalDetailsProps> = ({ contact }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       <div className="space-y-2">
-        <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
-          <Briefcase className="h-4 w-4" />
+        <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground">
+          <Briefcase className="size-4" />
           Professional Details
         </div>
-        <div className="text-sm text-gray-600 pl-6 space-y-1">
+        <div className="space-y-1 pl-6 text-sm text-muted-foreground">
           {contact.department && (
             <div><strong>Department:</strong> {contact.department}</div>
           )}
@@ -30,8 +30,8 @@ export const ContactProfessionalDetails: React.FC<ContactProfessionalDetailsProp
 
       {/* Badges Section */}
       <div className="space-y-2">
-        <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
-          <User className="h-4 w-4" />
+        <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground">
+          <User className="size-4" />
           Contact Classifications
         </div>
         <div className="pl-6">

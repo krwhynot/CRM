@@ -57,7 +57,7 @@ export const WizardStepDetails: React.FC<WizardStepDetailsProps> = ({
             </SelectContent>
           </Select>
           {errors.stage && (
-            <p className="text-sm text-red-600 mt-1">{errors.stage.message}</p>
+            <p className="mt-1 text-sm text-red-600">{errors.stage.message}</p>
           )}
         </div>
 
@@ -75,7 +75,7 @@ export const WizardStepDetails: React.FC<WizardStepDetailsProps> = ({
             disabled={loading}
           />
           {errors.probability && (
-            <p className="text-sm text-red-600 mt-1">{errors.probability.message}</p>
+            <p className="mt-1 text-sm text-red-600">{errors.probability.message}</p>
           )}
         </div>
       </div>
@@ -92,7 +92,7 @@ export const WizardStepDetails: React.FC<WizardStepDetailsProps> = ({
           rows={3}
         />
         {errors.description && (
-          <p className="text-sm text-red-600 mt-1">{errors.description.message}</p>
+          <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
         )}
       </div>
     </div>
