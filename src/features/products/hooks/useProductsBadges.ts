@@ -68,7 +68,7 @@ export const useProductsBadges = (): UseProductsBadgesReturn => {
           }
       }
     }
-  }, [])
+  })
 
   const getValueBadge = useMemo(() => {
     return (price: number | null): BadgeStyle | null => {
@@ -90,7 +90,7 @@ export const useProductsBadges = (): UseProductsBadgesReturn => {
       
       return null // No badge for regular/low value items
     }
-  }, [])
+  })
 
   const getFreshnessBadge = useMemo(() => {
     return (shelfLifeDays: number | null): BadgeStyle | null => {
@@ -119,7 +119,7 @@ export const useProductsBadges = (): UseProductsBadgesReturn => {
       
       return null // No badge for long shelf life items
     }
-  }, [])
+  })
 
   const getAvailabilityBadge = useMemo(() => {
     return (inStock: boolean | null, lowStock: boolean | null): BadgeStyle => {
@@ -142,7 +142,7 @@ export const useProductsBadges = (): UseProductsBadgesReturn => {
         label: 'In Stock'
       }
     }
-  }, [])
+  })
 
   return {
     getCategoryBadge,

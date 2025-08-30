@@ -145,7 +145,7 @@ export const getDeleteConfirmation = (entityName: string): string => {
 /**
  * Helper function to format button loading states consistently
  */
-export const getLoadingLabel = (action: keyof typeof COPY.LOADING, _baseLabel: string): string => {
+export const getLoadingLabel = (action: keyof typeof COPY.LOADING): string => {
   return `${COPY.LOADING[action]}`
 }
 

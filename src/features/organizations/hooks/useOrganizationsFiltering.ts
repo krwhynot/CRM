@@ -18,20 +18,20 @@ interface UseOrganizationsFilteringReturn {
   filterPills: FilterPill[]
 }
 
+// Base filter pills configuration (static - moved outside function)
+const baseFilterPills: Omit<FilterPill, 'count'>[] = [
+  { key: 'all', label: 'All' },
+  { key: 'high-priority', label: 'High Priority' },
+  { key: 'customers', label: 'Customers' },
+  { key: 'distributors', label: 'Distributors' },
+  { key: 'recently-contacted', label: 'Recently Contacted' }
+]
+
 export const useOrganizationsFiltering = (
   organizations: Organization[]
 ): UseOrganizationsFilteringReturn => {
   const [activeFilter, setActiveFilter] = useState<OrganizationFilterType>('all')
   const [searchTerm, setSearchTerm] = useState('')
-
-  // Base filter pills configuration
-  const baseFilterPills: Omit<FilterPill, 'count'>[] = [
-    { key: 'all', label: 'All' },
-    { key: 'high-priority', label: 'High Priority' },
-    { key: 'customers', label: 'Customers' },
-    { key: 'distributors', label: 'Distributors' },
-    { key: 'recently-contacted', label: 'Recently Contacted' }
-  ]
 
   // Filtered and searched organizations
   const filteredOrganizations = useMemo(() => {
@@ -48,7 +48,7 @@ export const useOrganizationsFiltering = (
       case 'distributors':
         filtered = filtered.filter(org => org.type === 'distributor')
         break
-      case 'recently-contacted':
+      case 'recently-contacted': {
         // Filter organizations contacted within the last 14 days
         const fourteenDaysAgo = new Date()
         fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14)
@@ -58,6 +58,7 @@ export const useOrganizationsFiltering = (
           return updatedDate > fourteenDaysAgo
         })
         break
+      }
       case 'all':
       default:
         // No filtering needed for 'all'
@@ -112,7 +113,7 @@ function getFilterCount(filterKey: OrganizationFilterType, organizations: Organi
       return organizations.filter(org => org.type === 'customer').length
     case 'distributors':
       return organizations.filter(org => org.type === 'distributor').length
-    case 'recently-contacted':
+    case 'recently-contacted': {
       const fourteenDaysAgo = new Date()
       fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14)
       return organizations.filter(org => {
@@ -120,6 +121,7 @@ function getFilterCount(filterKey: OrganizationFilterType, organizations: Organi
         const updatedDate = new Date(org.updated_at)
         return updatedDate > fourteenDaysAgo
       }).length
+    }
     default:
       return 0
   }

@@ -35,7 +35,7 @@ export const InteractionTimeline = forwardRef<HTMLDivElement, InteractionTimelin
     onItemClick,
     onEditInteraction,
     onDeleteInteraction,
-    opportunityId: _opportunityId, 
+    opportunityId: _, 
     loading = false,
     className,
     ...props 

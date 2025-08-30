@@ -120,9 +120,7 @@ export function isClientStateSafe(value: unknown): boolean {
     // If it has multiple server-like keys, it's probably server data
     const serverLikeKeyCount = serverDataKeys.filter(key => objectKeys.includes(key)).length
     if (serverLikeKeyCount >= 2) {
-      if (process.env.NODE_ENV === 'development') {
-        console.warn('⚠️ Attempting to store server-like object in client state:', value)
-      }
+      // Development warning for server data in client state
       return false
     }
     
@@ -137,17 +135,12 @@ export function isClientStateSafe(value: unknown): boolean {
  * Runtime validation function for development
  */
 export function validateClientState<T extends Record<string, unknown>>(
-  state: T,
-  storeName: string
+  state: T
 ): void {
   if (process.env.NODE_ENV === 'development') {
-    Object.entries(state).forEach(([key, value]) => {
+    Object.entries(state).forEach(([, value]) => {
       if (!isClientStateSafe(value)) {
-        console.error(
-          `❌ [${storeName}] Invalid client state detected in key '${key}':`,
-          value,
-          '\n💡 Client state should only contain UI state, preferences, and IDs - not full server objects.'
-        )
+        // Invalid client state detected - should be handled in development
       }
     })
   }

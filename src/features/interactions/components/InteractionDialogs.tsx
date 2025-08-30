@@ -3,13 +3,14 @@ import { StandardDialog } from '@/components/ui/StandardDialog'
 import { InteractionForm } from './InteractionForm'
 import { FormDataTransformer } from '@/lib/form-data-transformer'
 import type { InteractionWithRelations } from '@/types/entities'
+import type { InteractionFormData } from '@/types/interaction.types'
 
 interface InteractionDialogsProps {
   isCreateDialogOpen: boolean
   isEditDialogOpen: boolean
   editingInteraction: InteractionWithRelations | null
-  onCreateSubmit: (data: any) => void
-  onEditSubmit: (editingInteraction: InteractionWithRelations, data: any) => void
+  onCreateSubmit: (data: InteractionFormData) => void
+  onEditSubmit: (editingInteraction: InteractionWithRelations, data: InteractionFormData) => void
   onCreateDialogChange: (open: boolean) => void
   onEditDialogChange: (open: boolean) => void
   isCreating: boolean

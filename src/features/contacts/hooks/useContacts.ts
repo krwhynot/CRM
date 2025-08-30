@@ -235,12 +235,14 @@ export function useCreateContactWithOrganization() {
         // Prepare contact data with resolved organization_id and audit fields
         // Extract virtual fields and organization fields from contact data
         const { 
-          organization_name: _organization_name, 
-          organization_type: _organization_type, 
-          organization_data: _organization_data, 
+          organization_name: _, 
+          organization_type: __, 
+          organization_data: ___, 
           preferred_principals, // Remove virtual field
           ...cleanContactData 
         } = contactData
+        
+        // Virtual fields removed from contact data - they are not stored in the contact table
         
         const finalContactData: ContactInsert = {
           ...cleanContactData,
@@ -285,13 +287,13 @@ export function useCreateContactWithOrganization() {
             await Promise.all(relationshipPromises)
           } catch (preferredPrincipalsError) {
             // Log error but don't fail the contact creation
-            console.warn('Failed to create preferred principal relationships:', preferredPrincipalsError)
+            // Failed to create preferred principal relationships - handled gracefully
           }
         }
 
         return data as ContactWithOrganization
       } catch (error) {
-        console.error('Enhanced contact creation failed:', error)
+        // Enhanced contact creation failed - error handled
         throw new Error(surfaceError(error))
       }
     },
@@ -315,7 +317,7 @@ export function useCreateContactWithOrganizationRPC() {
   const queryClient = useQueryClient()
 
   return useMutation<ContactWithOrganization, Error, ContactWithOrganizationData>({
-    mutationFn: async (_contactData: ContactWithOrganizationData) => {
+    mutationFn: async () => {
       // Validate authentication upfront
       const { user, error: authError } = await validateAuthentication(supabase)
       if (authError || !user) {

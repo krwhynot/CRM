@@ -2,6 +2,7 @@ import React from 'react'
 import { StandardDialog } from '@/components/ui/StandardDialog'
 import { EnhancedContactForm } from './EnhancedContactForm'
 import type { Contact, ContactUpdate } from '@/types/entities'
+import type { ContactFormData } from '@/types/contact.types'
 import { FormDataTransformer } from '@/lib/form-data-transformer'
 
 interface ContactsDialogsProps {
@@ -9,7 +10,7 @@ interface ContactsDialogsProps {
   isEditDialogOpen: boolean
   isDeleteDialogOpen: boolean
   selectedContact: Contact | null
-  onCreateSubmit: (data: any) => void
+  onCreateSubmit: (data: ContactFormData) => void
   onEditSubmit: (selectedContact: Contact, data: ContactUpdate) => void
   onDeleteConfirm: (selectedContact: Contact) => void
   onCreateDialogChange: (open: boolean) => void

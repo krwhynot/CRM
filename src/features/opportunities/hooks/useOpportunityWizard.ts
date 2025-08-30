@@ -1,9 +1,10 @@
 import { useState, useCallback } from 'react'
+import type { ComponentType } from 'react'
 
 export interface WizardStep {
   id: number
   title: string
-  icon: any
+  icon: ComponentType<{ className?: string }>
   description: string
 }
 

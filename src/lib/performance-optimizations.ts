@@ -115,13 +115,15 @@ export function useMemoizedQueryResult<T>(
   queryResult: { data?: T; isLoading: boolean; error: unknown },
   dependencies: unknown[] = []
 ) {
+  const dependenciesString = useMemo(() => JSON.stringify(dependencies), [dependencies])
+  
   return useMemo(
     () => ({
       data: queryResult.data,
       isLoading: queryResult.isLoading,
       error: queryResult.error,
     }),
-    [queryResult.data, queryResult.isLoading, queryResult.error, JSON.stringify(dependencies)]
+    [queryResult.data, queryResult.isLoading, queryResult.error, dependenciesString]
   )
 }
 

@@ -3,7 +3,8 @@ import { toast } from '@/lib/toast-styles'
 import { 
   useCreateContactWithOrganization, 
   useUpdateContact, 
-  useDeleteContact 
+  useDeleteContact,
+  type ContactWithOrganizationData
 } from './useContacts'
 import type { Contact, ContactUpdate } from '@/types/entities'
 
@@ -16,14 +17,14 @@ export const useContactsPageActions = (
   const updateContactMutation = useUpdateContact()
   const deleteContactMutation = useDeleteContact()
 
-  const handleCreate = useCallback(async (data: any) => {
+  const handleCreate = useCallback(async (data: ContactWithOrganizationData) => {
     try {
       
       await createContactMutation.mutateAsync(data)
       closeCreateDialog()
       toast.success('Contact created successfully!')
     } catch (error) {
-      console.error('Failed to create contact:', error)
+      // Failed to create contact - error handled
       // Use the enhanced error message from our error utils
       const errorMessage = error instanceof Error ? error.message : 'Failed to create contact. Please try again.'
       toast.error(errorMessage)
@@ -39,7 +40,7 @@ export const useContactsPageActions = (
       closeEditDialog()
       toast.success('Contact updated successfully!')
     } catch (error) {
-      console.error('Failed to update contact:', error)
+      // Failed to update contact - error handled
       toast.error('Failed to update contact. Please try again.')
     }
   }, [updateContactMutation, closeEditDialog])
@@ -52,7 +53,7 @@ export const useContactsPageActions = (
       closeDeleteDialog()
       toast.success('Contact deleted successfully!')
     } catch (error) {
-      console.error('Failed to delete contact:', error)
+      // Failed to delete contact - error handled
       toast.error('Failed to delete contact. Please try again.')
     }
   }, [deleteContactMutation, closeDeleteDialog])

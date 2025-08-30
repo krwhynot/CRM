@@ -5,7 +5,7 @@ import { Database, Shield, Zap } from 'lucide-react'
 import { ServiceStatusCard } from './ServiceStatusCard'
 
 interface SystemStatusOverviewProps {
-  status: any
+  status: Record<string, unknown>
   summary: string
   isHealthy: boolean
 }

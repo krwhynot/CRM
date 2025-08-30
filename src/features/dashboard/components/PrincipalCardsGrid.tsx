@@ -46,13 +46,13 @@ export function PrincipalCardsGrid({ className, maxItems }: PrincipalCardsGridPr
   if (isError) {
     return (
       <div className={`${className || ''}`}>
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-destructive/50 bg-destructive/10">
           <CardContent className="p-6">
-            <div className="text-red-800">
+            <div className="text-destructive">
               <h3 className="font-semibold">Failed to load principal organizations</h3>
               <p className="mt-1 text-sm">Please try again later.</p>
               {error?.message && (
-                <div className="mt-2 text-xs text-red-600">
+                <div className="mt-2 text-xs text-destructive">
                   Error: {error.message}
                 </div>
               )}

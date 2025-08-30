@@ -367,13 +367,13 @@ export function useDashboardMetrics(options: DashboardMetricsOptions = {}): Dash
   const query = useQuery<DatabaseMetricsResponse, Error>({
     queryKey: ['dashboard', 'metrics', options.filters],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc('get_dashboard_metrics' as any, {
+      const { data, error } = await supabase.rpc('get_dashboard_metrics', {
         p_principal_ids: options.filters?.principalIds || null,
         p_date_from: options.filters?.dateRange?.start || null,
         p_date_to: options.filters?.dateRange?.end || null
       })
       if (error) {
-        console.error('Dashboard metrics RPC error:', error)
+        // Dashboard metrics RPC error - propagating to React Query error handling
         throw error
       }
       // The RPC returns an array with a single object
@@ -473,9 +473,9 @@ export function useRealTimeActivityMetrics() {
   const query = useQuery<DatabaseMetricsResponse, Error>({
     queryKey: ['dashboard', 'real-time-metrics'],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc('get_dashboard_metrics' as any)
+      const { data, error } = await supabase.rpc('get_dashboard_metrics')
       if (error) {
-        console.error('Real-time metrics RPC error:', error)
+        // Real-time metrics RPC error - propagating to React Query error handling
         throw error
       }
       return Array.isArray(data) ? data[0] : data

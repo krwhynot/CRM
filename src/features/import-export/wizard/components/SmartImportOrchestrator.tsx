@@ -12,6 +12,18 @@ import { Progress } from '@/components/ui/progress'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
+// Import error type
+interface ImportError {
+  row: number
+  error: string
+}
+
+// Import result type
+interface ImportResult {
+  errors: ImportError[]
+  [key: string]: unknown
+}
+
 interface SmartImportOrchestratorProps {
   onImportComplete?: (result: { success: boolean; imported: number; failed: number }) => void
   onCancel?: () => void
@@ -247,7 +259,7 @@ function ImportProgressStep({
 }: {
   inProgress: boolean
   progress: number
-  result: any
+  result: ImportResult
   error: string | null
 }) {
   return (
@@ -262,14 +274,14 @@ function ImportProgressStep({
               </div>
               
               <div>
-                <h3 className="text-lg font-semibold text-slate-900">Importing your data...</h3>
-                <p className="mt-1 text-sm text-slate-600">
+                <h3 className="text-lg font-semibold text-foreground">Importing your data...</h3>
+                <p className="mt-1 text-sm text-muted-foreground">
                   This may take a few moments depending on the size of your file
                 </p>
               </div>
 
               <div className="mx-auto w-full max-w-sm space-y-2">
-                <div className="flex justify-between text-sm text-slate-600">
+                <div className="flex justify-between text-sm text-muted-foreground">
                   <span>Progress</span>
                   <span>{progress}%</span>
                 </div>
@@ -288,40 +300,40 @@ function ImportProgressStep({
       )}
 
       {result && (
-        <Card className={result.success ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}>
+        <Card className={result.success ? "border-success/20 bg-success/5" : "border-destructive/20 bg-destructive/5"}>
           <CardContent className="p-6">
             <div className="text-center">
               {result.success ? (
-                <CheckCircle2 className="mx-auto mb-3 size-12 text-green-500" />
+                <CheckCircle2 className="mx-auto mb-3 size-12 text-success" />
               ) : (
-                <AlertCircle className="mx-auto mb-3 size-12 text-red-500" />
+                <AlertCircle className="mx-auto mb-3 size-12 text-destructive" />
               )}
               
-              <h3 className="text-lg font-semibold text-slate-900">
+              <h3 className="text-lg font-semibold text-foreground">
                 {result.success ? 'Import Successful!' : 'Import Failed'}
               </h3>
               
               <div className="mt-4 space-y-2">
-                <div className="text-sm text-slate-600">
+                <div className="text-sm text-muted-foreground">
                   <strong>{result.imported}</strong> records imported successfully
                   {result.failed > 0 && (
-                    <span>, <strong className="text-red-600">{result.failed}</strong> failed</span>
+                    <span>, <strong className="text-destructive">{result.failed}</strong> failed</span>
                   )}
                 </div>
 
                 {result.errors.length > 0 && (
                   <details className="mt-4">
-                    <summary className="cursor-pointer text-sm text-slate-600 hover:text-slate-800">
+                    <summary className="cursor-pointer text-sm text-muted-foreground hover:text-slate-800">
                       View errors ({result.errors.length})
                     </summary>
                     <div className="mt-2 space-y-1 text-left text-xs">
-                      {result.errors.slice(0, 5).map((error: any, idx: number) => (
-                        <div key={idx} className="text-red-600">
+                      {result.errors.slice(0, 5).map((error: ImportError, idx: number) => (
+                        <div key={idx} className="text-destructive">
                           Row {error.row}: {error.error}
                         </div>
                       ))}
                       {result.errors.length > 5 && (
-                        <div className="text-slate-500">
+                        <div className="text-muted-foreground">
                           ...and {result.errors.length - 5} more errors
                         </div>
                       )}
@@ -343,19 +355,19 @@ function ImportCompleteStep({
   onStartNew,
   onClose
 }: {
-  result: any
+  result: ImportResult
   onStartNew: () => void
   onClose?: () => void
 }) {
   return (
     <div className="space-y-6 text-center">
-      <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-green-100">
-        <CheckCircle2 className="size-8 text-green-600" />
+      <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-success/10">
+        <CheckCircle2 className="size-8 text-success" />
       </div>
 
       <div>
-        <h2 className="text-2xl font-bold text-slate-900">Import Complete!</h2>
-        <p className="mt-2 text-slate-600">
+        <h2 className="text-2xl font-bold text-foreground">Import Complete!</h2>
+        <p className="mt-2 text-muted-foreground">
           Your data has been successfully imported into the CRM system.
         </p>
       </div>
@@ -365,12 +377,12 @@ function ImportCompleteStep({
           <CardContent className="p-6">
             <div className="grid grid-cols-2 gap-4 text-center">
               <div>
-                <div className="text-2xl font-bold text-green-600">{result.imported}</div>
-                <div className="text-sm text-slate-600">Records Imported</div>
+                <div className="text-2xl font-bold text-success">{result.imported}</div>
+                <div className="text-sm text-muted-foreground">Records Imported</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-red-600">{result.failed}</div>
-                <div className="text-sm text-slate-600">Failed Records</div>
+                <div className="text-2xl font-bold text-destructive">{result.failed}</div>
+                <div className="text-sm text-muted-foreground">Failed Records</div>
               </div>
             </div>
           </CardContent>

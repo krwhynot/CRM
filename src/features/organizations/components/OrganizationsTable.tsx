@@ -184,7 +184,7 @@ export function OrganizationsTable({
           results.push({ id: organizationId, status: 'success' })
           successCount++
         } catch (error) {
-          console.error(`Failed to delete organization ${organizationId}:`, error)
+          // Log error to results for user feedback
           results.push({ 
             id: organizationId, 
             status: 'error', 
@@ -213,7 +213,7 @@ export function OrganizationsTable({
       }
       
     } catch (error) {
-      console.error('Unexpected error during bulk delete:', error)
+      // Handle unexpected errors during bulk delete operation
       toast.error('An unexpected error occurred during bulk deletion')
     } finally {
       setIsDeleting(false)
@@ -292,7 +292,7 @@ export function OrganizationsTable({
       key: 'phone',
       header: 'Phone',
       cell: (organization) => (
-        <span className="text-gray-700">
+        <span className="text-foreground">
           {organization.phone || <EmptyCell />}
         </span>
       ),

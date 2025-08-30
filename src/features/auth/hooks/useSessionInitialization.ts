@@ -31,7 +31,7 @@ export const useSessionInitialization = ({
   useEffect(() => {
     const initializeSession = async () => {
       if (authData.accessToken && authData.type === 'recovery' && !hasError) {
-        console.log('Initializing Supabase session for password reset')
+        // Initializing Supabase session for password reset
         
         try {
           const { error: sessionError } = await supabase.auth.setSession({
@@ -40,14 +40,14 @@ export const useSessionInitialization = ({
           })
 
           if (sessionError) {
-            console.error('Error setting session:', sessionError)
+            // Error setting session handled
             setSessionError('Invalid or expired reset link')
           } else {
-            console.log('Session initialized successfully')
+            // Session initialized successfully
             setSessionInitialized(true)
           }
         } catch (err) {
-          console.error('Error initializing session:', err)
+          // Error initializing session handled
           setSessionError('Failed to initialize password reset session')
         }
       }

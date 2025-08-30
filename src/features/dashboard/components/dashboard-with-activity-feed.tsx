@@ -3,7 +3,6 @@ import { DashboardCharts } from "./DashboardCharts"
 import { QuickActions } from "./QuickActions"
 import { StatsCards } from "./StatsCards"
 import { ActivityFeed } from "./ActivityFeed"
-import type { InteractionWithRelations } from "@/types/entities"
 
 /**
  * Enhanced Dashboard component showcasing the integration of the new ActivityFeed
@@ -11,8 +10,8 @@ import type { InteractionWithRelations } from "@/types/entities"
  */
 export function DashboardWithActivityFeed() {
   // Handler for when an activity is clicked
-  const handleActivityClick = (activity: InteractionWithRelations) => {
-    console.log('Activity clicked:', activity)
+  const handleActivityClick = () => {
+    // Handle activity click - can implement navigation logic here
     // You can implement navigation logic here, such as:
     // - Navigate to the contact detail page
     // - Open a modal with activity details
@@ -95,8 +94,8 @@ export function MinimalActivityDashboard() {
         limit={50}
         showFilters={true}
         enableRealTime={true}
-        onActivityClick={(activity: InteractionWithRelations) => {
-          console.log('Navigate to activity:', activity.id)
+        onActivityClick={() => {
+          // Navigate to activity - implement navigation logic here
         }}
       />
     </div>

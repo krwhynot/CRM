@@ -23,7 +23,7 @@ export const useProductsPageActions = (
       closeCreateDialog()
       toast.success('Product created successfully!')
     } catch (error) {
-      console.error('Failed to create product:', error)
+      // Failed to create product - error handled
       toast.error('Failed to create product. Please try again.')
     }
   }, [createProductMutation, closeCreateDialog])
@@ -43,7 +43,7 @@ export const useProductsPageActions = (
       closeEditDialog()
       toast.success('Product updated successfully!')
     } catch (error) {
-      console.error('Failed to update product:', error)
+      // Failed to update product - error handled
       toast.error('Failed to update product. Please try again.')
     }
   }, [updateProductMutation, closeEditDialog])
@@ -59,7 +59,7 @@ export const useProductsPageActions = (
       closeDeleteDialog()
       toast.success('Product deleted successfully!')
     } catch (error) {
-      console.error('Failed to delete product:', error)
+      // Failed to delete product - error handled
       toast.error('Failed to delete product. Please try again.')
     }
   }, [deleteProductMutation, closeDeleteDialog])

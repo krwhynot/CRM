@@ -6,9 +6,13 @@ import { type ParsedData } from '@/hooks/useFileUpload'
 import { useImportProgress } from '@/features/import-export/hooks/useImportProgress'
 import { suggestFieldMappings, isOpenAIAvailable } from '@/lib/openai'
 import { X } from 'lucide-react'
+import type { OrganizationInsert } from '@/types/entities'
 
 // Import state matching the 5 wireframe states
 type ImportState = 'upload' | 'mapping' | 'preview' | 'importing' | 'complete'
+
+// CSV row data type
+type CsvRowData = Record<string, string | number | null>
 
 // Field mapping structure 
 interface FieldMapping {
@@ -69,7 +73,7 @@ export function TemplateMatchingImport() {
   const { importState, importOrganizations, resetImport } = useImportProgress()
 
   // AI field mapping
-  const generateAIMappings = useCallback(async (headers: string[], rows: any[]) => {
+  const generateAIMappings = useCallback(async (headers: string[], rows: CsvRowData[]) => {
     if (!isOpenAIAvailable()) {
       // Fallback to basic mapping
       return headers.map(header => ({
@@ -92,7 +96,7 @@ export function TemplateMatchingImport() {
         }
       })
     } catch (error) {
-      console.warn('AI mapping failed, using fallback', error)
+      // AI mapping failed, using fallback field detection
       return headers.map(header => ({
         csvColumn: header,
         mapsTo: detectFieldMapping(header),
@@ -328,7 +332,7 @@ export function TemplateMatchingImport() {
     
     // Transform data based on mappings
     const validRows = parsedData.rows.map(row => {
-      const transformed: any = {
+      const transformed: Partial<OrganizationInsert> & Record<string, unknown> = {
         name: '',
         type: 'customer',
         priority: 'C',
@@ -459,7 +463,7 @@ export function TemplateMatchingImport() {
           {/* Template .card-header */}
           <div className="border-b border-border px-6 py-5">
             <div className="text-base font-semibold text-card-foreground">Field Mapping</div>
-            <p className="mt-1 text-sm text-muted-foreground">We've detected your CSV columns. Confirm or adjust the mapping below.</p>
+            <p className="mt-1 text-sm text-muted-foreground">We&apos;ve detected your CSV columns. Confirm or adjust the mapping below.</p>
           </div>
           {/* Template .card-content */}
           <div className="p-6">
@@ -473,12 +477,12 @@ export function TemplateMatchingImport() {
                 </tr>
               </thead>
               <tbody>
-                {fieldMappings.map((mapping, _idx) => (
-                  <tr key={mapping.csvColumn}>
+                {fieldMappings.map((mapping, idx) => (
+                  <tr key={`${mapping.csvColumn}-${idx}`}>
                     <td className="border-b border-border p-3 text-sm font-medium">{mapping.csvColumn}</td>
                     <td className="border-b border-border p-3">
                       <Select value={mapping.mapsTo || 'skip'} onValueChange={(value) => updateFieldMapping(mapping.csvColumn, value === 'skip' ? null : value)}>
-                        <SelectTrigger className="min-w-[200px] rounded-md border border-border bg-background px-3 py-2 text-sm">
+                        <SelectTrigger className="min-w-48 rounded-md border border-border bg-background px-3 py-2 text-sm">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>

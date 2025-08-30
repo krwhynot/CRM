@@ -42,7 +42,7 @@ export async function findExistingOrganization(
 
     return data || null
   } catch (error) {
-    console.error('Error finding existing organization:', error)
+    // Error finding existing organization - handled
     throw new Error(surfaceError(error))
   }
 }
@@ -89,7 +89,7 @@ export async function createNewOrganization(
 
     return data
   } catch (error) {
-    console.error('Error creating new organization:', error)
+    // Error creating new organization - handled
     throw new Error(surfaceError(error))
   }
 }
@@ -103,35 +103,30 @@ export async function resolveOrganization(
   type: OrganizationType,
   additionalData?: Partial<OrganizationInsert>
 ): Promise<OrganizationResolutionResult> {
-  try {
-    // First, try to find existing organization
-    const existing = await findExistingOrganization(name, type)
-    
-    if (existing) {
-      return {
-        id: existing.id,
-        name: existing.name,
-        type: existing.type,
-        isNew: false
-      }
-    }
-
-    // If not found, create new organization
-    const newOrg = await createNewOrganization({
-      name: name.trim(),
-      type: type as 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor',
-      ...additionalData
-    })
-
+  // First, try to find existing organization
+  const existing = await findExistingOrganization(name, type)
+  
+  if (existing) {
     return {
-      id: newOrg.id,
-      name: newOrg.name,
-      type: newOrg.type,
-      isNew: true
+      id: existing.id,
+      name: existing.name,
+      type: existing.type,
+      isNew: false
     }
-  } catch (error) {
-    console.error('Error resolving organization:', error)
-    throw error // Re-throw the error with enhanced message from create/find functions
+  }
+
+  // If not found, create new organization
+  const newOrg = await createNewOrganization({
+    name: name.trim(),
+    type: type as 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor',
+    ...additionalData
+  })
+
+  return {
+    id: newOrg.id,
+    name: newOrg.name,
+    type: newOrg.type,
+    isNew: true
   }
 }
 
@@ -144,13 +139,8 @@ export async function resolveOrganizations(
   const results: OrganizationResolutionResult[] = []
   
   for (const org of organizations) {
-    try {
-      const result = await resolveOrganization(org.name, org.type, org.data)
-      results.push(result)
-    } catch (error) {
-      console.error(`Failed to resolve organization ${org.name}:`, error)
-      throw error
-    }
+    const result = await resolveOrganization(org.name, org.type, org.data)
+    results.push(result)
   }
   
   return results

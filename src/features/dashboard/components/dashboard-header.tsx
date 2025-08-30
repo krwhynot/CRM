@@ -29,7 +29,7 @@ export function DashboardHeader() {
             Master Food Brokers, Inc.
           </span>
           <span className="ml-2 hidden text-xs italic text-gray-400 sm:inline">
-            "Partnering with Excellence"
+            &ldquo;Partnering with Excellence&rdquo;
           </span>
         </div>
         

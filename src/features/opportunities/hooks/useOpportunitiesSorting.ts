@@ -39,23 +39,26 @@ export const useOpportunitiesSorting = (
           if (!a.last_activity_date && b.last_activity_date) return 1 * direction
           return (new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime()) * direction
         
-        case 'company':
+        case 'company': {
           const aName = a.organization?.name || 'Z'
           const bName = b.organization?.name || 'Z'
           return aName.localeCompare(bName) * direction
+        }
         
         case 'stage':
           return a.stage.localeCompare(b.stage) * direction
         
-        case 'value':
+        case 'value': {
           const aValue = a.estimated_value || 0
           const bValue = b.estimated_value || 0
           return (aValue - bValue) * direction
+        }
         
-        case 'probability':
+        case 'probability': {
           const aProb = a.probability || 0
           const bProb = b.probability || 0
           return (aProb - bProb) * direction
+        }
         
         default:
           return 0

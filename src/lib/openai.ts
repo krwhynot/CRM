@@ -120,7 +120,7 @@ Analyze the headers and sample data to suggest the best field mappings.`
     return result as FieldMappingResponseType;
 
   } catch (error) {
-    console.error('OpenAI field mapping failed:', error);
+    // OpenAI field mapping failed - handled
     throw new Error('AI field mapping unavailable - falling back to manual mapping');
   }
 }
@@ -180,7 +180,7 @@ Check each row for data quality issues and provide specific feedback.`
     return result as BatchValidationResponseType;
 
   } catch (error) {
-    console.error('OpenAI validation failed:', error);
+    // OpenAI validation failed - handled
     throw new Error('AI validation unavailable - using basic validation only');
   }
 }
@@ -240,7 +240,7 @@ Group similar organizations and suggest how to handle each duplicate group.`
     return result as DuplicateDetectionResponseType;
 
   } catch (error) {
-    console.error('OpenAI duplicate detection failed:', error);
+    // OpenAI duplicate detection failed - handled
     throw new Error('AI duplicate detection unavailable');
   }
 }

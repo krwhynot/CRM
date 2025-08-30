@@ -47,7 +47,7 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
     return (
       <Card className={className}>
         <CardHeader>
-          <CardTitle className="text-red-600">Error Loading Activities</CardTitle>
+          <CardTitle className="text-destructive">Error Loading Activities</CardTitle>
           <CardDescription>
             Failed to load recent activities. Please try again later.
           </CardDescription>

@@ -140,7 +140,7 @@ export function OpportunityWizard({
           }
           onSubmit(cleanedData)
         })}>
-          <div className="mb-6 min-h-[300px]">
+          <div className="mb-6 min-h-72">
             {renderStepContent()}
           </div>
 

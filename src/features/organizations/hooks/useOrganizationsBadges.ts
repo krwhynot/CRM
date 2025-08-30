@@ -48,7 +48,7 @@ export const useOrganizationsBadges = (): UseOrganizationsBadgesReturn => {
           }
       }
     }
-  }, [])
+  })
 
   const getTypeBadge = useMemo(() => {
     return (type: string | null): BadgeStyle => {
@@ -80,7 +80,7 @@ export const useOrganizationsBadges = (): UseOrganizationsBadgesReturn => {
           }
       }
     }
-  }, [])
+  })
 
   const getSegmentBadge = useMemo(() => {
     return (segment: string | null): BadgeStyle | null => {
@@ -103,7 +103,7 @@ export const useOrganizationsBadges = (): UseOrganizationsBadgesReturn => {
         label: segment
       }
     }
-  }, [])
+  })
 
   const getStatusBadge = useMemo(() => {
     return (priority: string | null, type: string | null): BadgeStyle | null => {
@@ -125,7 +125,7 @@ export const useOrganizationsBadges = (): UseOrganizationsBadgesReturn => {
       
       return null
     }
-  }, [])
+  })
 
   return {
     getPriorityBadge,

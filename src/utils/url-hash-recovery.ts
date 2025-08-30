@@ -14,7 +14,7 @@ export function preserveUrlHash() {
   if (typeof window !== 'undefined' && window.location.hash) {
     const success = safeSetString(HASH_STORAGE_KEY, window.location.hash, 'sessionStorage')
     if (!success) {
-      console.warn('Failed to preserve URL hash - sessionStorage not available')
+      // Failed to preserve URL hash - sessionStorage not available
     }
   }
 }
@@ -77,7 +77,7 @@ export function forceCleanState() {
       try {
         window.history.replaceState({}, '', window.location.pathname + window.location.search)
       } catch (error) {
-        console.warn('Failed to clear URL hash:', error)
+        // Failed to clear URL hash - handled
       }
     }
     // Hash not found in storage - nothing to clear

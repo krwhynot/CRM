@@ -132,11 +132,7 @@ export function aggregateInteractionsByWeek(
     contact_id?: string | null
     opportunity_id?: string | null
   }>,
-  weekRanges: WeeklyData[],
-  _filters?: {
-    principal?: string
-    product?: string
-  }
+  weekRanges: WeeklyData[]
 ): WeeklyData[] {
   return weekRanges.map(week => {
     const weekInteractions = interactions.filter(interaction => {

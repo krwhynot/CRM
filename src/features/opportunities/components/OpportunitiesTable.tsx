@@ -39,8 +39,8 @@ export function OpportunitiesTable({
   filters,
   onEdit, 
   onDelete, 
-  onView: _onView, // Unused now - expansion handled internally
-  onAddNew: _onAddNew, // Unused in table - handled by parent
+  onView: _, // Unused now - expansion handled internally
+  onAddNew: __, // Unused in table - handled by parent
   onAddInteraction,
   onEditInteraction,
   onDeleteInteraction,
@@ -58,7 +58,7 @@ export function OpportunitiesTable({
   
   const { selectedItems, handleSelectAll, handleSelectItem, clearSelection } = useOpportunitiesSelection()
   
-  const { sortField: _sortField, sortDirection: _sortDirection, handleSort: _handleSort, sortedOpportunities } = useOpportunitiesSorting(filteredOpportunities)
+  const { sortedOpportunities } = useOpportunitiesSorting(filteredOpportunities)
   
   const { getStageConfig, formatCurrency, formatActivityType } = useOpportunitiesFormatting()
   
@@ -99,7 +99,7 @@ export function OpportunitiesTable({
           results.push({ id: opportunityId, status: 'success' })
           successCount++
         } catch (error) {
-          console.error(`Failed to delete opportunity ${opportunityId}:`, error)
+          // Log error to results for user feedback
           results.push({ 
             id: opportunityId, 
             status: 'error', 
@@ -124,7 +124,7 @@ export function OpportunitiesTable({
       }
       
     } catch (error) {
-      console.error('Unexpected error during bulk delete:', error)
+      // Handle unexpected errors during bulk delete operation
       toast.error('An unexpected error occurred during bulk deletion')
     } finally {
       setIsDeleting(false)

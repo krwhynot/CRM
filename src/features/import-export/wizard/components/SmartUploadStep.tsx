@@ -72,7 +72,7 @@ export function SmartUploadStep({
   
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isDragOver, setIsDragOver] = React.useState(false)
-  const [uploadProgress, _setUploadProgress] = React.useState(0)
+  const [uploadProgress] = React.useState(0)
 
   // File drop handlers
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -189,17 +189,17 @@ export function SmartUploadStep({
                   <div className="flex justify-center">
                     <div className={cn(
                       "w-16 h-16 rounded-full flex items-center justify-center",
-                      isDragOver ? "bg-primary text-white" : "bg-slate-100 text-slate-500"
+                      isDragOver ? "bg-primary text-white" : "bg-muted text-muted-foreground"
                     )}>
                       <Upload className="size-8" />
                     </div>
                   </div>
                   
                   <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-slate-900">
+                    <h3 className="text-lg font-semibold text-foreground">
                       {isDragOver ? 'Drop your CSV file here' : 'Upload your CSV file'}
                     </h3>
-                    <p className="text-sm text-slate-600">
+                    <p className="text-sm text-muted-foreground">
                       Drag and drop your file here, or click to browse
                     </p>
                   </div>
@@ -224,7 +224,7 @@ export function SmartUploadStep({
                   </div>
 
                   {/* File Requirements */}
-                  <div className="pt-4 text-xs text-slate-500">
+                  <div className="pt-4 text-xs text-muted-foreground">
                     <div className="flex items-center justify-center space-x-4 text-xs">
                       <span>Max {FILE_REQUIREMENTS.maxSize}</span>
                       <span>•</span>
@@ -237,21 +237,21 @@ export function SmartUploadStep({
               </div>
             ) : (
               // File Preview
-              <Card className="border-green-200 bg-green-50/50">
+              <Card className="border-success/20 bg-success/5/50">
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-3">
-                      <div className="flex size-10 items-center justify-center rounded-lg bg-green-100">
-                        <FileText className="size-5 text-green-600" />
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-success/10">
+                        <FileText className="size-5 text-success" />
                       </div>
                       <div className="space-y-1">
-                        <h4 className="font-medium text-slate-900">{file.name}</h4>
-                        <p className="text-sm text-slate-600">
+                        <h4 className="font-medium text-foreground">{file.name}</h4>
+                        <p className="text-sm text-muted-foreground">
                           {formatFileSize(file.size)} • {file.type || 'CSV file'}
                         </p>
                         <div className="flex items-center space-x-2">
-                          <CheckCircle2 className="size-4 text-green-600" />
-                          <span className="text-sm text-green-700">File uploaded successfully</span>
+                          <CheckCircle2 className="size-4 text-success" />
+                          <span className="text-sm text-success">File uploaded successfully</span>
                         </div>
                       </div>
                     </div>
@@ -273,8 +273,8 @@ export function SmartUploadStep({
             {uploadProgress > 0 && uploadProgress < 100 && (
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-slate-600">Uploading...</span>
-                  <span className="text-slate-600">{uploadProgress}%</span>
+                  <span className="text-muted-foreground">Uploading...</span>
+                  <span className="text-muted-foreground">{uploadProgress}%</span>
                 </div>
                 <Progress value={uploadProgress} className="h-2" />
               </div>
@@ -289,12 +289,12 @@ export function SmartUploadStep({
           <div className="flex items-start space-x-3">
             <Sparkles className="mt-0.5 size-5 text-amber-500" />
             <div>
-              <h4 className="font-semibold text-slate-900">AI-Enhanced Import</h4>
-              <p className="mt-1 text-sm text-slate-700">
+              <h4 className="font-semibold text-foreground">AI-Enhanced Import</h4>
+              <p className="mt-1 text-sm text-muted-foreground">
                 After uploading, our AI will automatically suggest field mappings and validate your data 
                 to ensure the best import quality.
               </p>
-              <ul className="mt-2 space-y-1 text-xs text-slate-600">
+              <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
                 <li>• Smart field detection (Company → Organization Name)</li>
                 <li>• Data quality validation and suggestions</li>
                 <li>• Duplicate detection and handling</li>
@@ -306,13 +306,13 @@ export function SmartUploadStep({
       </Card>
 
       {/* File Requirements Card */}
-      <Card className="bg-slate-50">
+      <Card className="bg-muted/50">
         <CardContent className="p-4">
-          <h4 className="mb-3 font-medium text-slate-900">File Requirements</h4>
-          <div className="space-y-2 text-sm text-slate-700">
+          <h4 className="mb-3 font-medium text-foreground">File Requirements</h4>
+          <div className="space-y-2 text-sm text-muted-foreground">
             {FILE_REQUIREMENTS.requirements.map((req, idx) => (
               <div key={idx} className="flex items-center space-x-2">
-                <div className="size-1.5 rounded-full bg-slate-400" />
+                <div className="size-1.5 rounded-full bg-muted-foreground" />
                 <span>{req}</span>
               </div>
             ))}

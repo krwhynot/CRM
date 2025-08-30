@@ -31,7 +31,7 @@ export const InteractionTableRow: React.FC<InteractionTableRowProps> = ({
   const { getTypeColor, formatType, formatDate, formatDuration, isFollowUpOverdue } = useInteractionFormatting()
 
   return (
-    <TableRow className={isSelected ? "bg-blue-50" : ""}>
+    <TableRow className={isSelected ? "bg-muted/50" : ""}>
       {showSelection && (
         <TableCell className="w-12">
           <Checkbox

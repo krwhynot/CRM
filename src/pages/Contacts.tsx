@@ -4,7 +4,6 @@ import {
   useRefreshContacts,
   useContactsPageState,
   useContactsPageActions,
-  useContactFormData,
   ContactsDataDisplay,
   ContactsDialogs
 } from '@/features/contacts'
@@ -37,7 +36,6 @@ function ContactsPage() {
     isDeleting
   } = useContactsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
   
-  const { initialData: _editFormInitialData } = useContactFormData(selectedContact)
 
 
   return (

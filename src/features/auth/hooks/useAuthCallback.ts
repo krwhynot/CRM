@@ -45,7 +45,7 @@ export function useAuthCallback() {
           errorDescription: authParams.get('error_description') || undefined,
         }
 
-        console.log('Auth callback data parsed:', authData)
+        // Auth callback data parsed successfully
         setData(authData)
         
         // Clear the URL hash/params after parsing to clean up the URL
@@ -54,7 +54,7 @@ export function useAuthCallback() {
           window.history.replaceState({}, '', cleanUrl)
         }
       } catch (error) {
-        console.error('Error parsing auth callback:', error)
+        // Error parsing auth callback handled
         setData({ error: 'parsing_error' })
       } finally {
         setIsLoading(false)

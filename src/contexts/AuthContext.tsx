@@ -39,9 +39,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       
       if (error) {
         // Auth errors handled by UI error boundaries
-        if (process.env.NODE_ENV === 'development') {
-          console.error('Error getting initial session:', error)
-        }
+        // Initial session error handling
       } else {
         setSession(session)
         setUser(session?.user ?? null)

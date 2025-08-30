@@ -5,6 +5,7 @@ import { useContacts } from '@/features/contacts/hooks/useContacts'
 import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities'
 import { useInteractions } from '@/features/interactions/hooks/useInteractions'
 import { useProducts } from '@/features/products/hooks/useProducts'
+import type { Organization, Contact, Opportunity, Interaction, Product } from '@/types/entities'
 
 export interface ActivityItem {
   id: string
@@ -15,7 +16,7 @@ export interface ActivityItem {
   entity?: string
   priority?: 'high' | 'medium' | 'low'
   status?: string
-  relatedData?: any
+  relatedData?: Organization | Contact | Opportunity | Interaction | Product | (Interaction & { icon?: string })
 }
 
 const INTERACTION_TYPE_ICONS = {

@@ -64,7 +64,7 @@ export function NewDashboard() {
       opportunities: opportunityData[index]?.opportunities || 0,
       activities: activityData[index]?.activities || 0
     }))
-  }, [opportunities, interactions, filters])
+  }, [filters])
 
   const hasData = weeklyData.some(week => week.opportunities > 0 || week.activities > 0)
 
@@ -72,7 +72,7 @@ export function NewDashboard() {
     <div className={`flex-1 overflow-auto bg-gray-50 ${USE_NEW_STYLE ? "p-3 sm:p-4" : "p-4 sm:p-6"}`}>
       {/* Dashboard Content Header */}
       <div className={USE_NEW_STYLE ? "mb-3 sm:mb-4" : "mb-4 sm:mb-6"}>
-        <h1 className={`mb-1 ${USE_NEW_STYLE ? "text-lg font-bold text-[hsl(var(--foreground))] sm:text-xl" : "text-xl font-bold text-gray-900 sm:text-2xl"}`}>
+        <h1 className={`mb-1 ${USE_NEW_STYLE ? "text-lg font-bold text-foreground sm:text-xl" : "text-xl font-bold text-gray-900 sm:text-2xl"}`}>
           📊 CRM ANALYTICS DASHBOARD
         </h1>
         <p className={USE_NEW_STYLE ? "text-xs text-muted-foreground sm:text-sm" : "text-sm text-gray-600 sm:text-base"}>

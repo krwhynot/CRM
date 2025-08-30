@@ -18,20 +18,20 @@ interface UseContactsFilteringReturn {
   filterPills: FilterPill[]
 }
 
+// Base filter pills configuration (static - moved outside function)
+const baseFilterPills: Omit<FilterPill, 'count'>[] = [
+  { key: 'all', label: 'All' },
+  { key: 'decision-makers', label: 'Decision Makers' },
+  { key: 'primary-contacts', label: 'Primary Contacts' },
+  { key: 'high-influence', label: 'High Influence' },
+  { key: 'recently-added', label: 'Recently Added' }
+]
+
 export const useContactsFiltering = (
   contacts: ContactWithOrganization[]
 ): UseContactsFilteringReturn => {
   const [activeFilter, setActiveFilter] = useState<FilterType>('all')
   const [searchTerm, setSearchTerm] = useState('')
-
-  // Base filter pills configuration
-  const baseFilterPills: Omit<FilterPill, 'count'>[] = [
-    { key: 'all', label: 'All' },
-    { key: 'decision-makers', label: 'Decision Makers' },
-    { key: 'primary-contacts', label: 'Primary Contacts' },
-    { key: 'high-influence', label: 'High Influence' },
-    { key: 'recently-added', label: 'Recently Added' }
-  ]
 
   // Filtered and searched contacts
   const filteredContacts = useMemo(() => {
@@ -48,7 +48,7 @@ export const useContactsFiltering = (
       case 'high-influence':
         filtered = filtered.filter(contact => contact.purchase_influence === 'High')
         break
-      case 'recently-added':
+      case 'recently-added': {
         // Filter contacts added within the last 7 days
         const sevenDaysAgo = new Date()
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
@@ -58,6 +58,7 @@ export const useContactsFiltering = (
           return createdDate > sevenDaysAgo
         })
         break
+      }
       case 'all':
       default:
         // No filtering needed for 'all'
@@ -110,7 +111,7 @@ function getFilterCount(filterKey: FilterType, contacts: ContactWithOrganization
       return contacts.filter(c => c.is_primary_contact).length
     case 'high-influence':
       return contacts.filter(c => c.purchase_influence === 'High').length
-    case 'recently-added':
+    case 'recently-added': {
       const sevenDaysAgo = new Date()
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
       return contacts.filter(c => {
@@ -118,6 +119,7 @@ function getFilterCount(filterKey: FilterType, contacts: ContactWithOrganization
         const createdDate = new Date(c.created_at)
         return createdDate > sevenDaysAgo
       }).length
+    }
     default:
       return 0
   }

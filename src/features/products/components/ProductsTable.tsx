@@ -103,7 +103,7 @@ export function ProductsTable({
           results.push({ id: productId, status: 'success' })
           successCount++
         } catch (error) {
-          console.error(`Failed to delete product ${productId}:`, error)
+          // Failed to delete product - error handled
           results.push({ 
             id: productId, 
             status: 'error', 
@@ -132,7 +132,7 @@ export function ProductsTable({
       }
       
     } catch (error) {
-      console.error('Unexpected error during bulk delete:', error)
+      // Unexpected error during bulk delete - handled
       toast.error('An unexpected error occurred during bulk deletion')
     } finally {
       setIsDeleting(false)

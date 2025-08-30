@@ -1,6 +1,6 @@
 import React from 'react'
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from 'recharts'
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, type TooltipProps } from 'recharts'
 import { ChartDataPoint } from '@/types/dashboard'
 
 interface OpportunityChartProps {
@@ -35,7 +35,7 @@ export const OpportunityChart = React.memo(({ data, loading }: OpportunityChartP
     )
   }
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
     if (active && payload && payload.length) {
       const data = payload[0]
       return (

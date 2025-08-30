@@ -10,16 +10,16 @@ export function SmartImportDemo() {
   
   const handleImportComplete = (result: { success: boolean; imported: number; failed: number }) => {
     if (result.success) {
-      console.log(`Successfully imported ${result.imported} records`)
+      // Successfully imported records - navigate to organizations list or show success toast
       // Navigate to organizations list or show success toast
     } else {
-      console.error(`Import failed: ${result.failed} records had errors`)
+      // Import failed - show error toast or detailed error view
       // Show error toast or detailed error view
     }
   }
 
   const handleCancel = () => {
-    console.log('Import cancelled')
+    // Import cancelled - navigate back to previous page
     // Navigate back to previous page
   }
 

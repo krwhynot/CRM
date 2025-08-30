@@ -39,7 +39,9 @@ export const useOpportunityFormSubmission = (
         }
       }
 
-      const { principals: _principals, ...opportunityFormData } = data
+      const { principals: _, ...opportunityFormData } = data
+      
+      // Extract principals for multi-principal workflows
 
       const opportunityData: Partial<OpportunityInsert> = {
         name: opportunityName,
@@ -59,7 +61,7 @@ export const useOpportunityFormSubmission = (
       toast.success('Multi-principal opportunity created successfully!')
       onSuccess?.(result.id)
     } catch (error) {
-      console.error('Failed to create opportunity:', error)
+      // Handle opportunity creation errors
       toast.error('Failed to create opportunity. Please try again.')
     }
   }, [organizations, selectedPrincipals, createOpportunity, onSuccess])

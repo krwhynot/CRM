@@ -28,7 +28,7 @@ const InteractionTimelineItemComponent = forwardRef<HTMLDivElement, InteractionT
     onToggleExpand, 
     onEdit, 
     onDelete, 
-    onItemClick: _onItemClick,
+    onItemClick: _,
     getInteractionIcon,
     getInteractionTypeColor,
     className,

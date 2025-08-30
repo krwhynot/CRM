@@ -1,5 +1,7 @@
 import { CsvRow, isValidEmail } from './csv-parser'
 import { FIELD_MAPPINGS, findBestMatch, FieldMapping } from './field-mapping'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import type { Database } from '@/lib/database.types'
 
 export interface ValidationResult {
   isValid: boolean
@@ -94,7 +96,7 @@ export function validateMappingCompleteness(mappings: FieldMapping[]): {
  */
 export async function checkDuplicateOrganizations(
   organizationNames: string[], 
-  supabase: any
+  supabase: SupabaseClient<Database>
 ): Promise<Set<string>> {
   try {
     const { data: existingOrgs } = await supabase
@@ -109,7 +111,7 @@ export async function checkDuplicateOrganizations(
 
     return duplicates
   } catch (error) {
-    console.error('Error checking duplicates:', error)
+    // Error checking duplicates - returning empty set as fallback
     return new Set()
   }
 }

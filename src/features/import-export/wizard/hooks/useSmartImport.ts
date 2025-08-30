@@ -136,25 +136,31 @@ export function useSmartImport(): UseSmartImportReturn {
   }, [])
 
   const nextStep = useCallback(() => {
-    const currentIndex = STEP_ORDER.indexOf(state.currentStep)
-    if (currentIndex < STEP_ORDER.length - 1) {
-      const newStep = STEP_ORDER[currentIndex + 1]
-      setState(prev => ({
-        ...prev,
-        currentStep: newStep,
-        completedSteps: prev.completedSteps.includes(prev.currentStep) 
-          ? prev.completedSteps 
-          : [...prev.completedSteps, prev.currentStep]
-      }))
-    }
-  }, [state.currentStep])
+    setState(prev => {
+      const currentIndex = STEP_ORDER.indexOf(prev.currentStep)
+      if (currentIndex < STEP_ORDER.length - 1) {
+        const newStep = STEP_ORDER[currentIndex + 1]
+        return {
+          ...prev,
+          currentStep: newStep,
+          completedSteps: prev.completedSteps.includes(prev.currentStep) 
+            ? prev.completedSteps 
+            : [...prev.completedSteps, prev.currentStep]
+        }
+      }
+      return prev
+    })
+  }, [])
 
   const previousStep = useCallback(() => {
-    const currentIndex = STEP_ORDER.indexOf(state.currentStep)
-    if (currentIndex > 0) {
-      setState(prev => ({ ...prev, currentStep: STEP_ORDER[currentIndex - 1] }))
-    }
-  }, [state.currentStep])
+    setState(prev => {
+      const currentIndex = STEP_ORDER.indexOf(prev.currentStep)
+      if (currentIndex > 0) {
+        return { ...prev, currentStep: STEP_ORDER[currentIndex - 1] }
+      }
+      return prev
+    })
+  }, [])
 
   // File handling
   const uploadFile = useCallback(async (file: File) => {
@@ -220,7 +226,7 @@ export function useSmartImport(): UseSmartImportReturn {
       }))
       throw error
     }
-  }, [state.config.entityType])
+  }, [])
 
   const clearFile = useCallback(() => {
     setState(prev => ({
@@ -241,24 +247,30 @@ export function useSmartImport(): UseSmartImportReturn {
 
   // AI mapping actions
   const generateAIMappings = useCallback(async () => {
-    if (!state.parsedData || !isOpenAIAvailable()) {
-      setState(prev => ({
-        ...prev,
-        warnings: [...prev.warnings, 'OpenAI not available - using manual mapping']
-      }))
+    setState(prev => {
+      if (!prev.parsedData || !isOpenAIAvailable()) {
+        return {
+          ...prev,
+          warnings: [...prev.warnings, 'OpenAI not available - using manual mapping']
+        }
+      }
+      return { ...prev, mappingInProgress: true, error: null }
+    })
+
+    // Get current state values at execution time
+    const currentState = state
+    if (!currentState.parsedData || !isOpenAIAvailable()) {
       return
     }
 
-    setState(prev => ({ ...prev, mappingInProgress: true, error: null }))
-
     try {
       const aiResponse = await suggestFieldMappings(
-        state.parsedData.headers,
-        state.parsedData.rows.slice(0, 3), // Sample for AI
-        state.config.entityType
+        currentState.parsedData.headers,
+        currentState.parsedData.rows.slice(0, 3), // Sample for AI
+        currentState.config.entityType
       )
 
-      const updatedMappings: SmartFieldMapping[] = state.fieldMappings.map(mapping => {
+      const updatedMappings: SmartFieldMapping[] = currentState.fieldMappings.map(mapping => {
         const aiMapping = aiResponse.mappings.find(m => 
           m.header.toLowerCase() === mapping.csvHeader.toLowerCase()
         )
@@ -392,6 +404,9 @@ export function useSmartImport(): UseSmartImportReturn {
       // TODO: Integrate with existing useImportProgress hook
       // This is a placeholder for the actual import implementation
       
+      // Get current state for the calculation
+      const currentParsedData = state.parsedData
+      
       // Simulate progress
       for (let i = 0; i <= 100; i += 10) {
         setState(prev => ({ ...prev, importProgress: i }))
@@ -403,7 +418,7 @@ export function useSmartImport(): UseSmartImportReturn {
         importInProgress: false,
         importResult: {
           success: true,
-          imported: state.parsedData?.rows.length || 0,
+          imported: currentParsedData?.rows.length || 0,
           failed: 0,
           errors: []
         }

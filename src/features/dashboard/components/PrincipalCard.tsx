@@ -36,14 +36,14 @@ export function PrincipalCard({ principal, className }: PrincipalCardProps) {
   // Handle error state
   if (hasError) {
     return (
-      <Card className={`border-red-200 transition-shadow hover:shadow-md ${className || ''}`}>
+      <Card className={`border-destructive/50 transition-shadow hover:shadow-md ${className || ''}`}>
         <PrincipalCardHeader
           principal={principal}
           priority={priority}
-          priorityColor="text-red-600"
+          priorityColor="text-destructive"
         />
         <CardContent>
-          <p className="text-sm text-red-500">Failed to load principal data</p>
+          <p className="text-sm text-destructive">Failed to load principal data</p>
         </CardContent>
       </Card>
     )

@@ -70,14 +70,8 @@ export class QueryErrorBoundary extends React.Component<Props, State> {
     }
   }
 
-  componentDidCatch(error: Error, _errorInfo: React.ErrorInfo) {
-    // Error boundary logging for production debugging
-    if (process.env.NODE_ENV === 'development') {
-      // Log error for debugging in development only
-      console.error('[QueryErrorBoundary] Error:', error.message, error.stack)
-    }
-
-    // In production, errors should be logged to external service
+  componentDidCatch() {
+    // Error boundary caught error - in production, errors should be logged to external service
     // This is intentionally minimal to avoid console spam
   }
 

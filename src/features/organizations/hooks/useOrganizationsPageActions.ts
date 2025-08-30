@@ -29,7 +29,7 @@ export const useOrganizationsPageActions = (
       closeCreateDialog()
       toast.success('Organization created successfully!')
     } catch (error) {
-      console.error('Failed to create organization:', error)
+      // Failed to create organization - error handled
       toast.error('Failed to create organization. Please try again.')
     }
   }, [createOrganizationMutation, closeCreateDialog])
@@ -43,7 +43,7 @@ export const useOrganizationsPageActions = (
       closeEditDialog()
       toast.success('Organization updated successfully!')
     } catch (error) {
-      console.error('Failed to update organization:', error)
+      // Failed to update organization - error handled
       toast.error('Failed to update organization. Please try again.')
     }
   }, [updateOrganizationMutation, closeEditDialog])
@@ -56,7 +56,7 @@ export const useOrganizationsPageActions = (
       closeDeleteDialog()
       toast.success('Organization deleted successfully!')
     } catch (error) {
-      console.error('Failed to delete organization:', error)
+      // Failed to delete organization - error handled
       toast.error('Failed to delete organization. Please try again.')
     }
   }, [deleteOrganizationMutation, closeDeleteDialog])

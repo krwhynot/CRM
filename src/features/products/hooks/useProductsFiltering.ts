@@ -18,20 +18,20 @@ interface UseProductsFilteringReturn {
   filterPills: FilterPill[]
 }
 
+// Base filter pills configuration (static - moved outside function)
+const baseFilterPills: Omit<FilterPill, 'count'>[] = [
+  { key: 'all', label: 'All' },
+  { key: 'high-value', label: 'High Value' },
+  { key: 'dairy', label: 'Dairy Products' },
+  { key: 'fresh-products', label: 'Fresh Products' },
+  { key: 'recently-added', label: 'Recently Added' }
+]
+
 export const useProductsFiltering = (
   products: ProductWithPrincipal[]
 ): UseProductsFilteringReturn => {
   const [activeFilter, setActiveFilter] = useState<ProductFilterType>('all')
   const [searchTerm, setSearchTerm] = useState('')
-
-  // Base filter pills configuration
-  const baseFilterPills: Omit<FilterPill, 'count'>[] = [
-    { key: 'all', label: 'All' },
-    { key: 'high-value', label: 'High Value' },
-    { key: 'dairy', label: 'Dairy Products' },
-    { key: 'fresh-products', label: 'Fresh Products' },
-    { key: 'recently-added', label: 'Recently Added' }
-  ]
 
   // Filtered and searched products
   const filteredProducts = useMemo(() => {
@@ -48,7 +48,7 @@ export const useProductsFiltering = (
       case 'fresh-products':
         filtered = filtered.filter(product => (product.shelf_life_days || 0) <= 7)
         break
-      case 'recently-added':
+      case 'recently-added': {
         // Filter products added within the last 7 days
         const sevenDaysAgo = new Date()
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
@@ -58,6 +58,7 @@ export const useProductsFiltering = (
           return createdDate > sevenDaysAgo
         })
         break
+      }
       case 'all':
       default:
         // No filtering needed for 'all'
@@ -108,7 +109,7 @@ function getFilterCount(filterKey: ProductFilterType, products: ProductWithPrinc
       return products.filter(product => product.category === 'dairy').length
     case 'fresh-products':
       return products.filter(product => (product.shelf_life_days || 0) <= 7).length
-    case 'recently-added':
+    case 'recently-added': {
       const sevenDaysAgo = new Date()
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
       return products.filter(product => {
@@ -116,6 +117,7 @@ function getFilterCount(filterKey: ProductFilterType, products: ProductWithPrinc
         const createdDate = new Date(product.created_at)
         return createdDate > sevenDaysAgo
       }).length
+    }
     default:
       return 0
   }

@@ -46,7 +46,7 @@ export const InteractionActionsDropdown: React.FC<InteractionActionsDropdownProp
         {onDelete && (
           <DropdownMenuItem 
             onClick={() => onDelete(interaction)}
-            className="text-red-600"
+            className="text-destructive"
           >
             <Trash2 className="mr-2 size-4" />
             Delete

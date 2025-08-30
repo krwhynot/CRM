@@ -110,6 +110,7 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     } catch (error) {
       // Chart styling errors handled gracefully - charts will fall back to default colors
       if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
         console.warn('Failed to insert chart styles:', error)
       }
     }

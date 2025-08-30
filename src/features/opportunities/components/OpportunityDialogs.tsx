@@ -6,19 +6,20 @@ import { FormDataTransformer } from '@/lib/form-data-transformer'
 import { COPY } from '@/lib/copy'
 import type { Opportunity, InteractionWithRelations } from '@/types/entities'
 import type { InteractionFormData } from '@/types/interaction.types'
+import type { OpportunityFormData } from '@/types/opportunity.types'
 
 interface OpportunityDialogsProps {
   // Create dialog
   isCreateDialogOpen: boolean
   setIsCreateDialogOpen: (open: boolean) => void
-  onCreateOpportunity: (data: any) => Promise<void>
+  onCreateOpportunity: (data: OpportunityFormData) => Promise<void>
   createLoading: boolean
   
   // Edit dialog
   isEditDialogOpen: boolean
   setIsEditDialogOpen: (open: boolean) => void
   editingOpportunity: Opportunity | null
-  onUpdateOpportunity: (data: any) => Promise<void>
+  onUpdateOpportunity: (data: OpportunityFormData) => Promise<void>
   updateLoading: boolean
   
   // Interaction dialog

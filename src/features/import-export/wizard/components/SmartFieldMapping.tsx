@@ -53,7 +53,7 @@ function getConfidenceBadge(confidence: number) {
   if (confidence >= CONFIDENCE_THRESHOLDS.HIGH) {
     return {
       variant: 'default' as const,
-      className: 'bg-green-100 text-green-800 border-green-200',
+      className: 'bg-success/20 text-success border-success/50',
       label: 'High',
       icon: CheckCircle2
     }
@@ -152,30 +152,30 @@ function MappingRow({
           </SelectTrigger>
           <SelectContent className="max-h-60 overflow-y-auto">
             <SelectItem value="none">
-              <span className="text-slate-500">Skip this field</span>
+              <span className="text-muted-foreground">Skip this field</span>
             </SelectItem>
             <div className="py-1">
-              <div className="px-2 py-1 text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <div className="px-2 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Organization Fields
               </div>
               {CRM_FIELD_OPTIONS.organization.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   <div>
                     <div className="font-medium">{option.label}</div>
-                    <div className="text-xs text-slate-500">{option.description}</div>
+                    <div className="text-xs text-muted-foreground">{option.description}</div>
                   </div>
                 </SelectItem>
               ))}
             </div>
             <div className="py-1">
-              <div className="px-2 py-1 text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <div className="px-2 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Contact Fields
               </div>
               {CRM_FIELD_OPTIONS.contact.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   <div>
                     <div className="font-medium">{option.label}</div>
-                    <div className="text-xs text-slate-500">{option.description}</div>
+                    <div className="text-xs text-muted-foreground">{option.description}</div>
                   </div>
                 </SelectItem>
               ))}
@@ -236,7 +236,7 @@ function MappingRow({
   )
 }
 
-export function SmartFieldMapping({
+export function SmartFieldMappingComponent({
   mappings,
   aiInProgress,
   onGenerateAIMappings,
@@ -317,7 +317,7 @@ export function SmartFieldMapping({
                 <div className="text-xs text-slate-600">Need Review</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-slate-500">{stats.skipped}</div>
+                <div className="text-2xl font-bold text-muted-foreground">{stats.skipped}</div>
                 <div className="text-xs text-slate-600">Skipped</div>
               </div>
             </div>
@@ -368,10 +368,10 @@ export function SmartFieldMapping({
       )}
 
       {/* Help Section */}
-      <Card className="bg-slate-50">
+      <Card className="bg-muted/50">
         <CardContent className="p-4">
           <div className="flex items-start space-x-3">
-            <HelpCircle className="mt-0.5 size-5 text-slate-500" />
+            <HelpCircle className="mt-0.5 size-5 text-muted-foreground" />
             <div className="space-y-2 text-sm text-slate-600">
               <p className="font-medium">Need help with field mapping?</p>
               <ul className="space-y-1 text-xs">
@@ -387,3 +387,6 @@ export function SmartFieldMapping({
     </div>
   )
 }
+
+// Export alias for backward compatibility
+export { SmartFieldMappingComponent as SmartFieldMapping }

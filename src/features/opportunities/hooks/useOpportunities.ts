@@ -289,9 +289,9 @@ export function useCreateOpportunity() {
         throw new Error('Organization is required for all opportunities')
       }
 
-      // Business rule validation: Warn about advanced stages without contacts
+      // Business rule validation: Check advanced stages have contacts for better tracking
       if (opportunity.stage && ['proposal', 'negotiation'].includes(opportunity.stage) && !opportunity.contact_id) {
-        console.warn(`Creating opportunity "${opportunity.name}" in stage "${opportunity.stage}" without a contact. Consider assigning a contact for better tracking.`)
+        // Advanced stage opportunity created without contact - consider assigning one for better tracking
       }
 
       // Ensure required audit fields are set for RLS policy and clean up empty strings

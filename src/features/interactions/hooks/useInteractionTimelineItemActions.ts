@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import React, { useCallback } from 'react'
 
 interface UseInteractionTimelineItemActionsProps {
   interactionType: string
@@ -37,7 +37,7 @@ export const useInteractionTimelineItemActions = ({
   const handleMarkComplete = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
     // TODO: Implement mark complete functionality
-    console.log('Mark complete not yet implemented')
+    // Mark complete feature not yet implemented
   }, [])
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {

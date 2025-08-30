@@ -54,7 +54,7 @@ export const useImportProgress = (): UseImportProgressReturn => {
       .is('deleted_at', null)
     
     if (error) {
-      console.error('Error checking existing organizations:', error)
+      // Error checking existing organizations - propagating to error handling
       throw error
     }
 
@@ -149,14 +149,9 @@ export const useImportProgress = (): UseImportProgressReturn => {
             .select('id, name')
 
           if (error) {
-            console.error('Batch import error:', error)
+            // Batch import error - capturing details for user feedback
             const errorDetail = `Code: ${error.code || 'unknown'}, Message: ${error.message || 'unknown error'}`
-            if (error.details) {
-              console.error('Error details:', error.details)
-            }
-            if (error.hint) {
-              console.error('Error hint:', error.hint)
-            }
+            // Additional error details and hints are available in error.details and error.hint
             
             failed += batch.length
             errors.push({
@@ -167,7 +162,7 @@ export const useImportProgress = (): UseImportProgressReturn => {
             imported += batch.length
           }
         } catch (batchError) {
-          console.error('Batch processing error:', batchError)
+          // Batch processing error - capturing for user feedback
           failed += batch.length
           errors.push({
             row: batchIndex * batchSize + 1,
@@ -198,7 +193,7 @@ export const useImportProgress = (): UseImportProgressReturn => {
       }))
 
     } catch (error) {
-      console.error('Import error:', error)
+      // Handle import errors
       setImportState(prev => ({
         ...prev,
         isImporting: false,

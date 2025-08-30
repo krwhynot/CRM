@@ -2,7 +2,7 @@ import React from 'react'
 import { useHealthStatus } from '@/lib/monitoring'
 
 interface UseHealthDashboardStateReturn {
-  status: any
+  status: unknown
   summary: string
   isHealthy: boolean
   lastUpdated: Date

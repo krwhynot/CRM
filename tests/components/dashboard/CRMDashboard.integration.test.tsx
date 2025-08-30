@@ -1,6 +1,30 @@
 import { render, screen } from '@testing-library/react'
 import { CRMDashboard } from '@/features/dashboard/components/CRMDashboard'
 import { vi } from 'vitest'
+import type { ChartDataPoint } from '@/types/dashboard'
+
+// Mock component prop types
+interface MockDashboardFiltersProps {
+  filters: Record<string, string>
+  onFiltersChange: (filters: Record<string, string>) => void
+  isLoading: boolean
+}
+
+interface MockDashboardChartsProps {
+  opportunityChartData: ChartDataPoint[]
+  interactionChartData: ChartDataPoint[]
+  isLoading: boolean
+}
+
+interface MockOpportunityKanbanProps {
+  opportunities: Array<{ id: string; [key: string]: unknown }>
+  loading: boolean
+}
+
+interface MockActivityFeedProps {
+  activities: Array<{ id: string; [key: string]: unknown }>
+  loading: boolean
+}
 
 // Mock all the dependencies
 vi.mock('@/features/dashboard/hooks/useDashboardFilters', () => ({
@@ -62,7 +86,7 @@ vi.mock('@/features/dashboard/hooks/useDashboardLoading', () => ({
 
 // Mock child components to focus on integration logic
 vi.mock('@/features/dashboard/components/DashboardFilters', () => ({
-  DashboardFilters: ({ filters, onFiltersChange, isLoading }: any) => (
+  DashboardFilters: ({ filters, onFiltersChange, isLoading }: MockDashboardFiltersProps) => (
     <div data-testid="dashboard-filters">
       <div data-testid="filters-state">{JSON.stringify(filters)}</div>
       <div data-testid="loading-state">{isLoading ? 'loading' : 'not-loading'}</div>
@@ -74,7 +98,7 @@ vi.mock('@/features/dashboard/components/DashboardFilters', () => ({
 }))
 
 vi.mock('@/features/dashboard/components/DashboardCharts', () => ({
-  DashboardCharts: ({ opportunityChartData, interactionChartData, isLoading }: any) => (
+  DashboardCharts: ({ opportunityChartData, interactionChartData, isLoading }: MockDashboardChartsProps) => (
     <div data-testid="dashboard-charts">
       <div data-testid="opportunity-data-count">{opportunityChartData.length}</div>
       <div data-testid="interaction-data-count">{interactionChartData.length}</div>
@@ -84,7 +108,7 @@ vi.mock('@/features/dashboard/components/DashboardCharts', () => ({
 }))
 
 vi.mock('@/features/dashboard/components/OpportunityKanban', () => ({
-  OpportunityKanban: ({ opportunities, loading }: any) => (
+  OpportunityKanban: ({ opportunities, loading }: MockOpportunityKanbanProps) => (
     <div data-testid="opportunity-kanban">
       <div data-testid="opportunities-count">{opportunities.length}</div>
       <div data-testid="kanban-loading">{loading ? 'loading' : 'not-loading'}</div>
@@ -93,7 +117,7 @@ vi.mock('@/features/dashboard/components/OpportunityKanban', () => ({
 }))
 
 vi.mock('@/features/dashboard/components/SimpleActivityFeed', () => ({
-  SimpleActivityFeed: ({ activities, loading }: any) => (
+  SimpleActivityFeed: ({ activities, loading }: MockActivityFeedProps) => (
     <div data-testid="activity-feed">
       <div data-testid="activities-count">{activities.length}</div>
       <div data-testid="feed-loading">{loading ? 'loading' : 'not-loading'}</div>

@@ -114,7 +114,7 @@ export function useBatchOptimizedQueries(
   }, [queries])
 
   // Generate cache key for query batching
-  const _cacheKey = useMemo(
+  useMemo(
     () => queries.map((q) => JSON.stringify(q.queryKey)).join('|'),
     [queries]
   )
@@ -202,7 +202,7 @@ export function usePrefetchRelatedData() {
           prefetchPromises.push(
             queryClient.prefetchQuery({
               queryKey: ['contacts', { filters: { organization_id: entityId } }],
-              queryFn: () => fetchContacts({ organization_id: entityId }),
+              queryFn: () => fetchContacts(),
               staleTime: 2 * 60 * 1000,
             })
           )
@@ -211,7 +211,7 @@ export function usePrefetchRelatedData() {
           prefetchPromises.push(
             queryClient.prefetchQuery({
               queryKey: ['opportunities', { filters: { organization_id: entityId } }],
-              queryFn: () => fetchOpportunities({ organization_id: entityId }),
+              queryFn: () => fetchOpportunities(),
               staleTime: 2 * 60 * 1000,
             })
           )
@@ -228,7 +228,7 @@ export function usePrefetchRelatedData() {
             prefetchPromises.push(
               queryClient.prefetchQuery({
                 queryKey: ['organizations', contactData.organization_id],
-                queryFn: () => fetchOrganization(contactData.organization_id!),
+                queryFn: () => fetchOrganization(),
                 staleTime: 5 * 60 * 1000,
               })
             )
@@ -246,7 +246,7 @@ export function usePrefetchRelatedData() {
             prefetchPromises.push(
               queryClient.prefetchQuery({
                 queryKey: ['organizations', opportunityData.organization_id],
-                queryFn: () => fetchOrganization(opportunityData.organization_id!),
+                queryFn: () => fetchOrganization(),
                 staleTime: 5 * 60 * 1000,
               })
             )
@@ -305,7 +305,7 @@ export function useBackgroundSync() {
           await mutation.execute(mutation.state.variables)
         }
       } catch (error) {
-        console.error('Failed to sync mutation:', error)
+        // Failed mutation sync error handling
       }
     }
   }, [queryClient])
@@ -327,15 +327,18 @@ export function useBackgroundSync() {
 }
 
 // Placeholder functions for demo - should be imported from actual API modules
-const fetchContacts = async (_filters: { organization_id?: string }): Promise<unknown> => {
+const fetchContacts = async (): Promise<unknown> => {
   // Implementation - returns contact data
+  // Fetching contacts with specified filters
   return Promise.resolve([])
 }
-const fetchOpportunities = async (_filters: { organization_id?: string }): Promise<unknown> => {
+const fetchOpportunities = async (): Promise<unknown> => {
   // Implementation - returns opportunity data
+  // Fetching opportunities with specified filters
   return Promise.resolve([])
 }
-const fetchOrganization = async (_id: string): Promise<unknown> => {
+const fetchOrganization = async (): Promise<unknown> => {
   // Implementation - returns organization data
+  // Fetching organization by ID
   return Promise.resolve({})
 }

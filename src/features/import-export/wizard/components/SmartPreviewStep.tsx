@@ -64,7 +64,7 @@ function DataPreviewTable({
             <TableRow className="bg-slate-50">
               <TableHead className="w-12">#</TableHead>
               {mappedFields.map((mapping) => (
-                <TableHead key={mapping.csvHeader} className="min-w-[150px]">
+                <TableHead key={mapping.csvHeader} className="min-w-36">
                   <div className="space-y-1">
                     <div className="font-medium">{mapping.csvHeader}</div>
                     <Badge variant="outline" className="text-xs">
@@ -80,7 +80,7 @@ function DataPreviewTable({
               <TableRow key={idx}>
                 <TableCell className="text-slate-500">{idx + 1}</TableCell>
                 {mappedFields.map((mapping) => (
-                  <TableCell key={mapping.csvHeader} className="max-w-[200px]">
+                  <TableCell key={mapping.csvHeader} className="max-w-48">
                     <div className="truncate" title={row[mapping.csvHeader]}>
                       {row[mapping.csvHeader] || (
                         <span className="italic text-slate-400">empty</span>
@@ -114,9 +114,9 @@ function ValidationResults({ results }: { results: BatchValidationResponseType }
 
   const getSeverityIcon = (severity: string) => {
     switch (severity) {
-      case 'error': return <X className="size-4 text-red-500" />
+      case 'error': return <X className="size-4 text-destructive" />
       case 'warning': return <AlertTriangle className="size-4 text-yellow-500" />
-      default: return <Info className="size-4 text-blue-500" />
+      default: return <Info className="size-4 text-primary" />
     }
   }
 
@@ -147,7 +147,7 @@ function ValidationResults({ results }: { results: BatchValidationResponseType }
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-red-600">{results.summary.errorRows}</div>
+            <div className="text-2xl font-bold text-destructive">{results.summary.errorRows}</div>
             <div className="text-sm text-slate-600">Error Rows</div>
           </CardContent>
         </Card>
@@ -161,8 +161,8 @@ function ValidationResults({ results }: { results: BatchValidationResponseType }
 
       {/* Quality Score */}
       {results.overallQuality && (
-        <Alert className="border-blue-200 bg-blue-50">
-          <TrendingUp className="size-4 text-blue-600" />
+        <Alert className="border-primary/20 bg-primary/5">
+          <TrendingUp className="size-4 text-primary" />
           <AlertDescription>
             <strong>Data Quality Score: {Math.round(results.overallQuality * 100)}%</strong>
             {results.overallQuality >= 0.8 && " - Excellent data quality!"}
@@ -254,9 +254,9 @@ function ValidationResults({ results }: { results: BatchValidationResponseType }
 function DuplicateResults({ results }: { results: DuplicateDetectionResponseType }) {
   const getSuggestionBadge = (action: string) => {
     switch (action) {
-      case 'merge': return <Badge className="bg-blue-100 text-blue-800">Merge</Badge>
-      case 'keep_first': return <Badge className="bg-green-100 text-green-800">Keep First</Badge>
-      case 'keep_last': return <Badge className="bg-purple-100 text-purple-800">Keep Last</Badge>
+      case 'merge': return <Badge className="bg-primary/10 text-primary">Merge</Badge>
+      case 'keep_first': return <Badge className="bg-success/10 text-success">Keep First</Badge>
+      case 'keep_last': return <Badge className="bg-purple-100/50 text-purple-700">Keep Last</Badge>
       default: return <Badge variant="outline">Review</Badge>
     }
   }
@@ -286,7 +286,7 @@ function DuplicateResults({ results }: { results: DuplicateDetectionResponseType
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-red-600">{results.summary.totalDuplicates}</div>
+            <div className="text-2xl font-bold text-destructive">{results.summary.totalDuplicates}</div>
             <div className="text-sm text-slate-600">Total Duplicates</div>
           </CardContent>
         </Card>
@@ -369,7 +369,7 @@ export function SmartPreviewStep({
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600">{mappedFieldsCount}</div>
+            <div className="text-2xl font-bold text-primary">{mappedFieldsCount}</div>
             <div className="text-sm text-slate-600">Mapped Fields</div>
           </CardContent>
         </Card>
@@ -436,7 +436,7 @@ export function SmartPreviewStep({
             {validationResults && (
               <Badge 
                 variant={hasErrors ? "destructive" : hasWarnings ? "secondary" : "default"}
-                className={!hasErrors && !hasWarnings ? "bg-green-100 text-green-800" : ""}
+                className={!hasErrors && !hasWarnings ? "bg-success/10 text-success" : ""}
               >
                 {hasErrors ? "❌ Errors Found" : hasWarnings ? "⚠️ Warnings" : "✅ Validation Complete"}
               </Badge>
@@ -444,7 +444,7 @@ export function SmartPreviewStep({
             {duplicateResults && (
               <Badge 
                 variant={hasDuplicates ? "secondary" : "default"}
-                className={!hasDuplicates ? "bg-green-100 text-green-800" : ""}
+                className={!hasDuplicates ? "bg-success/10 text-success" : ""}
               >
                 {hasDuplicates ? `⚠️ ${duplicateResults.summary.totalDuplicates} Duplicates` : "✅ No Duplicates"}
               </Badge>
@@ -538,8 +538,8 @@ export function SmartPreviewStep({
                     <Badge 
                       variant={mapping.status === 'skipped' ? 'secondary' : 'default'}
                       className={
-                        mapping.status === 'auto' ? 'bg-green-100 text-green-800' :
-                        mapping.status === 'confirmed' ? 'bg-blue-100 text-blue-800' :
+                        mapping.status === 'auto' ? 'bg-success/10 text-success' :
+                        mapping.status === 'confirmed' ? 'bg-primary/10 text-primary' :
                         mapping.status === 'needs_review' ? 'bg-yellow-100 text-yellow-800' :
                         ''
                       }
@@ -559,11 +559,11 @@ export function SmartPreviewStep({
 
       {/* Ready to Import Status */}
       {mappedFieldsCount > 0 && (
-        <Alert className={hasErrors ? "border-red-200 bg-red-50" : "border-green-200 bg-green-50"}>
+        <Alert className={hasErrors ? "border-destructive/20 bg-destructive/5" : "border-success/20 bg-success/5"}>
           <AlertDescription className="flex items-center">
             {hasErrors ? (
               <>
-                <X className="mr-2 size-4 text-red-600" />
+                <X className="mr-2 size-4 text-destructive" />
                 Please fix validation errors before importing
               </>
             ) : (

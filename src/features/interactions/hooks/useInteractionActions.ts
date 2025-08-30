@@ -39,7 +39,7 @@ export const useInteractionActions = (): UseInteractionActionsReturn => {
       onSuccess()
       toast.success('Activity logged successfully!')
     } catch (error) {
-      console.error('Failed to create interaction:', error)
+      // Handle interaction creation errors
       toast.error('Failed to log activity. Please try again.')
     }
   }, [createInteractionMutation])
@@ -62,7 +62,7 @@ export const useInteractionActions = (): UseInteractionActionsReturn => {
       onSuccess()
       toast.success('Activity updated successfully!')
     } catch (error) {
-      console.error('Failed to update interaction:', error)
+      // Handle interaction update errors
       toast.error('Failed to update activity. Please try again.')
     }
   }, [updateInteractionMutation])
@@ -73,15 +73,14 @@ export const useInteractionActions = (): UseInteractionActionsReturn => {
         await deleteInteractionMutation.mutateAsync(interaction.id)
         toast.success('Activity deleted successfully!')
       } catch (error) {
-        console.error('Failed to delete interaction:', error)
+        // Handle interaction deletion errors
         toast.error('Failed to delete activity. Please try again.')
       }
     }
   }, [deleteInteractionMutation])
 
-  const handleInteractionItemClick = useCallback((interaction: InteractionWithRelations) => {
-    // For now, just log the click - could be used for quick views
-    console.log('Interaction clicked:', interaction)
+  const handleInteractionItemClick = useCallback(() => {
+    // For now, just handle the click - could be used for quick views in the future
   }, [])
 
   return {

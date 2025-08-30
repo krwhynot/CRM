@@ -9,8 +9,9 @@ import { PageHeader } from '@/components/ui/new/PageHeader'
 function MultiPrincipalOpportunityPage() {
   const navigate = useNavigate()
 
-  const handleSuccess = (_opportunityId: string) => {
+  const handleSuccess = () => {
     toast.success('Multi-principal opportunity created successfully!')
+    // Opportunity created successfully, navigating to opportunities list
     navigate(`/opportunities`) // Could navigate to specific opportunity view if it exists
   }
 

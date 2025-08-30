@@ -118,7 +118,7 @@ export function SmartImportWizard({
       <Card className="border-slate-200 bg-slate-50">
         <CardContent className="p-4">
           <div className="grid grid-cols-5 gap-2 md:gap-4">
-            {steps.map((step, _index) => {
+            {steps.map((step) => {
               const Icon = step.icon
               const isClickable = step.completed || step.current
               
@@ -155,8 +155,8 @@ export function SmartImportWizard({
                     <div className={cn(
                       "text-xs font-medium leading-tight",
                       step.current && "text-primary",
-                      step.completed && "text-green-700",
-                      !step.completed && !step.current && "text-slate-600"
+                      step.completed && "text-success",
+                      !step.completed && !step.current && "text-muted-foreground"
                     )}>
                       {step.title}
                     </div>
@@ -181,7 +181,7 @@ export function SmartImportWizard({
       </Card>
 
       {/* Main Content Area */}
-      <Card className="min-h-[500px]">
+      <Card className="min-h-96">
         <CardHeader className="pb-4">
           <div className="flex items-center space-x-3">
             {/* Current Step Icon */}

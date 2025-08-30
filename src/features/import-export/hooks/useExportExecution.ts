@@ -101,7 +101,7 @@ export const useExportExecution = (exportOptions: ExportOptions): UseExportExecu
     const worksheet = XLSX.utils.json_to_sheet(transformedData)
     
     // Set column widths for better readability
-    const columnWidths = exportOptions.selectedFields.map(_field => ({ wch: 20 }))
+    const columnWidths = exportOptions.selectedFields.map(() => ({ wch: 20 }))
     worksheet['!cols'] = columnWidths
     
     const workbook = XLSX.utils.book_new()
@@ -204,7 +204,7 @@ export const useExportExecution = (exportOptions: ExportOptions): UseExportExecu
         mimeType = 'text/csv'
         fileExtension = 'csv'
         
-        console.log('XLSX export requested but feature disabled, falling back to CSV')
+        // XLSX export requested but feature disabled, falling back to CSV
       }
 
       // Download file
@@ -243,7 +243,7 @@ export const useExportExecution = (exportOptions: ExportOptions): UseExportExecu
       }))
 
     } catch (error) {
-      console.error('Export error:', error)
+      // Handle export errors
       setExportProgress(prev => ({
         ...prev,
         isExporting: false,

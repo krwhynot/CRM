@@ -185,7 +185,7 @@ export { BaseDialogContent as DialogContent }
  * This component will be removed in a future version
  */
 export function DialogScrollableContent({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  console.warn("DialogScrollableContent is deprecated. Use StandardDialog with scroll='content' instead.")
+  // DialogScrollableContent is deprecated. Use StandardDialog with scroll='content' instead.
   return (
     <div className={cn("flex-1 overflow-y-auto pr-2", className)} {...props}>
       {children}

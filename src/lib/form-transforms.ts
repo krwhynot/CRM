@@ -192,11 +192,7 @@ export const isTransformFunction = (value: unknown): value is Function => {
  * Development helper to log transform operations
  * Only active in development mode
  */
-export const debugTransform = (
-  _transformName: string,
-  _originalValue: unknown,
-  _transformedValue: unknown
-) => {
+export const debugTransform = () => {
   if (process.env.NODE_ENV === 'development') {
     // Transform debugging is handled silently
     // Use browser dev tools for debugging if needed

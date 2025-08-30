@@ -37,7 +37,7 @@ export const useContactsBadges = (): UseContactsBadgesReturn => {
           }
       }
     }
-  }, [])
+  })
 
   const getAuthorityBadge = useMemo(() => {
     return (authority: string | null): BadgeStyle => {
@@ -69,7 +69,7 @@ export const useContactsBadges = (): UseContactsBadgesReturn => {
           }
       }
     }
-  }, [])
+  })
 
   const getPriorityBadge = useMemo(() => {
     return (isPromary: boolean, influence: string | null): BadgeStyle | null => {
@@ -93,7 +93,7 @@ export const useContactsBadges = (): UseContactsBadgesReturn => {
       }
       return null
     }
-  }, [])
+  })
 
   return {
     getInfluenceBadge,

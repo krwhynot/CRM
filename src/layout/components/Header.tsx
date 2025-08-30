@@ -39,7 +39,7 @@ export function Header() {
             Master Food Brokers, Inc.
           </span>
           <span className="ml-2 hidden text-xs italic text-muted-foreground sm:inline">
-            "Partnering with Excellence"
+            &ldquo;Partnering with Excellence&rdquo;
           </span>
         </div>
         

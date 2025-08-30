@@ -45,7 +45,7 @@ export const useOpportunityActions = (): UseOpportunityActionsReturn => {
       onSuccess()
       toast.success('Opportunity created successfully!')
     } catch (error: unknown) {
-      console.error('Failed to create opportunity:', error)
+      // Handle opportunity creation errors
       
       // Handle specific constraint violation errors
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
@@ -62,7 +62,9 @@ export const useOpportunityActions = (): UseOpportunityActionsReturn => {
   const handleUpdateOpportunity = useCallback(async (data: OpportunityFormData, opportunity: Opportunity, onSuccess: () => void) => {
     try {
       // Transform form data to OpportunityUpdate by removing non-database fields
-      const { principals: _principals, auto_generated_name: _auto_generated_name, ...updateData } = data
+      const { principals: _, auto_generated_name: __, ...updateData } = data
+      
+      // Remove form fields that shouldn't be included in update
       
       await updateOpportunityMutation.mutateAsync({
         id: opportunity.id,
@@ -71,7 +73,7 @@ export const useOpportunityActions = (): UseOpportunityActionsReturn => {
       onSuccess()
       toast.success('Opportunity updated successfully!')
     } catch (error: unknown) {
-      console.error('Failed to update opportunity:', error)
+      // Handle opportunity update errors
       
       // Handle specific constraint violation errors
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
@@ -91,7 +93,7 @@ export const useOpportunityActions = (): UseOpportunityActionsReturn => {
         await deleteOpportunityMutation.mutateAsync(opportunity.id)
         toast.success('Opportunity deleted successfully!')
       } catch (error) {
-        console.error('Failed to delete opportunity:', error)
+        // Handle opportunity deletion errors
         toast.error('Failed to delete opportunity. Please try again.')
       }
     }

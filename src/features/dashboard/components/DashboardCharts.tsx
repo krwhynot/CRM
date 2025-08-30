@@ -23,7 +23,7 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
       {/* Opportunity Chart */}
       <ChartCard
         title="Opportunities"
-        colorClass="bg-blue-500"
+        colorClass="bg-primary"
         data={opportunityChartData}
         isLoading={isLoading}
         emptyTitle="No opportunities found"
@@ -37,7 +37,7 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
       {/* Activity Chart */}
       <ChartCard
         title="Activities"
-        colorClass="bg-green-500"
+        colorClass="bg-success"
         data={interactionChartData}
         isLoading={isLoading}
         emptyTitle="No activities found"
