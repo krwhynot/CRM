@@ -5,7 +5,7 @@ import type { Organization, OpportunityWithRelations, InteractionWithRelations }
 
 interface PrincipalMetrics {
   opportunityCount: number
-  interactionCount: number
+  activityCount: number
   lastActivity: Date | null
   totalValue: number
   activeOpportunities: number
@@ -55,7 +55,7 @@ const calculatePrincipalMetrics = (
 
   return {
     opportunityCount: principalOpportunities.length,
-    interactionCount: principalInteractions.length,
+    activityCount: principalInteractions.length,
     lastActivity,
     totalValue,
     activeOpportunities

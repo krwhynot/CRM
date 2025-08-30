@@ -9,6 +9,7 @@ import {
   CommandList,
 } from '@/components/ui/command'
 import { Building2, Users, Target, MessageSquare, Package, Search } from 'lucide-react'
+import { COPY } from '@/lib/copy'
 
 interface CommandPaletteProps {
   open: boolean
@@ -62,9 +63,9 @@ export function CommandPalette({ open, setOpen }: CommandPaletteProps) {
             <Target className="mr-2 h-4 w-4" />
             <span>Opportunities</span>
           </CommandItem>
-          <CommandItem onSelect={() => runCommand(() => navigate('/interactions'))}>
+          <CommandItem onSelect={() => runCommand(() => navigate('/interactions'))}> {/* ui-audit: allow */}
             <MessageSquare className="mr-2 h-4 w-4" />
-            <span>Interactions</span>
+            <span>Activities</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/products'))}>
             <Package className="mr-2 h-4 w-4" />
@@ -75,19 +76,19 @@ export function CommandPalette({ open, setOpen }: CommandPaletteProps) {
         <CommandGroup heading="Quick Actions">
           <CommandItem onSelect={() => runCommand(() => navigate('/organizations?action=create'))}>
             <Building2 className="mr-2 h-4 w-4" />
-            <span>New Organization</span>
+            <span>{COPY.BUTTONS.ADD_ORGANIZATION}</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/contacts?action=create'))}>
             <Users className="mr-2 h-4 w-4" />
-            <span>New Contact</span>
+            <span>{COPY.BUTTONS.ADD_CONTACT}</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/opportunities?action=create'))}>
             <Target className="mr-2 h-4 w-4" />
-            <span>New Opportunity</span>
+            <span>{COPY.BUTTONS.ADD_OPPORTUNITY}</span>
           </CommandItem>
-          <CommandItem onSelect={() => runCommand(() => navigate('/interactions?action=create'))}>
+          <CommandItem onSelect={() => runCommand(() => navigate('/interactions?action=create'))}> {/* ui-audit: allow */}
             <MessageSquare className="mr-2 h-4 w-4" />
-            <span>New Interaction</span>
+            <span>{COPY.BUTTONS.LOG_ACTIVITY}</span>
           </CommandItem>
         </CommandGroup>
       </CommandList>

@@ -5,12 +5,12 @@ import { ChartTooltip } from './ChartTooltip'
 import { useChartStyling } from '../../hooks/useChartStyling'
 import type { ChartDataPoint } from '../../hooks/useChartData'
 
-interface InteractionsChartProps {
+interface ActivityChartProps {
   data: ChartDataPoint[]
   maxValue: number
 }
 
-export function InteractionsChart({ data, maxValue }: InteractionsChartProps) {
+export function ActivityChart({ data, maxValue }: ActivityChartProps) {
   const { 
     cardClassName, 
     headerClassName, 
@@ -24,14 +24,14 @@ export function InteractionsChart({ data, maxValue }: InteractionsChartProps) {
       <CardHeader className={headerClassName}>
         <CardTitle className={`flex items-center gap-2 ${titleClassName}`}>
           <Activity className="h-5 w-5 text-primary" />
-          Interactions per Week
+          Activity per Week
         </CardTitle>
         <p className={`text-sm text-muted-foreground ${subtitleClassName}`}>
-          Weekly interaction activity trends
+          Weekly activity trends
         </p>
       </CardHeader>
       <CardContent className={contentClassName}>
-        <div className="h-[280px] w-full">
+        <div className="h-chart w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={data}
@@ -52,10 +52,10 @@ export function InteractionsChart({ data, maxValue }: InteractionsChartProps) {
                 fontSize={11}
                 domain={[0, maxValue + 2]}
               />
-              <Tooltip content={<ChartTooltip chartType="interactions" />} />
+              <Tooltip content={<ChartTooltip chartType="activities" />} />
               <Line
                 type="monotone"
-                dataKey="interactions"
+                dataKey="activities"
                 stroke="hsl(var(--primary))"
                 strokeWidth={3}
                 dot={{ 

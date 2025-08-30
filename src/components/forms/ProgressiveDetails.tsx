@@ -91,8 +91,9 @@ export function ProgressiveDetails({
       <div
         id="progressive-details-content"
         className={cn(
-          "transition-all duration-300 ease-in-out overflow-hidden",
-          isOpen ? "opacity-100 max-h-screen" : "opacity-0 max-h-0"
+          "transition-all duration-300 ease-in-out",
+          isOpen ? "opacity-100" : "opacity-0 pointer-events-none",
+          !isOpen && "sr-only"
         )}
         aria-hidden={!isOpen}
       >

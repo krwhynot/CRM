@@ -12,7 +12,7 @@ export function DualChartsEmpty({ className }: DualChartsEmptyProps) {
   return (
     <div className={`grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 ${className}`}>
       <Card className={cardClassName}>
-        <CardContent className={`${contentClassName} flex flex-col items-center justify-center h-[380px]`}>
+        <CardContent className={`${contentClassName} flex flex-col items-center justify-center h-chart-lg`}>
           <Target className="h-12 w-12 text-muted-foreground/30 mb-4" />
           <h3 className="text-lg font-semibold mb-2">No Opportunity Data</h3>
           <p className="text-sm text-muted-foreground text-center">
@@ -22,11 +22,11 @@ export function DualChartsEmpty({ className }: DualChartsEmptyProps) {
       </Card>
       
       <Card className={cardClassName}>
-        <CardContent className={`${contentClassName} flex flex-col items-center justify-center h-[380px]`}>
+        <CardContent className={`${contentClassName} flex flex-col items-center justify-center h-chart-lg`}>
           <Activity className="h-12 w-12 text-muted-foreground/30 mb-4" />
-          <h3 className="text-lg font-semibold mb-2">No Interaction Data</h3>
+          <h3 className="text-lg font-semibold mb-2">No Activity Data</h3>
           <p className="text-sm text-muted-foreground text-center">
-            No interactions found for the selected time period and filters.
+            No activities found for the selected time period and filters.
           </p>
         </CardContent>
       </Card>

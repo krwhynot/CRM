@@ -7,6 +7,7 @@ import type {
   OrganizationUpdate, 
   OrganizationFilters 
 } from '@/types/entities'
+import type { OrganizationFormInterface } from '@/types/forms/form-interfaces'
 import { deriveOrganizationFlags } from '@/lib/organization-utils'
 import { debugQueryState, measureQueryPerformance } from '@/lib/query-debug'
 
@@ -232,7 +233,7 @@ export function useCreateOrganization() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (organization: OrganizationInsert) => {
+    mutationFn: async (organization: OrganizationFormInterface) => {
       // Get current user ID for RLS policy compliance
       const { data: { user }, error: authError } = await supabase.auth.getUser()
       
@@ -276,7 +277,7 @@ export function useUpdateOrganization() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, updates }: { id: string; updates: OrganizationUpdate }) => {
+    mutationFn: async ({ id, updates }: { id: string; updates: OrganizationFormInterface }) => {
       // Ensure boolean flags are derived from type if type is being updated
       const derivedFlags = updates.type ? deriveOrganizationFlags(updates.type) : {}
       const updateData = { 

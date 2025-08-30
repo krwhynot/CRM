@@ -8,7 +8,7 @@ import { useContactFormStyle } from '@/features/contacts/hooks/useContactFormSty
 import { ContactFormBasicFields } from './contact-form/ContactFormBasicFields'
 import { ContactFormRoleFields } from './contact-form/ContactFormRoleFields'
 import { ContactFormDetailsFields } from './contact-form/ContactFormDetailsFields'
-import { ContactFormSubmitButton } from './contact-form/ContactFormSubmitButton'
+import { FormSubmitButton } from '@/components/forms/FormSubmitButton'
 
 interface ContactFormProps {
   onSubmit: (data: ContactFormData) => void
@@ -31,7 +31,7 @@ export function ContactForm({
 
   return (
     <Card className="w-full max-w-md mx-auto">
-      <CardHeader><CardTitle>{initialData ? 'Edit Contact' : 'New Contact'}</CardTitle></CardHeader>
+      <CardHeader><CardTitle>{initialData ? 'Edit Contact' : 'Add Contact'}</CardTitle></CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -56,12 +56,12 @@ export function ContactForm({
               />
             </ProgressiveDetails>
 
-            <ContactFormSubmitButton
+            <FormSubmitButton
               loading={loading}
-              submitLabel={submitLabel}
-              useNewStyle={useNewStyle}
-              inputClassName={inputClassName}
-            />
+              className={inputClassName}
+            >
+              {submitLabel}
+            </FormSubmitButton>
           </form>
         </Form>
       </CardContent>

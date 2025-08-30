@@ -24,7 +24,7 @@ export const PrincipalFilter: React.FC<PrincipalFilterProps> = ({
         onValueChange={(value) => onFilterChange('principal', value)}
         disabled={isLoading}
       >
-        <SelectTrigger className="w-full sm:w-[180px]">
+        <SelectTrigger className="w-full sm:w-filter-md">
           <SelectValue placeholder="Select Principal" />
         </SelectTrigger>
         <SelectContent>

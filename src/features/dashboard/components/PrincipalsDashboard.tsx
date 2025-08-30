@@ -12,7 +12,7 @@ interface DashboardStats {
   totalPrincipals: number
   activePrincipals: number
   totalOpportunities: number
-  totalInteractions: number
+  totalActivities: number
   totalEstimatedValue: number
 }
 
@@ -40,7 +40,7 @@ export function PrincipalsDashboard() {
   const stats: DashboardStats = React.useMemo(() => {
     const principalIds = new Set(principals.map(p => p.id))
     
-    // Filter opportunities and interactions related to principals
+    // Filter opportunities and activities related to principals
     const principalOpportunities = opportunities.filter(
       opp => opp.principal_organization_id && principalIds.has(opp.principal_organization_id)
     )
@@ -53,7 +53,7 @@ export function PrincipalsDashboard() {
       totalPrincipals: principals.length,
       activePrincipals: principals.filter(p => p.is_active).length,
       totalOpportunities: principalOpportunities.length,
-      totalInteractions: principalInteractions.length,
+      totalActivities: principalInteractions.length,
       totalEstimatedValue: principalOpportunities.reduce(
         (sum, opp) => sum + (opp.estimated_value || 0), 
         0
@@ -133,12 +133,12 @@ export function PrincipalsDashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Interactions</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Activities</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold" role="status" aria-live="polite">
-              {isLoading ? <span>Loading...</span> : stats.totalInteractions}
+              {isLoading ? <span>Loading...</span> : stats.totalActivities}
             </div>
             <p className="text-xs text-muted-foreground">
               All principal activities

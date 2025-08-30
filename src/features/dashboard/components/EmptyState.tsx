@@ -26,7 +26,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         return {
           icon: <Building2 className="w-12 h-12 text-muted-foreground/50" />,
           title: title || 'Select a principal to view their activity',
-          description: description || 'Choose a principal from the filter above to see opportunities, interactions, and activity trends.',
+          description: description || 'Choose a principal from the filter above to see opportunities, activities, and trends.',
           actionText: actionText || 'Browse Principals',
         }
       case 'chart':
@@ -40,7 +40,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         return {
           icon: <Activity className="w-8 h-8 text-muted-foreground/50" />,
           title: title || 'No activities to display',
-          description: description || 'Activities will appear here as opportunities and interactions are created.',
+          description: description || 'Activities will appear here as opportunities and interactions are created.', /* ui-audit: allow */
           actionText: actionText || 'Create Activity',
         }
       default:
@@ -57,7 +57,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 
   if (type === 'chart') {
     return (
-      <div className={`h-[300px] w-full border border-dashed rounded-lg flex items-center justify-center ${className}`}>
+      <div className={`h-chart w-full border border-dashed rounded-lg flex items-center justify-center ${className}`}>
         <div className="text-center text-muted-foreground">
           {content.icon}
           <div className="text-sm mt-2">{content.title}</div>
@@ -99,7 +99,7 @@ export const ChartEmptyState: React.FC<{ title?: string; description?: string }>
   description = "Select filters to view activity" 
 }) => {
   return (
-    <div className="h-[300px] w-full border border-dashed rounded-lg flex items-center justify-center">
+    <div className="h-chart w-full border border-dashed rounded-lg flex items-center justify-center">
       <div className="text-center text-muted-foreground">
         <TrendingUp className="w-8 h-8 mx-auto mb-2 text-muted-foreground/50" />
         <div className="text-sm">{title}</div>

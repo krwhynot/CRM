@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { StandardDialog } from '@/components/ui/StandardDialog'
 import { InteractionForm } from './InteractionForm'
 import { FormDataTransformer } from '@/lib/form-data-transformer'
 import type { InteractionWithRelations } from '@/types/entities'
@@ -35,37 +30,37 @@ export const InteractionDialogs: React.FC<InteractionDialogsProps> = ({
   return (
     <>
       {/* Create Interaction Dialog */}
-      <Dialog open={isCreateDialogOpen} onOpenChange={onCreateDialogChange}>
-        <DialogContent className="max-w-4xl w-full max-h-screen overflow-hidden">
-          <DialogHeader>
-            <DialogTitle>Create New Interaction</DialogTitle>
-          </DialogHeader>
-          <div className="max-h-[calc(80vh-8rem)] overflow-y-auto pr-2">
-            <InteractionForm 
-              onSubmit={onCreateSubmit}
-              loading={isCreating}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
+      <StandardDialog
+        open={isCreateDialogOpen}
+        onOpenChange={onCreateDialogChange}
+        title="Log Activity"
+        description="Record a new interaction with contacts or opportunities to track engagement history."
+        size="xl"
+        scroll="content"
+      >
+        <InteractionForm 
+          onSubmit={onCreateSubmit}
+          loading={isCreating}
+        />
+      </StandardDialog>
 
       {/* Edit Interaction Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={onEditDialogChange}>
-        <DialogContent className="max-w-4xl w-full max-h-screen overflow-hidden">
-          <DialogHeader>
-            <DialogTitle>Edit Interaction</DialogTitle>
-          </DialogHeader>
-          <div className="max-h-[calc(80vh-8rem)] overflow-y-auto pr-2">
-            {editingInteraction && (
-              <InteractionForm 
-                initialData={FormDataTransformer.toFormData(editingInteraction)}
-                onSubmit={(data) => onEditSubmit(editingInteraction, data)}
-                loading={isUpdating}
-              />
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <StandardDialog
+        open={isEditDialogOpen}
+        onOpenChange={onEditDialogChange}
+        title="Edit Interaction"
+        description="Update interaction details and modify engagement history."
+        size="xl"
+        scroll="content"
+      >
+        {editingInteraction && (
+          <InteractionForm 
+            initialData={FormDataTransformer.toFormData(editingInteraction)}
+            onSubmit={(data) => onEditSubmit(editingInteraction, data)}
+            loading={isUpdating}
+          />
+        )}
+      </StandardDialog>
     </>
   )
 }

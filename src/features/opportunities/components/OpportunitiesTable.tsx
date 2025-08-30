@@ -21,11 +21,11 @@ interface OpportunitiesTableProps {
   onView?: (opportunity: OpportunityWithLastActivity) => void
   onAddNew?: () => void
   
-  // Interaction handlers for inline details
-  onAddInteraction?: (opportunityId: string) => void
-  onEditInteraction?: (interaction: any) => void
-  onDeleteInteraction?: (interaction: any) => void
-  onInteractionItemClick?: (interaction: any) => void
+  // Activity handlers for inline details
+  onAddInteraction?: (opportunityId: string) => void /* ui-audit: allow */
+  onEditInteraction?: (interaction: any) => void /* ui-audit: allow */
+  onDeleteInteraction?: (interaction: any) => void /* ui-audit: allow */
+  onInteractionItemClick?: (interaction: any) => void /* ui-audit: allow */
 }
 
 export function OpportunitiesTable({ 
@@ -151,7 +151,7 @@ export function OpportunitiesTable({
       sortField: 'value'
     },
     { 
-      label: 'Last Interaction', 
+      label: 'Last Activity', 
       className: 'w-[20%] px-6 py-3 text-xs text-right',
       sortable: true,
       sortField: 'last_activity'
@@ -177,7 +177,7 @@ export function OpportunitiesTable({
       onToggleExpansion={() => toggleRowExpansion(opportunity.id)}
       // For now, pass empty/loading states - will be improved later
       interactions={[]}
-      interactionsLoading={false}
+      activitiesLoading={false}
       onAddInteraction={() => onAddInteraction?.(opportunity.id)}
       onEditInteraction={onEditInteraction}
       onDeleteInteraction={onDeleteInteraction}

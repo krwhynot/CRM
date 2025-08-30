@@ -1,22 +1,5 @@
 import React from 'react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogScrollableContent
-} from '@/components/ui/StandardDialog'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
+import { StandardDialog } from '@/components/ui/StandardDialog'
 import { EnhancedContactForm } from './EnhancedContactForm'
 import type { Contact, ContactUpdate } from '@/types/entities'
 import { FormDataTransformer } from '@/lib/form-data-transformer'
@@ -57,68 +40,56 @@ export const ContactsDialogs: React.FC<ContactsDialogsProps> = ({
   return (
     <>
       {/* Create Dialog */}
-      <Dialog open={isCreateDialogOpen} onOpenChange={onCreateDialogChange}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Create New Contact</DialogTitle>
-            <DialogDescription>
-              Add a new contact to your CRM system. Fill in the contact details below.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogScrollableContent>
-            <EnhancedContactForm 
-              onSubmit={onCreateSubmit}
-              loading={isCreating}
-            />
-          </DialogScrollableContent>
-        </DialogContent>
-      </Dialog>
+      <StandardDialog
+        open={isCreateDialogOpen}
+        onOpenChange={onCreateDialogChange}
+        title="Add Contact"
+        description="Add a contact to your CRM system. Fill in the contact details below."
+        size="lg"
+        scroll="content"
+      >
+        <EnhancedContactForm 
+          onSubmit={onCreateSubmit}
+          loading={isCreating}
+        />
+      </StandardDialog>
 
       {/* Edit Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={onEditDialogChange}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Contact</DialogTitle>
-            <DialogDescription>
-              Update the contact information below.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogScrollableContent>
-            {selectedContact && (
-              <EnhancedContactForm
-                initialData={FormDataTransformer.toFormData(selectedContact)}
-                onSubmit={(data) => onEditSubmit(selectedContact, data as ContactUpdate)}
-                loading={isUpdating}
-              />
-            )}
-          </DialogScrollableContent>
-        </DialogContent>
-      </Dialog>
+      <StandardDialog
+        open={isEditDialogOpen}
+        onOpenChange={onEditDialogChange}
+        title="Edit Contact"
+        description="Update the contact information below."
+        size="lg"
+        scroll="content"
+      >
+        {selectedContact && (
+          <EnhancedContactForm
+            initialData={FormDataTransformer.toFormData(selectedContact)}
+            onSubmit={(data) => onEditSubmit(selectedContact, data as ContactUpdate)}
+            loading={isUpdating}
+          />
+        )}
+      </StandardDialog>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={onDeleteDialogChange}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action will permanently delete "{selectedContact?.first_name} {selectedContact?.last_name}". 
-              This action cannot be undone and will remove all associated data.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={onDeleteCancel}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => selectedContact && onDeleteConfirm(selectedContact)}
-              className="bg-destructive hover:bg-destructive-hover text-destructive-foreground"
-              disabled={isDeleting}
-            >
-              {isDeleting ? 'Deleting...' : 'Delete Contact'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <StandardDialog
+        variant="alert"
+        open={isDeleteDialogOpen}
+        onOpenChange={onDeleteDialogChange}
+        title="Are you sure?"
+        description={`This action will permanently delete "${selectedContact?.first_name} ${selectedContact?.last_name}". This action cannot be undone and will remove all associated data.`}
+        onConfirm={() => selectedContact && onDeleteConfirm(selectedContact)}
+        onCancel={onDeleteCancel}
+        confirmText="Delete Contact"
+        cancelText="Cancel"
+        confirmVariant="destructive"
+        isLoading={isDeleting}
+      >
+        <div className="text-center text-sm text-muted-foreground">
+          All interactions and history associated with this contact will also be removed.
+        </div>
+      </StandardDialog>
     </>
   )
 }

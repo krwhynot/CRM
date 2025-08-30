@@ -1,7 +1,7 @@
 import React from 'react'
 import { OpportunitiesTableRow } from './OpportunitiesTableRow'
 import { OpportunityRowDetails } from './OpportunityRowDetails'
-import type { OpportunityWithLastActivity, InteractionWithRelations } from '@/types/opportunity.types'
+import type { OpportunityWithLastActivity, InteractionWithRelations } from '@/types/opportunity.types' /* ui-audit: allow */
 
 interface OpportunityRowProps {
   opportunity: OpportunityWithLastActivity
@@ -17,12 +17,12 @@ interface OpportunityRowProps {
   isExpanded: boolean
   onToggleExpansion: () => void
   
-  // Interaction props for details
-  interactions?: InteractionWithRelations[]
-  interactionsLoading?: boolean
-  onAddInteraction?: () => void
-  onEditInteraction?: (interaction: InteractionWithRelations) => void
-  onDeleteInteraction?: (interaction: InteractionWithRelations) => void
+  // Activity props for details
+  interactions?: InteractionWithRelations[] /* ui-audit: allow */
+  activitiesLoading?: boolean
+  onAddInteraction?: () => void /* ui-audit: allow */
+  onEditInteraction?: (interaction: InteractionWithRelations) => void /* ui-audit: allow */
+  onDeleteInteraction?: (interaction: InteractionWithRelations) => void /* ui-audit: allow */
   onInteractionItemClick?: (interaction: InteractionWithRelations) => void
 }
 
@@ -38,7 +38,7 @@ export const OpportunityRow: React.FC<OpportunityRowProps> = ({
   isExpanded,
   onToggleExpansion,
   interactions,
-  interactionsLoading,
+  activitiesLoading,
   onAddInteraction,
   onEditInteraction,
   onDeleteInteraction,
@@ -63,7 +63,7 @@ export const OpportunityRow: React.FC<OpportunityRowProps> = ({
         <OpportunityRowDetails
           opportunity={opportunity}
           interactions={interactions}
-          interactionsLoading={interactionsLoading}
+          activitiesLoading={activitiesLoading}
           onAddInteraction={onAddInteraction}
           onEditInteraction={onEditInteraction}
           onDeleteInteraction={onDeleteInteraction}

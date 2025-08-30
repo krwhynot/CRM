@@ -20,8 +20,8 @@ const quickActions = [
     action: "opportunity",
   },
   {
-    title: "Interaction",
-    action: "interaction",
+    title: "Activity",
+    action: "activity",
   },
 ]
 
@@ -31,7 +31,16 @@ export function QuickActions() {
       {quickActions.map((action, index) => (
         <Button
           key={index}
-          className="bg-gradient-to-br from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white border-none rounded-md px-4 py-2 flex items-center gap-2 shadow-[0_2px_4px_rgba(141,198,63,0.2)] hover:shadow-[0_4px_8px_rgba(141,198,63,0.3)] hover:-translate-y-0.5 transition-all duration-200 whitespace-nowrap"
+          className="bg-gradient-to-br from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white border-none rounded-md px-4 py-2 flex items-center gap-2 hover:-translate-y-0.5 transition-all duration-200 whitespace-nowrap"
+          style={{ 
+            boxShadow: 'var(--quick-action-shadow)' 
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = 'var(--quick-action-shadow-hover)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = 'var(--quick-action-shadow)'
+          }}
           onClick={() => console.log(`Creating new ${action.title}`)}
         >
           <Plus className="h-4 w-4" />

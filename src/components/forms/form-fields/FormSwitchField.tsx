@@ -29,7 +29,7 @@ export function FormSwitchField<TFieldValues extends FieldValues>({
           <div className="space-y-0.5">
             <FormLabel>{label}</FormLabel>
             {description && (
-              <div className="text-[0.8rem] text-muted-foreground">
+              <div className="text-xs text-muted-foreground">
                 {description}
               </div>
             )}

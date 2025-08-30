@@ -5,7 +5,8 @@ import {
   useUpdateOrganization, 
   useDeleteOrganization 
 } from './useOrganizations'
-import type { Organization, OrganizationInsert, OrganizationUpdate } from '@/types/entities'
+import type { Organization, OrganizationUpdate } from '@/types/entities'
+import type { OrganizationFormInterface } from '@/types/forms/form-interfaces'
 
 export const useOrganizationsPageActions = (
   closeCreateDialog: () => void,
@@ -16,7 +17,7 @@ export const useOrganizationsPageActions = (
   const updateOrganizationMutation = useUpdateOrganization()
   const deleteOrganizationMutation = useDeleteOrganization()
 
-  const handleCreate = useCallback(async (data: OrganizationInsert) => {
+  const handleCreate = useCallback(async (data: OrganizationFormInterface) => {
     try {
       console.log('🔍 Form data received:', data)
       
@@ -36,7 +37,7 @@ export const useOrganizationsPageActions = (
     }
   }, [createOrganizationMutation, closeCreateDialog])
 
-  const handleUpdate = useCallback(async (selectedOrganization: Organization, data: OrganizationUpdate) => {
+  const handleUpdate = useCallback(async (selectedOrganization: Organization, data: OrganizationFormInterface) => {
     try {
       await updateOrganizationMutation.mutateAsync({
         id: selectedOrganization.id,

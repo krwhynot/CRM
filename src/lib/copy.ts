@@ -3,6 +3,12 @@
  * This ensures consistency across the application and makes copy updates easier
  */
 
+/** Terms config for consistent terminology */
+export const TERMS = {
+  ACTIVITY_SINGULAR: "Activity",
+  ACTIVITY_PLURAL: "Activities",
+} as const
+
 export const COPY = {
   // Loading States
   LOADING: {
@@ -45,19 +51,19 @@ export const COPY = {
 
   // Dialog Titles
   DIALOGS: {
-    CREATE_ORGANIZATION: 'Create New Organization',
+    CREATE_ORGANIZATION: 'Add Organization',
     EDIT_ORGANIZATION: 'Edit Organization',
     DELETE_ORGANIZATION: 'Delete Organization',
-    CREATE_CONTACT: 'Create New Contact',
+    CREATE_CONTACT: 'Add Contact',
     EDIT_CONTACT: 'Edit Contact',
     DELETE_CONTACT: 'Delete Contact',
-    CREATE_PRODUCT: 'Create New Product',
+    CREATE_PRODUCT: 'Add Product',
     EDIT_PRODUCT: 'Edit Product',
     DELETE_PRODUCT: 'Delete Product',
-    CREATE_OPPORTUNITY: 'Create New Opportunity',
+    CREATE_OPPORTUNITY: 'Add Opportunity',
     EDIT_OPPORTUNITY: 'Edit Opportunity',
     DELETE_OPPORTUNITY: 'Delete Opportunity',
-    LOG_ACTIVITY: 'Log New Activity',
+    LOG_ACTIVITY: 'Log Activity',
     EDIT_ACTIVITY: 'Edit Activity',
   },
 

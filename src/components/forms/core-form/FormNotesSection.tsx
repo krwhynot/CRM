@@ -4,7 +4,7 @@ import { FormFieldRenderer } from '../FormFieldRenderer'
 interface FormNotesSectionProps<T extends FieldValues> {
   form: UseFormReturn<T>
   loading: boolean
-  entityType: 'organization' | 'contact' | 'product' | 'opportunity' | 'interaction'
+  entityType: 'organization' | 'contact' | 'product' | 'opportunity' | 'activity'
 }
 
 export function FormNotesSection<T extends FieldValues>({

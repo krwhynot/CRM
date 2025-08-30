@@ -38,7 +38,7 @@ export const ActivityFilters: React.FC<ActivityFiltersProps> = ({
         onClick={() => onTypeChange('interaction')}
         className="h-7 px-3 text-xs"
       >
-        Interactions
+        Activities
       </Button>
       <Button
         variant={selectedType === 'contact' ? 'default' : 'outline'}

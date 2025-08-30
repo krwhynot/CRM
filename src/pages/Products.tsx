@@ -1,117 +1,71 @@
-import { useState } from 'react'
-import { toast } from '@/lib/toast-styles'
-import { ProductsTable } from '@/features/products/components/ProductsTable'
-import { ProductForm } from '@/features/products/components/ProductForm'
-import { useProducts, useCreateProduct, useUpdateProduct, useDeleteProduct } from '@/features/products/hooks/useProducts'
+import { ProductsDataDisplay } from '@/features/products/components/ProductsDataDisplay'
+import { ProductDialogs } from '@/features/products/components/ProductDialogs'
+import { useProducts } from '@/features/products/hooks/useProducts'
+import { useProductsPageState } from '@/features/products/hooks/useProductsPageState'
+import { useProductsPageActions } from '@/features/products/hooks/useProductsPageActions'
+import { ProductsErrorBoundary } from '@/components/error-boundaries/QueryErrorBoundary'
 import { ProductManagementTemplate } from '@/components/templates/EntityManagementTemplate'
-import type { Product, ProductInsert, ProductUpdate } from '@/types/entities'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogScrollableContent
-} from '@/components/ui/StandardDialog'
 
 function ProductsPage() {
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null)
-  const { data: products = [], isLoading } = useProducts()
-  const createProductMutation = useCreateProduct()
-  const updateProductMutation = useUpdateProduct()
-  const deleteProductMutation = useDeleteProduct()
+  const { data: products = [], isLoading, isError, error, refetch } = useProducts()
+  
+  const {
+    isCreateDialogOpen,
+    isEditDialogOpen,
+    isDeleteDialogOpen,
+    selectedProduct,
+    openCreateDialog,
+    closeCreateDialog,
+    openEditDialog,
+    closeEditDialog,
+    openDeleteDialog,
+    closeDeleteDialog
+  } = useProductsPageState()
+  
+  const {
+    handleCreate,
+    handleUpdate,
+    handleDelete,
+    isCreating,
+    isUpdating,
+    isDeleting
+  } = useProductsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
 
-
-
-  const handleEdit = (product: Product) => {
-    setEditingProduct(product)
-    setIsEditDialogOpen(true)
-  }
-
-  const handleDelete = async (product: Product) => {
-    if (window.confirm(`Are you sure you want to delete ${product.name}?`)) {
-      try {
-        await deleteProductMutation.mutateAsync(product.id)
-        toast.success('Product deleted successfully!')
-      } catch (error) {
-        console.error('Failed to delete product:', error)
-        toast.error('Failed to delete product. Please try again.')
-      }
-    }
-  }
 
   return (
-    <ProductManagementTemplate
-      entityCount={products.length}
-      onAddClick={() => setIsCreateDialogOpen(true)}
-    >
-      {/* Products Table */}
-      {isLoading ? (
-        <div className="text-center py-8 font-nunito text-mfb-green bg-white rounded-lg border shadow-sm p-12">Loading products...</div>
-      ) : (
-        <ProductsTable 
-          products={products} 
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
-      )}
+    <ProductsErrorBoundary>
+      <ProductManagementTemplate
+        entityCount={products.length}
+        onAddClick={openCreateDialog}
+      >
+      <ProductsDataDisplay
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        products={products}
+        onEdit={openEditDialog}
+        onDelete={openDeleteDialog}
+        onRefresh={refetch}
+      />
 
-      {/* Create Product Dialog */}
-      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Create New Product</DialogTitle>
-          </DialogHeader>
-          <DialogScrollableContent>
-            <ProductForm 
-            onSubmit={async (data) => {
-              try {
-                await createProductMutation.mutateAsync(data as ProductInsert)
-                setIsCreateDialogOpen(false)
-                toast.success('Product created successfully!')
-              } catch (error) {
-                console.error('Failed to create product:', error)
-                toast.error('Failed to create product. Please try again.')
-              }
-            }}
-            loading={createProductMutation.isPending}
-          />
-          </DialogScrollableContent>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit Product Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Product</DialogTitle>
-          </DialogHeader>
-          <DialogScrollableContent>
-            {editingProduct && (
-              <ProductForm 
-              initialData={editingProduct}
-              onSubmit={async (data) => {
-                try {
-                  await updateProductMutation.mutateAsync({
-                    id: editingProduct.id,
-                    updates: data as ProductUpdate
-                  })
-                  setIsEditDialogOpen(false)
-                  setEditingProduct(null)
-                  toast.success('Product updated successfully!')
-                } catch (error) {
-                  console.error('Failed to update product:', error)
-                  toast.error('Failed to update product. Please try again.')
-                }
-              }}
-              loading={updateProductMutation.isPending}
-              />
-            )}
-          </DialogScrollableContent>
-        </DialogContent>
-      </Dialog>
+      <ProductDialogs
+        isCreateDialogOpen={isCreateDialogOpen}
+        isEditDialogOpen={isEditDialogOpen}
+        isDeleteDialogOpen={isDeleteDialogOpen}
+        selectedProduct={selectedProduct}
+        onCreateSubmit={handleCreate}
+        onEditSubmit={(data) => selectedProduct && handleUpdate(selectedProduct, data)}
+        onDeleteConfirm={(product) => handleDelete(product)}
+        onCreateDialogChange={closeCreateDialog}
+        onEditDialogChange={closeEditDialog}
+        onDeleteDialogChange={closeDeleteDialog}
+        onDeleteCancel={closeDeleteDialog}
+        isCreating={isCreating}
+        isUpdating={isUpdating}
+        isDeleting={isDeleting}
+      />
     </ProductManagementTemplate>
+    </ProductsErrorBoundary>
   )
 }
 

@@ -16,15 +16,15 @@ export const DashboardSkeleton: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-3 flex-1">
               <div className="flex items-center gap-2">
                 <Skeleton className="h-4 w-4" />
-                <Skeleton className="h-9 w-[180px]" />
+                <Skeleton className="h-9 w-44" />
               </div>
               <div className="flex items-center gap-2">
                 <Skeleton className="h-4 w-4" />
-                <Skeleton className="h-9 w-[180px]" />
+                <Skeleton className="h-9 w-44" />
               </div>
               <div className="flex items-center gap-2">
                 <Skeleton className="h-4 w-4" />
-                <Skeleton className="h-9 w-[140px]" />
+                <Skeleton className="h-9 w-36" />
               </div>
             </div>
             <Skeleton className="h-8 w-16" />
@@ -40,7 +40,7 @@ export const DashboardSkeleton: React.FC = () => {
             <Skeleton className="h-6 w-32" />
           </CardHeader>
           <CardContent>
-            <div className="h-[300px] space-y-4">
+            <div className="h-chart space-y-4">
               <div className="flex justify-between items-end h-full">
                 {Array.from({ length: 8 }).map((_, index) => (
                   <div key={index} className="flex flex-col items-center space-y-2">
@@ -62,7 +62,7 @@ export const DashboardSkeleton: React.FC = () => {
             <Skeleton className="h-6 w-32" />
           </CardHeader>
           <CardContent>
-            <div className="h-[300px] space-y-4">
+            <div className="h-chart space-y-4">
               <div className="flex justify-between items-end h-full">
                 {Array.from({ length: 8 }).map((_, index) => (
                   <div key={index} className="flex flex-col items-center space-y-2">
@@ -115,7 +115,7 @@ export const DashboardSkeleton: React.FC = () => {
 
 export const ChartSkeleton: React.FC = () => {
   return (
-    <div className="h-[300px] space-y-4 animate-pulse">
+    <div className="h-chart space-y-4 animate-pulse">
       <div className="flex justify-between items-end h-full">
         {Array.from({ length: 8 }).map((_, index) => (
           <div key={index} className="flex flex-col items-center space-y-2">

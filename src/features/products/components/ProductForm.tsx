@@ -5,7 +5,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { FormValidationFeedback, FieldValidationIndicator } from '@/components/forms/FormValidationFeedback'
 import { useForm } from 'react-hook-form'
+import { useFormValidationFeedback } from '@/hooks/useFormValidationFeedback'
 import { productSchema, type ProductFormData } from '@/types/validation'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
@@ -41,24 +43,49 @@ export function ProductForm({
     }
   })
 
+  const validationState = useFormValidationFeedback(form.control, {
+    requiredFields: ['name', 'sku', 'principal_id'],
+    warningValidations: {
+      description: (value: string) => 
+        !value || value.length < 10 ? 'Consider adding a more detailed description' : null,
+      list_price: (value: number) => 
+        !value ? 'Adding a price helps with cost calculations' : null
+    }
+  })
+
   return (
     <Card className="w-full max-w-md mx-auto">
-      <CardHeader><CardTitle>{initialData ? 'Edit Product' : 'New Product'}</CardTitle></CardHeader>
+      <CardHeader><CardTitle>{initialData ? 'Edit Product' : 'Add Product'}</CardTitle></CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             
-            <FormField control={form.control} name="name" render={({ field }) => (
+            {/* Form validation feedback */}
+            <FormValidationFeedback {...validationState} />
+            
+            <FormField control={form.control} name="name" render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel>Name *</FormLabel>
+                <div className="flex items-center justify-between">
+                  <FormLabel>Name *</FormLabel>
+                  <FieldValidationIndicator 
+                    hasError={!!fieldState.error}
+                    isValid={!fieldState.error && fieldState.isTouched && field.value}
+                  />
+                </div>
                 <FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
 
-            <FormField control={form.control} name="sku" render={({ field }) => (
+            <FormField control={form.control} name="sku" render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel>SKU *</FormLabel>
+                <div className="flex items-center justify-between">
+                  <FormLabel>SKU *</FormLabel>
+                  <FieldValidationIndicator 
+                    hasError={!!fieldState.error}
+                    isValid={!fieldState.error && fieldState.isTouched && field.value}
+                  />
+                </div>
                 <FormControl><Input {...field} value={field.value || ''} className="h-11" disabled={loading} /></FormControl>
                 <FormMessage />
               </FormItem>

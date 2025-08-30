@@ -175,9 +175,29 @@ else
     ((WARNINGS++))
 fi
 
-# Gate 6: Mobile Optimization Check
+# Gate 6: UI Consistency Check
 echo ""
-echo -e "${BLUE}📱 Gate 6: Mobile Optimization${NC}"
+echo -e "${BLUE}🎨 Gate 6: UI Consistency${NC}"
+if npm run test:ui-consistency > /tmp/ui-consistency.log 2>&1; then
+    echo -e "${GREEN}✅ UI consistency checks passed${NC}"
+    echo "## ✅ UI Consistency" >> "$REPORT_FILE"
+    echo "Status: PASSED" >> "$REPORT_FILE"
+    echo "" >> "$REPORT_FILE"
+    ((GATES_PASSED++))
+else
+    echo -e "${RED}❌ UI consistency checks failed${NC}"
+    echo "## ❌ UI Consistency" >> "$REPORT_FILE"
+    echo "Status: FAILED" >> "$REPORT_FILE"
+    echo "\`\`\`" >> "$REPORT_FILE"
+    cat /tmp/ui-consistency.log >> "$REPORT_FILE"
+    echo "\`\`\`" >> "$REPORT_FILE"
+    echo "" >> "$REPORT_FILE"
+    ((GATES_FAILED++))
+fi
+
+# Gate 7: Mobile Optimization Check
+echo ""
+echo -e "${BLUE}📱 Gate 7: Mobile Optimization${NC}"
 MOBILE_CSS=$(find src/ -name "*.css" -exec grep -l "@media.*mobile\|@media.*max-width.*768" {} \; 2>/dev/null | wc -l)
 RESPONSIVE_COMPONENTS=$(find src/ -name "*.tsx" -exec grep -l "useIsMobile\|useMobile\|mobile" {} \; 2>/dev/null | wc -l)
 MOBILE_SCORE=$(( (MOBILE_CSS + RESPONSIVE_COMPONENTS) * 10 ))
@@ -255,6 +275,6 @@ echo ""
 echo -e "${BOLD}📋 Full report: ${BLUE}$REPORT_FILE${NC}"
 
 # Cleanup temp files
-rm -f /tmp/ts-check.log /tmp/lint.log /tmp/arch-health.log /tmp/build.log /tmp/perf-monitor.log
+rm -f /tmp/ts-check.log /tmp/lint.log /tmp/arch-health.log /tmp/build.log /tmp/perf-monitor.log /tmp/ui-consistency.log
 
 exit $EXIT_CODE

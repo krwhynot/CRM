@@ -15,7 +15,7 @@ import { UserMenu } from "@/features/auth/components/UserMenu"
 
 export function DashboardHeader() {
   return (
-    <header className="h-[60px] bg-gradient-to-r from-white to-primary-50 border-b-2 border-primary-400 flex items-center justify-between px-6 shrink-0 shadow-[0_2px_8px_rgba(141,198,63,0.15)]">
+    <header className="h-header bg-gradient-to-r from-white to-primary-50 border-b-2 border-primary-400 flex items-center justify-between px-6 shrink-0" style={{ boxShadow: 'var(--dashboard-shadow)' }}>
       <div className="flex items-center gap-4">
         {/* Mobile menu toggle - hidden on larger screens since we use fixed sidebar */}
         <SidebarTrigger className="md:hidden -ml-1" />
@@ -39,7 +39,7 @@ export function DashboardHeader() {
           <Input
             type="search"
             placeholder="Search..."
-            className="w-[200px] lg:w-[300px] rounded-lg bg-white pl-8 border-gray-200"
+            className="w-search-sm lg:w-search-lg rounded-lg bg-white pl-8 border-gray-200"
           />
         </div>
       </div>

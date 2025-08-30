@@ -46,7 +46,7 @@ export const PrincipalMetricsGrid: React.FC<PrincipalMetricsGridProps> = ({
 
       <div className="grid grid-cols-2 gap-4 text-sm">
         <div className="space-y-1">
-          <span className="text-muted-foreground">Interactions:</span>
+          <span className="text-muted-foreground">Activities:</span>
           {isLoading ? (
             <Skeleton className="h-4 w-8" />
           ) : (

@@ -130,16 +130,16 @@ export function DataPreviewTable({ parsedData }: DataPreviewTableProps) {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="min-w-[150px]">Organization</TableHead>
+                    <TableHead className="min-w-36">Organization</TableHead>
                     <TableHead>Priority</TableHead>
                     <TableHead>Type</TableHead>
                     <TableHead>Phone</TableHead>
-                    <TableHead className="min-w-[120px]">Website</TableHead>
+                    <TableHead className="min-w-32">Website</TableHead>
                     <TableHead>Address</TableHead>
                     <TableHead>City</TableHead>
                     <TableHead>State</TableHead>
                     <TableHead>Zip</TableHead>
-                    <TableHead className="min-w-[100px]">Notes</TableHead>
+                    <TableHead className="min-w-24">Notes</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -155,7 +155,7 @@ export function DataPreviewTable({ parsedData }: DataPreviewTableProps) {
                         <Badge variant="outline">{row.type}</Badge>
                       </TableCell>
                       <TableCell>{row.phone || '-'}</TableCell>
-                      <TableCell className="max-w-[120px] truncate">
+                      <TableCell className="max-w-32 truncate">
                         {row.website ? (
                           <a 
                             href={row.website} 
@@ -167,13 +167,13 @@ export function DataPreviewTable({ parsedData }: DataPreviewTableProps) {
                           </a>
                         ) : '-'}
                       </TableCell>
-                      <TableCell className="max-w-[120px] truncate">
+                      <TableCell className="max-w-32 truncate">
                         {row.address_line_1 || '-'}
                       </TableCell>
                       <TableCell>{row.city || '-'}</TableCell>
                       <TableCell>{row.state_province || '-'}</TableCell>
                       <TableCell>{row.postal_code || '-'}</TableCell>
-                      <TableCell className="max-w-[100px] truncate" title={row.notes || ''}>
+                      <TableCell className="max-w-24 truncate" title={row.notes || ''}>
                         {row.notes || '-'}
                       </TableCell>
                     </TableRow>

@@ -22,7 +22,7 @@ export const useDualLineChartsStyle = (): UseDualLineChartsStyleReturn => {
     cardClassName: useNewStyle ? "shadow-sm border-primary/10" : "shadow-md",
     headerClassName: useNewStyle ? "p-4 pb-3" : "p-6 pb-4",
     titleClassName: useNewStyle 
-      ? "text-base font-bold text-[hsl(var(--foreground))]" 
+      ? "text-base font-bold text-foreground" 
       : "text-lg font-semibold",
     descriptionClassName: useNewStyle ? "text-xs" : "text-sm",
     contentClassName: useNewStyle ? "p-4 pt-0" : "p-6 pt-0"

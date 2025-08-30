@@ -16,7 +16,7 @@ interface WizardStepTimelineProps {
 const OPPORTUNITY_CONTEXTS = [
   'Site Visit',
   'Food Show',
-  'New Product Interest', 
+  'Product Interest', 
   'Follow-up',
   'Demo Request',
   'Sampling',

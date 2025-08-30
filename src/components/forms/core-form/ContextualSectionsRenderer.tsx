@@ -8,7 +8,7 @@ interface ContextualSectionsRendererProps<T extends FieldValues> {
   sections: ConditionalSection<T>[]
   form: UseFormReturn<T>
   loading: boolean
-  entityType: 'organization' | 'contact' | 'product' | 'opportunity' | 'interaction'
+  entityType: 'organization' | 'contact' | 'product' | 'opportunity' | 'activity'
   shouldShowConditionalSection: (condition: (values: T) => boolean) => boolean
   getLayoutClass: (layout?: FormSection<T>['layout']) => string
   getSectionClassName: (section: FormSection<T>) => string

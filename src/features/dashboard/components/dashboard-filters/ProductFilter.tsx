@@ -24,7 +24,7 @@ export const ProductFilter: React.FC<ProductFilterProps> = ({
         onValueChange={(value) => onFilterChange('product', value)}
         disabled={isLoading || localFilters.principal === 'all'}
       >
-        <SelectTrigger className="w-full sm:w-[180px]">
+        <SelectTrigger className="w-full sm:w-filter-md">
           <SelectValue placeholder="Select Product" />
         </SelectTrigger>
         <SelectContent>

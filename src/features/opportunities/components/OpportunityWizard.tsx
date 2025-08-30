@@ -105,7 +105,7 @@ export function OpportunityWizard({
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
-        <CardTitle>Create New Opportunity</CardTitle>
+        <CardTitle>Add Opportunity</CardTitle>
         <div className="mt-4">
           <Progress value={progress} className="h-2" />
           <div className="flex justify-between mt-2 text-sm text-gray-500">

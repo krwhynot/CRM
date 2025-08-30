@@ -27,7 +27,7 @@ export interface CoreFormLayoutProps<T extends FieldValues> {
   submitLabel?: string
   
   // Layout configuration
-  entityType: 'organization' | 'contact' | 'product' | 'opportunity' | 'interaction'
+  entityType: 'organization' | 'contact' | 'product' | 'opportunity' | 'activity'
   showAdvancedOptions?: boolean
   
   // Sections configuration

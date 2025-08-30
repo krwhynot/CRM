@@ -152,6 +152,69 @@ module.exports = {
           }
         }
       }
+    },
+
+    'prefer-formfield-component': {
+      meta: {
+        type: 'suggestion',
+        docs: {
+          description: 'Encourage use of FormField component for consistent form UX and accessibility',
+          category: 'Best Practices',
+          recommended: true
+        },
+        schema: []
+      },
+      create(context) {
+        return {
+          // Check for inline label + input patterns that should use FormField
+          JSXElement(node) {
+            if (node.openingElement.name.name === 'FormItem') {
+              let hasLabel = false
+              let hasControl = false
+              let hasMessage = false
+              
+              // Check if this FormItem contains FormLabel + FormControl + FormMessage
+              node.children.forEach(child => {
+                if (child.type === 'JSXElement') {
+                  const tagName = child.openingElement.name.name
+                  if (tagName === 'FormLabel') hasLabel = true
+                  if (tagName === 'FormControl') hasControl = true  
+                  if (tagName === 'FormMessage') hasMessage = true
+                }
+              })
+              
+              // If we have the typical FormItem structure, suggest FormField
+              if (hasLabel && hasControl) {
+                context.report({
+                  node,
+                  message: 'Consider using FormField component instead of FormItem + FormLabel + FormControl for consistent UX and accessibility. See: @/components/forms/FormField'
+                })
+              }
+            }
+          },
+
+          // Check for manual label + input patterns outside of form context
+          Program(node) {
+            const sourceCode = context.getSourceCode()
+            const filename = context.getFilename()
+            
+            // Only check files that contain forms (have Controller or form-related imports)
+            if (filename.includes('Form') && !filename.includes('FormField')) {
+              const text = sourceCode.getText()
+              
+              // Look for manual label + input patterns
+              if (text.includes('Controller') && 
+                  (text.includes('<label') || text.includes('<Label')) &&
+                  !text.includes('FormField')) {
+                context.report({
+                  node,
+                  message: 'Form files should use FormField component for consistent labels, errors, and accessibility. Import from @/components/forms/FormField'
+                })
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

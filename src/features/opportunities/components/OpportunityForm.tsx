@@ -1,11 +1,11 @@
-import { ProgressiveDetails } from '@/components/forms'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { ProgressiveDetails, FormField } from '@/components/forms'
+import { Form } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { opportunitySchema, type OpportunityFormData } from '@/types/opportunity.types'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
@@ -74,97 +74,135 @@ export function OpportunityForm({
 
   return (
     <Card className="w-full max-w-md mx-auto">
-      <CardHeader><CardTitle>{initialData ? 'Edit Opportunity' : 'New Opportunity'}</CardTitle></CardHeader>
+      <CardHeader><CardTitle>{initialData ? 'Edit Opportunity' : 'Add Opportunity'}</CardTitle></CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             
-            <FormField control={form.control} name="name" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name *</FormLabel>
-                <FormControl><Input {...field} className="h-11" disabled={loading} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
+            <Controller
+              control={form.control}
+              name="name"
+              render={({ field, fieldState }) => (
+                <FormField label="Name" required error={fieldState.error?.message}>
+                  <Input {...field} className="h-11" disabled={loading} />
+                </FormField>
+              )}
+            />
 
-            <FormField control={form.control} name="organization_id" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Organization *</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl><SelectTrigger className="h-11"><SelectValue placeholder="Select organization" /></SelectTrigger></FormControl>
-                  <SelectContent>
-                    {organizations.map((org) => (
-                      <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )} />
+            <Controller
+              control={form.control}
+              name="organization_id"
+              render={({ field, fieldState }) => (
+                <FormField label="Organization" required error={fieldState.error?.message}>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="h-11">
+                      <SelectValue placeholder="Select organization" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {organizations.map((org) => (
+                        <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormField>
+              )}
+            />
 
-            <FormField control={form.control} name="estimated_value" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Value *</FormLabel>
-                <FormControl><Input {...field} type="number" min="0" step="0.01" className="h-11" disabled={loading} onChange={(e) => field.onChange(Number(e.target.value))} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
+            <Controller
+              control={form.control}
+              name="estimated_value"
+              render={({ field, fieldState }) => (
+                <FormField label="Value" required error={fieldState.error?.message}>
+                  <Input {...field} type="number" min="0" step="0.01" className="h-11" disabled={loading} onChange={(e) => field.onChange(Number(e.target.value))} />
+                </FormField>
+              )}
+            />
 
-            <FormField control={form.control} name="stage" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Stage *</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl><SelectTrigger className="h-11"><SelectValue /></SelectTrigger></FormControl>
-                  <SelectContent>
-                    {STAGES.map((stage) => (
-                      <SelectItem key={stage.value} value={stage.value}>{stage.display}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )} />
+            <Controller
+              control={form.control}
+              name="stage"
+              render={({ field, fieldState }) => (
+                <FormField label="Stage" required error={fieldState.error?.message}>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <SelectTrigger className="h-11">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {STAGES.map((stage) => (
+                        <SelectItem key={stage.value} value={stage.value}>{stage.display}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormField>
+              )}
+            />
 
-            <FormField control={form.control} name="status" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Status *</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl><SelectTrigger className="h-11"><SelectValue /></SelectTrigger></FormControl>
-                  <SelectContent>
-                    {STATUSES.map((status) => (
-                      <SelectItem key={status.value} value={status.value}>{status.display}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )} />
+            <Controller
+              control={form.control}
+              name="status"
+              render={({ field, fieldState }) => (
+                <FormField label="Status" required error={fieldState.error?.message}>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <SelectTrigger className="h-11">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {STATUSES.map((status) => (
+                        <SelectItem key={status.value} value={status.value}>{status.display}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormField>
+              )}
+            />
 
             <ProgressiveDetails buttonText="Add Details">
               <div className="space-y-4">
-                <FormField control={form.control} name="contact_id" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Contact</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value || ''}>
-                      <FormControl><SelectTrigger className="h-11"><SelectValue placeholder="Select contact" /></SelectTrigger></FormControl>
-                      <SelectContent>
-                        {filteredContacts.map((contact) => (
-                          <SelectItem key={contact.id} value={contact.id}>{contact.first_name} {contact.last_name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-                <FormField control={form.control} name="estimated_close_date" render={({ field }) => (
-                  <FormItem><FormLabel>Est. Close Date</FormLabel><FormControl><Input {...field} value={field.value || ''} type="date" className="h-11" disabled={loading} /></FormControl><FormMessage /></FormItem>
-                )} />
-                <FormField control={form.control} name="description" render={({ field }) => (
-                  <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} value={field.value || ''} rows={3} disabled={loading} /></FormControl><FormMessage /></FormItem>
-                )} />
-                <FormField control={form.control} name="notes" render={({ field }) => (
-                  <FormItem><FormLabel>Notes</FormLabel><FormControl><Textarea {...field} value={field.value || ''} rows={3} disabled={loading} /></FormControl><FormMessage /></FormItem>
-                )} />
+                <Controller
+                  control={form.control}
+                  name="contact_id"
+                  render={({ field, fieldState }) => (
+                    <FormField label="Contact" error={fieldState.error?.message}>
+                      <Select onValueChange={field.onChange} value={field.value || ''}>
+                        <SelectTrigger className="h-11">
+                          <SelectValue placeholder="Select contact" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {filteredContacts.map((contact) => (
+                            <SelectItem key={contact.id} value={contact.id}>{contact.first_name} {contact.last_name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormField>
+                  )}
+                />
+                <Controller
+                  control={form.control}
+                  name="estimated_close_date"
+                  render={({ field, fieldState }) => (
+                    <FormField label="Est. Close Date" error={fieldState.error?.message}>
+                      <Input {...field} value={field.value || ''} type="date" className="h-11" disabled={loading} />
+                    </FormField>
+                  )}
+                />
+                <Controller
+                  control={form.control}
+                  name="description"
+                  render={({ field, fieldState }) => (
+                    <FormField label="Description" error={fieldState.error?.message}>
+                      <Textarea {...field} value={field.value || ''} rows={3} disabled={loading} />
+                    </FormField>
+                  )}
+                />
+                <Controller
+                  control={form.control}
+                  name="notes"
+                  render={({ field, fieldState }) => (
+                    <FormField label="Notes" error={fieldState.error?.message}>
+                      <Textarea {...field} value={field.value || ''} rows={3} disabled={loading} />
+                    </FormField>
+                  )}
+                />
               </div>
             </ProgressiveDetails>
 

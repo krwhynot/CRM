@@ -62,7 +62,7 @@ export const OrganizationModeSelector: React.FC<OrganizationModeSelectorProps> =
         </div>
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="new" id="new" />
-          <label htmlFor="new" className="text-sm">Create new</label>
+          <label htmlFor="new" className="text-sm">Add new</label>
         </div>
       </RadioGroup>
 

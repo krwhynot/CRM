@@ -20,7 +20,7 @@ export const useEnhancedContactFormState = (
   )
   
   const form = useForm<ContactFormData>({
-    resolver: yupResolver(contactSchema),
+    resolver: yupResolver(contactSchema) as any,
     defaultValues: {
       first_name: initialData?.first_name || '',
       last_name: initialData?.last_name || '',

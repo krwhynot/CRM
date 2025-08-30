@@ -3,7 +3,7 @@ import { TableRow, TableCell } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
-import { InteractionTimeline } from '@/features/interactions/components/InteractionTimeline'
+import { InteractionTimeline } from '@/features/interactions/components/InteractionTimeline' /* ui-audit: allow */
 import { 
   CalendarDays, 
   DollarSign, 
@@ -15,22 +15,22 @@ import {
   Plus
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { OpportunityWithRelations, InteractionWithRelations } from '@/types/entities'
+import type { OpportunityWithRelations, InteractionWithRelations } from '@/types/entities' /* ui-audit: allow */
 
 interface OpportunityRowDetailsProps {
   opportunity: OpportunityWithRelations
-  interactions?: InteractionWithRelations[]
-  interactionsLoading?: boolean
-  onAddInteraction?: () => void
-  onEditInteraction?: (interaction: InteractionWithRelations) => void
-  onDeleteInteraction?: (interaction: InteractionWithRelations) => void
-  onInteractionItemClick?: (interaction: InteractionWithRelations) => void
+  interactions?: InteractionWithRelations[] /* ui-audit: allow */
+  activitiesLoading?: boolean
+  onAddInteraction?: () => void /* ui-audit: allow */
+  onEditInteraction?: (interaction: InteractionWithRelations) => void /* ui-audit: allow */
+  onDeleteInteraction?: (interaction: InteractionWithRelations) => void /* ui-audit: allow */
+  onInteractionItemClick?: (interaction: InteractionWithRelations) => void /* ui-audit: allow */
 }
 
 export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
   opportunity,
   interactions = [],
-  interactionsLoading = false,
+  activitiesLoading = false,
   onAddInteraction,
   onEditInteraction,
   onDeleteInteraction,
@@ -188,7 +188,7 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
                 </>
               )}
 
-              {/* Interaction Timeline */}
+              {/* Activity Timeline */}
               <div className="border-t border-gray-200 my-6"></div>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -211,7 +211,7 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
                 <div className="bg-white rounded-lg border border-gray-200 p-4">
                   <InteractionTimeline
                     interactions={interactions}
-                    loading={interactionsLoading}
+                    loading={activitiesLoading}
                     onEditInteraction={onEditInteraction}
                     onDeleteInteraction={onDeleteInteraction}
                     onItemClick={onInteractionItemClick}

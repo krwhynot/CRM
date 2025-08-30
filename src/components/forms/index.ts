@@ -1,5 +1,6 @@
 // New Shared Form Components (3-Tier System)
 export { FormCard } from './FormCard'
+export { FormField } from './FormField'
 export { FormInput, FormTextarea, FormSelect, FormSwitch, FormCheckbox } from './FormInput'
 export { FormSubmitButton } from './FormSubmitButton'
 export { SimpleForm } from './SimpleForm'

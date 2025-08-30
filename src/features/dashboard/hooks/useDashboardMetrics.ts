@@ -73,12 +73,12 @@ function transformDatabaseMetrics(data: DatabaseMetricsResponse | undefined): Om
       avgOpportunitiesPerPrincipal: 0,
       topPrincipalsByValue: [],
       
-      // Interaction & activity metrics
-      totalInteractions: 0,
-      recentInteractions: 0,
-      thisWeekInteractions: 0,
-      thisMonthInteractions: 0,
-      avgInteractionsPerOpportunity: 0,
+      // Activity metrics
+      totalActivities: 0,
+      recentActivities: 0,
+      thisWeekActivities: 0,
+      thisMonthActivities: 0,
+      avgActivitiesPerOpportunity: 0,
       interactionsRequiringFollowUp: 0,
       lastActivityDate: null,
       
@@ -176,12 +176,12 @@ function transformDatabaseMetrics(data: DatabaseMetricsResponse | undefined): Om
     avgOpportunitiesPerPrincipal: data.avg_opportunities_per_principal || 0,
     topPrincipalsByValue: data.top_principals_by_value || [],
     
-    // Interaction & activity metrics
-    totalInteractions: data.total_interactions || 0,
-    recentInteractions: data.recent_interactions || 0,
-    thisWeekInteractions: data.this_week_interactions || 0,
-    thisMonthInteractions: data.this_month_interactions || 0,
-    avgInteractionsPerOpportunity: data.avg_interactions_per_opportunity || 0,
+    // Activity metrics
+    totalActivities: data.total_interactions || 0,
+    recentActivities: data.recent_interactions || 0,
+    thisWeekActivities: data.this_week_interactions || 0,
+    thisMonthActivities: data.this_month_interactions || 0,
+    avgActivitiesPerOpportunity: data.avg_interactions_per_opportunity || 0,
     interactionsRequiringFollowUp: 0, // Placeholder - not calculated in DB function yet
     lastActivityDate: data.last_activity_date ? new Date(data.last_activity_date) : null,
     
@@ -313,12 +313,12 @@ export interface DashboardMetrics {
     opportunityCount: number
   }>
   
-  // Interaction & activity metrics
-  totalInteractions: number
-  recentInteractions: number
-  thisWeekInteractions: number
-  thisMonthInteractions: number
-  avgInteractionsPerOpportunity: number
+  // Activity metrics
+  totalActivities: number
+  recentActivities: number
+  thisWeekActivities: number
+  thisMonthActivities: number
+  avgActivitiesPerOpportunity: number
   interactionsRequiringFollowUp: number
   lastActivityDate: Date | null
   
@@ -486,9 +486,9 @@ export function useRealTimeActivityMetrics() {
   })
 
   return {
-    totalInteractions: query.data?.total_interactions || 0,
-    recentInteractions: query.data?.recent_interactions || 0,
-    thisWeekInteractions: query.data?.this_week_interactions || 0,
+    totalActivities: query.data?.total_interactions || 0,
+    recentActivities: query.data?.recent_interactions || 0,
+    thisWeekActivities: query.data?.this_week_interactions || 0,
     lastActivityDate: query.data?.last_activity_date ? new Date(query.data.last_activity_date) : null,
     interactionsRequiringFollowUp: 0, // Placeholder for now
     isLoading: query.isLoading,

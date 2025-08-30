@@ -1,15 +1,16 @@
 import { Button } from '@/components/ui/button';
-// import { ButtonNew } from '@/components/ui/new/Button'; // Removed during component consolidation
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-// import { CardNew, CardHeader as CardHeaderNew, CardTitle as CardTitleNew, CardDescription as CardDescriptionNew, CardContent as CardContentNew } from '@/components/ui/new/Card'; // Removed during component consolidation
 import { PriorityBadge } from '@/components/ui/new/PriorityBadge';
-// import { InputNew } from '@/components/ui/new/Input'; // Removed during component consolidation
-// import { LabelNew } from '@/components/ui/new/Label'; // Removed during component consolidation
+import { PageContainer } from '@/components/layout/PageContainer';
+import { PageHeader } from '@/components/ui/new/PageHeader';
 
 export function StyleGuideTest() {
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold font-nunito text-mfb-olive mb-6">Style Guide Test Page</h1>
+    <PageContainer>
+      <PageHeader
+        title="Style Guide Test Page"
+        className="mb-6"
+      />
       
       <div className="grid grid-cols-2 gap-8">
         <div>
@@ -88,7 +89,7 @@ export function StyleGuideTest() {
           </div>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }
 

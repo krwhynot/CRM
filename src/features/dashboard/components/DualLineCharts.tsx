@@ -2,7 +2,7 @@ import { useChartData } from '../hooks/useChartData'
 import { 
   ChartLoadingSkeleton,
   OpportunitiesChart,
-  InteractionsChart 
+  ActivityChart 
 } from './charts'
 import type { WeeklyData } from '@/lib/date-utils'
 
@@ -14,7 +14,7 @@ interface DualLineChartsProps {
 
 
 export function DualLineCharts({ data, isLoading = false, className }: DualLineChartsProps) {
-  const { chartData, maxOpportunities, maxInteractions } = useChartData(data)
+  const { chartData, maxOpportunities, maxActivities } = useChartData(data)
 
   if (isLoading) {
     return <ChartLoadingSkeleton className={className} />
@@ -23,7 +23,7 @@ export function DualLineCharts({ data, isLoading = false, className }: DualLineC
   return (
     <div className={`grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 ${className}`}>
       <OpportunitiesChart data={chartData} maxValue={maxOpportunities} />
-      <InteractionsChart data={chartData} maxValue={maxInteractions} />
+      <ActivityChart data={chartData} maxValue={maxActivities} />
     </div>
   )
 }

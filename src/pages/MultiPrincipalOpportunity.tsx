@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom'
 import { toast } from '@/lib/toast-styles'
-import { ArrowLeft, Users } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Users } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { SimpleMultiPrincipalForm } from '@/features/opportunities/components/SimpleMultiPrincipalForm'
 import { PageContainer } from '@/components/layout'
+import { PageHeader } from '@/components/ui/new/PageHeader'
 
 function MultiPrincipalOpportunityPage() {
   const navigate = useNavigate()
@@ -20,33 +20,19 @@ function MultiPrincipalOpportunityPage() {
 
   return (
     <PageContainer>
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleCancel}
-            className="flex items-center gap-2 focus-ring"
-            aria-label="Go back to opportunities page"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            Back to Opportunities
-          </Button>
-          <div>
-            <h1 className="text-display mb-6 flex items-center gap-2">
-              <Users className="h-8 w-8 text-primary" />
-              New Multi-Principal Opportunity
-            </h1>
-            <p className="text-subtitle">
-              Create opportunities with multiple principals and complex participant relationships
-            </p>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        title="New Multi-Principal Opportunity"
+        subtitle="Create opportunities with multiple principals and complex participant relationships"
+        icon={<Users className="h-8 w-8 text-primary" />}
+        backButton={{
+          onClick: handleCancel,
+          label: "Back to Opportunities",
+          'aria-label': "Go back to opportunities page"
+        }}
+      />
 
       {/* Main Form */}
-      <div className="max-w-4xl mx-auto">
+      <div>
         <SimpleMultiPrincipalForm
           onSuccess={handleSuccess}
           className="w-full"
@@ -54,7 +40,7 @@ function MultiPrincipalOpportunityPage() {
       </div>
 
       {/* Help Text */}
-      <Card className="max-w-4xl mx-auto">
+      <Card>
         <CardHeader>
           <CardTitle className="text-lg">Multi-Principal Opportunities</CardTitle>
         </CardHeader>

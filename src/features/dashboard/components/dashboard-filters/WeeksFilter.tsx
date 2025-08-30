@@ -24,7 +24,7 @@ export const WeeksFilter: React.FC<WeeksFilterProps> = ({
         onValueChange={(value) => onFilterChange('weeks', value)}
         disabled={isLoading}
       >
-        <SelectTrigger className="w-full sm:w-[140px]">
+        <SelectTrigger className="w-full sm:w-filter-sm">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

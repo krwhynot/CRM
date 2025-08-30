@@ -1,6 +1,6 @@
 import React from 'react'
-import { Control } from 'react-hook-form'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Control, Controller } from 'react-hook-form'
+import { FormField } from '@/components/forms'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -20,84 +20,93 @@ export const ContactFormDetailsFields: React.FC<ContactFormDetailsFieldsProps> =
 }) => {
   return (
     <div className="space-y-4">
-      <FormField control={control} name="email" render={({ field }) => (
-        <FormItem>
-          <FormLabel>Email</FormLabel>
-          <FormControl>
+      <Controller
+        control={control}
+        name="email"
+        render={({ field, fieldState }) => (
+          <FormField label="Email" error={fieldState.error?.message}>
             <Input {...field} value={field.value || ''} type="email" className={inputClassName} disabled={loading} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )} />
+          </FormField>
+        )}
+      />
 
-      <FormField control={control} name="phone" render={({ field }) => (
-        <FormItem>
-          <FormLabel>Phone</FormLabel>
-          <FormControl>
+      <Controller
+        control={control}
+        name="phone"
+        render={({ field, fieldState }) => (
+          <FormField label="Phone" error={fieldState.error?.message}>
             <Input {...field} value={field.value || ''} type="tel" className={inputClassName} disabled={loading} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )} />
+          </FormField>
+        )}
+      />
 
-      <FormField control={control} name="mobile_phone" render={({ field }) => (
-        <FormItem>
-          <FormLabel>Mobile Phone</FormLabel>
-          <FormControl>
+      <Controller
+        control={control}
+        name="mobile_phone"
+        render={({ field, fieldState }) => (
+          <FormField label="Mobile Phone" error={fieldState.error?.message}>
             <Input {...field} value={field.value || ''} type="tel" className={inputClassName} disabled={loading} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )} />
+          </FormField>
+        )}
+      />
 
-      <FormField control={control} name="department" render={({ field }) => (
-        <FormItem>
-          <FormLabel>Department</FormLabel>
-          <FormControl>
+      <Controller
+        control={control}
+        name="department"
+        render={({ field, fieldState }) => (
+          <FormField label="Department" error={fieldState.error?.message}>
             <Input {...field} value={field.value || ''} className={inputClassName} disabled={loading} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )} />
+          </FormField>
+        )}
+      />
 
-      <FormField control={control} name="preferred_principals" render={({ field }) => (
-        <FormItem>
-          <FormLabel>Preferred Principals</FormLabel>
-          <FormControl>
+      <Controller
+        control={control}
+        name="preferred_principals"
+        render={({ field, fieldState }) => (
+          <FormField label="Preferred Principals" error={fieldState.error?.message}>
             <PreferredPrincipalsSelect
               value={field.value?.filter((v): v is string => v !== undefined) || []}
               onChange={(value) => field.onChange(value)}
               disabled={loading}
             />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )} />
+          </FormField>
+        )}
+      />
 
-      <FormField control={control} name="is_primary_contact" render={({ field }) => (
-        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-          <FormControl>
+      <Controller
+        control={control}
+        name="is_primary_contact"
+        render={({ field, fieldState }) => (
+          <div className="flex items-start space-x-3">
             <Checkbox
               checked={Boolean(field.value)}
               onCheckedChange={field.onChange}
               disabled={loading}
             />
-          </FormControl>
-          <div className="space-y-1 leading-none">
-            <FormLabel>Primary Contact</FormLabel>
+            <div className="grid gap-1.5 leading-none">
+              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                Primary Contact
+              </label>
+              {fieldState.error && (
+                <p className="text-xs text-destructive" role="alert">
+                  {fieldState.error.message}
+                </p>
+              )}
+            </div>
           </div>
-        </FormItem>
-      )} />
+        )}
+      />
 
-      <FormField control={control} name="notes" render={({ field }) => (
-        <FormItem>
-          <FormLabel>Notes</FormLabel>
-          <FormControl>
+      <Controller
+        control={control}
+        name="notes"
+        render={({ field, fieldState }) => (
+          <FormField label="Notes" error={fieldState.error?.message}>
             <Textarea {...field} value={field.value || ''} rows={3} disabled={loading} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )} />
+          </FormField>
+        )}
+      />
     </div>
   )
 }

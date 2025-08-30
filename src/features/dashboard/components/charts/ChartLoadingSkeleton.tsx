@@ -17,7 +17,7 @@ export function ChartLoadingSkeleton({ className }: ChartLoadingSkeletonProps) {
           <Skeleton className="h-4 w-48" />
         </CardHeader>
         <CardContent className={contentClassName}>
-          <Skeleton className="h-[280px] w-full" />
+          <Skeleton className="h-chart w-full" />
         </CardContent>
       </Card>
       
@@ -27,7 +27,7 @@ export function ChartLoadingSkeleton({ className }: ChartLoadingSkeletonProps) {
           <Skeleton className="h-4 w-48" />
         </CardHeader>
         <CardContent className={contentClassName}>
-          <Skeleton className="h-[280px] w-full" />
+          <Skeleton className="h-chart w-full" />
         </CardContent>
       </Card>
     </div>

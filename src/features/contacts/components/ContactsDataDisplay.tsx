@@ -1,6 +1,6 @@
 import React from 'react'
-import { Button } from '@/components/ui/button'
 import { ContactsTable } from './ContactsTable'
+import { LoadingState, ErrorState } from '@/components/ui/data-state'
 import type { Contact, ContactWithOrganization } from '@/types/entities'
 
 interface ContactsDataDisplayProps {
@@ -22,32 +22,25 @@ export const ContactsDataDisplay: React.FC<ContactsDataDisplayProps> = ({
   onDelete,
   onRefresh
 }) => {
-  if (isError) {
+  if (isLoading) {
     return (
-      <div className="text-center py-8 space-y-4 bg-white rounded-lg border shadow-sm p-12">
-        <div className="text-red-600 font-medium">Failed to load contacts</div>
-        <div className="text-gray-500 text-sm">
-          {error?.message || 'An unexpected error occurred while fetching contacts.'}
-        </div>
-        <Button 
-          onClick={onRefresh} 
-          variant="outline"
-          className="mt-2"
-        >
-          Refresh Data
-        </Button>
-      </div>
+      <LoadingState 
+        message="Loading contacts..."
+        subtext="Fetching contact data from the database"
+        variant="table"
+      />
     )
   }
 
-  if (isLoading) {
+  if (isError) {
     return (
-      <div className="text-center py-8 space-y-2 bg-white rounded-lg border shadow-sm p-12">
-        <div className="font-nunito text-mfb-green">Loading contacts...</div>
-        <div className="text-sm text-mfb-olive/60 font-nunito">
-          This should only take a few seconds
-        </div>
-      </div>
+      <ErrorState
+        title="Failed to load contacts"
+        message={error?.message || 'An unexpected error occurred while fetching contacts.'}
+        onRetry={onRefresh}
+        retryLabel="Refresh Contacts"
+        variant="destructive"
+      />
     )
   }
 

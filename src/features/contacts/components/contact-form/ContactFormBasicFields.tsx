@@ -1,6 +1,6 @@
 import React from 'react'
-import { Control } from 'react-hook-form'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Control, Controller } from 'react-hook-form'
+import { FormField } from '@/components/forms'
 import { Input } from '@/components/ui/input'
 import { ContactFormData } from '@/types/contact.types'
 
@@ -18,35 +18,35 @@ export const ContactFormBasicFields: React.FC<ContactFormBasicFieldsProps> = ({
 }) => {
   return (
     <>
-      <FormField control={control} name="first_name" render={({ field }) => (
-        <FormItem>
-          <FormLabel>First Name *</FormLabel>
-          <FormControl>
+      <Controller
+        control={control}
+        name="first_name"
+        render={({ field, fieldState }) => (
+          <FormField label="First Name" required error={fieldState.error?.message}>
             <Input {...field} className={inputClassName} disabled={loading} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )} />
+          </FormField>
+        )}
+      />
 
-      <FormField control={control} name="last_name" render={({ field }) => (
-        <FormItem>
-          <FormLabel>Last Name *</FormLabel>
-          <FormControl>
+      <Controller
+        control={control}
+        name="last_name"
+        render={({ field, fieldState }) => (
+          <FormField label="Last Name" required error={fieldState.error?.message}>
             <Input {...field} className={inputClassName} disabled={loading} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )} />
+          </FormField>
+        )}
+      />
 
-      <FormField control={control} name="title" render={({ field }) => (
-        <FormItem>
-          <FormLabel>Title</FormLabel>
-          <FormControl>
+      <Controller
+        control={control}
+        name="title"
+        render={({ field, fieldState }) => (
+          <FormField label="Title" error={fieldState.error?.message}>
             <Input {...field} value={field.value || ''} className={inputClassName} disabled={loading} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )} />
+          </FormField>
+        )}
+      />
     </>
   )
 }

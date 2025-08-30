@@ -69,7 +69,7 @@ export function EnhancedContactForm({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <User className="h-5 w-5" />
-          {initialData ? 'Edit Contact' : 'New Contact'}
+          {initialData ? 'Edit Contact' : 'Add Contact'}
         </CardTitle>
       </CardHeader>
       <CardContent>

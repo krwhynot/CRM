@@ -17,7 +17,7 @@ import type { ActivityItem } from '../../hooks/useEnhancedActivityData'
 
 const ACTIVITY_ICONS = {
   opportunity: Target,
-  interaction: MessageSquare,
+  interaction: MessageSquare, /* ui-audit: allow */
   contact: User,
   organization: Building2,
   product: Package
@@ -63,7 +63,7 @@ export const ActivityItemComponent: React.FC<ActivityItemProps> = ({
       
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2 mb-1">
-          <h4 className={`font-medium truncate ${useNewStyle ? "text-sm text-[hsl(var(--foreground))]" : "text-sm"}`}>
+          <h4 className={`font-medium truncate ${useNewStyle ? "text-sm text-foreground" : "text-sm"}`}>
             {item.title}
           </h4>
           {item.priority && (

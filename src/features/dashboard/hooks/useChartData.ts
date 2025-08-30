@@ -17,13 +17,13 @@ export function useChartData(data: WeeklyData[]) {
     return Math.max(...data.map(d => d.opportunities), 5)
   }, [data])
 
-  const maxInteractions = useMemo(() => {
+  const maxActivities = useMemo(() => {
     return Math.max(...data.map(d => d.interactions), 10)
   }, [data])
 
   return {
     chartData,
     maxOpportunities,
-    maxInteractions
+    maxActivities
   }
 }

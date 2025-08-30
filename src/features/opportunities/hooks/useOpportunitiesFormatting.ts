@@ -33,7 +33,7 @@ export const useOpportunitiesFormatting = (): UseOpportunitiesFormattingReturn =
   }, [])
 
   const formatActivityType = useCallback((type: string | null): string => {
-    if (!type) return 'No interactions'
+    if (!type) return 'No activities'
     return type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())
   }, [])
 

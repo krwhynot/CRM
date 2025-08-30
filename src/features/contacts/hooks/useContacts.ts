@@ -5,6 +5,7 @@ import type { Database } from '@/lib/database.types'
 import { resolveOrganization } from '@/lib/organization-resolution'
 import { validateAuthentication, surfaceError } from '@/lib/error-utils'
 import type { 
+  Contact,
   ContactInsert, 
   ContactUpdate, 
   ContactFilters,

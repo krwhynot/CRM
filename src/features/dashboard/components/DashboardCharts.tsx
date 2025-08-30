@@ -29,14 +29,14 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
         <OpportunityChart data={opportunityChartData} loading={false} />
       </ChartCard>
       
-      {/* Interaction Chart */}
+      {/* Activity Chart */}
       <ChartCard
-        title="Interactions"
+        title="Activities"
         colorClass="bg-green-500"
         data={interactionChartData}
         isLoading={isLoading}
-        emptyTitle="No interactions found"
-        emptyDescription="No interactions match the selected filters"
+        emptyTitle="No activities found"
+        emptyDescription="No activities match the selected filters"
       >
         <InteractionChart data={interactionChartData} loading={false} />
       </ChartCard>

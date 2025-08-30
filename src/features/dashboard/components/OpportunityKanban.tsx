@@ -93,7 +93,7 @@ export const OpportunityKanban: React.FC<OpportunityKanbanProps> = ({
 
   if (loading) {
     return (
-      <div className="h-[250px] w-full animate-pulse bg-muted rounded-lg flex items-center justify-center">
+      <div className="h-chart-sm w-full animate-pulse bg-muted rounded-lg flex items-center justify-center">
         <div className="text-muted-foreground text-sm">Loading pipeline...</div>
       </div>
     )
@@ -114,7 +114,7 @@ export const OpportunityKanban: React.FC<OpportunityKanbanProps> = ({
       </div>
 
       {/* Compact Pipeline Container */}
-      <div className="h-[250px] border border-border rounded-lg bg-muted/30 p-2 shadow-sm overflow-hidden">
+      <div className="h-chart-sm border border-border rounded-lg bg-muted/30 p-2 shadow-sm overflow-hidden">
         <div className="flex gap-1 h-full">
             {STAGE_ORDER.map((stage) => {
               const stageOpportunities = opportunitiesByStage[stage] || []
@@ -124,7 +124,7 @@ export const OpportunityKanban: React.FC<OpportunityKanbanProps> = ({
               return (
                 <div
                   key={stage}
-                  className="flex-1 min-w-[130px] flex flex-col bg-card rounded border overflow-hidden"
+                  className="flex-1 min-w-kanban-column flex flex-col bg-card rounded border overflow-hidden"
                   style={{
                     borderColor: colors.border
                   }}
@@ -146,7 +146,7 @@ export const OpportunityKanban: React.FC<OpportunityKanbanProps> = ({
                   </div>
 
                   {/* Scrollable Cards Container */}
-                  <div className="flex-1 overflow-y-auto px-2 py-2 max-h-[180px] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
+                  <div className="flex-1 overflow-y-auto px-2 py-2 max-h-kanban-content scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
                     {stageOpportunities.map((opportunity) => {
                       const principal = principals.find(p => p.id === opportunity.principalId)
                       const organizationName = principal?.company || principal?.name || 'Unknown Organization'
@@ -167,7 +167,7 @@ export const OpportunityKanban: React.FC<OpportunityKanbanProps> = ({
                           <div className="text-xs font-medium truncate">
                             {organizationName}
                           </div>
-                          <div className="text-[10px] opacity-75 truncate">
+                          <div className="text-xs opacity-75 truncate">
                             {opportunity.title}
                           </div>
                         </div>
@@ -176,7 +176,7 @@ export const OpportunityKanban: React.FC<OpportunityKanbanProps> = ({
                     
                     {/* Empty State */}
                     {stageOpportunities.length === 0 && (
-                      <div className="text-[10px] text-muted-foreground text-center py-4">
+                      <div className="text-xs text-muted-foreground text-center py-4">
                         No opportunities
                       </div>
                     )}

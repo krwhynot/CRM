@@ -36,7 +36,7 @@ export function FormCheckboxField<TFieldValues extends FieldValues>({
           <div className="space-y-1 leading-none">
             <FormLabel>{label}</FormLabel>
             {description && (
-              <div className="text-[0.8rem] text-muted-foreground">
+              <div className="text-xs text-muted-foreground">
                 {description}
               </div>
             )}

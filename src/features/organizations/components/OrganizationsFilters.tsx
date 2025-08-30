@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { COPY } from '@/lib/copy'
 import type { OrganizationFilterType } from '@/features/organizations/hooks/useOrganizationsFiltering'
 
 interface FilterPill {
@@ -46,9 +47,9 @@ export const OrganizationsFilters: React.FC<OrganizationsFiltersProps> = ({
           </p>
         </div>
         {onAddNew && (
-          <Button onClick={onAddNew} className="flex items-center gap-2">
+          <Button onClick={onAddNew} className="flex items-center gap-2 focus-ring mobile-touch-target">
             <Plus className="h-4 w-4" />
-            Add Organization
+{COPY.BUTTONS.ADD_ORGANIZATION}
           </Button>
         )}
       </div>
@@ -61,7 +62,7 @@ export const OrganizationsFilters: React.FC<OrganizationsFiltersProps> = ({
           placeholder="Search organizations by name, location, manager, phone, or segment..."
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-10 pr-4 py-2 w-full"
+          className="pl-10 pr-4 py-2 w-full mobile-search-input"
         />
       </div>
 

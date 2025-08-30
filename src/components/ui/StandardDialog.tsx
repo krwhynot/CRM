@@ -5,32 +5,190 @@ import {
   DialogContent as BaseDialogContent, 
   DialogHeader, 
   DialogTitle,
-  DialogTrigger,
-  DialogDescription
-} from "@/components/ui/dialog"
+  DialogDescription,
+  DialogFooter
+} from "./dialog"
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "./alert-dialog"
 
-interface StandardDialogContentProps extends React.HTMLAttributes<HTMLDivElement> {}
+// Size mapping for consistent dialog sizing
+const sizeClasses = {
+  sm: "max-w-sm",
+  md: "max-w-lg", 
+  lg: "max-w-2xl",
+  xl: "max-w-4xl"
+} as const
 
-export function DialogContent(props: StandardDialogContentProps) {
-  const { className, children, ...rest } = props
+// Base dialog props interface
+interface BaseDialogProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  title: React.ReactNode
+  description?: React.ReactNode
+  size?: keyof typeof sizeClasses
+  headerActions?: React.ReactNode
+  children: React.ReactNode
+}
+
+// Regular dialog props (for forms, content)
+interface RegularDialogProps extends BaseDialogProps {
+  footer?: React.ReactNode
+  scroll?: "content" | "body"
+}
+
+// Alert dialog props (for confirmations)
+interface AlertDialogProps extends BaseDialogProps {
+  onConfirm: () => void
+  onCancel?: () => void
+  confirmText?: string
+  cancelText?: string
+  confirmVariant?: "default" | "destructive"
+  isLoading?: boolean
+}
+
+// Union type for StandardDialog props
+type StandardDialogProps = 
+  | (RegularDialogProps & { variant?: "dialog" })
+  | (AlertDialogProps & { variant: "alert" })
+
+/**
+ * StandardDialog - Unified dialog component for the CRM system
+ * 
+ * Supports both regular dialogs (forms, content) and alert dialogs (confirmations)
+ * with consistent sizing, scrolling patterns, and accessibility features.
+ * 
+ * @example Regular Dialog
+ * <StandardDialog
+ *   open={isOpen}
+ *   onOpenChange={setIsOpen}
+ *   title="Add Contact"
+ *   description="Fill in the contact details below"
+ *   size="lg"
+ *   scroll="content"
+ *   footer={<Button>Save</Button>}
+ * >
+ *   <ContactForm />
+ * </StandardDialog>
+ * 
+ * @example Alert Dialog
+ * <StandardDialog
+ *   variant="alert"
+ *   open={isOpen}
+ *   onOpenChange={setIsOpen}
+ *   title="Delete Contact"
+ *   description="Are you sure you want to delete this contact?"
+ *   confirmText="Delete"
+ *   confirmVariant="destructive"
+ *   onConfirm={handleDelete}
+ *   onCancel={handleCancel}
+ *   isLoading={isDeleting}
+ * >
+ *   <p>This action cannot be undone.</p>
+ * </StandardDialog>
+ */
+export function StandardDialog(props: StandardDialogProps) {
+  const {
+    open,
+    onOpenChange,
+    title,
+    description,
+    size = "md",
+    headerActions,
+    children,
+  } = props
+
+  // Alert dialog variant
+  if (props.variant === "alert") {
+    const {
+      onConfirm,
+      onCancel,
+      confirmText = "Confirm",
+      cancelText = "Cancel", 
+      confirmVariant = "default",
+      isLoading = false
+    } = props
+
+    return (
+      <AlertDialog open={open} onOpenChange={onOpenChange}>
+        <AlertDialogContent className={cn(sizeClasses[size])}>
+          <AlertDialogHeader className="flex items-start justify-between">
+            <div>
+              <AlertDialogTitle>{title}</AlertDialogTitle>
+              {description && (
+                <AlertDialogDescription>{description}</AlertDialogDescription>
+              )}
+            </div>
+            {headerActions}
+          </AlertDialogHeader>
+          
+          <div className="py-4">{children}</div>
+          
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={onCancel} disabled={isLoading}>
+              {cancelText}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={onConfirm}
+              disabled={isLoading}
+              className={cn(
+                confirmVariant === "destructive" &&
+                "bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              )}
+            >
+              {isLoading ? "Loading..." : confirmText}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    )
+  }
+
+  // Regular dialog variant (default)
+  const { footer, scroll = "content" } = props
+  const scrollClasses = scroll === "content" ? "max-h-[80vh] overflow-y-auto" : ""
+
   return (
-    <BaseDialogContent 
-      className={cn("max-w-4xl w-full max-h-screen overflow-hidden", className)} 
-      {...rest}
-    >
-      {children}
-    </BaseDialogContent>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <BaseDialogContent className={cn(sizeClasses[size])}>
+        <DialogHeader className="flex items-start justify-between">
+          <div>
+            <DialogTitle>{title}</DialogTitle>
+            {description && <DialogDescription>{description}</DialogDescription>}
+          </div>
+          {headerActions}
+        </DialogHeader>
+        
+        <div className={cn(scrollClasses, scroll === "content" && "pr-2")}>
+          {children}
+        </div>
+        
+        {footer && <DialogFooter>{footer}</DialogFooter>}
+      </BaseDialogContent>
+    </Dialog>
   )
 }
 
-export function DialogScrollableContent(props: StandardDialogContentProps) {
-  const { className, children, ...rest } = props
+// Export legacy components for backward compatibility during migration
+export { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter }
+export { BaseDialogContent as DialogContent }
+
+/**
+ * @deprecated Use StandardDialog instead of DialogScrollableContent
+ * This component will be removed in a future version
+ */
+export function DialogScrollableContent({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  console.warn("DialogScrollableContent is deprecated. Use StandardDialog with scroll='content' instead.")
   return (
-    <div className={cn("flex-1 overflow-y-auto pr-2", className)} {...rest}>
+    <div className={cn("flex-1 overflow-y-auto pr-2", className)} {...props}>
       {children}
     </div>
   )
 }
-
-// Re-export all other dialog components for consistency
-export { Dialog, DialogHeader, DialogTitle, DialogTrigger, DialogDescription }

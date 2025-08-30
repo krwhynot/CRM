@@ -18,7 +18,7 @@ const chartConfig = {
 export const OpportunityChart = React.memo(({ data, loading }: OpportunityChartProps) => {
   if (loading) {
     return (
-      <div className="h-[300px] w-full animate-pulse bg-muted rounded-lg flex items-center justify-center">
+      <div className="h-chart w-full animate-pulse bg-muted rounded-lg flex items-center justify-center">
         <div className="text-muted-foreground">Loading chart...</div>
       </div>
     )
@@ -26,7 +26,7 @@ export const OpportunityChart = React.memo(({ data, loading }: OpportunityChartP
 
   if (!data || data.length === 0) {
     return (
-      <div className="h-[300px] w-full border border-dashed rounded-lg flex items-center justify-center">
+      <div className="h-chart w-full border border-dashed rounded-lg flex items-center justify-center">
         <div className="text-center text-muted-foreground">
           <div className="text-sm">No opportunity data available</div>
           <div className="text-xs mt-1">Select filters to view activity</div>
@@ -50,7 +50,7 @@ export const OpportunityChart = React.memo(({ data, loading }: OpportunityChartP
   }
 
   return (
-    <ChartContainer config={chartConfig} className="h-[300px] w-full">
+    <ChartContainer config={chartConfig} className="h-chart w-full">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
           <XAxis 

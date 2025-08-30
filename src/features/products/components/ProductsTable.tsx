@@ -137,11 +137,11 @@ export function ProductsTable({
   // Headers configuration for SimpleTable
   const headers = [
     { label: '', isCheckbox: true },
-    { label: 'Product', className: 'min-w-[220px]' },
-    { label: 'Price', className: 'min-w-[90px] text-right' },
-    { label: 'Principal', className: 'min-w-[110px]' },
-    { label: 'Brand', className: 'min-w-[90px]' },
-    { label: 'Actions', className: 'text-center min-w-[110px]' }
+    { label: 'Product', className: 'min-w-56' },
+    { label: 'Price', className: 'min-w-20 text-right' },
+    { label: 'Principal', className: 'min-w-28' },
+    { label: 'Brand', className: 'min-w-20' },
+    { label: 'Actions', className: 'text-center min-w-28' }
   ]
 
   const renderProductRow = (product: ProductWithPrincipal, isExpanded: boolean, onToggle: () => void) => (

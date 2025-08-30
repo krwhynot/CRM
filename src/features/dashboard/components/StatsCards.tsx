@@ -72,8 +72,8 @@ export function StatsCards() {
       subtitle: `${metrics.opportunitiesByStage['New Lead'] || 0} New Leads, ${metrics.opportunitiesByStage['Demo Scheduled'] || 0} Demo Scheduled`,
     },
     {
-      title: "This Week's Interactions",
-      value: metrics.thisWeekInteractions.toString(),
+      title: "This Week's Activities",
+      value: metrics.thisWeekActivities.toString(),
       change: `${metrics.growthMetrics.interactionsGrowth >= 0 ? '+' : ''}${metrics.growthMetrics.interactionsGrowth.toFixed(1)}%`,
       changeType: metrics.growthMetrics.interactionsGrowth >= 0 ? "increase" : "decrease",
       icon: MessageSquare,

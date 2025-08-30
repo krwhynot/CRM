@@ -180,7 +180,7 @@ The system is built around 5 core entities:
 1. **KISS Principle**: Favor shadcn/ui components over custom implementations
 2. **Defensive Design**: Use UUIDs, soft deletes, and preserve data integrity
 3. **Performance-First**: Index foreign keys, use LIMIT on queries, implement pagination
-4. **Error Handling**: Use shadcn/ui Toast for transient messages, Alert/Dialog for blocking errors
+4. **Error Handling**: Use shadcn/ui Toast for transient messages, StandardDialog for confirmations and forms
 5. **Relationship-Centric**: Model data around relationships, track engagement quality over quantity
 6. **State Separation**: Use TanStack Query for server data, Zustand for client UI state only
 
@@ -415,3 +415,6 @@ When working with MCP tools in this project:
    - Index foreign keys and commonly queried columns
 
 See `/docs/MCP_TOOL_REFERENCE_GUIDE.md` for complete guidelines and `/docs/templates/mcp-query-templates.md` for ready-to-use query patterns.
+
+### UI Component Documentation
+- **Dialog Patterns**: `/docs/ui/dialog.md` - StandardDialog API, migration guide, and best practices

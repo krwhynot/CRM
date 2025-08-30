@@ -19,8 +19,8 @@ export interface PrincipalMetrics {
   /** Total number of opportunities for this principal */
   opportunityCount: number
   
-  /** Total number of interactions related to this principal */
-  interactionCount: number
+  /** Total number of activities related to this principal */
+  activityCount: number
   
   /** Date of the most recent interaction, null if none */
   lastActivity: Date | null
@@ -65,8 +65,8 @@ export interface DashboardStats {
   /** Total number of opportunities across all principals */
   totalOpportunities: number
   
-  /** Total number of interactions across all principals */
-  totalInteractions: number
+  /** Total number of activities across all principals */
+  totalActivities: number
   
   /** Total estimated value across all opportunities */
   totalEstimatedValue: number

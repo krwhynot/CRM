@@ -142,6 +142,30 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      height: {
+        'header': 'var(--header-height)',
+        'chart': 'var(--chart-height)',
+        'chart-sm': 'var(--chart-height-sm)',
+        'chart-lg': 'var(--chart-height-lg)',
+        'activity-feed': 'var(--activity-feed-height)',
+        'kanban-content': 'var(--kanban-content-height)',
+      },
+      maxHeight: {
+        'dialog': 'var(--dialog-max-height)',
+        'activity-feed': 'var(--activity-feed-height)',
+        'kanban-content': 'var(--kanban-content-height)',
+      },
+      minWidth: {
+        'kanban-column': 'var(--kanban-column-min-width)',
+        'search-sm': 'var(--search-width-sm)',
+        'search-lg': 'var(--search-width-lg)',
+      },
+      width: {
+        'search-sm': 'var(--search-width-sm)',
+        'search-lg': 'var(--search-width-lg)',
+        'filter-sm': 'var(--filter-width-sm)',
+        'filter-md': 'var(--filter-width-md)',
+      },
       keyframes: {
         "accordion-down": {
           from: { height: 0 },

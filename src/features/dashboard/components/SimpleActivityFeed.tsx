@@ -34,12 +34,12 @@ export const SimpleActivityFeed = React.memo(({ activities, loading, className }
     }, 500)
   }
 
-  const getActivityIcon = (type: 'opportunity' | 'interaction') => {
+  const getActivityIcon = (type: 'opportunity' | 'activity') => {
     switch (type) {
       case 'opportunity':
         return '🔵' // Blue circle for opportunities
-      case 'interaction':
-        return '🟢' // Green circle for interactions
+      case 'activity':
+        return '🟢' // Green circle for activities
       default:
         return '⚪'
     }
@@ -96,7 +96,7 @@ export const SimpleActivityFeed = React.memo(({ activities, loading, className }
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[400px] w-full">
+        <ScrollArea className="h-activity-feed w-full">
           <div className="space-y-4">
             {visibleActivities.map((activity) => (
               <div key={activity.id} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">

@@ -64,7 +64,11 @@ module.exports = {
         {
           group: ['@/features/*/components/*PageHeader'],
           message: 'Feature-specific PageHeader components are deprecated. Use PageHeader from @/components/ui/new/PageHeader instead.'
-        }
+        },
+        {
+          group: ['@/components/ui/dialog', '@/components/ui/alert-dialog'],
+          message: 'Use StandardDialog from @/components/ui/StandardDialog instead of raw dialog components for consistent UX patterns.'
+        },
       ]
     }],
     

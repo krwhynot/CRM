@@ -77,7 +77,7 @@ export const OpportunitiesTableRow: React.FC<OpportunitiesTableRowProps> = ({
             {opportunity.organization?.name || 'No Organization'}
           </div>
           <div className="text-xs text-gray-500 mt-0.5">
-            {opportunity.name} • {opportunity.interaction_count || 0} interactions
+            {opportunity.name} • {opportunity.interaction_count || 0} activities
           </div>
         </div>
       </TableCell>
@@ -117,7 +117,7 @@ export const OpportunitiesTableRow: React.FC<OpportunitiesTableRowProps> = ({
         </div>
       </TableCell>
       
-      {/* Last Interaction */}
+      {/* Last Activity */}
       <TableCell className="px-6 py-2.5 text-right">
         <div>
           <div className="text-sm text-gray-900">

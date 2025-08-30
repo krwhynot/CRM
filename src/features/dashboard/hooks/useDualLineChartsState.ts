@@ -8,7 +8,7 @@ interface UseDualLineChartsStateProps {
 interface UseDualLineChartsStateReturn {
   chartData: (WeeklyData & { weekLabel: string })[]
   maxOpportunities: number
-  maxInteractions: number
+  maxActivities: number
 }
 
 export const useDualLineChartsState = ({ data }: UseDualLineChartsStateProps): UseDualLineChartsStateReturn => {
@@ -24,13 +24,13 @@ export const useDualLineChartsState = ({ data }: UseDualLineChartsStateProps): U
     return Math.max(...data.map(d => d.opportunities), 5)
   }, [data])
 
-  const maxInteractions = useMemo(() => {
+  const maxActivities = useMemo(() => {
     return Math.max(...data.map(d => d.interactions), 10)
   }, [data])
 
   return {
     chartData,
     maxOpportunities,
-    maxInteractions
+    maxActivities
   }
 }

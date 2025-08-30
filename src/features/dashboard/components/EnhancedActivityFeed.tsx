@@ -48,7 +48,7 @@ export function EnhancedActivityFeed({
     <Card className={`${USE_NEW_STYLE ? "shadow-sm border-primary/10" : "shadow-md"} ${className}`}>
       <CardHeader className={USE_NEW_STYLE ? "p-4 pb-3" : "p-6 pb-4"}>
         <div className="flex items-center justify-between">
-          <CardTitle className={`flex items-center gap-2 ${USE_NEW_STYLE ? "text-base font-bold text-[hsl(var(--foreground))]" : "text-lg font-semibold"}`}>
+          <CardTitle className={`flex items-center gap-2 ${USE_NEW_STYLE ? "text-base font-bold text-foreground" : "text-lg font-semibold"}`}>
             <Activity className="h-5 w-5 text-primary" />
             Recent Activity
           </CardTitle>
@@ -79,7 +79,7 @@ export function EnhancedActivityFeed({
             </p>
           </div>
         ) : (
-          <div className={`space-y-3 max-h-[400px] overflow-y-auto ${USE_NEW_STYLE ? "pr-2" : "pr-3"}`}>
+          <div className={`space-y-3 max-h-activity-feed overflow-y-auto ${USE_NEW_STYLE ? "pr-2" : "pr-3"}`}>
             {filteredItems.map((item) => (
               <ActivityItemComponent
                 key={item.id}
