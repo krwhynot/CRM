@@ -6,7 +6,7 @@ const mockOrganizations: Organization[] = [
   {
     id: '1',
     name: 'ACME Restaurant Corp',
-    type: 'customer' as any,
+    type: 'customer' as const,
     priority: 'A+',
     segment: 'Restaurant',
     phone: '(555) 123-4567',
@@ -14,12 +14,12 @@ const mockOrganizations: Organization[] = [
     city: 'New York',
     state_province: 'NY',
     created_at: new Date().toISOString(),
-    updated_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() // 5 days ago
+    updated_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
   },
   {
     id: '2',
     name: 'Global Food Distributors',
-    type: 'distributor' as any,
+    type: 'distributor' as const,
     priority: 'A',
     segment: 'Distribution',
     phone: '(555) 234-5678',
@@ -27,12 +27,12 @@ const mockOrganizations: Organization[] = [
     city: 'Chicago',
     state_province: 'IL',
     created_at: new Date().toISOString(),
-    updated_at: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString() // 20 days ago
+    updated_at: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(), // 20 days ago
   },
   {
     id: '3',
     name: 'Café Central',
-    type: 'customer' as any,
+    type: 'customer' as const,
     priority: 'B',
     segment: 'Fine Dining',
     phone: '(555) 345-6789',
@@ -40,8 +40,8 @@ const mockOrganizations: Organization[] = [
     city: 'Los Angeles',
     state_province: 'CA',
     created_at: new Date().toISOString(),
-    updated_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() // 2 days ago
-  }
+    updated_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
+  },
 ]
 
 describe('useOrganizationsFiltering', () => {
@@ -76,7 +76,7 @@ describe('useOrganizationsFiltering', () => {
 
     expect(result.current.activeFilter).toBe('customers')
     expect(result.current.filteredOrganizations).toHaveLength(2) // 2 customers
-    expect(result.current.filteredOrganizations.every(org => org.type === 'customer')).toBe(true)
+    expect(result.current.filteredOrganizations.every((org) => org.type === 'customer')).toBe(true)
   })
 
   it('should filter by distributor organizations', () => {
@@ -163,10 +163,13 @@ describe('useOrganizationsFiltering', () => {
   it('should calculate correct filter pill counts', () => {
     const { result } = renderHook(() => useOrganizationsFiltering(mockOrganizations))
 
-    const pillMap = result.current.filterPills.reduce((acc, pill) => {
-      acc[pill.key] = pill.count
-      return acc
-    }, {} as Record<string, number>)
+    const pillMap = result.current.filterPills.reduce(
+      (acc, pill) => {
+        acc[pill.key] = pill.count
+        return acc
+      },
+      {} as Record<string, number>
+    )
 
     expect(pillMap.all).toBe(3)
     expect(pillMap['high-priority']).toBe(2) // A+ and A priorities
@@ -189,6 +192,6 @@ describe('useOrganizationsFiltering', () => {
     const { result } = renderHook(() => useOrganizationsFiltering([]))
 
     expect(result.current.filteredOrganizations).toHaveLength(0)
-    expect(result.current.filterPills.find(p => p.key === 'all')?.count).toBe(0)
+    expect(result.current.filterPills.find((p) => p.key === 'all')?.count).toBe(0)
   })
 })

@@ -27,7 +27,7 @@ interface OpportunitiesTableProps {
   onDelete?: (opportunity: OpportunityWithLastActivity) => void
   onView?: (opportunity: OpportunityWithLastActivity) => void
   onAddNew?: () => void
-  
+
   // Activity handlers for inline details
   onAddInteraction?: (opportunityId: string) => void
   onEditInteraction?: (interaction: Interaction) => void
@@ -35,16 +35,16 @@ interface OpportunitiesTableProps {
   onInteractionItemClick?: (interaction: Interaction) => void
 }
 
-export function OpportunitiesTable({ 
+export function OpportunitiesTable({
   filters,
-  onEdit, 
-  onDelete, 
-  onView: _, // Unused now - expansion handled internally
-  onAddNew: __, // Unused in table - handled by parent
+  onEdit,
+  onDelete,
+  onView: _onView, // eslint-disable-line @typescript-eslint/no-unused-vars
+  onAddNew: _onAddNew, // eslint-disable-line @typescript-eslint/no-unused-vars
   onAddInteraction,
   onEditInteraction,
   onDeleteInteraction,
-  onInteractionItemClick
+  onInteractionItemClick,
 }: OpportunitiesTableProps) {
   // Bulk delete state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -55,20 +55,21 @@ export function OpportunitiesTable({
   const deleteOpportunity = useDeleteOpportunity()
 
   const { searchTerm, setSearchTerm, filteredOpportunities } = useOpportunitiesSearch(opportunities)
-  
-  const { selectedItems, handleSelectAll, handleSelectItem, clearSelection } = useOpportunitiesSelection()
-  
+
+  const { selectedItems, handleSelectAll, handleSelectItem, clearSelection } =
+    useOpportunitiesSelection()
+
   const { sortedOpportunities } = useOpportunitiesSorting(filteredOpportunities)
-  
+
   const { getStageConfig, formatCurrency, formatActivityType } = useOpportunitiesFormatting()
-  
+
   const { toggleRowExpansion, isRowExpanded } = useOpportunitiesDisplay(
-    sortedOpportunities.map(opp => opp.id)
+    sortedOpportunities.map((opp) => opp.id)
   )
 
   // Convert Set to Array for easier manipulation
   const selectedIds = Array.from(selectedItems)
-  const selectedOpportunities = opportunities.filter(opp => selectedItems.has(opp.id))
+  const selectedOpportunities = opportunities.filter((opp) => selectedItems.has(opp.id))
 
   // Bulk action handlers
   const handleSelectAllFromToolbar = () => {
@@ -85,12 +86,12 @@ export function OpportunitiesTable({
 
   const handleConfirmDelete = async () => {
     if (selectedIds.length === 0) return
-    
+
     setIsDeleting(true)
     const results = []
     let successCount = 0
     let errorCount = 0
-    
+
     try {
       // Process deletions sequentially for maximum safety
       for (const opportunityId of selectedIds) {
@@ -100,10 +101,10 @@ export function OpportunitiesTable({
           successCount++
         } catch (error) {
           // Log error to results for user feedback
-          results.push({ 
-            id: opportunityId, 
-            status: 'error', 
-            error: error instanceof Error ? error.message : 'Unknown error' 
+          results.push({
+            id: opportunityId,
+            status: 'error',
+            error: error instanceof Error ? error.message : 'Unknown error',
           })
           errorCount++
         }
@@ -111,7 +112,9 @@ export function OpportunitiesTable({
 
       // Show results to user
       if (successCount > 0 && errorCount === 0) {
-        toast.success(`Successfully archived ${successCount} opportunit${successCount !== 1 ? 'ies' : 'y'}`)
+        toast.success(
+          `Successfully archived ${successCount} opportunit${successCount !== 1 ? 'ies' : 'y'}`
+        )
       } else if (successCount > 0 && errorCount > 0) {
         toast.warning(`Archived ${successCount} opportunities, but ${errorCount} failed`)
       } else if (errorCount > 0) {
@@ -122,7 +125,6 @@ export function OpportunitiesTable({
       if (successCount > 0) {
         clearSelection()
       }
-      
     } catch (error) {
       // Handle unexpected errors during bulk delete operation
       toast.error('An unexpected error occurred during bulk deletion')
@@ -152,7 +154,7 @@ export function OpportunitiesTable({
             size="sm"
             onClick={() => toggleRowExpansion(opportunity.id)}
             className="h-auto p-0 text-gray-400 hover:bg-transparent hover:text-gray-600"
-            aria-label={isRowExpanded(opportunity.id) ? "Collapse details" : "Expand details"}
+            aria-label={isRowExpanded(opportunity.id) ? 'Collapse details' : 'Expand details'}
           >
             {isRowExpanded(opportunity.id) ? (
               <ChevronDown className="size-4" />
@@ -167,7 +169,7 @@ export function OpportunitiesTable({
           />
         </div>
       ),
-      className: "w-[60px] px-6 py-3"
+      className: 'w-[60px] px-6 py-3',
     },
     {
       key: 'company',
@@ -182,19 +184,24 @@ export function OpportunitiesTable({
           </div>
         </div>
       ),
-      className: "w-[35%] px-6 py-3"
+      className: 'w-[35%] px-6 py-3',
     },
     {
       key: 'stage',
       header: 'Stage',
       cell: (opportunity) => {
-        const stalled = isOpportunityStalled(opportunity.stage_updated_at || null, opportunity.created_at || '')
-        const stalledDays = stalled ? getStalledDays(opportunity.stage_updated_at || null, opportunity.created_at || '') : 0
+        const stalled = isOpportunityStalled(
+          opportunity.stage_updated_at || null,
+          opportunity.created_at || ''
+        )
+        const stalledDays = stalled
+          ? getStalledDays(opportunity.stage_updated_at || null, opportunity.created_at || '')
+          : 0
         const stageConfig = getStageConfig(opportunity.stage)
-        
+
         return (
           <div className="flex items-center gap-1.5">
-            <span className={cn("w-2 h-2 rounded-full", stageConfig.dot)}></span>
+            <span className={cn('w-2 h-2 rounded-full', stageConfig.dot)}></span>
             {stalled && (
               <TooltipProvider>
                 <Tooltip>
@@ -212,8 +219,8 @@ export function OpportunitiesTable({
           </div>
         )
       },
-      className: "w-[20%] px-6 py-3",
-      hidden: { sm: true }
+      className: 'w-[20%] px-6 py-3',
+      hidden: { sm: true },
     },
     {
       key: 'value',
@@ -226,8 +233,8 @@ export function OpportunitiesTable({
           </div>
         </div>
       ),
-      className: "w-[15%] px-6 py-3 text-right",
-      hidden: { sm: true, md: true }
+      className: 'w-[15%] px-6 py-3 text-right',
+      hidden: { sm: true, md: true },
     },
     {
       key: 'last_activity',
@@ -242,8 +249,8 @@ export function OpportunitiesTable({
           </div>
         </div>
       ),
-      className: "w-[20%] px-6 py-3 text-right",
-      hidden: { sm: true }
+      className: 'w-[20%] px-6 py-3 text-right',
+      hidden: { sm: true },
     },
     {
       key: 'actions',
@@ -256,12 +263,14 @@ export function OpportunitiesTable({
           onView={() => toggleRowExpansion(opportunity.id)}
         />
       ),
-      className: "w-[10%] px-6 py-3 text-right"
-    }
+      className: 'w-[10%] px-6 py-3 text-right',
+    },
   ]
 
   const emptyMessage = searchTerm ? 'No opportunities match your search.' : 'No opportunities yet'
-  const emptySubtext = searchTerm ? 'Try adjusting your search terms' : 'Get started by adding your first opportunity'
+  const emptySubtext = searchTerm
+    ? 'Try adjusting your search terms'
+    : 'Get started by adding your first opportunity'
 
   return (
     <div className="space-y-4">
@@ -292,16 +301,16 @@ export function OpportunitiesTable({
           rowKey={(opportunity) => opportunity.id}
           empty={{
             title: emptyMessage,
-            description: emptySubtext
+            description: emptySubtext,
           }}
         />
-        
+
         {/* Expanded Row Details */}
         {sortedOpportunities
           .filter((opportunity) => isRowExpanded(opportunity.id))
           .map((opportunity) => (
-            <div 
-              key={`${opportunity.id}-details`} 
+            <div
+              key={`${opportunity.id}-details`}
               className="-mt-px border-x border-b bg-gray-50/50 p-6"
               style={{ marginTop: '-1px' }}
             >
@@ -322,7 +331,7 @@ export function OpportunitiesTable({
       <BulkDeleteDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
-        organizations={selectedOpportunities as any} // TODO: Create generic BulkDeleteDialog
+        organizations={selectedOpportunities as OpportunityWithLastActivity[]} // Future: Create generic BulkDeleteDialog
         onConfirm={handleConfirmDelete}
         isDeleting={isDeleting}
       />

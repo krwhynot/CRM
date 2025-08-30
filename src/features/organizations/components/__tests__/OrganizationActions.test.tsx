@@ -6,23 +6,18 @@ import type { Organization } from '@/types/entities'
 const mockOrganization: Organization = {
   id: '1',
   name: 'Test Organization',
-  type: 'customer' as any,
+  type: 'customer' as 'customer',
   priority: 'A',
   phone: '(555) 123-4567',
   created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString()
+  updated_at: new Date().toISOString(),
 }
 
 describe('OrganizationActions', () => {
   it('should render view button when onView is provided', () => {
     const onView = vi.fn()
 
-    render(
-      <OrganizationActions
-        organization={mockOrganization}
-        onView={onView}
-      />
-    )
+    render(<OrganizationActions organization={mockOrganization} onView={onView} />)
 
     const viewButton = screen.getByTitle('View organization details')
     expect(viewButton).toBeInTheDocument()
@@ -34,12 +29,7 @@ describe('OrganizationActions', () => {
   it('should render contact button when onContact is provided and phone exists', () => {
     const onContact = vi.fn()
 
-    render(
-      <OrganizationActions
-        organization={mockOrganization}
-        onContact={onContact}
-      />
-    )
+    render(<OrganizationActions organization={mockOrganization} onContact={onContact} />)
 
     const contactButton = screen.getByTitle('Contact organization')
     expect(contactButton).toBeInTheDocument()
@@ -52,12 +42,7 @@ describe('OrganizationActions', () => {
     const onContact = vi.fn()
     const orgWithoutPhone = { ...mockOrganization, phone: undefined }
 
-    render(
-      <OrganizationActions
-        organization={orgWithoutPhone}
-        onContact={onContact}
-      />
-    )
+    render(<OrganizationActions organization={orgWithoutPhone} onContact={onContact} />)
 
     expect(screen.queryByTitle('Contact organization')).not.toBeInTheDocument()
   })
@@ -65,12 +50,7 @@ describe('OrganizationActions', () => {
   it('should render edit button when onEdit is provided', () => {
     const onEdit = vi.fn()
 
-    render(
-      <OrganizationActions
-        organization={mockOrganization}
-        onEdit={onEdit}
-      />
-    )
+    render(<OrganizationActions organization={mockOrganization} onEdit={onEdit} />)
 
     const editButton = screen.getByTitle('Edit organization')
     expect(editButton).toBeInTheDocument()
@@ -99,11 +79,7 @@ describe('OrganizationActions', () => {
   })
 
   it('should render no buttons when no handlers are provided', () => {
-    const { container } = render(
-      <OrganizationActions
-        organization={mockOrganization}
-      />
-    )
+    const { container } = render(<OrganizationActions organization={mockOrganization} />)
 
     // Should render empty div with gap-2 class
     expect(container.firstChild).toBeEmptyDOMElement()
@@ -113,12 +89,7 @@ describe('OrganizationActions', () => {
     // This test ensures we're not using onDelete accidentally
     const onEdit = vi.fn()
 
-    render(
-      <OrganizationActions
-        organization={mockOrganization}
-        onEdit={onEdit}
-      />
-    )
+    render(<OrganizationActions organization={mockOrganization} onEdit={onEdit} />)
 
     // Only edit button should be present
     expect(screen.getAllByRole('button')).toHaveLength(1)
@@ -129,12 +100,7 @@ describe('OrganizationActions', () => {
     const onContact = vi.fn()
     const orgWithEmptyPhone = { ...mockOrganization, phone: '' }
 
-    render(
-      <OrganizationActions
-        organization={orgWithEmptyPhone}
-        onContact={onContact}
-      />
-    )
+    render(<OrganizationActions organization={orgWithEmptyPhone} onContact={onContact} />)
 
     expect(screen.queryByTitle('Contact organization')).not.toBeInTheDocument()
   })

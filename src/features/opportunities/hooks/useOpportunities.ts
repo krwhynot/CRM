@@ -1,11 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
-import type { 
-  OpportunityInsert, 
-  OpportunityUpdate, 
+import type {
+  OpportunityInsert,
+  OpportunityUpdate,
   OpportunityFilters,
   OpportunityWithRelations,
-  OpportunityWithLastActivity 
+  OpportunityWithLastActivity,
 } from '@/types/opportunity.types'
 import type { Database } from '@/lib/database.types'
 
@@ -16,7 +16,8 @@ export const opportunityKeys = {
   list: (filters?: OpportunityFilters) => [...opportunityKeys.lists(), { filters }] as const,
   details: () => [...opportunityKeys.all, 'detail'] as const,
   detail: (id: string) => [...opportunityKeys.details(), id] as const,
-  byOrganization: (organizationId: string) => [...opportunityKeys.all, 'organization', organizationId] as const,
+  byOrganization: (organizationId: string) =>
+    [...opportunityKeys.all, 'organization', organizationId] as const,
   byContact: (contactId: string) => [...opportunityKeys.all, 'contact', contactId] as const,
   byStage: (stage: string) => [...opportunityKeys.all, 'stage', stage] as const,
   pipeline: () => [...opportunityKeys.all, 'pipeline'] as const,
@@ -29,13 +30,15 @@ export function useOpportunities(filters?: OpportunityFilters) {
     queryFn: async () => {
       let query = supabase
         .from('opportunities')
-        .select(`
+        .select(
+          `
           *,
           organization:organizations!opportunities_organization_id_fkey(*),
           contact:contacts!opportunities_contact_id_fkey(*),
           principal_organization:organizations!opportunities_principal_organization_id_fkey(*),
           distributor_organization:organizations!opportunities_distributor_organization_id_fkey(*)
-        `)
+        `
+        )
         .is('deleted_at', null)
 
       // Apply filters
@@ -105,7 +108,8 @@ export function useOpportunity(id: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('opportunities')
-        .select(`
+        .select(
+          `
           *,
           organization:organizations!opportunities_organization_id_fkey(*),
           contact:contacts!opportunities_contact_id_fkey(*),
@@ -116,19 +120,20 @@ export function useOpportunity(id: string) {
             product:products(*)
           ),
           interactions(*)
-        `)
+        `
+        )
         .eq('id', id)
         .is('deleted_at', null)
         .single()
 
       if (error) throw error
-      
+
       // Transform the data to match OpportunityWithRelations type
       const transformedData = {
         ...data,
-        interactions: data.interactions ? [data.interactions].flat() : []
+        interactions: data.interactions ? [data.interactions].flat() : [],
       }
-      
+
       return transformedData as OpportunityWithRelations
     },
     enabled: !!id,
@@ -143,13 +148,15 @@ export function useOpportunitiesByOrganization(organizationId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('opportunities')
-        .select(`
+        .select(
+          `
           *,
           organization:organizations!opportunities_organization_id_fkey(*),
           contact:contacts!opportunities_contact_id_fkey(*),
           principal_organization:organizations!opportunities_principal_organization_id_fkey(*),
           distributor_organization:organizations!opportunities_distributor_organization_id_fkey(*)
-        `)
+        `
+        )
         .eq('organization_id', organizationId)
         .is('deleted_at', null)
         .order('created_at', { ascending: false })
@@ -169,13 +176,15 @@ export function useOpportunitiesByContact(contactId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('opportunities')
-        .select(`
+        .select(
+          `
           *,
           organization:organizations!opportunities_organization_id_fkey(*),
           contact:contacts!opportunities_contact_id_fkey(*),
           principal_organization:organizations!opportunities_principal_organization_id_fkey(*),
           distributor_organization:organizations!opportunities_distributor_organization_id_fkey(*)
-        `)
+        `
+        )
         .eq('contact_id', contactId)
         .is('deleted_at', null)
         .order('created_at', { ascending: false })
@@ -195,50 +204,58 @@ export function usePipelineData() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('opportunities')
-        .select(`
+        .select(
+          `
           stage,
           estimated_value,
           probability,
           organization:organizations!opportunities_organization_id_fkey(name),
           contact:contacts!opportunities_contact_id_fkey(first_name, last_name)
-        `)
+        `
+        )
         .is('deleted_at', null)
         .order('created_at', { ascending: false })
 
       if (error) throw error
 
       // Group by stage and calculate metrics
-      const pipeline = data.reduce((acc, opp) => {
-        const stage = opp.stage
-        if (!acc[stage]) {
-          acc[stage] = {
-            stage,
-            count: 0,
-            totalValue: 0,
-            weightedValue: 0,
-            opportunities: []
+      const pipeline = data.reduce(
+        (acc, opp) => {
+          const stage = opp.stage
+          if (!acc[stage]) {
+            acc[stage] = {
+              stage,
+              count: 0,
+              totalValue: 0,
+              weightedValue: 0,
+              opportunities: [],
+            }
           }
-        }
-        
-        acc[stage].count += 1
-        acc[stage].totalValue += opp.estimated_value || 0
-        acc[stage].weightedValue += (opp.estimated_value || 0) * ((opp.probability || 0) / 100)
-        acc[stage].opportunities.push(opp)
-        
-        return acc
-      }, {} as Record<string, { 
-        stage: string; 
-        count: number; 
-        totalValue: number; 
-        weightedValue: number; 
-        opportunities: Array<{
-          stage: Database['public']['Enums']['opportunity_stage'];
-          estimated_value: number | null;
-          probability: number | null;
-          organization: { name: string } | null;
-          contact: { first_name: string; last_name: string } | null;
-        }>
-      }>)
+
+          acc[stage].count += 1
+          acc[stage].totalValue += opp.estimated_value || 0
+          acc[stage].weightedValue += (opp.estimated_value || 0) * ((opp.probability || 0) / 100)
+          acc[stage].opportunities.push(opp)
+
+          return acc
+        },
+        {} as Record<
+          string,
+          {
+            stage: string
+            count: number
+            totalValue: number
+            weightedValue: number
+            opportunities: Array<{
+              stage: Database['public']['Enums']['opportunity_stage']
+              estimated_value: number | null
+              probability: number | null
+              organization: { name: string } | null
+              contact: { first_name: string; last_name: string } | null
+            }>
+          }
+        >
+      )
 
       return Object.values(pipeline)
     },
@@ -253,13 +270,15 @@ export function useActiveOpportunities() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('opportunities')
-        .select(`
+        .select(
+          `
           *,
           organization:organizations!opportunities_organization_id_fkey(*),
           contact:contacts!opportunities_contact_id_fkey(*),
           principal_organization:organizations!opportunities_principal_organization_id_fkey(*),
           distributor_organization:organizations!opportunities_distributor_organization_id_fkey(*)
-        `)
+        `
+        )
         .not('stage', 'in', '(Closed - Won,Closed - Lost)')
         .is('deleted_at', null)
         .order('estimated_close_date')
@@ -278,8 +297,11 @@ export function useCreateOpportunity() {
   return useMutation({
     mutationFn: async (opportunity: OpportunityInsert) => {
       // Get current user ID for RLS policy compliance
-      const { data: { user }, error: authError } = await supabase.auth.getUser()
-      
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser()
+
       if (authError || !user) {
         throw new Error('Authentication required to create opportunity')
       }
@@ -290,7 +312,11 @@ export function useCreateOpportunity() {
       }
 
       // Business rule validation: Check advanced stages have contacts for better tracking
-      if (opportunity.stage && ['proposal', 'negotiation'].includes(opportunity.stage) && !opportunity.contact_id) {
+      if (
+        opportunity.stage &&
+        ['proposal', 'negotiation'].includes(opportunity.stage) &&
+        !opportunity.contact_id
+      ) {
         // Advanced stage opportunity created without contact - consider assigning one for better tracking
       }
 
@@ -315,13 +341,15 @@ export function useCreateOpportunity() {
       const { data, error } = await supabase
         .from('opportunities')
         .insert(opportunityData)
-        .select(`
+        .select(
+          `
           *,
           organization:organizations!opportunities_organization_id_fkey(*),
           contact:contacts!opportunities_contact_id_fkey(*),
           principal_organization:organizations!opportunities_principal_organization_id_fkey(*),
           distributor_organization:organizations!opportunities_distributor_organization_id_fkey(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -330,19 +358,23 @@ export function useCreateOpportunity() {
     onSuccess: (newOpportunity) => {
       // Invalidate all opportunity lists
       queryClient.invalidateQueries({ queryKey: opportunityKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: opportunityKeys.byOrganization(newOpportunity.organization_id) })
-      
+      queryClient.invalidateQueries({
+        queryKey: opportunityKeys.byOrganization(newOpportunity.organization_id),
+      })
+
       // Only invalidate contact-specific queries if contact_id exists
       if (newOpportunity.contact_id) {
-        queryClient.invalidateQueries({ queryKey: opportunityKeys.byContact(newOpportunity.contact_id) })
+        queryClient.invalidateQueries({
+          queryKey: opportunityKeys.byContact(newOpportunity.contact_id),
+        })
       }
-      
+
       queryClient.invalidateQueries({ queryKey: opportunityKeys.pipeline() })
       queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'active'] })
-      
+
       // Invalidate opportunities with activity data (used by OpportunitiesTable)
       queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'with-activity'] })
-      
+
       // Add the new opportunity to the cache
       queryClient.setQueryData(opportunityKeys.detail(newOpportunity.id), newOpportunity)
     },
@@ -357,8 +389,8 @@ export function useUpdateOpportunity() {
     mutationFn: async ({ id, updates }: { id: string; updates: OpportunityUpdate }) => {
       const { data, error } = await supabase
         .from('opportunities')
-        .update({ 
-          ...updates, 
+        .update({
+          ...updates,
           contact_id: updates.contact_id || null,
           principal_organization_id: updates.principal_organization_id || null,
           distributor_organization_id: updates.distributor_organization_id || null,
@@ -370,16 +402,18 @@ export function useUpdateOpportunity() {
           next_action: updates.next_action || null,
           next_action_date: updates.next_action_date || null,
           notes: updates.notes || null,
-          updated_at: new Date().toISOString() 
+          updated_at: new Date().toISOString(),
         })
         .eq('id', id)
-        .select(`
+        .select(
+          `
           *,
           organization:organizations!opportunities_organization_id_fkey(*),
           contact:contacts!opportunities_contact_id_fkey(*),
           principal_organization:organizations!opportunities_principal_organization_id_fkey(*),
           distributor_organization:organizations!opportunities_distributor_organization_id_fkey(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -388,19 +422,23 @@ export function useUpdateOpportunity() {
     onSuccess: (updatedOpportunity) => {
       // Update all related queries
       queryClient.invalidateQueries({ queryKey: opportunityKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: opportunityKeys.byOrganization(updatedOpportunity.organization_id) })
-      
+      queryClient.invalidateQueries({
+        queryKey: opportunityKeys.byOrganization(updatedOpportunity.organization_id),
+      })
+
       // Only invalidate contact-specific queries if contact_id exists
       if (updatedOpportunity.contact_id) {
-        queryClient.invalidateQueries({ queryKey: opportunityKeys.byContact(updatedOpportunity.contact_id) })
+        queryClient.invalidateQueries({
+          queryKey: opportunityKeys.byContact(updatedOpportunity.contact_id),
+        })
       }
-      
+
       queryClient.invalidateQueries({ queryKey: opportunityKeys.pipeline() })
       queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'active'] })
-      
+
       // Invalidate opportunities with activity data (used by OpportunitiesTable)
       queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'with-activity'] })
-      
+
       // Update the specific opportunity in the cache
       queryClient.setQueryData(opportunityKeys.detail(updatedOpportunity.id), updatedOpportunity)
     },
@@ -438,18 +476,20 @@ export function useAdvanceOpportunityStage() {
 
       const { data, error } = await supabase
         .from('opportunities')
-        .update({ 
+        .update({
           stage: nextStage,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', id)
-        .select(`
+        .select(
+          `
           *,
           organization:organizations!opportunities_organization_id_fkey(*),
           contact:contacts!opportunities_contact_id_fkey(*),
           principal_organization:organizations!opportunities_principal_organization_id_fkey(*),
           distributor_organization:organizations!opportunities_distributor_organization_id_fkey(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -458,19 +498,23 @@ export function useAdvanceOpportunityStage() {
     onSuccess: (updatedOpportunity) => {
       // Update all related queries
       queryClient.invalidateQueries({ queryKey: opportunityKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: opportunityKeys.byOrganization(updatedOpportunity.organization_id) })
-      
+      queryClient.invalidateQueries({
+        queryKey: opportunityKeys.byOrganization(updatedOpportunity.organization_id),
+      })
+
       // Only invalidate contact-specific queries if contact_id exists
       if (updatedOpportunity.contact_id) {
-        queryClient.invalidateQueries({ queryKey: opportunityKeys.byContact(updatedOpportunity.contact_id) })
+        queryClient.invalidateQueries({
+          queryKey: opportunityKeys.byContact(updatedOpportunity.contact_id),
+        })
       }
-      
+
       queryClient.invalidateQueries({ queryKey: opportunityKeys.pipeline() })
       queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'active'] })
-      
+
       // Invalidate opportunities with activity data (used by OpportunitiesTable)
       queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'with-activity'] })
-      
+
       // Update the specific opportunity in the cache
       queryClient.setQueryData(opportunityKeys.detail(updatedOpportunity.id), updatedOpportunity)
     },
@@ -485,16 +529,18 @@ export function useDeleteOpportunity() {
     mutationFn: async (id: string) => {
       const { data, error } = await supabase
         .from('opportunities')
-        .update({ 
+        .update({
           deleted_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', id)
-        .select(`
+        .select(
+          `
           *,
           organization:organizations!opportunities_organization_id_fkey(*),
           contact:contacts!opportunities_contact_id_fkey(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -503,19 +549,23 @@ export function useDeleteOpportunity() {
     onSuccess: (deletedOpportunity) => {
       // Invalidate all opportunity lists
       queryClient.invalidateQueries({ queryKey: opportunityKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: opportunityKeys.byOrganization(deletedOpportunity.organization_id) })
-      
+      queryClient.invalidateQueries({
+        queryKey: opportunityKeys.byOrganization(deletedOpportunity.organization_id),
+      })
+
       // Only invalidate contact-specific queries if contact_id exists
       if (deletedOpportunity.contact_id) {
-        queryClient.invalidateQueries({ queryKey: opportunityKeys.byContact(deletedOpportunity.contact_id) })
+        queryClient.invalidateQueries({
+          queryKey: opportunityKeys.byContact(deletedOpportunity.contact_id),
+        })
       }
-      
+
       queryClient.invalidateQueries({ queryKey: opportunityKeys.pipeline() })
       queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'active'] })
-      
+
       // Invalidate opportunities with activity data (used by OpportunitiesTable)
       queryClient.invalidateQueries({ queryKey: [...opportunityKeys.all, 'with-activity'] })
-      
+
       // Remove from individual cache
       queryClient.removeQueries({ queryKey: opportunityKeys.detail(deletedOpportunity.id) })
     },
@@ -530,12 +580,14 @@ export function useOpportunitiesWithLastActivity(filters?: OpportunityFilters) {
       // First get opportunities with basic relations
       let opportunityQuery = supabase
         .from('opportunities')
-        .select(`
+        .select(
+          `
           *,
           organization:organizations!opportunities_organization_id_fkey(*),
           contact:contacts!opportunities_contact_id_fkey(*),
           principal_organization:organizations!opportunities_principal_organization_id_fkey(*)
-        `)
+        `
+        )
         .is('deleted_at', null)
 
       // Apply filters (same as useOpportunities)
@@ -560,7 +612,10 @@ export function useOpportunitiesWithLastActivity(filters?: OpportunityFilters) {
       }
 
       if (filters?.principal_organization_id) {
-        opportunityQuery = opportunityQuery.eq('principal_organization_id', filters.principal_organization_id)
+        opportunityQuery = opportunityQuery.eq(
+          'principal_organization_id',
+          filters.principal_organization_id
+        )
       }
 
       if (filters?.contact_id) {
@@ -589,8 +644,8 @@ export function useOpportunitiesWithLastActivity(filters?: OpportunityFilters) {
       if (!opportunities || opportunities.length === 0) return []
 
       // Get last activity for each opportunity
-      const opportunityIds = opportunities.map(opp => opp.id)
-      
+      const opportunityIds = opportunities.map((opp) => opp.id)
+
       const { data: lastActivities, error: actError } = await supabase
         .from('interactions')
         .select('opportunity_id, interaction_date, type')
@@ -611,20 +666,23 @@ export function useOpportunitiesWithLastActivity(filters?: OpportunityFilters) {
 
       // Group interactions by opportunity_id to get last activity and count
       const lastActivityMap = new Map<string, { date: string; type: string; count: number }>()
-      
+
       // Count interactions per opportunity
-      const countMap = interactionCounts.reduce((acc, interaction) => {
-        acc[interaction.opportunity_id] = (acc[interaction.opportunity_id] || 0) + 1
-        return acc
-      }, {} as Record<string, number>)
+      const countMap = interactionCounts.reduce(
+        (acc, interaction) => {
+          acc[interaction.opportunity_id] = (acc[interaction.opportunity_id] || 0) + 1
+          return acc
+        },
+        {} as Record<string, number>
+      )
 
       // Get last activity per opportunity
       const activityMap = new Map<string, { date: string; type: string }>()
-      lastActivities?.forEach(activity => {
+      lastActivities?.forEach((activity) => {
         if (!activityMap.has(activity.opportunity_id)) {
           activityMap.set(activity.opportunity_id, {
             date: activity.interaction_date,
-            type: activity.type
+            type: activity.type,
           })
         }
       })
@@ -634,23 +692,23 @@ export function useOpportunitiesWithLastActivity(filters?: OpportunityFilters) {
         lastActivityMap.set(oppId, {
           date: activity.date,
           type: activity.type,
-          count: countMap[oppId] || 0
+          count: countMap[oppId] || 0,
         })
       })
 
       // Add interaction counts for opportunities without activities
-      Object.keys(countMap).forEach(oppId => {
+      Object.keys(countMap).forEach((oppId) => {
         if (!lastActivityMap.has(oppId)) {
           lastActivityMap.set(oppId, {
             date: '',
             type: '',
-            count: countMap[oppId] || 0
+            count: countMap[oppId] || 0,
           })
         }
       })
 
       // Merge opportunities with their last activity data
-      const result: OpportunityWithLastActivity[] = opportunities.map(opp => {
+      const result: OpportunityWithLastActivity[] = opportunities.map((opp) => {
         const activity = lastActivityMap.get(opp.id)
         return {
           ...opp,
@@ -660,7 +718,7 @@ export function useOpportunitiesWithLastActivity(filters?: OpportunityFilters) {
           last_activity_date: activity?.date || null,
           last_activity_type: activity?.type || null,
           interaction_count: activity?.count || 0,
-          stage_updated_at: null // TODO: Add stage tracking in future iteration
+          stage_updated_at: null, // Future: Add stage tracking in future iteration
         }
       })
 

@@ -18,39 +18,39 @@ export interface InteractionTimelineItemProps extends React.HTMLAttributes<HTMLD
   getInteractionIcon: (type: string) => React.ReactNode
   getInteractionTypeColor: (type: string) => string
   className?: string
-  [key: string]: any // Migration safety
 }
 
 const InteractionTimelineItemComponent = forwardRef<HTMLDivElement, InteractionTimelineItemProps>(
-  ({ 
-    interaction, 
-    isExpanded, 
-    onToggleExpand, 
-    onEdit, 
-    onDelete, 
-    onItemClick: _,
-    getInteractionIcon,
-    getInteractionTypeColor,
-    className,
-    ...props 
-  }, ref) => {
-    
-    const { handleDelete, handleEdit, handleMarkComplete, handleKeyDown, handleItemClick } = 
+  (
+    {
+      interaction,
+      isExpanded,
+      onToggleExpand,
+      onEdit,
+      onDelete,
+      onItemClick: _onItemClick, // eslint-disable-line @typescript-eslint/no-unused-vars
+      getInteractionIcon,
+      getInteractionTypeColor,
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    const { handleDelete, handleEdit, handleMarkComplete, handleKeyDown, handleItemClick } =
       useInteractionTimelineItemActions({
         interactionType: interaction.type,
         onToggleExpand,
         onEdit,
-        onDelete
+        onDelete,
       })
 
-    const { formattedDate, relativeTime, formattedType } = 
-      useInteractionTimelineItemFormatting({
-        interactionDate: interaction.interaction_date,
-        interactionType: interaction.type
-      })
+    const { formattedDate, relativeTime, formattedType } = useInteractionTimelineItemFormatting({
+      interactionDate: interaction.interaction_date,
+      interactionType: interaction.type,
+    })
 
     return (
-      <div 
+      <div
         ref={ref}
         className={cn(
           'relative flex gap-4 cursor-pointer group transition-colors duration-200',
@@ -86,10 +86,7 @@ const InteractionTimelineItemComponent = forwardRef<HTMLDivElement, InteractionT
             handleMarkComplete={handleMarkComplete}
           />
 
-          <InteractionTimelineContent
-            interaction={interaction}
-            isExpanded={isExpanded}
-          />
+          <InteractionTimelineContent interaction={interaction} isExpanded={isExpanded} />
         </div>
       </div>
     )

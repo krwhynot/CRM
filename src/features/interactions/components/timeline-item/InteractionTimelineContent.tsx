@@ -9,7 +9,7 @@ interface InteractionTimelineContentProps {
 
 export const InteractionTimelineContent: React.FC<InteractionTimelineContentProps> = ({
   interaction,
-  isExpanded
+  isExpanded,
 }) => {
   return (
     <>
@@ -30,7 +30,7 @@ export const InteractionTimelineContent: React.FC<InteractionTimelineContentProp
           {interaction.follow_up_required && interaction.follow_up_date && (
             <div className="text-sm">
               <span className="font-medium text-gray-700">Follow-up: </span>
-              <span className="text-gray-600">
+              <span className="text-muted-foreground">
                 {format(new Date(interaction.follow_up_date), 'MMM d, yyyy')}
               </span>
             </div>
@@ -40,7 +40,7 @@ export const InteractionTimelineContent: React.FC<InteractionTimelineContentProp
           {interaction.opportunity && (
             <div className="text-sm">
               <span className="font-medium text-gray-700">Opportunity: </span>
-              <span className="text-gray-600">{interaction.opportunity.name}</span>
+              <span className="text-muted-foreground">{interaction.opportunity.name}</span>
             </div>
           )}
         </div>
@@ -48,9 +48,7 @@ export const InteractionTimelineContent: React.FC<InteractionTimelineContentProp
 
       {/* Collapsed preview */}
       {!isExpanded && interaction.description && (
-        <p className="line-clamp-2 text-sm text-gray-600">
-          {interaction.description}
-        </p>
+        <p className="line-clamp-2 text-sm text-gray-600">{interaction.description}</p>
       )}
     </>
   )

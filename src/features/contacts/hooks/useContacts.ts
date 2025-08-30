@@ -4,14 +4,14 @@ import { isFeatureEnabled } from '@/lib/feature-flags'
 import type { Database } from '@/lib/database.types'
 import { resolveOrganization } from '@/lib/organization-resolution'
 import { validateAuthentication, surfaceError } from '@/lib/error-utils'
-import type { 
+import type {
   Contact,
-  ContactInsert, 
-  ContactUpdate, 
+  ContactInsert,
+  ContactUpdate,
   ContactFilters,
   ContactWithOrganization,
   OrganizationInsert,
-  OrganizationType 
+  OrganizationType,
 } from '@/types/entities'
 
 // Query key factory
@@ -21,7 +21,8 @@ export const contactKeys = {
   list: (filters?: ContactFilters) => [...contactKeys.lists(), { filters }] as const,
   details: () => [...contactKeys.all, 'detail'] as const,
   detail: (id: string) => [...contactKeys.details(), id] as const,
-  byOrganization: (organizationId: string) => [...contactKeys.all, 'organization', organizationId] as const,
+  byOrganization: (organizationId: string) =>
+    [...contactKeys.all, 'organization', organizationId] as const,
 }
 
 // Hook to fetch all contacts with optional filtering
@@ -31,10 +32,12 @@ export function useContacts(filters?: ContactFilters) {
     queryFn: async () => {
       let query = supabase
         .from('contacts')
-        .select(`
+        .select(
+          `
           *,
           organization:organizations(*)
-        `)
+        `
+        )
         .is('deleted_at', null)
 
       // Apply filters
@@ -55,7 +58,9 @@ export function useContacts(filters?: ContactFilters) {
       }
 
       if (filters?.search) {
-        query = query.or(`first_name.ilike.%${filters.search}%,last_name.ilike.%${filters.search}%,title.ilike.%${filters.search}%`)
+        query = query.or(
+          `first_name.ilike.%${filters.search}%,last_name.ilike.%${filters.search}%,title.ilike.%${filters.search}%`
+        )
       }
 
       query = query.order('last_name').order('first_name')
@@ -76,10 +81,12 @@ export function useContact(id: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('contacts')
-        .select(`
+        .select(
+          `
           *,
           organization:organizations(*)
-        `)
+        `
+        )
         .eq('id', id)
         .is('deleted_at', null)
         .single()
@@ -99,10 +106,12 @@ export function useContactsByOrganization(organizationId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('contacts')
-        .select(`
+        .select(
+          `
           *,
           organization:organizations(*)
-        `)
+        `
+        )
         .eq('organization_id', organizationId)
         .is('deleted_at', null)
         .order('is_primary_contact', { ascending: false })
@@ -124,10 +133,12 @@ export function usePrimaryContacts() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('contacts')
-        .select(`
+        .select(
+          `
           *,
           organization:organizations(*)
-        `)
+        `
+        )
         .eq('is_primary_contact', true)
         .is('deleted_at', null)
         .order('last_name')
@@ -147,8 +158,11 @@ export function useCreateContact() {
   return useMutation({
     mutationFn: async (contact: ContactInsert) => {
       // Get current user ID for RLS policy compliance
-      const { data: { user }, error: authError } = await supabase.auth.getUser()
-      
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser()
+
       if (authError || !user) {
         throw new Error('Authentication required to create contact')
       }
@@ -163,10 +177,12 @@ export function useCreateContact() {
       const { data, error } = await supabase
         .from('contacts')
         .insert(contactData)
-        .select(`
+        .select(
+          `
           *,
           organization:organizations(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -175,9 +191,11 @@ export function useCreateContact() {
     onSuccess: (newContact) => {
       // Invalidate all contact lists
       queryClient.invalidateQueries({ queryKey: contactKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: contactKeys.byOrganization(newContact.organization_id) })
+      queryClient.invalidateQueries({
+        queryKey: contactKeys.byOrganization(newContact.organization_id),
+      })
       queryClient.invalidateQueries({ queryKey: [...contactKeys.all, 'primary'] })
-      
+
       // Add the new contact to the cache
       queryClient.setQueryData(contactKeys.detail(newContact.id), newContact)
     },
@@ -186,7 +204,8 @@ export function useCreateContact() {
 
 // Enhanced contact creation interface for form data with organization details
 // Excludes virtual fields that are not part of the actual contacts table schema
-export interface ContactWithOrganizationData extends Omit<ContactInsert, 'organization_id' | 'created_by' | 'updated_by'> {
+export interface ContactWithOrganizationData
+  extends Omit<ContactInsert, 'organization_id' | 'created_by' | 'updated_by'> {
   // Organization can be provided as ID (existing) or details (new/existing)
   organization_id?: string
   organization_name?: string
@@ -234,17 +253,16 @@ export function useCreateContactWithOrganization() {
 
         // Prepare contact data with resolved organization_id and audit fields
         // Extract virtual fields and organization fields from contact data
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { 
-          organization_name,
-          organization_type,
-          organization_data,
-          preferred_principals, // Remove virtual field
-          ...cleanContactData 
+        const {
+          organization_name: _organization_name, // eslint-disable-line @typescript-eslint/no-unused-vars
+          organization_type: _organization_type, // eslint-disable-line @typescript-eslint/no-unused-vars
+          organization_data: _organization_data, // eslint-disable-line @typescript-eslint/no-unused-vars
+          preferred_principals: _preferred_principals, // Remove virtual field
+          ...cleanContactData
         } = contactData
-        
+
         // Virtual fields removed from contact data - they are not stored in the contact table
-        
+
         const finalContactData: ContactInsert = {
           ...cleanContactData,
           organization_id: organizationId,
@@ -256,10 +274,12 @@ export function useCreateContactWithOrganization() {
         const { data, error } = await supabase
           .from('contacts')
           .insert(finalContactData)
-          .select(`
+          .select(
+            `
             *,
             organization:organizations(*)
-          `)
+          `
+          )
           .single()
 
         if (error) {
@@ -271,20 +291,18 @@ export function useCreateContactWithOrganization() {
         }
 
         // Handle preferred principals if provided (virtual field processing)
-        if (preferred_principals && preferred_principals.length > 0) {
+        if (_preferred_principals && _preferred_principals.length > 0) {
           try {
             // Create preferred principal relationships
-            const relationshipPromises = preferred_principals.map(async (principalId) => {
-              return supabase
-                .from('contact_preferred_principals')
-                .insert({
-                  contact_id: data.id,
-                  principal_organization_id: principalId,
-                  created_by: user.id,
-                  updated_by: user.id
-                })
+            const relationshipPromises = _preferred_principals.map(async (principalId) => {
+              return supabase.from('contact_preferred_principals').insert({
+                contact_id: data.id,
+                principal_organization_id: principalId,
+                created_by: user.id,
+                updated_by: user.id,
+              })
             })
-            
+
             await Promise.all(relationshipPromises)
           } catch (preferredPrincipalsError) {
             // Log error but don't fail the contact creation
@@ -301,12 +319,14 @@ export function useCreateContactWithOrganization() {
     onSuccess: (newContact) => {
       // Invalidate all contact lists
       queryClient.invalidateQueries({ queryKey: contactKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: contactKeys.byOrganization(newContact.organization_id) })
+      queryClient.invalidateQueries({
+        queryKey: contactKeys.byOrganization(newContact.organization_id),
+      })
       queryClient.invalidateQueries({ queryKey: [...contactKeys.all, 'primary'] })
-      
+
       // Invalidate organization lists since we may have created a new organization
       queryClient.invalidateQueries({ queryKey: ['organizations'] })
-      
+
       // Add the new contact to the cache
       queryClient.setQueryData(contactKeys.detail(newContact.id), newContact)
     },
@@ -326,9 +346,11 @@ export function useCreateContactWithOrganizationRPC() {
       }
 
       if (!isFeatureEnabled('rpcContactCreation')) {
-        throw new Error('Contact creation is temporarily disabled while we improve the feature. Please use the Excel import functionality to add contacts.')
+        throw new Error(
+          'Contact creation is temporarily disabled while we improve the feature. Please use the Excel import functionality to add contacts.'
+        )
       }
-      
+
       // RPC contact creation will be implemented here
       // Will include proper validation and organization linking
       throw new Error('RPC contact creation feature is being finalized')
@@ -336,12 +358,14 @@ export function useCreateContactWithOrganizationRPC() {
     onSuccess: (newContact) => {
       // Invalidate all contact lists
       queryClient.invalidateQueries({ queryKey: contactKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: contactKeys.byOrganization(newContact.organization_id) })
+      queryClient.invalidateQueries({
+        queryKey: contactKeys.byOrganization(newContact.organization_id),
+      })
       queryClient.invalidateQueries({ queryKey: [...contactKeys.all, 'primary'] })
-      
+
       // Invalidate organization lists since we may have created a new organization
       queryClient.invalidateQueries({ queryKey: ['organizations'] })
-      
+
       // Add the new contact to the cache
       queryClient.setQueryData(contactKeys.detail(newContact.id), newContact)
     },
@@ -358,10 +382,12 @@ export function useUpdateContact() {
         .from('contacts')
         .update({ ...updates, updated_at: new Date().toISOString() })
         .eq('id', id)
-        .select(`
+        .select(
+          `
           *,
           organization:organizations(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -370,9 +396,11 @@ export function useUpdateContact() {
     onSuccess: (updatedContact) => {
       // Update all related queries
       queryClient.invalidateQueries({ queryKey: contactKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: contactKeys.byOrganization(updatedContact.organization_id) })
+      queryClient.invalidateQueries({
+        queryKey: contactKeys.byOrganization(updatedContact.organization_id),
+      })
       queryClient.invalidateQueries({ queryKey: [...contactKeys.all, 'primary'] })
-      
+
       // Update the specific contact in the cache
       queryClient.setQueryData(contactKeys.detail(updatedContact.id), updatedContact)
     },
@@ -387,15 +415,17 @@ export function useDeleteContact() {
     mutationFn: async (id: string) => {
       const { data, error } = await supabase
         .from('contacts')
-        .update({ 
+        .update({
           deleted_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', id)
-        .select(`
+        .select(
+          `
           *,
           organization:organizations(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -404,9 +434,11 @@ export function useDeleteContact() {
     onSuccess: (deletedContact) => {
       // Invalidate all contact lists
       queryClient.invalidateQueries({ queryKey: contactKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: contactKeys.byOrganization(deletedContact.organization_id) })
+      queryClient.invalidateQueries({
+        queryKey: contactKeys.byOrganization(deletedContact.organization_id),
+      })
       queryClient.invalidateQueries({ queryKey: [...contactKeys.all, 'primary'] })
-      
+
       // Remove from individual cache
       queryClient.removeQueries({ queryKey: contactKeys.detail(deletedContact.id) })
     },
@@ -421,15 +453,17 @@ export function useRestoreContact() {
     mutationFn: async (id: string) => {
       const { data, error } = await supabase
         .from('contacts')
-        .update({ 
+        .update({
           deleted_at: null,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', id)
-        .select(`
+        .select(
+          `
           *,
           organization:organizations(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -438,9 +472,11 @@ export function useRestoreContact() {
     onSuccess: (restoredContact) => {
       // Invalidate all contact lists
       queryClient.invalidateQueries({ queryKey: contactKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: contactKeys.byOrganization(restoredContact.organization_id) })
+      queryClient.invalidateQueries({
+        queryKey: contactKeys.byOrganization(restoredContact.organization_id),
+      })
       queryClient.invalidateQueries({ queryKey: [...contactKeys.all, 'primary'] })
-      
+
       // Add back to individual cache
       queryClient.setQueryData(contactKeys.detail(restoredContact.id), restoredContact)
     },
@@ -465,9 +501,9 @@ export function useSetPrimaryContact() {
       // Remove primary status from all contacts in the organization
       const { error: clearError } = await supabase
         .from('contacts')
-        .update({ 
+        .update({
           is_primary_contact: false,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('organization_id', contact.organization_id)
 
@@ -476,15 +512,17 @@ export function useSetPrimaryContact() {
       // Set the new primary contact
       const { data, error } = await supabase
         .from('contacts')
-        .update({ 
+        .update({
           is_primary_contact: true,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', contactId)
-        .select(`
+        .select(
+          `
           *,
           organization:organizations(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -493,7 +531,9 @@ export function useSetPrimaryContact() {
     onSuccess: (primaryContact) => {
       // Invalidate all contact lists for the organization
       queryClient.invalidateQueries({ queryKey: contactKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: contactKeys.byOrganization(primaryContact.organization_id) })
+      queryClient.invalidateQueries({
+        queryKey: contactKeys.byOrganization(primaryContact.organization_id),
+      })
       queryClient.invalidateQueries({ queryKey: [...contactKeys.all, 'primary'] })
     },
   })
@@ -502,7 +542,7 @@ export function useSetPrimaryContact() {
 // Hook to refresh contacts data
 export const useRefreshContacts = () => {
   const queryClient = useQueryClient()
-  
+
   return () => {
     queryClient.invalidateQueries({ queryKey: contactKeys.all })
   }
@@ -530,28 +570,28 @@ export const useContactFormData = (contact: Contact | null) => {
   const initialData = {
     // Basic fields
     first_name: contact.first_name || '',
-    last_name: contact.last_name || '', 
+    last_name: contact.last_name || '',
     title: contact.title || '',
     email: contact.email || '',
     phone: contact.phone || '',
     mobile_phone: contact.mobile_phone || '',
-    
+
     // Organization fields
     organization_id: contact.organization_id || '',
-    
+
     // Additional fields
     notes: contact.notes || '',
     is_primary_contact: contact.is_primary_contact || false,
     linkedin_profile: extendedContact.linkedin_profile || contact.linkedin_url || '',
     department: contact.department || '',
-    
+
     // Address fields (not in database yet, but form may expect them)
     address_line_1: extendedContact.address_line_1 || '',
     address_line_2: extendedContact.address_line_2 || '',
     city: extendedContact.city || '',
     state_province: extendedContact.state_province || '',
     postal_code: extendedContact.postal_code || '',
-    country: extendedContact.country || ''
+    country: extendedContact.country || '',
   }
 
   return { initialData }

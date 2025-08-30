@@ -1,10 +1,15 @@
 import { useState, useCallback } from 'react'
 import { WizardStep } from '../components/SmartImportWizard'
-import { suggestFieldMappings, validateRowsWithAI, detectDuplicatesWithAI, isOpenAIAvailable } from '@/lib/openai'
-import { 
-  type FieldMappingResponseType, 
+import {
+  suggestFieldMappings,
+  validateRowsWithAI,
+  detectDuplicatesWithAI,
+  isOpenAIAvailable,
+} from '@/lib/openai'
+import {
+  type FieldMappingResponseType,
   type BatchValidationResponseType,
-  type DuplicateDetectionResponseType
+  type DuplicateDetectionResponseType,
 } from '@/lib/aiSchemas'
 import type { ParsedData } from '@/hooks/useFileUpload'
 
@@ -33,34 +38,34 @@ interface SmartImportState {
   // Wizard navigation
   currentStep: WizardStep
   completedSteps: WizardStep[]
-  
+
   // File handling
   file: File | null
   parsedData: ParsedData | null
-  
+
   // AI-powered mapping
   fieldMappings: SmartFieldMapping[]
   aiMappingResponse: FieldMappingResponseType | null
   mappingInProgress: boolean
-  
+
   // Validation
   validationResults: BatchValidationResponseType | null
   duplicateResults: DuplicateDetectionResponseType | null
   validationInProgress: boolean
-  
+
   // Import process
   importInProgress: boolean
   importProgress: number
   importResult: {
     success: boolean
     imported: number
-    failed: number  
+    failed: number
     errors: Array<{ row: number; error: string }>
   } | null
-  
+
   // Configuration
   config: ImportConfig
-  
+
   // Error handling
   error: string | null
   warnings: string[]
@@ -73,27 +78,27 @@ interface UseSmartImportReturn {
     goToStep: (step: WizardStep) => void
     nextStep: () => void
     previousStep: () => void
-    
+
     // File handling
     uploadFile: (file: File) => Promise<void>
     clearFile: () => void
-    
+
     // AI mapping
     generateAIMappings: () => Promise<void>
     updateFieldMapping: (csvHeader: string, crmField: string | null, userOverride?: boolean) => void
     confirmMapping: (csvHeader: string) => void
     skipField: (csvHeader: string) => void
-    
+
     // Validation
     validateData: () => Promise<void>
     checkDuplicates: () => Promise<void>
-    
+
     // Import
     executeImport: () => Promise<void>
-    
+
     // Configuration
     updateConfig: (updates: Partial<ImportConfig>) => void
-    
+
     // Reset
     resetWizard: () => void
   }
@@ -105,7 +110,7 @@ const defaultConfig: ImportConfig = {
   entityType: 'organization',
   skipValidation: false,
   allowDuplicates: false,
-  batchSize: 50
+  batchSize: 50,
 }
 
 const initialState: SmartImportState = {
@@ -124,7 +129,7 @@ const initialState: SmartImportState = {
   importResult: null,
   config: defaultConfig,
   error: null,
-  warnings: []
+  warnings: [],
 }
 
 export function useSmartImport(): UseSmartImportReturn {
@@ -132,20 +137,20 @@ export function useSmartImport(): UseSmartImportReturn {
 
   // Navigation actions
   const goToStep = useCallback((step: WizardStep) => {
-    setState(prev => ({ ...prev, currentStep: step }))
+    setState((prev) => ({ ...prev, currentStep: step }))
   }, [])
 
   const nextStep = useCallback(() => {
-    setState(prev => {
+    setState((prev) => {
       const currentIndex = STEP_ORDER.indexOf(prev.currentStep)
       if (currentIndex < STEP_ORDER.length - 1) {
         const newStep = STEP_ORDER[currentIndex + 1]
         return {
           ...prev,
           currentStep: newStep,
-          completedSteps: prev.completedSteps.includes(prev.currentStep) 
-            ? prev.completedSteps 
-            : [...prev.completedSteps, prev.currentStep]
+          completedSteps: prev.completedSteps.includes(prev.currentStep)
+            ? prev.completedSteps
+            : [...prev.completedSteps, prev.currentStep],
         }
       }
       return prev
@@ -153,7 +158,7 @@ export function useSmartImport(): UseSmartImportReturn {
   }, [])
 
   const previousStep = useCallback(() => {
-    setState(prev => {
+    setState((prev) => {
       const currentIndex = STEP_ORDER.indexOf(prev.currentStep)
       if (currentIndex > 0) {
         return { ...prev, currentStep: STEP_ORDER[currentIndex - 1] }
@@ -165,16 +170,16 @@ export function useSmartImport(): UseSmartImportReturn {
   // File handling
   const uploadFile = useCallback(async (file: File) => {
     try {
-      setState(prev => ({ 
-        ...prev, 
-        file, 
+      setState((prev) => ({
+        ...prev,
+        file,
         error: null,
-        warnings: []
+        warnings: [],
       }))
 
       // Import parseCSV logic from useFileUpload
       const Papa = (await import('papaparse')).default
-      
+
       return new Promise<void>((resolve, reject) => {
         Papa.parse<Record<string, string>>(file, {
           header: true,
@@ -191,21 +196,21 @@ export function useSmartImport(): UseSmartImportReturn {
                 headers,
                 rows,
                 validRows: [], // Will be populated after field mapping
-                invalidRows: []
+                invalidRows: [],
               }
 
-              setState(prev => ({
+              setState((prev) => ({
                 ...prev,
                 parsedData,
-                fieldMappings: headers.map(header => ({
+                fieldMappings: headers.map((header) => ({
                   csvHeader: header,
                   crmField: null,
                   confidence: 0,
                   isUserOverridden: false,
                   aiSuggestion: null,
                   alternatives: [],
-                  status: 'needs_review' as const
-                }))
+                  status: 'needs_review' as const,
+                })),
               }))
 
               resolve()
@@ -215,21 +220,20 @@ export function useSmartImport(): UseSmartImportReturn {
           },
           error: (error) => {
             reject(new Error(`CSV parsing error: ${error.message}`))
-          }
+          },
         })
       })
-
     } catch (error) {
-      setState(prev => ({ 
-        ...prev, 
-        error: error instanceof Error ? error.message : 'File upload failed' 
+      setState((prev) => ({
+        ...prev,
+        error: error instanceof Error ? error.message : 'File upload failed',
       }))
       throw error
     }
   }, [])
 
   const clearFile = useCallback(() => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       file: null,
       parsedData: null,
@@ -241,17 +245,17 @@ export function useSmartImport(): UseSmartImportReturn {
       currentStep: 'upload',
       completedSteps: [],
       error: null,
-      warnings: []
+      warnings: [],
     }))
   }, [])
 
   // AI mapping actions
   const generateAIMappings = useCallback(async () => {
-    setState(prev => {
+    setState((prev) => {
       if (!prev.parsedData || !isOpenAIAvailable()) {
         return {
           ...prev,
-          warnings: [...prev.warnings, 'OpenAI not available - using manual mapping']
+          warnings: [...prev.warnings, 'OpenAI not available - using manual mapping'],
         }
       }
       return { ...prev, mappingInProgress: true, error: null }
@@ -270,9 +274,9 @@ export function useSmartImport(): UseSmartImportReturn {
         currentState.config.entityType
       )
 
-      const updatedMappings: SmartFieldMapping[] = currentState.fieldMappings.map(mapping => {
-        const aiMapping = aiResponse.mappings.find(m => 
-          m.header.toLowerCase() === mapping.csvHeader.toLowerCase()
+      const updatedMappings: SmartFieldMapping[] = currentState.fieldMappings.map((mapping) => {
+        const aiMapping = aiResponse.mappings.find(
+          (m) => m.header.toLowerCase() === mapping.csvHeader.toLowerCase()
         )
 
         if (aiMapping && aiMapping.suggestedField && aiMapping.confidence >= 0.5) {
@@ -283,64 +287,64 @@ export function useSmartImport(): UseSmartImportReturn {
             aiSuggestion: aiMapping.suggestedField,
             alternatives: aiMapping.alternatives || [],
             reason: aiMapping.reason,
-            status: aiMapping.confidence >= 0.85 ? 'auto' : 'needs_review'
+            status: aiMapping.confidence >= 0.85 ? 'auto' : 'needs_review',
           }
         }
 
         return mapping
       })
 
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         fieldMappings: updatedMappings,
         aiMappingResponse: aiResponse,
-        mappingInProgress: false
+        mappingInProgress: false,
       }))
-
     } catch (error) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         mappingInProgress: false,
-        warnings: [...prev.warnings, 'AI mapping failed - using manual mapping']
+        warnings: [...prev.warnings, 'AI mapping failed - using manual mapping'],
       }))
     }
-  }, [state.parsedData, state.fieldMappings, state.config.entityType])
+  }, [state])
 
-  const updateFieldMapping = useCallback((csvHeader: string, crmField: string | null, userOverride = true) => {
-    setState(prev => ({
-      ...prev,
-      fieldMappings: prev.fieldMappings.map(mapping =>
-        mapping.csvHeader === csvHeader
-          ? {
-              ...mapping,
-              crmField,
-              isUserOverridden: userOverride,
-              status: crmField ? 'confirmed' : 'skipped'
-            }
-          : mapping
-      )
-    }))
-  }, [])
+  const updateFieldMapping = useCallback(
+    (csvHeader: string, crmField: string | null, userOverride = true) => {
+      setState((prev) => ({
+        ...prev,
+        fieldMappings: prev.fieldMappings.map((mapping) =>
+          mapping.csvHeader === csvHeader
+            ? {
+                ...mapping,
+                crmField,
+                isUserOverridden: userOverride,
+                status: crmField ? 'confirmed' : 'skipped',
+              }
+            : mapping
+        ),
+      }))
+    },
+    []
+  )
 
   const confirmMapping = useCallback((csvHeader: string) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
-      fieldMappings: prev.fieldMappings.map(mapping =>
-        mapping.csvHeader === csvHeader
-          ? { ...mapping, status: 'confirmed' }
-          : mapping
-      )
+      fieldMappings: prev.fieldMappings.map((mapping) =>
+        mapping.csvHeader === csvHeader ? { ...mapping, status: 'confirmed' } : mapping
+      ),
     }))
   }, [])
 
   const skipField = useCallback((csvHeader: string) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
-      fieldMappings: prev.fieldMappings.map(mapping =>
+      fieldMappings: prev.fieldMappings.map((mapping) =>
         mapping.csvHeader === csvHeader
           ? { ...mapping, crmField: null, status: 'skipped' }
           : mapping
-      )
+      ),
     }))
   }, [])
 
@@ -350,13 +354,13 @@ export function useSmartImport(): UseSmartImportReturn {
       return
     }
 
-    setState(prev => ({ ...prev, validationInProgress: true }))
+    setState((prev) => ({ ...prev, validationInProgress: true }))
 
     try {
       const fieldMappingDict = Object.fromEntries(
         state.fieldMappings
-          .filter(m => m.crmField && m.status !== 'skipped')
-          .map(m => [m.csvHeader, m.crmField!])
+          .filter((m) => m.crmField && m.status !== 'skipped')
+          .map((m) => [m.csvHeader, m.crmField!])
       )
 
       const validationResults = await validateRowsWithAI(
@@ -365,17 +369,16 @@ export function useSmartImport(): UseSmartImportReturn {
         50 // Sample size
       )
 
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         validationResults,
-        validationInProgress: false
+        validationInProgress: false,
       }))
-
     } catch (error) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         validationInProgress: false,
-        warnings: [...prev.warnings, 'AI validation failed - using basic validation']
+        warnings: [...prev.warnings, 'AI validation failed - using basic validation'],
       }))
     }
   }, [state.parsedData, state.fieldMappings, state.config.skipValidation])
@@ -387,57 +390,56 @@ export function useSmartImport(): UseSmartImportReturn {
 
     try {
       const duplicateResults = await detectDuplicatesWithAI(state.parsedData.rows, 100)
-      setState(prev => ({ ...prev, duplicateResults }))
+      setState((prev) => ({ ...prev, duplicateResults }))
     } catch (error) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
-        warnings: [...prev.warnings, 'AI duplicate detection failed']
+        warnings: [...prev.warnings, 'AI duplicate detection failed'],
       }))
     }
   }, [state.parsedData, state.config.allowDuplicates])
 
   // Import execution (placeholder - will integrate with existing import logic)
   const executeImport = useCallback(async () => {
-    setState(prev => ({ ...prev, importInProgress: true, importProgress: 0 }))
+    setState((prev) => ({ ...prev, importInProgress: true, importProgress: 0 }))
 
     try {
-      // TODO: Integrate with existing useImportProgress hook
+      // Future: Integrate with existing useImportProgress hook
       // This is a placeholder for the actual import implementation
-      
+
       // Get current state for the calculation
       const currentParsedData = state.parsedData
-      
+
       // Simulate progress
       for (let i = 0; i <= 100; i += 10) {
-        setState(prev => ({ ...prev, importProgress: i }))
-        await new Promise(resolve => setTimeout(resolve, 100))
+        setState((prev) => ({ ...prev, importProgress: i }))
+        await new Promise((resolve) => setTimeout(resolve, 100))
       }
 
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         importInProgress: false,
         importResult: {
           success: true,
           imported: currentParsedData?.rows.length || 0,
           failed: 0,
-          errors: []
-        }
+          errors: [],
+        },
       }))
-
     } catch (error) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         importInProgress: false,
-        error: error instanceof Error ? error.message : 'Import failed'
+        error: error instanceof Error ? error.message : 'Import failed',
       }))
     }
   }, [state.parsedData])
 
   // Configuration
   const updateConfig = useCallback((updates: Partial<ImportConfig>) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
-      config: { ...prev.config, ...updates }
+      config: { ...prev.config, ...updates },
     }))
   }, [])
 
@@ -462,7 +464,7 @@ export function useSmartImport(): UseSmartImportReturn {
       checkDuplicates,
       executeImport,
       updateConfig,
-      resetWizard
-    }
+      resetWizard,
+    },
   }
 }

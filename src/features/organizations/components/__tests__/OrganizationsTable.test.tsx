@@ -15,66 +15,76 @@ vi.mock('@/features/organizations/hooks/useOrganizationsFiltering', () => ({
     filterPills: [
       { key: 'all', label: 'All', count: organizations.length },
       { key: 'high-priority', label: 'High Priority', count: 1 },
-      { key: 'customers', label: 'Customers', count: 2 }
-    ]
-  })
+      { key: 'customers', label: 'Customers', count: 2 },
+    ],
+  }),
 }))
 
 vi.mock('@/features/organizations/hooks/useOrganizationsDisplay', () => ({
   useOrganizationsDisplay: () => ({
     toggleRowExpansion: vi.fn(),
-    isRowExpanded: vi.fn(() => false)
-  })
+    isRowExpanded: vi.fn(() => false),
+  }),
 }))
 
 // Mock the child components
 vi.mock('../OrganizationsFilters', () => ({
-  OrganizationsFilters: ({ totalOrganizations, filteredCount }: any) => (
+  OrganizationsFilters: ({
+    totalOrganizations,
+    filteredCount,
+  }: {
+    totalOrganizations: number
+    filteredCount: number
+  }) => (
     <div data-testid="organizations-filters">
       <span>Total: {totalOrganizations}</span>
       <span>Filtered: {filteredCount}</span>
     </div>
-  )
+  ),
 }))
 
 vi.mock('../OrganizationRow', () => ({
-  OrganizationRow: ({ organization, onEdit, onView, onContact }: any) => (
+  OrganizationRow: ({
+    organization,
+    onEdit,
+    onView,
+    onContact,
+  }: {
+    organization: Organization
+    onEdit: () => void
+    onView: () => void
+    onContact: () => void
+  }) => (
     <tr data-testid={`organization-row-${organization.id}`}>
       <td>{organization.name}</td>
       <td>
-        {onEdit && (
-          <button onClick={() => onEdit(organization)}>Edit</button>
-        )}
-        {onView && (
-          <button onClick={() => onView(organization)}>View</button>
-        )}
-        {onContact && (
-          <button onClick={() => onContact(organization)}>Contact</button>
-        )}
+        {onEdit && <button onClick={() => onEdit(organization)}>Edit</button>}
+        {onView && <button onClick={() => onView(organization)}>View</button>}
+        {onContact && <button onClick={() => onContact(organization)}>Contact</button>}
       </td>
     </tr>
-  )
+  ),
 }))
 
 const mockOrganizations: Organization[] = [
   {
     id: '1',
     name: 'ACME Corp',
-    type: 'customer' as any,
+    type: 'customer' as const,
     priority: 'A',
     phone: '(555) 123-4567',
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
   },
   {
     id: '2',
     name: 'Global Distributors',
-    type: 'distributor' as any,
+    type: 'distributor' as const,
     priority: 'B',
     phone: '(555) 234-5678',
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  }
+    updated_at: new Date().toISOString(),
+  },
 ]
 
 describe('OrganizationsTable', () => {
@@ -94,7 +104,7 @@ describe('OrganizationsTable', () => {
     expect(screen.getByTestId('organizations-filters')).toBeInTheDocument()
     expect(screen.getByText('Total: 2')).toBeInTheDocument()
     expect(screen.getByText('Filtered: 2')).toBeInTheDocument()
-    
+
     expect(screen.getByTestId('organization-row-1')).toBeInTheDocument()
     expect(screen.getByTestId('organization-row-2')).toBeInTheDocument()
     expect(screen.getByText('ACME Corp')).toBeInTheDocument()
@@ -110,49 +120,34 @@ describe('OrganizationsTable', () => {
 
   it('should call onEdit when edit button is clicked', () => {
     const onEdit = vi.fn()
-    
-    render(
-      <OrganizationsTable 
-        organizations={mockOrganizations}
-        onEdit={onEdit}
-      />
-    )
+
+    render(<OrganizationsTable organizations={mockOrganizations} onEdit={onEdit} />)
 
     const editButtons = screen.getAllByText('Edit')
     fireEvent.click(editButtons[0])
-    
+
     expect(onEdit).toHaveBeenCalledWith(mockOrganizations[0])
   })
 
   it('should call onView when view button is clicked', () => {
     const onView = vi.fn()
-    
-    render(
-      <OrganizationsTable 
-        organizations={mockOrganizations}
-        onView={onView}
-      />
-    )
+
+    render(<OrganizationsTable organizations={mockOrganizations} onView={onView} />)
 
     const viewButtons = screen.getAllByText('View')
     fireEvent.click(viewButtons[1])
-    
+
     expect(onView).toHaveBeenCalledWith(mockOrganizations[1])
   })
 
   it('should call onContact when contact button is clicked', () => {
     const onContact = vi.fn()
-    
-    render(
-      <OrganizationsTable 
-        organizations={mockOrganizations}
-        onContact={onContact}
-      />
-    )
+
+    render(<OrganizationsTable organizations={mockOrganizations} onContact={onContact} />)
 
     const contactButtons = screen.getAllByText('Contact')
     fireEvent.click(contactButtons[0])
-    
+
     expect(onContact).toHaveBeenCalledWith(mockOrganizations[0])
   })
 

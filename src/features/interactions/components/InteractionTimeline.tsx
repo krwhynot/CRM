@@ -7,12 +7,7 @@ import { useInteractionTimelineState } from '../hooks/useInteractionTimelineStat
 import { useInteractionTimelineData } from '../hooks/useInteractionTimelineData'
 import { useInteractionTimelineActions } from '../hooks/useInteractionTimelineActions'
 import { useInteractionIconMapping } from '../hooks/useInteractionIconMapping'
-import { 
-  TimelineHeader,
-  TimelineEmptyState,
-  TimelineItems 
-} from './timeline'
-
+import { TimelineHeader, TimelineEmptyState, TimelineItems } from './timeline'
 
 // Interface following error prevention rules
 export interface InteractionTimelineProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -24,32 +19,36 @@ export interface InteractionTimelineProps extends React.HTMLAttributes<HTMLDivEl
   opportunityId: string
   loading?: boolean
   className?: string
-  [key: string]: any // Migration safety
 }
 
-
 export const InteractionTimeline = forwardRef<HTMLDivElement, InteractionTimelineProps>(
-  ({ 
-    interactions, 
-    onAddNew, 
-    onItemClick,
-    onEditInteraction,
-    onDeleteInteraction,
-    opportunityId: _, 
-    loading = false,
-    className,
-    ...props 
-  }, ref) => {
-    
-    const { showAllInteractions, expandedItems, handleToggleExpand, handleToggleShowAll } = 
+  (
+    {
+      interactions,
+      onAddNew,
+      onItemClick,
+      onEditInteraction,
+      onDeleteInteraction,
+      opportunityId: _opportunityId, // eslint-disable-line @typescript-eslint/no-unused-vars
+      loading = false,
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    const { showAllInteractions, expandedItems, handleToggleExpand, handleToggleShowAll } =
       useInteractionTimelineState()
-    
-    const { displayedInteractions, hasMore, remaining } = 
-      useInteractionTimelineData({ interactions, showAllInteractions })
-    
-    const { handleEditInteraction, handleDeleteInteraction } = 
-      useInteractionTimelineActions({ onEditInteraction, onDeleteInteraction })
-    
+
+    const { displayedInteractions, hasMore, remaining } = useInteractionTimelineData({
+      interactions,
+      showAllInteractions,
+    })
+
+    const { handleEditInteraction, handleDeleteInteraction } = useInteractionTimelineActions({
+      onEditInteraction,
+      onDeleteInteraction,
+    })
+
     const { getInteractionIcon, getInteractionTypeColor } = useInteractionIconMapping()
 
     if (loading) {
@@ -58,11 +57,8 @@ export const InteractionTimeline = forwardRef<HTMLDivElement, InteractionTimelin
 
     return (
       <Card ref={ref} className={cn('mt-4', className)} {...props}>
-        <TimelineHeader 
-          interactionCount={interactions.length}
-          onAddNew={onAddNew}
-        />
-        
+        <TimelineHeader interactionCount={interactions.length} onAddNew={onAddNew} />
+
         <CardContent className="p-3 md:p-6">
           {interactions.length === 0 ? (
             <TimelineEmptyState onAddNew={onAddNew} />

@@ -6,12 +6,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
-import { 
-  MoreHorizontal, 
-  Pencil, 
-  Trash2, 
-  ExternalLink
-} from 'lucide-react'
+import { MoreHorizontal, Pencil, Trash2, ExternalLink } from 'lucide-react'
 import type { OpportunityWithLastActivity } from '@/types/opportunity.types'
 
 interface OpportunitiesTableActionsProps {
@@ -25,7 +20,7 @@ export const OpportunitiesTableActions: React.FC<OpportunitiesTableActionsProps>
   opportunity,
   onEdit,
   onDelete,
-  onView
+  onView,
 }) => {
   return (
     <DropdownMenu>
@@ -49,10 +44,7 @@ export const OpportunitiesTableActions: React.FC<OpportunitiesTableActionsProps>
           </DropdownMenuItem>
         )}
         {onDelete && (
-          <DropdownMenuItem 
-            onClick={() => onDelete(opportunity)}
-            className="text-red-600"
-          >
+          <DropdownMenuItem onClick={() => onDelete(opportunity)} className="text-destructive">
             <Trash2 className="mr-2 size-4" />
             Delete
           </DropdownMenuItem>

@@ -16,7 +16,13 @@ export interface ActivityItem {
   entity?: string
   priority?: 'high' | 'medium' | 'low'
   status?: string
-  relatedData?: Organization | Contact | Opportunity | Interaction | Product | (Interaction & { icon?: string })
+  relatedData?:
+    | Organization
+    | Contact
+    | Opportunity
+    | Interaction
+    | Product
+    | (Interaction & { icon?: string })
 }
 
 const INTERACTION_TYPE_ICONS = {
@@ -24,7 +30,7 @@ const INTERACTION_TYPE_ICONS = {
   email: 'Mail',
   meeting: 'Calendar',
   demo: 'Heart',
-  follow_up: 'RefreshCw'
+  follow_up: 'RefreshCw',
 }
 
 interface UseEnhancedActivityDataReturn {
@@ -33,7 +39,7 @@ interface UseEnhancedActivityDataReturn {
   refresh: () => void
 }
 
-export const useEnhancedActivityData = (refreshKey: number): UseEnhancedActivityDataReturn => {
+export const useEnhancedActivityData = (): UseEnhancedActivityDataReturn => {
   // Data hooks
   const { data: organizations = [], isLoading: orgLoading } = useOrganizations()
   const { data: contacts = [], isLoading: contactLoading } = useContacts()
@@ -48,7 +54,7 @@ export const useEnhancedActivityData = (refreshKey: number): UseEnhancedActivity
     const items: ActivityItem[] = []
 
     // Organizations
-    organizations.forEach(org => {
+    organizations.forEach((org) => {
       if (org.created_at) {
         items.push({
           id: `org-${org.id}`,
@@ -59,13 +65,13 @@ export const useEnhancedActivityData = (refreshKey: number): UseEnhancedActivity
           entity: org.name,
           status: org.is_active ? 'active' : 'inactive',
           priority: org.type === 'principal' ? 'high' : 'medium',
-          relatedData: org
+          relatedData: org,
         })
       }
     })
 
     // Contacts
-    contacts.forEach(contact => {
+    contacts.forEach((contact) => {
       if (contact.created_at) {
         items.push({
           id: `contact-${contact.id}`,
@@ -76,13 +82,13 @@ export const useEnhancedActivityData = (refreshKey: number): UseEnhancedActivity
           entity: `${contact.first_name} ${contact.last_name}`,
           status: contact.is_primary_contact ? 'primary' : 'active',
           priority: contact.is_primary_contact ? 'high' : 'medium',
-          relatedData: contact
+          relatedData: contact,
         })
       }
     })
 
     // Opportunities
-    opportunities.forEach(opp => {
+    opportunities.forEach((opp) => {
       if (opp.created_at) {
         items.push({
           id: `opp-${opp.id}`,
@@ -92,16 +98,18 @@ export const useEnhancedActivityData = (refreshKey: number): UseEnhancedActivity
           timestamp: parseISO(opp.created_at),
           entity: opp.name,
           status: opp.stage?.toLowerCase().replace(' ', '_') || 'new_lead',
-          priority: opp.stage === 'Demo Scheduled' || opp.stage === 'Closed - Won' ? 'high' : 'medium',
-          relatedData: opp
+          priority:
+            opp.stage === 'Demo Scheduled' || opp.stage === 'Closed - Won' ? 'high' : 'medium',
+          relatedData: opp,
         })
       }
     })
 
     // Interactions
-    interactions.forEach(interaction => {
+    interactions.forEach((interaction) => {
       if (interaction.created_at) {
-        const InteractionIcon = INTERACTION_TYPE_ICONS[interaction.type as keyof typeof INTERACTION_TYPE_ICONS]
+        const InteractionIcon =
+          INTERACTION_TYPE_ICONS[interaction.type as keyof typeof INTERACTION_TYPE_ICONS]
         items.push({
           id: `int-${interaction.id}`,
           type: 'interaction',
@@ -110,14 +118,15 @@ export const useEnhancedActivityData = (refreshKey: number): UseEnhancedActivity
           timestamp: parseISO(interaction.created_at),
           entity: interaction.subject,
           status: 'completed',
-          priority: interaction.type === 'demo' || interaction.type === 'meeting' ? 'high' : 'medium',
-          relatedData: { ...interaction, icon: InteractionIcon }
+          priority:
+            interaction.type === 'demo' || interaction.type === 'meeting' ? 'high' : 'medium',
+          relatedData: { ...interaction, icon: InteractionIcon },
         })
       }
     })
 
     // Products
-    products.forEach(product => {
+    products.forEach((product) => {
       if (product.created_at) {
         items.push({
           id: `prod-${product.id}`,
@@ -128,13 +137,13 @@ export const useEnhancedActivityData = (refreshKey: number): UseEnhancedActivity
           entity: product.name,
           status: 'active',
           priority: 'low',
-          relatedData: product
+          relatedData: product,
         })
       }
     })
 
     return items.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-  }, [organizations, contacts, opportunities, interactions, products, refreshKey])
+  }, [organizations, contacts, opportunities, interactions, products])
 
   const refresh = () => {
     // Refresh is handled by parent component through refreshKey
@@ -143,6 +152,6 @@ export const useEnhancedActivityData = (refreshKey: number): UseEnhancedActivity
   return {
     activityItems,
     isLoading,
-    refresh
+    refresh,
   }
 }
