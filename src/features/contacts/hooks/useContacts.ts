@@ -234,10 +234,11 @@ export function useCreateContactWithOrganization() {
 
         // Prepare contact data with resolved organization_id and audit fields
         // Extract virtual fields and organization fields from contact data
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { 
-          organization_name: _, 
-          organization_type: __, 
-          organization_data: ___, 
+          organization_name,
+          organization_type,
+          organization_data,
           preferred_principals, // Remove virtual field
           ...cleanContactData 
         } = contactData

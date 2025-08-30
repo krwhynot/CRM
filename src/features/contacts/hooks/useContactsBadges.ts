@@ -37,7 +37,7 @@ export const useContactsBadges = (): UseContactsBadgesReturn => {
           }
       }
     }
-  })
+  }, [])
 
   const getAuthorityBadge = useMemo(() => {
     return (authority: string | null): BadgeStyle => {

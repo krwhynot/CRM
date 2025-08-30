@@ -237,7 +237,7 @@ export function SmartUploadStep({
               </div>
             ) : (
               // File Preview
-              <Card className="border-success/20 bg-success/5/50">
+              <Card className="bg-success/5/50 border-success/20">
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-3">
@@ -335,7 +335,7 @@ export function SmartUploadStep({
           <AlertDescription>
             <div className="space-y-1">
               {warnings.map((warning, idx) => (
-                <div key={idx} className="text-amber-800">{warning}</div>
+                <div key={idx} className="text-warning">{warning}</div>
               ))}
             </div>
           </AlertDescription>
