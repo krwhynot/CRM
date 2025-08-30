@@ -60,6 +60,10 @@ module.exports = {
           group: ['@/features/*/components/*'],
           importNamePattern: '^(.*Store|.*State)$',
           message: 'Feature components should not import Zustand stores directly. Use feature hooks instead.'
+        },
+        {
+          group: ['@/features/*/components/*PageHeader'],
+          message: 'Feature-specific PageHeader components are deprecated. Use PageHeader from @/components/ui/new/PageHeader instead.'
         }
       ]
     }],
