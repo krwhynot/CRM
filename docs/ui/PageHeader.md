@@ -146,7 +146,7 @@ interface PageHeaderBackButton {
 
 ### From Feature-Specific Headers
 
-**Before (deprecated):**
+**Before (deprecated - direct import):**
 ```tsx
 import { ContactsPageHeader } from '@/features/contacts/components/ContactsPageHeader'
 
