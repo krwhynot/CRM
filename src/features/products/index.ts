@@ -1,6 +1,8 @@
 // Products Feature - Main Exports
 export { ProductForm } from './components/ProductForm'
 export { ProductsTable } from './components/ProductsTable'
+export { ProductsDataDisplay } from './components/ProductsDataDisplay'
+export { ProductDialogs } from './components/ProductDialogs'
 export { ProductRow } from './components/ProductRow'
 export { ProductsFilters } from './components/ProductsFilters'
 export { ProductActions } from './components/ProductActions'

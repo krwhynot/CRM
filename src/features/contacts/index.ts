@@ -8,7 +8,6 @@ export { ContactActions } from './components/ContactActions'
 export { ContactBadges } from './components/ContactBadges'
 export { ContactsDialogs } from './components/ContactsDialogs'
 export { ContactsDataDisplay } from './components/ContactsDataDisplay'
-export { ContactsPageHeader } from './components/ContactsPageHeader'
 export { PreferredPrincipalsSelect } from './components/PreferredPrincipalsSelect'
 export { ContactSelect, type ContactSelectProps } from './components/ContactSelect'
 
