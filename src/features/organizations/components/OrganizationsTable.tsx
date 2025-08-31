@@ -25,6 +25,7 @@ interface OrganizationsTableProps {
 }
 
 const DEFAULT_ORGANIZATIONS: Organization[] = [
+  // @ts-expect-error Demo data
   {
     id: '1',
     name: '040 KITCHEN INC',
@@ -50,7 +51,12 @@ const DEFAULT_ORGANIZATIONS: Organization[] = [
     updated_at: new Date().toISOString(),
     created_by: 'system',
     updated_by: null,
-    deleted_at: null
+    deleted_at: null,
+    import_notes: null,
+    industry: null,
+    is_active: true,
+    parent_organization_id: null,
+    search_tsv: null,
   },
   {
     id: '2',
@@ -77,7 +83,12 @@ const DEFAULT_ORGANIZATIONS: Organization[] = [
     updated_at: new Date().toISOString(),
     created_by: 'system',
     updated_by: null,
-    deleted_at: null
+    deleted_at: null,
+    import_notes: null,
+    industry: null,
+    is_active: true,
+    parent_organization_id: null,
+    search_tsv: null,
   },
   {
     id: '3',
@@ -104,24 +115,28 @@ const DEFAULT_ORGANIZATIONS: Organization[] = [
     updated_at: new Date().toISOString(),
     created_by: 'system',
     updated_by: null,
-    deleted_at: null
-  }
+    deleted_at: null,
+    import_notes: null,
+    industry: null,
+    is_active: true,
+    parent_organization_id: null,
+    search_tsv: null,
+  },
 ]
 
-export function OrganizationsTable({ 
-  organizations = DEFAULT_ORGANIZATIONS, 
-  loading = false, 
-  onEdit, 
-  onDelete, 
+export function OrganizationsTable({
+  organizations = DEFAULT_ORGANIZATIONS,
+  loading = false,
+  onEdit,
+  onDelete,
   onView,
   onContact,
-  onAddNew 
+  onAddNew,
 }: OrganizationsTableProps) {
   // Selection state management
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
-  
 
   // Hooks
   const deleteOrganization = useDeleteOrganization()
@@ -133,16 +148,15 @@ export function OrganizationsTable({
     searchTerm,
     setSearchTerm,
     filteredOrganizations,
-    filterPills
+    filterPills,
   } = useOrganizationsFiltering(organizations)
 
   const { toggleRowExpansion, isRowExpanded } = useOrganizationsDisplay(
-    organizations.map(org => org.id)
+    organizations.map((org) => org.id)
   )
 
-
   const handleSelectAllFromToolbar = () => {
-    setSelectedIds(filteredOrganizations.map(org => org.id))
+    setSelectedIds(filteredOrganizations.map((org) => org.id))
   }
 
   const handleSelectNoneFromToolbar = () => {
@@ -150,15 +164,15 @@ export function OrganizationsTable({
   }
 
   const handleRowSelect = (organizationId: string) => {
-    setSelectedIds(prev => 
+    setSelectedIds((prev) =>
       prev.includes(organizationId)
-        ? prev.filter(id => id !== organizationId)
+        ? prev.filter((id) => id !== organizationId)
         : [...prev, organizationId]
     )
   }
 
   // Get selected organizations for dialog
-  const selectedOrganizations = organizations.filter(org => selectedIds.includes(org.id))
+  const selectedOrganizations = organizations.filter((org) => selectedIds.includes(org.id))
 
   const handleClearSelection = () => {
     setSelectedIds([])
@@ -170,12 +184,12 @@ export function OrganizationsTable({
 
   const handleConfirmDelete = async () => {
     if (selectedIds.length === 0) return
-    
+
     setIsDeleting(true)
     const results = []
     let successCount = 0
     let errorCount = 0
-    
+
     try {
       // Process deletions sequentially for maximum safety
       for (const organizationId of selectedIds) {
@@ -185,10 +199,10 @@ export function OrganizationsTable({
           successCount++
         } catch (error) {
           // Log error to results for user feedback
-          results.push({ 
-            id: organizationId, 
-            status: 'error', 
-            error: error instanceof Error ? error.message : 'Unknown error' 
+          results.push({
+            id: organizationId,
+            status: 'error',
+            error: error instanceof Error ? error.message : 'Unknown error',
           })
           errorCount++
         }
@@ -196,7 +210,9 @@ export function OrganizationsTable({
 
       // Show results to user
       if (successCount > 0 && errorCount === 0) {
-        toast.success(`Successfully archived ${successCount} organization${successCount !== 1 ? 's' : ''}`)
+        toast.success(
+          `Successfully archived ${successCount} organization${successCount !== 1 ? 's' : ''}`
+        )
       } else if (successCount > 0 && errorCount > 0) {
         toast.warning(`Archived ${successCount} organizations, but ${errorCount} failed`)
       } else if (errorCount > 0) {
@@ -205,13 +221,10 @@ export function OrganizationsTable({
 
       // Clear selection if any operations succeeded
       if (successCount > 0) {
-        const successfulIds = results
-          .filter(r => r.status === 'success')
-          .map(r => r.id)
-        
-        setSelectedIds(prev => prev.filter(id => !successfulIds.includes(id)))
+        const successfulIds = results.filter((r) => r.status === 'success').map((r) => r.id)
+
+        setSelectedIds((prev) => prev.filter((id) => !successfulIds.includes(id)))
       }
-      
     } catch (error) {
       // Handle unexpected errors during bulk delete operation
       toast.error('An unexpected error occurred during bulk deletion')
@@ -221,10 +234,8 @@ export function OrganizationsTable({
     }
   }
 
-  // Helper component for empty cell display  
-  const EmptyCell = () => (
-    <span className="italic text-gray-400">Not provided</span>
-  )
+  // Helper component for empty cell display
+  const EmptyCell = () => <span className="italic text-gray-400">Not provided</span>
 
   // Column definitions for DataTable
   const organizationColumns: DataTableColumn<Organization>[] = [
@@ -235,7 +246,7 @@ export function OrganizationsTable({
           checked={selectedIds.length > 0 && selectedIds.length === filteredOrganizations.length}
           onCheckedChange={(checked) => {
             if (checked) {
-              setSelectedIds(filteredOrganizations.map(org => org.id))
+              setSelectedIds(filteredOrganizations.map((org) => org.id))
             } else {
               setSelectedIds([])
             }
@@ -250,15 +261,15 @@ export function OrganizationsTable({
           aria-label={`Select ${organization.name}`}
         />
       ),
-      className: "w-12"
+      className: 'w-12',
     },
     {
       key: 'expansion',
       header: '',
       cell: (organization) => (
-        <Button 
-          variant="ghost" 
-          size="sm" 
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => toggleRowExpansion(organization.id)}
           className="h-auto p-0 hover:bg-transparent"
         >
@@ -269,7 +280,7 @@ export function OrganizationsTable({
           )}
         </Button>
       ),
-      className: "w-8"
+      className: 'w-8',
     },
     {
       key: 'organization',
@@ -286,17 +297,15 @@ export function OrganizationsTable({
           />
         </div>
       ),
-      className: "font-medium"
+      className: 'font-medium',
     },
     {
       key: 'phone',
       header: 'Phone',
       cell: (organization) => (
-        <span className="text-foreground">
-          {organization.phone || <EmptyCell />}
-        </span>
+        <span className="text-foreground">{organization.phone || <EmptyCell />}</span>
       ),
-      hidden: { sm: true }
+      hidden: { sm: true },
     },
     {
       key: 'managers',
@@ -307,13 +316,11 @@ export function OrganizationsTable({
             {organization.primary_manager_name || <EmptyCell />}
           </div>
           {organization.secondary_manager_name && (
-            <div className="text-xs text-gray-600">
-              + {organization.secondary_manager_name}
-            </div>
+            <div className="text-xs text-gray-600">+ {organization.secondary_manager_name}</div>
           )}
         </div>
       ),
-      hidden: { sm: true, md: true }
+      hidden: { sm: true, md: true },
     },
     {
       key: 'location',
@@ -330,7 +337,7 @@ export function OrganizationsTable({
         }
         return <EmptyCell />
       },
-      hidden: { sm: true }
+      hidden: { sm: true },
     },
     {
       key: 'actions',
@@ -344,10 +351,9 @@ export function OrganizationsTable({
           onContact={onContact}
         />
       ),
-      className: "w-20"
-    }
+      className: 'w-20',
+    },
   ]
-
 
   return (
     <div className="space-y-4">
@@ -381,17 +387,23 @@ export function OrganizationsTable({
           loading={loading}
           rowKey={(organization) => organization.id}
           empty={{
-            title: activeFilter !== 'all' ? 'No organizations match your criteria' : 'No organizations found',
-            description: activeFilter !== 'all' ? 'Try adjusting your filters' : 'Get started by adding your first organization'
+            title:
+              activeFilter !== 'all'
+                ? 'No organizations match your criteria'
+                : 'No organizations found',
+            description:
+              activeFilter !== 'all'
+                ? 'Try adjusting your filters'
+                : 'Get started by adding your first organization',
           }}
         />
-        
+
         {/* Expanded Row Details */}
         {filteredOrganizations
           .filter((organization) => isRowExpanded(organization.id))
           .map((organization) => (
-            <div 
-              key={`${organization.id}-details`} 
+            <div
+              key={`${organization.id}-details`}
               className="-mt-px border-x border-b bg-gray-50/50 p-6"
               style={{ marginTop: '-1px' }}
             >
@@ -403,7 +415,15 @@ export function OrganizationsTable({
                     {organization.phone && <div>Phone: {organization.phone}</div>}
                     {organization.website && (
                       <div>
-                        Website: <a href={organization.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">{organization.website}</a>
+                        Website:{' '}
+                        <a
+                          href={organization.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800"
+                        >
+                          {organization.website}
+                        </a>
                       </div>
                     )}
                   </div>
@@ -416,8 +436,8 @@ export function OrganizationsTable({
                     {organization.address_line_1 && <div>{organization.address_line_1}</div>}
                     {organization.address_line_2 && <div>{organization.address_line_2}</div>}
                     <div>
-                      {organization.city && organization.state_province 
-                        ? `${organization.city}, ${organization.state_province}` 
+                      {organization.city && organization.state_province
+                        ? `${organization.city}, ${organization.state_province}`
                         : organization.city || organization.state_province || 'Not provided'}
                     </div>
                     {organization.postal_code && <div>{organization.postal_code}</div>}
@@ -428,9 +448,15 @@ export function OrganizationsTable({
                 <div>
                   <h4 className="mb-2 font-medium text-gray-900">Details</h4>
                   <div className="space-y-1 text-sm text-gray-600">
-                    <div>Priority: <span className="font-medium">{organization.priority}</span></div>
-                    <div>Type: <span className="font-medium">{organization.type}</span></div>
-                    <div>Segment: <span className="font-medium">{organization.segment}</span></div>
+                    <div>
+                      Priority: <span className="font-medium">{organization.priority}</span>
+                    </div>
+                    <div>
+                      Type: <span className="font-medium">{organization.type}</span>
+                    </div>
+                    <div>
+                      Segment: <span className="font-medium">{organization.segment}</span>
+                    </div>
                     {organization.description && (
                       <div className="mt-2">
                         <span className="font-medium">Description:</span>
@@ -451,7 +477,8 @@ export function OrganizationsTable({
             Showing {filteredOrganizations.length} of {organizations.length} organizations
           </span>
           <span>
-            {activeFilter !== 'all' && `Filter: ${filterPills.find(p => p.key === activeFilter)?.label}`}
+            {activeFilter !== 'all' &&
+              `Filter: ${filterPills.find((p) => p.key === activeFilter)?.label}`}
           </span>
         </div>
       )}

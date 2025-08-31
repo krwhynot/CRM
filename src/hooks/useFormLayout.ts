@@ -40,7 +40,10 @@ export interface SelectOption {
 interface UseFormLayoutProps<T extends FieldValues> {
   entityType: string
   coreSections: FormSection<T>[]
-  form: UseFormReturn<T>
+  optionalSections?: FormSection<T>[]
+  contextualSections?: ConditionalSection<T>[]
+  showAdvancedOptions?: boolean
+  form: UseFormReturn<T, any, any> // Accept any form type to work with React Hook Form
 }
 
 interface UseFormLayoutReturn<T extends FieldValues> {
@@ -55,51 +58,57 @@ interface UseFormLayoutReturn<T extends FieldValues> {
 
 export const useFormLayout = <T extends FieldValues>({
   entityType,
-  form
+  form,
 }: UseFormLayoutProps<T>): UseFormLayoutReturn<T> => {
   const [showOptionalSections, setShowOptionalSections] = useState(false) // Default to false, can be managed by consuming component
-  
+
   const watchedValues = form.watch()
-  
+
   // Toggle optional sections visibility
   const toggleOptionalSections = () => {
     setShowOptionalSections(!showOptionalSections)
   }
-  
+
   // Get responsive layout class for section
   const getLayoutClass = useCallback((layout?: FormSection<T>['layout']): string => {
     switch (layout) {
-      case 'single': return 'space-y-4'
-      case 'double': return 'grid grid-cols-1 md:grid-cols-2 gap-4'
-      case 'triple': return 'grid grid-cols-1 md:grid-cols-3 gap-4'
-      case 'auto': return 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'
-      default: return 'space-y-4'
+      case 'single':
+        return 'space-y-4'
+      case 'double':
+        return 'grid grid-cols-1 md:grid-cols-2 gap-4'
+      case 'triple':
+        return 'grid grid-cols-1 md:grid-cols-3 gap-4'
+      case 'auto':
+        return 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'
+      default:
+        return 'space-y-4'
     }
   }, [])
-  
+
   // Get entity-specific section styling
-  const getSectionClassName = useCallback((section: FormSection<T>): string => {
-    const baseClass = `space-y-6 ${section.className || ''}`
-    return entityType === 'interaction' 
-      ? `${baseClass} bg-blue-50/50 p-4 rounded-lg` 
-      : baseClass
-  }, [entityType])
-  
+  const getSectionClassName = useCallback(
+    (section: FormSection<T>): string => {
+      const baseClass = `space-y-6 ${section.className || ''}`
+      return entityType === 'activity' ? `${baseClass} bg-blue-50/50 p-4 rounded-lg` : baseClass
+    },
+    [entityType]
+  )
+
   // Check if conditional section should be shown
   const shouldShowConditionalSection = (condition: (values: T) => boolean): boolean => {
     return condition(watchedValues)
   }
-  
+
   // Clean form data by converting empty strings to null
   const cleanFormData = (data: T): T => {
     return Object.fromEntries(
       Object.entries(data).map(([key, value]) => [
         key,
-        typeof value === 'string' && value.trim() === '' ? null : value
+        typeof value === 'string' && value.trim() === '' ? null : value,
       ])
     ) as T
   }
-  
+
   return {
     showOptionalSections,
     toggleOptionalSections,
@@ -107,6 +116,6 @@ export const useFormLayout = <T extends FieldValues>({
     getLayoutClass,
     getSectionClassName,
     shouldShowConditionalSection,
-    cleanFormData
+    cleanFormData,
   }
 }

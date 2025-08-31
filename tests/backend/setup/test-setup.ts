@@ -7,7 +7,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/lib/database.types'
-import { vi, beforeAll, afterAll, beforeEach, expect } from 'vitest'
+import { beforeAll, afterAll, beforeEach } from 'vitest'
 import '@testing-library/jest-dom'
 
 // Test environment configuration
@@ -269,7 +269,7 @@ beforeAll(async () => {
   
   // Verify database connection
   try {
-    const { data, error } = await testSupabase
+    const { error } = await testSupabase
       .from('organizations')
       .select('count')
       .limit(1)
@@ -316,14 +316,27 @@ beforeEach(() => {
 })
 
 // Make utilities globally available
-// Using `var` in the global declaration is a common workaround for this type of error
 declare global {
-  var testSupabase: typeof testSupabase
-  var testSupabaseAnon: typeof testSupabaseAnon
-  var testConfig: typeof testConfig
-  var TestCleanup: typeof TestCleanup
-  var PerformanceMonitor: typeof PerformanceMonitor
-  var TestAuth: typeof TestAuth
+  var testSupabase: ReturnType<typeof createClient<Database>>
+  var testSupabaseAnon: ReturnType<typeof createClient<Database>>
+  var testConfig: TestConfig
+  var TestCleanup: {
+    trackCreatedRecord: (table: string, id: string) => void
+    cleanupTestData: () => Promise<void>
+    reset: () => void
+  }
+  var PerformanceMonitor: {
+    measureQuery: <T>(operation: string, queryFn: () => Promise<T>) => Promise<T>
+    getMetrics: () => Array<{ operation: string; duration: number; timestamp: Date }>
+    getAverageQueryTime: (operation?: string) => number
+    reset: () => void
+  }
+  var TestAuth: {
+    loginAsTestUser: () => Promise<any>
+    loginAsAdmin: () => Promise<any>
+    logout: () => Promise<void>
+    getCurrentUser: () => any
+  }
   var useServiceRole: boolean
 }
 

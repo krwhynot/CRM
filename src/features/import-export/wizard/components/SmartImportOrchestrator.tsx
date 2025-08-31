@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ArrowLeft, ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react'
-import { SmartImportWizard, getNextStep } from './SmartImportWizard'
+import { SmartImportWizard } from './SmartImportWizard'
+import { getNextStep } from '../utils/wizard-steps'
 import { SmartUploadStep } from './SmartUploadStep'
 import { SmartFieldMapping } from './SmartFieldMapping'
 import { SmartPreviewStep } from './SmartPreviewStep'
@@ -12,16 +13,12 @@ import { Progress } from '@/components/ui/progress'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
-// Import error type
-interface ImportError {
-  row: number
-  error: string
-}
-
-// Import result type
+// Import result type - matching the structure from useSmartImport
 interface ImportResult {
-  errors: ImportError[]
-  [key: string]: unknown
+  success: boolean
+  imported: number
+  failed: number
+  errors: Array<{ row: number; error: string }>
 }
 
 interface SmartImportOrchestratorProps {
@@ -33,9 +30,8 @@ interface SmartImportOrchestratorProps {
 export function SmartImportOrchestrator({
   onImportComplete,
   onCancel,
-  className
+  className,
 }: SmartImportOrchestratorProps) {
-  
   const { state, actions } = useSmartImport()
   const { downloadTemplate } = useFileUpload() // Reuse existing template logic
 
@@ -59,8 +55,10 @@ export function SmartImportOrchestrator({
       case 'upload':
         return !!state.file && !!state.parsedData
       case 'map':
-        return state.fieldMappings.filter(m => m.status === 'needs_review').length === 0 &&
-               state.fieldMappings.some(m => m.crmField && m.status !== 'skipped')
+        return (
+          state.fieldMappings.filter((m) => m.status === 'needs_review').length === 0 &&
+          state.fieldMappings.some((m) => m.crmField && m.status !== 'skipped')
+        )
       case 'preview':
         return !state.validationResults || state.validationResults.summary.errorRows === 0
       case 'import':
@@ -164,7 +162,7 @@ export function SmartImportOrchestrator({
   }
 
   return (
-    <div className={cn("w-full", className)}>
+    <div className={cn('w-full', className)}>
       <SmartImportWizard
         currentStep={state.currentStep}
         completedSteps={state.completedSteps}
@@ -174,7 +172,6 @@ export function SmartImportOrchestrator({
 
         {/* Navigation Footer */}
         <div className="mt-8 flex items-center justify-between border-t pt-6">
-          
           {/* Left side - Previous button */}
           <div>
             {canGoPrevious() ? (
@@ -199,14 +196,16 @@ export function SmartImportOrchestrator({
                 <AlertDescription>{state.error}</AlertDescription>
               </Alert>
             )}
-            
+
             {state.warnings.length > 0 && !state.error && (
               <Alert className="mb-0 border-amber-200 bg-amber-50">
                 <AlertCircle className="size-4 text-amber-600" />
                 <AlertDescription>
                   <div className="space-y-1">
                     {state.warnings.slice(0, 2).map((warning, idx) => (
-                      <div key={idx} className="text-sm text-amber-800">{warning}</div>
+                      <div key={idx} className="text-sm text-amber-800">
+                        {warning}
+                      </div>
                     ))}
                     {state.warnings.length > 2 && (
                       <div className="text-xs text-amber-700">
@@ -222,25 +221,15 @@ export function SmartImportOrchestrator({
           {/* Right side - Next/Action buttons */}
           <div className="flex space-x-3">
             {onCancel && state.currentStep !== 'complete' && (
-              <Button
-                variant="ghost"
-                onClick={onCancel}
-                className="h-12 px-6"
-              >
+              <Button variant="ghost" onClick={onCancel} className="h-12 px-6">
                 Cancel
               </Button>
             )}
 
             {state.currentStep !== 'import' && state.currentStep !== 'complete' && (
-              <Button
-                onClick={handleNext}
-                disabled={!canGoNext()}
-                className="h-12 px-6"
-              >
+              <Button onClick={handleNext} disabled={!canGoNext()} className="h-12 px-6">
                 {state.currentStep === 'preview' ? 'Start Import' : 'Next'}
-                {state.currentStep !== 'preview' && (
-                  <ArrowRight className="ml-2 size-4" />
-                )}
+                {state.currentStep !== 'preview' && <ArrowRight className="ml-2 size-4" />}
               </Button>
             )}
           </div>
@@ -255,16 +244,15 @@ function ImportProgressStep({
   inProgress,
   progress,
   result,
-  error
+  error,
 }: {
   inProgress: boolean
   progress: number
-  result: ImportResult
+  result: ImportResult | null
   error: string | null
 }) {
   return (
     <div className="space-y-6">
-      
       {inProgress && (
         <Card>
           <CardContent className="p-8">
@@ -272,7 +260,7 @@ function ImportProgressStep({
               <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10">
                 <div className="size-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
               </div>
-              
+
               <div>
                 <h3 className="text-lg font-semibold text-foreground">Importing your data...</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
@@ -299,8 +287,14 @@ function ImportProgressStep({
         </Alert>
       )}
 
-      {result && (
-        <Card className={result.success ? "border-success/20 bg-success/5" : "border-destructive/20 bg-destructive/5"}>
+      {result && result !== null && (
+        <Card
+          className={
+            result.success
+              ? 'border-success/20 bg-success/5'
+              : 'border-destructive/20 bg-destructive/5'
+          }
+        >
           <CardContent className="p-6">
             <div className="text-center">
               {result.success ? (
@@ -308,16 +302,18 @@ function ImportProgressStep({
               ) : (
                 <AlertCircle className="mx-auto mb-3 size-12 text-destructive" />
               )}
-              
+
               <h3 className="text-lg font-semibold text-foreground">
                 {result.success ? 'Import Successful!' : 'Import Failed'}
               </h3>
-              
+
               <div className="mt-4 space-y-2">
                 <div className="text-sm text-muted-foreground">
                   <strong>{result.imported}</strong> records imported successfully
                   {result.failed > 0 && (
-                    <span>, <strong className="text-destructive">{result.failed}</strong> failed</span>
+                    <span>
+                      , <strong className="text-destructive">{result.failed}</strong> failed
+                    </span>
                   )}
                 </div>
 
@@ -327,7 +323,7 @@ function ImportProgressStep({
                       View errors ({result.errors.length})
                     </summary>
                     <div className="mt-2 space-y-1 text-left text-xs">
-                      {result.errors.slice(0, 5).map((error: ImportError, idx: number) => (
+                      {result.errors.slice(0, 5).map((error, idx: number) => (
                         <div key={idx} className="text-destructive">
                           Row {error.row}: {error.error}
                         </div>
@@ -353,9 +349,9 @@ function ImportProgressStep({
 function ImportCompleteStep({
   result,
   onStartNew,
-  onClose
+  onClose,
 }: {
-  result: ImportResult
+  result: ImportResult | null
   onStartNew: () => void
   onClose?: () => void
 }) {
@@ -372,7 +368,7 @@ function ImportCompleteStep({
         </p>
       </div>
 
-      {result && (
+      {result && result !== null && (
         <Card>
           <CardContent className="p-6">
             <div className="grid grid-cols-2 gap-4 text-center">

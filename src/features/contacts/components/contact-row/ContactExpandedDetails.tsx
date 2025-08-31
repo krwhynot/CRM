@@ -1,4 +1,3 @@
-import React from 'react'
 import { TableRow, TableCell } from '@/components/ui/table'
 import { ContactMethodsList } from './ContactMethodsList'
 import { ContactProfessionalDetails } from './ContactProfessionalDetails'
@@ -9,20 +8,20 @@ interface ContactExpandedDetailsProps {
   showOrganization: boolean
 }
 
-export const ContactExpandedDetails: React.FC<ContactExpandedDetailsProps> = ({
+export const ContactExpandedDetails = ({
   contact,
-  showOrganization
-}) => {
+  showOrganization,
+}: ContactExpandedDetailsProps) => {
   return (
     <TableRow className="border-b-2 border-border">
-      <TableCell 
-        colSpan={showOrganization ? 7 : 6} 
+      <TableCell
+        colSpan={showOrganization ? 7 : 6}
         className="border-l-4 border-mfb-green bg-mfb-sage-tint p-6 transition-all duration-300 ease-out"
       >
         <div className="space-y-6">
           <ContactMethodsList contact={contact} />
           <ContactProfessionalDetails contact={contact} />
-          
+
           {/* Notes */}
           {contact.notes && (
             <div className="space-y-2">

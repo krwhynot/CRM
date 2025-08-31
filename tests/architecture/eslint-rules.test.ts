@@ -16,8 +16,7 @@ describe('Custom ESLint Rules', () => {
   beforeAll(async () => {
     // Initialize ESLint with project configuration
     eslint = new ESLint({
-      cwd: projectRoot,
-      useEslintrc: true,
+      cwd: projectRoot
     })
   })
 

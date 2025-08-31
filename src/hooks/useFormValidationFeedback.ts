@@ -11,9 +11,9 @@ export const useFormValidationFeedback = <T extends FieldValues>(
   options: UseFormValidationFeedbackOptions = {}
 ) => {
   const { requiredFields = [], warningValidations = {} } = options
-  
+
   const { errors, isValid, isDirty, isSubmitting, touchedFields } = useFormState({
-    control: formControl
+    control: formControl,
   })
 
   const validationState = useMemo(() => {
@@ -29,7 +29,7 @@ export const useFormValidationFeedback = <T extends FieldValues>(
         fieldErrors.push({
           field,
           message: error.message as string,
-          type: 'error'
+          type: 'error',
         })
       }
     })
@@ -38,11 +38,11 @@ export const useFormValidationFeedback = <T extends FieldValues>(
     Object.entries(warningValidations).forEach(([field, validator]) => {
       const fieldValue = formControl._formValues?.[field]
       const warning = validator(fieldValue)
-      if (warning && touchedFields[field]) {
+      if (warning && (touchedFields as any)[field]) {
         fieldErrors.push({
           field,
           message: warning,
-          type: 'warning'
+          type: 'warning',
         })
       }
     })
@@ -51,8 +51,8 @@ export const useFormValidationFeedback = <T extends FieldValues>(
     const totalFields = Object.keys(formControl._formValues || {}).length
     const touchedFieldsArray = Object.keys(touchedFields)
     const errorFieldsArray = Object.keys(errors)
-    const validFields = touchedFieldsArray.filter(field => 
-      !errorFieldsArray.includes(field)
+    const validFields = touchedFieldsArray.filter(
+      (field) => !errorFieldsArray.includes(field)
     ).length
 
     return {
@@ -60,14 +60,23 @@ export const useFormValidationFeedback = <T extends FieldValues>(
       isValid,
       isDirty,
       isSubmitting,
-      hasErrors: fieldErrors.filter(e => e.type === 'error').length > 0,
-      hasWarnings: fieldErrors.filter(e => e.type === 'warning').length > 0,
+      hasErrors: fieldErrors.filter((e) => e.type === 'error').length > 0,
+      hasWarnings: fieldErrors.filter((e) => e.type === 'warning').length > 0,
       totalFields,
       validFields,
       requiredFields: requiredFields.length,
-      touchedFields: touchedFieldsArray.length
+      touchedFields: touchedFieldsArray.length,
     }
-  }, [errors, isValid, isDirty, isSubmitting, touchedFields, formControl._formValues, requiredFields, warningValidations])
+  }, [
+    errors,
+    isValid,
+    isDirty,
+    isSubmitting,
+    touchedFields,
+    formControl._formValues,
+    requiredFields,
+    warningValidations,
+  ])
 
   return validationState
 }

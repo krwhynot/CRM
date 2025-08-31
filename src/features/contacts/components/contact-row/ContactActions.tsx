@@ -1,4 +1,3 @@
-import React from 'react'
 import { TableCell } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Pencil, Eye, Phone } from 'lucide-react'
@@ -11,12 +10,7 @@ interface ContactActionsProps {
   onContact?: (contact: Contact) => void
 }
 
-export const ContactActions: React.FC<ContactActionsProps> = ({
-  contact,
-  onEdit,
-  onView,
-  onContact
-}) => {
+export const ContactActions = ({ contact, onEdit, onView, onContact }: ContactActionsProps) => {
   return (
     <TableCell>
       <div className="flex items-center justify-center gap-1">
@@ -31,7 +25,7 @@ export const ContactActions: React.FC<ContactActionsProps> = ({
             <Pencil className="size-4" />
           </Button>
         )}
-        
+
         {onContact && (
           <Button
             variant="ghost"
@@ -43,7 +37,7 @@ export const ContactActions: React.FC<ContactActionsProps> = ({
             <Phone className="size-4" />
           </Button>
         )}
-        
+
         {onView && (
           <Button
             variant="ghost"

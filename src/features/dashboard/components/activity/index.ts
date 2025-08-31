@@ -1,6 +1,6 @@
 // Dashboard Activity Components
-export { ActivityConfig } from './ActivityConfig'
+export { ACTIVITY_CONFIG } from './ActivityConfig'
 export { ActivityFeedSkeleton } from './ActivityFeedSkeleton'
-export { ActivityFilters } from './ActivityFilters'
+export { ActivityFiltersComponent } from './ActivityFilters'
 export { ActivityGroup } from './ActivityGroup'
 export { ActivityItem } from './ActivityItem'

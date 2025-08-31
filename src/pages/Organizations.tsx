@@ -1,12 +1,11 @@
-import React from 'react'
-import { 
-  useOrganizations, 
+import {
+  useOrganizations,
   useRefreshOrganizations,
   useOrganizationsPageState,
   useOrganizationsPageActions,
   useOrganizationFormData,
   OrganizationsDataDisplay,
-  OrganizationDialogs
+  OrganizationDialogs,
 } from '@/features/organizations'
 import { OrganizationsErrorBoundary } from '@/components/error-boundaries/QueryErrorBoundary'
 import { OrganizationManagementTemplate } from '@/components/templates/EntityManagementTemplate'
@@ -14,7 +13,7 @@ import { OrganizationManagementTemplate } from '@/components/templates/EntityMan
 function OrganizationsPage() {
   const { data: organizations = [], isLoading, error, isError } = useOrganizations()
   const refreshOrganizations = useRefreshOrganizations()
-  
+
   const {
     isCreateDialogOpen,
     isEditDialogOpen,
@@ -25,20 +24,13 @@ function OrganizationsPage() {
     openEditDialog,
     closeEditDialog,
     openDeleteDialog,
-    closeDeleteDialog
+    closeDeleteDialog,
   } = useOrganizationsPageState()
-  
-  const {
-    handleCreate,
-    handleUpdate,
-    handleDelete,
-    isCreating,
-    isUpdating,
-    isDeleting
-  } = useOrganizationsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
-  
-  const { initialData: editFormInitialData } = useOrganizationFormData(selectedOrganization)
 
+  const { handleCreate, handleUpdate, handleDelete, isCreating, isUpdating, isDeleting } =
+    useOrganizationsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
+
+  const { initialData: editFormInitialData } = useOrganizationFormData(selectedOrganization)
 
   return (
     <OrganizationsErrorBoundary>
@@ -55,7 +47,7 @@ function OrganizationsPage() {
           onDelete={openDeleteDialog}
           onRefresh={refreshOrganizations}
         />
-        
+
         <OrganizationDialogs
           isCreateDialogOpen={isCreateDialogOpen}
           isEditDialogOpen={isEditDialogOpen}

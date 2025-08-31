@@ -246,7 +246,8 @@ describe('Database Query Performance Tests', () => {
         () => testSupabase
           .from('organizations')
           .select('id, name, type')
-          .limit(10),
+          .limit(10)
+          .then(res => ({ data: res.data || [], error: res.error })),
         { maxDuration: 25, minRows: 10 }
       )
     })
@@ -260,7 +261,8 @@ describe('Database Query Performance Tests', () => {
           .eq('type', 'customer')
           .eq('is_active', true)
           .is('deleted_at', null)
-          .limit(20),
+          .limit(20)
+          .then(res => ({ data: res.data || [], error: res.error })),
         { maxDuration: 50 }
       )
     })
@@ -331,12 +333,12 @@ describe('Database Query Performance Tests', () => {
     test('should perform opportunity pipeline query efficiently', async () => {
       await measureQuery(
         'opportunity_pipeline',
-        () => testSupabase
-          .rpc('get_opportunity_pipeline_stats')
+        () => (testSupabase
+          .rpc('get_opportunity_pipeline_stats' as any)
           .then(result => ({ 
             data: result.data || [], 
             error: result.error 
-          }))
+          })) as any)
           .catch(() => 
             // Fallback if RPC doesn't exist
             testSupabase
@@ -359,7 +361,7 @@ describe('Database Query Performance Tests', () => {
             contact:contacts(first_name, last_name)
           `)
           .order('interaction_date', { ascending: false })
-          .limit(20),
+          .limit(20) as any,
         { maxDuration: 100 }
       )
     })
@@ -413,7 +415,7 @@ describe('Database Query Performance Tests', () => {
             organization:organizations(name)
           `)
           .range(0, 99) // First 100 records
-          .order('interaction_date', { ascending: false }),
+          .order('interaction_date', { ascending: false }) as any,
         { maxDuration: 150 }
       )
     })
@@ -439,7 +441,7 @@ describe('Database Query Performance Tests', () => {
           }, {})
 
           return {
-            data: Object.entries(aggregated || {}).map(([stage, data]) => ({ stage, ...data })),
+            data: Object.entries(aggregated || {}).map(([stage, data]) => ({ stage, ...(data as any) })),
             error: null
           }
         },
@@ -454,7 +456,7 @@ describe('Database Query Performance Tests', () => {
           () => testSupabase
             .from('organizations')
             .select('id, name, type')
-            .range(index * 10, (index * 10) + 9),
+            .range(index * 10, (index * 10) + 9) as any,
           { maxDuration: 100 }
         )
       )
@@ -491,7 +493,7 @@ describe('Database Query Performance Tests', () => {
             .select('*')
             .eq('id', orgList.data.id)
             .single()
-            .then(result => ({ data: [result.data], error: result.error })),
+            .then(result => ({ data: [result.data], error: result.error })) as any,
           { maxDuration: 10 } // Primary key lookups should be very fast
         )
       }
@@ -512,7 +514,7 @@ describe('Database Query Performance Tests', () => {
             .from('contacts')
             .select('*')
             .eq('organization_id', orgWithContacts.data.organization_id)
-            .limit(20),
+            .limit(20) as any,
           { maxDuration: 30 }
         )
       }
@@ -526,7 +528,7 @@ describe('Database Query Performance Tests', () => {
           .select('*')
           .eq('type', 'customer')
           .eq('is_active', true)
-          .limit(25),
+          .limit(25) as any,
         { maxDuration: 40 }
       )
     })
@@ -538,7 +540,7 @@ describe('Database Query Performance Tests', () => {
           .from('contacts')
           .select('*')
           .is('deleted_at', null)
-          .limit(30),
+          .limit(30) as any,
         { maxDuration: 50 }
       )
     })

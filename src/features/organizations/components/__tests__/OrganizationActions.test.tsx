@@ -1,17 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { vi } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { OrganizationActions } from '../OrganizationActions'
-import type { Organization } from '@/types/entities'
+import { createTestOrganization } from '@/test-utils/factories'
 
-const mockOrganization: Organization = {
-  id: '1',
-  name: 'Test Organization',
-  type: 'customer' as 'customer',
-  priority: 'A',
-  phone: '(555) 123-4567',
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
-}
+const mockOrganization = createTestOrganization()
 
 describe('OrganizationActions', () => {
   it('should render view button when onView is provided', () => {
@@ -40,7 +32,7 @@ describe('OrganizationActions', () => {
 
   it('should not render contact button when phone is missing', () => {
     const onContact = vi.fn()
-    const orgWithoutPhone = { ...mockOrganization, phone: undefined }
+    const orgWithoutPhone = { ...mockOrganization, phone: null }
 
     render(<OrganizationActions organization={orgWithoutPhone} onContact={onContact} />)
 

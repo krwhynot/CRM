@@ -1,6 +1,6 @@
 /**
  * Opportunity Form Types and Default Values
- * 
+ *
  * Provides type-safe default values that align with the opportunity schema expectations.
  * This ensures React Hook Form defaults match Yup schema validation rules.
  */
@@ -19,6 +19,7 @@ export const defaultOpportunityFormValues: OpportunityFormData = {
   organization_id: '',
   estimated_value: 0,
   stage: DEFAULT_OPPORTUNITY_STAGE,
+  status: 'Active',
 
   // Optional fields - using null for nullable schema fields
   contact_id: null,
@@ -33,7 +34,7 @@ export const defaultOpportunityFormValues: OpportunityFormData = {
   auto_generated_name: false,
   principal_id: null,
   probability: null,
-  deal_owner: null
+  deal_owner: null,
 }
 
 /**
@@ -45,7 +46,7 @@ export const createOpportunityFormDefaults = (
 ): OpportunityFormData => {
   return {
     ...defaultOpportunityFormValues,
-    ...overrides
+    ...overrides,
   }
 }
 
@@ -58,7 +59,7 @@ export const createOpportunityFormDefaultsWithOrganization = (
 ): OpportunityFormData => {
   return createOpportunityFormDefaults({
     organization_id: organizationId,
-    ...overrides
+    ...overrides,
   })
 }
 
@@ -73,7 +74,7 @@ export const createOpportunityFormDefaultsWithContact = (
   return createOpportunityFormDefaults({
     organization_id: organizationId,
     contact_id: contactId,
-    ...overrides
+    ...overrides,
   })
 }
 
@@ -86,7 +87,7 @@ export const createDiscoveryOpportunityDefaults = (
   return createOpportunityFormDefaults({
     stage: 'Initial Outreach',
     probability: null,
-    ...overrides
+    ...overrides,
   })
 }
 
@@ -96,7 +97,7 @@ export const createProposalOpportunityDefaults = (
   return createOpportunityFormDefaults({
     stage: 'Sample/Visit Offered',
     probability: 25,
-    ...overrides
+    ...overrides,
   })
 }
 
@@ -106,7 +107,7 @@ export const createNegotiationOpportunityDefaults = (
   return createOpportunityFormDefaults({
     stage: 'Demo Scheduled',
     probability: 75,
-    ...overrides
+    ...overrides,
   })
 }
 
@@ -116,15 +117,20 @@ export const createNegotiationOpportunityDefaults = (
 export const isOpportunityFormData = (data: unknown): data is OpportunityFormData => {
   return Boolean(
     data &&
-    typeof data === 'object' &&
-    data !== null &&
-    'name' in data &&
-    'organization_id' in data &&
-    'stage' in data &&
-    typeof (data as Record<string, unknown>).name === 'string' &&
-    typeof (data as Record<string, unknown>).organization_id === 'string' &&
-    typeof (data as Record<string, unknown>).stage === 'string' &&
-    ('estimated_value' in data ? (typeof (data as Record<string, unknown>).estimated_value === 'number' || (data as Record<string, unknown>).estimated_value === null) : true)
+      typeof data === 'object' &&
+      data !== null &&
+      'name' in data &&
+      'organization_id' in data &&
+      'stage' in data &&
+      'status' in data &&
+      typeof (data as Record<string, unknown>).name === 'string' &&
+      typeof (data as Record<string, unknown>).organization_id === 'string' &&
+      typeof (data as Record<string, unknown>).stage === 'string' &&
+      typeof (data as Record<string, unknown>).status === 'string' &&
+      ('estimated_value' in data
+        ? typeof (data as Record<string, unknown>).estimated_value === 'number' ||
+          (data as Record<string, unknown>).estimated_value === null
+        : true)
   )
 }
 

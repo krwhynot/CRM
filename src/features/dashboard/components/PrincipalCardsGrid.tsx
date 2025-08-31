@@ -10,10 +10,10 @@ interface PrincipalCardsGridProps {
 
 /**
  * PrincipalCardsGrid Component
- * 
+ *
  * Displays a responsive grid of PrincipalCard components showing
  * all principal organizations with their key metrics and analytics.
- * 
+ *
  * Features:
  * - Responsive grid layout (1 column mobile, 2 tablet, 3+ desktop)
  * - Loading states with skeleton placeholders
@@ -22,17 +22,14 @@ interface PrincipalCardsGridProps {
  * - Optimized data fetching using existing hooks
  */
 export function PrincipalCardsGrid({ className, maxItems }: PrincipalCardsGridProps) {
-  const { 
-    data: principals = [], 
-    isLoading, 
-    error,
-    isError
-  } = usePrincipals()
+  const { data: principals = [], isLoading, error, isError } = usePrincipals()
 
   // Handle loading state
   if (isLoading) {
     return (
-      <div className={`grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${className || ''}`}>
+      <div
+        className={`grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${className || ''}`}
+      >
         {Array.from({ length: 8 }).map((_, index) => (
           <div key={index} className="space-y-4">
             <Skeleton className="h-48 w-full rounded-lg" />
@@ -52,9 +49,7 @@ export function PrincipalCardsGrid({ className, maxItems }: PrincipalCardsGridPr
               <h3 className="font-semibold">Failed to load principal organizations</h3>
               <p className="mt-1 text-sm">Please try again later.</p>
               {error?.message && (
-                <div className="mt-2 text-xs text-destructive">
-                  Error: {error.message}
-                </div>
+                <div className="mt-2 text-xs text-destructive">Error: {error.message}</div>
               )}
             </div>
           </CardContent>
@@ -80,41 +75,37 @@ export function PrincipalCardsGrid({ className, maxItems }: PrincipalCardsGridPr
   }
 
   // Apply optional limit
-  const displayPrincipals = maxItems 
-    ? principals.slice(0, maxItems)
-    : principals
+  const displayPrincipals = maxItems ? principals.slice(0, maxItems) : principals
 
-  // Sort principals by priority (A+ first) and then by name
+  // Sort principals by priority (A first) and then by name
   const sortedPrincipals = displayPrincipals.sort((a, b) => {
-    // Priority order: enterprise -> large -> medium -> small -> null
-    const priorityOrder = {
-      'enterprise': 0,
-      'large': 1,
-      'medium': 2,
-      'small': 3
+    // Priority order: A -> B -> C -> D -> null
+    const priorityOrder: { [key: string]: number } = {
+      A: 0,
+      B: 1,
+      C: 2,
+      D: 3,
     }
-    
-    const aPriority = priorityOrder[a.size as keyof typeof priorityOrder] ?? 4
-    const bPriority = priorityOrder[b.size as keyof typeof priorityOrder] ?? 4
-    
+
+    const aPriority = priorityOrder[a.priority] ?? 4
+    const bPriority = priorityOrder[b.priority] ?? 4
+
     if (aPriority !== bPriority) {
       return aPriority - bPriority
     }
-    
+
     // If same priority, sort by name
     return a.name.localeCompare(b.name)
   })
 
   return (
-    <div className={`grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${className || ''}`}>
+    <div
+      className={`grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${className || ''}`}
+    >
       {sortedPrincipals.map((principal) => (
-        <PrincipalCard
-          key={principal.id}
-          principal={principal}
-          className="h-full"
-        />
+        <PrincipalCard key={principal.id} principal={principal} className="h-full" />
       ))}
-      
+
       {maxItems && principals.length > maxItems && (
         <div className="col-span-full">
           <div className="py-4 text-center">

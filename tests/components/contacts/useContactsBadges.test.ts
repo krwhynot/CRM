@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react'
-import { useContactsBadges } from '@/hooks/useContactsBadges'
+import { beforeEach, describe, it, expect } from 'vitest'
+import { useContactsBadges } from '@/features/contacts/hooks/useContactsBadges'
 
 describe('useContactsBadges', () => {
   let result: ReturnType<typeof useContactsBadges>

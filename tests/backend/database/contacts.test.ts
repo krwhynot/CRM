@@ -21,11 +21,11 @@ describe('Contacts Database Operations', () => {
       .insert({
         name: 'Test Organization for Contacts',
         type: 'customer' as const
-      })
+      } as any)
       .select()
       .single()
 
-    testOrgId = orgResult.data.id
+    testOrgId = orgResult.data!.id
     TestCleanup.trackCreatedRecord('organizations', testOrgId)
   })
 
@@ -59,7 +59,7 @@ describe('Contacts Database Operations', () => {
       const result = await PerformanceMonitor.measureQuery('create_contact', async () => {
         return await testSupabase
           .from('contacts')
-          .insert(contactData)
+          .insert(contactData as any)
           .select(`
             *,
             organization:organizations(name, type)
@@ -69,16 +69,16 @@ describe('Contacts Database Operations', () => {
 
       expect(result.error).toBeNull()
       expect(result.data).toBeDefined()
-      expect(result.data.first_name).toBe(contactData.first_name)
-      expect(result.data.last_name).toBe(contactData.last_name)
-      expect(result.data.organization_id).toBe(testOrgId)
-      expect(result.data.organization).toBeDefined()
-      expect(result.data.organization.name).toBe('Test Organization for Contacts')
-      expect(result.data.id).toBeDefined()
-      expect(result.data.created_at).toBeDefined()
+      expect(result.data!.first_name).toBe(contactData.first_name)
+      expect(result.data!.last_name).toBe(contactData.last_name)
+      expect(result.data!.organization_id).toBe(testOrgId)
+      expect(result.data!.organization).toBeDefined()
+      expect((result.data! as any).organization.name).toBe('Test Organization for Contacts')
+      expect(result.data!.id).toBeDefined()
+      expect(result.data!.created_at).toBeDefined()
 
-      testContactIds.push(result.data.id)
-      TestCleanup.trackCreatedRecord('contacts', result.data.id)
+      testContactIds.push(result.data!.id)
+      TestCleanup.trackCreatedRecord('contacts', result.data!.id)
     })
 
     test('should create contacts with different roles', async () => {

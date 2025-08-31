@@ -1,4 +1,3 @@
-import React from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { X } from 'lucide-react'
@@ -19,7 +18,7 @@ interface OpportunityDetailCardProps {
   onInteractionItemClick: (interaction: InteractionWithRelations) => void /* ui-audit: allow */
 }
 
-export const OpportunityDetailCard: React.FC<OpportunityDetailCardProps> = ({
+export const OpportunityDetailCard = ({
   opportunity,
   interactions,
   activitiesLoading,
@@ -28,7 +27,7 @@ export const OpportunityDetailCard: React.FC<OpportunityDetailCardProps> = ({
   onEditInteraction,
   onDeleteInteraction,
   onInteractionItemClick,
-}) => {
+}: OpportunityDetailCardProps) => {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">

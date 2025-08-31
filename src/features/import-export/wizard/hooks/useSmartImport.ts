@@ -71,7 +71,7 @@ interface SmartImportState {
   warnings: string[]
 }
 
-interface UseSmartImportReturn {
+export interface UseSmartImportReturn {
   state: SmartImportState
   actions: {
     // Navigation
@@ -286,7 +286,7 @@ export function useSmartImport(): UseSmartImportReturn {
             confidence: aiMapping.confidence,
             aiSuggestion: aiMapping.suggestedField,
             alternatives: aiMapping.alternatives || [],
-            reason: aiMapping.reason,
+            reason: aiMapping.reason ?? undefined,
             status: aiMapping.confidence >= 0.85 ? 'auto' : 'needs_review',
           }
         }

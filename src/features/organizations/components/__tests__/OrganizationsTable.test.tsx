@@ -1,8 +1,8 @@
 import { render, screen, fireEvent } from '@testing-library/react'
+import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { OrganizationsTable } from '../OrganizationsTable'
+import { createTestOrganization } from '@/test-utils/factories'
 import type { Organization } from '@/types/entities'
-
-import { vi } from 'vitest'
 
 // Mock the custom hooks
 vi.mock('@/features/organizations/hooks/useOrganizationsFiltering', () => ({
@@ -51,9 +51,9 @@ vi.mock('../OrganizationRow', () => ({
     onContact,
   }: {
     organization: Organization
-    onEdit: () => void
-    onView: () => void
-    onContact: () => void
+    onEdit?: (org: Organization) => void
+    onView?: (org: Organization) => void
+    onContact?: (org: Organization) => void
   }) => (
     <tr data-testid={`organization-row-${organization.id}`}>
       <td>{organization.name}</td>
@@ -67,24 +67,20 @@ vi.mock('../OrganizationRow', () => ({
 }))
 
 const mockOrganizations: Organization[] = [
-  {
+  createTestOrganization({
     id: '1',
     name: 'ACME Corp',
-    type: 'customer' as const,
+    type: 'customer',
     priority: 'A',
     phone: '(555) 123-4567',
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
+  }),
+  createTestOrganization({
     id: '2',
     name: 'Global Distributors',
-    type: 'distributor' as const,
+    type: 'distributor',
     priority: 'B',
     phone: '(555) 234-5678',
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
+  }),
 ]
 
 describe('OrganizationsTable', () => {

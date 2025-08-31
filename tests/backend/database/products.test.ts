@@ -22,11 +22,11 @@ describe('Products Database Operations', () => {
         name: 'Test Principal for Products',
         type: 'principal' as const,
         industry: 'Food Manufacturing'
-      })
+      } as any)
       .select()
       .single()
 
-    testPrincipalId = principalResult.data.id
+    testPrincipalId = principalResult.data!.id
     TestCleanup.trackCreatedRecord('organizations', testPrincipalId)
   })
 
@@ -63,7 +63,7 @@ describe('Products Database Operations', () => {
       const result = await PerformanceMonitor.measureQuery('create_product', async () => {
         return await testSupabase
           .from('products')
-          .insert(productData)
+          .insert(productData as any)
           .select(`
             *,
             principal:organizations(name, type)
@@ -73,21 +73,21 @@ describe('Products Database Operations', () => {
 
       expect(result.error).toBeNull()
       expect(result.data).toBeDefined()
-      expect(result.data.name).toBe(productData.name)
-      expect(result.data.category).toBe(productData.category)
-      expect(result.data.sku).toBe(productData.sku)
-      expect(result.data.principal_id).toBe(testPrincipalId)
-      expect(result.data.principal).toBeDefined()
-      expect(result.data.principal.type).toBe('principal')
-      expect(result.data.unit_cost).toBe(productData.unit_cost)
-      expect(result.data.list_price).toBe(productData.list_price)
-      expect(result.data.season_start).toBe(productData.season_start)
-      expect(result.data.season_end).toBe(productData.season_end)
-      expect(result.data.id).toBeDefined()
-      expect(result.data.created_at).toBeDefined()
+      expect(result.data!.name).toBe(productData.name)
+      expect(result.data!.category).toBe(productData.category)
+      expect(result.data!.sku).toBe(productData.sku)
+      expect(result.data!.principal_id).toBe(testPrincipalId)
+      expect(result.data!.principal).toBeDefined()
+      expect((result.data! as any).principal.type).toBe('principal')
+      expect(result.data!.unit_cost).toBe(productData.unit_cost)
+      expect(result.data!.list_price).toBe(productData.list_price)
+      expect(result.data!.season_start).toBe(productData.season_start)
+      expect(result.data!.season_end).toBe(productData.season_end)
+      expect(result.data!.id).toBeDefined()
+      expect(result.data!.created_at).toBeDefined()
 
-      testProductIds.push(result.data.id)
-      TestCleanup.trackCreatedRecord('products', result.data.id)
+      testProductIds.push(result.data!.id)
+      TestCleanup.trackCreatedRecord('products', result.data!.id)
     })
 
     test('should create products in different categories', async () => {
@@ -146,7 +146,7 @@ describe('Products Database Operations', () => {
       expect(result.error).toBeNull()
       expect(result.data.name).toBe(minimalProductData.name)
       expect(result.data.category).toBe(minimalProductData.category)
-      expect(result.data.is_active).toBe(true) // Default value
+      expect((result.data as any).is_active).toBe(true) // Default value
       expect(result.data.deleted_at).toBeNull() // Default value
 
       testProductIds.push(result.data.id)

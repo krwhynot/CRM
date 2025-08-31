@@ -7,6 +7,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { supabase } from '@/lib/supabase'
 import { AuthProvider, useAuth } from '../AuthContext'
 import { renderHook, act } from '@testing-library/react'
+import { AuthError } from '@supabase/supabase-js'
 import React from 'react'
 
 // Mock Supabase
@@ -94,18 +95,24 @@ describe('AuthContext - Security Fix', () => {
   it('should handle resetPasswordForEmail errors correctly', async () => {
     const { result } = renderHook(() => useAuth(), { wrapper })
 
-    const mockError = { message: 'Invalid email', name: 'AuthError', status: 400 }
+    const mockError = {
+      message: 'Invalid email',
+      name: 'AuthError',
+      status: 400,
+      code: 'invalid_email',
+      __isAuthError: true,
+    } as unknown as AuthError
     vi.mocked(supabase.auth.resetPasswordForEmail).mockResolvedValue({
-      data: {},
+      data: null,
       error: mockError,
     })
 
-    let response: { success: boolean; error?: Error }
+    let response: { error: AuthError | null }
     await act(async () => {
       response = await result.current.resetPassword('invalid@example.com')
     })
 
-    expect(response.error).toEqual(mockError)
+    expect(response!.error).toEqual(mockError)
     expect(supabase.auth.resetPasswordForEmail).toHaveBeenCalledWith('invalid@example.com')
   })
 })

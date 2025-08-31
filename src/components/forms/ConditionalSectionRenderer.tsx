@@ -6,7 +6,7 @@ interface ConditionalSectionRendererProps<T extends FieldValues> {
   condition: (values: T) => boolean
   section: FormSection<T>
   shouldShow: boolean
-  form: UseFormReturn<T>
+  form: UseFormReturn<T, any, any>
   loading: boolean
   entityType: string
   layoutClass: string
@@ -20,10 +20,10 @@ export function ConditionalSectionRenderer<T extends FieldValues>({
   loading,
   entityType,
   layoutClass,
-  sectionClassName
+  sectionClassName,
 }: ConditionalSectionRendererProps<T>) {
   if (!shouldShow) return null
-  
+
   return (
     <div className="rounded-lg border-l-4 border-blue-400 bg-blue-50 p-4">
       <FormSectionComponent

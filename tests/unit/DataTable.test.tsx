@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { DataTable, type Column } from '@/components/ui/DataTable'
 import '@testing-library/jest-dom'

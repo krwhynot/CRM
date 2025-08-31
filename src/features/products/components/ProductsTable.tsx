@@ -28,14 +28,14 @@ interface ProductsTableProps {
 
 const DEFAULT_PRODUCTS: ProductWithPrincipal[] = []
 
-export function ProductsTable({ 
-  products = DEFAULT_PRODUCTS, 
-  loading = false, 
-  onEdit, 
-  onDelete, 
+export function ProductsTable({
+  products = DEFAULT_PRODUCTS,
+  loading = false,
+  onEdit,
+  onDelete,
   onView,
   onContactSupplier,
-  onAddNew 
+  onAddNew,
 }: ProductsTableProps) {
   // Selection state management
   const [selectedIds, setSelectedIds] = useState<string[]>([])
@@ -52,16 +52,16 @@ export function ProductsTable({
     searchTerm,
     setSearchTerm,
     filteredProducts,
-    filterPills
+    filterPills,
   } = useProductsFiltering(products)
 
   const { toggleRowExpansion, isRowExpanded } = useProductsDisplay(
-    products.map(product => product.id)
+    products.map((product) => product.id)
   )
 
   // Selection management functions
   const handleSelectAllFromToolbar = () => {
-    setSelectedIds(filteredProducts.map(product => product.id))
+    setSelectedIds(filteredProducts.map((product) => product.id))
   }
 
   const handleSelectNoneFromToolbar = () => {
@@ -69,10 +69,8 @@ export function ProductsTable({
   }
 
   const handleRowSelect = (productId: string) => {
-    setSelectedIds(prev => 
-      prev.includes(productId)
-        ? prev.filter(id => id !== productId)
-        : [...prev, productId]
+    setSelectedIds((prev) =>
+      prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]
     )
   }
 
@@ -85,16 +83,16 @@ export function ProductsTable({
   }
 
   // Get selected products for dialog
-  const selectedProducts = products.filter(product => selectedIds.includes(product.id))
+  const selectedProducts = products.filter((product) => selectedIds.includes(product.id))
 
   const handleConfirmDelete = async () => {
     if (selectedIds.length === 0) return
-    
+
     setIsDeleting(true)
     const results = []
     let successCount = 0
     let errorCount = 0
-    
+
     try {
       // Process deletions sequentially for maximum safety
       for (const productId of selectedIds) {
@@ -104,10 +102,10 @@ export function ProductsTable({
           successCount++
         } catch (error) {
           // Failed to delete product - error handled
-          results.push({ 
-            id: productId, 
-            status: 'error', 
-            error: error instanceof Error ? error.message : 'Unknown error' 
+          results.push({
+            id: productId,
+            status: 'error',
+            error: error instanceof Error ? error.message : 'Unknown error',
           })
           errorCount++
         }
@@ -115,7 +113,9 @@ export function ProductsTable({
 
       // Show results to user
       if (successCount > 0 && errorCount === 0) {
-        toast.success(`Successfully archived ${successCount} product${successCount !== 1 ? 's' : ''}`)
+        toast.success(
+          `Successfully archived ${successCount} product${successCount !== 1 ? 's' : ''}`
+        )
       } else if (successCount > 0 && errorCount > 0) {
         toast.warning(`Archived ${successCount} products, but ${errorCount} failed`)
       } else if (errorCount > 0) {
@@ -124,13 +124,10 @@ export function ProductsTable({
 
       // Clear selection if any operations succeeded
       if (successCount > 0) {
-        const successfulIds = results
-          .filter(r => r.status === 'success')
-          .map(r => r.id)
-        
-        setSelectedIds(prev => prev.filter(id => !successfulIds.includes(id)))
+        const successfulIds = results.filter((r) => r.status === 'success').map((r) => r.id)
+
+        setSelectedIds((prev) => prev.filter((id) => !successfulIds.includes(id)))
       }
-      
     } catch (error) {
       // Unexpected error during bulk delete - handled
       toast.error('An unexpected error occurred during bulk deletion')
@@ -140,10 +137,8 @@ export function ProductsTable({
     }
   }
 
-  // Helper component for empty cell display  
-  const EmptyCell = () => (
-    <span className="italic text-gray-400">Not provided</span>
-  )
+  // Helper component for empty cell display
+  const EmptyCell = () => <span className="italic text-gray-400">Not provided</span>
 
   // Column definitions for DataTable
   const productColumns: DataTableColumn<ProductWithPrincipal>[] = [
@@ -154,7 +149,7 @@ export function ProductsTable({
           checked={selectedIds.length > 0 && selectedIds.length === filteredProducts.length}
           onCheckedChange={(checked) => {
             if (checked) {
-              setSelectedIds(filteredProducts.map(product => product.id))
+              setSelectedIds(filteredProducts.map((product) => product.id))
             } else {
               setSelectedIds([])
             }
@@ -169,15 +164,15 @@ export function ProductsTable({
           aria-label={`Select ${product.name}`}
         />
       ),
-      className: "w-12"
+      className: 'w-12',
     },
     {
       key: 'expansion',
       header: '',
       cell: (product) => (
-        <Button 
-          variant="ghost" 
-          size="sm" 
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => toggleRowExpansion(product.id)}
           className="h-auto p-0 hover:bg-transparent"
         >
@@ -188,7 +183,7 @@ export function ProductsTable({
           )}
         </Button>
       ),
-      className: "w-8"
+      className: 'w-8',
     },
     {
       key: 'product',
@@ -198,21 +193,17 @@ export function ProductsTable({
           <div className="text-base font-semibold text-gray-900">
             {product.name || <EmptyCell />}
           </div>
-          {product.sku && (
-            <div className="font-mono text-xs text-gray-500">
-              SKU: {product.sku}
-            </div>
-          )}
+          {product.sku && <div className="font-mono text-xs text-gray-500">SKU: {product.sku}</div>}
           <ProductBadges
             category={product.category}
             price={product.list_price}
             shelfLifeDays={product.shelf_life_days}
-            inStock={product.in_stock}
-            lowStock={product.low_stock}
+            inStock={(product as any).in_stock ?? true}
+            lowStock={(product as any).low_stock ?? false}
           />
         </div>
       ),
-      className: "font-medium min-w-56"
+      className: 'font-medium min-w-56',
     },
     {
       key: 'price',
@@ -222,30 +213,28 @@ export function ProductsTable({
           {formatPrice(product.list_price)}
         </div>
       ),
-      className: "text-right min-w-20",
-      hidden: { sm: true }
+      className: 'text-right min-w-20',
+      hidden: { sm: true },
     },
     {
       key: 'principal',
       header: 'Principal',
       cell: (product) => (
         <div className="text-sm text-gray-700">
-          {product.principal_name || <EmptyCell />}
+          {(product as any).principal_name || <EmptyCell />}
         </div>
       ),
-      className: "min-w-28",
-      hidden: { sm: true, md: true }
+      className: 'min-w-28',
+      hidden: { sm: true, md: true },
     },
     {
       key: 'brand',
       header: 'Brand',
       cell: (product) => (
-        <div className="text-sm text-gray-700">
-          {product.brand || <EmptyCell />}
-        </div>
+        <div className="text-sm text-gray-700">{(product as any).brand || <EmptyCell />}</div>
       ),
-      className: "min-w-20",
-      hidden: { sm: true }
+      className: 'min-w-20',
+      hidden: { sm: true },
     },
     {
       key: 'actions',
@@ -259,8 +248,8 @@ export function ProductsTable({
           onContactSupplier={onContactSupplier}
         />
       ),
-      className: "text-center min-w-28"
-    }
+      className: 'text-center min-w-28',
+    },
   ]
 
   return (
@@ -296,16 +285,19 @@ export function ProductsTable({
           rowKey={(product) => product.id}
           empty={{
             title: activeFilter !== 'all' ? 'No products match your criteria' : 'No products found',
-            description: activeFilter !== 'all' ? 'Try adjusting your filters' : 'Get started by adding your first product'
+            description:
+              activeFilter !== 'all'
+                ? 'Try adjusting your filters'
+                : 'Get started by adding your first product',
           }}
         />
-        
+
         {/* Expanded Row Details */}
         {filteredProducts
           .filter((product) => isRowExpanded(product.id))
           .map((product) => (
-            <div 
-              key={`${product.id}-details`} 
+            <div
+              key={`${product.id}-details`}
               className="-mt-px border-x border-b border-l-4 border-l-mfb-green bg-mfb-sage-tint p-6 transition-all duration-300 ease-out"
               style={{ marginTop: '-1px' }}
             >
@@ -321,7 +313,8 @@ export function ProductsTable({
             Showing {filteredProducts.length} of {products.length} products
           </span>
           <span>
-            {activeFilter !== 'all' && `Filter: ${filterPills.find(p => p.key === activeFilter)?.label}`}
+            {activeFilter !== 'all' &&
+              `Filter: ${filterPills.find((p) => p.key === activeFilter)?.label}`}
           </span>
         </div>
       )}
@@ -330,7 +323,7 @@ export function ProductsTable({
       <BulkDeleteDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
-        organizations={selectedProducts}
+        organizations={selectedProducts as any}
         onConfirm={handleConfirmDelete}
         isDeleting={isDeleting}
       />

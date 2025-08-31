@@ -5,9 +5,12 @@ import type { OrganizationType } from '@/types/entities'
 // Query key factory
 export const opportunityNamingKeys = {
   all: ['opportunity-naming'] as const,
-  principalNames: (ids: string[]) => [...opportunityNamingKeys.all, 'principal-names', ids.sort()] as const,
-  organizationName: (id: string) => [...opportunityNamingKeys.all, 'organization-name', id] as const,
-  principalValidation: (ids: string[]) => [...opportunityNamingKeys.all, 'principal-validation', ids.sort()] as const,
+  principalNames: (ids: string[]) =>
+    [...opportunityNamingKeys.all, 'principal-names', ids.sort()] as const,
+  organizationName: (id: string) =>
+    [...opportunityNamingKeys.all, 'organization-name', id] as const,
+  principalValidation: (ids: string[]) =>
+    [...opportunityNamingKeys.all, 'principal-validation', ids.sort()] as const,
   templates: () => [...opportunityNamingKeys.all, 'templates'] as const,
 }
 
@@ -29,7 +32,7 @@ export function usePrincipalNames(principalIds: string[]) {
 
       // Maintain order based on input array
       const orderedNames = principalIds
-        .map(id => data.find(org => org.id === id)?.name)
+        .map((id) => data.find((org) => org.id === id)?.name)
         .filter((name): name is string => Boolean(name))
 
       return orderedNames
@@ -78,16 +81,16 @@ export function useValidatePrincipals(principalIds: string[]) {
       if (error) {
         return {
           valid: false,
-          invalid_ids: principalIds
+          invalid_ids: principalIds,
         }
       }
 
-      const validIds = data.map(org => org.id)
-      const invalidIds = principalIds.filter(id => !validIds.includes(id))
+      const validIds = data.map((org) => org.id)
+      const invalidIds = principalIds.filter((id) => !validIds.includes(id))
 
       return {
         valid: invalidIds.length === 0,
-        invalid_ids: invalidIds
+        invalid_ids: invalidIds,
       }
     },
     enabled: principalIds.length > 0,
@@ -118,7 +121,7 @@ export function useNamingData(organizationId: string, principalIds: string[]) {
             .eq('id', organizationId)
             .is('deleted_at', null)
             .single()
-            .then(result => ({ type: 'organization', ...result }))
+            .then((result) => ({ type: 'organization', ...result }))
         )
       }
 
@@ -131,16 +134,16 @@ export function useNamingData(organizationId: string, principalIds: string[]) {
             .in('id', principalIds)
             .eq('type', 'principal')
             .is('deleted_at', null)
-            .then(result => ({ type: 'principals', ...result }))
+            .then((result) => ({ type: 'principals', ...result }))
         )
       }
 
       const results = await Promise.all(queries)
-      
+
       let organizationName = ''
       let principalNames: string[] = []
 
-      results.forEach(result => {
+      results.forEach((result) => {
         if (result.error) {
           throw result.error
         }
@@ -150,14 +153,18 @@ export function useNamingData(organizationId: string, principalIds: string[]) {
         } else if (result.type === 'principals' && result.data && Array.isArray(result.data)) {
           // Maintain order based on input array
           principalNames = principalIds
-            .map(id => result.data.find((org: OrganizationBasic) => org.id === id)?.name)
+            .map(
+              (id) =>
+                (result.data as OrganizationBasic[]).find((org: OrganizationBasic) => org.id === id)
+                  ?.name
+            )
             .filter((name): name is string => Boolean(name))
         }
       })
 
       return {
         organizationName,
-        principalNames
+        principalNames,
       }
     },
     enabled: !!organizationId || principalIds.length > 0,
@@ -182,7 +189,7 @@ export function useBulkOrganizationLookup(organizationIds: string[]) {
 
       // Return as a lookup map for easy access
       const lookup: Record<string, { name: string; type: OrganizationType }> = {}
-      data.forEach(org => {
+      data.forEach((org) => {
         lookup[org.id] = { name: org.name, type: org.type as OrganizationType }
       })
 
@@ -236,7 +243,7 @@ export function useCreateNamingTemplate() {
       // In the future, this could insert into a templates table
       const newTemplate: NamingTemplate = {
         ...template,
-        id: `custom-${Date.now()}`
+        id: `custom-${Date.now()}`,
       }
       return newTemplate
     },
@@ -254,10 +261,10 @@ export interface NamingDataRequirements {
 }
 
 // Comprehensive hook that fetches all naming data needs
-export function useCompleteNamingData({ 
-  organizationId, 
-  principalIds = [], 
-  validatePrincipals = false 
+export function useCompleteNamingData({
+  organizationId,
+  principalIds = [],
+  validatePrincipals = false,
 }: NamingDataRequirements) {
   const organizationNameQuery = useOrganizationName(organizationId || '')
   const principalNamesQuery = usePrincipalNames(principalIds)
@@ -267,9 +274,15 @@ export function useCompleteNamingData({
     organizationName: organizationNameQuery.data || '',
     principalNames: principalNamesQuery.data || [],
     principalValidation: principalValidationQuery.data,
-    isLoading: organizationNameQuery.isLoading || principalNamesQuery.isLoading || principalValidationQuery.isLoading,
-    error: organizationNameQuery.error || principalNamesQuery.error || principalValidationQuery.error,
-    isReady: !organizationNameQuery.isLoading && !principalNamesQuery.isLoading && 
-             (!validatePrincipals || !principalValidationQuery.isLoading)
+    isLoading:
+      organizationNameQuery.isLoading ||
+      principalNamesQuery.isLoading ||
+      principalValidationQuery.isLoading,
+    error:
+      organizationNameQuery.error || principalNamesQuery.error || principalValidationQuery.error,
+    isReady:
+      !organizationNameQuery.isLoading &&
+      !principalNamesQuery.isLoading &&
+      (!validatePrincipals || !principalValidationQuery.isLoading),
   }
 }

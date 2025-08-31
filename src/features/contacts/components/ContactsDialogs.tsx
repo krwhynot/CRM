@@ -1,8 +1,7 @@
-import React from 'react'
 import { StandardDialog } from '@/components/ui/StandardDialog'
 import { EnhancedContactForm } from './EnhancedContactForm'
 import type { Contact, ContactUpdate } from '@/types/entities'
-import type { ContactFormData } from '@/types/contact.types'
+import type { ContactWithOrganizationData } from '../hooks/useContacts'
 import { FormDataTransformer } from '@/lib/form-data-transformer'
 
 interface ContactsDialogsProps {
@@ -10,9 +9,9 @@ interface ContactsDialogsProps {
   isEditDialogOpen: boolean
   isDeleteDialogOpen: boolean
   selectedContact: Contact | null
-  onCreateSubmit: (data: ContactFormData) => void
-  onEditSubmit: (selectedContact: Contact, data: ContactUpdate) => void
-  onDeleteConfirm: (selectedContact: Contact) => void
+  onCreateSubmit: (data: ContactWithOrganizationData) => Promise<void>
+  onEditSubmit: (selectedContact: Contact, data: ContactUpdate) => Promise<void>
+  onDeleteConfirm: (selectedContact: Contact) => Promise<void>
   onCreateDialogChange: (open: boolean) => void
   onEditDialogChange: (open: boolean) => void
   onDeleteDialogChange: (open: boolean) => void
@@ -22,7 +21,7 @@ interface ContactsDialogsProps {
   isDeleting: boolean
 }
 
-export const ContactsDialogs: React.FC<ContactsDialogsProps> = ({
+export const ContactsDialogs = ({
   isCreateDialogOpen,
   isEditDialogOpen,
   isDeleteDialogOpen,
@@ -36,8 +35,8 @@ export const ContactsDialogs: React.FC<ContactsDialogsProps> = ({
   onDeleteCancel,
   isCreating,
   isUpdating,
-  isDeleting
-}) => {
+  isDeleting,
+}: ContactsDialogsProps) => {
   return (
     <>
       {/* Create Dialog */}
@@ -49,10 +48,7 @@ export const ContactsDialogs: React.FC<ContactsDialogsProps> = ({
         size="lg"
         scroll="content"
       >
-        <EnhancedContactForm 
-          onSubmit={onCreateSubmit}
-          loading={isCreating}
-        />
+        <EnhancedContactForm onSubmit={onCreateSubmit} loading={isCreating} />
       </StandardDialog>
 
       {/* Edit Dialog */}

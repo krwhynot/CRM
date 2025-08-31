@@ -1,7 +1,8 @@
 import React from 'react'
 import { OpportunitiesTableRow } from './OpportunitiesTableRow'
 import { OpportunityRowDetails } from './OpportunityRowDetails'
-import type { OpportunityWithLastActivity, InteractionWithRelations } from '@/types/opportunity.types' /* ui-audit: allow */
+import type { OpportunityWithLastActivity } from '@/types/opportunity.types'
+import type { InteractionWithRelations } from '@/types/entities' /* ui-audit: allow */
 
 interface OpportunityRowProps {
   opportunity: OpportunityWithLastActivity
@@ -12,11 +13,11 @@ interface OpportunityRowProps {
   getStageConfig: (stage: string) => { dot: string; position: number }
   formatCurrency: (value: number | null) => string
   formatActivityType: (type: string | null) => string
-  
+
   // Expansion props
   isExpanded: boolean
   onToggleExpansion: () => void
-  
+
   // Activity props for details
   interactions?: InteractionWithRelations[] /* ui-audit: allow */
   activitiesLoading?: boolean
@@ -42,7 +43,7 @@ export const OpportunityRow: React.FC<OpportunityRowProps> = ({
   onAddInteraction,
   onEditInteraction,
   onDeleteInteraction,
-  onInteractionItemClick
+  onInteractionItemClick,
 }) => {
   return (
     <>
@@ -58,7 +59,7 @@ export const OpportunityRow: React.FC<OpportunityRowProps> = ({
         formatActivityType={formatActivityType}
         isExpanded={isExpanded}
       />
-      
+
       {isExpanded && (
         <OpportunityRowDetails
           opportunity={opportunity}

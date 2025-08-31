@@ -13,19 +13,19 @@ import { ContactDetailsSection } from './enhanced-form/ContactDetailsSection'
 import type { ContactFormData } from '@/types/contact.types'
 
 interface EnhancedContactFormProps {
-  onSubmit: (data: ContactWithOrganizationData) => void
+  onSubmit: (data: ContactWithOrganizationData) => Promise<void>
   initialData?: Partial<ContactFormData>
   loading?: boolean
   submitLabel?: string
   preselectedOrganization?: string
 }
 
-export function EnhancedContactForm({ 
-  onSubmit, 
-  initialData, 
+export function EnhancedContactForm({
+  onSubmit,
+  initialData,
   loading = false,
   submitLabel = 'Save Contact',
-  preselectedOrganization
+  preselectedOrganization,
 }: EnhancedContactFormProps) {
   const { data: organizations = [] } = useOrganizations()
   const { form, organizationMode, setOrganizationMode } = useEnhancedContactFormState(
@@ -34,10 +34,12 @@ export function EnhancedContactForm({
   )
   const { newOrgData, updateNewOrgField } = useNewOrganizationData()
 
-  const handleSubmit = (contactData: ContactFormData) => {
+  const handleSubmit = async (contactData: ContactFormData) => {
     const cleanedContactData = {
       ...contactData,
-      preferred_principals: contactData.preferred_principals?.filter((id): id is string => id !== undefined)
+      preferred_principals: contactData.preferred_principals?.filter(
+        (id): id is string => id !== undefined
+      ),
     }
 
     let enhancedData: ContactWithOrganizationData
@@ -45,7 +47,7 @@ export function EnhancedContactForm({
     if (organizationMode === 'existing') {
       enhancedData = {
         ...cleanedContactData,
-        organization_id: cleanedContactData.organization_id
+        organization_id: cleanedContactData.organization_id,
       }
     } else {
       enhancedData = {
@@ -56,12 +58,12 @@ export function EnhancedContactForm({
           phone: newOrgData.phone || null,
           email: newOrgData.email || null,
           website: newOrgData.website || null,
-          notes: newOrgData.notes || null
-        }
+          notes: newOrgData.notes || null,
+        },
       }
     }
 
-    onSubmit(enhancedData)
+    await onSubmit(enhancedData)
   }
 
   return (
@@ -76,7 +78,7 @@ export function EnhancedContactForm({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             <ContactBasicFields form={form} loading={loading} />
-            
+
             <OrganizationModeSelector
               form={form}
               organizations={organizations}

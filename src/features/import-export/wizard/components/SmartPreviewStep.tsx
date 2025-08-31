@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -25,7 +25,8 @@ import {
   RefreshCw,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { SmartFieldMapping, ImportConfig, type ParsedData } from '../hooks/useSmartImport'
+import type { SmartFieldMapping, ImportConfig } from '../hooks/useSmartImport'
+import type { ParsedData } from '@/hooks/useFileUpload'
 import type { BatchValidationResponseType, DuplicateDetectionResponseType } from '@/lib/aiSchemas'
 
 interface SmartPreviewStepProps {
@@ -360,8 +361,8 @@ export function SmartPreviewStep({
   }
 
   const mappedFieldsCount = fieldMappings.filter((m) => m.crmField && m.status !== 'skipped').length
-  const hasErrors = validationResults?.summary.errorRows > 0
-  const hasWarnings = validationResults?.summary.warningRows > 0
+  const hasErrors = (validationResults?.summary?.errorRows ?? 0) > 0
+  const hasWarnings = (validationResults?.summary?.warningRows ?? 0) > 0
   const hasDuplicates = (duplicateResults?.summary.totalDuplicates || 0) > 0
 
   return (

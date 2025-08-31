@@ -2,9 +2,9 @@ import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import type { InteractionType } from '@/types/entities'
-import { 
-  createDbStageRecord, 
-  type OpportunityStageDB as OpportunityStage 
+import {
+  createDbStageRecord,
+  type OpportunityStageDB as OpportunityStage,
 } from '@/lib/opportunity-stage-mapping'
 
 // ============================================================================
@@ -32,19 +32,16 @@ interface DatabaseMetricsResponse {
   principals_with_active_opportunities: number
   avg_opportunities_per_principal: number
   last_activity_date: string | null
-  opportunities_by_stage: Record<string, number> | null
-  opportunity_values_by_stage: Record<string, number> | null
-  interactions_by_type: Record<string, number> | null
-  top_principals_by_value: Array<{
-    id: string
-    name: string
-    totalValue: number
-    opportunityCount: number
-  }> | null
+  opportunities_by_stage: any
+  opportunity_values_by_stage: any
+  interactions_by_type: any
+  top_principals_by_value: any
 }
 
 // Transform database response to match existing interface
-function transformDatabaseMetrics(data: DatabaseMetricsResponse | undefined): Omit<DashboardMetrics, 'isLoading' | 'error' | 'lastUpdated' | 'dataFreshness'> {
+function transformDatabaseMetrics(
+  data: DatabaseMetricsResponse | undefined
+): Omit<DashboardMetrics, 'isLoading' | 'error' | 'lastUpdated' | 'dataFreshness'> {
   if (!data) {
     return {
       // Core entity metrics
@@ -55,24 +52,24 @@ function transformDatabaseMetrics(data: DatabaseMetricsResponse | undefined): Om
       totalProducts: 0,
       totalOpportunities: 0,
       activeOpportunities: 0,
-      
+
       // Financial metrics
       totalPipelineValue: 0,
       activePipelineValue: 0,
       conversionRate: 0,
       averageOpportunityValue: 0,
-      
+
       // Breakdown metrics
       opportunitiesByStage: createDbStageRecord(0),
       opportunityValuesByStage: createDbStageRecord(0),
       principalsByPriority: {} as Record<PriorityLevel, number>,
       interactionsByType: {} as Record<InteractionType, number>,
-      
+
       // Principal-specific metrics
       principalsWithActiveOpportunities: 0,
       avgOpportunitiesPerPrincipal: 0,
       topPrincipalsByValue: [],
-      
+
       // Activity metrics
       totalActivities: 0,
       recentActivities: 0,
@@ -81,7 +78,7 @@ function transformDatabaseMetrics(data: DatabaseMetricsResponse | undefined): Om
       avgActivitiesPerOpportunity: 0,
       interactionsRequiringFollowUp: 0,
       lastActivityDate: null,
-      
+
       // Growth and trends
       growthMetrics: {
         organizationsGrowth: 0,
@@ -90,9 +87,9 @@ function transformDatabaseMetrics(data: DatabaseMetricsResponse | undefined): Om
         pipelineValueGrowth: 0,
         interactionsGrowth: 0,
         principalsGrowth: 0,
-        distributorsGrowth: 0
+        distributorsGrowth: 0,
       },
-      
+
       // Detailed metric objects
       opportunityMetrics: {
         totalPipelineValue: 0,
@@ -100,13 +97,13 @@ function transformDatabaseMetrics(data: DatabaseMetricsResponse | undefined): Om
         conversionRate: 0,
         averageValue: 0,
         byStage: createDbStageRecord(0),
-        stageValues: createDbStageRecord(0)
+        stageValues: createDbStageRecord(0),
       },
       principalMetrics: {
         byPriority: {} as Record<PriorityLevel, number>,
         withActiveOpportunities: 0,
         averageOpportunitiesPerPrincipal: 0,
-        topByPipelineValue: []
+        topByPipelineValue: [],
       },
       interactionMetrics: {
         total: 0,
@@ -116,27 +113,28 @@ function transformDatabaseMetrics(data: DatabaseMetricsResponse | undefined): Om
         averagePerOpportunity: 0,
         followUpRequired: 0,
         lastActivityDate: null,
-        byType: {} as Record<InteractionType, number>
-      }
+        byType: {} as Record<InteractionType, number>,
+      },
     }
   }
 
   // Transform stage breakdowns, ensuring all stages are present
   const opportunitiesByStage = createDbStageRecord(0)
   const opportunityValuesByStage = createDbStageRecord(0)
-  
+
   if (data.opportunities_by_stage) {
-    Object.keys(data.opportunities_by_stage).forEach(stage => {
+    Object.keys(data.opportunities_by_stage).forEach((stage) => {
       if (stage in opportunitiesByStage) {
         opportunitiesByStage[stage as OpportunityStage] = data.opportunities_by_stage![stage] || 0
       }
     })
   }
-  
+
   if (data.opportunity_values_by_stage) {
-    Object.keys(data.opportunity_values_by_stage).forEach(stage => {
+    Object.keys(data.opportunity_values_by_stage).forEach((stage) => {
       if (stage in opportunityValuesByStage) {
-        opportunityValuesByStage[stage as OpportunityStage] = data.opportunity_values_by_stage![stage] || 0
+        opportunityValuesByStage[stage as OpportunityStage] =
+          data.opportunity_values_by_stage![stage] || 0
       }
     })
   }
@@ -144,7 +142,7 @@ function transformDatabaseMetrics(data: DatabaseMetricsResponse | undefined): Om
   // Transform interactions by type
   const interactionsByType: Record<InteractionType, number> = {} as Record<InteractionType, number>
   if (data.interactions_by_type) {
-    Object.keys(data.interactions_by_type).forEach(type => {
+    Object.keys(data.interactions_by_type).forEach((type) => {
       interactionsByType[type as InteractionType] = data.interactions_by_type![type] || 0
     })
   }
@@ -158,24 +156,24 @@ function transformDatabaseMetrics(data: DatabaseMetricsResponse | undefined): Om
     totalProducts: data.total_products || 0,
     totalOpportunities: data.total_opportunities || 0,
     activeOpportunities: data.active_opportunities || 0,
-    
+
     // Financial metrics
     totalPipelineValue: data.total_pipeline_value || 0,
     activePipelineValue: data.active_pipeline_value || 0,
     conversionRate: data.conversion_rate || 0,
     averageOpportunityValue: data.average_opportunity_value || 0,
-    
+
     // Breakdown metrics
     opportunitiesByStage,
     opportunityValuesByStage,
     principalsByPriority: {} as Record<PriorityLevel, number>, // Placeholder for now
     interactionsByType,
-    
+
     // Principal-specific metrics
     principalsWithActiveOpportunities: data.principals_with_active_opportunities || 0,
     avgOpportunitiesPerPrincipal: data.avg_opportunities_per_principal || 0,
     topPrincipalsByValue: data.top_principals_by_value || [],
-    
+
     // Activity metrics
     totalActivities: data.total_interactions || 0,
     recentActivities: data.recent_interactions || 0,
@@ -184,7 +182,7 @@ function transformDatabaseMetrics(data: DatabaseMetricsResponse | undefined): Om
     avgActivitiesPerOpportunity: data.avg_interactions_per_opportunity || 0,
     interactionsRequiringFollowUp: 0, // Placeholder - not calculated in DB function yet
     lastActivityDate: data.last_activity_date ? new Date(data.last_activity_date) : null,
-    
+
     // Growth and trends (placeholder for now)
     growthMetrics: {
       organizationsGrowth: 0,
@@ -193,9 +191,9 @@ function transformDatabaseMetrics(data: DatabaseMetricsResponse | undefined): Om
       pipelineValueGrowth: 0,
       interactionsGrowth: 0,
       principalsGrowth: 0,
-      distributorsGrowth: 0
+      distributorsGrowth: 0,
     },
-    
+
     // Detailed metric objects
     opportunityMetrics: {
       totalPipelineValue: data.total_pipeline_value || 0,
@@ -203,13 +201,13 @@ function transformDatabaseMetrics(data: DatabaseMetricsResponse | undefined): Om
       conversionRate: data.conversion_rate || 0,
       averageValue: data.average_opportunity_value || 0,
       byStage: opportunitiesByStage,
-      stageValues: opportunityValuesByStage
+      stageValues: opportunityValuesByStage,
     },
     principalMetrics: {
       byPriority: {} as Record<PriorityLevel, number>, // Placeholder for now
       withActiveOpportunities: data.principals_with_active_opportunities || 0,
       averageOpportunitiesPerPrincipal: data.avg_opportunities_per_principal || 0,
-      topByPipelineValue: data.top_principals_by_value || []
+      topByPipelineValue: data.top_principals_by_value || [],
     },
     interactionMetrics: {
       total: data.total_interactions || 0,
@@ -219,8 +217,8 @@ function transformDatabaseMetrics(data: DatabaseMetricsResponse | undefined): Om
       averagePerOpportunity: data.avg_interactions_per_opportunity || 0,
       followUpRequired: 0, // Placeholder - not calculated in DB function yet
       lastActivityDate: data.last_activity_date ? new Date(data.last_activity_date) : null,
-      byType: interactionsByType
-    }
+      byType: interactionsByType,
+    },
   }
 }
 
@@ -290,19 +288,19 @@ export interface DashboardMetrics {
   totalProducts: number
   totalOpportunities: number
   activeOpportunities: number
-  
+
   // Financial metrics
   totalPipelineValue: number
   activePipelineValue: number
   conversionRate: number
   averageOpportunityValue: number
-  
+
   // Breakdown metrics
   opportunitiesByStage: Record<OpportunityStage, number>
   opportunityValuesByStage: Record<OpportunityStage, number>
   principalsByPriority: Record<PriorityLevel, number>
   interactionsByType: Record<InteractionType, number>
-  
+
   // Principal-specific metrics
   principalsWithActiveOpportunities: number
   avgOpportunitiesPerPrincipal: number
@@ -312,7 +310,7 @@ export interface DashboardMetrics {
     totalValue: number
     opportunityCount: number
   }>
-  
+
   // Activity metrics
   totalActivities: number
   recentActivities: number
@@ -321,20 +319,20 @@ export interface DashboardMetrics {
   avgActivitiesPerOpportunity: number
   interactionsRequiringFollowUp: number
   lastActivityDate: Date | null
-  
+
   // Growth and trends
   growthMetrics: GrowthMetrics
-  
+
   // Detailed metric objects
   opportunityMetrics: OpportunityMetrics
   principalMetrics: PrincipalMetrics
   interactionMetrics: InteractionMetrics
-  
+
   // Loading and error states
   isLoading: boolean
   error: Error | null
   lastUpdated: Date | null
-  
+
   // Data freshness indicators
   dataFreshness: {
     organizations: Date | null
@@ -368,9 +366,9 @@ export function useDashboardMetrics(options: DashboardMetricsOptions = {}): Dash
     queryKey: ['dashboard', 'metrics', options.filters],
     queryFn: async () => {
       const { data, error } = await supabase.rpc('get_dashboard_metrics', {
-        p_principal_ids: options.filters?.principalIds || null,
-        p_date_from: options.filters?.dateRange?.start || null,
-        p_date_to: options.filters?.dateRange?.end || null
+        p_principal_ids: options.filters?.principalIds || undefined,
+        p_date_from: options.filters?.dateRange?.start?.toISOString() || undefined,
+        p_date_to: options.filters?.dateRange?.end?.toISOString() || undefined,
       })
       if (error) {
         // Dashboard metrics RPC error - propagating to React Query error handling
@@ -380,10 +378,16 @@ export function useDashboardMetrics(options: DashboardMetricsOptions = {}): Dash
       return Array.isArray(data) ? data[0] : data
     },
     staleTime: 2 * 60 * 1000, // 2 minutes for dashboard data
-    gcTime: 10 * 60 * 1000,   // 10 minutes cache
+    gcTime: 10 * 60 * 1000, // 10 minutes cache
     retry: (failureCount, error) => {
       // Don't retry on 4xx errors
-      if (error && 'status' in error && typeof error.status === 'number' && error.status >= 400 && error.status < 500) {
+      if (
+        error &&
+        'status' in error &&
+        typeof error.status === 'number' &&
+        error.status >= 400 &&
+        error.status < 500
+      ) {
         return false
       }
       return failureCount < 3
@@ -401,7 +405,7 @@ export function useDashboardMetrics(options: DashboardMetricsOptions = {}): Dash
       opportunities: timestamp,
       contacts: timestamp,
       interactions: timestamp,
-      products: timestamp
+      products: timestamp,
     }
   }, [query.dataUpdatedAt])
 
@@ -413,15 +417,18 @@ export function useDashboardMetrics(options: DashboardMetricsOptions = {}): Dash
   // TRANSFORM AND RETURN METRICS
   // ============================================================================
 
-  return useMemo(() => ({
-    ...transformDatabaseMetrics(query.data),
-    
-    // Loading and error states
-    isLoading: query.isLoading,
-    error: query.error,
-    lastUpdated,
-    dataFreshness
-  }), [query.data, query.isLoading, query.error, lastUpdated, dataFreshness])
+  return useMemo(
+    () => ({
+      ...transformDatabaseMetrics(query.data),
+
+      // Loading and error states
+      isLoading: query.isLoading,
+      error: query.error,
+      lastUpdated,
+      dataFreshness,
+    }),
+    [query.data, query.isLoading, query.error, lastUpdated, dataFreshness]
+  )
 }
 
 // ============================================================================
@@ -436,7 +443,7 @@ export function useOpportunityMetrics(filters?: MetricsFilters) {
   return {
     ...opportunityMetrics,
     isLoading,
-    error
+    error,
   }
 }
 
@@ -448,7 +455,7 @@ export function usePrincipalMetrics(filters?: MetricsFilters) {
   return {
     ...principalMetrics,
     isLoading,
-    error
+    error,
   }
 }
 
@@ -460,7 +467,7 @@ export function useInteractionMetrics(filters?: MetricsFilters) {
   return {
     ...interactionMetrics,
     isLoading,
-    error
+    error,
   }
 }
 
@@ -489,10 +496,12 @@ export function useRealTimeActivityMetrics() {
     totalActivities: query.data?.total_interactions || 0,
     recentActivities: query.data?.recent_interactions || 0,
     thisWeekActivities: query.data?.this_week_interactions || 0,
-    lastActivityDate: query.data?.last_activity_date ? new Date(query.data.last_activity_date) : null,
+    lastActivityDate: query.data?.last_activity_date
+      ? new Date(query.data.last_activity_date)
+      : null,
     interactionsRequiringFollowUp: 0, // Placeholder for now
     isLoading: query.isLoading,
-    error: query.error
+    error: query.error,
   }
 }
 

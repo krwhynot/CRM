@@ -1,7 +1,13 @@
 import { ProgressiveDetails, FormField } from '@/components/forms'
 import { Form } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -22,9 +28,9 @@ interface OpportunityFormProps {
 }
 
 // Opportunity stages for select dropdown
-const STAGES: Array<{ value: OpportunityStageDB; display: string }> = DB_STAGES.map(stage => ({
+const STAGES: Array<{ value: OpportunityStageDB; display: string }> = DB_STAGES.map((stage) => ({
   value: stage,
-  display: stage
+  display: stage,
 }))
 
 // Opportunity statuses for select dropdown
@@ -34,21 +40,21 @@ const STATUSES: Array<{ value: string; display: string }> = [
   { value: 'Nurturing', display: 'Nurturing' },
   { value: 'Qualified', display: 'Qualified' },
   { value: 'Closed - Won', display: 'Closed - Won' },
-  { value: 'Closed - Lost', display: 'Closed - Lost' }
+  { value: 'Closed - Lost', display: 'Closed - Lost' },
 ]
 
-export function OpportunityForm({ 
-  onSubmit, 
-  initialData, 
+export function OpportunityForm({
+  onSubmit,
+  initialData,
   loading = false,
   submitLabel = 'Save Opportunity',
-  preselectedOrganization
+  preselectedOrganization,
 }: OpportunityFormProps) {
   const { data: organizations = [] } = useOrganizations()
   const { data: contacts = [] } = useContacts()
-  
+
   const form = useForm<OpportunityFormData>({
-    resolver: yupResolver(opportunitySchema),
+    resolver: yupResolver(opportunitySchema) as any,
     defaultValues: {
       name: initialData?.name || '',
       organization_id: preselectedOrganization || initialData?.organization_id || '',
@@ -65,20 +71,23 @@ export function OpportunityForm({
       auto_generated_name: initialData?.auto_generated_name || false,
       principal_id: initialData?.principal_id || null,
       probability: initialData?.probability || null,
-      deal_owner: initialData?.deal_owner || null
-    }
+      deal_owner: initialData?.deal_owner || null,
+    },
   })
 
   const watchedOrganization = form.watch('organization_id')
-  const filteredContacts = contacts.filter(contact => contact.organization_id === watchedOrganization)
+  const filteredContacts = contacts.filter(
+    (contact) => contact.organization_id === watchedOrganization
+  )
 
   return (
     <Card className="mx-auto w-full max-w-md">
-      <CardHeader><CardTitle>{initialData ? 'Edit Opportunity' : 'Add Opportunity'}</CardTitle></CardHeader>
+      <CardHeader>
+        <CardTitle>{initialData ? 'Edit Opportunity' : 'Add Opportunity'}</CardTitle>
+      </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            
+          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
             <Controller
               control={form.control}
               name="name"
@@ -100,7 +109,9 @@ export function OpportunityForm({
                     </SelectTrigger>
                     <SelectContent>
                       {organizations.map((org) => (
-                        <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
+                        <SelectItem key={org.id} value={org.id}>
+                          {org.name}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -113,7 +124,15 @@ export function OpportunityForm({
               name="estimated_value"
               render={({ field, fieldState }) => (
                 <FormField label="Value" required error={fieldState.error?.message}>
-                  <Input {...field} type="number" min="0" step="0.01" className="h-11" disabled={loading} onChange={(e) => field.onChange(Number(e.target.value))} />
+                  <Input
+                    {...field}
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    className="h-11"
+                    disabled={loading}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  />
                 </FormField>
               )}
             />
@@ -129,7 +148,9 @@ export function OpportunityForm({
                     </SelectTrigger>
                     <SelectContent>
                       {STAGES.map((stage) => (
-                        <SelectItem key={stage.value} value={stage.value}>{stage.display}</SelectItem>
+                        <SelectItem key={stage.value} value={stage.value}>
+                          {stage.display}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -148,7 +169,9 @@ export function OpportunityForm({
                     </SelectTrigger>
                     <SelectContent>
                       {STATUSES.map((status) => (
-                        <SelectItem key={status.value} value={status.value}>{status.display}</SelectItem>
+                        <SelectItem key={status.value} value={status.value}>
+                          {status.display}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -169,7 +192,9 @@ export function OpportunityForm({
                         </SelectTrigger>
                         <SelectContent>
                           {filteredContacts.map((contact) => (
-                            <SelectItem key={contact.id} value={contact.id}>{contact.first_name} {contact.last_name}</SelectItem>
+                            <SelectItem key={contact.id} value={contact.id}>
+                              {contact.first_name} {contact.last_name}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -181,7 +206,13 @@ export function OpportunityForm({
                   name="estimated_close_date"
                   render={({ field, fieldState }) => (
                     <FormField label="Est. Close Date" error={fieldState.error?.message}>
-                      <Input {...field} value={field.value || ''} type="date" className="h-11" disabled={loading} />
+                      <Input
+                        {...field}
+                        value={field.value || ''}
+                        type="date"
+                        className="h-11"
+                        disabled={loading}
+                      />
                     </FormField>
                   )}
                 />

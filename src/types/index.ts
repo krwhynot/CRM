@@ -4,12 +4,29 @@
 // Core Entity Types
 export * from './entities'
 
-// Database & Infrastructure Types
-export * from './database.types'
-export * from './supabase'
+// Database & Infrastructure Types - Using namespace imports to prevent naming collisions
+export * as Database from './database.types'
+export * as Supabase from './supabase'
 
-// Feature-Specific Entity Types
-export * from './contact.types'
+// Feature-Specific Entity Types - Avoid re-exporting ContactRole to prevent conflicts
+export {
+  Contact,
+  ContactInsert,
+  ContactUpdate,
+  ContactWithOrganization,
+  ContactWithPreferredPrincipals,
+  ContactWithRelations,
+  PurchaseInfluenceLevel,
+  DecisionAuthorityRole,
+  ContactFilters,
+  ContactFormData,
+  contactSchema,
+  PURCHASE_INFLUENCE_LEVELS,
+  DECISION_AUTHORITY_ROLES,
+  CONTACT_ROLES,
+  getRoleLabel,
+  getRoleValue,
+} from './contact.types'
 export * from './organization.types'
 export * from './opportunity.types'
 export * from './interaction.types'
@@ -25,11 +42,11 @@ export * from './forms'
 export * from './validation'
 
 // Re-export commonly used types for convenience
-export type { Database } from './database.types'
-export type { 
-  Organization, 
-  Contact, 
-  Product, 
-  Opportunity, 
-  Interaction 
-} from './entities'
+// Using the namespaced imports to prevent conflicts
+export type { Database as DatabaseType } from './database.types'
+export type { Database as SupabaseDatabase } from './supabase'
+export type { Tables as DatabaseTables, Enums as DatabaseEnums } from './database.types'
+export type { Tables as SupabaseTables, Enums as SupabaseEnums } from './supabase'
+
+// Keep core CRM entity types directly exported for convenience
+export type { Organization, Contact, Product, Opportunity, Interaction } from './entities'

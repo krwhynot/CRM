@@ -12,7 +12,7 @@ export { useProgressiveDetails } from './useProgressiveDetails'
 export { useFileUpload } from './useFileUpload'
 
 // UI & Navigation Hooks
-export { useMobile } from './use-mobile'
+export { useIsMobile } from './use-mobile'
 export { useSidebar } from './useSidebar'
 export { useNavigationCounts } from './useNavigationCounts'
 

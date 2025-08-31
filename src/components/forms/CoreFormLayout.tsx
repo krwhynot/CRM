@@ -1,5 +1,5 @@
 import React from 'react'
-import { FieldValues } from 'react-hook-form'
+import { FieldValues, SubmitHandler } from 'react-hook-form'
 import * as yup from 'yup'
 import { Card, CardContent } from '@/components/ui/card'
 import { Form } from '@/components/ui/form'
@@ -19,7 +19,7 @@ export interface CoreFormLayoutProps<T extends FieldValues> {
   title: string
   icon: React.ComponentType<{ className?: string }>
   formSchema: yup.ObjectSchema<T>
-  onSubmit: (data: T) => void | Promise<void>
+  onSubmit: SubmitHandler<T>
 
   // Data and state
   initialData?: Partial<T>
@@ -27,7 +27,7 @@ export interface CoreFormLayoutProps<T extends FieldValues> {
   submitLabel?: string
 
   // Layout configuration
-  entityType: 'organization' | 'contact' | 'product' | 'opportunity' | 'interaction'
+  entityType: 'organization' | 'contact' | 'product' | 'opportunity' | 'activity'
   showAdvancedOptions?: boolean
 
   // Sections configuration
@@ -75,7 +75,10 @@ export function CoreFormLayout<T extends FieldValues>({
 
       <CardContent className="space-y-8 p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit as SubmitHandler<FieldValues>)}
+            className="space-y-8"
+          >
             <CoreSectionsRenderer
               sections={coreSections}
               form={form}

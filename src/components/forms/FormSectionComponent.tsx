@@ -4,39 +4,33 @@ import type { FormSection } from '@/hooks/useFormLayout'
 
 interface FormSectionProps<T extends FieldValues> {
   section: FormSection<T>
-  form: UseFormReturn<T>
+  form: UseFormReturn<T, any, any>
   loading: boolean
   entityType: string
   layoutClass: string
   sectionClassName: string
 }
 
-export function FormSectionComponent<T extends FieldValues>({ 
-  section, 
-  form, 
-  loading, 
+export function FormSectionComponent<T extends FieldValues>({
+  section,
+  form,
+  loading,
   entityType,
   layoutClass,
-  sectionClassName
+  sectionClassName,
 }: FormSectionProps<T>) {
   // Use entityType for section-specific styling or behavior
-  const sectionKey = `${section.id}-${entityType}`;
-  
+  const sectionKey = `${section.id}-${entityType}`
+
   return (
     <div className={sectionClassName} data-section={sectionKey}>
       {section.title && (
         <div className="space-y-2">
-          <h3 className="text-lg font-medium text-gray-900">
-            {section.title}
-          </h3>
-          {section.description && (
-            <p className="text-sm text-gray-600">
-              {section.description}
-            </p>
-          )}
+          <h3 className="text-lg font-medium text-gray-900">{section.title}</h3>
+          {section.description && <p className="text-sm text-gray-600">{section.description}</p>}
         </div>
       )}
-      
+
       <div className={layoutClass}>
         {section.fields.map((field) => (
           <FormFieldRenderer

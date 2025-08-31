@@ -1,12 +1,22 @@
 import { ProgressiveDetails, FormField } from '@/components/forms'
 import { Form } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useForm, Controller } from 'react-hook-form'
-import { organizationSchema, FOOD_SERVICE_SEGMENTS, type OrganizationFormData } from '@/types/organization.types'
+import {
+  organizationSchema,
+  FOOD_SERVICE_SEGMENTS,
+  type OrganizationFormData,
+} from '@/types/organization.types'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { deriveOrganizationFlags } from '@/lib/organization-utils'
 
@@ -17,15 +27,14 @@ interface OrganizationFormProps {
   submitLabel?: string
 }
 
-export function OrganizationForm({ 
-  onSubmit, 
-  initialData, 
+export function OrganizationForm({
+  onSubmit,
+  initialData,
   loading = false,
-  submitLabel = 'Save Organization'
+  submitLabel = 'Save Organization',
 }: OrganizationFormProps) {
-  
   const form = useForm<OrganizationFormData>({
-    resolver: yupResolver(organizationSchema),
+    resolver: yupResolver(organizationSchema) as any,
     defaultValues: {
       name: initialData?.name || '',
       type: initialData?.type || 'customer',
@@ -44,8 +53,8 @@ export function OrganizationForm({
       postal_code: initialData?.postal_code || null,
       country: initialData?.country || null,
       industry: initialData?.industry || null,
-      notes: initialData?.notes || null
-    }
+      notes: initialData?.notes || null,
+    },
   })
 
   const handleSubmit = (data: OrganizationFormData) => {
@@ -57,11 +66,12 @@ export function OrganizationForm({
 
   return (
     <Card className="mx-auto w-full max-w-md">
-      <CardHeader><CardTitle>{initialData ? 'Edit Organization' : 'Add Organization'}</CardTitle></CardHeader>
+      <CardHeader>
+        <CardTitle>{initialData ? 'Edit Organization' : 'Add Organization'}</CardTitle>
+      </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-            
             <Controller
               control={form.control}
               name="name"
@@ -124,14 +134,15 @@ export function OrganizationForm({
                     </SelectTrigger>
                     <SelectContent>
                       {FOOD_SERVICE_SEGMENTS.map((segment) => (
-                        <SelectItem key={segment} value={segment}>{segment}</SelectItem>
+                        <SelectItem key={segment} value={segment}>
+                          {segment}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </FormField>
               )}
             />
-
 
             <ProgressiveDetails buttonText="Add Details">
               <div className="space-y-4">
@@ -140,7 +151,12 @@ export function OrganizationForm({
                   name="city"
                   render={({ field, fieldState }) => (
                     <FormField label="City" error={fieldState.error?.message}>
-                      <Input {...field} value={field.value || ''} className="h-11" disabled={loading} />
+                      <Input
+                        {...field}
+                        value={field.value || ''}
+                        className="h-11"
+                        disabled={loading}
+                      />
                     </FormField>
                   )}
                 />
@@ -149,7 +165,12 @@ export function OrganizationForm({
                   name="state_province"
                   render={({ field, fieldState }) => (
                     <FormField label="State/Province" error={fieldState.error?.message}>
-                      <Input {...field} value={field.value || ''} className="h-11" disabled={loading} />
+                      <Input
+                        {...field}
+                        value={field.value || ''}
+                        className="h-11"
+                        disabled={loading}
+                      />
                     </FormField>
                   )}
                 />
@@ -158,7 +179,12 @@ export function OrganizationForm({
                   name="phone"
                   render={({ field, fieldState }) => (
                     <FormField label="Phone" error={fieldState.error?.message}>
-                      <Input {...field} value={field.value || ''} className="h-11" disabled={loading} />
+                      <Input
+                        {...field}
+                        value={field.value || ''}
+                        className="h-11"
+                        disabled={loading}
+                      />
                     </FormField>
                   )}
                 />
@@ -167,7 +193,12 @@ export function OrganizationForm({
                   name="website"
                   render={({ field, fieldState }) => (
                     <FormField label="Website" error={fieldState.error?.message}>
-                      <Input {...field} value={field.value || ''} className="h-11" disabled={loading} />
+                      <Input
+                        {...field}
+                        value={field.value || ''}
+                        className="h-11"
+                        disabled={loading}
+                      />
                     </FormField>
                   )}
                 />

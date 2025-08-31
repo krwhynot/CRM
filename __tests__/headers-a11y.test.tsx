@@ -2,6 +2,7 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { describe, test, beforeEach, expect, vi } from 'vitest'
 import { PageHeader, PageHeaderAction } from '@/components/ui/new/PageHeader'
 
 // Extend Jest matchers
@@ -13,7 +14,7 @@ expect.extend(toHaveNoViolations)
  */
 
 describe('PageHeader Accessibility', () => {
-  const mockOnClick = jest.fn()
+  const mockOnClick = vi.fn()
   
   beforeEach(() => {
     mockOnClick.mockClear()
@@ -60,7 +61,7 @@ describe('PageHeader Accessibility', () => {
   })
 
   test('back button has proper accessibility attributes', () => {
-    const handleBack = jest.fn()
+    const handleBack = vi.fn()
     
     render(
       <PageHeader 
@@ -92,8 +93,8 @@ describe('PageHeader Accessibility', () => {
 
   test('keyboard navigation works properly', async () => {
     const user = userEvent.setup()
-    const handleAction1 = jest.fn()
-    const handleAction2 = jest.fn()
+    const handleAction1 = vi.fn()
+    const handleAction2 = vi.fn()
     
     const actions: PageHeaderAction[] = [
       { type: 'button', label: 'Action 1', onClick: handleAction1 },

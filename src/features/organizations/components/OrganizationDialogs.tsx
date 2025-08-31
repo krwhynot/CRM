@@ -1,4 +1,3 @@
-import React from 'react'
 import { StandardDialog } from '@/components/ui/StandardDialog'
 import { OrganizationForm } from './OrganizationForm'
 import { COPY } from '@/lib/copy'
@@ -10,7 +9,7 @@ interface OrganizationDialogsProps {
   isEditDialogOpen: boolean
   isDeleteDialogOpen: boolean
   selectedOrganization: Organization | null
-  editFormInitialData: Partial<OrganizationFormInterface>
+  editFormInitialData: Partial<OrganizationFormInterface> | undefined
   onCreateSubmit: (data: OrganizationFormInterface) => void
   onEditSubmit: (selectedOrganization: Organization, data: OrganizationFormInterface) => void
   onDeleteConfirm: (selectedOrganization: Organization) => void
@@ -23,7 +22,7 @@ interface OrganizationDialogsProps {
   isDeleting: boolean
 }
 
-export const OrganizationDialogs: React.FC<OrganizationDialogsProps> = ({
+export const OrganizationDialogs = ({
   isCreateDialogOpen,
   isEditDialogOpen,
   isDeleteDialogOpen,
@@ -38,8 +37,8 @@ export const OrganizationDialogs: React.FC<OrganizationDialogsProps> = ({
   onDeleteCancel,
   isCreating,
   isUpdating,
-  isDeleting
-}) => {
+  isDeleting,
+}: OrganizationDialogsProps) => {
   return (
     <>
       {/* Create Dialog */}
@@ -51,10 +50,7 @@ export const OrganizationDialogs: React.FC<OrganizationDialogsProps> = ({
         size="lg"
         scroll="content"
       >
-        <OrganizationForm 
-          onSubmit={onCreateSubmit}
-          loading={isCreating}
-        />
+        <OrganizationForm onSubmit={onCreateSubmit} loading={isCreating} />
       </StandardDialog>
 
       {/* Edit Dialog */}
@@ -81,7 +77,10 @@ export const OrganizationDialogs: React.FC<OrganizationDialogsProps> = ({
         open={isDeleteDialogOpen}
         onOpenChange={onDeleteDialogChange}
         title={COPY.CONFIRMATIONS.ARE_YOU_SURE}
-        description={selectedOrganization && COPY.CONFIRMATIONS.DELETE_WARNING.replace('{name}', selectedOrganization.name)}
+        description={
+          selectedOrganization &&
+          COPY.CONFIRMATIONS.DELETE_WARNING.replace('{name}', selectedOrganization.name)
+        }
         onConfirm={() => selectedOrganization && onDeleteConfirm(selectedOrganization)}
         onCancel={onDeleteCancel}
         confirmText={COPY.BUTTONS.DELETE + ' Organization'}

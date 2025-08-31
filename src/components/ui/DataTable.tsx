@@ -206,9 +206,9 @@ export function DataTable<T>({
                       {column.cell
                         ? column.cell(row)
                         : String(
-                            typeof column.key === 'string'
-                              ? (row as Record<string, unknown>)[column.key] || ''
-                              : (row as Record<string | symbol, unknown>)[column.key] || ''
+                            (row as Record<string | number | symbol, unknown>)[
+                              column.key as keyof T
+                            ] || ''
                           )}
                     </td>
                   ))}

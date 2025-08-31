@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Activity, RefreshCw } from 'lucide-react'
@@ -21,23 +20,25 @@ interface EnhancedActivityFeedProps {
   refreshInterval?: number
 }
 
-export function EnhancedActivityFeed({ 
-  limit = 20, 
+export function EnhancedActivityFeed({
+  limit = 20,
   className,
-  showFilters = true
+  showFilters = true,
 }: EnhancedActivityFeedProps) {
-  const [refreshKey, setRefreshKey] = useState(0)
-
   // Feature flag for new MFB compact styling
   const USE_NEW_STYLE = safeGetString('useNewStyle', 'true') !== 'false'
 
   // Custom hooks
-  const { activityItems, isLoading } = useEnhancedActivityData(refreshKey)
-  const { selectedType, setSelectedType, filteredItems } = useActivityFiltering(activityItems, limit)
+  const { activityItems, isLoading } = useEnhancedActivityData()
+  const { selectedType, setSelectedType, filteredItems } = useActivityFiltering(
+    activityItems,
+    limit
+  )
   const { formatTimestamp, getPriorityColor } = useActivityFormatting()
 
   const handleRefresh = () => {
-    setRefreshKey(prev => prev + 1)
+    // Refresh functionality can be implemented here if needed
+    window.location.reload()
   }
 
   if (isLoading) {
@@ -45,23 +46,20 @@ export function EnhancedActivityFeed({
   }
 
   return (
-    <Card className={`${USE_NEW_STYLE ? "border-primary/10 shadow-sm" : "shadow-md"} ${className}`}>
-      <CardHeader className={USE_NEW_STYLE ? "p-4 pb-3" : "p-6 pb-4"}>
+    <Card className={`${USE_NEW_STYLE ? 'border-primary/10 shadow-sm' : 'shadow-md'} ${className}`}>
+      <CardHeader className={USE_NEW_STYLE ? 'p-4 pb-3' : 'p-6 pb-4'}>
         <div className="flex items-center justify-between">
-          <CardTitle className={`flex items-center gap-2 ${USE_NEW_STYLE ? "text-base font-bold text-foreground" : "text-lg font-semibold"}`}>
+          <CardTitle
+            className={`flex items-center gap-2 ${USE_NEW_STYLE ? 'text-base font-bold text-foreground' : 'text-lg font-semibold'}`}
+          >
             <Activity className="size-5 text-primary" />
             Recent Activity
           </CardTitle>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleRefresh}
-            className="size-8 p-0"
-          >
+          <Button variant="ghost" size="sm" onClick={handleRefresh} className="size-8 p-0">
             <RefreshCw className="size-4" />
           </Button>
         </div>
-        
+
         <ActivityFilters
           selectedType={selectedType}
           onTypeChange={setSelectedType}
@@ -69,7 +67,7 @@ export function EnhancedActivityFeed({
         />
       </CardHeader>
 
-      <CardContent className={USE_NEW_STYLE ? "p-4 pt-0" : "p-6 pt-0"}>
+      <CardContent className={USE_NEW_STYLE ? 'p-4 pt-0' : 'p-6 pt-0'}>
         {filteredItems.length === 0 ? (
           <div className="py-8 text-center">
             <Activity className="mx-auto mb-3 size-12 text-muted-foreground/30" />
@@ -79,7 +77,9 @@ export function EnhancedActivityFeed({
             </p>
           </div>
         ) : (
-          <div className={`max-h-activity-feed space-y-3 overflow-y-auto ${USE_NEW_STYLE ? "pr-2" : "pr-3"}`}>
+          <div
+            className={`max-h-activity-feed space-y-3 overflow-y-auto ${USE_NEW_STYLE ? 'pr-2' : 'pr-3'}`}
+          >
             {filteredItems.map((item) => (
               <ActivityItemComponent
                 key={item.id}

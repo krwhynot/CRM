@@ -6,6 +6,7 @@
 import { describe, test, expect } from 'vitest'
 import { render } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { Control } from 'react-hook-form'
 import { useForm, Controller } from 'react-hook-form'
 import { FormField } from '@/components/forms/FormField'
 import { Input } from '@/components/ui/input'
@@ -21,8 +22,8 @@ function AccessibilityTestForm({
   children, 
   defaultValues = {} 
 }: { 
-  children: React.ReactNode
-  defaultValues?: Record<string, any>
+  children: React.ReactNode | ((control: Control<any>) => React.ReactNode)
+  defaultValues?: Record<string, unknown>
 }) {
   const { control } = useForm({ defaultValues })
   

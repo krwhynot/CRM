@@ -548,13 +548,13 @@ describe("✍️ UX Writing & Microcopy", () => {
       const content = stripImportsAndTypes(stripComments(raw));
       
       // Check if this file is allowed to use domain-specific terminology
-      const hasTerminologyException = TERMINOLOGY_EXCEPTIONS.some(({ pathRe, terms }) => {
+      const hasTerminologyException = TERMINOLOGY_EXCEPTIONS.some(({ pathRe }) => {
         return pathRe.test(f.replace(/\\/g, "/"));
       });
       
       for (const preferred in PREFERRED_TERMS) {
-        const forbidden = PREFERRED_TERMS[preferred];
-        forbidden.forEach((term) => {
+        const forbidden = PREFERRED_TERMS[preferred as keyof typeof PREFERRED_TERMS];
+        forbidden.forEach((term: string) => {
           // Skip if this file has an exception for this term
           if (hasTerminologyException && TERMINOLOGY_EXCEPTIONS.some(({ pathRe, terms }) => {
             return pathRe.test(f.replace(/\\/g, "/")) && terms.includes(term);

@@ -1,6 +1,6 @@
 /**
  * Form Types Index
- * 
+ *
  * Centralized exports for all form types and default value factories.
  * This provides a single import location for form-related utilities.
  */
@@ -11,7 +11,7 @@ export {
   defaultContactFormValues,
   createContactFormDefaults,
   createContactFormDefaultsWithOrganization,
-  isContactFormData
+  isContactFormData,
 } from './contact-form.types'
 
 // Organization form types and defaults
@@ -22,7 +22,7 @@ export {
   createPrincipalOrganizationDefaults,
   createDistributorOrganizationDefaults,
   createCustomerOrganizationDefaults,
-  isOrganizationFormData
+  isOrganizationFormData,
 } from './organization-form.types'
 
 // Opportunity form types and defaults
@@ -35,14 +35,14 @@ export {
   createDiscoveryOpportunityDefaults,
   createProposalOpportunityDefaults,
   createNegotiationOpportunityDefaults,
-  isOpportunityFormData
+  isOpportunityFormData,
 } from './opportunity-form.types'
 
 // Re-export additional form data types from validation.ts for convenience
-export type { 
+export type {
   ProductFormData,
   OpportunityProductFormData,
-  ContactPreferredPrincipalFormData
+  ContactPreferredPrincipalFormData,
 } from '../validation'
 
 // Re-export individual form data types for direct access
@@ -54,10 +54,7 @@ import type { OpportunityFormData as OpportunityFormDataType } from './opportuni
  * Union type of all form data types
  * Useful for generic form handling utilities
  */
-export type AnyFormData = 
-  | ContactFormDataType 
-  | OrganizationFormDataType 
-  | OpportunityFormDataType
+export type AnyFormData = ContactFormDataType | OrganizationFormDataType | OpportunityFormDataType
 
 // Re-export individual form data types for direct access
 import { isContactFormData } from './contact-form.types'
@@ -68,11 +65,7 @@ import { isOpportunityFormData } from './opportunity-form.types'
  * Type guard to check if data is any form data type
  */
 export const isFormData = (data: unknown): data is AnyFormData => {
-  return (
-    isContactFormData(data) || 
-    isOrganizationFormData(data) || 
-    isOpportunityFormData(data)
-  )
+  return isContactFormData(data) || isOrganizationFormData(data) || isOpportunityFormData(data)
 }
 
 /**
@@ -100,7 +93,7 @@ export const FormValidationPatterns = {
   email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   phone: /^\+?[\d\s\-().]+$/,
   uuid: /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
-  url: /^https?:\/\/.+/
+  url: /^https?:\/\/.+/,
 }
 
 /**
@@ -108,21 +101,46 @@ export const FormValidationPatterns = {
  */
 export const FormFieldRequirements = {
   contact: {
-    required: ['first_name', 'last_name', 'organization_id', 'purchase_influence', 'decision_authority'],
-    nullable: ['email', 'title', 'department', 'phone', 'mobile_phone', 'linkedin_url', 'notes', 'role'],
+    required: [
+      'first_name',
+      'last_name',
+      'organization_id',
+      'purchase_influence',
+      'decision_authority',
+    ],
+    nullable: [
+      'email',
+      'title',
+      'department',
+      'phone',
+      'mobile_phone',
+      'linkedin_url',
+      'notes',
+      'role',
+    ],
     boolean: ['is_primary_contact'],
-    array: ['preferred_principals']
+    array: ['preferred_principals'],
   },
   organization: {
     required: ['name', 'type', 'priority', 'segment'],
     nullable: ['city', 'state_province', 'phone', 'website', 'account_manager', 'notes'],
     boolean: ['is_principal', 'is_distributor'],
-    array: []
+    array: [],
   },
   opportunity: {
-    required: ['name', 'organization_id', 'estimated_value', 'stage'],
-    nullable: ['contact_id', 'estimated_close_date', 'description', 'notes', 'product_id', 'opportunity_context', 'principal_id', 'probability', 'deal_owner'],
+    required: ['name', 'organization_id', 'estimated_value', 'stage', 'status'],
+    nullable: [
+      'contact_id',
+      'estimated_close_date',
+      'description',
+      'notes',
+      'product_id',
+      'opportunity_context',
+      'principal_id',
+      'probability',
+      'deal_owner',
+    ],
     boolean: ['auto_generated_name'],
-    array: ['principals']
-  }
+    array: ['principals'],
+  },
 } as const

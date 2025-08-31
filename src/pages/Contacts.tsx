@@ -1,11 +1,10 @@
-import React from 'react'
-import { 
-  useContacts, 
+import {
+  useContacts,
   useRefreshContacts,
   useContactsPageState,
   useContactsPageActions,
   ContactsDataDisplay,
-  ContactsDialogs
+  ContactsDialogs,
 } from '@/features/contacts'
 import { ContactsErrorBoundary } from '@/components/error-boundaries/QueryErrorBoundary'
 import { ContactManagementTemplate } from '@/components/templates/EntityManagementTemplate'
@@ -13,7 +12,7 @@ import { ContactManagementTemplate } from '@/components/templates/EntityManageme
 function ContactsPage() {
   const { data: contacts = [], isLoading, error, isError } = useContacts()
   const refreshContacts = useRefreshContacts()
-  
+
   const {
     isCreateDialogOpen,
     isEditDialogOpen,
@@ -24,26 +23,15 @@ function ContactsPage() {
     openEditDialog,
     closeEditDialog,
     openDeleteDialog,
-    closeDeleteDialog
+    closeDeleteDialog,
   } = useContactsPageState()
-  
-  const {
-    handleCreate,
-    handleUpdate,
-    handleDelete,
-    isCreating,
-    isUpdating,
-    isDeleting
-  } = useContactsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
-  
 
+  const { handleCreate, handleUpdate, handleDelete, isCreating, isUpdating, isDeleting } =
+    useContactsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
 
   return (
     <ContactsErrorBoundary>
-      <ContactManagementTemplate
-        entityCount={contacts.length}
-        onAddClick={openCreateDialog}
-      >
+      <ContactManagementTemplate entityCount={contacts.length} onAddClick={openCreateDialog}>
         <ContactsDataDisplay
           isLoading={isLoading}
           isError={isError}
@@ -53,7 +41,7 @@ function ContactsPage() {
           onDelete={openDeleteDialog}
           onRefresh={refreshContacts}
         />
-        
+
         <ContactsDialogs
           isCreateDialogOpen={isCreateDialogOpen}
           isEditDialogOpen={isEditDialogOpen}

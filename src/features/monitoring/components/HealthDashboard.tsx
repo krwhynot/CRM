@@ -1,6 +1,6 @@
 /**
  * Production Health Dashboard Component
- * 
+ *
  * Real-time monitoring dashboard for system health and performance metrics
  */
 
@@ -18,7 +18,10 @@ interface HealthDashboardProps {
   refreshInterval?: number
 }
 
-export function HealthDashboard({ showDetails = false, refreshInterval = 60000 }: HealthDashboardProps) {
+export function HealthDashboard({
+  showDetails = false,
+  refreshInterval = 60000,
+}: HealthDashboardProps) {
   const { status, summary, isHealthy } = useHealthStatus()
   const { lastUpdated } = useHealthDashboardState(refreshInterval)
 
@@ -37,25 +40,15 @@ export function HealthDashboard({ showDetails = false, refreshInterval = 60000 }
 
   return (
     <div className="space-y-4">
-      <SystemStatusOverview 
-        status={status}
-        summary={summary}
-        isHealthy={isHealthy}
-      />
-      
+      <SystemStatusOverview status={status as any} summary={summary} isHealthy={isHealthy} />
+
       <PerformanceMetrics performance={status.performance} />
-      
-      {showDetails && (
-        <DetailedSystemInfo status={status} />
-      )}
+
+      {showDetails && <DetailedSystemInfo status={status} />}
 
       <div className="flex items-center justify-between text-sm text-gray-500">
         <span>Last updated: {lastUpdated.toLocaleTimeString()}</span>
-        <Button 
-          variant="outline" 
-          size="sm"
-          onClick={() => window.location.reload()}
-        >
+        <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
           Refresh Status
         </Button>
       </div>
@@ -68,7 +61,7 @@ export function HealthDashboard({ showDetails = false, refreshInterval = 60000 }
  */
 export function HealthStatusIndicator() {
   const { summary, isHealthy } = useHealthStatus()
-  
+
   return (
     <div className="flex items-center space-x-2">
       {isHealthy ? (

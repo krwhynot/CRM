@@ -34,7 +34,7 @@ export const ProductDialogs: React.FC<ProductDialogsProps> = ({
   onDeleteCancel,
   isCreating,
   isUpdating,
-  isDeleting
+  isDeleting,
 }) => {
   return (
     <>
@@ -47,10 +47,7 @@ export const ProductDialogs: React.FC<ProductDialogsProps> = ({
         size="xl"
         scroll="content"
       >
-        <ProductForm 
-          onSubmit={onCreateSubmit}
-          loading={isCreating}
-        />
+        <ProductForm onSubmit={onCreateSubmit as any} loading={isCreating} />
       </StandardDialog>
 
       {/* Edit Dialog */}
@@ -65,7 +62,7 @@ export const ProductDialogs: React.FC<ProductDialogsProps> = ({
         {selectedProduct && (
           <ProductForm
             initialData={selectedProduct}
-            onSubmit={onEditSubmit}
+            onSubmit={onEditSubmit as any}
             loading={isUpdating}
           />
         )}

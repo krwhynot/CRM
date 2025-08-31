@@ -4,7 +4,7 @@ import type { FormSection } from '@/hooks/useFormLayout'
 
 interface CoreSectionsRendererProps<T extends FieldValues> {
   sections: FormSection<T>[]
-  form: UseFormReturn<T>
+  form: UseFormReturn<T, any, any>
   loading: boolean
   entityType: 'organization' | 'contact' | 'product' | 'opportunity' | 'activity'
   getLayoutClass: (layout?: FormSection<T>['layout']) => string
@@ -17,7 +17,7 @@ export function CoreSectionsRenderer<T extends FieldValues>({
   loading,
   entityType,
   getLayoutClass,
-  getSectionClassName
+  getSectionClassName,
 }: CoreSectionsRendererProps<T>) {
   return (
     <>

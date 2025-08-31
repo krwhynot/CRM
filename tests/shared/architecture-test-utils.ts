@@ -3,8 +3,8 @@
  * Shared utilities for architecture compliance testing
  */
 
-import { readFile, readdir, stat } from 'fs/promises'
-import { join, extname, basename, dirname } from 'path'
+import { readFile } from 'fs/promises'
+import { join, extname, basename } from 'path'
 import { glob } from 'glob'
 
 export interface ComponentAnalysis {

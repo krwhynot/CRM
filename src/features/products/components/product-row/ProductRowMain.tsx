@@ -21,9 +21,7 @@ interface ProductRowMainProps {
   onSelect?: () => void
 }
 
-const EmptyCell = () => (
-  <span className="italic text-gray-400">Not provided</span>
-)
+const EmptyCell = () => <span className="italic text-gray-400">Not provided</span>
 
 export const ProductRowMain: React.FC<ProductRowMainProps> = ({
   product,
@@ -34,13 +32,15 @@ export const ProductRowMain: React.FC<ProductRowMainProps> = ({
   onView,
   onContactSupplier,
   isSelected = false,
-  onSelect
+  onSelect,
 }) => {
   return (
-    <TableRow className={cn(
-      "hover:bg-gray-50 transition-colors duration-200 group",
-      isSelected && "bg-blue-50 hover:bg-blue-100"
-    )}>
+    <TableRow
+      className={cn(
+        'hover:bg-gray-50 transition-colors duration-200 group',
+        isSelected && 'bg-blue-50 hover:bg-blue-100'
+      )}
+    >
       <TableCell className="py-4">
         <Checkbox
           checked={isSelected}
@@ -49,9 +49,9 @@ export const ProductRowMain: React.FC<ProductRowMainProps> = ({
         />
       </TableCell>
       <TableCell className="py-4">
-        <Button 
-          variant="ghost" 
-          size="sm" 
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onToggleExpansion}
           className="h-auto p-0 hover:bg-transparent"
         >
@@ -67,17 +67,13 @@ export const ProductRowMain: React.FC<ProductRowMainProps> = ({
           <div className="text-base font-semibold text-gray-900">
             {product.name || <EmptyCell />}
           </div>
-          {product.sku && (
-            <div className="font-mono text-xs text-gray-500">
-              SKU: {product.sku}
-            </div>
-          )}
+          {product.sku && <div className="font-mono text-xs text-gray-500">SKU: {product.sku}</div>}
           <ProductBadges
             category={product.category}
             price={product.list_price}
             shelfLifeDays={product.shelf_life_days}
-            inStock={product.in_stock}
-            lowStock={product.low_stock}
+            inStock={(product as any).in_stock ?? true}
+            lowStock={(product as any).low_stock ?? false}
           />
         </div>
       </TableCell>
@@ -88,13 +84,11 @@ export const ProductRowMain: React.FC<ProductRowMainProps> = ({
       </TableCell>
       <TableCell className="py-4">
         <div className="text-sm text-gray-700">
-          {product.principal_name || <EmptyCell />}
+          {(product as any).principal_name || <EmptyCell />}
         </div>
       </TableCell>
       <TableCell className="py-4">
-        <div className="text-sm text-gray-700">
-          {product.brand || <EmptyCell />}
-        </div>
+        <div className="text-sm text-gray-700">{(product as any).brand || <EmptyCell />}</div>
       </TableCell>
       <TableCell className="py-4">
         <ProductActions

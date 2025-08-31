@@ -4,8 +4,8 @@
  */
 
 import { describe, test, expect, beforeAll } from 'vitest'
-import { readdir, readFile, stat } from 'fs/promises'
-import { join, basename, dirname } from 'path'
+import { readdir, readFile } from 'fs/promises'
+import { join, basename } from 'path'
 import { glob } from 'glob'
 
 const projectRoot = join(process.cwd())
@@ -274,13 +274,9 @@ describe('Component Placement Architecture', () => {
           // Good patterns: charts/, forms/, tables/, etc.
           const goodGroupingPatterns = [/charts?/, /forms?/, /tables?/, /cards?/, /lists?/]
           
-          let hasGoodGrouping = false
-          for (const subdir of subdirectories) {
-            if (goodGroupingPatterns.some(pattern => pattern.test(subdir.name))) {
-              hasGoodGrouping = true
-              break
-            }
-          }
+          const hasGoodGrouping = subdirectories.some(subdir => 
+            goodGroupingPatterns.some(pattern => pattern.test(subdir.name))
+          )
           
           // Not required but good practice
           // expect(hasGoodGrouping || subdirectories.length === 0).toBe(true)

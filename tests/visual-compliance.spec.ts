@@ -93,9 +93,12 @@ test.describe('Accessibility compliance', () => {
         await button.focus()
         
         // Check that focus ring is applied (focus-visible styles)
-        const focusedButton = await button.evaluate(el => {
+        const hasFocusRing = await button.evaluate(el => {
           return window.getComputedStyle(el, ':focus-visible').outline !== 'none'
         })
+        
+        // Verify focus ring exists
+        expect(hasFocusRing).toBe(true)
         
         // At minimum, element should be focusable
         expect(await button.evaluate(el => el === document.activeElement)).toBe(true)

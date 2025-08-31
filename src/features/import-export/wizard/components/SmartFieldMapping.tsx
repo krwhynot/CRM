@@ -1,8 +1,13 @@
-import React from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2, CheckCircle2, AlertTriangle, X, Sparkles, HelpCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -36,16 +41,24 @@ const CRM_FIELD_OPTIONS = {
     { value: 'type', label: 'Organization Type', description: 'Customer, distributor, etc.' },
     { value: 'priority', label: 'Priority', description: 'A, B, C, or D priority' },
     { value: 'segment', label: 'Segment', description: 'Business segment' },
-    { value: 'primary_manager_name', label: 'Primary Manager', description: 'Primary account manager name' },
-    { value: 'secondary_manager_name', label: 'Secondary Manager', description: 'Secondary account manager name' },
-    { value: 'is_active', label: 'Active Status', description: 'Whether organization is active' }
+    {
+      value: 'primary_manager_name',
+      label: 'Primary Manager',
+      description: 'Primary account manager name',
+    },
+    {
+      value: 'secondary_manager_name',
+      label: 'Secondary Manager',
+      description: 'Secondary account manager name',
+    },
+    { value: 'is_active', label: 'Active Status', description: 'Whether organization is active' },
   ],
   contact: [
     { value: 'contact_name', label: 'Full Name', description: 'Contact full name' },
     { value: 'contact_email', label: 'Email', description: 'Contact email address' },
     { value: 'contact_phone', label: 'Phone', description: 'Contact phone number' },
-    { value: 'contact_title', label: 'Title', description: 'Job title or role' }
-  ]
+    { value: 'contact_title', label: 'Title', description: 'Job title or role' },
+  ],
 }
 
 // Get confidence badge styling
@@ -55,24 +68,24 @@ function getConfidenceBadge(confidence: number) {
       variant: 'default' as const,
       className: 'bg-success/20 text-success border-success/50',
       label: 'High',
-      icon: CheckCircle2
+      icon: CheckCircle2,
     }
   }
-  
+
   if (confidence >= CONFIDENCE_THRESHOLDS.MEDIUM) {
     return {
       variant: 'secondary' as const,
       className: 'bg-yellow-100 text-yellow-800 border-yellow-200',
       label: 'Medium',
-      icon: AlertTriangle
+      icon: AlertTriangle,
     }
   }
-  
+
   return {
     variant: 'outline' as const,
     className: 'bg-red-50 text-red-700 border-red-200',
     label: 'Low',
-    icon: X
+    icon: X,
   }
 }
 
@@ -80,13 +93,29 @@ function getConfidenceBadge(confidence: number) {
 function getStatusBadge(status: SmartFieldMapping['status']) {
   switch (status) {
     case 'auto':
-      return { variant: 'default' as const, label: 'Auto-mapped', className: 'bg-green-100 text-green-800' }
+      return {
+        variant: 'default' as const,
+        label: 'Auto-mapped',
+        className: 'bg-green-100 text-green-800',
+      }
     case 'confirmed':
-      return { variant: 'default' as const, label: 'Confirmed', className: 'bg-blue-100 text-blue-800' }
+      return {
+        variant: 'default' as const,
+        label: 'Confirmed',
+        className: 'bg-blue-100 text-blue-800',
+      }
     case 'needs_review':
-      return { variant: 'outline' as const, label: 'Needs Review', className: 'bg-yellow-50 text-yellow-700 border-yellow-300' }
+      return {
+        variant: 'outline' as const,
+        label: 'Needs Review',
+        className: 'bg-yellow-50 text-yellow-700 border-yellow-300',
+      }
     case 'skipped':
-      return { variant: 'secondary' as const, label: 'Skipped', className: 'bg-slate-100 text-slate-600' }
+      return {
+        variant: 'secondary' as const,
+        label: 'Skipped',
+        className: 'bg-slate-100 text-slate-600',
+      }
     default:
       return { variant: 'outline' as const, label: 'Unknown', className: '' }
   }
@@ -97,7 +126,7 @@ function MappingRow({
   mapping,
   onUpdateMapping,
   onConfirmMapping,
-  onSkipField
+  onSkipField,
 }: {
   mapping: SmartFieldMapping
   onUpdateMapping: (csvHeader: string, crmField: string | null) => void
@@ -111,27 +140,24 @@ function MappingRow({
   const allFieldOptions = [...CRM_FIELD_OPTIONS.organization, ...CRM_FIELD_OPTIONS.contact]
 
   return (
-    <div className={cn(
-      "grid grid-cols-1 md:grid-cols-12 gap-4 p-4 border rounded-lg bg-white",
-      mapping.status === 'needs_review' && "border-yellow-300 bg-yellow-50/30",
-      mapping.status === 'auto' && "border-green-300 bg-green-50/30",
-      mapping.status === 'confirmed' && "border-blue-300 bg-blue-50/30"
-    )}>
-      
+    <div
+      className={cn(
+        'grid grid-cols-1 md:grid-cols-12 gap-4 p-4 border rounded-lg bg-white',
+        mapping.status === 'needs_review' && 'border-yellow-300 bg-yellow-50/30',
+        mapping.status === 'auto' && 'border-green-300 bg-green-50/30',
+        mapping.status === 'confirmed' && 'border-blue-300 bg-blue-50/30'
+      )}
+    >
       {/* CSV Header */}
       <div className="space-y-2 md:col-span-3">
         <div className="flex items-center space-x-2">
           <span className="text-sm font-medium text-slate-900 md:text-base">
             {mapping.csvHeader}
           </span>
-          {mapping.aiSuggestion && (
-            <Sparkles className="size-4 text-amber-500" />
-          )}
+          {mapping.aiSuggestion && <Sparkles className="size-4 text-amber-500" />}
         </div>
         <div className="flex flex-wrap gap-1">
-          <Badge {...statusBadge}>
-            {statusBadge.label}
-          </Badge>
+          <Badge {...statusBadge}>{statusBadge.label}</Badge>
           {mapping.confidence > 0 && (
             <Badge className={confidenceBadge.className}>
               <ConfidenceIcon className="mr-1 size-3" />
@@ -145,9 +171,13 @@ function MappingRow({
       <div className="space-y-2 md:col-span-4">
         <Select
           value={mapping.crmField || 'none'}
-          onValueChange={(value) => onUpdateMapping(mapping.csvHeader, value === 'none' ? null : value)}
+          onValueChange={(value) =>
+            onUpdateMapping(mapping.csvHeader, value === 'none' ? null : value)
+          }
         >
-          <SelectTrigger className="h-12 text-sm"> {/* iPad touch-friendly height */}
+          <SelectTrigger className="h-12 text-sm">
+            {' '}
+            {/* iPad touch-friendly height */}
             <SelectValue placeholder="Select CRM field" />
           </SelectTrigger>
           <SelectContent className="max-h-60 overflow-y-auto">
@@ -203,7 +233,7 @@ function MappingRow({
             Confirm
           </Button>
         )}
-        
+
         <Button
           size="sm"
           variant="outline"
@@ -227,7 +257,7 @@ function MappingRow({
               className="h-8 w-full justify-start px-2 text-xs"
               onClick={() => onUpdateMapping(mapping.csvHeader, alt)}
             >
-              {allFieldOptions.find(f => f.value === alt)?.label || alt}
+              {allFieldOptions.find((f) => f.value === alt)?.label || alt}
             </Button>
           ))}
         </div>
@@ -243,23 +273,21 @@ export function SmartFieldMappingComponent({
   onUpdateMapping,
   onConfirmMapping,
   onSkipField,
-  className
+  className,
 }: SmartFieldMappingProps) {
-  
   // Calculate mapping stats
   const stats = {
     total: mappings.length,
-    auto: mappings.filter(m => m.status === 'auto').length,
-    confirmed: mappings.filter(m => m.status === 'confirmed').length,
-    needsReview: mappings.filter(m => m.status === 'needs_review').length,
-    skipped: mappings.filter(m => m.status === 'skipped').length
+    auto: mappings.filter((m) => m.status === 'auto').length,
+    confirmed: mappings.filter((m) => m.status === 'confirmed').length,
+    needsReview: mappings.filter((m) => m.status === 'needs_review').length,
+    skipped: mappings.filter((m) => m.status === 'skipped').length,
   }
 
   const isComplete = stats.needsReview === 0 && stats.total > 0
 
   return (
-    <div className={cn("space-y-6", className)}>
-      
+    <div className={cn('space-y-6', className)}>
       {/* AI Generation Header */}
       <Card className="border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
         <CardContent className="p-6">
@@ -273,7 +301,7 @@ export function SmartFieldMappingComponent({
                 Let AI automatically map your CSV columns to CRM fields
               </p>
             </div>
-            
+
             <Button
               onClick={onGenerateAIMappings}
               disabled={aiInProgress || mappings.length === 0}
@@ -327,7 +355,9 @@ export function SmartFieldMappingComponent({
 
       {/* Completion Status */}
       {mappings.length > 0 && (
-        <Alert className={isComplete ? "border-green-200 bg-green-50" : "border-yellow-200 bg-yellow-50"}>
+        <Alert
+          className={isComplete ? 'border-green-200 bg-green-50' : 'border-yellow-200 bg-yellow-50'}
+        >
           <AlertDescription className="flex items-center">
             {isComplete ? (
               <>
@@ -337,7 +367,8 @@ export function SmartFieldMappingComponent({
             ) : (
               <>
                 <AlertTriangle className="mr-2 size-4 text-yellow-600" />
-                {stats.needsReview} field{stats.needsReview !== 1 ? 's' : ''} still need{stats.needsReview === 1 ? 's' : ''} review before proceeding.
+                {stats.needsReview} field{stats.needsReview !== 1 ? 's' : ''} still need
+                {stats.needsReview === 1 ? 's' : ''} review before proceeding.
               </>
             )}
           </AlertDescription>
@@ -375,10 +406,18 @@ export function SmartFieldMappingComponent({
             <div className="space-y-2 text-sm text-slate-600">
               <p className="font-medium">Need help with field mapping?</p>
               <ul className="space-y-1 text-xs">
-                <li>• <strong>Auto-mapped:</strong> AI confidently mapped these fields (≥85%)</li>
-                <li>• <strong>Needs Review:</strong> AI suggestions with lower confidence (60-84%)</li>
-                <li>• <strong>Skip:</strong> Fields not needed for import</li>
-                <li>• <strong>Required:</strong> Organization Name is required for import</li>
+                <li>
+                  • <strong>Auto-mapped:</strong> AI confidently mapped these fields (≥85%)
+                </li>
+                <li>
+                  • <strong>Needs Review:</strong> AI suggestions with lower confidence (60-84%)
+                </li>
+                <li>
+                  • <strong>Skip:</strong> Fields not needed for import
+                </li>
+                <li>
+                  • <strong>Required:</strong> Organization Name is required for import
+                </li>
               </ul>
             </div>
           </div>

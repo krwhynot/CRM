@@ -199,8 +199,6 @@ describe('FormField Component Adoption', () => {
       const formsUsingFormField = analysisResults.filter(analysis => analysis.hasFormField)
       
       for (const analysis of formsUsingFormField) {
-        const content = await readFile(join(projectRoot, analysis.file), 'utf-8')
-        
         // If using FormField, the data-form-field attribute should be present (added by our component)
         // This is implicitly tested by checking that FormField is imported and used
         expect(analysis.formFieldCount, `${analysis.file} should have FormField elements`).toBeGreaterThan(0)

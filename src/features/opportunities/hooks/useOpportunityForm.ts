@@ -20,14 +20,14 @@ export interface UseOpportunityFormReturn {
   trigger: ReturnType<typeof useForm<OpportunityFormData>>['trigger']
   formState: ReturnType<typeof useForm<OpportunityFormData>>['formState']
   errors: ReturnType<typeof useForm<OpportunityFormData>>['formState']['errors']
-  
+
   // Derived data
   organizations: ReturnType<typeof useOrganizations>['data']
   contacts: ReturnType<typeof useContacts>['data']
   filteredContacts: ReturnType<typeof useContacts>['data']
   watchedValues: OpportunityFormData
   selectedOrganization: string
-  
+
   // Validation helpers
   getStepValidation: (step: number) => Promise<boolean>
   validateStepsRange: (fromStep: number, toStep: number) => Promise<boolean>
@@ -35,13 +35,13 @@ export interface UseOpportunityFormReturn {
 
 export const useOpportunityForm = ({
   preselectedOrganization,
-  preselectedContact
+  preselectedContact,
 }: UseOpportunityFormProps = {}): UseOpportunityFormReturn => {
   const { data: organizations = [] } = useOrganizations()
   const { data: contacts = [] } = useContacts()
 
   const form = useForm<OpportunityFormData>({
-    resolver: yupResolver(opportunitySchema),
+    resolver: yupResolver(opportunitySchema) as any,
     mode: 'onBlur',
     defaultValues: {
       name: '',
@@ -58,8 +58,8 @@ export const useOpportunityForm = ({
       auto_generated_name: false,
       principal_id: null,
       probability: null,
-      deal_owner: null
-    }
+      deal_owner: null,
+    },
   })
 
   const { watch, trigger } = form
@@ -68,7 +68,7 @@ export const useOpportunityForm = ({
 
   // Filter contacts by selected organization
   const filteredContacts = useMemo(() => {
-    return selectedOrganization 
+    return selectedOrganization
       ? contacts.filter((contact) => contact.organization_id === selectedOrganization)
       : contacts
   }, [selectedOrganization, contacts])
@@ -105,22 +105,22 @@ export const useOpportunityForm = ({
   return {
     // Form methods
     register: form.register,
-    handleSubmit: form.handleSubmit,
+    handleSubmit: form.handleSubmit as any,
     setValue: form.setValue,
     watch: form.watch,
     trigger: form.trigger,
     formState: form.formState,
     errors: form.formState.errors,
-    
+
     // Derived data
     organizations,
     contacts,
     filteredContacts,
     watchedValues,
     selectedOrganization,
-    
+
     // Validation helpers
     getStepValidation,
-    validateStepsRange
+    validateStepsRange,
   }
 }

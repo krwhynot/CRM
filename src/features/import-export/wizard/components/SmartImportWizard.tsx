@@ -7,6 +7,9 @@ import { cn } from '@/lib/utils'
 import type { WizardStep } from '../utils/wizard-steps'
 import { STEP_ORDER, STEP_CONFIGS } from '../utils/wizard-steps'
 
+// Re-export WizardStep for consumers
+export type { WizardStep } from '../utils/wizard-steps'
+
 interface WizardStepConfig {
   id: WizardStep
   title: string

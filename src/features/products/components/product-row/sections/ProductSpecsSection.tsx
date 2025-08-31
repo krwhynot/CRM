@@ -6,9 +6,7 @@ interface ProductSpecsSectionProps {
   product: ProductWithPrincipal
 }
 
-const EmptyCell = () => (
-  <span className="italic text-gray-400">Not provided</span>
-)
+const EmptyCell = () => <span className="italic text-gray-400">Not provided</span>
 
 export const ProductSpecsSection: React.FC<ProductSpecsSectionProps> = ({ product }) => {
   return (
@@ -20,7 +18,7 @@ export const ProductSpecsSection: React.FC<ProductSpecsSectionProps> = ({ produc
           Package Size
         </div>
         <div className="pl-6 text-sm text-gray-600">
-          {product.package_size || <EmptyCell />}
+          {(product as any).package_size || <EmptyCell />}
         </div>
       </div>
 
@@ -30,9 +28,7 @@ export const ProductSpecsSection: React.FC<ProductSpecsSectionProps> = ({ produc
           <Scale className="size-4" />
           Unit of Measure
         </div>
-        <div className="pl-6 text-sm text-gray-600">
-          {product.unit_of_measure || <EmptyCell />}
-        </div>
+        <div className="pl-6 text-sm text-gray-600">{product.unit_of_measure || <EmptyCell />}</div>
       </div>
 
       {/* Origin Country */}
@@ -42,7 +38,7 @@ export const ProductSpecsSection: React.FC<ProductSpecsSectionProps> = ({ produc
           Origin
         </div>
         <div className="pl-6 text-sm text-gray-600">
-          {product.origin_country || <EmptyCell />}
+          {(product as any).origin_country || <EmptyCell />}
         </div>
       </div>
     </div>

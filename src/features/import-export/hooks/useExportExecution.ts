@@ -12,6 +12,7 @@ type ExportDataRecord = {
 interface XLSXLibrary {
   utils: {
     json_to_sheet: (data: ExportDataRecord[]) => unknown
+    sheet_add_aoa: (worksheet: unknown, data: unknown[][], options?: { origin?: string }) => void
     book_new: () => unknown
     book_append_sheet: (workbook: unknown, worksheet: unknown, sheetName: string) => void
   }
@@ -111,7 +112,7 @@ export const useExportExecution = (exportOptions: ExportOptions): UseExportExecu
       })
 
       // Create worksheet and workbook
-      const worksheet = XLSX.utils.json_to_sheet(transformedData)
+      const worksheet = XLSX.utils.json_to_sheet(transformedData) as any
 
       // Set column widths for better readability
       const columnWidths = exportOptions.selectedFields.map(() => ({ wch: 20 }))
@@ -167,7 +168,7 @@ export const useExportExecution = (exportOptions: ExportOptions): UseExportExecu
 
       // Fetch data in batches
       const batchSize = 1000
-      const allData: ExportDataRecord[] = []
+      const allData: any[] = [] // Use any[] for raw database data
       let offset = 0
       let hasMore = true
 
@@ -207,7 +208,7 @@ export const useExportExecution = (exportOptions: ExportOptions): UseExportExecu
       } else if (exportOptions.format === 'xlsx' && isFeatureEnabled('xlsxExport')) {
         // Dynamic import to avoid bundle bloat
         const XLSX = await import('xlsx')
-        content = generateXLSX(allData, XLSX.default)
+        content = generateXLSX(allData, XLSX.default as any)
         mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         fileExtension = 'xlsx'
       } else {

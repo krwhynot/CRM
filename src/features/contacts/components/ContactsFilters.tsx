@@ -1,4 +1,3 @@
-import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
@@ -21,7 +20,7 @@ interface ContactsFiltersProps {
   filteredCount: number
 }
 
-export const ContactsFilters: React.FC<ContactsFiltersProps> = ({
+export const ContactsFilters = ({
   activeFilter,
   onFilterChange,
   searchTerm,
@@ -29,7 +28,7 @@ export const ContactsFilters: React.FC<ContactsFiltersProps> = ({
   filterPills,
   totalContacts,
   filteredCount,
-}) => {
+}: ContactsFiltersProps) => {
   return (
     <div className="space-y-4 rounded-lg border border-border bg-card p-6 shadow-sm">
       {/* Header */}

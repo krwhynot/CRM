@@ -17,9 +17,8 @@ import { Button } from '@/components/ui/button'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn, formatTimeAgo, isOpportunityStalled, getStalledDays } from '@/lib/utils'
-import type { OpportunityFilters } from '@/types/entities'
+import type { OpportunityFilters, InteractionWithRelations } from '@/types/entities'
 import type { OpportunityWithLastActivity } from '@/types/opportunity.types'
-import type { Interaction } from '@/types/interaction.types'
 
 interface OpportunitiesTableProps {
   filters?: OpportunityFilters
@@ -30,9 +29,9 @@ interface OpportunitiesTableProps {
 
   // Activity handlers for inline details
   onAddInteraction?: (opportunityId: string) => void
-  onEditInteraction?: (interaction: Interaction) => void
-  onDeleteInteraction?: (interaction: Interaction) => void
-  onInteractionItemClick?: (interaction: Interaction) => void
+  onEditInteraction?: (interaction: InteractionWithRelations) => void
+  onDeleteInteraction?: (interaction: InteractionWithRelations) => void
+  onInteractionItemClick?: (interaction: InteractionWithRelations) => void
 }
 
 export function OpportunitiesTable({
@@ -331,7 +330,7 @@ export function OpportunitiesTable({
       <BulkDeleteDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
-        organizations={selectedOpportunities as OpportunityWithLastActivity[]} // Future: Create generic BulkDeleteDialog
+        organizations={selectedOpportunities as any} // Future: Create generic BulkDeleteDialog
         onConfirm={handleConfirmDelete}
         isDeleting={isDeleting}
       />

@@ -7,17 +7,19 @@ interface UsePrincipalPriorityReturn {
 }
 
 /**
- * Maps organization size to priority level for business intelligence
+ * Maps organization priority to display priority for business intelligence
  */
-const getPriorityFromSize = (size: string | null): string => {
-  switch (size) {
-    case 'enterprise':
+const getPriorityFromPriority = (priority: string): string => {
+  // The organization already has a priority field (A, B, C, D)
+  // We can enhance this with + modifiers based on business logic
+  switch (priority) {
+    case 'A':
       return 'A+'
-    case 'large':
+    case 'B':
       return 'A'
-    case 'medium':
+    case 'C':
       return 'B'
-    case 'small':
+    case 'D':
       return 'C'
     default:
       return 'D'
@@ -46,14 +48,14 @@ const getPriorityColor = (priority: string): string => {
 
 export const usePrincipalPriority = (principal: Organization): UsePrincipalPriorityReturn => {
   const { priority, priorityColor } = useMemo(() => {
-    const priority = getPriorityFromSize(principal.size)
+    const priority = getPriorityFromPriority(principal.priority)
     const priorityColor = getPriorityColor(priority)
-    
+
     return { priority, priorityColor }
-  }, [principal.size])
+  }, [principal.priority])
 
   return {
     priority,
-    priorityColor
+    priorityColor,
   }
 }

@@ -1,11 +1,15 @@
 import React from 'react'
 import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities'
 import { useInteractions } from '@/features/interactions/hooks/useInteractions'
-import type { Organization, OpportunityWithRelations, InteractionWithRelations } from '@/types/entities'
+import type {
+  Organization,
+  OpportunityWithRelations,
+  InteractionWithRelations,
+} from '@/types/entities'
 
 interface PrincipalMetrics {
   opportunityCount: number
-  activityCount: number
+  interactionCount: number
   lastActivity: Date | null
   totalValue: number
   activeOpportunities: number
@@ -36,11 +40,12 @@ const calculatePrincipalMetrics = (
   )
 
   // Find the most recent interaction
-  const lastActivity = principalInteractions.length > 0
-    ? principalInteractions
-        .map((interaction) => new Date(interaction.interaction_date))
-        .sort((a, b) => b.getTime() - a.getTime())[0]
-    : null
+  const lastActivity =
+    principalInteractions.length > 0
+      ? principalInteractions
+          .map((interaction) => new Date(interaction.interaction_date))
+          .sort((a, b) => b.getTime() - a.getTime())[0]
+      : null
 
   // Calculate total estimated value
   const totalValue = principalOpportunities.reduce(
@@ -55,26 +60,26 @@ const calculatePrincipalMetrics = (
 
   return {
     opportunityCount: principalOpportunities.length,
-    activityCount: principalInteractions.length,
+    interactionCount: principalInteractions.length,
     lastActivity,
     totalValue,
-    activeOpportunities
+    activeOpportunities,
   }
 }
 
 export const usePrincipalMetrics = (principal: Organization): UsePrincipalMetricsReturn => {
   // Fetch opportunities with filtering for performance
-  const { 
-    data: opportunities = [], 
+  const {
+    data: opportunities = [],
     isLoading: opportunitiesLoading,
-    error: opportunitiesError
+    error: opportunitiesError,
   } = useOpportunities({ principal_organization_id: principal.id })
 
   // Fetch interactions - we'll filter client-side for related opportunities
-  const { 
-    data: interactions = [], 
+  const {
+    data: interactions = [],
     isLoading: interactionsLoading,
-    error: interactionsError
+    error: interactionsError,
   } = useInteractions()
 
   // Calculate loading state
@@ -84,14 +89,14 @@ export const usePrincipalMetrics = (principal: Organization): UsePrincipalMetric
   const hasError = !!opportunitiesError || !!interactionsError
 
   // Calculate metrics
-  const metrics = React.useMemo(() => 
-    calculatePrincipalMetrics(principal, opportunities, interactions),
+  const metrics = React.useMemo(
+    () => calculatePrincipalMetrics(principal, opportunities, interactions),
     [principal, opportunities, interactions]
   )
 
   return {
     metrics,
     isLoading,
-    hasError
+    hasError,
   }
 }

@@ -48,14 +48,14 @@ export const useOpportunityActions = (): UseOpportunityActionsReturn => {
           description: data.description || null,
           notes: data.notes || null,
           // Optional fields with proper null handling
-          priority: data.priority || null,
+          priority: (data as any).priority || null,
           probability: data.probability || null,
           opportunity_context: data.opportunity_context || null,
           principal_organization_id: data.principal_id || null,
           // Remove non-database fields: principals, auto_generated_name
         }
 
-        await createOpportunityMutation.mutateAsync(opportunityData)
+        await createOpportunityMutation.mutateAsync(opportunityData as any)
         onSuccess()
         toast.success('Opportunity created successfully!')
       } catch (error: unknown) {

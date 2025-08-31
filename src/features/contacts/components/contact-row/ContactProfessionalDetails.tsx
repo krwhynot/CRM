@@ -1,4 +1,3 @@
-import React from 'react'
 import { Briefcase, User } from 'lucide-react'
 import { ContactBadges } from '../ContactBadges'
 import type { ContactWithOrganization } from '@/types/entities'
@@ -7,7 +6,7 @@ interface ContactProfessionalDetailsProps {
   contact: ContactWithOrganization
 }
 
-export const ContactProfessionalDetails: React.FC<ContactProfessionalDetailsProps> = ({ contact }) => {
+export const ContactProfessionalDetails = ({ contact }: ContactProfessionalDetailsProps) => {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       <div className="space-y-2">
@@ -17,13 +16,19 @@ export const ContactProfessionalDetails: React.FC<ContactProfessionalDetailsProp
         </div>
         <div className="space-y-1 pl-6 text-sm text-muted-foreground">
           {contact.department && (
-            <div><strong>Department:</strong> {contact.department}</div>
+            <div>
+              <strong>Department:</strong> {contact.department}
+            </div>
           )}
           {contact.purchase_influence && (
-            <div><strong>Purchase Influence:</strong> {contact.purchase_influence}</div>
+            <div>
+              <strong>Purchase Influence:</strong> {contact.purchase_influence}
+            </div>
           )}
           {contact.decision_authority && (
-            <div><strong>Decision Authority:</strong> {contact.decision_authority}</div>
+            <div>
+              <strong>Decision Authority:</strong> {contact.decision_authority}
+            </div>
           )}
         </div>
       </div>
@@ -35,7 +40,7 @@ export const ContactProfessionalDetails: React.FC<ContactProfessionalDetailsProp
           Contact Classifications
         </div>
         <div className="pl-6">
-          <ContactBadges 
+          <ContactBadges
             contact={contact}
             showPriority={true}
             showInfluence={true}

@@ -16,6 +16,7 @@ export interface ActivityItem {
   entity?: string
   priority?: 'high' | 'medium' | 'low'
   status?: string
+  interactionType?: 'phone' | 'email' | 'meeting' | 'demo' | 'follow_up'
   relatedData?:
     | Organization
     | Contact

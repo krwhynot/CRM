@@ -1,8 +1,13 @@
 import { useMemo } from 'react'
 import type { Organization } from '@/types/entities'
+import type { OrganizationFormInterface } from '@/types/forms/form-interfaces'
 
-export const useOrganizationFormData = (organization: Organization | null) => {
-  const initialData = useMemo(() => {
+export const useOrganizationFormData = (
+  organization: Organization | null
+): {
+  initialData: Partial<OrganizationFormInterface> | undefined
+} => {
+  const initialData = useMemo((): Partial<OrganizationFormInterface> | undefined => {
     if (!organization) return undefined
 
     return {
@@ -16,7 +21,7 @@ export const useOrganizationFormData = (organization: Organization | null) => {
       state_province: organization.state_province,
       phone: organization.phone,
       website: organization.website,
-      notes: organization.notes
+      notes: organization.notes,
     }
   }, [organization])
 

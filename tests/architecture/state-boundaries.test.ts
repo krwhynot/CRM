@@ -4,8 +4,8 @@
  */
 
 import { describe, test, expect, beforeAll } from 'vitest'
-import { readdir, readFile, stat } from 'fs/promises'
-import { join, extname } from 'path'
+import { readdir, readFile } from 'fs/promises'
+import { join } from 'path'
 
 // Simple glob implementation for tests
 async function getFiles(pattern: string, options: { cwd: string }): Promise<string[]> {

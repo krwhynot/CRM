@@ -4,17 +4,20 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { InteractionTimeline } from '@/features/interactions/components/InteractionTimeline' /* ui-audit: allow */
-import { 
-  CalendarDays, 
-  DollarSign, 
-  Target, 
-  Building2, 
-  User, 
+import {
+  CalendarDays,
+  DollarSign,
+  Target,
+  Building2,
+  User,
   MessageSquare,
-  Plus
+  Plus,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { OpportunityWithRelations, InteractionWithRelations } from '@/types/entities' /* ui-audit: allow */
+import type {
+  OpportunityWithRelations,
+  InteractionWithRelations,
+} from '@/types/entities' /* ui-audit: allow */
 
 interface OpportunityRowDetailsProps {
   opportunity: OpportunityWithRelations
@@ -33,13 +36,13 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
   onAddInteraction,
   onEditInteraction,
   onDeleteInteraction,
-  onInteractionItemClick
+  onInteractionItemClick,
 }) => {
   // Format currency utility function
   const formatCurrency = (value: number | null): string => {
     if (!value) return 'N/A'
-    if (value >= 1000000) return `$${(value/1000000).toFixed(1)}M`
-    if (value >= 1000) return `$${(value/1000).toFixed(0)}K`
+    if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`
+    if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`
     return `$${value.toLocaleString()}`
   }
 
@@ -47,10 +50,10 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
   const formatDate = (dateString: string): string => {
     if (!dateString) return 'Not set'
     const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
     })
   }
 
@@ -64,7 +67,7 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
       'Feedback Logged': 'bg-orange-100 text-orange-800 border-orange-200',
       'Demo Scheduled': 'bg-cyan-100 text-cyan-800 border-cyan-200',
       'Closed - Won': 'bg-green-100 text-green-800 border-green-200',
-      'Closed - Lost': 'bg-red-100 text-red-800 border-red-200'
+      'Closed - Lost': 'bg-red-100 text-red-800 border-red-200',
     }
     return stageColors[stage] || 'bg-gray-100 text-gray-800 border-gray-200'
   }
@@ -78,17 +81,15 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
               {/* Opportunity Header */}
               <div className="mb-6 flex items-start justify-between">
                 <div>
-                  <h3 className="mb-1 text-lg font-semibold text-gray-900">
-                    {opportunity.name}
-                  </h3>
+                  <h3 className="mb-1 text-lg font-semibold text-gray-900">{opportunity.name}</h3>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <Building2 className="size-4" />
                     {opportunity.organization?.name || 'No Organization'}
                   </div>
                 </div>
-                <Badge 
-                  variant="outline" 
-                  className={cn("text-sm font-medium", getStageColor(opportunity.stage))}
+                <Badge
+                  variant="outline"
+                  className={cn('text-sm font-medium', getStageColor(opportunity.stage))}
                 >
                   {opportunity.stage}
                 </Badge>
@@ -119,15 +120,12 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
                     <span className="text-sm font-medium text-gray-700">Contact</span>
                   </div>
                   <div className="text-sm font-medium text-gray-900">
-                    {opportunity.contact ? 
-                      `${opportunity.contact.first_name} ${opportunity.contact.last_name}` : 
-                      'No contact assigned'
-                    }
+                    {opportunity.contact
+                      ? `${opportunity.contact.first_name} ${opportunity.contact.last_name}`
+                      : 'No contact assigned'}
                   </div>
                   {opportunity.contact?.email && (
-                    <div className="mt-1 text-sm text-gray-600">
-                      {opportunity.contact.email}
-                    </div>
+                    <div className="mt-1 text-sm text-gray-600">{opportunity.contact.email}</div>
                   )}
                 </div>
 
@@ -138,10 +136,9 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
                     <span className="text-sm font-medium text-gray-700">Close Date</span>
                   </div>
                   <div className="text-sm font-medium text-gray-900">
-                    {opportunity.estimated_close_date ? 
-                      formatDate(opportunity.estimated_close_date) : 
-                      'Not set'
-                    }
+                    {opportunity.estimated_close_date
+                      ? formatDate(opportunity.estimated_close_date)
+                      : 'Not set'}
                   </div>
                 </div>
 
@@ -178,9 +175,7 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
                     {opportunity.notes && (
                       <div>
                         <h4 className="mb-2 text-sm font-semibold text-gray-700">Notes</h4>
-                        <p className="text-sm leading-relaxed text-gray-600">
-                          {opportunity.notes}
-                        </p>
+                        <p className="text-sm leading-relaxed text-gray-600">{opportunity.notes}</p>
                       </div>
                     )}
                   </div>
@@ -206,15 +201,15 @@ export const OpportunityRowDetails: React.FC<OpportunityRowDetailsProps> = ({
                     </Button>
                   )}
                 </div>
-                
+
                 <div className="rounded-lg border border-gray-200 bg-white p-4">
                   <InteractionTimeline
                     interactions={interactions}
                     loading={activitiesLoading}
-                    onEditInteraction={onEditInteraction}
-                    onDeleteInteraction={onDeleteInteraction}
-                    onItemClick={onInteractionItemClick}
-                    onAddNew={onAddInteraction}
+                    onEditInteraction={onEditInteraction || (() => {})}
+                    onDeleteInteraction={onDeleteInteraction || (() => {})}
+                    onItemClick={onInteractionItemClick || (() => {})}
+                    onAddNew={onAddInteraction || (() => {})}
                     opportunityId={opportunity.id}
                   />
                 </div>

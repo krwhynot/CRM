@@ -1,4 +1,3 @@
-import React from 'react'
 import { Mail, Phone, Smartphone, ExternalLink } from 'lucide-react'
 import type { ContactWithOrganization } from '@/types/entities'
 
@@ -6,7 +5,7 @@ interface ContactMethodsListProps {
   contact: ContactWithOrganization
 }
 
-export const ContactMethodsList: React.FC<ContactMethodsListProps> = ({ contact }) => {
+export const ContactMethodsList = ({ contact }: ContactMethodsListProps) => {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground">
@@ -41,7 +40,12 @@ export const ContactMethodsList: React.FC<ContactMethodsListProps> = ({ contact 
         {contact.linkedin_url && (
           <div className="flex items-center gap-2">
             <ExternalLink className="size-3" />
-            <a href={contact.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+            <a
+              href={contact.linkedin_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline"
+            >
               LinkedIn Profile
             </a>
           </div>

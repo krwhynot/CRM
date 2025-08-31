@@ -11,6 +11,7 @@ import { ActivityFeedSkeleton } from '@/features/dashboard/components/activity/A
 import { ActivityFiltersComponent } from '@/features/dashboard/components/activity/ActivityFilters'
 import { sortActivityGroups } from '@/lib/activity-utils'
 import type { InteractionWithRelations } from '@/types/entities'
+import type { ActivityItem } from '@/features/dashboard/hooks/useEnhancedActivityData'
 
 // Interface definitions
 export interface ActivityFeedProps {
@@ -21,7 +22,27 @@ export interface ActivityFeedProps {
   enableRealTime?: boolean
 }
 
-import type { ActivityItem } from '@/features/dashboard/hooks/useEnhancedActivityData'
+// Conversion function from InteractionWithRelations to ActivityItem
+const convertInteractionsToActivityItems = (
+  interactions: InteractionWithRelations[]
+): ActivityItem[] => {
+  return interactions.map((interaction) => ({
+    id: `interaction-${interaction.id}`,
+    type: 'interaction' as const,
+    title: interaction.subject || `${interaction.type} interaction`,
+    description:
+      interaction.description ||
+      `${interaction.type} with ${interaction.contact?.first_name} ${interaction.contact?.last_name}`.trim(),
+    timestamp: interaction.created_at ? new Date(interaction.created_at) : new Date(),
+    entity: interaction.contact
+      ? `${interaction.contact.first_name} ${interaction.contact.last_name}`
+      : 'Unknown Contact',
+    priority:
+      interaction.type === 'demo' || interaction.type === 'meeting' ? 'high' : ('medium' as const),
+    status: 'completed',
+    relatedData: interaction,
+  }))
+}
 
 // Re-export types for backward compatibility
 export type { UseActivityFilteringReturn } from '@/features/dashboard/hooks/useActivityFiltering'
@@ -31,18 +52,17 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
   showFilters = true,
   className = '',
   onActivityClick,
-  enableRealTime = true
+  enableRealTime = true,
 }) => {
   // Use extracted hooks for state management
   const realTimeData = useActivityRealTime({ limit, enableRealTime })
-  const {
-    selectedType,
-    selectedPriority,
-    setSelectedType,
-    setSelectedPriority,
-    filteredItems
-  } = useActivityFiltering(realTimeData.activities || [], limit)
-  
+
+  // Convert interactions to activity items
+  const activityItems = convertInteractionsToActivityItems(realTimeData.activities || [])
+
+  const { selectedType, selectedPriority, setSelectedType, setSelectedPriority, filteredItems } =
+    useActivityFiltering(activityItems, limit)
+
   if (realTimeData.error) {
     return (
       <Card className={className}>
@@ -55,7 +75,7 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
       </Card>
     )
   }
-  
+
   return (
     <Card className={className}>
       <CardHeader>
@@ -69,11 +89,9 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
                 </Badge>
               )}
             </CardTitle>
-            <CardDescription>
-              Recent interactions across all entities
-            </CardDescription>
+            <CardDescription>Recent interactions across all entities</CardDescription>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <ActivityFiltersComponent
               selectedType={selectedType}
@@ -94,7 +112,7 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent>
         {realTimeData.isLoading ? (
           <ActivityFeedSkeleton />
@@ -105,32 +123,35 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({
             <p className="mt-1 text-sm text-gray-400">
               {selectedType !== 'all' || selectedPriority !== 'all'
                 ? 'Try adjusting your filters to see more activities.'
-                : 'Activities will appear here as they are created.'
-              }
+                : 'Activities will appear here as they are created.'}
             </p>
           </div>
         ) : (
           <div className="space-y-4">
-            {sortActivityGroups(Object.entries(
-              filteredItems.reduce((acc, item) => {
-                const group = new Date(item.timestamp).toDateString();
-                if (!acc[group]) {
-                  acc[group] = [];
-                }
-                acc[group].push(item);
-                return acc;
-              }, {} as Record<string, ActivityItem[]>),
-            )).map(([groupKey, groupActivities]) => (
-                <div key={groupKey}>
-                  <ActivityGroup
-                    groupKey={groupKey}
-                    activities={groupActivities}
-                    onActivityClick={onActivityClick}
-                  />
-                  <Separator className="mt-4" />
-                </div>
-              ))
-            }
+            {sortActivityGroups(
+              Object.entries(
+                filteredItems.reduce(
+                  (acc, item) => {
+                    const group = new Date(item.timestamp).toDateString()
+                    if (!acc[group]) {
+                      acc[group] = []
+                    }
+                    acc[group].push(item)
+                    return acc
+                  },
+                  {} as Record<string, ActivityItem[]>
+                )
+              )
+            ).map(([groupKey, groupActivities]) => (
+              <div key={groupKey}>
+                <ActivityGroup
+                  groupKey={groupKey}
+                  activities={groupActivities}
+                  onActivityClick={onActivityClick}
+                />
+                <Separator className="mt-4" />
+              </div>
+            ))}
           </div>
         )}
       </CardContent>

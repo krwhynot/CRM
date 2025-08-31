@@ -47,7 +47,7 @@ export function InteractionForm({
   const { data: opportunities = [] } = useOpportunities()
 
   const form = useForm<InteractionFormData>({
-    resolver: yupResolver(interactionSchema),
+    resolver: yupResolver(interactionSchema) as any,
     defaultValues: {
       subject: initialData?.subject || '',
       type: initialData?.type || 'call',
