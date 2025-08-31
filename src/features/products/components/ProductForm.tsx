@@ -25,7 +25,7 @@ import {
 import { useForm } from 'react-hook-form'
 import { useFormValidationFeedback } from '@/hooks/useFormValidationFeedback'
 import { productSchema, type ProductFormData } from '@/types/validation'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { createTypedYupResolver } from '@/types/forms'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
 import { PRODUCT_CATEGORIES } from '@/constants/product.constants'
 
@@ -46,7 +46,7 @@ export function ProductForm({
   const principalOrganizations = organizations.filter((org) => org.type === 'principal')
 
   const form = useForm<ProductFormData>({
-    resolver: yupResolver(productSchema) as any,
+    resolver: createTypedYupResolver<ProductFormData>(productSchema),
     defaultValues: {
       name: initialData?.name || '',
       sku: initialData?.sku || '',
@@ -59,7 +59,7 @@ export function ProductForm({
     },
   })
 
-  const validationState = useFormValidationFeedback(form.control as any, {
+  const validationState = useFormValidationFeedback<ProductFormData>(form.control, {
     requiredFields: ['name', 'sku', 'principal_id'],
     warningValidations: {
       description: (value: unknown) => {

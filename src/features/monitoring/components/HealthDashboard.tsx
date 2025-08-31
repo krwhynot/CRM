@@ -22,7 +22,7 @@ export function HealthDashboard({
   showDetails = false,
   refreshInterval = 60000,
 }: HealthDashboardProps) {
-  const { status, summary, isHealthy } = useHealthStatus()
+  const { status, isHealthy } = useHealthStatus()
   const { lastUpdated } = useHealthDashboardState(refreshInterval)
 
   if (!status) {
@@ -38,13 +38,73 @@ export function HealthDashboard({
     )
   }
 
+  // Convert SystemMetrics to expected SystemStatus format
+  const systemStatus = {
+    database: {
+      status: status.database.status as 'healthy' | 'degraded' | 'unhealthy' | 'unknown',
+      lastChecked: status.database.timestamp,
+      responseTime: status.database.responseTime,
+      message: status.database.details,
+    },
+    auth: {
+      status: status.auth.status as 'healthy' | 'degraded' | 'unhealthy' | 'unknown',
+      lastChecked: status.auth.timestamp,
+      responseTime: status.auth.responseTime,
+      message: status.auth.details,
+    },
+    api: {
+      status: status.api.status as 'healthy' | 'degraded' | 'unhealthy' | 'unknown',
+      lastChecked: status.api.timestamp,
+      responseTime: status.api.responseTime,
+      message: status.api.details,
+    },
+    overall: (isHealthy ? 'healthy' : (status.database.status === 'down' || status.auth.status === 'down' || status.api.status === 'down') ? 'unhealthy' : 'degraded') as 'healthy' | 'degraded' | 'unhealthy' | 'unknown',
+    lastUpdated: new Date().toISOString()
+  }
+
+  // For DetailedSystemInfo component - needs ServiceDetail format
+  const detailedSystemStatus = {
+    database: {
+      status: status.database.status,
+      responseTime: status.database.responseTime,
+      timestamp: status.database.timestamp,
+      details: status.database.details,
+    },
+    auth: {
+      status: status.auth.status,
+      responseTime: status.auth.responseTime,
+      timestamp: status.auth.timestamp,
+      details: status.auth.details,
+    },
+    api: {
+      status: status.api.status,
+      responseTime: status.api.responseTime,
+      timestamp: status.api.timestamp,
+      details: status.api.details,
+    },
+  }
+
+  // Convert string summary to expected HealthSummary format
+  const healthSummary = {
+    totalServices: 3,
+    healthyServices: [status.database, status.auth, status.api].filter(s => s.status === 'healthy').length,
+    degradedServices: [status.database, status.auth, status.api].filter(s => s.status === 'degraded').length,
+    unhealthyServices: [status.database, status.auth, status.api].filter(s => s.status === 'down').length,
+    overallHealth: isHealthy ? 'healthy' as const : (status.database.status === 'down' || status.auth.status === 'down' || status.api.status === 'down') ? 'unhealthy' as const : 'degraded' as const,
+    uptime: {
+      hours: 0,
+      minutes: 0,
+      seconds: 0
+    }
+  }
+
   return (
     <div className="space-y-4">
-      <SystemStatusOverview status={status as any} summary={summary} isHealthy={isHealthy} />
+      <SystemStatusOverview status={systemStatus} summary={healthSummary} isHealthy={isHealthy} />
 
       <PerformanceMetrics performance={status.performance} />
 
-      {showDetails && <DetailedSystemInfo status={status} />}
+      {showDetails && <DetailedSystemInfo status={detailedSystemStatus} />}
 
       <div className="flex items-center justify-between text-sm text-gray-500">
         <span>Last updated: {lastUpdated.toLocaleTimeString()}</span>

@@ -2,19 +2,24 @@ import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChartSkeleton } from './DashboardSkeleton'
 import { ChartEmptyState } from './EmptyState'
-import type { ChartDataPoint } from '@/types/dashboard'
 
-interface ChartCardProps {
+// Generic type that works with both dashboard and chart data
+interface ChartData {
+  count?: number
+  value?: number
+}
+
+interface ChartCardProps<TData extends ChartData = ChartData> {
   title: string
   colorClass: string
-  data: ChartDataPoint[]
+  data: TData[]
   isLoading: boolean
   emptyTitle: string
   emptyDescription: string
   children: React.ReactNode
 }
 
-export const ChartCard: React.FC<ChartCardProps> = ({
+export const ChartCard = <TData extends ChartData = ChartData>({
   title,
   colorClass,
   data,
@@ -22,8 +27,8 @@ export const ChartCard: React.FC<ChartCardProps> = ({
   emptyTitle,
   emptyDescription,
   children,
-}) => {
-  const hasData = data.some((d) => d.count > 0)
+}: ChartCardProps<TData>) => {
+  const hasData = data.some((d) => (d.count || d.value || 0) > 0)
 
   return (
     <Card>

@@ -45,6 +45,29 @@ export type {
   ContactPreferredPrincipalFormData,
 } from '../validation'
 
+// Export form handler types and utilities
+export type {
+  FormSubmitHandler,
+  FormValidationError,
+  TypedYupResolver,
+  EnhancedFormProps,
+  FormStateManager,
+  FormValidationConfig,
+  FormValidationFeedbackReturn,
+  FieldValidationIndicatorProps,
+  FormDataWithComputed,
+  FormSubmissionResult,
+  AsyncFormHandler,
+  FormComponentRef,
+  TypedFormConfig,
+  FormFieldRenderProps,
+  FormFieldProps,
+  FormSection,
+  ProgressiveFormConfig,
+} from './form-handlers'
+
+export { createTypedYupResolver } from './form-handlers'
+
 // Re-export individual form data types for direct access
 import type { ContactFormData as ContactFormDataType } from './contact-form.types'
 import type { OrganizationFormData as OrganizationFormDataType } from './organization-form.types'

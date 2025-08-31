@@ -13,6 +13,7 @@
  */
 
 import type { Interaction, InteractionWithRelations } from '@/types/entities'
+import { debugWarn, debugLog } from '@/utils/debug'
 
 /**
  * Type guard to check if an interaction has relations populated
@@ -64,7 +65,7 @@ export const createInteractionWithRelationsHandler = <TArgs extends unknown[]>(
     if (isInteractionWithRelations(interaction)) {
       handler(interaction, ...args)
     } else {
-      console.warn(
+      debugWarn(
         fallbackMessage ||
           'Handler expected InteractionWithRelations but received basic Interaction. This may indicate a data loading issue.'
       )
@@ -98,7 +99,7 @@ export const validateInteractionRelations = (
   return requiredRelations.every((relation) => {
     const hasRelation = interaction[relation] !== undefined && interaction[relation] !== null
     if (!hasRelation) {
-      console.warn(`Missing required relation '${relation}' in InteractionWithRelations`)
+      debugWarn(`Missing required relation '${relation}' in InteractionWithRelations`)
     }
     return hasRelation
   })
@@ -138,7 +139,7 @@ export const debugInteractionType = (
 ): void => {
   if (process.env.NODE_ENV === 'development') {
     const hasRelations = isInteractionWithRelations(interaction)
-    console.log(`[${context || 'InteractionTypeCheck'}] Interaction type:`, {
+    debugLog(`[${context || 'InteractionTypeCheck'}] Interaction type:`, {
       hasRelations,
       id: interaction.id,
       opportunityId: getOpportunityId(interaction),

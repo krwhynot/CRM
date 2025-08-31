@@ -7,10 +7,11 @@ import { ProductBadges } from '../ProductBadges'
 import { ProductActions } from '../ProductActions'
 import { formatPrice } from '@/lib/product-formatters'
 import { cn } from '@/lib/utils'
-import type { Product, ProductWithPrincipal } from '@/types/entities'
+import type { Product } from '@/types/entities'
+import type { ProductDisplayData } from '@/types/product-extensions'
 
 interface ProductRowMainProps {
-  product: ProductWithPrincipal
+  product: ProductDisplayData
   isExpanded: boolean
   onToggleExpansion: () => void
   onEdit?: (product: Product) => void
@@ -72,8 +73,8 @@ export const ProductRowMain: React.FC<ProductRowMainProps> = ({
             category={product.category}
             price={product.list_price}
             shelfLifeDays={product.shelf_life_days}
-            inStock={(product as any).in_stock ?? true}
-            lowStock={(product as any).low_stock ?? false}
+            inStock={product.in_stock ?? true}
+            lowStock={product.low_stock ?? false}
           />
         </div>
       </TableCell>
@@ -84,11 +85,11 @@ export const ProductRowMain: React.FC<ProductRowMainProps> = ({
       </TableCell>
       <TableCell className="py-4">
         <div className="text-sm text-gray-700">
-          {(product as any).principal_name || <EmptyCell />}
+          {product.principal_name || <EmptyCell />}
         </div>
       </TableCell>
       <TableCell className="py-4">
-        <div className="text-sm text-gray-700">{(product as any).brand || <EmptyCell />}</div>
+        <div className="text-sm text-gray-700">{product.brand || <EmptyCell />}</div>
       </TableCell>
       <TableCell className="py-4">
         <ProductActions

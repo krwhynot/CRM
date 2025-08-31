@@ -2,6 +2,7 @@ import React from 'react'
 import { StandardDialog } from '@/components/ui/StandardDialog'
 import { ProductForm } from './ProductForm'
 import type { Product, ProductInsert, ProductUpdate } from '@/types/entities'
+import type { ProductFormData } from '@/types/validation'
 
 interface ProductDialogsProps {
   isCreateDialogOpen: boolean
@@ -47,7 +48,10 @@ export const ProductDialogs: React.FC<ProductDialogsProps> = ({
         size="xl"
         scroll="content"
       >
-        <ProductForm onSubmit={onCreateSubmit as any} loading={isCreating} />
+        <ProductForm 
+          onSubmit={(data: ProductFormData) => onCreateSubmit(data as ProductInsert)} 
+          loading={isCreating} 
+        />
       </StandardDialog>
 
       {/* Edit Dialog */}
@@ -62,7 +66,7 @@ export const ProductDialogs: React.FC<ProductDialogsProps> = ({
         {selectedProduct && (
           <ProductForm
             initialData={selectedProduct}
-            onSubmit={onEditSubmit as any}
+            onSubmit={(data: ProductFormData) => onEditSubmit(data as ProductUpdate)}
             loading={isUpdating}
           />
         )}

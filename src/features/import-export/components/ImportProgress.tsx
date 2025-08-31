@@ -7,14 +7,7 @@ import {
   Upload,
   X
 } from 'lucide-react'
-
-export interface ImportResult {
-  success: boolean
-  message: string
-  imported: number
-  failed: number
-  errors: Array<{ row: number; error: string }>
-}
+import type { ImportResult } from '@/types/import-export'
 
 interface ImportProgressProps {
   isImporting: boolean
@@ -84,7 +77,7 @@ export function ImportProgress({
         </div>
 
         {/* Error Details */}
-        {importResult.errors.length > 0 && (
+        {importResult.errors && importResult.errors.length > 0 && (
           <div className="space-y-2">
             <h3 className="flex items-center gap-2 font-medium text-red-600">
               <AlertCircle className="size-4" />
@@ -94,7 +87,7 @@ export function ImportProgress({
               <div className="space-y-1 p-3">
                 {importResult.errors.map((error, index) => (
                   <div key={index} className="text-sm text-red-600">
-                    Row {error.row}: {error.error}
+                    Row {error.row}: {'error' in error ? error.error : error.message}
                   </div>
                 ))}
               </div>

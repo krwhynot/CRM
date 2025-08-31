@@ -3,12 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Database, Shield, Zap } from 'lucide-react'
 import { ServiceStatusCard } from './ServiceStatusCard'
-
-interface SystemStatusOverviewProps {
-  status: Record<string, unknown>
-  summary: string
-  isHealthy: boolean
-}
+import type { SystemStatusOverviewProps } from '@/types/monitoring'
 
 export const SystemStatusOverview: React.FC<SystemStatusOverviewProps> = ({
   status,
@@ -24,7 +19,7 @@ export const SystemStatusOverview: React.FC<SystemStatusOverviewProps> = ({
             variant={isHealthy ? 'default' : 'destructive'}
             className={isHealthy ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}
           >
-            {summary}
+            {summary.overallHealth}
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -33,19 +28,28 @@ export const SystemStatusOverview: React.FC<SystemStatusOverviewProps> = ({
           <ServiceStatusCard
             icon={<Database className="size-6 text-blue-500" />}
             name="Database"
-            status={(status as any).database}
+            status={{
+              status: status.database.status,
+              responseTime: status.database.responseTime || 0
+            }}
           />
 
           <ServiceStatusCard
             icon={<Shield className="size-6 text-green-500" />}
             name="Authentication"
-            status={(status as any).auth}
+            status={{
+              status: status.auth.status,
+              responseTime: status.auth.responseTime || 0
+            }}
           />
 
           <ServiceStatusCard
             icon={<Zap className="size-6 text-purple-500" />}
             name="API Endpoints"
-            status={(status as any).api}
+            status={{
+              status: status.api.status,
+              responseTime: status.api.responseTime || 0
+            }}
           />
         </div>
       </CardContent>

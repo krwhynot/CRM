@@ -42,7 +42,7 @@ export interface FilterState {
   weeks: string
 }
 
-export interface ChartDataPoint {
+export interface DashboardChartDataPoint {
   week: string
   count: number
   weekStart: Date
@@ -73,8 +73,8 @@ export interface UseDashboardDataReturn {
   
   // Processed data
   filteredOpportunities: Opportunity[]
-  opportunityChartData: ChartDataPoint[]
-  interactionChartData: ChartDataPoint[]
+  opportunityChartData: DashboardChartDataPoint[]
+  interactionChartData: DashboardChartDataPoint[]
   activityItems: ActivityItem[]
 }
 

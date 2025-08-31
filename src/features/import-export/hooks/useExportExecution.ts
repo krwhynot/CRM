@@ -9,14 +9,23 @@ type ExportDataRecord = {
 }
 
 // Type for XLSX library interface
+interface XLSXWorksheet {
+  [key: string]: any
+  '!cols'?: Array<{ wch: number }>
+}
+
+interface XLSXWorkbook {
+  [key: string]: any
+}
+
 interface XLSXLibrary {
   utils: {
-    json_to_sheet: (data: ExportDataRecord[]) => unknown
-    sheet_add_aoa: (worksheet: unknown, data: unknown[][], options?: { origin?: string }) => void
-    book_new: () => unknown
-    book_append_sheet: (workbook: unknown, worksheet: unknown, sheetName: string) => void
+    json_to_sheet: (data: ExportDataRecord[]) => XLSXWorksheet
+    sheet_add_aoa: (worksheet: XLSXWorksheet, data: unknown[][], options?: { origin?: string }) => void
+    book_new: () => XLSXWorkbook
+    book_append_sheet: (workbook: XLSXWorkbook, worksheet: XLSXWorksheet, sheetName: string) => void
   }
-  write: (workbook: unknown, options: { type: string; bookType: string }) => string
+  write: (workbook: XLSXWorkbook, options: { type: string; bookType: string }) => string
 }
 
 export interface ExportProgress {
@@ -112,7 +121,7 @@ export const useExportExecution = (exportOptions: ExportOptions): UseExportExecu
       })
 
       // Create worksheet and workbook
-      const worksheet = XLSX.utils.json_to_sheet(transformedData) as any
+      const worksheet = XLSX.utils.json_to_sheet(transformedData)
 
       // Set column widths for better readability
       const columnWidths = exportOptions.selectedFields.map(() => ({ wch: 20 }))
@@ -168,7 +177,7 @@ export const useExportExecution = (exportOptions: ExportOptions): UseExportExecu
 
       // Fetch data in batches
       const batchSize = 1000
-      const allData: any[] = [] // Use any[] for raw database data
+      const allData: ExportDataRecord[] = []
       let offset = 0
       let hasMore = true
 
@@ -180,7 +189,9 @@ export const useExportExecution = (exportOptions: ExportOptions): UseExportExecu
         if (error) throw error
 
         if (data && data.length > 0) {
-          allData.push(...data)
+          // Type assertion - we know this should be record data from organizations table
+          const records = data as unknown as ExportDataRecord[]
+          allData.push(...records)
           offset += batchSize
 
           setExportProgress((prev) => ({
@@ -208,7 +219,7 @@ export const useExportExecution = (exportOptions: ExportOptions): UseExportExecu
       } else if (exportOptions.format === 'xlsx' && isFeatureEnabled('xlsxExport')) {
         // Dynamic import to avoid bundle bloat
         const XLSX = await import('xlsx')
-        content = generateXLSX(allData, XLSX.default as any)
+        content = generateXLSX(allData, XLSX.default as unknown as XLSXLibrary)
         mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         fileExtension = 'xlsx'
       } else {

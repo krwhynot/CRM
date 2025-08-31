@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from 'react'
 import { ChartCard } from './ChartCard'
-import type { ChartDataPoint } from '@/types/dashboard'
+import type { DashboardChartDataPoint } from '@/types/dashboard'
 import { ChartSkeleton } from './DashboardSkeleton'
 
 // Lazy load chart components to reduce initial bundle size
@@ -12,8 +12,8 @@ const InteractionChart = lazy(() =>
 )
 
 interface DashboardChartsProps {
-  opportunityChartData: ChartDataPoint[]
-  interactionChartData: ChartDataPoint[]
+  opportunityChartData: DashboardChartDataPoint[]
+  interactionChartData: DashboardChartDataPoint[]
   isLoading: boolean
 }
 

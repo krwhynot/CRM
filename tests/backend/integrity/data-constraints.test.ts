@@ -6,6 +6,7 @@
  */
 
 import { describe, test, expect, beforeAll, afterAll, beforeEach } from 'vitest'
+import { testSupabase, TestAuth } from '../setup/test-setup'
 
 describe('Data Integrity and Constraint Tests', () => {
   let testDataIds: { table: string; ids: string[] }[] = []
@@ -57,7 +58,8 @@ describe('Data Integrity and Constraint Tests', () => {
         .from('organizations')
         .insert({
           name: 'FK Test Organization',
-          type: 'customer' as const
+          type: 'customer' as const,
+          created_by: '00000000-0000-0000-0000-000000000001'
         })
         .select()
         .single()
@@ -71,7 +73,8 @@ describe('Data Integrity and Constraint Tests', () => {
         .insert({
           organization_id: testOrgId,
           first_name: 'FK',
-          last_name: 'TestContact'
+          last_name: 'TestContact',
+          created_by: '00000000-0000-0000-0000-000000000001'
         })
         .select()
         .single()
@@ -84,7 +87,8 @@ describe('Data Integrity and Constraint Tests', () => {
       const invalidContactData = {
         organization_id: '00000000-0000-0000-0000-000000000000', // Non-existent UUID
         first_name: 'Invalid',
-        last_name: 'Contact'
+        last_name: 'Contact',
+        created_by: '00000000-0000-0000-0000-000000000001'
       }
 
       const result = await testSupabase
@@ -102,7 +106,8 @@ describe('Data Integrity and Constraint Tests', () => {
         name: 'Invalid Organization Opportunity',
         organization_id: '00000000-0000-0000-0000-000000000000',
         contact_id: testContactId,
-        stage: 'new_lead' as const
+        stage: 'new_lead' as const,
+        created_by: '00000000-0000-0000-0000-000000000001'
       }
 
       const result = await testSupabase
@@ -120,7 +125,8 @@ describe('Data Integrity and Constraint Tests', () => {
         name: 'Invalid Contact Opportunity',
         organization_id: testOrgId,
         contact_id: '00000000-0000-0000-0000-000000000000', // Non-existent UUID
-        stage: 'new_lead' as const
+        stage: 'new_lead' as const,
+        created_by: '00000000-0000-0000-0000-000000000001'
       }
 
       const result = await testSupabase
@@ -137,7 +143,8 @@ describe('Data Integrity and Constraint Tests', () => {
       const invalidProductData = {
         principal_id: '00000000-0000-0000-0000-000000000000',
         name: 'Invalid Principal Product',
-        category: 'other' as const
+        category: 'other' as const,
+        created_by: '00000000-0000-0000-0000-000000000001'
       }
 
       const result = await testSupabase
@@ -195,7 +202,7 @@ describe('Data Integrity and Constraint Tests', () => {
       // Create organization and contact for opportunity
       const orgResult = await testSupabase
         .from('organizations')
-        .insert({ name: 'Check Constraint Test Org', type: 'customer' as const })
+        .insert({ name: 'Check Constraint Test Org', type: 'customer' as const, created_by: '00000000-0000-0000-0000-000000000001' })
         .select()
         .single()
 
@@ -204,7 +211,8 @@ describe('Data Integrity and Constraint Tests', () => {
         .insert({
           organization_id: orgResult.data.id,
           first_name: 'Check',
-          last_name: 'Test'
+          last_name: 'Test',
+          created_by: '00000000-0000-0000-0000-000000000001'
         })
         .select()
         .single()
@@ -221,7 +229,8 @@ describe('Data Integrity and Constraint Tests', () => {
           organization_id: orgResult.data.id,
           contact_id: contactResult.data.id,
           stage: 'qualified' as const,
-          probability: probability
+          probability: probability,
+          created_by: '00000000-0000-0000-0000-000000000001'
         }
 
         const result = await testSupabase
@@ -243,7 +252,8 @@ describe('Data Integrity and Constraint Tests', () => {
           organization_id: orgResult.data.id,
           contact_id: contactResult.data.id,
           stage: 'qualified' as const,
-          probability: probability
+          probability: probability,
+          created_by: '00000000-0000-0000-0000-000000000001'
         }
 
         const result = await testSupabase
@@ -263,7 +273,7 @@ describe('Data Integrity and Constraint Tests', () => {
       // Create principal organization
       const principalResult = await testSupabase
         .from('organizations')
-        .insert({ name: 'Season Constraint Principal', type: 'principal' as const })
+        .insert({ name: 'Season Constraint Principal', type: 'principal' as const, created_by: '00000000-0000-0000-0000-000000000001' })
         .select()
         .single()
 
@@ -283,7 +293,8 @@ describe('Data Integrity and Constraint Tests', () => {
           name: `Invalid Season Product ${season.start}-${season.end}`,
           category: 'produce' as const,
           season_start: season.start,
-          season_end: season.end
+          season_end: season.end,
+          created_by: '00000000-0000-0000-0000-000000000001'
         }
 
         const result = await testSupabase
@@ -309,7 +320,8 @@ describe('Data Integrity and Constraint Tests', () => {
           name: `Valid Season Product ${season.start}-${season.end}`,
           category: 'produce' as const,
           season_start: season.start,
-          season_end: season.end
+          season_end: season.end,
+          created_by: '00000000-0000-0000-0000-000000000001'
         }
 
         const result = await testSupabase
@@ -332,7 +344,7 @@ describe('Data Integrity and Constraint Tests', () => {
       // Create organization
       const orgResult = await testSupabase
         .from('organizations')
-        .insert({ name: 'Unique Constraint Test Org', type: 'customer' as const })
+        .insert({ name: 'Unique Constraint Test Org', type: 'customer' as const, created_by: '00000000-0000-0000-0000-000000000001' })
         .select()
         .single()
 
@@ -345,7 +357,8 @@ describe('Data Integrity and Constraint Tests', () => {
           organization_id: orgResult.data.id,
           first_name: 'Primary1',
           last_name: 'Contact',
-          is_primary_contact: true
+          is_primary_contact: true,
+          created_by: '00000000-0000-0000-0000-000000000001'
         })
         .select()
         .single()
@@ -360,7 +373,8 @@ describe('Data Integrity and Constraint Tests', () => {
           organization_id: orgResult.data.id,
           first_name: 'Primary2',
           last_name: 'Contact',
-          is_primary_contact: true
+          is_primary_contact: true,
+          created_by: '00000000-0000-0000-0000-000000000001'
         })
         .select()
         .single()
@@ -373,7 +387,7 @@ describe('Data Integrity and Constraint Tests', () => {
       // Create principal organization
       const principalResult = await testSupabase
         .from('organizations')
-        .insert({ name: 'SKU Unique Test Principal', type: 'principal' as const })
+        .insert({ name: 'SKU Unique Test Principal', type: 'principal' as const, created_by: '00000000-0000-0000-0000-000000000001' })
         .select()
         .single()
 
@@ -388,7 +402,8 @@ describe('Data Integrity and Constraint Tests', () => {
           principal_id: principalResult.data.id,
           name: 'First SKU Product',
           category: 'other' as const,
-          sku: testSKU
+          sku: testSKU,
+          created_by: '00000000-0000-0000-0000-000000000001'
         })
         .select()
         .single()
@@ -403,7 +418,8 @@ describe('Data Integrity and Constraint Tests', () => {
           principal_id: principalResult.data.id,
           name: 'Second SKU Product',
           category: 'other' as const,
-          sku: testSKU
+          sku: testSKU,
+          created_by: '00000000-0000-0000-0000-000000000001'
         })
         .select()
         .single()
@@ -416,13 +432,13 @@ describe('Data Integrity and Constraint Tests', () => {
       // Create two principal organizations
       const principal1Result = await testSupabase
         .from('organizations')
-        .insert({ name: 'Principal 1 for SKU Test', type: 'principal' as const })
+        .insert({ name: 'Principal 1 for SKU Test', type: 'principal' as const, created_by: '00000000-0000-0000-0000-000000000001' })
         .select()
         .single()
 
       const principal2Result = await testSupabase
         .from('organizations')
-        .insert({ name: 'Principal 2 for SKU Test', type: 'principal' as const })
+        .insert({ name: 'Principal 2 for SKU Test', type: 'principal' as const, created_by: '00000000-0000-0000-0000-000000000001' })
         .select()
         .single()
 
@@ -438,7 +454,8 @@ describe('Data Integrity and Constraint Tests', () => {
           principal_id: principal1Result.data.id,
           name: 'Product from Principal 1',
           category: 'other' as const,
-          sku: sameSKU
+          sku: sameSKU,
+          created_by: '00000000-0000-0000-0000-000000000001'
         })
         .select()
         .single()
@@ -449,7 +466,8 @@ describe('Data Integrity and Constraint Tests', () => {
           principal_id: principal2Result.data.id,
           name: 'Product from Principal 2',
           category: 'other' as const,
-          sku: sameSKU
+          sku: sameSKU,
+          created_by: '00000000-0000-0000-0000-000000000001'
         })
         .select()
         .single()
@@ -468,8 +486,8 @@ describe('Data Integrity and Constraint Tests', () => {
   describe('Not Null Constraints', () => {
     test('should enforce required fields on organizations', async () => {
       const requiredFieldTests = [
-        { data: { type: 'customer' as const }, missingField: 'name' },
-        { data: { name: 'Test Org' }, missingField: 'type' }
+        { data: { type: 'customer' as const, created_by: '00000000-0000-0000-0000-000000000001' }, missingField: 'name' },
+        { data: { name: 'Test Org', created_by: '00000000-0000-0000-0000-000000000001' }, missingField: 'type' }
       ]
 
       for (const test of requiredFieldTests) {
@@ -488,7 +506,7 @@ describe('Data Integrity and Constraint Tests', () => {
       // Create organization first
       const orgResult = await testSupabase
         .from('organizations')
-        .insert({ name: 'Required Fields Test Org', type: 'customer' as const })
+        .insert({ name: 'Required Fields Test Org', type: 'customer' as const, created_by: '00000000-0000-0000-0000-000000000001' })
         .select()
         .single()
 
@@ -496,15 +514,15 @@ describe('Data Integrity and Constraint Tests', () => {
 
       const requiredFieldTests = [
         { 
-          data: { organization_id: orgResult.data.id, last_name: 'Test' }, 
+          data: { organization_id: orgResult.data.id, last_name: 'Test', created_by: '00000000-0000-0000-0000-000000000001' }, 
           missingField: 'first_name' 
         },
         { 
-          data: { organization_id: orgResult.data.id, first_name: 'Test' }, 
+          data: { organization_id: orgResult.data.id, first_name: 'Test', created_by: '00000000-0000-0000-0000-000000000001' }, 
           missingField: 'last_name' 
         },
         { 
-          data: { first_name: 'Test', last_name: 'Contact' }, 
+          data: { first_name: 'Test', last_name: 'Contact', created_by: '00000000-0000-0000-0000-000000000001' }, 
           missingField: 'organization_id' 
         }
       ]
@@ -525,7 +543,7 @@ describe('Data Integrity and Constraint Tests', () => {
       // Create principal organization first
       const principalResult = await testSupabase
         .from('organizations')
-        .insert({ name: 'Product Required Fields Principal', type: 'principal' as const })
+        .insert({ name: 'Product Required Fields Principal', type: 'principal' as const, created_by: '00000000-0000-0000-0000-000000000001' })
         .select()
         .single()
 
@@ -533,15 +551,15 @@ describe('Data Integrity and Constraint Tests', () => {
 
       const requiredFieldTests = [
         { 
-          data: { principal_id: principalResult.data.id, category: 'other' as const }, 
+          data: { principal_id: principalResult.data.id, category: 'other' as const, created_by: '00000000-0000-0000-0000-000000000001' }, 
           missingField: 'name' 
         },
         { 
-          data: { principal_id: principalResult.data.id, name: 'Test Product' }, 
+          data: { principal_id: principalResult.data.id, name: 'Test Product', created_by: '00000000-0000-0000-0000-000000000001' }, 
           missingField: 'category' 
         },
         { 
-          data: { name: 'Test Product', category: 'other' as const }, 
+          data: { name: 'Test Product', category: 'other' as const, created_by: '00000000-0000-0000-0000-000000000001' }, 
           missingField: 'principal_id' 
         }
       ]
@@ -574,7 +592,8 @@ describe('Data Integrity and Constraint Tests', () => {
           .insert({
             organization_id: invalidUUID as any,
             first_name: 'UUID',
-            last_name: 'Test'
+            last_name: 'Test',
+            created_by: '00000000-0000-0000-0000-000000000001'
           })
           .select()
           .single()
@@ -589,7 +608,7 @@ describe('Data Integrity and Constraint Tests', () => {
       // Create principal and product for testing
       const principalResult = await testSupabase
         .from('organizations')
-        .insert({ name: 'Decimal Precision Principal', type: 'principal' as const })
+        .insert({ name: 'Decimal Precision Principal', type: 'principal' as const, created_by: '00000000-0000-0000-0000-000000000001' })
         .select()
         .single()
 
@@ -601,7 +620,8 @@ describe('Data Integrity and Constraint Tests', () => {
         name: 'Decimal Precision Test Product',
         category: 'other' as const,
         unit_cost: 999999999.99, // Testing decimal precision
-        list_price: 999999999.99
+        list_price: 999999999.99,
+        created_by: '00000000-0000-0000-0000-000000000001'
       }
 
       const result = await testSupabase
@@ -625,7 +645,7 @@ describe('Data Integrity and Constraint Tests', () => {
       const invalidEnumTests = [
         {
           table: 'organizations',
-          data: { name: 'Invalid Type Org', type: 'invalid_type' as any },
+          data: { name: 'Invalid Type Org', type: 'invalid_type' as any, created_by: '00000000-0000-0000-0000-000000000001' },
           field: 'type'
         },
         {
@@ -634,7 +654,8 @@ describe('Data Integrity and Constraint Tests', () => {
             organization_id: '00000000-0000-0000-0000-000000000001', // Will fail on FK anyway
             first_name: 'Invalid',
             last_name: 'Role',
-            role: 'invalid_role' as any 
+            role: 'invalid_role' as any,
+            created_by: '00000000-0000-0000-0000-000000000001'
           },
           field: 'role'
         }
@@ -659,13 +680,13 @@ describe('Data Integrity and Constraint Tests', () => {
       // Create two organizations
       const org1Result = await testSupabase
         .from('organizations')
-        .insert({ name: 'Org 1 for Business Logic', type: 'customer' as const })
+        .insert({ name: 'Org 1 for Business Logic', type: 'customer' as const, created_by: '00000000-0000-0000-0000-000000000001' })
         .select()
         .single()
 
       const org2Result = await testSupabase
         .from('organizations')
-        .insert({ name: 'Org 2 for Business Logic', type: 'customer' as const })
+        .insert({ name: 'Org 2 for Business Logic', type: 'customer' as const, created_by: '00000000-0000-0000-0000-000000000001' })
         .select()
         .single()
 
@@ -678,7 +699,8 @@ describe('Data Integrity and Constraint Tests', () => {
         .insert({
           organization_id: org1Result.data.id,
           first_name: 'Business',
-          last_name: 'Logic'
+          last_name: 'Logic',
+          created_by: '00000000-0000-0000-0000-000000000001'
         })
         .select()
         .single()
@@ -692,7 +714,8 @@ describe('Data Integrity and Constraint Tests', () => {
           name: 'Invalid Contact-Org Relationship',
           organization_id: org2Result.data.id, // Different org
           contact_id: contactResult.data.id,    // Contact from org1
-          stage: 'new_lead' as const
+          stage: 'new_lead' as const,
+          created_by: '00000000-0000-0000-0000-000000000001'
         })
         .select()
         .single()
@@ -711,7 +734,7 @@ describe('Data Integrity and Constraint Tests', () => {
       // Create customer organization (not principal)
       const customerResult = await testSupabase
         .from('organizations')
-        .insert({ name: 'Customer Org for Product Test', type: 'customer' as const })
+        .insert({ name: 'Customer Org for Product Test', type: 'customer' as const, created_by: '00000000-0000-0000-0000-000000000001' })
         .select()
         .single()
 
@@ -723,7 +746,8 @@ describe('Data Integrity and Constraint Tests', () => {
         .insert({
           principal_id: customerResult.data.id,
           name: 'Invalid Principal Type Product',
-          category: 'other' as const
+          category: 'other' as const,
+          created_by: '00000000-0000-0000-0000-000000000001'
         })
         .select()
         .single()
@@ -744,7 +768,7 @@ describe('Data Integrity and Constraint Tests', () => {
       // Create organization for performance test
       const orgResult = await testSupabase
         .from('organizations')
-        .insert({ name: 'Constraint Performance Test Org', type: 'customer' as const })
+        .insert({ name: 'Constraint Performance Test Org', type: 'customer' as const, created_by: '00000000-0000-0000-0000-000000000001' })
         .select()
         .single()
 
@@ -759,7 +783,8 @@ describe('Data Integrity and Constraint Tests', () => {
           organization_id: orgResult.data.id,
           first_name: 'Performance',
           last_name: 'Test',
-          email: 'performance@test.com'
+          email: 'performance@test.com',
+          created_by: '00000000-0000-0000-0000-000000000001'
         })
         .select()
         .single()

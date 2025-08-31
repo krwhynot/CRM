@@ -2,6 +2,7 @@ import { ProgressiveDetails } from '@/components/forms'
 import { Form } from '@/components/ui/form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { type ContactFormData } from '@/types/contact.types'
+import { type FormPropsWithPreselection } from '@/types/forms'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
 import { useContactFormState } from '@/features/contacts/hooks/useContactFormState'
 import { useContactFormStyle } from '@/features/contacts/hooks/useContactFormStyle'
@@ -10,12 +11,8 @@ import { ContactFormRoleFields } from './contact-form/ContactFormRoleFields'
 import { ContactFormDetailsFields } from './contact-form/ContactFormDetailsFields'
 import { FormSubmitButton } from '@/components/forms/FormSubmitButton'
 
-interface ContactFormProps {
-  onSubmit: (data: ContactFormData) => void
-  initialData?: Partial<ContactFormData>
-  loading?: boolean
-  submitLabel?: string
-  preselectedOrganization?: string
+interface ContactFormProps extends FormPropsWithPreselection<ContactFormData> {
+  // ContactForm-specific props can be added here if needed
 }
 
 export function ContactForm({ 

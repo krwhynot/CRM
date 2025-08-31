@@ -6,6 +6,29 @@
  */
 
 import { describe, test, expect, beforeAll, afterAll } from 'vitest'
+import { testSupabase, TestAuth } from '../setup/test-setup'
+
+// Type interfaces for import data processing
+interface ImportRow {
+  name: string
+  type: string
+  industry?: string
+  description?: string
+  website?: string
+  phone?: string
+  email?: string
+  address?: string
+  city?: string
+  state?: string
+  zip?: string
+  country?: string
+  manager_name?: string
+}
+
+interface ProcessedImportRow extends ImportRow {
+  created_by: string
+  created_at?: string
+}
 
 describe('Excel Import Backend Validation Tests', () => {
   let testDataIds: { table: string; ids: string[] }[] = []
@@ -225,7 +248,8 @@ describe('Excel Import Backend Validation Tests', () => {
             city: record.city,
             state_province: record.state,
             postal_code: record.zip,
-            country: record.country
+            country: record.country,
+            created_by: '00000000-0000-0000-0000-000000000001'
             // Note: manager_name would be stored in notes or handled separately
           }
 
@@ -296,7 +320,8 @@ describe('Excel Import Backend Validation Tests', () => {
               city: record.city,
               state_province: record.state,
               postal_code: record.zip,
-              country: record.country
+              country: record.country,
+              created_by: '00000000-0000-0000-0000-000000000001'
             }
 
             const validation = validateImportRecord(record)
@@ -376,7 +401,8 @@ describe('Excel Import Backend Validation Tests', () => {
               city: record.city,
               state_province: record.state,
               postal_code: record.zip,
-              country: record.country
+              country: record.country,
+              created_by: '00000000-0000-0000-0000-000000000001'
             }
 
             const result = await testSupabase
@@ -483,7 +509,8 @@ describe('Excel Import Backend Validation Tests', () => {
       const originalData = {
         name: 'Duplicate Test Organization',
         type: 'customer' as const,
-        industry: 'Food Service'
+        industry: 'Food Service',
+        created_by: '00000000-0000-0000-0000-000000000001'
       }
 
       const originalResult = await testSupabase
@@ -499,7 +526,8 @@ describe('Excel Import Backend Validation Tests', () => {
       const duplicateData = {
         name: 'Duplicate Test Organization', // Same name
         type: 'principal' as const, // Different type
-        industry: 'Food Manufacturing'
+        industry: 'Food Manufacturing',
+        created_by: '00000000-0000-0000-0000-000000000001'
       }
 
       const duplicateResult = await testSupabase
@@ -526,9 +554,9 @@ describe('Excel Import Backend Validation Tests', () => {
       // but we can test error handling behavior
 
       const records = [
-        { name: 'Transaction Test 1', type: 'customer', industry: 'Food' },
-        { name: 'Transaction Test 2', type: 'invalid_type', industry: 'Food' }, // This should fail
-        { name: 'Transaction Test 3', type: 'distributor', industry: 'Food' }
+        { name: 'Transaction Test 1', type: 'customer', industry: 'Food', created_by: '00000000-0000-0000-0000-000000000001' },
+        { name: 'Transaction Test 2', type: 'invalid_type', industry: 'Food', created_by: '00000000-0000-0000-0000-000000000001' }, // This should fail
+        { name: 'Transaction Test 3', type: 'distributor', industry: 'Food', created_by: '00000000-0000-0000-0000-000000000001' }
       ]
 
       const results = { successful: 0, failed: 0 }
@@ -543,7 +571,8 @@ describe('Excel Import Backend Validation Tests', () => {
               .insert({
                 name: record.name,
                 type: record.type.toLowerCase() as any,
-                industry: record.industry
+                industry: record.industry,
+                created_by: '00000000-0000-0000-0000-000000000001'
               })
               .select()
               .single()
@@ -598,7 +627,8 @@ describe('Excel Import Backend Validation Tests', () => {
               name: record.name,
               type: record.type.toLowerCase() as any,
               industry: record.industry,
-              description: record.description
+              description: record.description,
+              created_by: '00000000-0000-0000-0000-000000000001'
             }
 
             const result = await testSupabase
@@ -727,7 +757,8 @@ describe('Excel Import Backend Validation Tests', () => {
                 name: record.name,
                 type: record.type.toLowerCase() as any,
                 email: record.email,
-                industry: 'Test'
+                industry: 'Test',
+                created_by: '00000000-0000-0000-0000-000000000001'
               })
               .select()
               .single()
@@ -792,7 +823,8 @@ describe('Excel Import Backend Validation Tests', () => {
           .insert({
             name: record.name,
             type: record.type.toLowerCase() as any,
-            industry: record.industry
+            industry: record.industry,
+            created_by: '00000000-0000-0000-0000-000000000001'
           })
           .select()
           .single()
@@ -815,7 +847,8 @@ describe('Excel Import Backend Validation Tests', () => {
           .insert({
             name: record.name,
             type: record.type.toLowerCase() as any,
-            industry: record.industry
+            industry: record.industry,
+            created_by: '00000000-0000-0000-0000-000000000001'
           })
           .select()
           .single()

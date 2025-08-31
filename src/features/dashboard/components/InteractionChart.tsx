@@ -1,10 +1,10 @@
 import React from 'react'
 import { ChartContainer, ChartTooltip } from '@/components/ui/chart'
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from 'recharts'
-import type { ChartDataPoint } from '@/types/dashboard'
+import type { DashboardChartDataPoint } from '@/types/dashboard'
 
 interface InteractionChartProps {
-  /* ui-audit: allow */ data: ChartDataPoint[]
+  data: DashboardChartDataPoint[]
   loading?: boolean
 }
 
@@ -37,19 +37,23 @@ export const InteractionChart = React.memo(({ data, loading }: InteractionChartP
     )
   }
 
-  interface InteractionTooltipProps {
+  interface TooltipProps {
     active?: boolean
-    payload?: Array<{ payload: ChartDataPoint; value: number }>
-    label?: string
+    payload?: Array<{
+      payload: DashboardChartDataPoint
+      value: number
+    }>
+    label?: string | number
   }
 
-  const CustomTooltip = ({ active, payload, label }: InteractionTooltipProps) => {
+  const CustomTooltip: React.FC<TooltipProps> = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       const data = payload[0]
+      const count = data.payload.count || 0
       return (
         <div className="rounded-lg border bg-background px-3 py-2 shadow-lg">
           <p className="text-sm font-medium">
-            {label}: {data.value} {data.value === 1 ? 'interaction' : 'interactions'}{' '}
+            {label}: {count} {count === 1 ? 'interaction' : 'interactions'}{' '}
             {/* ui-audit: allow */}
           </p>
         </div>
@@ -78,7 +82,7 @@ export const InteractionChart = React.memo(({ data, loading }: InteractionChartP
             domain={['dataMin', 'dataMax']}
             allowDecimals={false}
           />
-          <ChartTooltip content={CustomTooltip as any} />
+          <ChartTooltip content={CustomTooltip} />
           <Line
             type="monotone"
             dataKey="count"

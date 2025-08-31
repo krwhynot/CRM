@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { CRMDashboard } from '@/features/dashboard/components/CRMDashboard'
 import { vi } from 'vitest'
-import type { ChartDataPoint } from '@/types/dashboard'
+import type { DashboardChartDataPoint } from '@/types/dashboard'
 
 // Mock component prop types
 interface MockDashboardFiltersProps {
@@ -11,8 +11,8 @@ interface MockDashboardFiltersProps {
 }
 
 interface MockDashboardChartsProps {
-  opportunityChartData: ChartDataPoint[]
-  interactionChartData: ChartDataPoint[]
+  opportunityChartData: DashboardChartDataPoint[]
+  interactionChartData: DashboardChartDataPoint[]
   isLoading: boolean
 }
 

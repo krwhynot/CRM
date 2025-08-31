@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import type { InteractionType } from '@/types/entities'
+import type { Json } from '@/lib/database.types'
 import {
   createDbStageRecord,
   type OpportunityStageDB as OpportunityStage,
@@ -32,10 +33,10 @@ interface DatabaseMetricsResponse {
   principals_with_active_opportunities: number
   avg_opportunities_per_principal: number
   last_activity_date: string | null
-  opportunities_by_stage: any
-  opportunity_values_by_stage: any
-  interactions_by_type: any
-  top_principals_by_value: any
+  opportunities_by_stage: Json | null
+  opportunity_values_by_stage: Json | null
+  interactions_by_type: Json | null
+  top_principals_by_value: Json | null
 }
 
 // Transform database response to match existing interface
@@ -122,28 +123,30 @@ function transformDatabaseMetrics(
   const opportunitiesByStage = createDbStageRecord(0)
   const opportunityValuesByStage = createDbStageRecord(0)
 
-  if (data.opportunities_by_stage) {
+  if (data.opportunities_by_stage && typeof data.opportunities_by_stage === 'object' && data.opportunities_by_stage !== null) {
     Object.keys(data.opportunities_by_stage).forEach((stage) => {
       if (stage in opportunitiesByStage) {
-        opportunitiesByStage[stage as OpportunityStage] = data.opportunities_by_stage![stage] || 0
+        const stageData = data.opportunities_by_stage as Record<string, number>
+        opportunitiesByStage[stage as OpportunityStage] = stageData[stage] || 0
       }
     })
   }
 
-  if (data.opportunity_values_by_stage) {
+  if (data.opportunity_values_by_stage && typeof data.opportunity_values_by_stage === 'object' && data.opportunity_values_by_stage !== null) {
     Object.keys(data.opportunity_values_by_stage).forEach((stage) => {
       if (stage in opportunityValuesByStage) {
-        opportunityValuesByStage[stage as OpportunityStage] =
-          data.opportunity_values_by_stage![stage] || 0
+        const stageData = data.opportunity_values_by_stage as Record<string, number>
+        opportunityValuesByStage[stage as OpportunityStage] = stageData[stage] || 0
       }
     })
   }
 
   // Transform interactions by type
   const interactionsByType: Record<InteractionType, number> = {} as Record<InteractionType, number>
-  if (data.interactions_by_type) {
+  if (data.interactions_by_type && typeof data.interactions_by_type === 'object' && data.interactions_by_type !== null) {
     Object.keys(data.interactions_by_type).forEach((type) => {
-      interactionsByType[type as InteractionType] = data.interactions_by_type![type] || 0
+      const typeData = data.interactions_by_type as Record<string, number>
+      interactionsByType[type as InteractionType] = typeData[type] || 0
     })
   }
 
@@ -172,7 +175,12 @@ function transformDatabaseMetrics(
     // Principal-specific metrics
     principalsWithActiveOpportunities: data.principals_with_active_opportunities || 0,
     avgOpportunitiesPerPrincipal: data.avg_opportunities_per_principal || 0,
-    topPrincipalsByValue: data.top_principals_by_value || [],
+    topPrincipalsByValue: (Array.isArray(data.top_principals_by_value) ? data.top_principals_by_value : []) as Array<{
+      id: string
+      name: string
+      totalValue: number
+      opportunityCount: number
+    }>,
 
     // Activity metrics
     totalActivities: data.total_interactions || 0,
@@ -207,7 +215,12 @@ function transformDatabaseMetrics(
       byPriority: {} as Record<PriorityLevel, number>, // Placeholder for now
       withActiveOpportunities: data.principals_with_active_opportunities || 0,
       averageOpportunitiesPerPrincipal: data.avg_opportunities_per_principal || 0,
-      topByPipelineValue: data.top_principals_by_value || [],
+      topByPipelineValue: (Array.isArray(data.top_principals_by_value) ? data.top_principals_by_value : []) as Array<{
+        id: string
+        name: string
+        totalValue: number
+        opportunityCount: number
+      }>,
     },
     interactionMetrics: {
       total: data.total_interactions || 0,

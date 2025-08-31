@@ -1,5 +1,5 @@
 import { startOfWeek, format, subWeeks, isSameWeek } from 'date-fns'
-import type { ChartDataPoint } from '@/types/dashboard'
+import type { DashboardChartDataPoint } from '@/types/dashboard'
 
 /**
  * Get the start of week (Monday) for a given date
@@ -40,8 +40,8 @@ export const getRelativeTime = (date: Date): string => {
 /**
  * Generate weeks data for the specified period
  */
-export const generateWeeksData = (weeksBack: number): ChartDataPoint[] => {
-  const weeks: ChartDataPoint[] = []
+export const generateWeeksData = (weeksBack: number): DashboardChartDataPoint[] => {
+  const weeks: DashboardChartDataPoint[] = []
   const today = new Date()
 
   for (let i = weeksBack - 1; i >= 0; i--) {

@@ -235,7 +235,7 @@ export const useFileUpload = (): UseFileUploadReturn => {
                           } else {
                             const key = dbField as keyof TransformedOrganizationRow
                             if (key in transformedRow) {
-                              ;(transformedRow as Record<string, unknown>)[key] = value
+                              (transformedRow as Record<string, unknown>)[key] = value
                             }
                           }
                         }

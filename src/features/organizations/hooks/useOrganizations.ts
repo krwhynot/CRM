@@ -109,7 +109,14 @@ export function useOrganizations(filters?: OrganizationFilters) {
       [...organizationKeys.list(filters)],
       'useOrganizations',
       queryResult.data,
-      queryResult as any
+      {
+        isLoading: queryResult.isLoading,
+        isError: queryResult.isError,
+        error: queryResult.error || undefined,
+        dataUpdatedAt: queryResult.dataUpdatedAt,
+        status: queryResult.status,
+        fetchStatus: queryResult.fetchStatus,
+      }
     )
   }, [queryResult.data, queryResult.isLoading, queryResult.isError, filters, queryResult])
 

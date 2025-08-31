@@ -17,14 +17,11 @@ import {
   FOOD_SERVICE_SEGMENTS,
   type OrganizationFormData,
 } from '@/types/organization.types'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { createTypedYupResolver, type BaseFormProps } from '@/types/forms'
 import { deriveOrganizationFlags } from '@/lib/organization-utils'
 
-interface OrganizationFormProps {
-  onSubmit: (data: OrganizationFormData) => void
-  initialData?: Partial<OrganizationFormData>
-  loading?: boolean
-  submitLabel?: string
+interface OrganizationFormProps extends BaseFormProps<OrganizationFormData> {
+  // OrganizationForm-specific props can be added here if needed
 }
 
 export function OrganizationForm({
@@ -34,7 +31,7 @@ export function OrganizationForm({
   submitLabel = 'Save Organization',
 }: OrganizationFormProps) {
   const form = useForm<OrganizationFormData>({
-    resolver: yupResolver(organizationSchema) as any,
+    resolver: createTypedYupResolver<OrganizationFormData>(organizationSchema),
     defaultValues: {
       name: initialData?.name || '',
       type: initialData?.type || 'customer',

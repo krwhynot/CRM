@@ -14,10 +14,11 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { ProductRowDetails } from './product-row/ProductRowDetails'
-import type { Product, ProductWithPrincipal } from '@/types/entities'
+import type { Product, Organization } from '@/types/entities'
+import type { ProductDisplayData } from '@/types/product-extensions'
 
 interface ProductsTableProps {
-  products?: ProductWithPrincipal[]
+  products?: ProductDisplayData[]
   loading?: boolean
   onEdit?: (product: Product) => void
   onDelete?: (product: Product) => void
@@ -26,7 +27,7 @@ interface ProductsTableProps {
   onAddNew?: () => void
 }
 
-const DEFAULT_PRODUCTS: ProductWithPrincipal[] = []
+const DEFAULT_PRODUCTS: ProductDisplayData[] = []
 
 export function ProductsTable({
   products = DEFAULT_PRODUCTS,
@@ -141,7 +142,7 @@ export function ProductsTable({
   const EmptyCell = () => <span className="italic text-gray-400">Not provided</span>
 
   // Column definitions for DataTable
-  const productColumns: DataTableColumn<ProductWithPrincipal>[] = [
+  const productColumns: DataTableColumn<ProductDisplayData>[] = [
     {
       key: 'selection',
       header: (
@@ -198,8 +199,8 @@ export function ProductsTable({
             category={product.category}
             price={product.list_price}
             shelfLifeDays={product.shelf_life_days}
-            inStock={(product as any).in_stock ?? true}
-            lowStock={(product as any).low_stock ?? false}
+            inStock={product.in_stock ?? true}
+            lowStock={product.low_stock ?? false}
           />
         </div>
       ),
@@ -221,7 +222,7 @@ export function ProductsTable({
       header: 'Principal',
       cell: (product) => (
         <div className="text-sm text-gray-700">
-          {(product as any).principal_name || <EmptyCell />}
+          {product.principal_name || <EmptyCell />}
         </div>
       ),
       className: 'min-w-28',
@@ -231,7 +232,7 @@ export function ProductsTable({
       key: 'brand',
       header: 'Brand',
       cell: (product) => (
-        <div className="text-sm text-gray-700">{(product as any).brand || <EmptyCell />}</div>
+        <div className="text-sm text-gray-700">{product.brand || <EmptyCell />}</div>
       ),
       className: 'min-w-20',
       hidden: { sm: true },
@@ -278,7 +279,7 @@ export function ProductsTable({
 
       {/* Table Container with Row Expansion */}
       <div className="space-y-0">
-        <DataTable<ProductWithPrincipal>
+        <DataTable<ProductDisplayData>
           data={filteredProducts}
           columns={productColumns}
           loading={loading}
@@ -319,11 +320,11 @@ export function ProductsTable({
         </div>
       )}
 
-      {/* Bulk Delete Dialog */}
+      {/* Bulk Delete Dialog - Reused for products with type assertion for shared interface */}
       <BulkDeleteDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
-        organizations={selectedProducts as any}
+        organizations={selectedProducts as unknown as Organization[]}
         onConfirm={handleConfirmDelete}
         isDeleting={isDeleting}
       />

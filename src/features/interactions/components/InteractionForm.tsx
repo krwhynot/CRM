@@ -24,7 +24,7 @@ import {
   type InteractionFormData,
   type InteractionType,
 } from '@/types/interaction.types'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { createTypedYupResolver } from '@/types/forms'
 import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities'
 import { INTERACTION_TYPES } from '@/constants/interaction.constants'
 
@@ -47,7 +47,7 @@ export function InteractionForm({
   const { data: opportunities = [] } = useOpportunities()
 
   const form = useForm<InteractionFormData>({
-    resolver: yupResolver(interactionSchema) as any,
+    resolver: createTypedYupResolver<InteractionFormData>(interactionSchema),
     defaultValues: {
       subject: initialData?.subject || '',
       type: initialData?.type || 'call',

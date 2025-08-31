@@ -2,25 +2,9 @@ import { useState, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import type { Database } from '@/lib/database.types'
 import type { TransformedOrganizationRow } from '@/hooks/useFileUpload'
+import type { ImportResult, SkippedRecord } from '@/types/import-export'
 
 type OrganizationInsert = Database['public']['Tables']['organizations']['Insert']
-
-export interface SkippedRecord {
-  name: string
-  type: string
-  reason: string
-  rowIndex: number
-}
-
-export interface ImportResult {
-  success: boolean
-  message: string
-  imported: number
-  failed: number
-  skipped: number
-  errors: Array<{ row: number; error: string }>
-  skippedRecords: SkippedRecord[]
-}
 
 interface UseImportProgressState {
   isImporting: boolean

@@ -1,9 +1,9 @@
 import React from 'react'
 import { Package, Scale, Building2 } from 'lucide-react'
-import type { ProductWithPrincipal } from '@/types/entities'
+import type { ProductDisplayData } from '@/types/product-extensions'
 
 interface ProductSpecsSectionProps {
-  product: ProductWithPrincipal
+  product: ProductDisplayData
 }
 
 const EmptyCell = () => <span className="italic text-gray-400">Not provided</span>
@@ -18,7 +18,7 @@ export const ProductSpecsSection: React.FC<ProductSpecsSectionProps> = ({ produc
           Package Size
         </div>
         <div className="pl-6 text-sm text-gray-600">
-          {(product as any).package_size || <EmptyCell />}
+          {product.package_size || <EmptyCell />}
         </div>
       </div>
 
@@ -38,7 +38,7 @@ export const ProductSpecsSection: React.FC<ProductSpecsSectionProps> = ({ produc
           Origin
         </div>
         <div className="pl-6 text-sm text-gray-600">
-          {(product as any).origin_country || <EmptyCell />}
+          {product.origin_country || <EmptyCell />}
         </div>
       </div>
     </div>

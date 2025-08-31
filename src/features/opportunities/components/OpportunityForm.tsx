@@ -13,18 +13,14 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useForm, Controller } from 'react-hook-form'
 import { opportunitySchema, type OpportunityFormData } from '@/types/opportunity.types'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { createTypedYupResolver, type FormPropsWithPreselection } from '@/types/forms'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
 import { useContacts } from '@/features/contacts/hooks/useContacts'
 import { DB_STAGES, DEFAULT_OPPORTUNITY_STAGE } from '@/lib/opportunity-stage-mapping'
 import type { OpportunityStage as OpportunityStageDB } from '@/types/entities'
 
-interface OpportunityFormProps {
-  onSubmit: (data: OpportunityFormData) => void | Promise<void>
-  initialData?: Partial<OpportunityFormData>
-  loading?: boolean
-  submitLabel?: string
-  preselectedOrganization?: string
+interface OpportunityFormProps extends FormPropsWithPreselection<OpportunityFormData> {
+  // OpportunityForm-specific props can be added here if needed
 }
 
 // Opportunity stages for select dropdown
@@ -54,7 +50,7 @@ export function OpportunityForm({
   const { data: contacts = [] } = useContacts()
 
   const form = useForm<OpportunityFormData>({
-    resolver: yupResolver(opportunitySchema) as any,
+    resolver: createTypedYupResolver<OpportunityFormData>(opportunitySchema),
     defaultValues: {
       name: initialData?.name || '',
       organization_id: preselectedOrganization || initialData?.organization_id || '',
@@ -87,7 +83,7 @@ export function OpportunityForm({
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <Controller
               control={form.control}
               name="name"

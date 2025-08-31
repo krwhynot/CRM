@@ -18,7 +18,6 @@ export type {
   PurchaseInfluenceLevel,
   DecisionAuthorityRole,
   ContactFilters,
-  ContactFormData,
 } from './contact.types'
 
 export { contactSchema, CONTACT_ROLES, getRoleLabel, getRoleValue } from './contact.types'
@@ -30,11 +29,96 @@ export * from './interaction.types'
 export * from './components'
 export * from './dashboard'
 
-// Form Types (comprehensive barrel export)
-export * from './forms'
+// Chart Types
+export * from './charts'
+
+// Monitoring Types
+export * from './monitoring'
+
+// Product Extensions - Using specific exports to avoid conflicts
+export type {
+  ProductWithStatus,
+  ProductWithSpecs,
+  ProductComplete,
+  ProductDisplayData,
+  ProductAvailabilityStatus,
+  ProductRowProps,
+  ProductTableProps as ExtendedProductTableProps, // Renamed to avoid conflict
+  ProductWithPrincipal as ExtendedProductWithPrincipal, // Renamed to avoid conflict
+} from './product-extensions'
+
+export {
+  hasInventoryStatus,
+  hasPrincipalInfo,
+  hasSpecifications,
+  isCompleteProduct,
+  createSafeProductDisplay,
+} from './product-extensions'
+
+// Form Types - Using specific exports to avoid conflicts
+export type {
+  ContactFormData,
+  OrganizationFormData,
+  OpportunityFormData,
+  ProductFormData,
+  OpportunityProductFormData,
+  ContactPreferredPrincipalFormData,
+  AnyFormData,
+  BaseFormProps as FormBaseProps, // Renamed to avoid conflict
+  FormPropsWithPreselection,
+} from './forms'
+
+export {
+  defaultContactFormValues,
+  createContactFormDefaults,
+  createContactFormDefaultsWithOrganization,
+  defaultOrganizationFormValues,
+  createOrganizationFormDefaults,
+  createPrincipalOrganizationDefaults,
+  createDistributorOrganizationDefaults,
+  createCustomerOrganizationDefaults,
+  defaultOpportunityFormValues,
+  createOpportunityFormDefaults,
+  createOpportunityFormDefaultsWithOrganization,
+  createOpportunityFormDefaultsWithContact,
+  createDiscoveryOpportunityDefaults,
+  createProposalOpportunityDefaults,
+  createNegotiationOpportunityDefaults,
+  isContactFormData,
+  isOrganizationFormData,
+  isOpportunityFormData,
+  isFormData,
+  FormValidationPatterns,
+  FormFieldRequirements,
+  createTypedYupResolver,
+} from './forms'
+
+// Form handler types with specific naming
+export type {
+  FormSubmitHandler,
+  FormValidationError,
+  TypedYupResolver,
+  EnhancedFormProps,
+  FormStateManager,
+  FormValidationConfig,
+  FormValidationFeedbackReturn,
+  FieldValidationIndicatorProps,
+  FormDataWithComputed,
+  FormSubmissionResult,
+  AsyncFormHandler,
+  FormComponentRef,
+  TypedFormConfig,
+  FormFieldRenderProps,
+  FormFieldProps as FormHandlerFieldProps, // Renamed to avoid conflict
+  FormSection,
+  ProgressiveFormConfig,
+} from './forms/form-handlers'
 
 // Validation Types
 export * from './validation'
+
+// Import/Export Types
+export * from './import-export'
 
 // Re-export commonly used types for convenience
 // Using the namespaced imports to prevent conflicts
