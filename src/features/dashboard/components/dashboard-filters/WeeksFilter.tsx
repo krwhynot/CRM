@@ -1,7 +1,13 @@
 import React from 'react'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Calendar } from "lucide-react"
-import { FilterState } from "@/types/dashboard"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Calendar } from 'lucide-react'
+import type { FilterState } from '@/types/dashboard'
 
 interface WeeksFilterProps {
   localFilters: FilterState
@@ -14,7 +20,7 @@ export const WeeksFilter: React.FC<WeeksFilterProps> = ({
   localFilters,
   weekOptions,
   isLoading,
-  onFilterChange
+  onFilterChange,
 }) => {
   return (
     <div className="flex min-w-0 items-center gap-2">

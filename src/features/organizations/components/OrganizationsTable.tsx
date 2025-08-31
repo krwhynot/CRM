@@ -25,7 +25,6 @@ interface OrganizationsTableProps {
 }
 
 const DEFAULT_ORGANIZATIONS: Organization[] = [
-  // @ts-expect-error Demo data
   {
     id: '1',
     name: '040 KITCHEN INC',

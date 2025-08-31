@@ -1,5 +1,5 @@
 import React from 'react'
-import { FilterState, Principal, Product } from "@/types/dashboard"
+import type { FilterState, Principal, Product } from '@/types/dashboard'
 
 interface ActiveFiltersSummaryProps {
   localFilters: FilterState
@@ -10,13 +10,12 @@ interface ActiveFiltersSummaryProps {
 export const ActiveFiltersSummary: React.FC<ActiveFiltersSummaryProps> = ({
   localFilters,
   principals,
-  filteredProducts
+  filteredProducts,
 }) => {
-  const hasActiveFilters = (
-    localFilters.principal !== 'all' || 
-    localFilters.product !== 'all' || 
+  const hasActiveFilters =
+    localFilters.principal !== 'all' ||
+    localFilters.product !== 'all' ||
     localFilters.weeks !== 'Last 4 Weeks'
-  )
 
   if (!hasActiveFilters) {
     return null
@@ -28,12 +27,16 @@ export const ActiveFiltersSummary: React.FC<ActiveFiltersSummaryProps> = ({
         <span>Active filters:</span>
         {localFilters.principal !== 'all' && (
           <span className="rounded-full bg-primary/10 px-2 py-1 text-primary">
-            Principal: {principals.find(p => p.id === localFilters.principal)?.name || localFilters.principal}
+            Principal:{' '}
+            {principals.find((p) => p.id === localFilters.principal)?.name ||
+              localFilters.principal}
           </span>
         )}
         {localFilters.product !== 'all' && (
           <span className="rounded-full bg-primary/10 px-2 py-1 text-primary">
-            Product: {filteredProducts.find(p => p.id === localFilters.product)?.name || localFilters.product}
+            Product:{' '}
+            {filteredProducts.find((p) => p.id === localFilters.product)?.name ||
+              localFilters.product}
           </span>
         )}
         {localFilters.weeks !== 'Last 4 Weeks' && (

@@ -6,6 +6,7 @@
  */
 
 import { describe, test, expect, beforeEach, afterEach } from 'vitest'
+import { createTestOrganization, createTestProduct, checkResult, validateTestData } from '../../utils/test-factories'
 
 describe('Products Database Operations', () => {
   let testPrincipalId: string
@@ -16,17 +17,20 @@ describe('Products Database Operations', () => {
     await TestAuth.loginAsTestUser()
 
     // Create a test principal organization for product relationships
+    const principalData = createTestOrganization({
+      name: 'Test Principal for Products',
+      type: 'principal',
+      industry: 'Food Manufacturing'
+    })
+    
     const principalResult = await testSupabase
       .from('organizations')
-      .insert({
-        name: 'Test Principal for Products',
-        type: 'principal' as const,
-        industry: 'Food Manufacturing'
-      } as any)
+      .insert(principalData)
       .select()
       .single()
 
-    testPrincipalId = principalResult.data!.id
+    const principal = checkResult(principalResult, 'create test principal organization')
+    testPrincipalId = principal.id
     TestCleanup.trackCreatedRecord('organizations', testPrincipalId)
   })
 
@@ -42,7 +46,7 @@ describe('Products Database Operations', () => {
 
   describe('CREATE Operations', () => {
     test('should create a new product with all fields', async () => {
-      const productData = {
+      const productData = createTestProduct({
         principal_id: testPrincipalId,
         name: 'Premium Organic Tomato Sauce',
         category: 'condiments_sauces' as const,
@@ -58,12 +62,12 @@ describe('Products Database Operations', () => {
         storage_requirements: 'Store in cool, dry place',
         specifications: 'Made from 100% organic tomatoes, no preservatives',
         is_active: true
-      }
+      })
 
       const result = await PerformanceMonitor.measureQuery('create_product', async () => {
         return await testSupabase
           .from('products')
-          .insert(productData as any)
+          .insert(productData)
           .select(`
             *,
             principal:organizations(name, type)
@@ -71,23 +75,22 @@ describe('Products Database Operations', () => {
           .single()
       })
 
-      expect(result.error).toBeNull()
-      expect(result.data).toBeDefined()
-      expect(result.data!.name).toBe(productData.name)
-      expect(result.data!.category).toBe(productData.category)
-      expect(result.data!.sku).toBe(productData.sku)
-      expect(result.data!.principal_id).toBe(testPrincipalId)
-      expect(result.data!.principal).toBeDefined()
-      expect((result.data! as any).principal.type).toBe('principal')
-      expect(result.data!.unit_cost).toBe(productData.unit_cost)
-      expect(result.data!.list_price).toBe(productData.list_price)
-      expect(result.data!.season_start).toBe(productData.season_start)
-      expect(result.data!.season_end).toBe(productData.season_end)
-      expect(result.data!.id).toBeDefined()
-      expect(result.data!.created_at).toBeDefined()
+      const createdProduct = checkResult(result, 'create product with all fields')
+      expect(createdProduct.name).toBe(productData.name)
+      expect(createdProduct.category).toBe(productData.category)
+      expect(createdProduct.sku).toBe(productData.sku)
+      expect(createdProduct.principal_id).toBe(testPrincipalId)
+      expect(createdProduct.principal).toBeDefined()
+      expect((createdProduct as any).principal.type).toBe('principal')
+      expect(createdProduct.unit_cost).toBe(productData.unit_cost)
+      expect(createdProduct.list_price).toBe(productData.list_price)
+      expect(createdProduct.season_start).toBe(productData.season_start)
+      expect(createdProduct.season_end).toBe(productData.season_end)
+      expect(createdProduct.id).toBeDefined()
+      expect(createdProduct.created_at).toBeDefined()
 
-      testProductIds.push(result.data!.id)
-      TestCleanup.trackCreatedRecord('products', result.data!.id)
+      testProductIds.push(createdProduct.id)
+      TestCleanup.trackCreatedRecord('products', createdProduct.id)
     })
 
     test('should create products in different categories', async () => {
@@ -107,12 +110,12 @@ describe('Products Database Operations', () => {
       const createdProducts = []
 
       for (const category of categories) {
-        const productData = {
+        const productData = createTestProduct({
           principal_id: testPrincipalId,
           name: `Test ${category} Product`,
           category: category,
           description: `Test product in ${category} category`
-        }
+        })
 
         const result = await testSupabase
           .from('products')
@@ -120,22 +123,22 @@ describe('Products Database Operations', () => {
           .select()
           .single()
 
-        expect(result.error).toBeNull()
-        expect(result.data.category).toBe(category)
+        const createdProduct = checkResult(result, `create ${category} product`)
+        expect(createdProduct.category).toBe(category)
         
-        createdProducts.push(result.data)
-        testProductIds.push(result.data.id)
+        createdProducts.push(createdProduct)
+        testProductIds.push(createdProduct.id)
       }
 
       expect(createdProducts).toHaveLength(categories.length)
     })
 
     test('should create product with minimal required fields', async () => {
-      const minimalProductData = {
+      const minimalProductData = createTestProduct({
         principal_id: testPrincipalId,
         name: 'Minimal Test Product',
         category: 'other' as const
-      }
+      })
 
       const result = await testSupabase
         .from('products')
@@ -143,13 +146,13 @@ describe('Products Database Operations', () => {
         .select()
         .single()
 
-      expect(result.error).toBeNull()
-      expect(result.data.name).toBe(minimalProductData.name)
-      expect(result.data.category).toBe(minimalProductData.category)
-      expect((result.data as any).is_active).toBe(true) // Default value
-      expect(result.data.deleted_at).toBeNull() // Default value
+      const createdProduct = checkResult(result, 'create product with minimal fields')
+      expect(createdProduct.name).toBe(minimalProductData.name)
+      expect(createdProduct.category).toBe(minimalProductData.category)
+      expect((createdProduct as any).is_active).toBe(true) // Default value
+      expect(createdProduct.deleted_at).toBeNull() // Default value
 
-      testProductIds.push(result.data.id)
+      testProductIds.push(createdProduct.id)
     })
 
     test('should reject product creation without required fields', async () => {
@@ -168,11 +171,11 @@ describe('Products Database Operations', () => {
     })
 
     test('should reject product with invalid principal_id', async () => {
-      const invalidPrincipalProduct = {
+      const invalidPrincipalProduct = createTestProduct({
         principal_id: '00000000-0000-0000-0000-000000000000', // Non-existent UUID
         name: 'Invalid Principal Product',
         category: 'other' as const
-      }
+      })
 
       const result = await testSupabase
         .from('products')
@@ -185,13 +188,13 @@ describe('Products Database Operations', () => {
     })
 
     test('should validate season month constraints', async () => {
-      const invalidSeasonProduct = {
+      const invalidSeasonProduct = createTestProduct({
         principal_id: testPrincipalId,
         name: 'Invalid Season Product',
         category: 'produce' as const,
         season_start: 13, // Invalid month (should be 1-12)
         season_end: 6
-      }
+      })
 
       const result = await testSupabase
         .from('products')
@@ -204,19 +207,19 @@ describe('Products Database Operations', () => {
     })
 
     test('should enforce unique SKU per principal constraint', async () => {
-      const product1Data = {
+      const product1Data = createTestProduct({
         principal_id: testPrincipalId,
         name: 'Product 1',
         category: 'dairy' as const,
         sku: 'UNIQUE-SKU-001'
-      }
+      })
 
-      const product2Data = {
+      const product2Data = createTestProduct({
         principal_id: testPrincipalId,
         name: 'Product 2',
         category: 'dairy' as const,
         sku: 'UNIQUE-SKU-001' // Same SKU as product1
-      }
+      })
 
       // Create first product
       const result1 = await testSupabase
@@ -225,8 +228,8 @@ describe('Products Database Operations', () => {
         .select()
         .single()
 
-      expect(result1.error).toBeNull()
-      testProductIds.push(result1.data.id)
+      const firstProduct = checkResult(result1, 'create first product with unique SKU')
+      testProductIds.push(firstProduct.id)
 
       // Attempt to create second product with same SKU
       const result2 = await testSupabase
@@ -245,7 +248,7 @@ describe('Products Database Operations', () => {
 
     beforeEach(async () => {
       // Create a sample product for read tests
-      const productData = {
+      const productData = createTestProduct({
         principal_id: testPrincipalId,
         name: 'Sample Read Test Product',
         category: 'beverages' as const,
@@ -254,7 +257,7 @@ describe('Products Database Operations', () => {
         unit_cost: 25.00,
         list_price: 35.99,
         is_active: true
-      }
+      })
 
       const result = await testSupabase
         .from('products')
@@ -262,7 +265,8 @@ describe('Products Database Operations', () => {
         .select()
         .single()
 
-      sampleProductId = result.data.id
+      const createdProduct = checkResult(result, 'create sample product for read tests')
+      sampleProductId = createdProduct.id
       testProductIds.push(sampleProductId)
     })
 
@@ -283,26 +287,26 @@ describe('Products Database Operations', () => {
           .single()
       })
 
-      expect(result.error).toBeNull()
-      expect(result.data).toBeDefined()
-      expect(result.data.id).toBe(sampleProductId)
-      expect(result.data.name).toBe('Sample Read Test Product')
-      expect(result.data.principal).toBeDefined()
-      expect(result.data.principal.type).toBe('principal')
-      expect(result.data.principal.name).toBe('Test Principal for Products')
+      const product = checkResult(result, 'retrieve product by ID with principal information')
+      expect(product.id).toBe(sampleProductId)
+      expect(product.name).toBe('Sample Read Test Product')
+      expect(product.principal).toBeDefined()
+      expect(product.principal.type).toBe('principal')
+      expect(product.principal.name).toBe('Test Principal for Products')
     })
 
     test('should list products for specific principal', async () => {
       // Create additional products for the principal
       const additionalProducts = [
-        { name: 'Product A', category: 'dairy' as const, principal_id: testPrincipalId },
-        { name: 'Product B', category: 'meat_poultry' as const, principal_id: testPrincipalId },
-        { name: 'Product C', category: 'produce' as const, principal_id: testPrincipalId }
+        createTestProduct({ name: 'Product A', category: 'dairy' as const, principal_id: testPrincipalId }),
+        createTestProduct({ name: 'Product B', category: 'meat_poultry' as const, principal_id: testPrincipalId }),
+        createTestProduct({ name: 'Product C', category: 'produce' as const, principal_id: testPrincipalId })
       ]
 
       for (const product of additionalProducts) {
         const result = await testSupabase.from('products').insert(product).select().single()
-        testProductIds.push(result.data.id)
+        const createdProduct = checkResult(result, 'create additional product')
+        testProductIds.push(createdProduct.id)
       }
 
       const result = await PerformanceMonitor.measureQuery('list_products_by_principal', async () => {
@@ -318,10 +322,10 @@ describe('Products Database Operations', () => {
       expect(result.error).toBeNull()
       expect(result.data).toBeDefined()
       expect(result.count).toBeGreaterThanOrEqual(4) // Sample + 3 additional
-      expect(result.data.length).toBeGreaterThanOrEqual(4)
+      expect(result.data!.length).toBeGreaterThanOrEqual(4)
 
       // Verify all products belong to the same principal
-      result.data.forEach((product: any) => {
+      result.data!.forEach((product: any) => {
         expect(product.principal_id).toBe(testPrincipalId)
         expect(product.is_active).toBe(true)
         expect(product.deleted_at).toBeNull()
@@ -331,14 +335,15 @@ describe('Products Database Operations', () => {
     test('should filter products by category', async () => {
       // Create products in different categories
       const categoryProducts = [
-        { name: 'Dairy Product 1', category: 'dairy' as const, principal_id: testPrincipalId },
-        { name: 'Dairy Product 2', category: 'dairy' as const, principal_id: testPrincipalId },
-        { name: 'Beverage Product 1', category: 'beverages' as const, principal_id: testPrincipalId }
+        createTestProduct({ name: 'Dairy Product 1', category: 'dairy' as const, principal_id: testPrincipalId }),
+        createTestProduct({ name: 'Dairy Product 2', category: 'dairy' as const, principal_id: testPrincipalId }),
+        createTestProduct({ name: 'Beverage Product 1', category: 'beverages' as const, principal_id: testPrincipalId })
       ]
 
       for (const product of categoryProducts) {
         const result = await testSupabase.from('products').insert(product).select().single()
-        testProductIds.push(result.data.id)
+        const createdProduct = checkResult(result, 'create category product')
+        testProductIds.push(createdProduct.id)
       }
 
       const result = await testSupabase
@@ -349,8 +354,9 @@ describe('Products Database Operations', () => {
         .is('deleted_at', null)
 
       expect(result.error).toBeNull()
-      expect(result.data.length).toBeGreaterThanOrEqual(2)
-      result.data.forEach((product: any) => {
+      expect(result.data).toBeDefined()
+      expect(result.data!.length).toBeGreaterThanOrEqual(2)
+      result.data!.forEach((product: any) => {
         expect(product.category).toBe('dairy')
       })
     })
@@ -370,10 +376,10 @@ describe('Products Database Operations', () => {
 
       expect(result.error).toBeNull()
       expect(result.data).toBeDefined()
-      expect(result.data.length).toBeGreaterThan(0)
+      expect(result.data!.length).toBeGreaterThan(0)
       
       // Verify search results contain the search term
-      result.data.forEach((product: any) => {
+      result.data!.forEach((product: any) => {
         const searchableText = `${product.name} ${product.description || ''}`.toLowerCase()
         expect(searchableText).toContain('sample')
       })
@@ -381,12 +387,12 @@ describe('Products Database Operations', () => {
 
     test('should filter active products only', async () => {
       // Create inactive product
-      const inactiveProductData = {
+      const inactiveProductData = createTestProduct({
         principal_id: testPrincipalId,
         name: 'Inactive Test Product',
         category: 'other' as const,
         is_active: false
-      }
+      })
 
       const inactiveResult = await testSupabase
         .from('products')
@@ -394,7 +400,8 @@ describe('Products Database Operations', () => {
         .select()
         .single()
 
-      testProductIds.push(inactiveResult.data.id)
+      const inactiveProduct = checkResult(inactiveResult, 'create inactive product')
+      testProductIds.push(inactiveProduct.id)
 
       const result = await testSupabase
         .from('products')
@@ -404,38 +411,40 @@ describe('Products Database Operations', () => {
         .is('deleted_at', null)
 
       expect(result.error).toBeNull()
-      result.data.forEach((product: any) => {
+      expect(result.data).toBeDefined()
+      result.data!.forEach((product: any) => {
         expect(product.is_active).toBe(true)
         expect(product.deleted_at).toBeNull()
       })
 
       // Verify inactive product is not included
-      const inactiveProductInResults = result.data.find((p: any) => p.id === inactiveResult.data.id)
+      const inactiveProductInResults = result.data!.find((p: any) => p.id === inactiveProduct.id)
       expect(inactiveProductInResults).toBeUndefined()
     })
 
     test('should filter products by seasonal availability', async () => {
       // Create seasonal products
       const seasonalProducts = [
-        { 
+        createTestProduct({ 
           name: 'Spring Product', 
           category: 'produce' as const, 
           principal_id: testPrincipalId,
           season_start: 3, // March
           season_end: 5    // May
-        },
-        { 
+        }),
+        createTestProduct({ 
           name: 'Summer Product', 
           category: 'produce' as const, 
           principal_id: testPrincipalId,
           season_start: 6, // June
           season_end: 8    // August
-        }
+        })
       ]
 
       for (const product of seasonalProducts) {
         const result = await testSupabase.from('products').insert(product).select().single()
-        testProductIds.push(result.data.id)
+        const createdProduct = checkResult(result, 'create seasonal product')
+        testProductIds.push(createdProduct.id)
       }
 
       // Query for products available in May (month 5)
@@ -448,7 +457,8 @@ describe('Products Database Operations', () => {
         .gte('season_end', currentMonth)
 
       expect(result.error).toBeNull()
-      result.data.forEach((product: any) => {
+      expect(result.data).toBeDefined()
+      result.data!.forEach((product: any) => {
         if (product.season_start && product.season_end) {
           expect(product.season_start).toBeLessThanOrEqual(currentMonth)
           expect(product.season_end).toBeGreaterThanOrEqual(currentMonth)
@@ -461,14 +471,14 @@ describe('Products Database Operations', () => {
     let sampleProductId: string
 
     beforeEach(async () => {
-      const productData = {
+      const productData = createTestProduct({
         principal_id: testPrincipalId,
         name: 'Update Test Product',
         category: 'dry_goods' as const,
         sku: 'UPDATE-TEST-001',
         unit_cost: 30.00,
         list_price: 45.00
-      }
+      })
 
       const result = await testSupabase
         .from('products')
@@ -476,7 +486,8 @@ describe('Products Database Operations', () => {
         .select()
         .single()
 
-      sampleProductId = result.data.id
+      const createdProduct = checkResult(result, 'create sample product for update tests')
+      sampleProductId = createdProduct.id
       testProductIds.push(sampleProductId)
     })
 
@@ -499,13 +510,13 @@ describe('Products Database Operations', () => {
           .single()
       })
 
-      expect(result.error).toBeNull()
-      expect(result.data.name).toBe(updateData.name)
-      expect(result.data.description).toBe(updateData.description)
-      expect(result.data.unit_cost).toBe(updateData.unit_cost)
-      expect(result.data.list_price).toBe(updateData.list_price)
-      expect(result.data.min_order_quantity).toBe(updateData.min_order_quantity)
-      expect(new Date(result.data.updated_at) > new Date(result.data.created_at)).toBe(true)
+      const updatedProduct = checkResult(result, 'update product information')
+      expect(updatedProduct.name).toBe(updateData.name)
+      expect(updatedProduct.description).toBe(updateData.description)
+      expect(updatedProduct.unit_cost).toBe(updateData.unit_cost)
+      expect(updatedProduct.list_price).toBe(updateData.list_price)
+      expect(updatedProduct.min_order_quantity).toBe(updateData.min_order_quantity)
+      expect(new Date(updatedProduct.updated_at) > new Date(updatedProduct.created_at)).toBe(true)
     })
 
     test('should update product category', async () => {
@@ -516,8 +527,8 @@ describe('Products Database Operations', () => {
         .select()
         .single()
 
-      expect(result.error).toBeNull()
-      expect(result.data.category).toBe('frozen_foods')
+      const categoryUpdatedProduct = checkResult(result, 'update product category')
+      expect(categoryUpdatedProduct.category).toBe('frozen_foods')
     })
 
     test('should not allow invalid category values', async () => {
@@ -545,9 +556,9 @@ describe('Products Database Operations', () => {
         .select()
         .single()
 
-      expect(result.error).toBeNull()
-      expect(result.data.unit_cost).toBe(pricingUpdate.unit_cost)
-      expect(result.data.list_price).toBe(pricingUpdate.list_price)
+      const pricingUpdatedProduct = checkResult(result, 'update product pricing')
+      expect(pricingUpdatedProduct.unit_cost).toBe(pricingUpdate.unit_cost)
+      expect(pricingUpdatedProduct.list_price).toBe(pricingUpdate.list_price)
     })
 
     test('should deactivate product', async () => {
@@ -558,8 +569,8 @@ describe('Products Database Operations', () => {
         .select()
         .single()
 
-      expect(result.error).toBeNull()
-      expect(result.data.is_active).toBe(false)
+      const deactivatedProduct = checkResult(result, 'deactivate product')
+      expect(deactivatedProduct.is_active).toBe(false)
     })
 
     test('should update seasonal information', async () => {
@@ -576,10 +587,10 @@ describe('Products Database Operations', () => {
         .select()
         .single()
 
-      expect(result.error).toBeNull()
-      expect(result.data.season_start).toBe(seasonalUpdate.season_start)
-      expect(result.data.season_end).toBe(seasonalUpdate.season_end)
-      expect(result.data.shelf_life_days).toBe(seasonalUpdate.shelf_life_days)
+      const seasonalUpdatedProduct = checkResult(result, 'update seasonal information')
+      expect(seasonalUpdatedProduct.season_start).toBe(seasonalUpdate.season_start)
+      expect(seasonalUpdatedProduct.season_end).toBe(seasonalUpdate.season_end)
+      expect(seasonalUpdatedProduct.shelf_life_days).toBe(seasonalUpdate.shelf_life_days)
     })
   })
 
@@ -587,12 +598,12 @@ describe('Products Database Operations', () => {
     let sampleProductId: string
 
     beforeEach(async () => {
-      const productData = {
+      const productData = createTestProduct({
         principal_id: testPrincipalId,
         name: 'Delete Test Product',
         category: 'other' as const,
         sku: 'DELETE-TEST-001'
-      }
+      })
 
       const result = await testSupabase
         .from('products')
@@ -600,7 +611,8 @@ describe('Products Database Operations', () => {
         .select()
         .single()
 
-      sampleProductId = result.data.id
+      const createdProduct = checkResult(result, 'create sample product for delete tests')
+      sampleProductId = createdProduct.id
       testProductIds.push(sampleProductId)
     })
 
@@ -614,9 +626,9 @@ describe('Products Database Operations', () => {
           .single()
       })
 
-      expect(result.error).toBeNull()
-      expect(result.data.deleted_at).toBeDefined()
-      expect(result.data.deleted_at).not.toBeNull()
+      const deletedProduct = checkResult(result, 'soft delete product')
+      expect(deletedProduct.deleted_at).toBeDefined()
+      expect(deletedProduct.deleted_at).not.toBeNull()
     })
 
     test('should exclude soft-deleted products from normal queries', async () => {
@@ -653,32 +665,33 @@ describe('Products Database Operations', () => {
         .not('deleted_at', 'is', null)
         .single()
 
-      expect(result.error).toBeNull()
-      expect(result.data).toBeDefined()
-      expect(result.data.deleted_at).not.toBeNull()
+      const softDeletedProduct = checkResult(result, 'query soft-deleted products')
+      expect(softDeletedProduct.deleted_at).not.toBeNull()
     })
   })
 
   describe('Business Logic Constraints', () => {
     test('should enforce principal organization type constraint', async () => {
       // Create a customer organization (not principal)
+      const customerOrgData = createTestOrganization({
+        name: 'Test Customer Organization',
+        type: 'customer'
+      })
       const customerOrgResult = await testSupabase
         .from('organizations')
-        .insert({
-          name: 'Test Customer Organization',
-          type: 'customer' as const
-        })
+        .insert(customerOrgData)
         .select()
         .single()
 
-      TestCleanup.trackCreatedRecord('organizations', customerOrgResult.data.id)
+      const customerOrg = checkResult(customerOrgResult, 'create customer organization for constraint test')
+      TestCleanup.trackCreatedRecord('organizations', customerOrg.id)
 
       // Attempt to create product with customer organization as principal
-      const productData = {
-        principal_id: customerOrgResult.data.id,
+      const productData = createTestProduct({
+        principal_id: customerOrg.id,
         name: 'Invalid Principal Product',
         category: 'other' as const
-      }
+      })
 
       const result = await testSupabase
         .from('products')
@@ -696,13 +709,13 @@ describe('Products Database Operations', () => {
     })
 
     test('should handle decimal precision correctly', async () => {
-      const productData = {
+      const productData = createTestProduct({
         principal_id: testPrincipalId,
         name: 'Precision Test Product',
         category: 'other' as const,
         unit_cost: 99.99,
         list_price: 999.99
-      }
+      })
 
       const result = await testSupabase
         .from('products')
@@ -710,15 +723,15 @@ describe('Products Database Operations', () => {
         .select()
         .single()
 
-      expect(result.error).toBeNull()
-      expect(result.data.unit_cost).toBe(99.99)
-      expect(result.data.list_price).toBe(999.99)
+      const precisionProduct = checkResult(result, 'create product with decimal precision')
+      expect(precisionProduct.unit_cost).toBe(99.99)
+      expect(precisionProduct.list_price).toBe(999.99)
 
-      testProductIds.push(result.data.id)
+      testProductIds.push(precisionProduct.id)
     })
 
     test('should allow null values for optional fields', async () => {
-      const productData = {
+      const productData = createTestProduct({
         principal_id: testPrincipalId,
         name: 'Null Values Test Product',
         category: 'other' as const,
@@ -729,7 +742,7 @@ describe('Products Database Operations', () => {
         season_start: null,
         season_end: null,
         shelf_life_days: null
-      }
+      })
 
       const result = await testSupabase
         .from('products')
@@ -737,13 +750,13 @@ describe('Products Database Operations', () => {
         .select()
         .single()
 
-      expect(result.error).toBeNull()
-      expect(result.data.description).toBeNull()
-      expect(result.data.sku).toBeNull()
-      expect(result.data.unit_cost).toBeNull()
-      expect(result.data.list_price).toBeNull()
+      const nullValuesProduct = checkResult(result, 'create product with null optional fields')
+      expect(nullValuesProduct.description).toBeNull()
+      expect(nullValuesProduct.sku).toBeNull()
+      expect(nullValuesProduct.unit_cost).toBeNull()
+      expect(nullValuesProduct.list_price).toBeNull()
 
-      testProductIds.push(result.data.id)
+      testProductIds.push(nullValuesProduct.id)
     })
   })
 
@@ -784,12 +797,12 @@ describe('Products Database Operations', () => {
 
     test('should perform efficiently with SKU lookups', async () => {
       // Create product with specific SKU
-      const productData = {
+      const productData = createTestProduct({
         principal_id: testPrincipalId,
         name: 'SKU Lookup Test',
         category: 'other' as const,
         sku: 'SKU-PERF-TEST-001'
-      }
+      })
 
       const createResult = await testSupabase
         .from('products')
@@ -797,7 +810,8 @@ describe('Products Database Operations', () => {
         .select()
         .single()
 
-      testProductIds.push(createResult.data.id)
+      const skuProduct = checkResult(createResult, 'create product for SKU lookup test')
+      testProductIds.push(skuProduct.id)
 
       const startTime = performance.now()
       

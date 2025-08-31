@@ -8,7 +8,7 @@ export {
   detectSegment,
   determineOrganizationType,
   normalizePriority,
-  isValidEmail
+  isValidEmail,
 } from './csv-parser'
 
 export {
@@ -17,17 +17,23 @@ export {
   calculateMappingConfidence,
   generateInitialMappings,
   getFieldMappingOptions,
-  generateImportNotes
+  generateImportNotes,
 } from './field-mapping'
 
 export {
   validateRow,
   validateMappingCompleteness,
   checkDuplicateOrganizations,
-  formatImportResults
+  formatImportResults,
 } from './validation'
 
-import { CsvRow, ParsedOrganization, ParsedContact, parseContactName, detectSegment, determineOrganizationType, normalizePriority } from './csv-parser'
+import type { CsvRow, ParsedOrganization, ParsedContact } from './csv-parser'
+import {
+  parseContactName,
+  detectSegment,
+  determineOrganizationType,
+  normalizePriority,
+} from './csv-parser'
 import { FIELD_MAPPINGS, findBestMatch, generateImportNotes } from './field-mapping'
 
 /**
@@ -49,7 +55,7 @@ export function parseOrganization(row: CsvRow, headers: string[]): ParsedOrganiz
 
   const name = nameField ? row[nameField]?.trim() : ''
   const segment = segmentField ? row[segmentField]?.trim() : detectSegment(name)
-  
+
   return {
     name,
     type: determineOrganizationType(row, segment),
@@ -64,22 +70,28 @@ export function parseOrganization(row: CsvRow, headers: string[]): ParsedOrganiz
     country: 'US',
     notes: notesField ? row[notesField]?.trim() || null : null,
     primary_manager_name: primaryManagerField ? row[primaryManagerField]?.trim() || null : null,
-    secondary_manager_name: secondaryManagerField ? row[secondaryManagerField]?.trim() || null : null,
+    secondary_manager_name: secondaryManagerField
+      ? row[secondaryManagerField]?.trim() || null
+      : null,
     import_notes: generateImportNotes(row, headers),
-    is_active: true
+    is_active: true,
   }
 }
 
 /**
  * Parse contact data from CSV row
  */
-export function parseContact(row: CsvRow, headers: string[], isPrimary = false): ParsedContact | null {
+export function parseContact(
+  row: CsvRow,
+  headers: string[],
+  isPrimary = false
+): ParsedContact | null {
   const nameField = findBestMatch(headers, FIELD_MAPPINGS.contact_name)
   const emailField = findBestMatch(headers, FIELD_MAPPINGS.contact_email)
   const phoneField = findBestMatch(headers, FIELD_MAPPINGS.contact_phone)
 
   const fullName = nameField ? row[nameField]?.trim() : ''
-  
+
   // Skip if no contact name provided
   if (!fullName) return null
 
@@ -90,20 +102,23 @@ export function parseContact(row: CsvRow, headers: string[], isPrimary = false):
     last_name,
     email: emailField ? row[emailField]?.trim() || null : null,
     phone: phoneField ? row[phoneField]?.trim() || null : null,
-    is_primary: isPrimary
+    is_primary: isPrimary,
   }
 }
 
 /**
  * Group CSV rows by organization
  */
-export function groupRowsByOrganization(rows: CsvRow[], headers: string[]): Array<{ organization: ParsedOrganization; contacts: ParsedContact[] }> {
+export function groupRowsByOrganization(
+  rows: CsvRow[],
+  headers: string[]
+): Array<{ organization: ParsedOrganization; contacts: ParsedContact[] }> {
   const groups = new Map<string, { organization: ParsedOrganization; contacts: ParsedContact[] }>()
-  
+
   const orgNameField = findBestMatch(headers, FIELD_MAPPINGS.organization_name)
   if (!orgNameField) return []
 
-  rows.forEach(row => {
+  rows.forEach((row) => {
     const orgName = row[orgNameField]?.trim()
     if (!orgName) return
 

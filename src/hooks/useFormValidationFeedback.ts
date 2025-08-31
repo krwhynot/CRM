@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import { useFormState, FieldErrors, FieldValues, Control } from 'react-hook-form'
+import type { FieldErrors, FieldValues, Control } from 'react-hook-form'
+import { useFormState } from 'react-hook-form'
 
 interface UseFormValidationFeedbackOptions {
   requiredFields?: string[]

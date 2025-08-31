@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useDebounce } from '@/lib/performance-optimizations'
-import { FilterState } from '@/types/dashboard'
+import type { FilterState } from '@/types/dashboard'
 
 export const useDashboardFiltersState = (
   filters: FilterState,
@@ -8,10 +8,10 @@ export const useDashboardFiltersState = (
 ) => {
   // Local state for immediate UI updates
   const [localFilters, setLocalFilters] = useState<FilterState>(filters)
-  
+
   // Debounce the filter changes by 300ms
   const debouncedFilters = useDebounce(localFilters, 300)
-  
+
   // Update parent when debounced filters change
   useEffect(() => {
     onFiltersChange(debouncedFilters)
@@ -28,12 +28,12 @@ export const useDashboardFiltersState = (
       setLocalFilters({
         ...localFilters,
         [key]: value,
-        product: 'all'
+        product: 'all',
       })
     } else {
       setLocalFilters({
         ...localFilters,
-        [key]: value
+        [key]: value,
       })
     }
   }
@@ -42,7 +42,7 @@ export const useDashboardFiltersState = (
     const resetState: FilterState = {
       principal: 'all',
       product: 'all',
-      weeks: 'Last 4 Weeks'
+      weeks: 'Last 4 Weeks',
     }
     setLocalFilters(resetState)
     onFiltersChange(resetState)
@@ -51,6 +51,6 @@ export const useDashboardFiltersState = (
   return {
     localFilters,
     handleFilterChange,
-    resetFilters
+    resetFilters,
   }
 }

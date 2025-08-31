@@ -1,8 +1,9 @@
 import React from 'react'
-import { Control, Controller } from 'react-hook-form'
+import type { Control } from 'react-hook-form'
+import { Controller } from 'react-hook-form'
 import { FormField } from '@/components/forms'
 import { Input } from '@/components/ui/input'
-import { ContactFormData } from '@/types/contact.types'
+import type { ContactFormData } from '@/types/contact.types'
 
 interface ContactFormBasicFieldsProps {
   control: Control<ContactFormData>
@@ -14,7 +15,7 @@ interface ContactFormBasicFieldsProps {
 export const ContactFormBasicFields: React.FC<ContactFormBasicFieldsProps> = ({
   control,
   loading,
-  inputClassName = ""
+  inputClassName = '',
 }) => {
   return (
     <>
@@ -43,7 +44,12 @@ export const ContactFormBasicFields: React.FC<ContactFormBasicFieldsProps> = ({
         name="title"
         render={({ field, fieldState }) => (
           <FormField label="Title" error={fieldState.error?.message}>
-            <Input {...field} value={field.value || ''} className={inputClassName} disabled={loading} />
+            <Input
+              {...field}
+              value={field.value || ''}
+              className={inputClassName}
+              disabled={loading}
+            />
           </FormField>
         )}
       />

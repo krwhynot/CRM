@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Filter } from "lucide-react"
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Filter } from 'lucide-react'
 import { useDashboardFiltersState } from '../hooks/useDashboardFiltersState'
 import { useDashboardFiltersData } from '../hooks/useDashboardFiltersData'
 import { useDashboardFiltersStyle } from '../hooks/useDashboardFiltersStyle'
@@ -8,7 +8,7 @@ import { PrincipalFilter } from './dashboard-filters/PrincipalFilter'
 import { ProductFilter } from './dashboard-filters/ProductFilter'
 import { WeeksFilter } from './dashboard-filters/WeeksFilter'
 import { ActiveFiltersSummary } from './dashboard-filters/ActiveFiltersSummary'
-import { FilterState, Principal, Product } from "@/types/dashboard"
+import type { FilterState, Principal, Product } from '@/types/dashboard'
 
 interface DashboardFiltersProps {
   filters: FilterState
@@ -18,28 +18,25 @@ interface DashboardFiltersProps {
   isLoading?: boolean
 }
 
-export function DashboardFilters({ 
-  filters, 
-  onFiltersChange, 
-  principals = [], 
-  products = [], 
-  isLoading = false 
+export function DashboardFilters({
+  filters,
+  onFiltersChange,
+  principals = [],
+  products = [],
+  isLoading = false,
 }: DashboardFiltersProps) {
   const { localFilters, handleFilterChange, resetFilters } = useDashboardFiltersState(
     filters,
     onFiltersChange
   )
-  
-  const { weekOptions, filteredProducts } = useDashboardFiltersData(
-    products,
-    localFilters
-  )
-  
+
+  const { weekOptions, filteredProducts } = useDashboardFiltersData(products, localFilters)
+
   const { USE_NEW_STYLE } = useDashboardFiltersStyle()
 
   return (
-    <Card className={`${USE_NEW_STYLE ? "border-primary/10 shadow-sm" : "shadow-md"}`}>
-      <CardContent className={`${USE_NEW_STYLE ? "p-4" : "p-6"}`}>
+    <Card className={`${USE_NEW_STYLE ? 'border-primary/10 shadow-sm' : 'shadow-md'}`}>
+      <CardContent className={`${USE_NEW_STYLE ? 'p-4' : 'p-6'}`}>
         <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
           {/* Header */}
           <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
@@ -55,14 +52,14 @@ export function DashboardFilters({
               isLoading={isLoading}
               onFilterChange={handleFilterChange}
             />
-            
+
             <ProductFilter
               localFilters={localFilters}
               filteredProducts={filteredProducts}
               isLoading={isLoading}
               onFilterChange={handleFilterChange}
             />
-            
+
             <WeeksFilter
               localFilters={localFilters}
               weekOptions={weekOptions}

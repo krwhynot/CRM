@@ -1,5 +1,12 @@
-import { ReactNode } from 'react'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import type { ReactNode } from 'react'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 
 interface SignUpFormLayoutProps {
   children: ReactNode
@@ -15,14 +22,10 @@ export function SignUpFormLayout({ children, footer }: SignUpFormLayoutProps) {
           Join KitchenPantry CRM to manage your food service relationships
         </CardDescription>
       </CardHeader>
-      
-      <CardContent className="space-y-4">
-        {children}
-      </CardContent>
-      
-      <CardFooter className="flex flex-col gap-4">
-        {footer}
-      </CardFooter>
+
+      <CardContent className="space-y-4">{children}</CardContent>
+
+      <CardFooter className="flex flex-col gap-4">{footer}</CardFooter>
     </Card>
   )
 }

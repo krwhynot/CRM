@@ -1,5 +1,5 @@
 import { startOfWeek, format, subWeeks, isSameWeek } from 'date-fns'
-import { ChartDataPoint } from '@/types/dashboard'
+import type { ChartDataPoint } from '@/types/dashboard'
 
 /**
  * Get the start of week (Monday) for a given date
@@ -23,16 +23,16 @@ export const formatWeekLabel = (date: Date): string => {
 export const getRelativeTime = (date: Date): string => {
   const now = new Date()
   const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60))
-  
+
   if (diffInMinutes < 60) {
     return diffInMinutes <= 1 ? '1 min ago' : `${diffInMinutes} min ago`
   }
-  
+
   const diffInHours = Math.floor(diffInMinutes / 60)
   if (diffInHours < 24) {
     return diffInHours === 1 ? '1 hour ago' : `${diffInHours} hours ago`
   }
-  
+
   // Format as "Monday 3:45 PM"
   return format(date, 'EEEE h:mm a')
 }
@@ -43,18 +43,18 @@ export const getRelativeTime = (date: Date): string => {
 export const generateWeeksData = (weeksBack: number): ChartDataPoint[] => {
   const weeks: ChartDataPoint[] = []
   const today = new Date()
-  
+
   for (let i = weeksBack - 1; i >= 0; i--) {
     const weekDate = subWeeks(today, i)
     const weekStart = getWeekStart(weekDate)
-    
+
     weeks.push({
       week: formatWeekLabel(weekStart),
       count: 0,
-      weekStart
+      weekStart,
     })
   }
-  
+
   return weeks
 }
 

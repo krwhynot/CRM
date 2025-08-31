@@ -3,8 +3,6 @@
  * This extends the Vitest expect interface with the jest-axe matchers
  */
 
-import type { AxeResults } from 'axe-core'
-
 declare global {
   namespace Vi {
     interface AsymmetricMatchersContaining {

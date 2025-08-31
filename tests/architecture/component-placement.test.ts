@@ -269,17 +269,10 @@ describe('Component Placement Architecture', () => {
         
         try {
           const entries = await readdir(componentsPath, { withFileTypes: true })
-          const subdirectories = entries.filter(entry => entry.isDirectory())
+          // Directory structure validation could be added here if needed
           
           // Good patterns: charts/, forms/, tables/, etc.
-          const goodGroupingPatterns = [/charts?/, /forms?/, /tables?/, /cards?/, /lists?/]
-          
-          const hasGoodGrouping = subdirectories.some(subdir => 
-            goodGroupingPatterns.some(pattern => pattern.test(subdir.name))
-          )
-          
-          // Not required but good practice
-          // expect(hasGoodGrouping || subdirectories.length === 0).toBe(true)
+          // Component grouping validation could be added here if needed
         } catch (error) {
           // Components directory might not exist
         }

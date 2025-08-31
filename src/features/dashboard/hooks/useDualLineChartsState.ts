@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import { WeeklyData, formatWeekRange } from '@/lib/date-utils'
+import type { WeeklyData } from '@/lib/date-utils'
+import { formatWeekRange } from '@/lib/date-utils'
 
 interface UseDualLineChartsStateProps {
   data: WeeklyData[]
@@ -11,26 +12,27 @@ interface UseDualLineChartsStateReturn {
   maxActivities: number
 }
 
-export const useDualLineChartsState = ({ data }: UseDualLineChartsStateProps): UseDualLineChartsStateReturn => {
-  
+export const useDualLineChartsState = ({
+  data,
+}: UseDualLineChartsStateProps): UseDualLineChartsStateReturn => {
   const chartData = useMemo(() => {
-    return data.map(week => ({
+    return data.map((week) => ({
       ...week,
-      weekLabel: formatWeekRange(week.weekStart, week.weekEnd)
+      weekLabel: formatWeekRange(week.weekStart, week.weekEnd),
     }))
   }, [data])
 
   const maxOpportunities = useMemo(() => {
-    return Math.max(...data.map(d => d.opportunities), 5)
+    return Math.max(...data.map((d) => d.opportunities), 5)
   }, [data])
 
   const maxActivities = useMemo(() => {
-    return Math.max(...data.map(d => d.interactions), 10)
+    return Math.max(...data.map((d) => d.interactions), 10)
   }, [data])
 
   return {
     chartData,
     maxOpportunities,
-    maxActivities
+    maxActivities,
   }
 }

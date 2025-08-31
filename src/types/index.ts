@@ -9,8 +9,7 @@ export * as Database from './database.types'
 export * as Supabase from './supabase'
 
 // Feature-Specific Entity Types - Avoid re-exporting ContactRole to prevent conflicts
-export {
-  Contact,
+export type {
   ContactInsert,
   ContactUpdate,
   ContactWithOrganization,
@@ -20,13 +19,9 @@ export {
   DecisionAuthorityRole,
   ContactFilters,
   ContactFormData,
-  contactSchema,
-  PURCHASE_INFLUENCE_LEVELS,
-  DECISION_AUTHORITY_ROLES,
-  CONTACT_ROLES,
-  getRoleLabel,
-  getRoleValue,
 } from './contact.types'
+
+export { contactSchema, CONTACT_ROLES, getRoleLabel, getRoleValue } from './contact.types'
 export * from './organization.types'
 export * from './opportunity.types'
 export * from './interaction.types'

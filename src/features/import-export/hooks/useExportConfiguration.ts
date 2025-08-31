@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react'
+import type React from 'react'
+import { useState, useCallback } from 'react'
 import type { Database } from '@/lib/database.types'
 
 export interface ExportOptions {
@@ -6,8 +7,8 @@ export interface ExportOptions {
   includeInactive: boolean
   selectedFields: string[]
   filters: {
-    type?: Database["public"]["Enums"]["organization_type"][]
-    priority?: Database["public"]["Enums"]["priority_level"][]
+    type?: Database['public']['Enums']['organization_type'][]
+    priority?: Database['public']['Enums']['priority_level'][]
     segment?: string[] // Assuming segment is still string[] or needs a new enum
   }
 }
@@ -47,30 +48,30 @@ export const useExportConfiguration = (): UseExportConfigurationReturn => {
     format: 'csv',
     includeInactive: false,
     selectedFields: ['name', 'type', 'priority', 'segment', 'phone', 'city', 'state_province'],
-    filters: {}
+    filters: {},
   })
 
   // Handle field selection
   const handleFieldToggle = useCallback((fieldId: string, checked: boolean) => {
-    const field = AVAILABLE_FIELDS.find(f => f.id === fieldId)
+    const field = AVAILABLE_FIELDS.find((f) => f.id === fieldId)
     if (field?.required) return // Don't allow toggling required fields
 
-    setExportOptions(prev => ({
+    setExportOptions((prev) => ({
       ...prev,
-      selectedFields: checked 
+      selectedFields: checked
         ? [...prev.selectedFields, fieldId]
-        : prev.selectedFields.filter(id => id !== fieldId)
+        : prev.selectedFields.filter((id) => id !== fieldId),
     }))
   }, [])
 
   // Handle format change
   const handleFormatChange = useCallback((format: 'csv' | 'xlsx') => {
-    setExportOptions(prev => ({ ...prev, format }))
+    setExportOptions((prev) => ({ ...prev, format }))
   }, [])
 
   // Handle include inactive toggle
   const handleIncludeInactiveChange = useCallback((checked: boolean) => {
-    setExportOptions(prev => ({ ...prev, includeInactive: checked }))
+    setExportOptions((prev) => ({ ...prev, includeInactive: checked }))
   }, [])
 
   return {
@@ -78,6 +79,6 @@ export const useExportConfiguration = (): UseExportConfigurationReturn => {
     setExportOptions,
     handleFieldToggle,
     handleFormatChange,
-    handleIncludeInactiveChange
+    handleIncludeInactiveChange,
   }
 }

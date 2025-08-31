@@ -1,4 +1,4 @@
-import { FieldValues, UseFormReturn, Path, ControllerRenderProps } from 'react-hook-form'
+import type { FieldValues, UseFormReturn, Path, ControllerRenderProps } from 'react-hook-form'
 import {
   FormControl,
   FormField,

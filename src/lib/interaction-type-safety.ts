@@ -40,7 +40,12 @@ export const extractBaseInteraction = (
 ): Interaction => {
   if (isInteractionWithRelations(interaction)) {
     // Extract only base properties, excluding relations
-    const { contact, organization, opportunity, ...baseInteraction } = interaction
+    const {
+      contact: _contact,
+      organization: _organization,
+      opportunity: _opportunity,
+      ...baseInteraction
+    } = interaction
     return baseInteraction as Interaction
   }
 

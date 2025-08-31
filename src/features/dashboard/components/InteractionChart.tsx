@@ -1,7 +1,7 @@
 import React from 'react'
 import { ChartContainer, ChartTooltip } from '@/components/ui/chart'
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from 'recharts'
-import { ChartDataPoint } from '@/types/dashboard'
+import type { ChartDataPoint } from '@/types/dashboard'
 
 interface InteractionChartProps {
   /* ui-audit: allow */ data: ChartDataPoint[]

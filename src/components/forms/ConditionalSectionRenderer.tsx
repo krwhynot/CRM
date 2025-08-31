@@ -1,4 +1,4 @@
-import { FieldValues, UseFormReturn } from 'react-hook-form'
+import type { FieldValues, UseFormReturn } from 'react-hook-form'
 import { FormSectionComponent } from './FormSectionComponent'
 import type { FormSection } from '@/hooks/useFormLayout'
 

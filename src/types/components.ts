@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import type { LucideIcon } from 'lucide-react'
 import type {
   Organization,
@@ -14,7 +14,7 @@ import type {
   ContactFilters,
   ProductFilters,
   OpportunityFilters,
-  InteractionFilters
+  InteractionFilters,
 } from './entities'
 
 // Base component props
@@ -215,31 +215,36 @@ export interface FormStepProps {
 }
 
 // Entity-specific component props
-export interface OrganizationTableProps extends Omit<DataTableProps<Organization>, 'data' | 'columns'> {
+export interface OrganizationTableProps
+  extends Omit<DataTableProps<Organization>, 'data' | 'columns'> {
   organizations: Organization[]
   filters?: OrganizationFilters
   onFiltersChange?: (filters: OrganizationFilters) => void
 }
 
-export interface ContactTableProps extends Omit<DataTableProps<ContactWithOrganization>, 'data' | 'columns'> {
+export interface ContactTableProps
+  extends Omit<DataTableProps<ContactWithOrganization>, 'data' | 'columns'> {
   contacts: ContactWithOrganization[]
   filters?: ContactFilters
   onFiltersChange?: (filters: ContactFilters) => void
 }
 
-export interface ProductTableProps extends Omit<DataTableProps<ProductWithPrincipal>, 'data' | 'columns'> {
+export interface ProductTableProps
+  extends Omit<DataTableProps<ProductWithPrincipal>, 'data' | 'columns'> {
   products: ProductWithPrincipal[]
   filters?: ProductFilters
   onFiltersChange?: (filters: ProductFilters) => void
 }
 
-export interface OpportunityTableProps extends Omit<DataTableProps<OpportunityWithRelations>, 'data' | 'columns'> {
+export interface OpportunityTableProps
+  extends Omit<DataTableProps<OpportunityWithRelations>, 'data' | 'columns'> {
   opportunities: OpportunityWithRelations[]
   filters?: OpportunityFilters
   onFiltersChange?: (filters: OpportunityFilters) => void
 }
 
-export interface InteractionTableProps extends Omit<DataTableProps<InteractionWithRelations>, 'data' | 'columns'> {
+export interface InteractionTableProps
+  extends Omit<DataTableProps<InteractionWithRelations>, 'data' | 'columns'> {
   interactions: InteractionWithRelations[]
   filters?: InteractionFilters
   onFiltersChange?: (filters: InteractionFilters) => void

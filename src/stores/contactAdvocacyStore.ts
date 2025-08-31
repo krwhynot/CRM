@@ -15,7 +15,8 @@
 
 import { create } from 'zustand'
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
-import { BaseClientState, CreateClientFilters, validateClientState } from '@/lib/state-type-safety'
+import type { BaseClientState, CreateClientFilters } from '@/lib/state-type-safety'
+import { validateClientState } from '@/lib/state-type-safety'
 
 // UI View modes for advocacy management
 export type AdvocacyViewMode = 'list' | 'cards' | 'table'

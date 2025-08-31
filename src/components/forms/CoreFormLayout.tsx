@@ -1,6 +1,6 @@
 import React from 'react'
-import { FieldValues, SubmitHandler } from 'react-hook-form'
-import * as yup from 'yup'
+import type { FieldValues, SubmitHandler } from 'react-hook-form'
+import type * as yup from 'yup'
 import { Card, CardContent } from '@/components/ui/card'
 import { Form } from '@/components/ui/form'
 import { useCoreFormSetup } from '@/hooks/useCoreFormSetup'

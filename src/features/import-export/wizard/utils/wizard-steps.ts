@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { Upload, Map, Eye, Download, CheckCircle } from 'lucide-react'
 
 // Wizard step definitions

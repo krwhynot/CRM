@@ -1,7 +1,13 @@
 import React from 'react'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Package } from "lucide-react"
-import { Product, FilterState } from "@/types/dashboard"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Package } from 'lucide-react'
+import type { Product, FilterState } from '@/types/dashboard'
 
 interface ProductFilterProps {
   localFilters: FilterState
@@ -14,7 +20,7 @@ export const ProductFilter: React.FC<ProductFilterProps> = ({
   localFilters,
   filteredProducts,
   isLoading,
-  onFilterChange
+  onFilterChange,
 }) => {
   return (
     <div className="flex min-w-0 items-center gap-2">
@@ -33,9 +39,7 @@ export const ProductFilter: React.FC<ProductFilterProps> = ({
             <SelectItem key={product.id} value={product.id}>
               {product.name}
               {product.category && (
-                <span className="ml-1 text-xs text-muted-foreground">
-                  ({product.category})
-                </span>
+                <span className="ml-1 text-xs text-muted-foreground">({product.category})</span>
               )}
             </SelectItem>
           ))}

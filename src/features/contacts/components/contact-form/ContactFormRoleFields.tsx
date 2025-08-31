@@ -1,9 +1,17 @@
 import React from 'react'
-import { Control, Controller } from 'react-hook-form'
+import type { Control } from 'react-hook-form'
+import { Controller } from 'react-hook-form'
 import { FormField } from '@/components/forms'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ContactFormData, CONTACT_ROLES } from '@/types/contact.types'
-import { Organization } from '@/types/entities'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import type { ContactFormData } from '@/types/contact.types'
+import { CONTACT_ROLES } from '@/types/contact.types'
+import type { Organization } from '@/types/entities'
 
 interface ContactFormRoleFieldsProps {
   control: Control<ContactFormData>
@@ -14,7 +22,7 @@ interface ContactFormRoleFieldsProps {
 export const ContactFormRoleFields: React.FC<ContactFormRoleFieldsProps> = ({
   control,
   organizations,
-  inputClassName
+  inputClassName,
 }) => {
   return (
     <>
@@ -29,7 +37,9 @@ export const ContactFormRoleFields: React.FC<ContactFormRoleFieldsProps> = ({
               </SelectTrigger>
               <SelectContent>
                 {CONTACT_ROLES.map((role) => (
-                  <SelectItem key={role.value} value={role.value}>{role.label}</SelectItem>
+                  <SelectItem key={role.value} value={role.value}>
+                    {role.label}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -48,7 +58,9 @@ export const ContactFormRoleFields: React.FC<ContactFormRoleFieldsProps> = ({
               </SelectTrigger>
               <SelectContent>
                 {organizations.map((org) => (
-                  <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
+                  <SelectItem key={org.id} value={org.id}>
+                    {org.name}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>

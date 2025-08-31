@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { User, Session, AuthError } from '@supabase/supabase-js'
+import type { User, Session, AuthError } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 
 interface AuthContextType {
@@ -35,8 +35,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     // Get initial session
     const getInitialSession = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession()
-      
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession()
+
       if (error) {
         // Auth errors handled by UI error boundaries
         // Initial session error handling
@@ -44,7 +47,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setSession(session)
         setUser(session?.user ?? null)
       }
-      
+
       setLoading(false)
     }
 
@@ -103,9 +106,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // This prevents open redirect vulnerabilities by relying on server-side configuration
     // Optional: Allow environment variable override for explicit control
     const redirectUrl = import.meta.env.VITE_PASSWORD_RESET_URL
-    const { error } = (redirectUrl && redirectUrl !== 'undefined')
-      ? await supabase.auth.resetPasswordForEmail(email, { redirectTo: redirectUrl })
-      : await supabase.auth.resetPasswordForEmail(email)
+    const { error } =
+      redirectUrl && redirectUrl !== 'undefined'
+        ? await supabase.auth.resetPasswordForEmail(email, { redirectTo: redirectUrl })
+        : await supabase.auth.resetPasswordForEmail(email)
     return { error }
   }
 
@@ -119,9 +123,5 @@ export function AuthProvider({ children }: AuthProviderProps) {
     resetPassword,
   }
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  )
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

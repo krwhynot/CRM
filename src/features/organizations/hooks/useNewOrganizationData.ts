@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import type React from 'react'
+import { useState } from 'react'
 
 interface NewOrganizationData {
   name: string
@@ -22,16 +23,16 @@ export const useNewOrganizationData = (): UseNewOrganizationDataReturn => {
     phone: '',
     email: '',
     website: '',
-    notes: ''
+    notes: '',
   })
 
   const updateNewOrgField = (field: keyof NewOrganizationData, value: string) => {
-    setNewOrgData(prev => ({ ...prev, [field]: value }))
+    setNewOrgData((prev) => ({ ...prev, [field]: value }))
   }
 
   return {
     newOrgData,
     setNewOrgData,
-    updateNewOrgField
+    updateNewOrgField,
   }
 }

@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react'
+import type React from 'react'
+import { useState, useCallback } from 'react'
 import Papa from 'papaparse'
 import type { Database } from '@/lib/database.types'
 
@@ -234,7 +235,7 @@ export const useFileUpload = (): UseFileUploadReturn => {
                           } else {
                             const key = dbField as keyof TransformedOrganizationRow
                             if (key in transformedRow) {
-                              (transformedRow as Record<string, unknown>)[key] = value
+                              ;(transformedRow as Record<string, unknown>)[key] = value
                             }
                           }
                         }

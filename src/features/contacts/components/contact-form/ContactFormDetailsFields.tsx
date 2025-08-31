@@ -1,10 +1,11 @@
 import React from 'react'
-import { Control, Controller } from 'react-hook-form'
+import type { Control } from 'react-hook-form'
+import { Controller } from 'react-hook-form'
 import { FormField } from '@/components/forms'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
-import { ContactFormData } from '@/types/contact.types'
+import type { ContactFormData } from '@/types/contact.types'
 import { PreferredPrincipalsSelect } from '../PreferredPrincipalsSelect'
 
 interface ContactFormDetailsFieldsProps {
@@ -16,7 +17,7 @@ interface ContactFormDetailsFieldsProps {
 export const ContactFormDetailsFields: React.FC<ContactFormDetailsFieldsProps> = ({
   control,
   loading,
-  inputClassName
+  inputClassName,
 }) => {
   return (
     <div className="space-y-4">
@@ -25,7 +26,13 @@ export const ContactFormDetailsFields: React.FC<ContactFormDetailsFieldsProps> =
         name="email"
         render={({ field, fieldState }) => (
           <FormField label="Email" error={fieldState.error?.message}>
-            <Input {...field} value={field.value || ''} type="email" className={inputClassName} disabled={loading} />
+            <Input
+              {...field}
+              value={field.value || ''}
+              type="email"
+              className={inputClassName}
+              disabled={loading}
+            />
           </FormField>
         )}
       />
@@ -35,7 +42,13 @@ export const ContactFormDetailsFields: React.FC<ContactFormDetailsFieldsProps> =
         name="phone"
         render={({ field, fieldState }) => (
           <FormField label="Phone" error={fieldState.error?.message}>
-            <Input {...field} value={field.value || ''} type="tel" className={inputClassName} disabled={loading} />
+            <Input
+              {...field}
+              value={field.value || ''}
+              type="tel"
+              className={inputClassName}
+              disabled={loading}
+            />
           </FormField>
         )}
       />
@@ -45,7 +58,13 @@ export const ContactFormDetailsFields: React.FC<ContactFormDetailsFieldsProps> =
         name="mobile_phone"
         render={({ field, fieldState }) => (
           <FormField label="Mobile Phone" error={fieldState.error?.message}>
-            <Input {...field} value={field.value || ''} type="tel" className={inputClassName} disabled={loading} />
+            <Input
+              {...field}
+              value={field.value || ''}
+              type="tel"
+              className={inputClassName}
+              disabled={loading}
+            />
           </FormField>
         )}
       />
@@ -55,7 +74,12 @@ export const ContactFormDetailsFields: React.FC<ContactFormDetailsFieldsProps> =
         name="department"
         render={({ field, fieldState }) => (
           <FormField label="Department" error={fieldState.error?.message}>
-            <Input {...field} value={field.value || ''} className={inputClassName} disabled={loading} />
+            <Input
+              {...field}
+              value={field.value || ''}
+              className={inputClassName}
+              disabled={loading}
+            />
           </FormField>
         )}
       />

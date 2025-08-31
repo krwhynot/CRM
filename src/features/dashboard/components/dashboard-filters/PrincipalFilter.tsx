@@ -1,7 +1,13 @@
 import React from 'react'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Building2 } from "lucide-react"
-import { Principal, FilterState } from "@/types/dashboard"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Building2 } from 'lucide-react'
+import type { Principal, FilterState } from '@/types/dashboard'
 
 interface PrincipalFilterProps {
   localFilters: FilterState
@@ -14,7 +20,7 @@ export const PrincipalFilter: React.FC<PrincipalFilterProps> = ({
   localFilters,
   principals,
   isLoading,
-  onFilterChange
+  onFilterChange,
 }) => {
   return (
     <div className="flex min-w-0 items-center gap-2">

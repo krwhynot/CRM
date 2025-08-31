@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChartSkeleton } from './DashboardSkeleton'
 import { ChartEmptyState } from './EmptyState'
-import { ChartDataPoint } from '@/types/dashboard'
+import type { ChartDataPoint } from '@/types/dashboard'
 
 interface ChartCardProps {
   title: string
@@ -21,10 +21,10 @@ export const ChartCard: React.FC<ChartCardProps> = ({
   isLoading,
   emptyTitle,
   emptyDescription,
-  children
+  children,
 }) => {
-  const hasData = data.some(d => d.count > 0)
-  
+  const hasData = data.some((d) => d.count > 0)
+
   return (
     <Card>
       <CardHeader>
@@ -39,10 +39,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({
         ) : hasData ? (
           children
         ) : (
-          <ChartEmptyState 
-            title={emptyTitle}
-            description={emptyDescription}
-          />
+          <ChartEmptyState title={emptyTitle} description={emptyDescription} />
         )}
       </CardContent>
     </Card>

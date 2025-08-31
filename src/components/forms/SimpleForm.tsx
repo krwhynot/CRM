@@ -1,4 +1,5 @@
-import { useForm, FieldValues, DefaultValues, Path, Resolver } from 'react-hook-form'
+import type { FieldValues, DefaultValues, Path, Resolver } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { Form } from '@/components/ui/form'
 import { FormCard } from './FormCard'
 import { FormInput, FormSelect, FormTextarea, FormCheckbox } from './FormInput'
@@ -32,7 +33,7 @@ export function SimpleForm<TFieldValues extends FieldValues = FieldValues>({
   defaultValues,
   resolver,
   loading = false,
-  className
+  className,
 }: SimpleFormConfig<TFieldValues>) {
   const form = useForm<TFieldValues>({
     defaultValues,
@@ -45,7 +46,7 @@ export function SimpleForm<TFieldValues extends FieldValues = FieldValues>({
       name: field.name as Path<TFieldValues>,
       label: field.label,
       required: field.required,
-      disabled: loading
+      disabled: loading,
     }
 
     switch (field.type) {
@@ -59,20 +60,9 @@ export function SimpleForm<TFieldValues extends FieldValues = FieldValues>({
           />
         )
       case 'textarea':
-        return (
-          <FormTextarea
-            key={field.name}
-            {...commonProps}
-            placeholder={field.placeholder}
-          />
-        )
+        return <FormTextarea key={field.name} {...commonProps} placeholder={field.placeholder} />
       case 'checkbox':
-        return (
-          <FormCheckbox
-            key={field.name}
-            {...commonProps}
-          />
-        )
+        return <FormCheckbox key={field.name} {...commonProps} />
       default:
         return (
           <FormInput
@@ -90,9 +80,7 @@ export function SimpleForm<TFieldValues extends FieldValues = FieldValues>({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {fields.map(renderField)}
-          <FormSubmitButton loading={loading}>
-            {submitLabel}
-          </FormSubmitButton>
+          <FormSubmitButton loading={loading}>{submitLabel}</FormSubmitButton>
         </form>
       </Form>
     </FormCard>

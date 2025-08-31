@@ -1,5 +1,6 @@
 import React from 'react'
-import { useForm, FieldValues, Resolver, DefaultValues } from 'react-hook-form'
+import type { FieldValues, Resolver, DefaultValues } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { Form } from '@/components/ui/form'
 import { FormCard } from './FormCard'
 import { FormSubmitButton } from './FormSubmitButton'
@@ -23,7 +24,7 @@ export function BusinessForm<TFieldValues extends FieldValues>({
   onSubmit,
   submitLabel = 'Save',
   loading = false,
-  className
+  className,
 }: BusinessFormProps<TFieldValues>) {
   const form = useForm<TFieldValues>({
     resolver,
@@ -34,20 +35,18 @@ export function BusinessForm<TFieldValues extends FieldValues>({
     <FormCard title={title} className={className}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          {React.Children.map(children, child => {
+          {React.Children.map(children, (child) => {
             if (React.isValidElement(child)) {
               // Pass form control to child components
-              return React.cloneElement(child, { 
+              return React.cloneElement(child, {
                 control: form.control,
                 disabled: loading,
-                ...child.props 
+                ...child.props,
               })
             }
             return child
           })}
-          <FormSubmitButton loading={loading}>
-            {submitLabel}
-          </FormSubmitButton>
+          <FormSubmitButton loading={loading}>{submitLabel}</FormSubmitButton>
         </form>
       </Form>
     </FormCard>

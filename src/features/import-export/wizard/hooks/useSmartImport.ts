@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { WizardStep } from '../components/SmartImportWizard'
+import type { WizardStep } from '../components/SmartImportWizard'
 import {
   suggestFieldMappings,
   validateRowsWithAI,

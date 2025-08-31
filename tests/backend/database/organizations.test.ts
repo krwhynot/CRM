@@ -6,6 +6,7 @@
  */
 
 import { describe, test, expect, beforeEach, afterEach } from 'vitest'
+import { createTestOrganization, checkResult, validateTestData } from '../../utils/test-factories'
 
 describe('Organizations Database Operations', () => {
   let testOrgIds: string[] = []
@@ -27,9 +28,9 @@ describe('Organizations Database Operations', () => {
 
   describe('CREATE Operations', () => {
     test('should create a new organization with all required fields', async () => {
-      const orgData = {
+      const orgData = createTestOrganization({
         name: 'Test Organization',
-        type: 'customer' as const,
+        type: 'customer',
         description: 'Test organization description',
         phone: '555-0123',
         email: 'test@example.com',
@@ -41,7 +42,7 @@ describe('Organizations Database Operations', () => {
         country: 'United States',
         industry: 'Food Service',
         is_active: true
-      }
+      })
 
       const result = await PerformanceMonitor.measureQuery('create_organization', async () => {
         return await testSupabase
@@ -51,16 +52,15 @@ describe('Organizations Database Operations', () => {
           .single()
       })
 
-      expect(result.error).toBeNull()
-      expect(result.data).toBeDefined()
-      expect(result.data.name).toBe(orgData.name)
-      expect(result.data.type).toBe(orgData.type)
-      expect(result.data.id).toBeDefined()
-      expect(result.data.created_at).toBeDefined()
-      expect(result.data.updated_at).toBeDefined()
+      const createdOrg = checkResult(result, 'create organization with all fields')
+      expect(createdOrg.name).toBe(orgData.name)
+      expect(createdOrg.type).toBe(orgData.type)
+      expect(createdOrg.id).toBeDefined()
+      expect(createdOrg.created_at).toBeDefined()
+      expect(createdOrg.updated_at).toBeDefined()
 
-      testOrgIds.push(result.data.id)
-      TestCleanup.trackCreatedRecord('organizations', result.data.id)
+      testOrgIds.push(createdOrg.id)
+      TestCleanup.trackCreatedRecord('organizations', createdOrg.id)
     })
 
     test('should create organizations of different types (Principal, Customer, Distributor)', async () => {
@@ -68,11 +68,11 @@ describe('Organizations Database Operations', () => {
       const createdOrgs = []
 
       for (const type of types) {
-        const orgData = {
+        const orgData = createTestOrganization({
           name: `Test ${type} Organization`,
           type: type,
           description: `Test ${type} organization`
-        }
+        })
 
         const result = await testSupabase
           .from('organizations')
@@ -80,21 +80,21 @@ describe('Organizations Database Operations', () => {
           .select()
           .single()
 
-        expect(result.error).toBeNull()
-        expect(result.data.type).toBe(type)
+        const createdOrg = checkResult(result, `create ${type} organization`)
+        expect(createdOrg.type).toBe(type)
         
-        createdOrgs.push(result.data)
-        testOrgIds.push(result.data.id)
+        createdOrgs.push(createdOrg)
+        testOrgIds.push(createdOrg.id)
       }
 
       expect(createdOrgs).toHaveLength(3)
     })
 
     test('should handle organization creation with minimal required fields', async () => {
-      const minimalOrgData = {
+      const minimalOrgData = createTestOrganization({
         name: 'Minimal Test Organization',
-        type: 'customer' as const
-      }
+        type: 'customer'
+      })
 
       const result = await testSupabase
         .from('organizations')
@@ -102,13 +102,13 @@ describe('Organizations Database Operations', () => {
         .select()
         .single()
 
-      expect(result.error).toBeNull()
-      expect(result.data.name).toBe(minimalOrgData.name)
-      expect(result.data.type).toBe(minimalOrgData.type)
-      expect(result.data.is_active).toBe(true) // Default value
-      expect(result.data.deleted_at).toBeNull() // Default value
+      const createdOrg = checkResult(result, 'create organization with minimal fields')
+      expect(createdOrg.name).toBe(minimalOrgData.name)
+      expect(createdOrg.type).toBe(minimalOrgData.type)
+      expect(createdOrg.is_active).toBe(true) // Default value
+      expect(createdOrg.deleted_at).toBeNull() // Default value
 
-      testOrgIds.push(result.data.id)
+      testOrgIds.push(createdOrg.id)
     })
 
     test('should reject organization creation without required fields', async () => {
@@ -127,11 +127,11 @@ describe('Organizations Database Operations', () => {
     })
 
     test('should validate email format constraints', async () => {
-      const invalidEmailOrg = {
+      const invalidEmailOrg = createTestOrganization({
         name: 'Invalid Email Test',
-        type: 'customer' as const,
+        type: 'customer',
         email: 'invalid-email-format'
-      }
+      })
 
       // Note: This may pass at database level if no email validation constraint exists
       // In that case, validation should happen at application level
@@ -157,12 +157,12 @@ describe('Organizations Database Operations', () => {
 
     beforeEach(async () => {
       // Create a sample organization for read tests
-      const orgData = {
+      const orgData = createTestOrganization({
         name: 'Sample Read Test Organization',
-        type: 'customer' as const,
+        type: 'customer',
         description: 'Sample organization for read testing',
         industry: 'Food Service'
-      }
+      })
 
       const result = await testSupabase
         .from('organizations')
@@ -170,7 +170,8 @@ describe('Organizations Database Operations', () => {
         .select()
         .single()
 
-      sampleOrgId = result.data.id
+      const createdOrg = checkResult(result, 'create sample organization for read tests')
+      sampleOrgId = createdOrg.id
       testOrgIds.push(sampleOrgId)
     })
 
@@ -183,10 +184,9 @@ describe('Organizations Database Operations', () => {
           .single()
       })
 
-      expect(result.error).toBeNull()
-      expect(result.data).toBeDefined()
-      expect(result.data.id).toBe(sampleOrgId)
-      expect(result.data.name).toBe('Sample Read Test Organization')
+      const organization = checkResult(result, 'retrieve organization by ID')
+      expect(organization.id).toBe(sampleOrgId)
+      expect(organization.name).toBe('Sample Read Test Organization')
     })
 
     test('should list organizations with pagination', async () => {
@@ -201,19 +201,20 @@ describe('Organizations Database Operations', () => {
       expect(result.error).toBeNull()
       expect(result.data).toBeDefined()
       expect(result.count).toBeGreaterThanOrEqual(1)
-      expect(result.data.length).toBeLessThanOrEqual(10)
+      expect(result.data!.length).toBeLessThanOrEqual(10)
     })
 
     test('should filter organizations by type', async () => {
       // Create organizations of different types first
       const types = ['principal', 'customer', 'distributor'] as const
       for (const type of types) {
-        const orgData = {
+        const orgData = createTestOrganization({
           name: `Filter Test ${type}`,
           type: type
-        }
+        })
         const result = await testSupabase.from('organizations').insert(orgData).select().single()
-        testOrgIds.push(result.data.id)
+        const createdOrg = checkResult(result, `create ${type} org for filter test`)
+        testOrgIds.push(createdOrg.id)
       }
 
       // Test filtering by each type
@@ -226,7 +227,7 @@ describe('Organizations Database Operations', () => {
 
         expect(result.error).toBeNull()
         expect(result.data).toBeDefined()
-        result.data.forEach((org: any) => {
+        result.data!.forEach((org: any) => {
           expect(org.type).toBe(type)
         })
       }
@@ -243,10 +244,10 @@ describe('Organizations Database Operations', () => {
 
       expect(result.error).toBeNull()
       expect(result.data).toBeDefined()
-      expect(result.data.length).toBeGreaterThan(0)
+      expect(result.data!.length).toBeGreaterThan(0)
       
       // Verify search results contain the search term
-      result.data.forEach((org: any) => {
+      result.data!.forEach((org: any) => {
         expect(org.name.toLowerCase()).toContain('sample')
       })
     })
@@ -260,7 +261,8 @@ describe('Organizations Database Operations', () => {
         .limit(10)
 
       expect(result.error).toBeNull()
-      result.data.forEach((org: any) => {
+      expect(result.data).toBeDefined()
+      result.data!.forEach((org: any) => {
         expect(org.is_active).toBe(true)
         expect(org.deleted_at).toBeNull()
       })
@@ -271,11 +273,11 @@ describe('Organizations Database Operations', () => {
     let sampleOrgId: string
 
     beforeEach(async () => {
-      const orgData = {
+      const orgData = createTestOrganization({
         name: 'Update Test Organization',
-        type: 'customer' as const,
+        type: 'customer',
         description: 'Organization for update testing'
-      }
+      })
 
       const result = await testSupabase
         .from('organizations')
@@ -283,7 +285,8 @@ describe('Organizations Database Operations', () => {
         .select()
         .single()
 
-      sampleOrgId = result.data.id
+      const createdOrg = checkResult(result, 'create sample organization for update tests')
+      sampleOrgId = createdOrg.id
       testOrgIds.push(sampleOrgId)
     })
 
@@ -304,12 +307,12 @@ describe('Organizations Database Operations', () => {
           .single()
       })
 
-      expect(result.error).toBeNull()
-      expect(result.data.name).toBe(updateData.name)
-      expect(result.data.description).toBe(updateData.description)
-      expect(result.data.phone).toBe(updateData.phone)
-      expect(result.data.email).toBe(updateData.email)
-      expect(new Date(result.data.updated_at) > new Date(result.data.created_at)).toBe(true)
+      const updatedOrg = checkResult(result, 'update organization fields')
+      expect(updatedOrg.name).toBe(updateData.name)
+      expect(updatedOrg.description).toBe(updateData.description)
+      expect(updatedOrg.phone).toBe(updateData.phone)
+      expect(updatedOrg.email).toBe(updateData.email)
+      expect(new Date(updatedOrg.updated_at) > new Date(updatedOrg.created_at)).toBe(true)
     })
 
     test('should not allow updating to invalid type', async () => {
@@ -337,8 +340,8 @@ describe('Organizations Database Operations', () => {
         .select()
         .single()
 
-      expect(result.error).toBeNull()
-      expect(result.data.is_active).toBe(false)
+      const deactivatedOrg = checkResult(result, 'update organization to inactive status')
+      expect(deactivatedOrg.is_active).toBe(false)
     })
   })
 
@@ -346,11 +349,11 @@ describe('Organizations Database Operations', () => {
     let sampleOrgId: string
 
     beforeEach(async () => {
-      const orgData = {
+      const orgData = createTestOrganization({
         name: 'Delete Test Organization',
-        type: 'customer' as const,
+        type: 'customer',
         description: 'Organization for delete testing'
-      }
+      })
 
       const result = await testSupabase
         .from('organizations')
@@ -358,7 +361,8 @@ describe('Organizations Database Operations', () => {
         .select()
         .single()
 
-      sampleOrgId = result.data.id
+      const createdOrg = checkResult(result, 'create sample organization for delete tests')
+      sampleOrgId = createdOrg.id
       testOrgIds.push(sampleOrgId)
     })
 
@@ -372,9 +376,9 @@ describe('Organizations Database Operations', () => {
           .single()
       })
 
-      expect(result.error).toBeNull()
-      expect(result.data.deleted_at).toBeDefined()
-      expect(result.data.deleted_at).not.toBeNull()
+      const deletedOrg = checkResult(result, 'soft delete organization')
+      expect(deletedOrg.deleted_at).toBeDefined()
+      expect(deletedOrg.deleted_at).not.toBeNull()
     })
 
     test('should exclude soft-deleted organizations from normal queries', async () => {
@@ -411,9 +415,8 @@ describe('Organizations Database Operations', () => {
         .not('deleted_at', 'is', null)
         .single()
 
-      expect(result.error).toBeNull()
-      expect(result.data).toBeDefined()
-      expect(result.data.deleted_at).not.toBeNull()
+      const softDeletedOrg = checkResult(result, 'query soft-deleted organization')
+      expect(softDeletedOrg.deleted_at).not.toBeNull()
     })
 
     test('should hard delete organization (for cleanup)', async () => {
@@ -424,8 +427,8 @@ describe('Organizations Database Operations', () => {
         .select()
         .single()
 
-      expect(result.error).toBeNull()
-      expect(result.data.id).toBe(sampleOrgId)
+      const hardDeletedOrg = checkResult(result, 'hard delete organization')
+      expect(hardDeletedOrg.id).toBe(sampleOrgId)
 
       // Remove from testOrgIds since it's actually deleted
       testOrgIds = testOrgIds.filter(id => id !== sampleOrgId)
@@ -436,15 +439,15 @@ describe('Organizations Database Operations', () => {
     test('should enforce unique constraints where applicable', async () => {
       // Note: If there are any unique constraints (like email), test them here
       // For this schema, testing duplicate names which should be allowed
-      const orgData1 = {
+      const orgData1 = createTestOrganization({
         name: 'Duplicate Name Test',
-        type: 'customer' as const
-      }
+        type: 'customer'
+      })
 
-      const orgData2 = {
+      const orgData2 = createTestOrganization({
         name: 'Duplicate Name Test', // Same name
-        type: 'principal' as const
-      }
+        type: 'principal'
+      })
 
       const result1 = await testSupabase.from('organizations').insert(orgData1).select().single()
       const result2 = await testSupabase.from('organizations').insert(orgData2).select().single()
@@ -453,19 +456,20 @@ describe('Organizations Database Operations', () => {
       expect(result2.error).toBeNull()
       
       // Both should be created successfully (no unique constraint on name)
-      testOrgIds.push(result1.data.id, result2.data.id)
+      if (result1.data) testOrgIds.push(result1.data.id)
+      if (result2.data) testOrgIds.push(result2.data.id)
     })
 
 
     test('should handle null values for optional fields', async () => {
-      const orgData = {
+      const orgData = createTestOrganization({
         name: 'Null Values Test',
-        type: 'customer' as const,
+        type: 'customer',
         description: null,
         phone: null,
         email: null,
-        website: null,
-      }
+        website: null
+      })
 
       const result = await testSupabase
         .from('organizations')
@@ -473,12 +477,12 @@ describe('Organizations Database Operations', () => {
         .select()
         .single()
 
-      expect(result.error).toBeNull()
-      expect(result.data.description).toBeNull()
-      expect(result.data.phone).toBeNull()
-      expect(result.data.email).toBeNull()
+      const createdNullOrg = checkResult(result, 'create organization with null optional fields')
+      expect(createdNullOrg.description).toBeNull()
+      expect(createdNullOrg.phone).toBeNull()
+      expect(createdNullOrg.email).toBeNull()
 
-      testOrgIds.push(result.data.id)
+      testOrgIds.push(createdNullOrg.id)
     })
   })
 

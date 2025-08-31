@@ -1,4 +1,5 @@
-import { useForm, UseFormReturn } from 'react-hook-form'
+import type { UseFormReturn } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { type OpportunityFormData } from '@/types/opportunity.types'
 import { DEFAULT_OPPORTUNITY_STAGE } from '@/lib/opportunity-stage-mapping'
 

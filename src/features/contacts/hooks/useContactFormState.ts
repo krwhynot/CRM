@@ -1,4 +1,4 @@
-import React from 'react'
+import type React from 'react'
 import { useForm, type Resolver } from 'react-hook-form'
 import { contactSchema, type ContactFormData } from '@/types/contact.types'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -17,9 +17,8 @@ interface UseContactFormStateReturn {
 export const useContactFormState = ({
   initialData,
   preselectedOrganization,
-  onSubmit
+  onSubmit,
 }: UseContactFormStateProps): UseContactFormStateReturn => {
-  
   const form = useForm<ContactFormData>({
     resolver: yupResolver(contactSchema) as Resolver<ContactFormData>,
     defaultValues: {
@@ -37,14 +36,14 @@ export const useContactFormState = ({
       linkedin_url: initialData?.linkedin_url || null,
       is_primary_contact: initialData?.is_primary_contact || false,
       notes: initialData?.notes || null,
-      preferred_principals: initialData?.preferred_principals || []
-    }
+      preferred_principals: initialData?.preferred_principals || [],
+    },
   })
 
   const handleSubmit = form.handleSubmit(onSubmit)
 
   return {
     form,
-    handleSubmit
+    handleSubmit,
   }
 }

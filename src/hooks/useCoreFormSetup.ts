@@ -1,7 +1,8 @@
-import { useForm, FieldValues, DefaultValues, SubmitHandler } from 'react-hook-form'
+import type { FieldValues, DefaultValues, SubmitHandler } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useFormLayout } from '@/hooks/useFormLayout'
-import * as yup from 'yup'
+import type * as yup from 'yup'
 import type { FormSection, ConditionalSection } from '@/hooks/useFormLayout'
 
 interface CoreFormSetupProps<T extends FieldValues> {

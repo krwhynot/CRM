@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { FieldValues, UseFormReturn, RegisterOptions } from 'react-hook-form'
+import type { FieldValues, UseFormReturn, RegisterOptions } from 'react-hook-form'
 
 export interface FormSection<T extends FieldValues> {
   id: string

@@ -1,4 +1,5 @@
-import { WeeklyData, formatWeekRange } from '@/lib/date-utils'
+import type { WeeklyData } from '@/lib/date-utils'
+import { formatWeekRange } from '@/lib/date-utils'
 
 interface ChartTooltipProps {
   active?: boolean
