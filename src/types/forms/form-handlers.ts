@@ -7,7 +7,8 @@
 
 import React from 'react'
 import type { Resolver, FieldValues } from 'react-hook-form'
-import type { AnySchema } from 'yup'
+import type { ObjectSchema } from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 /**
  * Generic form submission handler types
@@ -32,9 +33,7 @@ export type TypedYupResolver<T extends FieldValues> = Resolver<T>
 /**
  * Creates a properly typed Yup resolver
  */
-export function createTypedYupResolver<T extends FieldValues>(schema: AnySchema): TypedYupResolver<T> {
-  // Import yupResolver dynamically to avoid issues with module resolution
-  const { yupResolver } = require('@hookform/resolvers/yup')
+export function createTypedYupResolver<T extends FieldValues>(schema: ObjectSchema<any>): TypedYupResolver<T> {
   return yupResolver(schema) as TypedYupResolver<T>
 }
 
@@ -146,7 +145,7 @@ export interface FormComponentRef<T> {
  * Type-safe form hook configuration
  */
 export interface TypedFormConfig<T> {
-  schema: AnySchema
+  schema: ObjectSchema<any>
   defaultValues: T
   mode?: 'onChange' | 'onBlur' | 'onSubmit'
   reValidateMode?: 'onChange' | 'onBlur' | 'onSubmit'
