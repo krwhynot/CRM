@@ -19,12 +19,12 @@ import {
   AlertDialogCancel,
 } from "./alert-dialog"
 
-// Size mapping for consistent dialog sizing
+// Size mapping for consistent dialog sizing - using approved responsive ladder
 const sizeClasses = {
-  sm: "max-w-sm",
-  md: "max-w-lg", 
-  lg: "max-w-2xl",
-  xl: "max-w-4xl"
+  sm: "max-w-[96%] sm:max-w-sm",
+  md: "max-w-[96%] sm:max-w-lg", 
+  lg: "max-w-[96%] sm:max-w-lg md:max-w-2xl lg:max-w-4xl",
+  xl: "max-w-[96%] sm:max-w-lg md:max-w-2xl lg:max-w-4xl"
 } as const
 
 // Base dialog props interface

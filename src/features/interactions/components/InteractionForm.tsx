@@ -1,32 +1,7 @@
-import { ProgressiveDetails } from '@/components/forms'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
-import { useForm } from 'react-hook-form'
-import {
-  interactionSchema,
-  type InteractionFormData,
-  type InteractionType,
-} from '@/types/interaction.types'
-import { createTypedYupResolver } from '@/types/forms'
+import { CoreFormLayout } from '@/components/forms/CoreFormLayout'
+import { createInteractionFormConfig } from '@/configs/forms/interaction.config'
+import { type InteractionFormData } from '@/types/interaction.types'
 import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities'
-import { INTERACTION_TYPES } from '@/constants/interaction.constants'
 
 interface InteractionFormProps {
   onSubmit: (data: InteractionFormData) => void
@@ -46,163 +21,38 @@ export function InteractionForm({
 }: InteractionFormProps) {
   const { data: opportunities = [] } = useOpportunities()
 
-  const form = useForm<InteractionFormData>({
-    resolver: createTypedYupResolver<InteractionFormData>(interactionSchema),
-    defaultValues: {
-      subject: initialData?.subject || '',
-      type: initialData?.type || 'call',
-      interaction_date: initialData?.interaction_date || new Date().toISOString().split('T')[0],
-      opportunity_id: initialData?.opportunity_id || defaultOpportunityId || '',
-      location: initialData?.location || null,
-      notes: initialData?.notes || null,
-      follow_up_required: initialData?.follow_up_required || false,
-      follow_up_date: initialData?.follow_up_date || null,
-    },
-  })
+  // Create form config with dynamic options
+  const formConfig = createInteractionFormConfig(initialData)
 
-  const filteredOpportunities = opportunities
+  // Update opportunity options dynamically
+  const opportunitySection = formConfig.coreSections.find(section => section.id === 'opportunity-assignment')
+  if (opportunitySection) {
+    const opportunityField = opportunitySection.fields.find(field => field.name === 'opportunity_id')
+    if (opportunityField) {
+      opportunityField.options = opportunities.map(opp => ({
+        value: opp.id,
+        label: opp.name,
+        description: `${opp.stage} - $${opp.estimated_value?.toLocaleString() || '0'}`
+      }))
+    }
+  }
+
+  // Handle default opportunity ID
+  const enhancedInitialData = defaultOpportunityId 
+    ? { ...initialData, opportunity_id: defaultOpportunityId }
+    : initialData
+
+  const enhancedFormConfig = {
+    ...formConfig,
+    initialData: enhancedInitialData
+  }
 
   return (
-    <Card className="mx-auto w-full max-w-md">
-      <CardHeader>
-        <CardTitle>{initialData ? 'Edit Interaction' : 'New Interaction'}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="subject"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Subject *</FormLabel>
-                  <FormControl>
-                    <Input {...field} className="h-11" disabled={loading} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Type *</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="h-11">
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {INTERACTION_TYPES.map((type) => (
-                        <SelectItem key={type} value={type as InteractionType}>
-                          {type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ')}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="interaction_date"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date *</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="date" className="h-11" disabled={loading} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <ProgressiveDetails buttonText="Add Details">
-              <div className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="opportunity_id"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Opportunity *</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                        disabled={!!defaultOpportunityId}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="h-11">
-                            <SelectValue placeholder="Select opportunity" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {filteredOpportunities.map((opp) => (
-                            <SelectItem key={opp.id} value={opp.id}>
-                              {opp.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {defaultOpportunityId && (
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          Linked to current opportunity
-                        </p>
-                      )}
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="location"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Location</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          value={field.value || ''}
-                          className="h-11"
-                          disabled={loading}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="notes"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Notes</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          {...field}
-                          value={field.value || ''}
-                          rows={3}
-                          disabled={loading}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </ProgressiveDetails>
-
-            <Button type="submit" disabled={loading} className="h-11 w-full">
-              {loading ? 'Saving...' : submitLabel}
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+    <CoreFormLayout
+      {...enhancedFormConfig}
+      onSubmit={onSubmit}
+      loading={loading}
+      submitLabel={submitLabel}
+    />
   )
 }

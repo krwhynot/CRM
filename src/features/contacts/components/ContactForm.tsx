@@ -1,15 +1,8 @@
-import { ProgressiveDetails } from '@/components/forms'
-import { Form } from '@/components/ui/form'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { CoreFormLayout } from '@/components/forms/CoreFormLayout'
+import { createContactFormConfig } from '@/configs/forms/contact.config'
 import { type ContactFormData } from '@/types/contact.types'
 import { type FormPropsWithPreselection } from '@/types/forms'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
-import { useContactFormState } from '@/features/contacts/hooks/useContactFormState'
-import { useContactFormStyle } from '@/features/contacts/hooks/useContactFormStyle'
-import { ContactFormBasicFields } from './contact-form/ContactFormBasicFields'
-import { ContactFormRoleFields } from './contact-form/ContactFormRoleFields'
-import { ContactFormDetailsFields } from './contact-form/ContactFormDetailsFields'
-import { FormSubmitButton } from '@/components/forms/FormSubmitButton'
 
 interface ContactFormProps extends FormPropsWithPreselection<ContactFormData> {
   // ContactForm-specific props can be added here if needed
@@ -23,45 +16,39 @@ export function ContactForm({
   preselectedOrganization
 }: ContactFormProps) {
   const { data: organizations = [] } = useOrganizations()
-  const { form, handleSubmit } = useContactFormState({ initialData, preselectedOrganization, onSubmit })
-  const { useNewStyle, inputClassName } = useContactFormStyle()
+  
+  // Create form config with dynamic options
+  const formConfig = createContactFormConfig(initialData)
+  
+  // Update organization options dynamically
+  const organizationSection = formConfig.coreSections.find(section => section.id === 'organization-assignment')
+  if (organizationSection) {
+    const organizationField = organizationSection.fields.find(field => field.name === 'organization_id')
+    if (organizationField) {
+      organizationField.options = organizations.map(org => ({
+        value: org.id,
+        label: org.name,
+        description: `${org.type} - ${org.segment || 'No segment'}`
+      }))
+    }
+  }
+
+  // Handle preselected organization
+  const enhancedInitialData = preselectedOrganization 
+    ? { ...initialData, organization_id: preselectedOrganization }
+    : initialData
+
+  const enhancedFormConfig = {
+    ...formConfig,
+    initialData: enhancedInitialData
+  }
 
   return (
-    <Card className="mx-auto w-full max-w-md">
-      <CardHeader><CardTitle>{initialData ? 'Edit Contact' : 'Add Contact'}</CardTitle></CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <ContactFormBasicFields
-              control={form.control}
-              loading={loading}
-              useNewStyle={useNewStyle}
-              inputClassName={inputClassName}
-            />
-
-            <ContactFormRoleFields
-              control={form.control}
-              organizations={organizations}
-              inputClassName={inputClassName}
-            />
-
-            <ProgressiveDetails buttonText="Add Details">
-              <ContactFormDetailsFields
-                control={form.control}
-                loading={loading}
-                inputClassName={inputClassName}
-              />
-            </ProgressiveDetails>
-
-            <FormSubmitButton
-              loading={loading}
-              className={inputClassName}
-            >
-              {submitLabel}
-            </FormSubmitButton>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+    <CoreFormLayout
+      {...enhancedFormConfig}
+      onSubmit={onSubmit}
+      loading={loading}
+      submitLabel={submitLabel}
+    />
   )
 }
