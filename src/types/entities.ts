@@ -3,7 +3,7 @@
 // legacy compatibility for the Principal CRM transformation
 
 // Import database types for supporting entities
-import type { Database } from '../lib/database.types'
+import type { Database } from './database.types'
 
 // Re-export main entity types from individual files
 export type {

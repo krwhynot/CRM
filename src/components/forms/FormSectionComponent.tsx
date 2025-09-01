@@ -4,7 +4,7 @@ import type { FormSection } from '@/hooks/useFormLayout'
 
 interface FormSectionProps<T extends FieldValues> {
   section: FormSection<T>
-  form: UseFormReturn<T, any, any>
+  form: UseFormReturn<T, any, undefined>
   loading: boolean
   entityType: string
   layoutClass: string
@@ -36,7 +36,7 @@ export function FormSectionComponent<T extends FieldValues>({
           <FormFieldRenderer
             key={String(field.name)}
             field={field}
-            form={form}
+            form={form as any}
             loading={loading}
             className={field.className}
           />

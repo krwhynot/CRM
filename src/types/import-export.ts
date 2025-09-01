@@ -30,7 +30,7 @@ export interface ImportColumn {
   /** Whether this field is required for the entity */
   required: boolean
   /** Optional transformation function for data conversion */
-  transform?: (value: string) => any
+  transform?: (value: string) => unknown
   /** Data type validation */
   dataType?: 'string' | 'number' | 'boolean' | 'date' | 'email' | 'phone'
   /** Example values to help users understand the expected format */
@@ -48,7 +48,7 @@ export interface ImportError {
   /** Error message describing what went wrong */
   message: string
   /** The invalid value that caused the error */
-  value?: any
+  value?: unknown
   /** Error severity level */
   severity: 'error' | 'warning'
 }
@@ -60,7 +60,7 @@ export interface ImportResult {
   /** Whether the overall import operation was successful */
   success: boolean
   /** Array of successfully imported data */
-  data?: any[]
+  data?: unknown[]
   /** Array of import errors - can be detailed ImportError objects or simple error objects */
   errors?: ImportError[] | Array<{ row: number; error: string }>
   /** Summary message */
@@ -90,7 +90,7 @@ export interface SkippedRecord {
   /** Original row index in the import file */
   rowIndex: number
   /** Additional context data */
-  context?: Record<string, any>
+  context?: Record<string, unknown>
 }
 
 // ============================================================================
@@ -108,7 +108,7 @@ export interface FieldMapping {
   /** Whether this mapping is required */
   required: boolean
   /** Default value if source is empty */
-  defaultValue?: any
+  defaultValue?: unknown
   /** Validation rules for this field */
   validation?: FieldValidation
 }
@@ -128,7 +128,7 @@ export interface FieldValidation {
   /** Whether the field is required */
   required?: boolean
   /** Custom validation function */
-  customValidator?: (value: any) => string | null
+  customValidator?: (value: unknown) => string | null
 }
 
 /**
@@ -150,7 +150,7 @@ export interface ImportConfiguration {
   /** Whether to create a backup before import */
   createBackup: boolean
   /** Additional options specific to entity type */
-  entityOptions?: Record<string, any>
+  entityOptions?: Record<string, unknown>
 }
 
 // ============================================================================
@@ -198,7 +198,7 @@ export interface ExportFilters {
   /** Status filters (for opportunities) */
   status?: string[]
   /** Custom field filters */
-  customFilters?: Record<string, any>
+  customFilters?: Record<string, unknown>
 }
 
 /**
@@ -402,7 +402,7 @@ export interface ImportTemplate {
   /** Optional columns with descriptions */
   optionalColumns: Record<string, string>
   /** Sample data for demonstration */
-  sampleData?: Record<string, any>[]
+  sampleData?: Record<string, unknown>[]
 }
 
 /**

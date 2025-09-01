@@ -73,7 +73,7 @@ export interface TestProduct extends TestEntityBase {
   storage_requirements?: string | null
   shelf_life?: string | null
   allergens?: string[] | null
-  nutritional_info?: Record<string, any> | null
+  nutritional_info?: Record<string, unknown> | null
   cost_per_unit?: number | null
   suggested_price?: number | null
   minimum_order_quantity?: number | null
@@ -166,7 +166,7 @@ export interface TestScenario {
     opportunities?: TestOpportunity[]
     interactions?: TestInteraction[]
   }
-  expectedOutcomes?: Record<string, any>
+  expectedOutcomes?: Record<string, unknown>
 }
 
 // Mock user types for authentication testing

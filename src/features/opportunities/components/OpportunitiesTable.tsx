@@ -330,9 +330,11 @@ export function OpportunitiesTable({
       <BulkDeleteDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
-        organizations={selectedOpportunities as any} // Future: Create generic BulkDeleteDialog
+        organizations={selectedOpportunities}
         onConfirm={handleConfirmDelete}
         isDeleting={isDeleting}
+        entityType="opportunity"
+        entityTypePlural="opportunities"
       />
     </div>
   )

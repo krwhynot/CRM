@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react'
 import { act } from 'react'
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { useDashboardLoading } from '@/features/dashboard/hooks/useDashboardLoading'
-import { FilterState, ActivityItem } from '@/types/dashboard'
+import type { FilterState, ActivityItem } from '@/types/dashboard'
 
 describe('useDashboardLoading', () => {
   const mockFilters: FilterState = {

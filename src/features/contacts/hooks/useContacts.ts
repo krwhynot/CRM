@@ -4,6 +4,7 @@ import { isFeatureEnabled } from '@/lib/feature-flags'
 import type { Database } from '@/lib/database.types'
 import { resolveOrganization } from '@/lib/organization-resolution'
 import { validateAuthentication, surfaceError } from '@/lib/error-utils'
+import { handleSingleRecord, handleArrayResult } from '@/lib/database-utils'
 import type {
   Contact,
   ContactInsert,
@@ -65,10 +66,8 @@ export function useContacts(filters?: ContactFilters) {
 
       query = query.order('last_name').order('first_name')
 
-      const { data, error } = await query
-
-      if (error) throw error
-      return data as ContactWithOrganization[]
+      const result = await query
+      return handleArrayResult(result, 'fetch contacts with filters') as ContactWithOrganization[]
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
   })
@@ -79,7 +78,7 @@ export function useContact(id: string) {
   return useQuery({
     queryKey: contactKeys.detail(id),
     queryFn: async () => {
-      const { data, error } = await supabase
+      const result = await supabase
         .from('contacts')
         .select(
           `
@@ -91,8 +90,7 @@ export function useContact(id: string) {
         .is('deleted_at', null)
         .single()
 
-      if (error) throw error
-      return data as ContactWithOrganization
+      return handleSingleRecord(result, 'fetch single contact') as ContactWithOrganization
     },
     enabled: !!id,
     staleTime: 5 * 60 * 1000,
@@ -104,7 +102,7 @@ export function useContactsByOrganization(organizationId: string) {
   return useQuery({
     queryKey: contactKeys.byOrganization(organizationId),
     queryFn: async () => {
-      const { data, error } = await supabase
+      const result = await supabase
         .from('contacts')
         .select(
           `
@@ -118,8 +116,7 @@ export function useContactsByOrganization(organizationId: string) {
         .order('last_name')
         .order('first_name')
 
-      if (error) throw error
-      return data as ContactWithOrganization[]
+      return handleArrayResult(result, 'fetch contacts by organization') as ContactWithOrganization[]
     },
     enabled: !!organizationId,
     staleTime: 5 * 60 * 1000,
@@ -131,7 +128,7 @@ export function usePrimaryContacts() {
   return useQuery({
     queryKey: [...contactKeys.all, 'primary'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const result = await supabase
         .from('contacts')
         .select(
           `
@@ -144,8 +141,7 @@ export function usePrimaryContacts() {
         .order('last_name')
         .order('first_name')
 
-      if (error) throw error
-      return data as ContactWithOrganization[]
+      return handleArrayResult(result, 'fetch primary contacts') as ContactWithOrganization[]
     },
     staleTime: 5 * 60 * 1000,
   })

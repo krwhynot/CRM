@@ -6,7 +6,8 @@
  */
 
 import { describe, test, expect, beforeEach, afterEach } from 'vitest'
-import { createTestOrganization, checkResult, validateTestData } from '../../utils/test-factories'
+import { createTestOrganization, checkResult } from '../../utils/test-factories'
+import { testSupabase, TestAuth, PerformanceMonitor, TestCleanup } from '../setup/test-setup'
 
 describe('Organizations Database Operations', () => {
   let testOrgIds: string[] = []
@@ -312,7 +313,7 @@ describe('Organizations Database Operations', () => {
       expect(updatedOrg.description).toBe(updateData.description)
       expect(updatedOrg.phone).toBe(updateData.phone)
       expect(updatedOrg.email).toBe(updateData.email)
-      expect(new Date(updatedOrg.updated_at) > new Date(updatedOrg.created_at)).toBe(true)
+      expect(new Date(updatedOrg.updated_at || new Date()) > new Date(updatedOrg.created_at || new Date())).toBe(true)
     })
 
     test('should not allow updating to invalid type', async () => {
@@ -465,10 +466,10 @@ describe('Organizations Database Operations', () => {
       const orgData = createTestOrganization({
         name: 'Null Values Test',
         type: 'customer',
-        description: null,
-        phone: null,
-        email: null,
-        website: null
+        description: undefined,
+        phone: undefined,
+        email: undefined,
+        website: undefined
       })
 
       const result = await testSupabase

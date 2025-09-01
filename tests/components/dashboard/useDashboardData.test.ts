@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react'
 import { useDashboardData } from '@/features/dashboard/hooks/useDashboardData'
-import { FilterState } from '@/types/dashboard'
+import type { FilterState } from '@/types/dashboard'
 import { vi } from 'vitest'
 
 // Mock the sample data generation

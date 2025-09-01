@@ -388,7 +388,7 @@ export function TemplateMatchingImport() {
               case 'type': {
                 // Validate organization type enum values
                 const validTypes = ['customer', 'principal', 'distributor', 'prospect', 'vendor'] as const
-                transformed.type = validTypes.includes(value as any) 
+                transformed.type = validTypes.includes(value as typeof validTypes[number]) 
                   ? value as 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor'
                   : 'customer' // Default fallback
                 break

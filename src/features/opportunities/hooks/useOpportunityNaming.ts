@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import type { OrganizationType } from '@/types/entities'
+import { safeFindInArray, safeArrayAccess } from '@/lib/database-utils'
 
 // Query key factory
 export const opportunityNamingKeys = {
@@ -30,9 +31,10 @@ export function usePrincipalNames(principalIds: string[]) {
 
       if (error) throw error
 
-      // Maintain order based on input array
+      // Maintain order based on input array with safe data access
+      const safeData = safeArrayAccess(data, 'fetch principal names')
       const orderedNames = principalIds
-        .map((id) => data.find((org) => org.id === id)?.name)
+        .map((id) => safeFindInArray(safeData, (org) => org.id === id, 'find principal by id')?.name)
         .filter((name): name is string => Boolean(name))
 
       return orderedNames
@@ -85,7 +87,8 @@ export function useValidatePrincipals(principalIds: string[]) {
         }
       }
 
-      const validIds = data.map((org) => org.id)
+      const safeData = safeArrayAccess(data, 'validate principals')
+      const validIds = safeData.map((org) => org.id)
       const invalidIds = principalIds.filter((id) => !validIds.includes(id))
 
       return {
@@ -151,11 +154,12 @@ export function useNamingData(organizationId: string, principalIds: string[]) {
         if (result.type === 'organization' && result.data && 'name' in result.data) {
           organizationName = result.data.name
         } else if (result.type === 'principals' && result.data && Array.isArray(result.data)) {
-          // Maintain order based on input array
+          // Maintain order based on input array with safe data access
+          const safeResultData = safeArrayAccess(result.data as OrganizationBasic[], 'naming data principals')
           principalNames = principalIds
             .map(
               (id) =>
-                (result.data as OrganizationBasic[]).find((org: OrganizationBasic) => org.id === id)
+                safeFindInArray(safeResultData, (org: OrganizationBasic) => org.id === id, 'find principal in naming data')
                   ?.name
             )
             .filter((name): name is string => Boolean(name))
@@ -187,9 +191,10 @@ export function useBulkOrganizationLookup(organizationIds: string[]) {
 
       if (error) throw error
 
-      // Return as a lookup map for easy access
+      // Return as a lookup map for easy access with safe data handling
       const lookup: Record<string, { name: string; type: OrganizationType }> = {}
-      data.forEach((org) => {
+      const safeData = safeArrayAccess(data, 'bulk organization lookup')
+      safeData.forEach((org) => {
         lookup[org.id] = { name: org.name, type: org.type as OrganizationType }
       })
 

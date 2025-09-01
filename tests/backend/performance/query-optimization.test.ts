@@ -6,6 +6,8 @@
  */
 
 import { describe, test, expect, beforeAll, afterAll, beforeEach } from 'vitest'
+import { testSupabase, TestAuth } from '../setup/test-setup'
+import type { ContactRole } from '@/types/entities'
 
 describe('Database Query Performance Tests', () => {
   let testDataIds: { table: string; ids: string[] }[] = []
@@ -55,7 +57,8 @@ describe('Database Query Performance Tests', () => {
         name: `Performance Test Org ${i + 1}`,
         type: orgType,
         industry: 'Food Service',
-        is_active: i % 10 !== 0 // 90% active
+        is_active: i % 10 !== 0, // 90% active
+        created_by: '00000000-0000-0000-0000-000000000001'
       }
 
       const result = await testSupabase
@@ -64,8 +67,10 @@ describe('Database Query Performance Tests', () => {
         .select()
         .single()
 
-      organizations.push(result.data)
-      trackTestData('organizations', result.data.id)
+      if (result.data) {
+        organizations.push(result.data)
+        trackTestData('organizations', result.data.id)
+      }
     }
 
     // Create contacts for organizations
@@ -74,12 +79,13 @@ describe('Database Query Performance Tests', () => {
       
       for (let i = 0; i < contactCount; i++) {
         const contactData = {
-          organization_id: org.id,
+          organization_id: org?.id || '',
           first_name: `Contact${i + 1}`,
           last_name: `Org${organizations.indexOf(org) + 1}`,
           email: `contact${i + 1}.org${organizations.indexOf(org) + 1}@example.com`,
-          role: (['decision_maker', 'influencer', 'gatekeeper', 'champion'] as const)[i % 4],
-          is_primary_contact: i === 0
+          role: (['decision_maker', 'influencer', 'gatekeeper', 'champion'] as ContactRole[])[i % 4],
+          is_primary_contact: i === 0,
+          created_by: '00000000-0000-0000-0000-000000000001'
         }
 
         const result = await testSupabase
@@ -88,26 +94,29 @@ describe('Database Query Performance Tests', () => {
           .select()
           .single()
 
-        trackTestData('contacts', result.data.id)
+        if (result.data) {
+          trackTestData('contacts', result.data.id)
+        }
       }
     }
 
     // Create products for principal organizations
     const principals = organizations.filter(org => org.type === 'principal')
-    const categories = ['dairy', 'meat_poultry', 'produce', 'beverages', 'dry_goods'] as const
+    const categories = ['dairy', 'meat_poultry', 'fresh_produce', 'beverages', 'dry_goods'] as const
 
     for (const principal of principals) {
       const productCount = Math.floor(Math.random() * 15) + 5 // 5-20 products per principal
       
       for (let i = 0; i < productCount; i++) {
         const productData = {
-          principal_id: principal.id,
-          name: `Product ${i + 1} - ${principal.name}`,
+          principal_id: principal?.id || '',
+          name: `Product ${i + 1} - ${principal?.name || 'Unknown'}`,
           category: categories[i % categories.length],
-          sku: `SKU-${principal.id.slice(-8).toUpperCase()}-${String(i + 1).padStart(3, '0')}`,
+          sku: `SKU-${(principal?.id || '').slice(-8).toUpperCase()}-${String(i + 1).padStart(3, '0')}`,
           unit_cost: Math.random() * 50 + 10, // $10-60
           list_price: Math.random() * 100 + 25, // $25-125
-          is_active: i % 8 !== 0 // 87.5% active
+          is_active: i % 8 !== 0, // 87.5% active
+          created_by: '00000000-0000-0000-0000-000000000001'
         }
 
         const result = await testSupabase
@@ -116,13 +125,15 @@ describe('Database Query Performance Tests', () => {
           .select()
           .single()
 
-        trackTestData('products', result.data.id)
+        if (result.data) {
+          trackTestData('products', result.data.id)
+        }
       }
     }
 
     // Create opportunities
     const customers = organizations.filter(org => org.type === 'customer')
-    const stages = ['new_lead', 'qualified', 'proposal', 'negotiation', 'closed_won', 'closed_lost'] as const
+    const stages = ['New Lead', 'qualified', 'proposal', 'negotiation', 'closed_won', 'closed_lost'] as const
 
     for (const customer of customers.slice(0, 20)) { // First 20 customers get opportunities
       const oppCount = Math.floor(Math.random() * 3) + 1 // 1-3 opportunities per customer
@@ -138,13 +149,14 @@ describe('Database Query Performance Tests', () => {
 
         if (contactResult.data) {
           const oppData = {
-            name: `Opportunity ${i + 1} - ${customer.name}`,
-            organization_id: customer.id,
+            name: `Opportunity ${i + 1} - ${customer?.name || 'Unknown'}`,
+            organization_id: customer?.id || '',
             contact_id: contactResult.data.id,
             stage: stages[i % stages.length],
             estimated_value: Math.random() * 100000 + 5000, // $5K-105K
             probability: Math.floor(Math.random() * 100),
-            estimated_close_date: new Date(Date.now() + Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+            estimated_close_date: new Date(Date.now() + Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            created_by: '00000000-0000-0000-0000-000000000001'
           }
 
           const result = await testSupabase
@@ -153,13 +165,15 @@ describe('Database Query Performance Tests', () => {
             .select()
             .single()
 
-          trackTestData('opportunities', result.data.id)
+          if (result.data) {
+            trackTestData('opportunities', result.data.id)
+          }
         }
       }
     }
 
     // Create interactions
-    const interactionTypes = ['call', 'email', 'meeting', 'demo', 'note'] as const
+    const interactionTypes = ['call', 'email', 'meeting', 'demo', 'follow_up'] as const
     const interactionCount = 200 // Create 200 interactions
 
     for (let i = 0; i < interactionCount; i++) {
@@ -180,7 +194,9 @@ describe('Database Query Performance Tests', () => {
         organization_id: randomOrg.id,
         contact_id: contactResult.data?.id || null,
         interaction_date: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-        duration_minutes: Math.floor(Math.random() * 120) + 15
+        duration_minutes: Math.floor(Math.random() * 120) + 15,
+        created_by: '00000000-0000-0000-0000-000000000001',
+        opportunity_id: crypto.randomUUID() // Dummy UUID for performance test
       }
 
       const result = await testSupabase
@@ -189,7 +205,9 @@ describe('Database Query Performance Tests', () => {
         .select()
         .single()
 
-      trackTestData('interactions', result.data.id)
+      if (result.data) {
+        trackTestData('interactions', result.data.id)
+      }
     }
 
     console.log('✅ Performance test data creation completed')
@@ -217,7 +235,7 @@ describe('Database Query Performance Tests', () => {
 
   const measureQuery = async <T>(
     queryName: string, 
-    queryFn: () => Promise<{ data: T[]; error: any }>,
+    queryFn: () => PromiseLike<{ data: T[]; error: any }>,
     expectation?: { maxDuration: number; minRows?: number }
   ) => {
     const startTime = performance.now()
@@ -276,7 +294,8 @@ describe('Database Query Performance Tests', () => {
             id, first_name, last_name, email,
             organization:organizations(name, type)
           `)
-          .limit(25),
+          .limit(25)
+          .then(res => ({ data: res.data || [], error: res.error })),
         { maxDuration: 75 }
       )
     })
@@ -291,7 +310,8 @@ describe('Database Query Performance Tests', () => {
             principal:organizations(name, type)
           `)
           .eq('is_active', true)
-          .limit(30),
+          .limit(30)
+          .then(res => ({ data: res.data || [], error: res.error })),
         { maxDuration: 100 }
       )
     })

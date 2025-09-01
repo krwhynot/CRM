@@ -224,10 +224,10 @@ export interface StatusIndicatorProps {
  * Health status color mapping
  */
 export const HealthStatusColors: Record<HealthStatus, string> = {
-  healthy: 'bg-green-500',
-  degraded: 'bg-yellow-500',
-  unhealthy: 'bg-red-500',
-  unknown: 'bg-gray-500',
+  healthy: 'bg-success',
+  degraded: 'bg-warning',
+  unhealthy: 'bg-destructive',
+  unknown: 'bg-muted',
 }
 
 /**
@@ -275,7 +275,7 @@ export function isServiceStatus(status: unknown): status is ServiceStatus {
     status !== null &&
     'status' in status &&
     'lastChecked' in status &&
-    typeof (status as any).status === 'string'
+    typeof (status as { status: unknown }).status === 'string'
   )
 }
 

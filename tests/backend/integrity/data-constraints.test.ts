@@ -7,6 +7,7 @@
 
 import { describe, test, expect, beforeAll, afterAll, beforeEach } from 'vitest'
 import { testSupabase, TestAuth } from '../setup/test-setup'
+import { checkResult } from '../../utils/test-factories'
 
 describe('Data Integrity and Constraint Tests', () => {
   let testDataIds: { table: string; ids: string[] }[] = []
@@ -64,7 +65,7 @@ describe('Data Integrity and Constraint Tests', () => {
         .select()
         .single()
 
-      testOrgId = orgResult.data.id
+      testOrgId = orgResult.data?.id || ''
       trackTestData('organizations', testOrgId)
 
       // Create test contact
@@ -79,7 +80,7 @@ describe('Data Integrity and Constraint Tests', () => {
         .select()
         .single()
 
-      testContactId = contactResult.data.id
+      testContactId = contactResult.data?.id || ''
       trackTestData('contacts', testContactId)
     })
 
@@ -106,7 +107,10 @@ describe('Data Integrity and Constraint Tests', () => {
         name: 'Invalid Organization Opportunity',
         organization_id: '00000000-0000-0000-0000-000000000000',
         contact_id: testContactId,
-        stage: 'new_lead' as const,
+        stage: 'lead' as const,
+        status: 'active' as const,
+        stage_manual: false,
+        status_manual: false,
         created_by: '00000000-0000-0000-0000-000000000001'
       }
 
@@ -125,7 +129,7 @@ describe('Data Integrity and Constraint Tests', () => {
         name: 'Invalid Contact Opportunity',
         organization_id: testOrgId,
         contact_id: '00000000-0000-0000-0000-000000000000', // Non-existent UUID
-        stage: 'new_lead' as const,
+        stage: 'New Lead' as const,
         created_by: '00000000-0000-0000-0000-000000000001'
       }
 
@@ -143,7 +147,7 @@ describe('Data Integrity and Constraint Tests', () => {
       const invalidProductData = {
         principal_id: '00000000-0000-0000-0000-000000000000',
         name: 'Invalid Principal Product',
-        category: 'other' as const,
+        category: 'dry_goods' as const,
         created_by: '00000000-0000-0000-0000-000000000001'
       }
 
@@ -206,10 +210,12 @@ describe('Data Integrity and Constraint Tests', () => {
         .select()
         .single()
 
+      const org = checkResult(orgResult, 'create check constraint test org')
+
       const contactResult = await testSupabase
         .from('contacts')
         .insert({
-          organization_id: orgResult.data.id,
+          organization_id: org.id,
           first_name: 'Check',
           last_name: 'Test',
           created_by: '00000000-0000-0000-0000-000000000001'
@@ -217,8 +223,10 @@ describe('Data Integrity and Constraint Tests', () => {
         .select()
         .single()
 
-      trackTestData('organizations', orgResult.data.id)
-      trackTestData('contacts', contactResult.data.id)
+      const contact = checkResult(contactResult, 'create check constraint test contact')
+
+      trackTestData('organizations', org.id)
+      trackTestData('contacts', contact.id)
 
       // Test invalid probability values
       const invalidProbabilities = [-1, 101, 150]
@@ -226,8 +234,8 @@ describe('Data Integrity and Constraint Tests', () => {
       for (const probability of invalidProbabilities) {
         const oppData = {
           name: `Invalid Probability Test ${probability}`,
-          organization_id: orgResult.data.id,
-          contact_id: contactResult.data.id,
+          organization_id: org.id,
+          contact_id: contact.id,
           stage: 'qualified' as const,
           probability: probability,
           created_by: '00000000-0000-0000-0000-000000000001'
@@ -249,8 +257,8 @@ describe('Data Integrity and Constraint Tests', () => {
       for (const probability of validProbabilities) {
         const oppData = {
           name: `Valid Probability Test ${probability}`,
-          organization_id: orgResult.data.id,
-          contact_id: contactResult.data.id,
+          organization_id: org.id,
+          contact_id: contact.id,
           stage: 'qualified' as const,
           probability: probability,
           created_by: '00000000-0000-0000-0000-000000000001'
@@ -263,9 +271,10 @@ describe('Data Integrity and Constraint Tests', () => {
           .single()
 
         expect(result.error).toBeNull()
-        expect(result.data.probability).toBe(probability)
+        const opportunity = checkResult(result, `create valid probability test ${probability}`)
+        expect(opportunity.probability).toBe(probability)
         
-        trackTestData('opportunities', result.data.id)
+        trackTestData('opportunities', opportunity.id)
       }
     })
 
@@ -277,7 +286,8 @@ describe('Data Integrity and Constraint Tests', () => {
         .select()
         .single()
 
-      trackTestData('organizations', principalResult.data.id)
+      const principal = checkResult(principalResult, 'create season constraint principal')
+      trackTestData('organizations', principal.id)
 
       // Test invalid season values
       const invalidSeasons = [
@@ -289,9 +299,9 @@ describe('Data Integrity and Constraint Tests', () => {
 
       for (const season of invalidSeasons) {
         const productData = {
-          principal_id: principalResult.data.id,
+          principal_id: principal.id,
           name: `Invalid Season Product ${season.start}-${season.end}`,
-          category: 'produce' as const,
+          category: 'fresh_produce' as const,
           season_start: season.start,
           season_end: season.end,
           created_by: '00000000-0000-0000-0000-000000000001'
@@ -316,9 +326,9 @@ describe('Data Integrity and Constraint Tests', () => {
 
       for (const season of validSeasons) {
         const productData = {
-          principal_id: principalResult.data.id,
+          principal_id: principal.id,
           name: `Valid Season Product ${season.start}-${season.end}`,
-          category: 'produce' as const,
+          category: 'fresh_produce' as const,
           season_start: season.start,
           season_end: season.end,
           created_by: '00000000-0000-0000-0000-000000000001'
@@ -331,10 +341,11 @@ describe('Data Integrity and Constraint Tests', () => {
           .single()
 
         expect(result.error).toBeNull()
-        expect(result.data.season_start).toBe(season.start)
-        expect(result.data.season_end).toBe(season.end)
+        const product = checkResult(result, `create valid season product ${season.start}-${season.end}`)
+        expect(product.season_start).toBe(season.start)
+        expect(product.season_end).toBe(season.end)
         
-        trackTestData('products', result.data.id)
+        trackTestData('products', product.id)
       }
     })
   })
@@ -348,13 +359,14 @@ describe('Data Integrity and Constraint Tests', () => {
         .select()
         .single()
 
-      trackTestData('organizations', orgResult.data.id)
+      const org = checkResult(orgResult, 'create unique constraint test org')
+      trackTestData('organizations', org.id)
 
       // Create first primary contact
       const contact1Result = await testSupabase
         .from('contacts')
         .insert({
-          organization_id: orgResult.data.id,
+          organization_id: org.id,
           first_name: 'Primary1',
           last_name: 'Contact',
           is_primary_contact: true,
@@ -364,13 +376,14 @@ describe('Data Integrity and Constraint Tests', () => {
         .single()
 
       expect(contact1Result.error).toBeNull()
-      trackTestData('contacts', contact1Result.data.id)
+      const contact1 = checkResult(contact1Result, 'create first primary contact')
+      trackTestData('contacts', contact1.id)
 
       // Attempt to create second primary contact (should fail)
       const contact2Result = await testSupabase
         .from('contacts')
         .insert({
-          organization_id: orgResult.data.id,
+          organization_id: org.id,
           first_name: 'Primary2',
           last_name: 'Contact',
           is_primary_contact: true,
@@ -391,7 +404,8 @@ describe('Data Integrity and Constraint Tests', () => {
         .select()
         .single()
 
-      trackTestData('organizations', principalResult.data.id)
+      const principal = checkResult(principalResult, 'create SKU unique test principal')
+      trackTestData('organizations', principal.id)
 
       const testSKU = 'UNIQUE-SKU-TEST-001'
 
@@ -399,9 +413,9 @@ describe('Data Integrity and Constraint Tests', () => {
       const product1Result = await testSupabase
         .from('products')
         .insert({
-          principal_id: principalResult.data.id,
+          principal_id: principal.id,
           name: 'First SKU Product',
-          category: 'other' as const,
+          category: 'dry_goods' as const,
           sku: testSKU,
           created_by: '00000000-0000-0000-0000-000000000001'
         })
@@ -409,15 +423,16 @@ describe('Data Integrity and Constraint Tests', () => {
         .single()
 
       expect(product1Result.error).toBeNull()
-      trackTestData('products', product1Result.data.id)
+      const product1 = checkResult(product1Result, 'create first SKU product')
+      trackTestData('products', product1.id)
 
       // Attempt to create second product with same SKU (should fail)
       const product2Result = await testSupabase
         .from('products')
         .insert({
-          principal_id: principalResult.data.id,
+          principal_id: principal.id,
           name: 'Second SKU Product',
-          category: 'other' as const,
+          category: 'dry_goods' as const,
           sku: testSKU,
           created_by: '00000000-0000-0000-0000-000000000001'
         })
@@ -442,8 +457,10 @@ describe('Data Integrity and Constraint Tests', () => {
         .select()
         .single()
 
-      trackTestData('organizations', principal1Result.data.id)
-      trackTestData('organizations', principal2Result.data.id)
+      const principal1 = checkResult(principal1Result, 'create principal 1 for SKU test')
+      const principal2 = checkResult(principal2Result, 'create principal 2 for SKU test')
+      trackTestData('organizations', principal1.id)
+      trackTestData('organizations', principal2.id)
 
       const sameSKU = 'SHARED-SKU-001'
 
@@ -451,9 +468,9 @@ describe('Data Integrity and Constraint Tests', () => {
       const product1Result = await testSupabase
         .from('products')
         .insert({
-          principal_id: principal1Result.data.id,
+          principal_id: principal1.id,
           name: 'Product from Principal 1',
-          category: 'other' as const,
+          category: 'dry_goods' as const,
           sku: sameSKU,
           created_by: '00000000-0000-0000-0000-000000000001'
         })
@@ -463,9 +480,9 @@ describe('Data Integrity and Constraint Tests', () => {
       const product2Result = await testSupabase
         .from('products')
         .insert({
-          principal_id: principal2Result.data.id,
+          principal_id: principal2.id,
           name: 'Product from Principal 2',
-          category: 'other' as const,
+          category: 'dry_goods' as const,
           sku: sameSKU,
           created_by: '00000000-0000-0000-0000-000000000001'
         })
@@ -474,12 +491,16 @@ describe('Data Integrity and Constraint Tests', () => {
 
       expect(product1Result.error).toBeNull()
       expect(product2Result.error).toBeNull()
-      expect(product1Result.data.sku).toBe(sameSKU)
-      expect(product2Result.data.sku).toBe(sameSKU)
-      expect(product1Result.data.principal_id).not.toBe(product2Result.data.principal_id)
+      
+      const product1 = checkResult(product1Result, 'create first shared SKU product')
+      const product2 = checkResult(product2Result, 'create second shared SKU product')
+      
+      expect(product1.sku).toBe(sameSKU)
+      expect(product2.sku).toBe(sameSKU)
+      expect(product1.principal_id).not.toBe(product2.principal_id)
 
-      trackTestData('products', product1Result.data.id)
-      trackTestData('products', product2Result.data.id)
+      trackTestData('products', product1.id)
+      trackTestData('products', product2.id)
     })
   })
 
@@ -510,15 +531,16 @@ describe('Data Integrity and Constraint Tests', () => {
         .select()
         .single()
 
-      trackTestData('organizations', orgResult.data.id)
+      const org = checkResult(orgResult, 'create required fields test org')
+      trackTestData('organizations', org.id)
 
       const requiredFieldTests = [
         { 
-          data: { organization_id: orgResult.data.id, last_name: 'Test', created_by: '00000000-0000-0000-0000-000000000001' }, 
+          data: { organization_id: org.id, last_name: 'Test', created_by: '00000000-0000-0000-0000-000000000001' }, 
           missingField: 'first_name' 
         },
         { 
-          data: { organization_id: orgResult.data.id, first_name: 'Test', created_by: '00000000-0000-0000-0000-000000000001' }, 
+          data: { organization_id: org.id, first_name: 'Test', created_by: '00000000-0000-0000-0000-000000000001' }, 
           missingField: 'last_name' 
         },
         { 
@@ -547,19 +569,20 @@ describe('Data Integrity and Constraint Tests', () => {
         .select()
         .single()
 
-      trackTestData('organizations', principalResult.data.id)
+      const principal = checkResult(principalResult, 'create product required fields principal')
+      trackTestData('organizations', principal.id)
 
       const requiredFieldTests = [
         { 
-          data: { principal_id: principalResult.data.id, category: 'other' as const, created_by: '00000000-0000-0000-0000-000000000001' }, 
+          data: { principal_id: principal.id, category: 'dry_goods' as const, created_by: '00000000-0000-0000-0000-000000000001' }, 
           missingField: 'name' 
         },
         { 
-          data: { principal_id: principalResult.data.id, name: 'Test Product', created_by: '00000000-0000-0000-0000-000000000001' }, 
+          data: { principal_id: principal.id, name: 'Test Product', created_by: '00000000-0000-0000-0000-000000000001' }, 
           missingField: 'category' 
         },
         { 
-          data: { name: 'Test Product', category: 'other' as const, created_by: '00000000-0000-0000-0000-000000000001' }, 
+          data: { name: 'Test Product', category: 'dry_goods' as const, created_by: '00000000-0000-0000-0000-000000000001' }, 
           missingField: 'principal_id' 
         }
       ]
@@ -612,13 +635,14 @@ describe('Data Integrity and Constraint Tests', () => {
         .select()
         .single()
 
-      trackTestData('organizations', principalResult.data.id)
+      const principal = checkResult(principalResult, 'create precision test principal')
+      trackTestData('organizations', principal.id)
 
       // Test with very large decimal values that might exceed precision
       const productData = {
-        principal_id: principalResult.data.id,
+        principal_id: principal.id,
         name: 'Decimal Precision Test Product',
-        category: 'other' as const,
+        category: 'dry_goods' as const,
         unit_cost: 999999999.99, // Testing decimal precision
         list_price: 999999999.99,
         created_by: '00000000-0000-0000-0000-000000000001'
@@ -690,14 +714,16 @@ describe('Data Integrity and Constraint Tests', () => {
         .select()
         .single()
 
-      trackTestData('organizations', org1Result.data.id)
-      trackTestData('organizations', org2Result.data.id)
+      const org1 = checkResult(org1Result, 'create org 1 for business logic')
+      const org2 = checkResult(org2Result, 'create org 2 for business logic')
+      trackTestData('organizations', org1.id)
+      trackTestData('organizations', org2.id)
 
       // Create contact for org1
       const contactResult = await testSupabase
         .from('contacts')
         .insert({
-          organization_id: org1Result.data.id,
+          organization_id: org1.id,
           first_name: 'Business',
           last_name: 'Logic',
           created_by: '00000000-0000-0000-0000-000000000001'
@@ -705,16 +731,17 @@ describe('Data Integrity and Constraint Tests', () => {
         .select()
         .single()
 
-      trackTestData('contacts', contactResult.data.id)
+      const contact = checkResult(contactResult, 'create contact for business logic test')
+      trackTestData('contacts', contact.id)
 
       // Try to create opportunity with contact from org1 but assigned to org2
       const invalidOppResult = await testSupabase
         .from('opportunities')
         .insert({
           name: 'Invalid Contact-Org Relationship',
-          organization_id: org2Result.data.id, // Different org
-          contact_id: contactResult.data.id,    // Contact from org1
-          stage: 'new_lead' as const,
+          organization_id: org2.id, // Different org
+          contact_id: contact.id,    // Contact from org1
+          stage: 'New Lead' as const,
           created_by: '00000000-0000-0000-0000-000000000001'
         })
         .select()
@@ -738,15 +765,16 @@ describe('Data Integrity and Constraint Tests', () => {
         .select()
         .single()
 
-      trackTestData('organizations', customerResult.data.id)
+      const customer = checkResult(customerResult, 'create customer for principal validation test')
+      trackTestData('organizations', customer.id)
 
       // Try to create product with customer organization as principal
       const invalidProductResult = await testSupabase
         .from('products')
         .insert({
-          principal_id: customerResult.data.id,
+          principal_id: customer.id,
           name: 'Invalid Principal Type Product',
-          category: 'other' as const,
+          category: 'dry_goods' as const,
           created_by: '00000000-0000-0000-0000-000000000001'
         })
         .select()
@@ -772,7 +800,8 @@ describe('Data Integrity and Constraint Tests', () => {
         .select()
         .single()
 
-      trackTestData('organizations', orgResult.data.id)
+      const org = checkResult(orgResult, 'create performance constraint test org')
+      trackTestData('organizations', org.id)
 
       // Measure time to create contact with constraint validation
       const startTime = performance.now()
@@ -780,7 +809,7 @@ describe('Data Integrity and Constraint Tests', () => {
       const contactResult = await testSupabase
         .from('contacts')
         .insert({
-          organization_id: orgResult.data.id,
+          organization_id: org.id,
           first_name: 'Performance',
           last_name: 'Test',
           email: 'performance@test.com',
@@ -794,7 +823,8 @@ describe('Data Integrity and Constraint Tests', () => {
       expect(contactResult.error).toBeNull()
       expect(duration).toBeLessThan(100) // Should complete within 100ms
       
-      trackTestData('contacts', contactResult.data.id)
+      const contact = checkResult(contactResult, 'create performance test contact')
+      trackTestData('contacts', contact.id)
 
       console.log(`📊 Constraint validation performance: ${duration.toFixed(2)}ms`)
     })

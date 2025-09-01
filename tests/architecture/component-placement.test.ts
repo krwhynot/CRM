@@ -268,7 +268,7 @@ describe('Component Placement Architecture', () => {
         const componentsPath = join(projectRoot, featureDir, 'components')
         
         try {
-          const entries = await readdir(componentsPath, { withFileTypes: true })
+          await readdir(componentsPath, { withFileTypes: true })
           // Directory structure validation could be added here if needed
           
           // Good patterns: charts/, forms/, tables/, etc.

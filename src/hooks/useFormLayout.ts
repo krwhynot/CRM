@@ -43,7 +43,7 @@ interface UseFormLayoutProps<T extends FieldValues> {
   optionalSections?: FormSection<T>[]
   contextualSections?: ConditionalSection<T>[]
   showAdvancedOptions?: boolean
-  form: UseFormReturn<T, any, any> // Accept any form type to work with React Hook Form
+  form: UseFormReturn<T, FieldValues, undefined> // Accept properly typed form to work with React Hook Form
 }
 
 interface UseFormLayoutReturn<T extends FieldValues> {

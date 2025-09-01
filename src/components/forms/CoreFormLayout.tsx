@@ -81,7 +81,7 @@ export function CoreFormLayout<T extends FieldValues>({
           >
             <CoreSectionsRenderer
               sections={coreSections}
-              form={form}
+              form={form as any}
               loading={loading}
               entityType={entityType}
               getLayoutClass={formLayout.getLayoutClass}
@@ -90,7 +90,7 @@ export function CoreFormLayout<T extends FieldValues>({
 
             <ContextualSectionsRenderer
               sections={contextualSections}
-              form={form}
+              form={form as any}
               loading={loading}
               entityType={entityType}
               shouldShowConditionalSection={formLayout.shouldShowConditionalSection}
@@ -100,7 +100,7 @@ export function CoreFormLayout<T extends FieldValues>({
 
             <OptionalSectionsRenderer
               sections={optionalSections}
-              form={form}
+              form={form as any}
               loading={loading}
               entityType={entityType}
               showOptionalSections={formLayout.showOptionalSections}
@@ -109,7 +109,7 @@ export function CoreFormLayout<T extends FieldValues>({
               getSectionClassName={formLayout.getSectionClassName}
             />
 
-            <FormNotesSection form={form} loading={loading} entityType={entityType} />
+            <FormNotesSection form={form as any} loading={loading} entityType={entityType} />
 
             <FormSubmitActions
               loading={loading}

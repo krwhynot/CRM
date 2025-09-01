@@ -8,9 +8,7 @@ import type {
   InteractionType,
   PriorityLevel,
 } from '@/types/entities'
-
-// Organization size for priority mapping
-export type OrganizationSize = 'small' | 'medium' | 'large' | 'enterprise'
+import { mapStringSizeToPriority } from '@/lib/enum-guards'
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -80,22 +78,6 @@ export interface MetricsFilters {
 // UTILITY FUNCTIONS
 // ============================================================================
 
-/**
- * Map organization size to priority level for business logic
- */
-export function mapSizeToPriority(size: OrganizationSize | null | undefined): PriorityLevel {
-  switch (size) {
-    case 'enterprise':
-      return 'critical'
-    case 'large':
-      return 'high'
-    case 'medium':
-      return 'medium'
-    case 'small':
-    default:
-      return 'low'
-  }
-}
 
 /**
  * Safe date conversion with null handling
@@ -307,7 +289,7 @@ export function calculatePrincipalMetrics(
   // Calculate priority breakdown using size mapping
   const byPriority = filteredPrincipals.reduce(
     (acc, principal) => {
-      const priority = mapSizeToPriority((principal as any).size || 'medium')
+      const priority = mapStringSizeToPriority((principal as { size?: string }).size)
       acc[priority] = (acc[priority] || 0) + 1
       return acc
     },

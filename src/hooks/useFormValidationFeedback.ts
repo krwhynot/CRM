@@ -39,7 +39,7 @@ export const useFormValidationFeedback = <T extends FieldValues>(
     Object.entries(warningValidations).forEach(([field, validator]) => {
       const fieldValue = formControl._formValues?.[field]
       const warning = validator(fieldValue)
-      if (warning && (touchedFields as any)[field]) {
+      if (warning && touchedFields[field as keyof typeof touchedFields]) {
         fieldErrors.push({
           field,
           message: warning,

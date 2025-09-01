@@ -12,8 +12,9 @@ const isDevelopment = process.env.NODE_ENV === 'development'
  * Debug log function that only outputs in development mode
  * @param args - Arguments to log
  */
-export const debugLog = (...args: any[]) => {
+export const debugLog = (...args: unknown[]) => {
   if (isDevelopment) {
+    // eslint-disable-next-line no-console -- Intentional debug utility for development
     console.log('[DEBUG]', ...args)
   }
 }
@@ -22,8 +23,9 @@ export const debugLog = (...args: any[]) => {
  * Debug warning function that only outputs in development mode
  * @param args - Arguments to warn about
  */
-export const debugWarn = (...args: any[]) => {
+export const debugWarn = (...args: unknown[]) => {
   if (isDevelopment) {
+    // eslint-disable-next-line no-console -- Intentional debug utility for development
     console.warn('[WARNING]', ...args)
   }
 }
@@ -32,8 +34,9 @@ export const debugWarn = (...args: any[]) => {
  * Debug error function that only outputs in development mode
  * @param args - Arguments to error about
  */
-export const debugError = (...args: any[]) => {
+export const debugError = (...args: unknown[]) => {
   if (isDevelopment) {
+    // eslint-disable-next-line no-console -- Intentional debug utility for development
     console.error('[ERROR]', ...args)
   }
 }
@@ -42,8 +45,9 @@ export const debugError = (...args: any[]) => {
  * Debug info function that only outputs in development mode
  * @param args - Arguments to info about
  */
-export const debugInfo = (...args: any[]) => {
+export const debugInfo = (...args: unknown[]) => {
   if (isDevelopment) {
+    // eslint-disable-next-line no-console -- Intentional debug utility for development
     console.info('[INFO]', ...args)
   }
 }

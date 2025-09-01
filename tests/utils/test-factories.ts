@@ -6,16 +6,12 @@
  */
 
 import type {
-  Organization,
   OrganizationInsert,
-  Contact,
   ContactInsert,
-  Product,
   ProductInsert,
-  Opportunity,
   OpportunityInsert,
-  Interaction,
   InteractionInsert,
+  ContactRole
 } from '@/types/entities'
 import type { Database } from '@/types/database.types'
 
@@ -109,7 +105,7 @@ export interface TestContactOverrides {
   mobile_phone?: string
   title?: string
   department?: string
-  role?: Database['public']['Enums']['contact_role']
+  role?: ContactRole
   linkedin_url?: string
   is_primary_contact?: boolean
   notes?: string
@@ -157,6 +153,7 @@ export interface TestProductOverrides {
   season_start?: number
   season_end?: number
   specifications?: string
+  is_active?: boolean
 }
 
 export const createTestProduct = (overrides: TestProductOverrides = {}): ProductInsert => ({
@@ -177,7 +174,6 @@ export const createTestProduct = (overrides: TestProductOverrides = {}): Product
   season_start: overrides.season_start ?? null,
   season_end: overrides.season_end ?? null,
   specifications: overrides.specifications ?? null,
-  is_active: overrides.is_active ?? true, // Add default active state
   ...overrides
 })
 
@@ -224,10 +220,10 @@ export const createTestOpportunity = (overrides: TestOpportunityOverrides = {}):
   description: overrides.description ?? null,
   estimated_value: overrides.estimated_value ?? null,
   probability: overrides.probability ?? null,
-  estimated_close_date: overrides.estimated_close_date ?? null,
+  estimated_close_date: overrides.estimated_close_date ? overrides.estimated_close_date : null,
   priority: overrides.priority ?? null,
   next_action: overrides.next_action ?? null,
-  next_action_date: overrides.next_action_date ?? null,
+  next_action_date: overrides.next_action_date ? overrides.next_action_date : null,
   competition: overrides.competition ?? null,
   decision_criteria: overrides.decision_criteria ?? null,
   opportunity_context: overrides.opportunity_context ?? null,
@@ -272,7 +268,7 @@ export const createTestInteraction = (overrides: TestInteractionOverrides = {}):
   description: overrides.description ?? null,
   outcome: overrides.outcome ?? null,
   follow_up_required: overrides.follow_up_required ?? false,
-  follow_up_date: overrides.follow_up_date ?? null,
+  follow_up_date: overrides.follow_up_date ? overrides.follow_up_date : null,
   follow_up_notes: overrides.follow_up_notes ?? null,
   duration_minutes: overrides.duration_minutes ?? null,
   attachments: overrides.attachments ?? null,

@@ -6,7 +6,7 @@ import type { FormSection } from '@/hooks/useFormLayout'
 
 interface ContextualSectionsRendererProps<T extends FieldValues> {
   sections: ConditionalSection<T>[]
-  form: UseFormReturn<T, any, any>
+  form: UseFormReturn<T>
   loading: boolean
   entityType: 'organization' | 'contact' | 'product' | 'opportunity' | 'activity'
   shouldShowConditionalSection: (condition: (values: T) => boolean) => boolean
@@ -31,7 +31,7 @@ export function ContextualSectionsRenderer<T extends FieldValues>({
           condition={conditionalSection.condition}
           section={conditionalSection.section}
           shouldShow={shouldShowConditionalSection(conditionalSection.condition)}
-          form={form}
+          form={form as any}
           loading={loading}
           entityType={entityType}
           layoutClass={getLayoutClass(conditionalSection.section.layout)}

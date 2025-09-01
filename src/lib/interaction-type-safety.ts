@@ -42,9 +42,9 @@ export const extractBaseInteraction = (
   if (isInteractionWithRelations(interaction)) {
     // Extract only base properties, excluding relations
     const {
-      contact: _contact,
-      organization: _organization,
-      opportunity: _opportunity,
+      contact: _contact, // eslint-disable-line @typescript-eslint/no-unused-vars
+      organization: _organization, // eslint-disable-line @typescript-eslint/no-unused-vars
+      opportunity: _opportunity, // eslint-disable-line @typescript-eslint/no-unused-vars
       ...baseInteraction
     } = interaction
     return baseInteraction as Interaction

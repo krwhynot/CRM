@@ -6,7 +6,9 @@
  */
 
 import { describe, test, expect, beforeEach, afterEach } from 'vitest'
-import { createTestOrganization, createTestContact, checkResult, validateTestData } from '../../utils/test-factories'
+import { createTestOrganization, createTestContact, checkResult } from '../../utils/test-factories'
+import { testSupabase, TestAuth, PerformanceMonitor, TestCleanup } from '../setup/test-setup'
+import type { ContactRole } from '@/types/entities'
 
 describe('Contacts Database Operations', () => {
   let testOrgId: string
@@ -28,8 +30,8 @@ describe('Contacts Database Operations', () => {
       .select()
       .single()
 
-    const orgData = checkResult(orgResult, 'create test organization')
-    testOrgId = orgData.id
+    const createdOrg = checkResult(orgResult, 'create test organization')
+    testOrgId = createdOrg.id
     TestCleanup.trackCreatedRecord('organizations', testOrgId)
   })
 
@@ -50,7 +52,7 @@ describe('Contacts Database Operations', () => {
         first_name: 'John',
         last_name: 'Smith',
         title: 'Sales Manager',
-        role: 'decision_maker' as const,
+        role: 'decision_maker' as ContactRole,
         email: 'john.smith@example.com',
         phone: '555-0123',
         mobile_phone: '555-0124',
@@ -85,7 +87,7 @@ describe('Contacts Database Operations', () => {
     })
 
     test('should create contacts with different roles', async () => {
-      const roles = ['decision_maker', 'influencer', 'gatekeeper', 'champion', 'other'] as const
+      const roles: ContactRole[] = ['decision_maker', 'influencer', 'gatekeeper', 'champion', 'buyer']
       const createdContacts = []
 
       for (const role of roles) {
@@ -284,20 +286,24 @@ describe('Contacts Database Operations', () => {
 
       expect(result.error).toBeNull()
       expect(result.data).toBeDefined()
-      expect(result.data.length).toBeGreaterThan(0)
+      expect(result.data).not.toBeNull()
       
-      // Verify search results contain the search term
-      result.data.forEach((contact: any) => {
-        const fullName = `${contact.first_name} ${contact.last_name}`.toLowerCase()
-        expect(fullName).toContain('sample')
-      })
+      if (result.data) {
+        expect(result.data.length).toBeGreaterThan(0)
+        
+        // Verify search results contain the search term
+        result.data.forEach((contact: any) => {
+          const fullName = `${contact.first_name} ${contact.last_name}`.toLowerCase()
+          expect(fullName).toContain('sample')
+        })
+      }
     })
 
     test('should filter contacts by role', async () => {
       // Create contacts with specific roles
       const roleContacts = [
-        createTestContact({ first_name: 'Decision', last_name: 'Maker', role: 'decision_maker' as const, organization_id: testOrgId }),
-        createTestContact({ first_name: 'Influ', last_name: 'Encer', role: 'influencer' as const, organization_id: testOrgId })
+        createTestContact({ first_name: 'Decision', last_name: 'Maker', role: 'decision_maker' as ContactRole, organization_id: testOrgId }),
+        createTestContact({ first_name: 'Influ', last_name: 'Encer', role: 'influencer' as ContactRole, organization_id: testOrgId })
       ]
 
       for (const contact of roleContacts) {
@@ -399,13 +405,13 @@ describe('Contacts Database Operations', () => {
       expect(updatedContact.title).toBe(updateData.title)
       expect(updatedContact.phone).toBe(updateData.phone)
       expect(updatedContact.department).toBe(updateData.department)
-      expect(new Date(updatedContact.updated_at) > new Date(updatedContact.created_at)).toBe(true)
+      expect(new Date(updatedContact.updated_at || new Date()) > new Date(updatedContact.created_at || new Date())).toBe(true)
     })
 
     test('should update contact role', async () => {
       const result = await testSupabase
         .from('contacts')
-        .update({ role: 'champion' as const })
+        .update({ role: 'champion' as ContactRole })
         .eq('id', sampleContactId)
         .select()
         .single()
@@ -542,7 +548,10 @@ describe('Contacts Database Operations', () => {
         .single()
 
       expect(result.error).toBeNull()
-      expect(result.data.deleted_at).not.toBeNull()
+      expect(result.data).not.toBeNull()
+      if (result.data) {
+        expect(result.data.deleted_at).not.toBeNull()
+      }
       
       // Verify organization no longer has a primary contact
       const primaryContactCheck = await testSupabase

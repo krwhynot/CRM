@@ -5,7 +5,7 @@ import type { FormSection } from '@/hooks/useFormLayout'
 
 interface OptionalSectionsRendererProps<T extends FieldValues> {
   sections: FormSection<T>[]
-  form: UseFormReturn<T, any, any>
+  form: UseFormReturn<T, any, undefined>
   loading: boolean
   entityType: 'organization' | 'contact' | 'product' | 'opportunity' | 'activity'
   showOptionalSections: boolean

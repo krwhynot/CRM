@@ -22,7 +22,7 @@ import type { FormFieldConfig, SelectOption } from '@/hooks/useFormLayout'
 
 interface FormFieldRendererProps<T extends FieldValues> {
   field: FormFieldConfig<T>
-  form: UseFormReturn<T, any, any>
+  form: UseFormReturn<T>
   loading: boolean
   className?: string
 }

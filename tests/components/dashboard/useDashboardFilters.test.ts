@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react'
 import { useDashboardFilters } from '@/features/dashboard/hooks/useDashboardFilters'
-import { FilterState } from '@/types/dashboard'
+import type { FilterState } from '@/types/dashboard'
 import { vi } from 'vitest'
 
 // Mock the useDebounce hook

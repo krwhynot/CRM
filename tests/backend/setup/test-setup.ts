@@ -6,7 +6,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js'
-import type { Database } from '@/lib/database.types'
+import type { Database } from '@/types/database.types'
 import { beforeAll, afterAll, beforeEach } from 'vitest'
 import '@testing-library/jest-dom'
 

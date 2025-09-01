@@ -6,17 +6,17 @@
 declare global {
   namespace Vi {
     interface AsymmetricMatchersContaining {
-      toHaveNoViolations(): any
+      toHaveNoViolations(): void
     }
   }
 }
 
 declare module 'vitest' {
-  interface Assertion<T = any> {
+  interface Assertion<T = unknown> {
     toHaveNoViolations(): T
   }
   interface AsymmetricMatchersContaining {
-    toHaveNoViolations(): any
+    toHaveNoViolations(): void
   }
 }
 

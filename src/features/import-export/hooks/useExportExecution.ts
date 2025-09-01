@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { isFeatureEnabled } from '@/lib/feature-flags'
+import { safeArrayAccess } from '@/lib/database-utils'
 import type { ExportOptions } from './useExportConfiguration'
 
 // Type for export data record (based on organization fields)
@@ -10,12 +11,12 @@ type ExportDataRecord = {
 
 // Type for XLSX library interface
 interface XLSXWorksheet {
-  [key: string]: any
+  [key: string]: unknown
   '!cols'?: Array<{ wch: number }>
 }
 
 interface XLSXWorkbook {
-  [key: string]: any
+  [key: string]: unknown
 }
 
 interface XLSXLibrary {
@@ -188,9 +189,11 @@ export const useExportExecution = (exportOptions: ExportOptions): UseExportExecu
 
         if (error) throw error
 
-        if (data && data.length > 0) {
+        // Safe data access for batch processing
+        const safeData = safeArrayAccess(data, `export batch ${offset}-${offset + batchSize - 1}`)
+        if (safeData.length > 0) {
           // Type assertion - we know this should be record data from organizations table
-          const records = data as unknown as ExportDataRecord[]
+          const records = safeData as unknown as ExportDataRecord[]
           allData.push(...records)
           offset += batchSize
 

@@ -37,7 +37,7 @@ export function useCoreFormSetup<T extends FieldValues>({
     coreSections,
     optionalSections,
     contextualSections,
-    form,
+    form: form as any,
   })
 
   const handleSubmit: SubmitHandler<T> = (data) => {

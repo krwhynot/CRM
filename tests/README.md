@@ -1,6 +1,6 @@
-# KitchenPantry CRM - Playwright E2E Test Suite
+# KitchenPantry CRM - Comprehensive Test Suite
 
-Comprehensive end-to-end test suite for the KitchenPantry CRM system built with Playwright and TypeScript.
+Comprehensive test suite for the KitchenPantry CRM system including E2E (Playwright), Backend (Vitest), and Unit tests with advanced TypeScript support.
 
 ## Overview
 
@@ -19,17 +19,72 @@ This test suite provides complete coverage of the CRM application including:
 
 ```
 tests/
-├── auth/                 # Authentication tests
-├── crud/                 # CRUD operation tests
-├── dashboard/            # Dashboard functionality tests
-├── import-export/        # Excel import/export tests
-├── mobile/              # Responsive design tests
-├── forms/               # Form validation tests
+├── backend/              # Backend/Database tests (Vitest)
+│   ├── setup/           # Test setup and configuration
+│   ├── database/        # Database operation tests
+│   ├── security/        # RLS policy and security tests
+│   ├── performance/     # Performance benchmarks
+│   ├── integrity/       # Data integrity validation
+│   └── imports/         # Excel import backend tests
+├── shared/              # 🆕 Shared test utilities (NEW)
+│   ├── test-utils.ts    # Generic factories & DatabaseTestHelper
+│   └── test-utilities.ts # Legacy utilities (enhanced)
+├── types/               # 🆕 Test type definitions (NEW)
+│   └── index.ts         # Comprehensive test types
+├── unit/                # Unit tests for components
+├── mcp/                 # MCP integration tests
+├── auth/                # E2E Authentication tests
+├── crud/                # E2E CRUD operation tests
+├── dashboard/           # E2E Dashboard functionality tests
+├── import-export/       # E2E Excel import/export tests
+├── mobile/              # E2E Responsive design tests
+├── forms/               # E2E Form validation tests
 ├── page-objects/        # Page Object Model classes
-├── utils/               # Test utilities and helpers
+├── utils/               # E2E test utilities and helpers
 ├── fixtures/            # Test data and fixtures
 └── README.md           # This file
 ```
+
+## 🚀 New Advanced Test Utilities (Phase 5 & 6)
+
+### Generic Type-Safe Factories
+
+The test suite now includes advanced TypeScript-powered test utilities:
+
+#### `/tests/shared/test-utils.ts` - Generic Test Factories
+```typescript
+// Create any CRM entity with type safety
+const testOrg = createTestEntity('organization', {
+  type: 'principal',
+  segment: 'Fine Dining'
+})
+
+// Database operations with performance tracking
+const helper = new DatabaseTestHelper('organization')
+const createdOrg = await helper.create(testOrg)
+const orgs = await helper.list({ type: 'principal' }, 50)
+```
+
+#### `/tests/shared/test-utilities.ts` - Enhanced Legacy Utilities
+```typescript
+// Typed test data generation
+const orgData = TestData.organizations.valid()
+const contactData = TestData.contacts.valid(organizationId)
+const invalidData = TestData.organizations.invalid.emptyName()
+
+// Relationship validation
+const builder = new TestDataBuilder()
+  .organization('myPrincipal', { type: 'principal' })
+  .contact('primaryContact', 'myPrincipal')
+  .opportunity('bigDeal', 'myPrincipal', 'primaryContact')
+```
+
+#### `/tests/types/index.ts` - Comprehensive Type System
+- **TestEntityData** - Typed entity data interfaces  
+- **MockFormData** - Form testing types
+- **PerformanceTestResult** - Benchmarking types
+- **ValidationTestCase** - Validation test configurations
+- **DatabaseTestExpectations** - Database assertion types
 
 ## Page Object Model Architecture
 
