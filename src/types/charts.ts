@@ -1,6 +1,6 @@
 /**
  * Chart Type Definitions
- * 
+ *
  * Comprehensive type definitions for chart components that eliminate the need for `any` types.
  * Provides type-safe interfaces for Recharts components, data transformations, and configurations.
  */
@@ -109,7 +109,16 @@ export interface CustomLegendProps {
     color?: string
     inactive?: boolean
   }>
-  iconType?: 'line' | 'square' | 'rect' | 'circle' | 'cross' | 'diamond' | 'star' | 'triangle' | 'wye'
+  iconType?:
+    | 'line'
+    | 'square'
+    | 'rect'
+    | 'circle'
+    | 'cross'
+    | 'diamond'
+    | 'star'
+    | 'triangle'
+    | 'wye'
   layout?: 'horizontal' | 'vertical'
   align?: 'left' | 'center' | 'right'
   verticalAlign?: 'top' | 'middle' | 'bottom'

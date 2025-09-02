@@ -1,9 +1,9 @@
-import type { 
-  CommonFieldConfigs, 
+import type {
+  CommonFieldConfigs,
   LayoutClasses,
   FormTheme,
   FieldConfig,
-  SelectOption 
+  SelectOption,
 } from '@/types/forms'
 import { validationMessages } from '@/lib/validation-messages'
 
@@ -25,7 +25,7 @@ export const sectionLayouts: LayoutClasses = {
 export const formTheme: FormTheme = {
   spacing: {
     section: 'space-y-8',
-    field: 'space-y-6', 
+    field: 'space-y-6',
     inner: 'gap-2',
   },
   sizing: {
@@ -47,7 +47,7 @@ export const commonFields: CommonFieldConfigs = {
   },
 
   phone: {
-    name: 'phone', 
+    name: 'phone',
     label: 'Phone',
     type: 'phone',
     placeholder: '(555) 123-4567',
@@ -112,33 +112,33 @@ export const commonSelectOptions = {
       value: 'A',
       label: 'A - High Priority',
       description: 'Strategic accounts with high revenue potential',
-      icon: '🎯'
+      icon: '🎯',
     },
     {
       value: 'B',
-      label: 'B - Medium Priority', 
+      label: 'B - Medium Priority',
       description: 'Important accounts with good growth potential',
-      icon: '📈'
+      icon: '📈',
     },
     {
       value: 'C',
       label: 'C - Standard Priority',
       description: 'Regular accounts requiring standard service',
-      icon: '📊'
+      icon: '📊',
     },
     {
       value: 'D',
       label: 'D - Low Priority',
       description: 'Cold prospects needing nurturing',
-      icon: '❄️'
-    }
+      icon: '❄️',
+    },
   ] as SelectOption[],
 
   // Yes/No/Unknown options
   yesNoUnknown: [
     { value: 'Yes', label: 'Yes' },
     { value: 'No', label: 'No' },
-    { value: 'Unknown', label: 'Unknown' }
+    { value: 'Unknown', label: 'Unknown' },
   ] as SelectOption[],
 
   // Common influence levels
@@ -146,31 +146,31 @@ export const commonSelectOptions = {
     { value: 'High', label: 'High', description: 'Strong influence on decisions' },
     { value: 'Medium', label: 'Medium', description: 'Moderate influence' },
     { value: 'Low', label: 'Low', description: 'Limited influence' },
-    { value: 'Unknown', label: 'Unknown', description: 'Influence level unclear' }
+    { value: 'Unknown', label: 'Unknown', description: 'Influence level unclear' },
   ] as SelectOption[],
 
   // Contact decision authority levels
   decisionAuthority: [
-    { 
-      value: 'Decision Maker', 
+    {
+      value: 'Decision Maker',
       label: 'Decision Maker',
-      description: 'Final authority on purchasing decisions'
+      description: 'Final authority on purchasing decisions',
     },
-    { 
-      value: 'Influencer', 
+    {
+      value: 'Influencer',
       label: 'Influencer',
-      description: 'Influences purchasing decisions'
+      description: 'Influences purchasing decisions',
     },
-    { 
-      value: 'End User', 
-      label: 'End User', 
-      description: 'Uses the product/service'
+    {
+      value: 'End User',
+      label: 'End User',
+      description: 'Uses the product/service',
     },
-    { 
-      value: 'Gatekeeper', 
+    {
+      value: 'Gatekeeper',
       label: 'Gatekeeper',
-      description: 'Controls access to decision makers'
-    }
+      description: 'Controls access to decision makers',
+    },
   ] as SelectOption[],
 
   // Opportunity stages
@@ -180,7 +180,11 @@ export const commonSelectOptions = {
     { value: 'Proposal', label: 'Proposal', description: 'Proposal submitted' },
     { value: 'Negotiation', label: 'Negotiation', description: 'In negotiation phase' },
     { value: 'Closed Won', label: 'Closed Won', description: 'Deal successfully closed' },
-    { value: 'Closed Lost', label: 'Closed Lost', description: 'Deal lost to competitor or cancelled' }
+    {
+      value: 'Closed Lost',
+      label: 'Closed Lost',
+      description: 'Deal lost to competitor or cancelled',
+    },
   ] as SelectOption[],
 
   // Interaction types
@@ -190,7 +194,7 @@ export const commonSelectOptions = {
     { value: 'Meeting', label: 'Meeting', description: 'In-person or virtual meeting' },
     { value: 'Demo', label: 'Demo', description: 'Product or service demonstration' },
     { value: 'Follow-up', label: 'Follow-up', description: 'Follow-up communication' },
-    { value: 'Other', label: 'Other', description: 'Other type of interaction' }
+    { value: 'Other', label: 'Other', description: 'Other type of interaction' },
   ] as SelectOption[],
 }
 
@@ -281,8 +285,6 @@ export const dataTransformers = {
    * Combines common data transformations
    */
   standardTransform: <T extends Record<string, any>>(data: T): T => {
-    return dataTransformers.cleanEmptyStrings(
-      dataTransformers.trimStrings(data)
-    )
+    return dataTransformers.cleanEmptyStrings(dataTransformers.trimStrings(data))
   },
 }

@@ -1,7 +1,13 @@
 import React from 'react'
 import { X, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import type { InteractionType } from '@/types/entities'
 import type { ActivityFilters } from '../../hooks/useActivityFiltering'
 import { ACTIVITY_CONFIG } from './ActivityConfig'
@@ -28,7 +34,7 @@ export const ActivityFiltersComponent: React.FC<ActivityFiltersProps> = ({
   selectedType,
   setSelectedType,
   selectedPriority,
-  setSelectedPriority
+  setSelectedPriority,
 }) => {
   if (!showFilters) return null
 
@@ -60,10 +66,7 @@ export const ActivityFiltersComponent: React.FC<ActivityFiltersProps> = ({
 
       {/* Filter Controls */}
       <div className="flex flex-wrap items-center gap-2 pt-2">
-        <Select
-          value={currentType}
-          onValueChange={handleTypeChange}
-        >
+        <Select value={currentType} onValueChange={handleTypeChange}>
           <SelectTrigger className="w-32">
             <SelectValue placeholder="Type" />
           </SelectTrigger>
@@ -76,12 +79,9 @@ export const ActivityFiltersComponent: React.FC<ActivityFiltersProps> = ({
             ))}
           </SelectContent>
         </Select>
-        
+
         {setSelectedPriority && (
-          <Select
-            value={currentPriority}
-            onValueChange={handlePriorityChange}
-          >
+          <Select value={currentPriority} onValueChange={handlePriorityChange}>
             <SelectTrigger className="w-32">
               <SelectValue placeholder="Priority" />
             </SelectTrigger>
@@ -93,11 +93,17 @@ export const ActivityFiltersComponent: React.FC<ActivityFiltersProps> = ({
             </SelectContent>
           </Select>
         )}
-        
+
         {filters?.dateRange && (
           <Select
             value={filters.dateRange || 'all'}
-            onValueChange={(value) => setFilters && setFilters((prev: ActivityFilters) => ({ ...prev, dateRange: value as ActivityFilters['dateRange'] }))}
+            onValueChange={(value) =>
+              setFilters &&
+              setFilters((prev: ActivityFilters) => ({
+                ...prev,
+                dateRange: value as ActivityFilters['dateRange'],
+              }))
+            }
           >
             <SelectTrigger className="w-32">
               <SelectValue placeholder="Date Range" />
@@ -111,8 +117,8 @@ export const ActivityFiltersComponent: React.FC<ActivityFiltersProps> = ({
             </SelectContent>
           </Select>
         )}
-        
-        {(hasActiveFilters || (currentType !== 'all' || currentPriority !== 'all')) && (
+
+        {(hasActiveFilters || currentType !== 'all' || currentPriority !== 'all') && (
           <Button
             variant="ghost"
             size="sm"

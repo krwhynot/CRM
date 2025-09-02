@@ -114,10 +114,7 @@ export function useBatchOptimizedQueries(
   }, [queries])
 
   // Generate cache key for query batching
-  useMemo(
-    () => queries.map((q) => JSON.stringify(q.queryKey)).join('|'),
-    [queries]
-  )
+  useMemo(() => queries.map((q) => JSON.stringify(q.queryKey)).join('|'), [queries])
 
   // For now, return a placeholder result structure
   // In a real implementation, you would use useQueries from TanStack Query

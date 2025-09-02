@@ -58,8 +58,14 @@ export function HealthDashboard({
       responseTime: status.api.responseTime,
       message: status.api.details,
     },
-    overall: (isHealthy ? 'healthy' : (status.database.status === 'down' || status.auth.status === 'down' || status.api.status === 'down') ? 'unhealthy' : 'degraded') as 'healthy' | 'degraded' | 'unhealthy' | 'unknown',
-    lastUpdated: new Date().toISOString()
+    overall: (isHealthy
+      ? 'healthy'
+      : status.database.status === 'down' ||
+          status.auth.status === 'down' ||
+          status.api.status === 'down'
+        ? 'unhealthy'
+        : 'degraded') as 'healthy' | 'degraded' | 'unhealthy' | 'unknown',
+    lastUpdated: new Date().toISOString(),
   }
 
   // For DetailedSystemInfo component - needs ServiceDetail format
@@ -87,15 +93,26 @@ export function HealthDashboard({
   // Convert string summary to expected HealthSummary format
   const healthSummary = {
     totalServices: 3,
-    healthyServices: [status.database, status.auth, status.api].filter(s => s.status === 'healthy').length,
-    degradedServices: [status.database, status.auth, status.api].filter(s => s.status === 'degraded').length,
-    unhealthyServices: [status.database, status.auth, status.api].filter(s => s.status === 'down').length,
-    overallHealth: isHealthy ? 'healthy' as const : (status.database.status === 'down' || status.auth.status === 'down' || status.api.status === 'down') ? 'unhealthy' as const : 'degraded' as const,
+    healthyServices: [status.database, status.auth, status.api].filter(
+      (s) => s.status === 'healthy'
+    ).length,
+    degradedServices: [status.database, status.auth, status.api].filter(
+      (s) => s.status === 'degraded'
+    ).length,
+    unhealthyServices: [status.database, status.auth, status.api].filter((s) => s.status === 'down')
+      .length,
+    overallHealth: isHealthy
+      ? ('healthy' as const)
+      : status.database.status === 'down' ||
+          status.auth.status === 'down' ||
+          status.api.status === 'down'
+        ? ('unhealthy' as const)
+        : ('degraded' as const),
     uptime: {
       hours: 0,
       minutes: 0,
-      seconds: 0
-    }
+      seconds: 0,
+    },
   }
 
   return (

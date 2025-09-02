@@ -21,10 +21,10 @@ export function AuthCallbackHandler({ children }: AuthCallbackHandlerProps) {
       // Try to restore hash if it was preserved during redirects
       restoreUrlHash()
       // Hash restoration attempted
-      
+
       const hash = window.location.hash
       const search = window.location.search
-      
+
       // Skip processing if no auth parameters are present and none were restored
       if (!hash && !search && !hasPreservedHash()) {
         return
@@ -41,12 +41,12 @@ export function AuthCallbackHandler({ children }: AuthCallbackHandlerProps) {
 
       try {
         let authParams = new URLSearchParams()
-        
+
         // Check hash first (most common for Supabase)
         if (hash) {
           authParams = new URLSearchParams(hash.substring(1))
         }
-        
+
         // Fallback to search params
         if (!authParams.toString() && search) {
           authParams = new URLSearchParams(search)
@@ -56,7 +56,7 @@ export function AuthCallbackHandler({ children }: AuthCallbackHandlerProps) {
         const accessToken = authParams.get('access_token')
         const refreshToken = authParams.get('refresh_token')
         const error = authParams.get('error')
-        
+
         // Auth params logged in development builds
 
         if (error) {
@@ -73,7 +73,7 @@ export function AuthCallbackHandler({ children }: AuthCallbackHandlerProps) {
             // Password recovery handling
             // The ResetPasswordPage will handle this
             break
-            
+
           case 'signup':
             // Email confirmation handling
             if (accessToken && refreshToken) {
@@ -81,7 +81,7 @@ export function AuthCallbackHandler({ children }: AuthCallbackHandlerProps) {
                 access_token: accessToken,
                 refresh_token: refreshToken,
               })
-              
+
               if (!sessionError) {
                 // Clean URL and redirect to dashboard
                 window.history.replaceState({}, '', window.location.pathname)
@@ -89,12 +89,12 @@ export function AuthCallbackHandler({ children }: AuthCallbackHandlerProps) {
               }
             }
             break
-            
+
           case 'invite':
             // Team invite handling
             // Handle team invites if applicable
             break
-            
+
           default:
             if (accessToken && refreshToken) {
               // Generic auth token handling
@@ -102,7 +102,7 @@ export function AuthCallbackHandler({ children }: AuthCallbackHandlerProps) {
                 access_token: accessToken,
                 refresh_token: refreshToken,
               })
-              
+
               if (!sessionError) {
                 // Clean URL and redirect to dashboard
                 window.history.replaceState({}, '', window.location.pathname)

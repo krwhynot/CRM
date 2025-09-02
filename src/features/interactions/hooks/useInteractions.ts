@@ -1,11 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
-import type { 
-  InteractionInsert, 
-  InteractionUpdate, 
+import type {
+  InteractionInsert,
+  InteractionUpdate,
   InteractionFilters,
   InteractionWithRelations,
-  OpportunityInsert 
+  OpportunityInsert,
 } from '@/types/entities'
 import { opportunityKeys } from '@/features/opportunities/hooks/useOpportunities'
 
@@ -16,9 +16,11 @@ export const interactionKeys = {
   list: (filters?: InteractionFilters) => [...interactionKeys.lists(), { filters }] as const,
   details: () => [...interactionKeys.all, 'detail'] as const,
   detail: (id: string) => [...interactionKeys.details(), id] as const,
-  byOrganization: (organizationId: string) => [...interactionKeys.all, 'organization', organizationId] as const,
+  byOrganization: (organizationId: string) =>
+    [...interactionKeys.all, 'organization', organizationId] as const,
   byContact: (contactId: string) => [...interactionKeys.all, 'contact', contactId] as const,
-  byOpportunity: (opportunityId: string) => [...interactionKeys.all, 'opportunity', opportunityId] as const,
+  byOpportunity: (opportunityId: string) =>
+    [...interactionKeys.all, 'opportunity', opportunityId] as const,
   recentActivity: () => [...interactionKeys.all, 'recent'] as const,
   followUps: () => [...interactionKeys.all, 'followUps'] as const,
   stats: () => [...interactionKeys.all, 'stats'] as const,
@@ -31,7 +33,8 @@ export function useInteractions(filters?: InteractionFilters) {
     queryFn: async () => {
       let query = supabase
         .from('interactions')
-        .select(`
+        .select(
+          `
           id,
           type,
           interaction_date,
@@ -49,7 +52,8 @@ export function useInteractions(filters?: InteractionFilters) {
           contact:contacts!interactions_contact_id_fkey(id, first_name, last_name, title, organization_id),
           organization:organizations(id, name, type),
           opportunity:opportunities!interactions_opportunity_id_fkey(id, name, stage, organization_id)
-        `)
+        `
+        )
         .is('deleted_at', null)
         .order('interaction_date', { ascending: false })
         .limit(50)
@@ -103,12 +107,14 @@ export function useInteraction(id: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('interactions')
-        .select(`
+        .select(
+          `
           *,
           contact:contacts!interactions_contact_id_fkey(*),
           organization:organizations(*),
           opportunity:opportunities!interactions_opportunity_id_fkey(*)
-        `)
+        `
+        )
         .eq('id', id)
         .is('deleted_at', null)
         .single()
@@ -128,12 +134,14 @@ export function useInteractionsByOrganization(organizationId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('interactions')
-        .select(`
+        .select(
+          `
           *,
           contact:contacts!interactions_contact_id_fkey(*),
           organization:organizations(*),
           opportunity:opportunities!interactions_opportunity_id_fkey(*)
-        `)
+        `
+        )
         .eq('organization_id', organizationId)
         .is('deleted_at', null)
         .order('interaction_date', { ascending: false })
@@ -153,12 +161,14 @@ export function useInteractionsByContact(contactId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('interactions')
-        .select(`
+        .select(
+          `
           *,
           contact:contacts!interactions_contact_id_fkey(*),
           organization:organizations(*),
           opportunity:opportunities!interactions_opportunity_id_fkey(*)
-        `)
+        `
+        )
         .eq('contact_id', contactId)
         .is('deleted_at', null)
         .order('interaction_date', { ascending: false })
@@ -178,12 +188,14 @@ export function useInteractionsByOpportunity(opportunityId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('interactions')
-        .select(`
+        .select(
+          `
           *,
           contact:contacts!interactions_contact_id_fkey(*),
           organization:organizations(*),
           opportunity:opportunities!interactions_opportunity_id_fkey(*)
-        `)
+        `
+        )
         .eq('opportunity_id', opportunityId)
         .is('deleted_at', null)
         .order('interaction_date', { ascending: false })
@@ -203,12 +215,14 @@ export function useRecentActivity(limit: number = 50) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('interactions')
-        .select(`
+        .select(
+          `
           *,
           contact:contacts!interactions_contact_id_fkey(*),
           organization:organizations(*),
           opportunity:opportunities!interactions_opportunity_id_fkey(*)
-        `)
+        `
+        )
         .is('deleted_at', null)
         .order('interaction_date', { ascending: false })
         .limit(limit)
@@ -229,12 +243,14 @@ export function useFollowUpInteractions() {
 
       const { data, error } = await supabase
         .from('interactions')
-        .select(`
+        .select(
+          `
           *,
           contact:contacts!interactions_contact_id_fkey(*),
           organization:organizations(*),
           opportunity:opportunities!interactions_opportunity_id_fkey(*)
-        `)
+        `
+        )
         .eq('follow_up_required', true)
         .lte('follow_up_date', today)
         .is('deleted_at', null)
@@ -261,23 +277,26 @@ export function useInteractionStats() {
 
       const stats = {
         total: data.length,
-        followUpsNeeded: data.filter(i => 
-          i.follow_up_required && 
-          i.follow_up_date && 
-          new Date(i.follow_up_date) <= new Date()
+        followUpsNeeded: data.filter(
+          (i) =>
+            i.follow_up_required && i.follow_up_date && new Date(i.follow_up_date) <= new Date()
         ).length,
-        recentActivity: data.filter(i => 
-          i.created_at && new Date(i.created_at) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+        recentActivity: data.filter(
+          (i) =>
+            i.created_at && new Date(i.created_at) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
         ).length,
-        byType: data.reduce((acc, item) => {
-          acc[item.type] = (acc[item.type] || 0) + 1
-          return acc
-        }, {} as Record<string, number>)
+        byType: data.reduce(
+          (acc, item) => {
+            acc[item.type] = (acc[item.type] || 0) + 1
+            return acc
+          },
+          {} as Record<string, number>
+        ),
       }
 
       return stats
     },
-    staleTime: 5 * 60 * 1000
+    staleTime: 5 * 60 * 1000,
   })
 }
 
@@ -286,16 +305,19 @@ export function useCreateOpportunityFromInteraction() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ 
-      interactionId, 
-      opportunityData 
-    }: { 
+    mutationFn: async ({
+      interactionId,
+      opportunityData,
+    }: {
       interactionId: string
-      opportunityData: OpportunityInsert 
+      opportunityData: OpportunityInsert
     }) => {
       // Get current user ID for RLS policy compliance
-      const { data: { user }, error: authError } = await supabase.auth.getUser()
-      
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser()
+
       if (authError || !user) {
         throw new Error('Authentication required to create opportunity')
       }
@@ -319,11 +341,13 @@ export function useCreateOpportunityFromInteraction() {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: opportunityKeys.lists() })
       if (newOpportunity.founding_interaction_id) {
-        queryClient.invalidateQueries({ queryKey: interactionKeys.detail(newOpportunity.founding_interaction_id) })
+        queryClient.invalidateQueries({
+          queryKey: interactionKeys.detail(newOpportunity.founding_interaction_id),
+        })
       }
       // Invalidate stats as this might affect interaction statistics
       queryClient.invalidateQueries({ queryKey: interactionKeys.stats() })
-    }
+    },
   })
 }
 
@@ -334,8 +358,11 @@ export function useCreateInteraction() {
   return useMutation({
     mutationFn: async (interaction: InteractionInsert) => {
       // Get current user ID for RLS policy compliance
-      const { data: { user }, error: authError } = await supabase.auth.getUser()
-      
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser()
+
       if (authError || !user) {
         throw new Error('Authentication required to create interaction')
       }
@@ -362,18 +389,24 @@ export function useCreateInteraction() {
       queryClient.invalidateQueries({ queryKey: interactionKeys.recentActivity() })
       queryClient.invalidateQueries({ queryKey: interactionKeys.followUps() })
       queryClient.invalidateQueries({ queryKey: interactionKeys.stats() })
-      
+
       // Invalidate related entity interactions
       if (newInteraction.organization_id) {
-        queryClient.invalidateQueries({ queryKey: interactionKeys.byOrganization(newInteraction.organization_id) })
+        queryClient.invalidateQueries({
+          queryKey: interactionKeys.byOrganization(newInteraction.organization_id),
+        })
       }
       if (newInteraction.contact_id) {
-        queryClient.invalidateQueries({ queryKey: interactionKeys.byContact(newInteraction.contact_id) })
+        queryClient.invalidateQueries({
+          queryKey: interactionKeys.byContact(newInteraction.contact_id),
+        })
       }
       if (newInteraction.opportunity_id) {
-        queryClient.invalidateQueries({ queryKey: interactionKeys.byOpportunity(newInteraction.opportunity_id) })
+        queryClient.invalidateQueries({
+          queryKey: interactionKeys.byOpportunity(newInteraction.opportunity_id),
+        })
       }
-      
+
       // Add the new interaction to the cache
       queryClient.setQueryData(interactionKeys.detail(newInteraction.id), newInteraction)
     },
@@ -390,12 +423,14 @@ export function useUpdateInteraction() {
         .from('interactions')
         .update({ ...updates, updated_at: new Date().toISOString() })
         .eq('id', id)
-        .select(`
+        .select(
+          `
           *,
           contact:contacts!interactions_contact_id_fkey(*),
           organization:organizations(*),
           opportunity:opportunities!interactions_opportunity_id_fkey(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -407,18 +442,24 @@ export function useUpdateInteraction() {
       queryClient.invalidateQueries({ queryKey: interactionKeys.recentActivity() })
       queryClient.invalidateQueries({ queryKey: interactionKeys.followUps() })
       queryClient.invalidateQueries({ queryKey: interactionKeys.stats() })
-      
+
       // Invalidate related entity interactions
       if (updatedInteraction.organization_id) {
-        queryClient.invalidateQueries({ queryKey: interactionKeys.byOrganization(updatedInteraction.organization_id) })
+        queryClient.invalidateQueries({
+          queryKey: interactionKeys.byOrganization(updatedInteraction.organization_id),
+        })
       }
       if (updatedInteraction.contact_id) {
-        queryClient.invalidateQueries({ queryKey: interactionKeys.byContact(updatedInteraction.contact_id) })
+        queryClient.invalidateQueries({
+          queryKey: interactionKeys.byContact(updatedInteraction.contact_id),
+        })
       }
       if (updatedInteraction.opportunity_id) {
-        queryClient.invalidateQueries({ queryKey: interactionKeys.byOpportunity(updatedInteraction.opportunity_id) })
+        queryClient.invalidateQueries({
+          queryKey: interactionKeys.byOpportunity(updatedInteraction.opportunity_id),
+        })
       }
-      
+
       // Update the specific interaction in the cache
       queryClient.setQueryData(interactionKeys.detail(updatedInteraction.id), updatedInteraction)
     },
@@ -433,18 +474,20 @@ export function useCompleteFollowUp() {
     mutationFn: async (id: string) => {
       const { data, error } = await supabase
         .from('interactions')
-        .update({ 
+        .update({
           follow_up_required: false,
           follow_up_date: null,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', id)
-        .select(`
+        .select(
+          `
           *,
           contact:contacts!interactions_contact_id_fkey(*),
           organization:organizations(*),
           opportunity:opportunities!interactions_opportunity_id_fkey(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -454,7 +497,7 @@ export function useCompleteFollowUp() {
       // Update follow-up related queries
       queryClient.invalidateQueries({ queryKey: interactionKeys.followUps() })
       queryClient.invalidateQueries({ queryKey: interactionKeys.lists() })
-      
+
       // Update the specific interaction in the cache
       queryClient.setQueryData(interactionKeys.detail(updatedInteraction.id), updatedInteraction)
     },
@@ -469,17 +512,19 @@ export function useDeleteInteraction() {
     mutationFn: async (id: string) => {
       const { data, error } = await supabase
         .from('interactions')
-        .update({ 
+        .update({
           deleted_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', id)
-        .select(`
+        .select(
+          `
           *,
           contact:contacts!interactions_contact_id_fkey(*),
           organization:organizations(*),
           opportunity:opportunities!interactions_opportunity_id_fkey(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -491,18 +536,24 @@ export function useDeleteInteraction() {
       queryClient.invalidateQueries({ queryKey: interactionKeys.recentActivity() })
       queryClient.invalidateQueries({ queryKey: interactionKeys.followUps() })
       queryClient.invalidateQueries({ queryKey: interactionKeys.stats() })
-      
+
       // Invalidate related entity interactions
       if (deletedInteraction.organization_id) {
-        queryClient.invalidateQueries({ queryKey: interactionKeys.byOrganization(deletedInteraction.organization_id) })
+        queryClient.invalidateQueries({
+          queryKey: interactionKeys.byOrganization(deletedInteraction.organization_id),
+        })
       }
       if (deletedInteraction.contact_id) {
-        queryClient.invalidateQueries({ queryKey: interactionKeys.byContact(deletedInteraction.contact_id) })
+        queryClient.invalidateQueries({
+          queryKey: interactionKeys.byContact(deletedInteraction.contact_id),
+        })
       }
       if (deletedInteraction.opportunity_id) {
-        queryClient.invalidateQueries({ queryKey: interactionKeys.byOpportunity(deletedInteraction.opportunity_id) })
+        queryClient.invalidateQueries({
+          queryKey: interactionKeys.byOpportunity(deletedInteraction.opportunity_id),
+        })
       }
-      
+
       // Remove from individual cache
       queryClient.removeQueries({ queryKey: interactionKeys.detail(deletedInteraction.id) })
     },

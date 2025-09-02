@@ -12,10 +12,7 @@ export interface ContactSelectProps extends Omit<EntitySelectProps, 'options'> {
   }>
 }
 
-export const ContactSelect: React.FC<ContactSelectProps> = ({ 
-  contacts, 
-  ...props 
-}) => {
+export const ContactSelect: React.FC<ContactSelectProps> = ({ contacts, ...props }) => {
   const options = transformContacts(contacts)
   return <EntitySelect options={options} {...props} />
 }

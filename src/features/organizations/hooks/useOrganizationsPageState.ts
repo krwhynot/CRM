@@ -9,22 +9,22 @@ export const useOrganizationsPageState = () => {
 
   const openCreateDialog = () => setIsCreateDialogOpen(true)
   const closeCreateDialog = () => setIsCreateDialogOpen(false)
-  
+
   const openEditDialog = (organization: Organization) => {
     setSelectedOrganization(organization)
     setIsEditDialogOpen(true)
   }
-  
+
   const closeEditDialog = () => {
     setIsEditDialogOpen(false)
     setSelectedOrganization(null)
   }
-  
+
   const openDeleteDialog = (organization: Organization) => {
     setSelectedOrganization(organization)
     setIsDeleteDialogOpen(true)
   }
-  
+
   const closeDeleteDialog = () => {
     setIsDeleteDialogOpen(false)
     setSelectedOrganization(null)
@@ -40,6 +40,6 @@ export const useOrganizationsPageState = () => {
     openEditDialog,
     closeEditDialog,
     openDeleteDialog,
-    closeDeleteDialog
+    closeDeleteDialog,
   }
 }

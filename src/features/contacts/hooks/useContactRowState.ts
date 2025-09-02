@@ -6,9 +6,7 @@ interface UseContactRowStateReturn {
   getPrimaryContactInfo: (contact: ContactWithOrganization) => string | null
 }
 
-export const useContactRowState = (
-  contact: ContactWithOrganization
-): UseContactRowStateReturn => {
+export const useContactRowState = (contact: ContactWithOrganization): UseContactRowStateReturn => {
   const getPrimaryContactInfo = (contact: ContactWithOrganization): string | null => {
     // Prioritize phone numbers over email for main display
     if (contact.phone) return contact.phone
@@ -23,6 +21,6 @@ export const useContactRowState = (
 
   return {
     primaryContactInfo,
-    getPrimaryContactInfo
+    getPrimaryContactInfo,
   }
 }

@@ -19,26 +19,27 @@ interface UseActivityRealTimeReturn {
 
 export const useActivityRealTime = ({
   limit,
-  enableRealTime
+  enableRealTime,
 }: UseActivityRealTimeProps): UseActivityRealTimeReturn => {
   const [isRefreshing, setIsRefreshing] = useState(false)
-  
+
   // Fetch recent activities
   const { data: activities, isLoading, error, refetch } = useRecentActivity(limit)
-  
+
   // Real-time subscription for new interactions
   useEffect(() => {
     if (!enableRealTime) return
-    
+
     const channel = supabase
       .channel('activity-feed-updates')
-      .on('postgres_changes', 
-        { 
-          event: '*', 
-          schema: 'public', 
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
           table: 'interactions',
-          filter: 'deleted_at=is.null'
-        }, 
+          filter: 'deleted_at=is.null',
+        },
         () => {
           // Refetch data when interactions are updated
           refetch()
@@ -50,20 +51,20 @@ export const useActivityRealTime = ({
       supabase.removeChannel(channel)
     }
   }, [enableRealTime, refetch])
-  
+
   // Manual refresh function
   const handleRefresh = async () => {
     setIsRefreshing(true)
     await refetch()
     setIsRefreshing(false)
   }
-  
+
   return {
     activities,
     isLoading,
     error,
     refetch,
     isRefreshing,
-    handleRefresh
+    handleRefresh,
   }
 }

@@ -1,7 +1,7 @@
-import * as React from "react"
-import { type VariantProps } from "class-variance-authority"
-import { cn } from "@/lib/utils"
-import { statusIndicatorVariants } from "./status-indicator.variants"
+import * as React from 'react'
+import { type VariantProps } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
+import { statusIndicatorVariants } from './status-indicator.variants'
 
 export interface StatusIndicatorProps
   extends React.HTMLAttributes<HTMLSpanElement>,
@@ -23,6 +23,6 @@ const StatusIndicator = React.forwardRef<HTMLSpanElement, StatusIndicatorProps>(
     )
   }
 )
-StatusIndicator.displayName = "StatusIndicator"
+StatusIndicator.displayName = 'StatusIndicator'
 
 export { StatusIndicator }

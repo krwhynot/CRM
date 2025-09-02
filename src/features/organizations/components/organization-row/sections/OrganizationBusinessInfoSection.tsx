@@ -6,12 +6,10 @@ interface OrganizationBusinessInfoSectionProps {
   organization: Organization
 }
 
-const EmptyCell = () => (
-  <span className="italic text-gray-400">Not provided</span>
-)
+const EmptyCell = () => <span className="italic text-gray-400">Not provided</span>
 
 export const OrganizationBusinessInfoSection: React.FC<OrganizationBusinessInfoSectionProps> = ({
-  organization
+  organization,
 }) => {
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -20,9 +18,7 @@ export const OrganizationBusinessInfoSection: React.FC<OrganizationBusinessInfoS
           <Briefcase className="size-4" />
           Business Segment
         </div>
-        <div className="pl-6 text-sm text-gray-600">
-          {organization.segment || <EmptyCell />}
-        </div>
+        <div className="pl-6 text-sm text-gray-600">{organization.segment || <EmptyCell />}</div>
       </div>
 
       <div className="space-y-2">

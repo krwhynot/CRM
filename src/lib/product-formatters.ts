@@ -2,7 +2,7 @@ export const formatPrice = (price: number | null): string => {
   if (!price || price <= 0) return 'N/A'
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD'
+    currency: 'USD',
   }).format(price)
 }
 

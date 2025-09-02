@@ -12,16 +12,15 @@ interface PrincipalCardProps {
   className?: string
 }
 
-
 /**
  * PrincipalCard Component
- * 
+ *
  * Displays comprehensive information about a principal organization including:
  * - Organization details with priority-based coloring
  * - Real-time opportunity and interaction counts
  * - Last activity date
  * - Total estimated value and active opportunities
- * 
+ *
  * Features:
  * - Mobile-responsive design
  * - Hover effects for interactivity
@@ -36,7 +35,9 @@ export function PrincipalCard({ principal, className }: PrincipalCardProps) {
   // Handle error state
   if (hasError) {
     return (
-      <Card className={`border-destructive/50 transition-shadow hover:shadow-md ${className || ''}`}>
+      <Card
+        className={`border-destructive/50 transition-shadow hover:shadow-md ${className || ''}`}
+      >
         <PrincipalCardHeader
           principal={principal}
           priority={priority}
@@ -56,15 +57,12 @@ export function PrincipalCard({ principal, className }: PrincipalCardProps) {
         priority={priority}
         priorityColor={priorityColor}
       />
-      
+
       <CardContent className="space-y-4">
-        <PrincipalMetricsGrid
-          metrics={metrics}
-          isLoading={isLoading}
-        />
-        
+        <PrincipalMetricsGrid metrics={metrics} isLoading={isLoading} />
+
         <PrincipalStatusBadges principal={principal} />
-        
+
         <PrincipalContactInfo principal={principal} />
       </CardContent>
     </Card>

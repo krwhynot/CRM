@@ -13,7 +13,7 @@ interface WizardStepBasicInfoProps {
 export const WizardStepBasicInfo: React.FC<WizardStepBasicInfoProps> = ({
   register,
   errors,
-  loading = false
+  loading = false,
 }) => {
   return (
     <div className="space-y-4">
@@ -27,11 +27,9 @@ export const WizardStepBasicInfo: React.FC<WizardStepBasicInfoProps> = ({
           placeholder="Enter opportunity name"
           disabled={loading}
         />
-        {errors.name && (
-          <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-        )}
+        {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
       </div>
-      
+
       <div>
         <label htmlFor="description" className="text-sm font-medium">
           Description

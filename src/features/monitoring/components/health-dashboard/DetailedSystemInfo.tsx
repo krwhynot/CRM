@@ -55,14 +55,14 @@ export const DetailedSystemInfo: React.FC<DetailedSystemInfoProps> = ({ status }
             service={status.database}
             borderColor="border-primary"
           />
-          
+
           <ServiceDetailSection
             icon={<Shield className="size-4" />}
             title="Authentication Service"
             service={status.auth}
             borderColor="border-success"
           />
-          
+
           <ServiceDetailSection
             icon={<Zap className="size-4" />}
             title="API Service"

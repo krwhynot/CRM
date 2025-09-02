@@ -30,7 +30,7 @@ export const SystemStatusOverview: React.FC<SystemStatusOverviewProps> = ({
             name="Database"
             status={{
               status: status.database.status,
-              responseTime: status.database.responseTime || 0
+              responseTime: status.database.responseTime || 0,
             }}
           />
 
@@ -39,7 +39,7 @@ export const SystemStatusOverview: React.FC<SystemStatusOverviewProps> = ({
             name="Authentication"
             status={{
               status: status.auth.status,
-              responseTime: status.auth.responseTime || 0
+              responseTime: status.auth.responseTime || 0,
             }}
           />
 
@@ -48,7 +48,7 @@ export const SystemStatusOverview: React.FC<SystemStatusOverviewProps> = ({
             name="API Endpoints"
             status={{
               status: status.api.status,
-              responseTime: status.api.responseTime || 0
+              responseTime: status.api.responseTime || 0,
             }}
           />
         </div>

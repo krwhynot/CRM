@@ -7,25 +7,25 @@ export const DB_STAGES = [
   'Feedback Logged',
   'Demo Scheduled',
   'Closed - Won',
-  'Closed - Lost'
+  'Closed - Lost',
 ] as const
 
 export const DEFAULT_OPPORTUNITY_STAGE: OpportunityStageDB = 'New Lead'
 
 export const CODE_STAGES = [
   'lead',
-  'qualified', 
+  'qualified',
   'proposal',
   'negotiation',
   'closed_won',
-  'closed_lost'
+  'closed_lost',
 ] as const
 
 // Database enum type - the database stores display values directly
-export type OpportunityStageDB = typeof DB_STAGES[number]
+export type OpportunityStageDB = (typeof DB_STAGES)[number]
 
 // Application/UI coded values for internal logic (when needed)
-export type OpportunityStageCode = typeof CODE_STAGES[number]
+export type OpportunityStageCode = (typeof CODE_STAGES)[number]
 
 // The database stores display values, so we map database -> application codes
 export const OPPORTUNITY_STAGE_DB_TO_CODE: Record<OpportunityStageDB, OpportunityStageCode> = {
@@ -36,17 +36,17 @@ export const OPPORTUNITY_STAGE_DB_TO_CODE: Record<OpportunityStageDB, Opportunit
   'Feedback Logged': 'negotiation',
   'Demo Scheduled': 'negotiation', // Both map to negotiation stage
   'Closed - Won': 'closed_won',
-  'Closed - Lost': 'closed_lost'
+  'Closed - Lost': 'closed_lost',
 }
 
 // Reverse mapping for code to preferred database display value
 export const OPPORTUNITY_STAGE_CODE_TO_DB: Record<OpportunityStageCode, OpportunityStageDB> = {
-  'lead': 'New Lead',
-  'qualified': 'Initial Outreach',
-  'proposal': 'Sample/Visit Offered',
-  'negotiation': 'Demo Scheduled', 
-  'closed_won': 'Closed - Won',
-  'closed_lost': 'Closed - Lost'
+  lead: 'New Lead',
+  qualified: 'Initial Outreach',
+  proposal: 'Sample/Visit Offered',
+  negotiation: 'Demo Scheduled',
+  closed_won: 'Closed - Won',
+  closed_lost: 'Closed - Lost',
 }
 
 // Utility functions for conversion
@@ -77,18 +77,18 @@ export function createDbStageRecord<T>(defaultValue: T): Record<OpportunityStage
     'Feedback Logged': defaultValue,
     'Demo Scheduled': defaultValue,
     'Closed - Won': defaultValue,
-    'Closed - Lost': defaultValue
+    'Closed - Lost': defaultValue,
   }
 }
 
 export function createCodeStageRecord<T>(defaultValue: T): Record<OpportunityStageCode, T> {
   return {
-    'lead': defaultValue,
-    'qualified': defaultValue,
-    'proposal': defaultValue,
-    'negotiation': defaultValue,
-    'closed_won': defaultValue,
-    'closed_lost': defaultValue
+    lead: defaultValue,
+    qualified: defaultValue,
+    proposal: defaultValue,
+    negotiation: defaultValue,
+    closed_won: defaultValue,
+    closed_lost: defaultValue,
   }
 }
 
@@ -97,14 +97,14 @@ export function convertDbStageRecordToCode<T>(
   dbRecord: Record<OpportunityStageDB, T>
 ): Record<OpportunityStageCode, T> {
   const codeRecord = createCodeStageRecord<T>(dbRecord['New Lead']) // Use 'New Lead' as default
-  
+
   Object.entries(OPPORTUNITY_STAGE_DB_TO_CODE).forEach(([dbStage, codeStage]) => {
     if (dbRecord[dbStage as OpportunityStageDB] !== undefined) {
       // For stages that map to the same code, take the first occurrence or sum/aggregate as needed
       codeRecord[codeStage] = dbRecord[dbStage as OpportunityStageDB]
     }
   })
-  
+
   return codeRecord
 }
 
@@ -112,13 +112,13 @@ export function convertCodeStageRecordToDb<T>(
   codeRecord: Record<OpportunityStageCode, T>
 ): Record<OpportunityStageDB, T> {
   const dbRecord = createDbStageRecord<T>(codeRecord['lead']) // Use 'lead' as default
-  
+
   Object.entries(OPPORTUNITY_STAGE_CODE_TO_DB).forEach(([codeStage, dbStage]) => {
     if (codeRecord[codeStage as OpportunityStageCode] !== undefined) {
       dbRecord[dbStage] = codeRecord[codeStage as OpportunityStageCode]
     }
   })
-  
+
   return dbRecord
 }
 

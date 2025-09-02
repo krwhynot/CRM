@@ -116,7 +116,10 @@ export function useContactsByOrganization(organizationId: string) {
         .order('last_name')
         .order('first_name')
 
-      return handleArrayResult(result, 'fetch contacts by organization') as ContactWithOrganization[]
+      return handleArrayResult(
+        result,
+        'fetch contacts by organization'
+      ) as ContactWithOrganization[]
     },
     enabled: !!organizationId,
     staleTime: 5 * 60 * 1000,

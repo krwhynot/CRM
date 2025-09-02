@@ -10,13 +10,13 @@ interface InteractionTimelineDotProps {
 export const InteractionTimelineDot: React.FC<InteractionTimelineDotProps> = ({
   type,
   getInteractionIcon,
-  getInteractionTypeColor
+  getInteractionTypeColor,
 }) => {
   const colorClass = getInteractionTypeColor(type)
-  
+
   return (
     <div className="relative z-10 shrink-0">
-      <div 
+      <div
         className={cn(
           'w-8 h-8 rounded-full border-2 bg-background flex items-center justify-center',
           'shadow-sm group-hover:shadow-md transition-shadow',

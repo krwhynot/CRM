@@ -14,17 +14,18 @@ interface ExportActionProps {
 export const ExportAction: React.FC<ExportActionProps> = ({
   exportOptions,
   exportProgress,
-  onExecute
+  onExecute,
 }) => {
-  const shouldShow = !exportProgress.isExporting && !exportProgress.completed && !exportProgress.error
+  const shouldShow =
+    !exportProgress.isExporting && !exportProgress.completed && !exportProgress.error
 
   if (!shouldShow) return null
 
   return (
     <Card>
       <CardContent className="pt-6">
-        <Button 
-          onClick={onExecute} 
+        <Button
+          onClick={onExecute}
           className="w-full"
           disabled={exportOptions.selectedFields.length === 0}
         >

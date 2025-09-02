@@ -387,9 +387,15 @@ export function TemplateMatchingImport() {
                 break
               case 'type': {
                 // Validate organization type enum values
-                const validTypes = ['customer', 'principal', 'distributor', 'prospect', 'vendor'] as const
-                transformed.type = validTypes.includes(value as typeof validTypes[number]) 
-                  ? value as 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor'
+                const validTypes = [
+                  'customer',
+                  'principal',
+                  'distributor',
+                  'prospect',
+                  'vendor',
+                ] as const
+                transformed.type = validTypes.includes(value as (typeof validTypes)[number])
+                  ? (value as 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor')
                   : 'customer' // Default fallback
                 break
               }
@@ -814,7 +820,8 @@ export function TemplateMatchingImport() {
                     <div className="mt-2 max-h-32 overflow-y-auto rounded border bg-destructive/10 p-3">
                       {importState.importResult.errors.map((err, idx) => (
                         <div key={idx} className="mb-1 text-xs text-destructive">
-                          <span className="font-medium">Row {err.row}:</span> {'error' in err ? err.error : err.message}
+                          <span className="font-medium">Row {err.row}:</span>{' '}
+                          {'error' in err ? err.error : err.message}
                         </div>
                       ))}
                     </div>

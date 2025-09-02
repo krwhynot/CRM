@@ -6,11 +6,12 @@ export const useEntitySelectSearch = (options: EntityOption[]) => {
 
   const filteredOptions = useMemo(() => {
     if (!searchTerm.trim()) return options
-    
+
     const searchLower = searchTerm.toLowerCase()
-    return options.filter(option => 
-      option.name.toLowerCase().includes(searchLower) ||
-      option.description?.toLowerCase().includes(searchLower)
+    return options.filter(
+      (option) =>
+        option.name.toLowerCase().includes(searchLower) ||
+        option.description?.toLowerCase().includes(searchLower)
     )
   }, [options, searchTerm])
 
@@ -22,6 +23,6 @@ export const useEntitySelectSearch = (options: EntityOption[]) => {
     searchTerm,
     setSearchTerm,
     filteredOptions,
-    clearSearch
+    clearSearch,
   }
 }

@@ -48,9 +48,9 @@ export const ProductDialogs: React.FC<ProductDialogsProps> = ({
         size="xl"
         scroll="content"
       >
-        <ProductForm 
-          onSubmit={(data: ProductFormData) => onCreateSubmit(data as ProductInsert)} 
-          loading={isCreating} 
+        <ProductForm
+          onSubmit={(data: ProductFormData) => onCreateSubmit(data as ProductInsert)}
+          loading={isCreating}
         />
       </StandardDialog>
 

@@ -18,11 +18,13 @@ export function useNavigationCounts() {
       // Get organizations without contacts
       const { data: orgsWithoutContacts, error: orgsError } = await supabase
         .from('organizations')
-        .select(`
+        .select(
+          `
           id,
           name,
           contacts!inner(id)
-        `)
+        `
+        )
         .is('deleted_at', null)
         .is('contacts.deleted_at', null)
 
@@ -40,12 +42,12 @@ export function useNavigationCounts() {
       if (allOrgsError) throw allOrgsError
 
       // Calculate organizations without contacts
-      const orgsWithContacts = new Set(orgsWithoutContacts?.map(org => org.id) || [])
+      const orgsWithContacts = new Set(orgsWithoutContacts?.map((org) => org.id) || [])
       const orgsWithoutContactsCount = allOrgs.length - orgsWithContacts.size
 
       return {
         principalsCount: principals?.length || 0,
-        organizationsWithoutContactsCount: orgsWithoutContactsCount
+        organizationsWithoutContactsCount: orgsWithoutContactsCount,
       }
     },
     staleTime: 2 * 60 * 1000, // 2 minutes

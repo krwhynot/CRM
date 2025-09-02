@@ -24,7 +24,7 @@ const STEPS = [
   { id: 2, title: 'Organization', icon: Building, description: 'Select organization and contact' },
   { id: 3, title: 'Details', icon: Users, description: 'Stage, priority, and description' },
   { id: 4, title: 'Financial', icon: DollarSign, description: 'Value and probability' },
-  { id: 5, title: 'Timeline', icon: Calendar, description: 'Dates and next steps' }
+  { id: 5, title: 'Timeline', icon: Calendar, description: 'Dates and next steps' },
 ] as const
 
 export function OpportunityWizard({
@@ -32,7 +32,7 @@ export function OpportunityWizard({
   onCancel,
   loading = false,
   preselectedOrganization,
-  preselectedContact
+  preselectedContact,
 }: OpportunityWizardProps) {
   // Use extracted hooks for state management
   const wizard = useOpportunityWizard(STEPS.length, 1)
@@ -44,11 +44,7 @@ export function OpportunityWizard({
     switch (wizard.currentStep) {
       case 1:
         return (
-          <WizardStepBasicInfo
-            register={form.register}
-            errors={form.errors}
-            loading={loading}
-          />
+          <WizardStepBasicInfo register={form.register} errors={form.errors} loading={loading} />
         )
 
       case 2:
@@ -79,11 +75,7 @@ export function OpportunityWizard({
 
       case 4:
         return (
-          <WizardStepFinancial
-            register={form.register}
-            errors={form.errors}
-            loading={loading}
-          />
+          <WizardStepFinancial register={form.register} errors={form.errors} loading={loading} />
         )
 
       case 5:
@@ -109,7 +101,9 @@ export function OpportunityWizard({
         <div className="mt-4">
           <Progress value={progress} className="h-2" />
           <div className="mt-2 flex justify-between text-sm text-gray-500">
-            <span>Step {wizard.currentStep} of {STEPS.length}</span>
+            <span>
+              Step {wizard.currentStep} of {STEPS.length}
+            </span>
             <span>{Math.round(progress)}% Complete</span>
           </div>
         </div>
@@ -132,17 +126,17 @@ export function OpportunityWizard({
         />
 
         {/* Step Content */}
-        <form onSubmit={form.handleSubmit((data: OpportunityFormData) => {
-          // Filter out undefined values from principals array
-          const cleanedData = {
-            ...data,
-            principals: data.principals.filter((id): id is string => id !== undefined)
-          }
-          onSubmit(cleanedData)
-        })}>
-          <div className="mb-6 min-h-72">
-            {renderStepContent()}
-          </div>
+        <form
+          onSubmit={form.handleSubmit((data: OpportunityFormData) => {
+            // Filter out undefined values from principals array
+            const cleanedData = {
+              ...data,
+              principals: data.principals.filter((id): id is string => id !== undefined),
+            }
+            onSubmit(cleanedData)
+          })}
+        >
+          <div className="mb-6 min-h-72">{renderStepContent()}</div>
 
           {/* Navigation Buttons */}
           <div className="flex justify-between">
@@ -168,19 +162,21 @@ export function OpportunityWizard({
               >
                 Cancel
               </button>
-              
+
               {wizard.currentStep < STEPS.length ? (
                 <button
                   type="button"
                   className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
-                  onClick={() => wizard.handleNext(() => form.getStepValidation(wizard.currentStep))}
+                  onClick={() =>
+                    wizard.handleNext(() => form.getStepValidation(wizard.currentStep))
+                  }
                   disabled={loading}
                 >
                   Next
                 </button>
               ) : (
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
                   disabled={loading}
                 >

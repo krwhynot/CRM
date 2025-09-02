@@ -1,7 +1,13 @@
 import React from 'react'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import type { UseFormRegister, UseFormSetValue, FieldErrors } from 'react-hook-form'
 import type { OpportunityFormData, OpportunityContext } from '@/types/opportunity.types'
 
@@ -16,11 +22,11 @@ interface WizardStepTimelineProps {
 const OPPORTUNITY_CONTEXTS = [
   'Site Visit',
   'Food Show',
-  'Product Interest', 
+  'Product Interest',
   'Follow-up',
   'Demo Request',
   'Sampling',
-  'Custom'
+  'Custom',
 ] as const
 
 export const WizardStepTimeline: React.FC<WizardStepTimelineProps> = ({
@@ -28,7 +34,7 @@ export const WizardStepTimeline: React.FC<WizardStepTimelineProps> = ({
   setValue,
   opportunityContextValue,
   errors,
-  loading = false
+  loading = false,
 }) => {
   return (
     <div className="space-y-4">
@@ -51,8 +57,8 @@ export const WizardStepTimeline: React.FC<WizardStepTimelineProps> = ({
         <label htmlFor="opportunity_context" className="text-sm font-medium">
           Opportunity Context
         </label>
-        <Select 
-          value={opportunityContextValue || undefined} 
+        <Select
+          value={opportunityContextValue || undefined}
           onValueChange={(value: OpportunityContext) => setValue('opportunity_context', value)}
           disabled={loading}
         >
@@ -83,9 +89,7 @@ export const WizardStepTimeline: React.FC<WizardStepTimelineProps> = ({
           disabled={loading}
           rows={4}
         />
-        {errors.notes && (
-          <p className="mt-1 text-sm text-red-600">{errors.notes.message}</p>
-        )}
+        {errors.notes && <p className="mt-1 text-sm text-red-600">{errors.notes.message}</p>}
       </div>
     </div>
   )

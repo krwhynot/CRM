@@ -8,9 +8,7 @@ interface UseProductsDisplayReturn {
   collapseAll: () => void
 }
 
-export const useProductsDisplay = (
-  productIds: string[] = []
-): UseProductsDisplayReturn => {
+export const useProductsDisplay = (productIds: string[] = []): UseProductsDisplayReturn => {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
 
   const toggleRowExpansion = (productId: string) => {
@@ -40,6 +38,6 @@ export const useProductsDisplay = (
     toggleRowExpansion,
     isRowExpanded,
     expandAll,
-    collapseAll
+    collapseAll,
   }
 }

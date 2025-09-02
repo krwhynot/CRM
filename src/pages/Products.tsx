@@ -8,7 +8,7 @@ import { ProductManagementTemplate } from '@/components/templates/EntityManageme
 
 function ProductsPage() {
   const { data: products = [], isLoading, isError, error, refetch } = useProducts()
-  
+
   const {
     isCreateDialogOpen,
     isEditDialogOpen,
@@ -19,52 +19,42 @@ function ProductsPage() {
     openEditDialog,
     closeEditDialog,
     openDeleteDialog,
-    closeDeleteDialog
+    closeDeleteDialog,
   } = useProductsPageState()
-  
-  const {
-    handleCreate,
-    handleUpdate,
-    handleDelete,
-    isCreating,
-    isUpdating,
-    isDeleting
-  } = useProductsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
 
+  const { handleCreate, handleUpdate, handleDelete, isCreating, isUpdating, isDeleting } =
+    useProductsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
 
   return (
     <ProductsErrorBoundary>
-      <ProductManagementTemplate
-        entityCount={products.length}
-        onAddClick={openCreateDialog}
-      >
-      <ProductsDataDisplay
-        isLoading={isLoading}
-        isError={isError}
-        error={error}
-        products={products}
-        onEdit={openEditDialog}
-        onDelete={openDeleteDialog}
-        onRefresh={refetch}
-      />
+      <ProductManagementTemplate entityCount={products.length} onAddClick={openCreateDialog}>
+        <ProductsDataDisplay
+          isLoading={isLoading}
+          isError={isError}
+          error={error}
+          products={products}
+          onEdit={openEditDialog}
+          onDelete={openDeleteDialog}
+          onRefresh={refetch}
+        />
 
-      <ProductDialogs
-        isCreateDialogOpen={isCreateDialogOpen}
-        isEditDialogOpen={isEditDialogOpen}
-        isDeleteDialogOpen={isDeleteDialogOpen}
-        selectedProduct={selectedProduct}
-        onCreateSubmit={handleCreate}
-        onEditSubmit={(data) => selectedProduct && handleUpdate(selectedProduct, data)}
-        onDeleteConfirm={(product) => handleDelete(product)}
-        onCreateDialogChange={closeCreateDialog}
-        onEditDialogChange={closeEditDialog}
-        onDeleteDialogChange={closeDeleteDialog}
-        onDeleteCancel={closeDeleteDialog}
-        isCreating={isCreating}
-        isUpdating={isUpdating}
-        isDeleting={isDeleting}
-      />
-    </ProductManagementTemplate>
+        <ProductDialogs
+          isCreateDialogOpen={isCreateDialogOpen}
+          isEditDialogOpen={isEditDialogOpen}
+          isDeleteDialogOpen={isDeleteDialogOpen}
+          selectedProduct={selectedProduct}
+          onCreateSubmit={handleCreate}
+          onEditSubmit={(data) => selectedProduct && handleUpdate(selectedProduct, data)}
+          onDeleteConfirm={(product) => handleDelete(product)}
+          onCreateDialogChange={closeCreateDialog}
+          onEditDialogChange={closeEditDialog}
+          onDeleteDialogChange={closeDeleteDialog}
+          onDeleteCancel={closeDeleteDialog}
+          isCreating={isCreating}
+          isUpdating={isUpdating}
+          isDeleting={isDeleting}
+        />
+      </ProductManagementTemplate>
     </ProductsErrorBoundary>
   )
 }

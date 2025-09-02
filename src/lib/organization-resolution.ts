@@ -23,7 +23,7 @@ export interface OrganizationResolutionResult {
  * Returns null if not found
  */
 export async function findExistingOrganization(
-  name: string, 
+  name: string,
   type: OrganizationType
 ): Promise<{ id: string; name: string; type: OrganizationType } | null> {
   try {
@@ -36,7 +36,8 @@ export async function findExistingOrganization(
       .limit(1)
       .single()
 
-    if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found
+    if (error && error.code !== 'PGRST116') {
+      // PGRST116 = no rows found
       throw error
     }
 
@@ -61,9 +62,11 @@ export async function createNewOrganization(
     }
 
     // Derive organization flags from type
-    const orgType = organizationData.type as 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor' || 'customer'
+    const orgType =
+      (organizationData.type as 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor') ||
+      'customer'
     const derivedFlags = deriveOrganizationFlags(orgType)
-    
+
     // Prepare organization data with audit fields
     const fullOrganizationData = {
       ...organizationData,
@@ -105,13 +108,13 @@ export async function resolveOrganization(
 ): Promise<OrganizationResolutionResult> {
   // First, try to find existing organization
   const existing = await findExistingOrganization(name, type)
-  
+
   if (existing) {
     return {
       id: existing.id,
       name: existing.name,
       type: existing.type,
-      isNew: false
+      isNew: false,
     }
   }
 
@@ -119,14 +122,14 @@ export async function resolveOrganization(
   const newOrg = await createNewOrganization({
     name: name.trim(),
     type: type as 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor',
-    ...additionalData
+    ...additionalData,
   })
 
   return {
     id: newOrg.id,
     name: newOrg.name,
     type: newOrg.type,
-    isNew: true
+    isNew: true,
   }
 }
 
@@ -137,11 +140,11 @@ export async function resolveOrganizations(
   organizations: Array<{ name: string; type: OrganizationType; data?: Partial<OrganizationInsert> }>
 ): Promise<OrganizationResolutionResult[]> {
   const results: OrganizationResolutionResult[] = []
-  
+
   for (const org of organizations) {
     const result = await resolveOrganization(org.name, org.type, org.data)
     results.push(result)
   }
-  
+
   return results
 }

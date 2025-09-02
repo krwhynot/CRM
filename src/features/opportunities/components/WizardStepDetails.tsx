@@ -1,7 +1,13 @@
 import React from 'react'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import type { UseFormRegister, UseFormSetValue, FieldErrors } from 'react-hook-form'
 import type { OpportunityFormData } from '@/types/opportunity.types'
 
@@ -15,13 +21,13 @@ interface WizardStepDetailsProps {
 
 const OPPORTUNITY_STAGES = [
   'New Lead',
-  'Initial Outreach', 
+  'Initial Outreach',
   'Sample/Visit Offered',
   'Awaiting Response',
   'Feedback Logged',
   'Demo Scheduled',
   'Closed - Won',
-  'Closed - Lost'
+  'Closed - Lost',
 ] as const
 
 export const WizardStepDetails: React.FC<WizardStepDetailsProps> = ({
@@ -29,7 +35,7 @@ export const WizardStepDetails: React.FC<WizardStepDetailsProps> = ({
   setValue,
   stageValue,
   errors,
-  loading = false
+  loading = false,
 }) => {
   return (
     <div className="space-y-4">
@@ -38,8 +44,8 @@ export const WizardStepDetails: React.FC<WizardStepDetailsProps> = ({
           <label htmlFor="stage" className="text-sm font-medium">
             Stage *
           </label>
-          <Select 
-            value={stageValue} 
+          <Select
+            value={stageValue}
             onValueChange={(value: string) => {
               setValue('stage', value as OpportunityFormData['stage'])
             }}
@@ -56,9 +62,7 @@ export const WizardStepDetails: React.FC<WizardStepDetailsProps> = ({
               ))}
             </SelectContent>
           </Select>
-          {errors.stage && (
-            <p className="mt-1 text-sm text-red-600">{errors.stage.message}</p>
-          )}
+          {errors.stage && <p className="mt-1 text-sm text-red-600">{errors.stage.message}</p>}
         </div>
 
         <div>

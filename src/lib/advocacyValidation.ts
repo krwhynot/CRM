@@ -1,6 +1,6 @@
 /**
  * Advocacy Validation Library - Business Logic Enforcement
- * 
+ *
  * Comprehensive validation rules for contact-to-principal advocacy relationships
  * ensuring data integrity and business rule compliance.
  */
@@ -11,7 +11,7 @@ import type {
   ContactPreferredPrincipalInsert,
   ContactPreferredPrincipalUpdate,
   PurchaseInfluenceLevel,
-  DecisionAuthorityRole
+  DecisionAuthorityRole,
 } from '@/types/entities'
 
 // Validation result interface
@@ -27,25 +27,25 @@ export const ADVOCACY_BUSINESS_RULES = {
   MIN_ADVOCACY_STRENGTH: 1,
   MAX_ADVOCACY_STRENGTH: 10,
   VALID_RELATIONSHIP_TYPES: ['professional', 'personal', 'historical', 'competitive'] as const,
-  
+
   // Advocacy strength recommendations based on contact authority
   STRENGTH_RECOMMENDATIONS: {
     'Decision Maker': { min: 6, max: 10, default: 8 },
-    'Influencer': { min: 4, max: 9, default: 6 },
+    Influencer: { min: 4, max: 9, default: 6 },
     'End User': { min: 1, max: 7, default: 4 },
-    'Gatekeeper': { min: 2, max: 8, default: 5 }
+    Gatekeeper: { min: 2, max: 8, default: 5 },
   },
 
   // Purchase influence impact on advocacy effectiveness
   INFLUENCE_MULTIPLIERS: {
-    'High': 1.0,
-    'Medium': 0.8,
-    'Low': 0.6,
-    'Unknown': 0.5
-  }
+    High: 1.0,
+    Medium: 0.8,
+    Low: 0.6,
+    Unknown: 0.5,
+  },
 } as const
 
-export type RelationshipType = typeof ADVOCACY_BUSINESS_RULES.VALID_RELATIONSHIP_TYPES[number]
+export type RelationshipType = (typeof ADVOCACY_BUSINESS_RULES.VALID_RELATIONSHIP_TYPES)[number]
 
 /**
  * Validates advocacy relationship creation data
@@ -70,16 +70,26 @@ export function validateAdvocacyCreation(
 
   // Advocacy strength validation
   if (data.advocacy_strength !== undefined && data.advocacy_strength !== null) {
-    if (data.advocacy_strength! < ADVOCACY_BUSINESS_RULES.MIN_ADVOCACY_STRENGTH || 
-        data.advocacy_strength! > ADVOCACY_BUSINESS_RULES.MAX_ADVOCACY_STRENGTH) {
-      errors.push(`Advocacy strength must be between ${ADVOCACY_BUSINESS_RULES.MIN_ADVOCACY_STRENGTH} and ${ADVOCACY_BUSINESS_RULES.MAX_ADVOCACY_STRENGTH}`)
+    if (
+      data.advocacy_strength! < ADVOCACY_BUSINESS_RULES.MIN_ADVOCACY_STRENGTH ||
+      data.advocacy_strength! > ADVOCACY_BUSINESS_RULES.MAX_ADVOCACY_STRENGTH
+    ) {
+      errors.push(
+        `Advocacy strength must be between ${ADVOCACY_BUSINESS_RULES.MIN_ADVOCACY_STRENGTH} and ${ADVOCACY_BUSINESS_RULES.MAX_ADVOCACY_STRENGTH}`
+      )
     }
   }
 
   // Relationship type validation
-  if (data.relationship_type && 
-      !ADVOCACY_BUSINESS_RULES.VALID_RELATIONSHIP_TYPES.includes(data.relationship_type as RelationshipType)) {
-    errors.push(`Invalid relationship type. Must be one of: ${ADVOCACY_BUSINESS_RULES.VALID_RELATIONSHIP_TYPES.join(', ')}`)
+  if (
+    data.relationship_type &&
+    !ADVOCACY_BUSINESS_RULES.VALID_RELATIONSHIP_TYPES.includes(
+      data.relationship_type as RelationshipType
+    )
+  ) {
+    errors.push(
+      `Invalid relationship type. Must be one of: ${ADVOCACY_BUSINESS_RULES.VALID_RELATIONSHIP_TYPES.join(', ')}`
+    )
   }
 
   // Business logic validation with context
@@ -90,38 +100,57 @@ export function validateAdvocacyCreation(
     }
 
     // Check maximum relationships per contact
-    if (existingRelationships !== undefined && 
-        existingRelationships >= ADVOCACY_BUSINESS_RULES.MAX_PRINCIPALS_PER_CONTACT) {
-      errors.push(`Contact cannot have more than ${ADVOCACY_BUSINESS_RULES.MAX_PRINCIPALS_PER_CONTACT} principal relationships`)
+    if (
+      existingRelationships !== undefined &&
+      existingRelationships >= ADVOCACY_BUSINESS_RULES.MAX_PRINCIPALS_PER_CONTACT
+    ) {
+      errors.push(
+        `Contact cannot have more than ${ADVOCACY_BUSINESS_RULES.MAX_PRINCIPALS_PER_CONTACT} principal relationships`
+      )
     }
 
     // Validate advocacy strength against contact's decision authority
     if (data.advocacy_strength && contact.decision_authority) {
-      const recommendations = ADVOCACY_BUSINESS_RULES.STRENGTH_RECOMMENDATIONS[contact.decision_authority as DecisionAuthorityRole]
-      
+      const recommendations =
+        ADVOCACY_BUSINESS_RULES.STRENGTH_RECOMMENDATIONS[
+          contact.decision_authority as DecisionAuthorityRole
+        ]
+
       if (recommendations) {
         if (data.advocacy_strength < recommendations.min) {
-          warnings.push(`Advocacy strength seems low for a ${contact.decision_authority}. Consider ${recommendations.min}+ for better effectiveness.`)
+          warnings.push(
+            `Advocacy strength seems low for a ${contact.decision_authority}. Consider ${recommendations.min}+ for better effectiveness.`
+          )
         }
-        
+
         if (data.advocacy_strength > recommendations.max) {
-          warnings.push(`Advocacy strength seems high for a ${contact.decision_authority}. Consider ${recommendations.max} or below.`)
+          warnings.push(
+            `Advocacy strength seems high for a ${contact.decision_authority}. Consider ${recommendations.max} or below.`
+          )
         }
       }
     }
 
     // Check for potential conflicts
     if (data.relationship_type === 'competitive') {
-      warnings.push('Competitive relationship detected. Ensure this is intentional and properly documented.')
+      warnings.push(
+        'Competitive relationship detected. Ensure this is intentional and properly documented.'
+      )
     }
 
     // Purchase influence considerations
-    if (contact.purchase_influence === 'Low' && data.advocacy_strength && data.advocacy_strength > 6) {
+    if (
+      contact.purchase_influence === 'Low' &&
+      data.advocacy_strength &&
+      data.advocacy_strength > 6
+    ) {
       warnings.push('High advocacy strength with low purchase influence may have limited impact.')
     }
 
     if (contact.purchase_influence === 'Unknown') {
-      warnings.push('Contact purchase influence is unknown. Consider updating contact information for better advocacy assessment.')
+      warnings.push(
+        'Contact purchase influence is unknown. Consider updating contact information for better advocacy assessment.'
+      )
     }
   }
 
@@ -133,7 +162,7 @@ export function validateAdvocacyCreation(
   return {
     isValid: errors.length === 0,
     errors,
-    warnings
+    warnings,
   }
 }
 
@@ -150,22 +179,37 @@ export function validateAdvocacyUpdate(
 
   // Advocacy strength validation
   if (updates.advocacy_strength !== undefined && updates.advocacy_strength !== null) {
-    if (updates.advocacy_strength! < ADVOCACY_BUSINESS_RULES.MIN_ADVOCACY_STRENGTH || 
-        updates.advocacy_strength! > ADVOCACY_BUSINESS_RULES.MAX_ADVOCACY_STRENGTH) {
-      errors.push(`Advocacy strength must be between ${ADVOCACY_BUSINESS_RULES.MIN_ADVOCACY_STRENGTH} and ${ADVOCACY_BUSINESS_RULES.MAX_ADVOCACY_STRENGTH}`)
+    if (
+      updates.advocacy_strength! < ADVOCACY_BUSINESS_RULES.MIN_ADVOCACY_STRENGTH ||
+      updates.advocacy_strength! > ADVOCACY_BUSINESS_RULES.MAX_ADVOCACY_STRENGTH
+    ) {
+      errors.push(
+        `Advocacy strength must be between ${ADVOCACY_BUSINESS_RULES.MIN_ADVOCACY_STRENGTH} and ${ADVOCACY_BUSINESS_RULES.MAX_ADVOCACY_STRENGTH}`
+      )
     }
 
     // Check for significant changes
-    if (currentData?.advocacy_strength && updates.advocacy_strength !== null &&
-        Math.abs(updates.advocacy_strength! - currentData.advocacy_strength) >= 3) {
-      warnings.push('Significant advocacy strength change detected. Consider documenting the reason in notes.')
+    if (
+      currentData?.advocacy_strength &&
+      updates.advocacy_strength !== null &&
+      Math.abs(updates.advocacy_strength! - currentData.advocacy_strength) >= 3
+    ) {
+      warnings.push(
+        'Significant advocacy strength change detected. Consider documenting the reason in notes.'
+      )
     }
   }
 
   // Relationship type validation
-  if (updates.relationship_type && 
-      !ADVOCACY_BUSINESS_RULES.VALID_RELATIONSHIP_TYPES.includes(updates.relationship_type as RelationshipType)) {
-    errors.push(`Invalid relationship type. Must be one of: ${ADVOCACY_BUSINESS_RULES.VALID_RELATIONSHIP_TYPES.join(', ')}`)
+  if (
+    updates.relationship_type &&
+    !ADVOCACY_BUSINESS_RULES.VALID_RELATIONSHIP_TYPES.includes(
+      updates.relationship_type as RelationshipType
+    )
+  ) {
+    errors.push(
+      `Invalid relationship type. Must be one of: ${ADVOCACY_BUSINESS_RULES.VALID_RELATIONSHIP_TYPES.join(', ')}`
+    )
   }
 
   // Advocacy notes validation
@@ -177,16 +221,23 @@ export function validateAdvocacyUpdate(
 
   // Business logic validation with contact context
   if (contact && updates.advocacy_strength) {
-    const recommendations = contact.decision_authority ? 
-      ADVOCACY_BUSINESS_RULES.STRENGTH_RECOMMENDATIONS[contact.decision_authority as DecisionAuthorityRole] : null
+    const recommendations = contact.decision_authority
+      ? ADVOCACY_BUSINESS_RULES.STRENGTH_RECOMMENDATIONS[
+          contact.decision_authority as DecisionAuthorityRole
+        ]
+      : null
 
     if (recommendations) {
       if (updates.advocacy_strength < recommendations.min) {
-        warnings.push(`Advocacy strength seems low for a ${contact.decision_authority}. Consider ${recommendations.min}+ for better effectiveness.`)
+        warnings.push(
+          `Advocacy strength seems low for a ${contact.decision_authority}. Consider ${recommendations.min}+ for better effectiveness.`
+        )
       }
-      
+
       if (updates.advocacy_strength > recommendations.max) {
-        warnings.push(`Advocacy strength seems high for a ${contact.decision_authority}. Consider ${recommendations.max} or below.`)
+        warnings.push(
+          `Advocacy strength seems high for a ${contact.decision_authority}. Consider ${recommendations.max} or below.`
+        )
       }
     }
   }
@@ -194,7 +245,7 @@ export function validateAdvocacyUpdate(
   return {
     isValid: errors.length === 0,
     errors,
-    warnings
+    warnings,
   }
 }
 
@@ -212,18 +263,26 @@ export function calculateRecommendedAdvocacyStrength(contact: Contact): {
 
   // Adjust based on decision authority
   if (contact.decision_authority) {
-    const recommendations = ADVOCACY_BUSINESS_RULES.STRENGTH_RECOMMENDATIONS[contact.decision_authority as DecisionAuthorityRole]
+    const recommendations =
+      ADVOCACY_BUSINESS_RULES.STRENGTH_RECOMMENDATIONS[
+        contact.decision_authority as DecisionAuthorityRole
+      ]
     if (recommendations) {
       baseScore = recommendations.default
       reasoning.push(`Base score ${baseScore} for ${contact.decision_authority} role`)
-      
+
       // Apply purchase influence modifier
       if (contact.purchase_influence) {
-        const multiplier = ADVOCACY_BUSINESS_RULES.INFLUENCE_MULTIPLIERS[contact.purchase_influence as PurchaseInfluenceLevel]
+        const multiplier =
+          ADVOCACY_BUSINESS_RULES.INFLUENCE_MULTIPLIERS[
+            contact.purchase_influence as PurchaseInfluenceLevel
+          ]
         const adjustedScore = Math.round(baseScore * multiplier)
-        
+
         if (adjustedScore !== baseScore) {
-          reasoning.push(`Adjusted to ${adjustedScore} based on ${contact.purchase_influence} purchase influence`)
+          reasoning.push(
+            `Adjusted to ${adjustedScore} based on ${contact.purchase_influence} purchase influence`
+          )
           baseScore = adjustedScore
         }
       }
@@ -232,7 +291,7 @@ export function calculateRecommendedAdvocacyStrength(contact: Contact): {
         recommended: Math.max(recommendations.min, Math.min(recommendations.max, baseScore)),
         min: recommendations.min,
         max: recommendations.max,
-        reasoning
+        reasoning,
       }
     }
   }
@@ -243,7 +302,7 @@ export function calculateRecommendedAdvocacyStrength(contact: Contact): {
     recommended: baseScore,
     min: 1,
     max: 10,
-    reasoning
+    reasoning,
   }
 }
 
@@ -268,14 +327,18 @@ export function validateBulkAdvocacyUpdate(
       errors.push(`Update at index ${index}: ID is required`)
     }
 
-    if (update.advocacy_strength < ADVOCACY_BUSINESS_RULES.MIN_ADVOCACY_STRENGTH || 
-        update.advocacy_strength > ADVOCACY_BUSINESS_RULES.MAX_ADVOCACY_STRENGTH) {
-      errors.push(`Update at index ${index}: Advocacy strength must be between ${ADVOCACY_BUSINESS_RULES.MIN_ADVOCACY_STRENGTH} and ${ADVOCACY_BUSINESS_RULES.MAX_ADVOCACY_STRENGTH}`)
+    if (
+      update.advocacy_strength < ADVOCACY_BUSINESS_RULES.MIN_ADVOCACY_STRENGTH ||
+      update.advocacy_strength > ADVOCACY_BUSINESS_RULES.MAX_ADVOCACY_STRENGTH
+    ) {
+      errors.push(
+        `Update at index ${index}: Advocacy strength must be between ${ADVOCACY_BUSINESS_RULES.MIN_ADVOCACY_STRENGTH} and ${ADVOCACY_BUSINESS_RULES.MAX_ADVOCACY_STRENGTH}`
+      )
     }
   })
 
   // Check for duplicates
-  const ids = updates.map(update => update.id)
+  const ids = updates.map((update) => update.id)
   const uniqueIds = new Set(ids)
   if (ids.length !== uniqueIds.size) {
     errors.push('Duplicate relationship IDs found in bulk update')
@@ -283,13 +346,15 @@ export function validateBulkAdvocacyUpdate(
 
   // Warn about large bulk operations
   if (updates.length > 50) {
-    warnings.push('Large bulk update detected. Consider processing in smaller batches for better performance.')
+    warnings.push(
+      'Large bulk update detected. Consider processing in smaller batches for better performance.'
+    )
   }
 
   return {
     isValid: errors.length === 0,
     errors,
-    warnings
+    warnings,
   }
 }
 
@@ -345,13 +410,15 @@ export function validateAdvocacyBusinessRules(
   }
 
   if (relationshipType === 'historical' && advocacyStrength > 6) {
-    warnings.push('Consider if high advocacy strength is still relevant for historical relationship')
+    warnings.push(
+      'Consider if high advocacy strength is still relevant for historical relationship'
+    )
   }
 
   return {
     isValid: errors.length === 0,
     errors,
-    warnings
+    warnings,
   }
 }
 
@@ -365,12 +432,12 @@ export function formatValidationMessages(result: ValidationResult): {
   allMessages: string[]
 } {
   const allMessages = [...result.errors, ...result.warnings]
-  
+
   return {
     hasIssues: !result.isValid || result.warnings.length > 0,
     errorMessage: result.errors.length > 0 ? result.errors.join('; ') : undefined,
     warningMessage: result.warnings.length > 0 ? result.warnings.join('; ') : undefined,
-    allMessages
+    allMessages,
   }
 }
 
@@ -381,10 +448,10 @@ export function getValidationSummary(result: ValidationResult): string {
   if (result.isValid && result.warnings.length === 0) {
     return 'All validations passed'
   }
-  
+
   if (!result.isValid) {
     return `${result.errors.length} error(s) found`
   }
-  
+
   return `${result.warnings.length} warning(s) found`
 }

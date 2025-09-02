@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { ThemeProviderContext } from "@/hooks/use-theme"
+import * as React from 'react'
+import { ThemeProviderContext } from '@/hooks/use-theme'
 
-type Theme = "dark" | "light" | "system"
+type Theme = 'dark' | 'light' | 'system'
 
 type ThemeProviderProps = {
   children: React.ReactNode
@@ -15,8 +15,8 @@ type ThemeProviderProps = {
 
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
-  storageKey = "vite-ui-theme",
+  defaultTheme = 'system',
+  storageKey = 'vite-ui-theme',
   enableSystem = true,
   ...props
 }: ThemeProviderProps) {
@@ -27,13 +27,12 @@ export function ThemeProvider({
   React.useEffect(() => {
     const root = window.document.documentElement
 
-    root.classList.remove("light", "dark")
+    root.classList.remove('light', 'dark')
 
-    if (theme === "system" && enableSystem) {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light"
+    if (theme === 'system' && enableSystem) {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light'
 
       root.classList.add(systemTheme)
       return
@@ -56,4 +55,3 @@ export function ThemeProvider({
     </ThemeProviderContext.Provider>
   )
 }
-

@@ -7,17 +7,17 @@ interface ActivitySkeletonProps {
   useNewStyle?: boolean
 }
 
-export const ActivitySkeleton: React.FC<ActivitySkeletonProps> = ({ 
-  className, 
-  useNewStyle = false 
+export const ActivitySkeleton: React.FC<ActivitySkeletonProps> = ({
+  className,
+  useNewStyle = false,
 }) => {
   return (
-    <Card className={`${useNewStyle ? "shadow-sm" : "shadow-md"} ${className}`}>
-      <CardHeader className={useNewStyle ? "p-4 pb-3" : "p-6 pb-4"}>
+    <Card className={`${useNewStyle ? 'shadow-sm' : 'shadow-md'} ${className}`}>
+      <CardHeader className={useNewStyle ? 'p-4 pb-3' : 'p-6 pb-4'}>
         <Skeleton className="h-6 w-48" />
         <Skeleton className="h-4 w-32" />
       </CardHeader>
-      <CardContent className={useNewStyle ? "p-4 pt-0" : "p-6 pt-0"}>
+      <CardContent className={useNewStyle ? 'p-4 pt-0' : 'p-6 pt-0'}>
         <div className="space-y-4">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="flex items-start gap-3">

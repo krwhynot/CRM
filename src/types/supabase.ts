@@ -1,16 +1,10 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "13.0.4"
+    PostgrestVersion: '13.0.4'
   }
   public: {
     Tables: {
@@ -56,39 +50,39 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "contact_preferred_principals_contact_id_fkey"
-            columns: ["contact_id"]
+            foreignKeyName: 'contact_preferred_principals_contact_id_fkey'
+            columns: ['contact_id']
             isOneToOne: false
-            referencedRelation: "contact_influence_profile"
-            referencedColumns: ["contact_id"]
+            referencedRelation: 'contact_influence_profile'
+            referencedColumns: ['contact_id']
           },
           {
-            foreignKeyName: "contact_preferred_principals_contact_id_fkey"
-            columns: ["contact_id"]
+            foreignKeyName: 'contact_preferred_principals_contact_id_fkey'
+            columns: ['contact_id']
             isOneToOne: false
-            referencedRelation: "contacts"
-            referencedColumns: ["id"]
+            referencedRelation: 'contacts'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "contact_preferred_principals_principal_id_fkey"
-            columns: ["principal_organization_id"]
+            foreignKeyName: 'contact_preferred_principals_principal_id_fkey'
+            columns: ['principal_organization_id']
             isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
+            referencedRelation: 'organizations'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "contact_preferred_principals_principal_id_fkey"
-            columns: ["principal_organization_id"]
+            foreignKeyName: 'contact_preferred_principals_principal_id_fkey'
+            columns: ['principal_organization_id']
             isOneToOne: false
-            referencedRelation: "principal_advocacy_dashboard"
-            referencedColumns: ["principal_id"]
+            referencedRelation: 'principal_advocacy_dashboard'
+            referencedColumns: ['principal_id']
           },
           {
-            foreignKeyName: "contact_preferred_principals_principal_id_fkey"
-            columns: ["principal_organization_id"]
+            foreignKeyName: 'contact_preferred_principals_principal_id_fkey'
+            columns: ['principal_organization_id']
             isOneToOne: false
-            referencedRelation: "v_org_roles"
-            referencedColumns: ["organization_id"]
+            referencedRelation: 'v_org_roles'
+            referencedColumns: ['organization_id']
           },
         ]
       }
@@ -110,7 +104,7 @@ export type Database = {
           organization_id: string
           phone: string | null
           purchase_influence: string
-          role: Database["public"]["Enums"]["contact_role"] | null
+          role: Database['public']['Enums']['contact_role'] | null
           search_tsv: unknown | null
           title: string | null
           updated_at: string | null
@@ -133,7 +127,7 @@ export type Database = {
           organization_id: string
           phone?: string | null
           purchase_influence?: string
-          role?: Database["public"]["Enums"]["contact_role"] | null
+          role?: Database['public']['Enums']['contact_role'] | null
           search_tsv?: unknown | null
           title?: string | null
           updated_at?: string | null
@@ -156,7 +150,7 @@ export type Database = {
           organization_id?: string
           phone?: string | null
           purchase_influence?: string
-          role?: Database["public"]["Enums"]["contact_role"] | null
+          role?: Database['public']['Enums']['contact_role'] | null
           search_tsv?: unknown | null
           title?: string | null
           updated_at?: string | null
@@ -164,25 +158,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "contacts_organization_id_fkey"
-            columns: ["organization_id"]
+            foreignKeyName: 'contacts_organization_id_fkey'
+            columns: ['organization_id']
             isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
+            referencedRelation: 'organizations'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "contacts_organization_id_fkey"
-            columns: ["organization_id"]
+            foreignKeyName: 'contacts_organization_id_fkey'
+            columns: ['organization_id']
             isOneToOne: false
-            referencedRelation: "principal_advocacy_dashboard"
-            referencedColumns: ["principal_id"]
+            referencedRelation: 'principal_advocacy_dashboard'
+            referencedColumns: ['principal_id']
           },
           {
-            foreignKeyName: "contacts_organization_id_fkey"
-            columns: ["organization_id"]
+            foreignKeyName: 'contacts_organization_id_fkey'
+            columns: ['organization_id']
             isOneToOne: false
-            referencedRelation: "v_org_roles"
-            referencedColumns: ["organization_id"]
+            referencedRelation: 'v_org_roles'
+            referencedColumns: ['organization_id']
           },
         ]
       }
@@ -228,7 +222,7 @@ export type Database = {
           organization_id: string | null
           outcome: string | null
           subject: string
-          type: Database["public"]["Enums"]["interaction_type"]
+          type: Database['public']['Enums']['interaction_type']
           updated_at: string | null
           updated_by: string | null
         }
@@ -249,7 +243,7 @@ export type Database = {
           organization_id?: string | null
           outcome?: string | null
           subject: string
-          type: Database["public"]["Enums"]["interaction_type"]
+          type: Database['public']['Enums']['interaction_type']
           updated_at?: string | null
           updated_by?: string | null
         }
@@ -270,52 +264,52 @@ export type Database = {
           organization_id?: string | null
           outcome?: string | null
           subject?: string
-          type?: Database["public"]["Enums"]["interaction_type"]
+          type?: Database['public']['Enums']['interaction_type']
           updated_at?: string | null
           updated_by?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "interactions_contact_id_fkey"
-            columns: ["contact_id"]
+            foreignKeyName: 'interactions_contact_id_fkey'
+            columns: ['contact_id']
             isOneToOne: false
-            referencedRelation: "contact_influence_profile"
-            referencedColumns: ["contact_id"]
+            referencedRelation: 'contact_influence_profile'
+            referencedColumns: ['contact_id']
           },
           {
-            foreignKeyName: "interactions_contact_id_fkey"
-            columns: ["contact_id"]
+            foreignKeyName: 'interactions_contact_id_fkey'
+            columns: ['contact_id']
             isOneToOne: false
-            referencedRelation: "contacts"
-            referencedColumns: ["id"]
+            referencedRelation: 'contacts'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "interactions_opportunity_id_fkey"
-            columns: ["opportunity_id"]
+            foreignKeyName: 'interactions_opportunity_id_fkey'
+            columns: ['opportunity_id']
             isOneToOne: false
-            referencedRelation: "opportunities"
-            referencedColumns: ["id"]
+            referencedRelation: 'opportunities'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "interactions_organization_id_fkey"
-            columns: ["organization_id"]
+            foreignKeyName: 'interactions_organization_id_fkey'
+            columns: ['organization_id']
             isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
+            referencedRelation: 'organizations'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "interactions_organization_id_fkey"
-            columns: ["organization_id"]
+            foreignKeyName: 'interactions_organization_id_fkey'
+            columns: ['organization_id']
             isOneToOne: false
-            referencedRelation: "principal_advocacy_dashboard"
-            referencedColumns: ["principal_id"]
+            referencedRelation: 'principal_advocacy_dashboard'
+            referencedColumns: ['principal_id']
           },
           {
-            foreignKeyName: "interactions_organization_id_fkey"
-            columns: ["organization_id"]
+            foreignKeyName: 'interactions_organization_id_fkey'
+            columns: ['organization_id']
             isOneToOne: false
-            referencedRelation: "v_org_roles"
-            referencedColumns: ["organization_id"]
+            referencedRelation: 'v_org_roles'
+            referencedColumns: ['organization_id']
           },
         ]
       }
@@ -397,12 +391,12 @@ export type Database = {
           opportunity_context: string | null
           organization_id: string
           principal_organization_id: string | null
-          priority: Database["public"]["Enums"]["priority_level"] | null
+          priority: Database['public']['Enums']['priority_level'] | null
           probability: number | null
           search_tsv: unknown | null
-          stage: Database["public"]["Enums"]["opportunity_stage"]
+          stage: Database['public']['Enums']['opportunity_stage']
           stage_manual: boolean
-          status: Database["public"]["Enums"]["opportunity_status"]
+          status: Database['public']['Enums']['opportunity_status']
           status_manual: boolean
           updated_at: string | null
           updated_by: string | null
@@ -430,12 +424,12 @@ export type Database = {
           opportunity_context?: string | null
           organization_id: string
           principal_organization_id?: string | null
-          priority?: Database["public"]["Enums"]["priority_level"] | null
+          priority?: Database['public']['Enums']['priority_level'] | null
           probability?: number | null
           search_tsv?: unknown | null
-          stage?: Database["public"]["Enums"]["opportunity_stage"]
+          stage?: Database['public']['Enums']['opportunity_stage']
           stage_manual?: boolean
-          status?: Database["public"]["Enums"]["opportunity_status"]
+          status?: Database['public']['Enums']['opportunity_status']
           status_manual?: boolean
           updated_at?: string | null
           updated_by?: string | null
@@ -463,100 +457,100 @@ export type Database = {
           opportunity_context?: string | null
           organization_id?: string
           principal_organization_id?: string | null
-          priority?: Database["public"]["Enums"]["priority_level"] | null
+          priority?: Database['public']['Enums']['priority_level'] | null
           probability?: number | null
           search_tsv?: unknown | null
-          stage?: Database["public"]["Enums"]["opportunity_stage"]
+          stage?: Database['public']['Enums']['opportunity_stage']
           stage_manual?: boolean
-          status?: Database["public"]["Enums"]["opportunity_status"]
+          status?: Database['public']['Enums']['opportunity_status']
           status_manual?: boolean
           updated_at?: string | null
           updated_by?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "opportunities_contact_id_fkey"
-            columns: ["contact_id"]
+            foreignKeyName: 'opportunities_contact_id_fkey'
+            columns: ['contact_id']
             isOneToOne: false
-            referencedRelation: "contact_influence_profile"
-            referencedColumns: ["contact_id"]
+            referencedRelation: 'contact_influence_profile'
+            referencedColumns: ['contact_id']
           },
           {
-            foreignKeyName: "opportunities_contact_id_fkey"
-            columns: ["contact_id"]
+            foreignKeyName: 'opportunities_contact_id_fkey'
+            columns: ['contact_id']
             isOneToOne: false
-            referencedRelation: "contacts"
-            referencedColumns: ["id"]
+            referencedRelation: 'contacts'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "opportunities_distributor_organization_id_fkey"
-            columns: ["distributor_organization_id"]
+            foreignKeyName: 'opportunities_distributor_organization_id_fkey'
+            columns: ['distributor_organization_id']
             isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
+            referencedRelation: 'organizations'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "opportunities_distributor_organization_id_fkey"
-            columns: ["distributor_organization_id"]
+            foreignKeyName: 'opportunities_distributor_organization_id_fkey'
+            columns: ['distributor_organization_id']
             isOneToOne: false
-            referencedRelation: "principal_advocacy_dashboard"
-            referencedColumns: ["principal_id"]
+            referencedRelation: 'principal_advocacy_dashboard'
+            referencedColumns: ['principal_id']
           },
           {
-            foreignKeyName: "opportunities_distributor_organization_id_fkey"
-            columns: ["distributor_organization_id"]
+            foreignKeyName: 'opportunities_distributor_organization_id_fkey'
+            columns: ['distributor_organization_id']
             isOneToOne: false
-            referencedRelation: "v_org_roles"
-            referencedColumns: ["organization_id"]
+            referencedRelation: 'v_org_roles'
+            referencedColumns: ['organization_id']
           },
           {
-            foreignKeyName: "opportunities_founding_interaction_id_fkey"
-            columns: ["founding_interaction_id"]
+            foreignKeyName: 'opportunities_founding_interaction_id_fkey'
+            columns: ['founding_interaction_id']
             isOneToOne: false
-            referencedRelation: "interactions"
-            referencedColumns: ["id"]
+            referencedRelation: 'interactions'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "opportunities_organization_id_fkey"
-            columns: ["organization_id"]
+            foreignKeyName: 'opportunities_organization_id_fkey'
+            columns: ['organization_id']
             isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
+            referencedRelation: 'organizations'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "opportunities_organization_id_fkey"
-            columns: ["organization_id"]
+            foreignKeyName: 'opportunities_organization_id_fkey'
+            columns: ['organization_id']
             isOneToOne: false
-            referencedRelation: "principal_advocacy_dashboard"
-            referencedColumns: ["principal_id"]
+            referencedRelation: 'principal_advocacy_dashboard'
+            referencedColumns: ['principal_id']
           },
           {
-            foreignKeyName: "opportunities_organization_id_fkey"
-            columns: ["organization_id"]
+            foreignKeyName: 'opportunities_organization_id_fkey'
+            columns: ['organization_id']
             isOneToOne: false
-            referencedRelation: "v_org_roles"
-            referencedColumns: ["organization_id"]
+            referencedRelation: 'v_org_roles'
+            referencedColumns: ['organization_id']
           },
           {
-            foreignKeyName: "opportunities_principal_organization_id_fkey"
-            columns: ["principal_organization_id"]
+            foreignKeyName: 'opportunities_principal_organization_id_fkey'
+            columns: ['principal_organization_id']
             isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
+            referencedRelation: 'organizations'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "opportunities_principal_organization_id_fkey"
-            columns: ["principal_organization_id"]
+            foreignKeyName: 'opportunities_principal_organization_id_fkey'
+            columns: ['principal_organization_id']
             isOneToOne: false
-            referencedRelation: "principal_advocacy_dashboard"
-            referencedColumns: ["principal_id"]
+            referencedRelation: 'principal_advocacy_dashboard'
+            referencedColumns: ['principal_id']
           },
           {
-            foreignKeyName: "opportunities_principal_organization_id_fkey"
-            columns: ["principal_organization_id"]
+            foreignKeyName: 'opportunities_principal_organization_id_fkey'
+            columns: ['principal_organization_id']
             isOneToOne: false
-            referencedRelation: "v_org_roles"
-            referencedColumns: ["organization_id"]
+            referencedRelation: 'v_org_roles'
+            referencedColumns: ['organization_id']
           },
         ]
       }
@@ -596,18 +590,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "opportunity_products_opportunity_id_fkey"
-            columns: ["opportunity_id"]
+            foreignKeyName: 'opportunity_products_opportunity_id_fkey'
+            columns: ['opportunity_id']
             isOneToOne: false
-            referencedRelation: "opportunities"
-            referencedColumns: ["id"]
+            referencedRelation: 'opportunities'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "opportunity_products_product_id_fkey"
-            columns: ["product_id"]
+            foreignKeyName: 'opportunity_products_product_id_fkey'
+            columns: ['product_id']
             isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
+            referencedRelation: 'products'
+            referencedColumns: ['id']
           },
         ]
       }
@@ -639,7 +633,7 @@ export type Database = {
           secondary_manager_name: string | null
           segment: string
           state_province: string | null
-          type: Database["public"]["Enums"]["organization_type"]
+          type: Database['public']['Enums']['organization_type']
           updated_at: string | null
           updated_by: string | null
           website: string | null
@@ -671,7 +665,7 @@ export type Database = {
           secondary_manager_name?: string | null
           segment?: string
           state_province?: string | null
-          type: Database["public"]["Enums"]["organization_type"]
+          type: Database['public']['Enums']['organization_type']
           updated_at?: string | null
           updated_by?: string | null
           website?: string | null
@@ -703,32 +697,32 @@ export type Database = {
           secondary_manager_name?: string | null
           segment?: string
           state_province?: string | null
-          type?: Database["public"]["Enums"]["organization_type"]
+          type?: Database['public']['Enums']['organization_type']
           updated_at?: string | null
           updated_by?: string | null
           website?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "organizations_parent_organization_id_fkey"
-            columns: ["parent_organization_id"]
+            foreignKeyName: 'organizations_parent_organization_id_fkey'
+            columns: ['parent_organization_id']
             isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
+            referencedRelation: 'organizations'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "organizations_parent_organization_id_fkey"
-            columns: ["parent_organization_id"]
+            foreignKeyName: 'organizations_parent_organization_id_fkey'
+            columns: ['parent_organization_id']
             isOneToOne: false
-            referencedRelation: "principal_advocacy_dashboard"
-            referencedColumns: ["principal_id"]
+            referencedRelation: 'principal_advocacy_dashboard'
+            referencedColumns: ['principal_id']
           },
           {
-            foreignKeyName: "organizations_parent_organization_id_fkey"
-            columns: ["parent_organization_id"]
+            foreignKeyName: 'organizations_parent_organization_id_fkey'
+            columns: ['parent_organization_id']
             isOneToOne: false
-            referencedRelation: "v_org_roles"
-            referencedColumns: ["organization_id"]
+            referencedRelation: 'v_org_roles'
+            referencedColumns: ['organization_id']
           },
         ]
       }
@@ -774,52 +768,52 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "principal_distributor_relationships_distributor_id_fkey"
-            columns: ["distributor_id"]
+            foreignKeyName: 'principal_distributor_relationships_distributor_id_fkey'
+            columns: ['distributor_id']
             isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
+            referencedRelation: 'organizations'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "principal_distributor_relationships_distributor_id_fkey"
-            columns: ["distributor_id"]
+            foreignKeyName: 'principal_distributor_relationships_distributor_id_fkey'
+            columns: ['distributor_id']
             isOneToOne: false
-            referencedRelation: "principal_advocacy_dashboard"
-            referencedColumns: ["principal_id"]
+            referencedRelation: 'principal_advocacy_dashboard'
+            referencedColumns: ['principal_id']
           },
           {
-            foreignKeyName: "principal_distributor_relationships_distributor_id_fkey"
-            columns: ["distributor_id"]
+            foreignKeyName: 'principal_distributor_relationships_distributor_id_fkey'
+            columns: ['distributor_id']
             isOneToOne: false
-            referencedRelation: "v_org_roles"
-            referencedColumns: ["organization_id"]
+            referencedRelation: 'v_org_roles'
+            referencedColumns: ['organization_id']
           },
           {
-            foreignKeyName: "principal_distributor_relationships_principal_id_fkey"
-            columns: ["principal_id"]
+            foreignKeyName: 'principal_distributor_relationships_principal_id_fkey'
+            columns: ['principal_id']
             isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
+            referencedRelation: 'organizations'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "principal_distributor_relationships_principal_id_fkey"
-            columns: ["principal_id"]
+            foreignKeyName: 'principal_distributor_relationships_principal_id_fkey'
+            columns: ['principal_id']
             isOneToOne: false
-            referencedRelation: "principal_advocacy_dashboard"
-            referencedColumns: ["principal_id"]
+            referencedRelation: 'principal_advocacy_dashboard'
+            referencedColumns: ['principal_id']
           },
           {
-            foreignKeyName: "principal_distributor_relationships_principal_id_fkey"
-            columns: ["principal_id"]
+            foreignKeyName: 'principal_distributor_relationships_principal_id_fkey'
+            columns: ['principal_id']
             isOneToOne: false
-            referencedRelation: "v_org_roles"
-            referencedColumns: ["organization_id"]
+            referencedRelation: 'v_org_roles'
+            referencedColumns: ['organization_id']
           },
         ]
       }
       products: {
         Row: {
-          category: Database["public"]["Enums"]["product_category"]
+          category: Database['public']['Enums']['product_category']
           created_at: string | null
           created_by: string | null
           deleted_at: string | null
@@ -841,7 +835,7 @@ export type Database = {
           updated_by: string | null
         }
         Insert: {
-          category: Database["public"]["Enums"]["product_category"]
+          category: Database['public']['Enums']['product_category']
           created_at?: string | null
           created_by?: string | null
           deleted_at?: string | null
@@ -863,7 +857,7 @@ export type Database = {
           updated_by?: string | null
         }
         Update: {
-          category?: Database["public"]["Enums"]["product_category"]
+          category?: Database['public']['Enums']['product_category']
           created_at?: string | null
           created_by?: string | null
           deleted_at?: string | null
@@ -886,25 +880,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "products_principal_id_fkey"
-            columns: ["principal_id"]
+            foreignKeyName: 'products_principal_id_fkey'
+            columns: ['principal_id']
             isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
+            referencedRelation: 'organizations'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "products_principal_id_fkey"
-            columns: ["principal_id"]
+            foreignKeyName: 'products_principal_id_fkey'
+            columns: ['principal_id']
             isOneToOne: false
-            referencedRelation: "principal_advocacy_dashboard"
-            referencedColumns: ["principal_id"]
+            referencedRelation: 'principal_advocacy_dashboard'
+            referencedColumns: ['principal_id']
           },
           {
-            foreignKeyName: "products_principal_id_fkey"
-            columns: ["principal_id"]
+            foreignKeyName: 'products_principal_id_fkey'
+            columns: ['principal_id']
             isOneToOne: false
-            referencedRelation: "v_org_roles"
-            referencedColumns: ["organization_id"]
+            referencedRelation: 'v_org_roles'
+            referencedColumns: ['organization_id']
           },
         ]
       }
@@ -990,13 +984,11 @@ export type Database = {
           first_name: string | null
           last_name: string | null
           organization_name: string | null
-          organization_type:
-            | Database["public"]["Enums"]["organization_type"]
-            | null
+          organization_type: Database['public']['Enums']['organization_type'] | null
           overall_influence_score: number | null
           preferred_principals_count: number | null
           purchase_influence: string | null
-          role: Database["public"]["Enums"]["contact_role"] | null
+          role: Database['public']['Enums']['contact_role'] | null
           strong_advocacy_count: number | null
           title: string | null
         }
@@ -1052,7 +1044,7 @@ export type Database = {
           is_principal: boolean | null
           name: string | null
           organization_id: string | null
-          type: Database["public"]["Enums"]["organization_type"] | null
+          type: Database['public']['Enums']['organization_type'] | null
           updated_at: string | null
         }
         Insert: {
@@ -1065,7 +1057,7 @@ export type Database = {
           is_principal?: boolean | null
           name?: string | null
           organization_id?: string | null
-          type?: Database["public"]["Enums"]["organization_type"] | null
+          type?: Database['public']['Enums']['organization_type'] | null
           updated_at?: string | null
         }
         Update: {
@@ -1078,7 +1070,7 @@ export type Database = {
           is_principal?: boolean | null
           name?: string | null
           organization_id?: string | null
-          type?: Database["public"]["Enums"]["organization_type"] | null
+          type?: Database['public']['Enums']['organization_type'] | null
           updated_at?: string | null
         }
         Relationships: []
@@ -1098,27 +1090,27 @@ export type Database = {
         }[]
       }
       citext: {
-        Args: { "": boolean } | { "": string } | { "": unknown }
+        Args: { '': boolean } | { '': string } | { '': unknown }
         Returns: string
       }
       citext_hash: {
-        Args: { "": string }
+        Args: { '': string }
         Returns: number
       }
       citextin: {
-        Args: { "": unknown }
+        Args: { '': unknown }
         Returns: string
       }
       citextout: {
-        Args: { "": string }
+        Args: { '': string }
         Returns: unknown
       }
       citextrecv: {
-        Args: { "": unknown }
+        Args: { '': unknown }
         Returns: string
       }
       citextsend: {
-        Args: { "": string }
+        Args: { '': string }
         Returns: string
       }
       get_contact_advocacy_profile: {
@@ -1220,72 +1212,67 @@ export type Database = {
         Returns: boolean
       }
       validate_principal_type: {
-        Args: { org_type: Database["public"]["Enums"]["organization_type"] }
+        Args: { org_type: Database['public']['Enums']['organization_type'] }
         Returns: boolean
       }
       validate_priority_value_alignment: {
         Args: {
           estimated_value: number
-          priority: Database["public"]["Enums"]["priority_level"]
+          priority: Database['public']['Enums']['priority_level']
         }
         Returns: boolean
       }
     }
     Enums: {
       contact_role:
-        | "decision_maker"
-        | "influencer"
-        | "buyer"
-        | "end_user"
-        | "gatekeeper"
-        | "champion"
+        | 'decision_maker'
+        | 'influencer'
+        | 'buyer'
+        | 'end_user'
+        | 'gatekeeper'
+        | 'champion'
       interaction_type:
-        | "call"
-        | "email"
-        | "meeting"
-        | "demo"
-        | "proposal"
-        | "follow_up"
-        | "trade_show"
-        | "site_visit"
-        | "contract_review"
-      opportunity_priority: "low" | "medium" | "high" | "critical"
+        | 'call'
+        | 'email'
+        | 'meeting'
+        | 'demo'
+        | 'proposal'
+        | 'follow_up'
+        | 'trade_show'
+        | 'site_visit'
+        | 'contract_review'
+      opportunity_priority: 'low' | 'medium' | 'high' | 'critical'
       opportunity_stage:
-        | "New Lead"
-        | "Initial Outreach"
-        | "Sample/Visit Offered"
-        | "Awaiting Response"
-        | "Feedback Logged"
-        | "Demo Scheduled"
-        | "Closed - Won"
-        | "Closed - Lost"
+        | 'New Lead'
+        | 'Initial Outreach'
+        | 'Sample/Visit Offered'
+        | 'Awaiting Response'
+        | 'Feedback Logged'
+        | 'Demo Scheduled'
+        | 'Closed - Won'
+        | 'Closed - Lost'
       opportunity_status:
-        | "Active"
-        | "On Hold"
-        | "Closed - Won"
-        | "Closed - Lost"
-        | "Nurturing"
-        | "Qualified"
-      organization_type:
-        | "customer"
-        | "principal"
-        | "distributor"
-        | "prospect"
-        | "vendor"
-      priority_level: "low" | "medium" | "high" | "critical"
+        | 'Active'
+        | 'On Hold'
+        | 'Closed - Won'
+        | 'Closed - Lost'
+        | 'Nurturing'
+        | 'Qualified'
+      organization_type: 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor'
+      priority_level: 'low' | 'medium' | 'high' | 'critical'
       product_category:
-        | "beverages"
-        | "dairy"
-        | "frozen"
-        | "fresh_produce"
-        | "meat_poultry"
-        | "seafood"
-        | "dry_goods"
-        | "spices_seasonings"
-        | "baking_supplies"
-        | "cleaning_supplies"
-        | "paper_products"
-        | "equipment"
+        | 'beverages'
+        | 'dairy'
+        | 'frozen'
+        | 'fresh_produce'
+        | 'meat_poultry'
+        | 'seafood'
+        | 'dry_goods'
+        | 'spices_seasonings'
+        | 'baking_supplies'
+        | 'cleaning_supplies'
+        | 'paper_products'
+        | 'equipment'
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1293,33 +1280,31 @@ export type Database = {
   }
 }
 
-type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+type DatabaseWithoutInternals = Omit<Database, '__InternalSupabase'>
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, 'public'>]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
       Row: infer R
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
+    ? (DefaultSchema['Tables'] & DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -1328,23 +1313,23 @@ export type Tables<
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
+    | keyof DefaultSchema['Tables']
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
+    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
         Insert: infer I
       }
       ? I
@@ -1353,23 +1338,23 @@ export type TablesInsert<
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
+    | keyof DefaultSchema['Tables']
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
+    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
         Update: infer U
       }
       ? U
@@ -1378,100 +1363,87 @@ export type TablesUpdate<
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
+    | keyof DefaultSchema['Enums']
     | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums']
     : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
-    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums']
+    ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
     : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema["CompositeTypes"]
+    | keyof DefaultSchema['CompositeTypes']
     | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
-    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema['CompositeTypes']
+    ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
     : never
 
 export const Constants = {
   public: {
     Enums: {
-      contact_role: [
-        "decision_maker",
-        "influencer",
-        "buyer",
-        "end_user",
-        "gatekeeper",
-        "champion",
-      ],
+      contact_role: ['decision_maker', 'influencer', 'buyer', 'end_user', 'gatekeeper', 'champion'],
       interaction_type: [
-        "call",
-        "email",
-        "meeting",
-        "demo",
-        "proposal",
-        "follow_up",
-        "trade_show",
-        "site_visit",
-        "contract_review",
+        'call',
+        'email',
+        'meeting',
+        'demo',
+        'proposal',
+        'follow_up',
+        'trade_show',
+        'site_visit',
+        'contract_review',
       ],
-      opportunity_priority: ["low", "medium", "high", "critical"],
+      opportunity_priority: ['low', 'medium', 'high', 'critical'],
       opportunity_stage: [
-        "New Lead",
-        "Initial Outreach",
-        "Sample/Visit Offered",
-        "Awaiting Response",
-        "Feedback Logged",
-        "Demo Scheduled",
-        "Closed - Won",
-        "Closed - Lost",
+        'New Lead',
+        'Initial Outreach',
+        'Sample/Visit Offered',
+        'Awaiting Response',
+        'Feedback Logged',
+        'Demo Scheduled',
+        'Closed - Won',
+        'Closed - Lost',
       ],
       opportunity_status: [
-        "Active",
-        "On Hold",
-        "Closed - Won",
-        "Closed - Lost",
-        "Nurturing",
-        "Qualified",
+        'Active',
+        'On Hold',
+        'Closed - Won',
+        'Closed - Lost',
+        'Nurturing',
+        'Qualified',
       ],
-      organization_type: [
-        "customer",
-        "principal",
-        "distributor",
-        "prospect",
-        "vendor",
-      ],
-      priority_level: ["low", "medium", "high", "critical"],
+      organization_type: ['customer', 'principal', 'distributor', 'prospect', 'vendor'],
+      priority_level: ['low', 'medium', 'high', 'critical'],
       product_category: [
-        "beverages",
-        "dairy",
-        "frozen",
-        "fresh_produce",
-        "meat_poultry",
-        "seafood",
-        "dry_goods",
-        "spices_seasonings",
-        "baking_supplies",
-        "cleaning_supplies",
-        "paper_products",
-        "equipment",
+        'beverages',
+        'dairy',
+        'frozen',
+        'fresh_produce',
+        'meat_poultry',
+        'seafood',
+        'dry_goods',
+        'spices_seasonings',
+        'baking_supplies',
+        'cleaning_supplies',
+        'paper_products',
+        'equipment',
       ],
     },
   },

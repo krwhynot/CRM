@@ -40,6 +40,6 @@ export const useOrganizationsDisplay = (
     toggleRowExpansion,
     isRowExpanded,
     expandAll,
-    collapseAll
+    collapseAll,
   }
 }

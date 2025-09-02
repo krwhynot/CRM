@@ -7,11 +7,11 @@ interface ProductDescriptionSectionProps {
   product: ProductWithPrincipal
 }
 
-const EmptyCell = () => (
-  <span className="italic text-gray-400">Not provided</span>
-)
+const EmptyCell = () => <span className="italic text-gray-400">Not provided</span>
 
-export const ProductDescriptionSection: React.FC<ProductDescriptionSectionProps> = ({ product }) => {
+export const ProductDescriptionSection: React.FC<ProductDescriptionSectionProps> = ({
+  product,
+}) => {
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       {/* Description */}
@@ -20,9 +20,7 @@ export const ProductDescriptionSection: React.FC<ProductDescriptionSectionProps>
           <FileText className="size-4" />
           Description
         </div>
-        <div className="pl-6 text-sm text-gray-600">
-          {product.description || <EmptyCell />}
-        </div>
+        <div className="pl-6 text-sm text-gray-600">{product.description || <EmptyCell />}</div>
       </div>
 
       {/* Shelf Life */}
@@ -31,9 +29,7 @@ export const ProductDescriptionSection: React.FC<ProductDescriptionSectionProps>
           <Calendar className="size-4" />
           Shelf Life
         </div>
-        <div className="pl-6 text-sm text-gray-600">
-          {formatShelfLife(product.shelf_life_days)}
-        </div>
+        <div className="pl-6 text-sm text-gray-600">{formatShelfLife(product.shelf_life_days)}</div>
       </div>
     </div>
   )

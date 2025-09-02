@@ -9,22 +9,22 @@ export const useProductsPageState = () => {
 
   const openCreateDialog = () => setIsCreateDialogOpen(true)
   const closeCreateDialog = () => setIsCreateDialogOpen(false)
-  
+
   const openEditDialog = (product: Product) => {
     setSelectedProduct(product)
     setIsEditDialogOpen(true)
   }
-  
+
   const closeEditDialog = () => {
     setIsEditDialogOpen(false)
     setSelectedProduct(null)
   }
-  
+
   const openDeleteDialog = (product: Product) => {
     setSelectedProduct(product)
     setIsDeleteDialogOpen(true)
   }
-  
+
   const closeDeleteDialog = () => {
     setIsDeleteDialogOpen(false)
     setSelectedProduct(null)
@@ -36,13 +36,13 @@ export const useProductsPageState = () => {
     isEditDialogOpen,
     isDeleteDialogOpen,
     selectedProduct,
-    
+
     // Dialog actions
     openCreateDialog,
     closeCreateDialog,
     openEditDialog,
     closeEditDialog,
     openDeleteDialog,
-    closeDeleteDialog
+    closeDeleteDialog,
   }
 }

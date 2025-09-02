@@ -18,7 +18,17 @@ export interface SelectOption {
 export interface FieldConfig {
   name: string
   label: string
-  type: 'text' | 'email' | 'number' | 'textarea' | 'select' | 'switch' | 'date' | 'phone' | 'url' | 'radio'
+  type:
+    | 'text'
+    | 'email'
+    | 'number'
+    | 'textarea'
+    | 'select'
+    | 'switch'
+    | 'date'
+    | 'phone'
+    | 'url'
+    | 'radio'
   placeholder?: string
   description?: string
   tooltip?: string
@@ -60,15 +70,15 @@ export interface FormConfig<T extends FormData> {
   title: string
   icon: LucideIcon
   submitLabel?: string
-  
+
   // Form schema and validation
   schema: yup.ObjectSchema<T>
-  
+
   // Form structure
   sections: FormSection[]
   optionalSection?: OptionalSection
   conditionalSections?: ConditionalSection[]
-  
+
   // Data handling
   defaultValues: (initialData?: Partial<T>) => T
   transformData?: (data: T) => T

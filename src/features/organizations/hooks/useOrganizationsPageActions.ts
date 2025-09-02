@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
 import { toast } from '@/lib/toast-styles'
-import { 
-  useCreateOrganization, 
-  useUpdateOrganization, 
-  useDeleteOrganization 
+import {
+  useCreateOrganization,
+  useUpdateOrganization,
+  useDeleteOrganization,
 } from './useOrganizations'
 import type { Organization } from '@/types/entities'
 import type { OrganizationFormInterface } from '@/types/forms/form-interfaces'
@@ -17,49 +17,58 @@ export const useOrganizationsPageActions = (
   const updateOrganizationMutation = useUpdateOrganization()
   const deleteOrganizationMutation = useDeleteOrganization()
 
-  const handleCreate = useCallback(async (data: OrganizationFormInterface) => {
-    try {
-      const dbData = data
-      
-      if (!data.type) {
-        throw new Error('Organization type is required but missing from form data')
+  const handleCreate = useCallback(
+    async (data: OrganizationFormInterface) => {
+      try {
+        const dbData = data
+
+        if (!data.type) {
+          throw new Error('Organization type is required but missing from form data')
+        }
+
+        await createOrganizationMutation.mutateAsync(dbData)
+        closeCreateDialog()
+        toast.success('Organization created successfully!')
+      } catch (error) {
+        // Failed to create organization - error handled
+        toast.error('Failed to create organization. Please try again.')
       }
-      
-      await createOrganizationMutation.mutateAsync(dbData)
-      closeCreateDialog()
-      toast.success('Organization created successfully!')
-    } catch (error) {
-      // Failed to create organization - error handled
-      toast.error('Failed to create organization. Please try again.')
-    }
-  }, [createOrganizationMutation, closeCreateDialog])
+    },
+    [createOrganizationMutation, closeCreateDialog]
+  )
 
-  const handleUpdate = useCallback(async (selectedOrganization: Organization, data: OrganizationFormInterface) => {
-    try {
-      await updateOrganizationMutation.mutateAsync({
-        id: selectedOrganization.id,
-        updates: data
-      })
-      closeEditDialog()
-      toast.success('Organization updated successfully!')
-    } catch (error) {
-      // Failed to update organization - error handled
-      toast.error('Failed to update organization. Please try again.')
-    }
-  }, [updateOrganizationMutation, closeEditDialog])
+  const handleUpdate = useCallback(
+    async (selectedOrganization: Organization, data: OrganizationFormInterface) => {
+      try {
+        await updateOrganizationMutation.mutateAsync({
+          id: selectedOrganization.id,
+          updates: data,
+        })
+        closeEditDialog()
+        toast.success('Organization updated successfully!')
+      } catch (error) {
+        // Failed to update organization - error handled
+        toast.error('Failed to update organization. Please try again.')
+      }
+    },
+    [updateOrganizationMutation, closeEditDialog]
+  )
 
-  const handleDelete = useCallback(async (selectedOrganization: Organization) => {
-    if (!selectedOrganization) return
+  const handleDelete = useCallback(
+    async (selectedOrganization: Organization) => {
+      if (!selectedOrganization) return
 
-    try {
-      await deleteOrganizationMutation.mutateAsync(selectedOrganization.id)
-      closeDeleteDialog()
-      toast.success('Organization deleted successfully!')
-    } catch (error) {
-      // Failed to delete organization - error handled
-      toast.error('Failed to delete organization. Please try again.')
-    }
-  }, [deleteOrganizationMutation, closeDeleteDialog])
+      try {
+        await deleteOrganizationMutation.mutateAsync(selectedOrganization.id)
+        closeDeleteDialog()
+        toast.success('Organization deleted successfully!')
+      } catch (error) {
+        // Failed to delete organization - error handled
+        toast.error('Failed to delete organization. Please try again.')
+      }
+    },
+    [deleteOrganizationMutation, closeDeleteDialog]
+  )
 
   return {
     handleCreate,
@@ -67,6 +76,6 @@ export const useOrganizationsPageActions = (
     handleDelete,
     isCreating: createOrganizationMutation.isPending,
     isUpdating: updateOrganizationMutation.isPending,
-    isDeleting: deleteOrganizationMutation.isPending
+    isDeleting: deleteOrganizationMutation.isPending,
   }
 }

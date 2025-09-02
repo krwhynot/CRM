@@ -13,9 +13,10 @@ export const OrganizationBadges: React.FC<OrganizationBadgesProps> = ({
   priority,
   type,
   segment,
-  className = ""
+  className = '',
 }) => {
-  const { getPriorityBadge, getTypeBadge, getSegmentBadge, getStatusBadge } = useOrganizationsBadges()
+  const { getPriorityBadge, getTypeBadge, getSegmentBadge, getStatusBadge } =
+    useOrganizationsBadges()
 
   const priorityBadge = getPriorityBadge(priority)
   const typeBadge = getTypeBadge(type)
@@ -24,22 +25,10 @@ export const OrganizationBadges: React.FC<OrganizationBadgesProps> = ({
 
   return (
     <div className={`flex flex-wrap gap-1 ${className}`}>
-      {statusBadge && (
-        <Badge className={statusBadge.className}>
-          {statusBadge.label}
-        </Badge>
-      )}
-      <Badge className={priorityBadge.className}>
-        {priorityBadge.label}
-      </Badge>
-      <Badge className={typeBadge.className}>
-        {typeBadge.label}
-      </Badge>
-      {segmentBadge && (
-        <Badge className={segmentBadge.className}>
-          {segmentBadge.label}
-        </Badge>
-      )}
+      {statusBadge && <Badge className={statusBadge.className}>{statusBadge.label}</Badge>}
+      <Badge className={priorityBadge.className}>{priorityBadge.label}</Badge>
+      <Badge className={typeBadge.className}>{typeBadge.label}</Badge>
+      {segmentBadge && <Badge className={segmentBadge.className}>{segmentBadge.label}</Badge>}
     </div>
   )
 }

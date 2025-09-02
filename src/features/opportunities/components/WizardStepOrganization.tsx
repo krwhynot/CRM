@@ -1,5 +1,11 @@
 import React from 'react'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import type { UseFormSetValue, FieldErrors } from 'react-hook-form'
 import type { OpportunityFormData } from '@/types/opportunity.types'
 import type { Organization, Contact } from '@/types/entities'
@@ -25,7 +31,7 @@ export const WizardStepOrganization: React.FC<WizardStepOrganizationProps> = ({
   errors,
   loading = false,
   preselectedOrganization,
-  preselectedContact
+  preselectedContact,
 }) => {
   return (
     <div className="space-y-4">
@@ -33,8 +39,8 @@ export const WizardStepOrganization: React.FC<WizardStepOrganizationProps> = ({
         <label htmlFor="organization_id" className="text-sm font-medium">
           Organization *
         </label>
-        <Select 
-          value={selectedOrganization || undefined} 
+        <Select
+          value={selectedOrganization || undefined}
           onValueChange={(value) => {
             setValue('organization_id', value || '')
             if (value !== selectedOrganization) {
@@ -63,8 +69,8 @@ export const WizardStepOrganization: React.FC<WizardStepOrganizationProps> = ({
         <label htmlFor="contact_id" className="text-sm font-medium">
           Primary Contact
         </label>
-        <Select 
-          value={contactValue || 'none'} 
+        <Select
+          value={contactValue || 'none'}
           onValueChange={(value) => setValue('contact_id', value === 'none' ? null : value || null)}
           disabled={loading || !selectedOrganization || !!preselectedContact}
         >

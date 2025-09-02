@@ -7,7 +7,7 @@ export type PurchaseInfluenceLevel = 'High' | 'Medium' | 'Low' | 'Unknown'
 export type DecisionAuthorityRole = 'Decision Maker' | 'Influencer' | 'End User' | 'Gatekeeper'
 
 // Contact role types from database enum
-export type ContactRole = 
+export type ContactRole =
   | 'decision_maker'
   | 'influencer'
   | 'buyer'
@@ -22,7 +22,7 @@ export const CONTACT_ROLES: { value: ContactRole; label: string }[] = [
   { value: 'buyer', label: 'Buyer' },
   { value: 'end_user', label: 'End User' },
   { value: 'gatekeeper', label: 'Gatekeeper' },
-  { value: 'champion', label: 'Champion' }
+  { value: 'champion', label: 'Champion' },
 ] as const
 
 // Base contact types from database
@@ -49,81 +49,99 @@ export type ContactWithRelations = Contact & {
 // Contact validation schema - aligned with database schema
 export const contactSchema = yup.object({
   // REQUIRED FIELDS
-  first_name: yup.string()
+  first_name: yup
+    .string()
     .required('First name is required')
     .max(100, 'First name must be 100 characters or less'),
-  
-  last_name: yup.string()
+
+  last_name: yup
+    .string()
     .required('Last name is required')
     .max(100, 'Last name must be 100 characters or less'),
-  
-  organization_id: yup.string()
+
+  organization_id: yup
+    .string()
     .uuid('Invalid organization ID')
     .required('Organization is required'),
-  
-  purchase_influence: yup.string()
+
+  purchase_influence: yup
+    .string()
     .oneOf(['High', 'Medium', 'Low', 'Unknown'] as const, 'Invalid purchase influence level')
     .required('Purchase influence is required')
     .default('Unknown'),
-  
-  decision_authority: yup.string()
-    .oneOf(['Decision Maker', 'Influencer', 'End User', 'Gatekeeper'] as const, 'Invalid decision authority role')
+
+  decision_authority: yup
+    .string()
+    .oneOf(
+      ['Decision Maker', 'Influencer', 'End User', 'Gatekeeper'] as const,
+      'Invalid decision authority role'
+    )
     .required('Decision authority is required')
     .default('Gatekeeper'),
 
   // Database field is 'role' with enum values
-  role: yup.string()
-    .oneOf(['decision_maker', 'influencer', 'buyer', 'end_user', 'gatekeeper', 'champion'] as const, 'Invalid role')
+  role: yup
+    .string()
+    .oneOf(
+      ['decision_maker', 'influencer', 'buyer', 'end_user', 'gatekeeper', 'champion'] as const,
+      'Invalid role'
+    )
     .nullable()
     .transform(FormTransforms.nullableString),
 
   // OPTIONAL FIELDS - Database schema aligned with transforms
-  email: yup.string()
+  email: yup
+    .string()
     .email('Invalid email address')
     .max(255, 'Email must be 255 characters or less')
     .nullable()
     .transform(FormTransforms.nullableEmail),
-  
-  title: yup.string()
+
+  title: yup
+    .string()
     .max(100, 'Title must be 100 characters or less')
     .nullable()
     .transform(FormTransforms.nullableString),
-  
-  department: yup.string()
+
+  department: yup
+    .string()
     .max(100, 'Department must be 100 characters or less')
     .nullable()
     .transform(FormTransforms.nullableString),
-  
-  phone: yup.string()
+
+  phone: yup
+    .string()
     .max(50, 'Phone must be 50 characters or less')
     .nullable()
     .transform(FormTransforms.nullablePhone),
-  
-  mobile_phone: yup.string()
+
+  mobile_phone: yup
+    .string()
     .max(50, 'Mobile phone must be 50 characters or less')
     .nullable()
     .transform(FormTransforms.nullablePhone),
-  
-  linkedin_url: yup.string()
+
+  linkedin_url: yup
+    .string()
     .url('Invalid LinkedIn URL')
     .max(500, 'LinkedIn URL must be 500 characters or less')
     .nullable()
     .transform(FormTransforms.nullableUrl),
-  
-  is_primary_contact: yup.boolean()
-    .nullable()
-    .default(false),
-  
-  notes: yup.string()
+
+  is_primary_contact: yup.boolean().nullable().default(false),
+
+  notes: yup
+    .string()
     .max(500, 'Notes must be 500 characters or less')
     .nullable()
     .transform(FormTransforms.nullableString),
 
   // VIRTUAL FIELDS for form handling (not persisted to database)
-  preferred_principals: yup.array()
+  preferred_principals: yup
+    .array()
     .of(yup.string().uuid('Invalid principal organization ID'))
     .default([])
-    .transform(FormTransforms.optionalArray)
+    .transform(FormTransforms.optionalArray),
 })
 
 // Type inference from validation schema
@@ -143,7 +161,7 @@ export interface ContactFilters {
 export const getDisplayRole = (contact: Contact): string => {
   // Get the role display label from the contact
   if (contact.role) {
-    const roleOption = CONTACT_ROLES.find(r => r.value === contact.role)
+    const roleOption = CONTACT_ROLES.find((r) => r.value === contact.role)
     return roleOption?.label || contact.role
   }
   // Fall back to title field for backward compatibility
@@ -151,11 +169,11 @@ export const getDisplayRole = (contact: Contact): string => {
 }
 
 export const getRoleLabel = (role: ContactRole): string => {
-  const roleOption = CONTACT_ROLES.find(r => r.value === role)
+  const roleOption = CONTACT_ROLES.find((r) => r.value === role)
   return roleOption?.label || role
 }
 
 export const getRoleValue = (label: string): ContactRole | undefined => {
-  const roleOption = CONTACT_ROLES.find(r => r.label === label)
+  const roleOption = CONTACT_ROLES.find((r) => r.label === label)
   return roleOption?.value
 }

@@ -14,33 +14,23 @@ interface ActivityGroupProps {
   onActivityClick?: (activity: InteractionWithRelations) => void
 }
 
-export const ActivityGroup: React.FC<ActivityGroupProps> = ({ 
-  groupKey, 
-  activities
-}) => {
+export const ActivityGroup: React.FC<ActivityGroupProps> = ({ groupKey, activities }) => {
   const [isOpen, setIsOpen] = useState(true)
-  
+
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <CollapsibleTrigger asChild>
-        <Button
-          variant="ghost"
-          className="h-auto w-full justify-between p-2 text-left font-medium"
-        >
+        <Button variant="ghost" className="h-auto w-full justify-between p-2 text-left font-medium">
           <div className="flex items-center gap-2">
             <span className="text-sm font-semibold text-gray-900">{groupKey}</span>
             <Badge variant="secondary" className="text-xs">
               {activities.length}
             </Badge>
           </div>
-          {isOpen ? (
-            <ChevronDown className="size-4" />
-          ) : (
-            <ChevronRight className="size-4" />
-          )}
+          {isOpen ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
         </Button>
       </CollapsibleTrigger>
-      
+
       <CollapsibleContent className="space-y-2">
         {activities.map((activity) => (
           <ActivityItemComponent
@@ -48,7 +38,7 @@ export const ActivityGroup: React.FC<ActivityGroupProps> = ({
             item={activity}
             useNewStyle={false}
             formatTimestamp={formatActivityTimestamp}
-            getPriorityColor={(priority) => priority === 'high' ? 'red' : 'blue'}
+            getPriorityColor={(priority) => (priority === 'high' ? 'red' : 'blue')}
           />
         ))}
       </CollapsibleContent>

@@ -28,17 +28,17 @@ export const ContactRow: React.FC<ContactRowProps> = ({
   onEdit,
   onView,
   onContact,
-  showOrganization = true
+  showOrganization = true,
 }) => {
   const { primaryContactInfo } = useContactRowState(contact)
 
   return (
     <React.Fragment>
       {/* Main Row */}
-      <TableRow 
+      <TableRow
         className={cn(
-          "hover:bg-muted/80 transition-colors border-b",
-          index % 2 === 0 ? "bg-card" : "bg-muted/30"
+          'hover:bg-muted/80 transition-colors border-b',
+          index % 2 === 0 ? 'bg-card' : 'bg-muted/30'
         )}
       >
         {/* Expand Toggle */}
@@ -49,10 +49,11 @@ export const ContactRow: React.FC<ContactRowProps> = ({
             onClick={() => onToggleExpansion(contact.id)}
             className="size-8 p-0 hover:bg-muted"
           >
-            {isExpanded ? 
-              <ChevronDown className="size-4 text-muted-foreground" /> : 
+            {isExpanded ? (
+              <ChevronDown className="size-4 text-muted-foreground" />
+            ) : (
               <ChevronRight className="size-4 text-muted-foreground" />
-            }
+            )}
           </Button>
         </TableCell>
 
@@ -61,21 +62,13 @@ export const ContactRow: React.FC<ContactRowProps> = ({
           showOrganization={showOrganization}
           primaryContactInfo={primaryContactInfo}
         />
-        
-        <ContactActions
-          contact={contact}
-          onEdit={onEdit}
-          onView={onView}
-          onContact={onContact}
-        />
+
+        <ContactActions contact={contact} onEdit={onEdit} onView={onView} onContact={onContact} />
       </TableRow>
 
       {/* Expandable Row Details */}
       {isExpanded && (
-        <ContactExpandedDetails
-          contact={contact}
-          showOrganization={showOrganization}
-        />
+        <ContactExpandedDetails contact={contact} showOrganization={showOrganization} />
       )}
     </React.Fragment>
   )

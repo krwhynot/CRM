@@ -24,7 +24,7 @@ const baseFilterPills: Omit<FilterPill, 'count'>[] = [
   { key: 'high-value', label: 'High Value' },
   { key: 'dairy', label: 'Dairy Products' },
   { key: 'fresh-products', label: 'Fresh Products' },
-  { key: 'recently-added', label: 'Recently Added' }
+  { key: 'recently-added', label: 'Recently Added' },
 ]
 
 export const useProductsFiltering = (
@@ -40,19 +40,19 @@ export const useProductsFiltering = (
     // Apply filter
     switch (activeFilter) {
       case 'high-value':
-        filtered = filtered.filter(product => (product.list_price || 0) > 20)
+        filtered = filtered.filter((product) => (product.list_price || 0) > 20)
         break
       case 'dairy':
-        filtered = filtered.filter(product => product.category === 'dairy')
+        filtered = filtered.filter((product) => product.category === 'dairy')
         break
       case 'fresh-products':
-        filtered = filtered.filter(product => (product.shelf_life_days || 0) <= 7)
+        filtered = filtered.filter((product) => (product.shelf_life_days || 0) <= 7)
         break
       case 'recently-added': {
         // Filter products added within the last 7 days
         const sevenDaysAgo = new Date()
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
-        filtered = filtered.filter(product => {
+        filtered = filtered.filter((product) => {
           if (!product.created_at) return false
           const createdDate = new Date(product.created_at)
           return createdDate > sevenDaysAgo
@@ -68,12 +68,13 @@ export const useProductsFiltering = (
     // Apply search
     if (searchTerm) {
       const term = searchTerm.toLowerCase()
-      filtered = filtered.filter(product => 
-        product.name?.toLowerCase().includes(term) ||
-        product.sku?.toLowerCase().includes(term) ||
-        product.description?.toLowerCase().includes(term) ||
-        product.category?.toLowerCase().includes(term) ||
-        product.principal?.name?.toLowerCase().includes(term)
+      filtered = filtered.filter(
+        (product) =>
+          product.name?.toLowerCase().includes(term) ||
+          product.sku?.toLowerCase().includes(term) ||
+          product.description?.toLowerCase().includes(term) ||
+          product.category?.toLowerCase().includes(term) ||
+          product.principal?.name?.toLowerCase().includes(term)
       )
     }
 
@@ -82,9 +83,9 @@ export const useProductsFiltering = (
 
   // Update filter pills with counts
   const filterPills = useMemo(() => {
-    return baseFilterPills.map(pill => ({
+    return baseFilterPills.map((pill) => ({
       ...pill,
-      count: getFilterCount(pill.key, products)
+      count: getFilterCount(pill.key, products),
     }))
   }, [products])
 
@@ -94,7 +95,7 @@ export const useProductsFiltering = (
     searchTerm,
     setSearchTerm,
     filteredProducts,
-    filterPills
+    filterPills,
   }
 }
 
@@ -104,15 +105,15 @@ function getFilterCount(filterKey: ProductFilterType, products: ProductWithPrinc
     case 'all':
       return products.length
     case 'high-value':
-      return products.filter(product => (product.list_price || 0) > 20).length
+      return products.filter((product) => (product.list_price || 0) > 20).length
     case 'dairy':
-      return products.filter(product => product.category === 'dairy').length
+      return products.filter((product) => product.category === 'dairy').length
     case 'fresh-products':
-      return products.filter(product => (product.shelf_life_days || 0) <= 7).length
+      return products.filter((product) => (product.shelf_life_days || 0) <= 7).length
     case 'recently-added': {
       const sevenDaysAgo = new Date()
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
-      return products.filter(product => {
+      return products.filter((product) => {
         if (!product.created_at) return false
         const createdDate = new Date(product.created_at)
         return createdDate > sevenDaysAgo

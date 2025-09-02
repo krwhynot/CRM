@@ -10,10 +10,7 @@ interface ExportErrorProps {
   onReset: () => void
 }
 
-export const ExportError: React.FC<ExportErrorProps> = ({ 
-  exportProgress, 
-  onReset 
-}) => {
+export const ExportError: React.FC<ExportErrorProps> = ({ exportProgress, onReset }) => {
   if (!exportProgress.error) return null
 
   return (

@@ -27,7 +27,7 @@ export function PasswordInput({
   autoComplete,
   showHint = false,
   onChange,
-  onToggleVisibility
+  onToggleVisibility,
 }: PasswordInputProps) {
   return (
     <div className="space-y-2">
@@ -53,11 +53,7 @@ export function PasswordInput({
           onClick={onToggleVisibility}
           disabled={disabled}
         >
-          {showPassword ? (
-            <EyeOff className="size-4" />
-          ) : (
-            <Eye className="size-4" />
-          )}
+          {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
         </Button>
       </div>
       {showHint && (

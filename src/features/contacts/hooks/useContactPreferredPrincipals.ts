@@ -1,9 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
-import type { 
+import type {
   ContactPreferredPrincipal,
   ContactPreferredPrincipalInsert,
-  ContactPreferredPrincipalUpdate 
+  ContactPreferredPrincipalUpdate,
 } from '@/types/entities'
 
 // Query key factory
@@ -22,7 +22,8 @@ export function useContactPreferredPrincipals(contactId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('contact_preferred_principals')
-        .select(`
+        .select(
+          `
           id,
           contact_id,
           principal_organization_id,
@@ -41,7 +42,8 @@ export function useContactPreferredPrincipals(contactId: string) {
             email,
             website
           )
-        `)
+        `
+        )
         .eq('contact_id', contactId)
         .is('deleted_at', null)
         .order('created_at', { ascending: false })
@@ -72,8 +74,11 @@ export function useAddContactPreferredPrincipal() {
   return useMutation({
     mutationFn: async (data: ContactPreferredPrincipalInsert) => {
       // Get current user ID for RLS policy compliance
-      const { data: { user }, error: authError } = await supabase.auth.getUser()
-      
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser()
+
       if (authError || !user) {
         throw new Error('Authentication required to add preferred principal')
       }
@@ -96,8 +101,8 @@ export function useAddContactPreferredPrincipal() {
     },
     onSuccess: (newRelationship) => {
       // Invalidate contact preferred principals queries
-      queryClient.invalidateQueries({ 
-        queryKey: contactPreferredPrincipalsKeys.list(newRelationship.contact_id) 
+      queryClient.invalidateQueries({
+        queryKey: contactPreferredPrincipalsKeys.list(newRelationship.contact_id),
       })
     },
   })
@@ -108,15 +113,18 @@ export function useRemoveContactPreferredPrincipal() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ contactId, principalOrganizationId }: { 
+    mutationFn: async ({
+      contactId,
+      principalOrganizationId,
+    }: {
       contactId: string
-      principalOrganizationId: string 
+      principalOrganizationId: string
     }) => {
       const { data, error } = await supabase
         .from('contact_preferred_principals')
-        .update({ 
+        .update({
           deleted_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('contact_id', contactId)
         .eq('principal_organization_id', principalOrganizationId)
@@ -128,8 +136,8 @@ export function useRemoveContactPreferredPrincipal() {
     },
     onSuccess: (deletedRelationship) => {
       // Invalidate contact preferred principals queries
-      queryClient.invalidateQueries({ 
-        queryKey: contactPreferredPrincipalsKeys.list(deletedRelationship.contact_id) 
+      queryClient.invalidateQueries({
+        queryKey: contactPreferredPrincipalsKeys.list(deletedRelationship.contact_id),
       })
     },
   })
@@ -142,12 +150,12 @@ export function useBulkUpdateContactPreferredPrincipals() {
   const removeMutation = useRemoveContactPreferredPrincipal()
 
   return useMutation({
-    mutationFn: async ({ 
-      contactId, 
-      principalOrganizationIds 
-    }: { 
+    mutationFn: async ({
+      contactId,
+      principalOrganizationIds,
+    }: {
       contactId: string
-      principalOrganizationIds: string[] 
+      principalOrganizationIds: string[]
     }) => {
       // Get current preferred principals
       const { data: currentRelationships, error: fetchError } = await supabase
@@ -158,11 +166,16 @@ export function useBulkUpdateContactPreferredPrincipals() {
 
       if (fetchError) throw fetchError
 
-      const currentPrincipalIds = currentRelationships?.map(r => r.principal_organization_id) || []
+      const currentPrincipalIds =
+        currentRelationships?.map((r) => r.principal_organization_id) || []
 
       // Determine which principals to add and remove
-      const principalsToAdd = principalOrganizationIds.filter(id => !currentPrincipalIds.includes(id))
-      const principalsToRemove = currentPrincipalIds.filter(id => !principalOrganizationIds.includes(id))
+      const principalsToAdd = principalOrganizationIds.filter(
+        (id) => !currentPrincipalIds.includes(id)
+      )
+      const principalsToRemove = currentPrincipalIds.filter(
+        (id) => !principalOrganizationIds.includes(id)
+      )
 
       // Remove principals that are no longer selected
       for (const principalId of principalsToRemove) {
@@ -174,7 +187,7 @@ export function useBulkUpdateContactPreferredPrincipals() {
         await addMutation.mutateAsync({
           contact_id: contactId,
           principal_organization_id: principalId,
-          relationship_type: 'advocate' // Default relationship type
+          relationship_type: 'advocate', // Default relationship type
         })
       }
 
@@ -182,8 +195,8 @@ export function useBulkUpdateContactPreferredPrincipals() {
     },
     onSuccess: (_, variables) => {
       // Invalidate contact preferred principals queries
-      queryClient.invalidateQueries({ 
-        queryKey: contactPreferredPrincipalsKeys.list(variables.contactId) 
+      queryClient.invalidateQueries({
+        queryKey: contactPreferredPrincipalsKeys.list(variables.contactId),
       })
     },
   })
@@ -194,12 +207,12 @@ export function useUpdateContactPreferredPrincipal() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ 
-      id, 
-      updates 
-    }: { 
+    mutationFn: async ({
+      id,
+      updates,
+    }: {
       id: string
-      updates: ContactPreferredPrincipalUpdate 
+      updates: ContactPreferredPrincipalUpdate
     }) => {
       const { data, error } = await supabase
         .from('contact_preferred_principals')
@@ -213,10 +226,10 @@ export function useUpdateContactPreferredPrincipal() {
     },
     onSuccess: (updatedRelationship) => {
       // Invalidate contact preferred principals queries
-      queryClient.invalidateQueries({ 
-        queryKey: contactPreferredPrincipalsKeys.list(updatedRelationship.contact_id) 
+      queryClient.invalidateQueries({
+        queryKey: contactPreferredPrincipalsKeys.list(updatedRelationship.contact_id),
       })
-      
+
       // Update the specific relationship in the cache
       queryClient.setQueryData(
         contactPreferredPrincipalsKeys.detail(updatedRelationship.id),
@@ -227,8 +240,10 @@ export function useUpdateContactPreferredPrincipal() {
 }
 
 // Utility function to extract principal IDs from contact preferred principals
-export function extractPrincipalIds(relationships: ContactPreferredPrincipal[] | undefined): string[] {
-  return relationships?.map(r => r.principal_organization_id) || []
+export function extractPrincipalIds(
+  relationships: ContactPreferredPrincipal[] | undefined
+): string[] {
+  return relationships?.map((r) => r.principal_organization_id) || []
 }
 
 // Utility function to check if a contact advocates for a specific principal
@@ -236,5 +251,5 @@ export function isContactAdvocateForPrincipal(
   relationships: ContactPreferredPrincipal[] | undefined,
   principalId: string
 ): boolean {
-  return relationships?.some(r => r.principal_organization_id === principalId) || false
+  return relationships?.some((r) => r.principal_organization_id === principalId) || false
 }

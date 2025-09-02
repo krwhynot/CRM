@@ -1,48 +1,45 @@
-// New Shared Form Components (3-Tier System)
+// Form Architecture: Modern Dialog + Form System
+// Use StandardDialog -> FormCard -> FormField/SimpleForm/BusinessForm pattern
+
+// Core Form Components
 export { FormCard } from './FormCard'
-export { FormField } from './FormField'
+export { FormFieldNew } from './FormField'
+export { FormInput } from './FormInput'
 export { FormSubmitButton } from './FormSubmitButton'
 
-// Legacy Core form components
-export { 
-  CoreFormLayout, 
-  default as CoreFormLayoutDefault 
-} from './CoreFormLayout'
+// Form Builders
+export { SimpleForm, type SimpleFormField } from './SimpleForm'
+export { BusinessForm, type FormSection, type BusinessFormField } from './BusinessForm'
 
-export { 
-  EntitySelect 
-} from './EntitySelect'
-
-export { 
+// Specialized Components
+export { EntitySelect } from './EntitySelect'
+export {
   ProgressiveDetails,
   FormSectionDetails,
   OptionalFields,
   AdvancedOptions,
   ContactDetails,
   OrganizationDetails,
-  AddressDetails
+  AddressDetails,
 } from './ProgressiveDetails'
 
-// Hook export
+// Validation & Enhancement Components
+export { FormValidationFeedback } from './FormValidationFeedback'
+export { EnhancedFormField } from './EnhancedFormField'
+
+// Legacy Components (deprecated - use SimpleForm instead)
+export { FormLayout } from './FormLayout'
+export { CoreFormLayout } from './CoreFormLayout' // DEPRECATED: Shows migration notice
+
+// Hooks
 export { useProgressiveDetails } from '@/hooks/useProgressiveDetails'
 
-// Type exports
-export type {
-  CoreFormLayoutProps,
-  FormSection,
-  FormFieldConfig,
-  ConditionalSection,
-  SelectOption
-} from './CoreFormLayout'
-
-export type { 
-  EntityOption,
-  EntitySelectProps
-} from './EntitySelect'
-
+// Type Exports
+export type { EntityOption, EntitySelectProps } from './EntitySelect'
 export type {
   ProgressiveDetailsProps,
   FormSectionDetailsProps,
   OptionalFieldsProps,
-  AdvancedOptionsProps
+  AdvancedOptionsProps,
 } from './ProgressiveDetails'
+export type { InputConfig, SelectOption } from './FormInput'

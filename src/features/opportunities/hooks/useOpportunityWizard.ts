@@ -15,7 +15,10 @@ export interface UseOpportunityWizardReturn {
   setCurrentStep: (step: number) => void
   handleNext: (validateCurrentStep: () => Promise<boolean>) => Promise<void>
   handlePrevious: () => void
-  handleStepClick: (step: number, validateSteps: (fromStep: number, toStep: number) => Promise<boolean>) => Promise<void>
+  handleStepClick: (
+    step: number,
+    validateSteps: (fromStep: number, toStep: number) => Promise<boolean>
+  ) => Promise<void>
   getStepStatus: (step: number) => StepStatus
   progress: number
   isFirstStep: boolean
@@ -28,12 +31,15 @@ export const useOpportunityWizard = (
 ): UseOpportunityWizardReturn => {
   const [currentStep, setCurrentStep] = useState(initialStep)
 
-  const handleNext = useCallback(async (validateCurrentStep: () => Promise<boolean>) => {
-    const isValid = await validateCurrentStep()
-    if (isValid && currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1)
-    }
-  }, [currentStep, totalSteps])
+  const handleNext = useCallback(
+    async (validateCurrentStep: () => Promise<boolean>) => {
+      const isValid = await validateCurrentStep()
+      if (isValid && currentStep < totalSteps) {
+        setCurrentStep(currentStep + 1)
+      }
+    },
+    [currentStep, totalSteps]
+  )
 
   const handlePrevious = useCallback(() => {
     if (currentStep > 1) {
@@ -41,26 +47,29 @@ export const useOpportunityWizard = (
     }
   }, [currentStep])
 
-  const handleStepClick = useCallback(async (
-    step: number, 
-    validateSteps: (fromStep: number, toStep: number) => Promise<boolean>
-  ) => {
-    if (step <= currentStep) {
-      setCurrentStep(step)
-    } else {
-      // Validate all steps up to the target step
-      const canProceed = await validateSteps(currentStep, step)
-      if (canProceed) {
+  const handleStepClick = useCallback(
+    async (step: number, validateSteps: (fromStep: number, toStep: number) => Promise<boolean>) => {
+      if (step <= currentStep) {
         setCurrentStep(step)
+      } else {
+        // Validate all steps up to the target step
+        const canProceed = await validateSteps(currentStep, step)
+        if (canProceed) {
+          setCurrentStep(step)
+        }
       }
-    }
-  }, [currentStep])
+    },
+    [currentStep]
+  )
 
-  const getStepStatus = useCallback((step: number): StepStatus => {
-    if (step < currentStep) return 'completed'
-    if (step === currentStep) return 'current'
-    return 'upcoming'
-  }, [currentStep])
+  const getStepStatus = useCallback(
+    (step: number): StepStatus => {
+      if (step < currentStep) return 'completed'
+      if (step === currentStep) return 'current'
+      return 'upcoming'
+    },
+    [currentStep]
+  )
 
   const progress = ((currentStep - 1) / (totalSteps - 1)) * 100
 
@@ -76,6 +85,6 @@ export const useOpportunityWizard = (
     getStepStatus,
     progress,
     isFirstStep,
-    isLastStep
+    isLastStep,
   }
 }

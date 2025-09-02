@@ -9,17 +9,17 @@ interface UseOpportunitiesPageStateReturn {
   setIsCreateDialogOpen: (open: boolean) => void
   setIsEditDialogOpen: (open: boolean) => void
   setIsInteractionDialogOpen: (open: boolean) => void
-  
+
   // Editing states
   editingOpportunity: Opportunity | null
   setEditingOpportunity: (opportunity: Opportunity | null) => void
   editingInteraction: InteractionWithRelations | null
   setEditingInteraction: (interaction: InteractionWithRelations | null) => void
-  
+
   // Timeline state
   selectedOpportunityId: string | null
   setSelectedOpportunityId: (id: string | null) => void
-  
+
   // Combined handlers
   handleEditOpportunity: (opportunity: Opportunity) => void
   handleViewOpportunity: (opportunity: Opportunity) => void
@@ -33,11 +33,13 @@ export const useOpportunitiesPageState = (): UseOpportunitiesPageStateReturn => 
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isInteractionDialogOpen, setIsInteractionDialogOpen] = useState(false)
-  
+
   // Editing states
   const [editingOpportunity, setEditingOpportunity] = useState<Opportunity | null>(null)
-  const [editingInteraction, setEditingInteraction] = useState<InteractionWithRelations | null>(null)
-  
+  const [editingInteraction, setEditingInteraction] = useState<InteractionWithRelations | null>(
+    null
+  )
+
   // Timeline state
   const [selectedOpportunityId, setSelectedOpportunityId] = useState<string | null>(null)
 
@@ -75,22 +77,22 @@ export const useOpportunitiesPageState = (): UseOpportunitiesPageStateReturn => 
     setIsCreateDialogOpen,
     setIsEditDialogOpen,
     setIsInteractionDialogOpen,
-    
+
     // Editing states
     editingOpportunity,
     setEditingOpportunity,
     editingInteraction,
     setEditingInteraction,
-    
+
     // Timeline state
     selectedOpportunityId,
     setSelectedOpportunityId,
-    
+
     // Combined handlers
     handleEditOpportunity,
     handleViewOpportunity,
     handleCloseOpportunityDetail,
     handleAddInteraction,
-    handleEditInteraction
+    handleEditInteraction,
   }
 }

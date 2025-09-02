@@ -1,7 +1,7 @@
 import React from 'react'
 import { PrincipalCardsGrid } from './PrincipalCardsGrid'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { StatusIndicator } from "@/components/ui/status-indicator"
+import { StatusIndicator } from '@/components/ui/status-indicator'
 import { Button } from '@/components/ui/button'
 import { usePrincipals } from '@/features/organizations/hooks/useOrganizations'
 import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities'
@@ -18,13 +18,13 @@ interface DashboardStats {
 
 /**
  * PrincipalsDashboard Component
- * 
+ *
  * Comprehensive dashboard view for principal organizations showing:
  * - Key performance indicators and summary statistics
  * - Grid of individual principal cards with detailed metrics
  * - Quick actions for managing principals
  * - Real-time data integration
- * 
+ *
  * Features:
  * - Responsive design optimized for all screen sizes
  * - Real-time data updates using React Query
@@ -38,26 +38,26 @@ export function PrincipalsDashboard() {
 
   // Calculate dashboard statistics
   const stats: DashboardStats = React.useMemo(() => {
-    const principalIds = new Set(principals.map(p => p.id))
-    
+    const principalIds = new Set(principals.map((p) => p.id))
+
     // Filter opportunities and activities related to principals
     const principalOpportunities = opportunities.filter(
-      opp => opp.principal_organization_id && principalIds.has(opp.principal_organization_id)
+      (opp) => opp.principal_organization_id && principalIds.has(opp.principal_organization_id)
     )
-    
-    const principalInteractions = interactions.filter(
-      interaction => principalOpportunities.some(opp => opp.id === interaction.opportunity_id)
+
+    const principalInteractions = interactions.filter((interaction) =>
+      principalOpportunities.some((opp) => opp.id === interaction.opportunity_id)
     )
 
     return {
       totalPrincipals: principals.length,
-      activePrincipals: principals.filter(p => p.is_active).length,
+      activePrincipals: principals.filter((p) => p.is_active).length,
       totalOpportunities: principalOpportunities.length,
       totalActivities: principalInteractions.length,
       totalEstimatedValue: principalOpportunities.reduce(
-        (sum, opp) => sum + (opp.estimated_value || 0), 
+        (sum, opp) => sum + (opp.estimated_value || 0),
         0
-      )
+      ),
     }
   }, [principals, opportunities, interactions])
 
@@ -73,7 +73,7 @@ export function PrincipalsDashboard() {
             Manage and monitor your principal partnerships and opportunities
           </p>
         </div>
-        
+
         <div className="flex items-center gap-2">
           <Button className="gap-2">
             <Plus className="size-4" />
@@ -110,9 +110,7 @@ export function PrincipalsDashboard() {
             <div className="text-2xl font-bold" role="status" aria-live="polite">
               {isLoading ? <span>Loading...</span> : stats.totalOpportunities}
             </div>
-            <p className="text-xs text-muted-foreground">
-              Across all principals
-            </p>
+            <p className="text-xs text-muted-foreground">Across all principals</p>
           </CardContent>
         </Card>
 
@@ -123,11 +121,13 @@ export function PrincipalsDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold" role="status" aria-live="polite">
-              {isLoading ? <span>Loading...</span> : `$${stats.totalEstimatedValue.toLocaleString()}`}
+              {isLoading ? (
+                <span>Loading...</span>
+              ) : (
+                `$${stats.totalEstimatedValue.toLocaleString()}`
+              )}
             </div>
-            <p className="text-xs text-muted-foreground">
-              Pipeline value
-            </p>
+            <p className="text-xs text-muted-foreground">Pipeline value</p>
           </CardContent>
         </Card>
 
@@ -140,9 +140,7 @@ export function PrincipalsDashboard() {
             <div className="text-2xl font-bold" role="status" aria-live="polite">
               {isLoading ? <span>Loading...</span> : stats.totalActivities}
             </div>
-            <p className="text-xs text-muted-foreground">
-              All principal activities
-            </p>
+            <p className="text-xs text-muted-foreground">All principal activities</p>
           </CardContent>
         </Card>
       </div>
@@ -155,23 +153,37 @@ export function PrincipalsDashboard() {
         <CardContent>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
             <div className="flex items-center gap-2">
-              <StatusIndicator variant="destructive" size="sm">A+</StatusIndicator>
+              <StatusIndicator variant="destructive" size="sm">
+                A+
+              </StatusIndicator>
               <span className="text-sm">Enterprise</span>
             </div>
             <div className="flex items-center gap-2">
-              <StatusIndicator variant="warning" size="sm">A</StatusIndicator>
+              <StatusIndicator variant="warning" size="sm">
+                A
+              </StatusIndicator>
               <span className="text-sm">Large</span>
             </div>
             <div className="flex items-center gap-2">
-              <StatusIndicator variant="outline" size="sm" className="border-yellow-300 bg-yellow-100 text-yellow-800">B</StatusIndicator>
+              <StatusIndicator
+                variant="outline"
+                size="sm"
+                className="border-yellow-300 bg-yellow-100 text-yellow-800"
+              >
+                B
+              </StatusIndicator>
               <span className="text-sm">Medium</span>
             </div>
             <div className="flex items-center gap-2">
-              <StatusIndicator variant="secondary" size="sm">C</StatusIndicator>
+              <StatusIndicator variant="secondary" size="sm">
+                C
+              </StatusIndicator>
               <span className="text-sm">Small</span>
             </div>
             <div className="flex items-center gap-2">
-              <StatusIndicator variant="outline" size="sm">D</StatusIndicator>
+              <StatusIndicator variant="outline" size="sm">
+                D
+              </StatusIndicator>
               <span className="text-sm">Unassigned</span>
             </div>
           </div>
@@ -183,10 +195,14 @@ export function PrincipalsDashboard() {
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-semibold">Principal Organizations</h2>
           <p className="text-sm text-muted-foreground" role="status" aria-live="polite">
-            {isLoading ? <span>Loading...</span> : `${stats.totalPrincipals} principal${stats.totalPrincipals !== 1 ? 's' : ''}`}
+            {isLoading ? (
+              <span>Loading...</span>
+            ) : (
+              `${stats.totalPrincipals} principal${stats.totalPrincipals !== 1 ? 's' : ''}`
+            )}
           </p>
         </div>
-        
+
         <PrincipalCardsGrid />
       </div>
     </div>

@@ -1,76 +1,71 @@
-import * as React from "react"
-import { cn } from "@/lib/utils"
+import { type Control } from 'react-hook-form'
+import {
+  FormControl,
+  FormDescription,
+  FormField as FormFieldPrimitive,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { cn } from '@/lib/utils'
+import { useDialogContext } from '@/contexts/DialogContext'
+import { getFormSpacingClasses } from '@/lib/utils/form-utils'
+import { FormInput, type InputConfig, type SelectOption } from './FormInput'
 
-export interface FormFieldProps {
-  label: React.ReactNode
-  description?: React.ReactNode
-  error?: React.ReactNode
+/**
+ * FormField - Field wrapper component with label, validation, and description
+ *
+ * Provides consistent field layout with React Hook Form integration.
+ * Automatically adapts to dialog context for responsive behavior.
+ */
+
+export interface FieldConfig extends InputConfig {
+  label: string
+  name: string
   required?: boolean
-  children: React.ReactElement
+  description?: string
+  validation?: any // Yup schema validation
+}
+
+interface FormFieldProps {
+  control: Control<any>
+  name: string
+  config: FieldConfig
+  disabled?: boolean
   className?: string
 }
 
-/**
- * FormField component provides consistent labels, help text, error messages, 
- * and accessibility features for form inputs. Integrates seamlessly with 
- * React Hook Form via Controller pattern.
- * 
- * Features:
- * - Automatic ID generation and ARIA attribute management
- * - Required field indicators with asterisk
- * - Error state handling with proper styling
- * - Description/help text support
- * - Full accessibility compliance (aria-describedby, aria-invalid)
- * 
- * Usage with React Hook Form:
- * ```tsx
- * <Controller
- *   control={form.control}
- *   name="name"
- *   render={({ field, fieldState }) => (
- *     <FormField label="Name" required error={fieldState.error?.message}>
- *       <Input {...field} />
- *     </FormField>
- *   )}
- * />
- * ```
- */
-export function FormField({
-  label,
-  description,
-  error,
-  required,
-  children,
-  className
-}: FormFieldProps) {
-  const id = React.useId()
-  const descId = description ? `${id}-desc` : undefined
-  const errId = error ? `${id}-err` : undefined
-  const describedBy = [descId, errId].filter(Boolean).join(" ") || undefined
-
-  // Clone the child element and inject necessary props
-  const control = React.cloneElement(children, {
-    id,
-    "aria-invalid": !!error || undefined,
-    "aria-describedby": describedBy
-  })
+export function FormFieldNew({ control, name, config, disabled, className }: FormFieldProps) {
+  const { isInDialog } = useDialogContext()
+  const spacingClasses = getFormSpacingClasses(isInDialog)
 
   return (
-    <div data-form-field className={cn("grid gap-1.5", className)}>
-      <label htmlFor={id} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-        {label} {required && <span className="text-destructive" aria-label="required">*</span>}
-      </label>
-      {control}
-      {description && (
-        <p id={descId} className="text-xs text-muted-foreground">
-          {description}
-        </p>
+    <FormFieldPrimitive
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className={cn(spacingClasses, config.className, className)}>
+          <FormLabel className="text-sm font-medium text-gray-700">
+            {config.label}
+            {config.required && <span className="ml-1 text-red-500">*</span>}
+          </FormLabel>
+
+          <FormControl>
+            <FormInput {...field} config={config} disabled={disabled} />
+          </FormControl>
+
+          {config.description && (
+            <FormDescription className="text-xs text-muted-foreground">
+              {config.description}
+            </FormDescription>
+          )}
+
+          <FormMessage className="text-xs" />
+        </FormItem>
       )}
-      {error && (
-        <p id={errId} className="text-xs text-destructive" role="alert">
-          {error}
-        </p>
-      )}
-    </div>
+    />
   )
 }
+
+// Export types for external usage
+export type { SelectOption, InputConfig }

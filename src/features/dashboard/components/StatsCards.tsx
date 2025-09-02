@@ -1,13 +1,8 @@
-import { TrendingUp, TrendingDown, Users, Target, MessageSquare, Building2 } from "lucide-react"
-import { useDashboardMetrics } from "@/features/dashboard/hooks/useDashboardMetrics"
-import { Skeleton } from "@/components/ui/skeleton"
+import { TrendingUp, TrendingDown, Users, Target, MessageSquare, Building2 } from 'lucide-react'
+import { useDashboardMetrics } from '@/features/dashboard/hooks/useDashboardMetrics'
+import { Skeleton } from '@/components/ui/skeleton'
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export function StatsCards() {
   const metrics = useDashboardMetrics()
@@ -34,9 +29,7 @@ export function StatsCards() {
 
   if (metrics.error) {
     return (
-      <div className="col-span-4 text-center text-red-500">
-        Error loading dashboard metrics
-      </div>
+      <div className="col-span-4 text-center text-red-500">Error loading dashboard metrics</div>
     )
   }
 
@@ -44,7 +37,7 @@ export function StatsCards() {
   const prospectCount = Object.entries(metrics.principalsByPriority)
     .filter(([priority]) => priority === 'low')
     .reduce((sum, [, count]) => sum + count, 0)
-  
+
   const activeCount = metrics.totalPrincipals - prospectCount
 
   const emailCalls = Object.entries(metrics.interactionsByType)
@@ -55,18 +48,18 @@ export function StatsCards() {
 
   const stats = [
     {
-      title: "Active Principals",
+      title: 'Active Principals',
       value: metrics.totalPrincipals.toString(),
       change: `${metrics.growthMetrics.principalsGrowth >= 0 ? '+' : ''}${metrics.growthMetrics.principalsGrowth.toFixed(1)}%`,
-      changeType: metrics.growthMetrics.principalsGrowth >= 0 ? "increase" : "decrease",
+      changeType: metrics.growthMetrics.principalsGrowth >= 0 ? 'increase' : 'decrease',
       icon: Building2,
       subtitle: `${prospectCount} Prospects, ${activeCount} Active`,
     },
     {
-      title: "Open Opportunities",
+      title: 'Open Opportunities',
       value: metrics.activeOpportunities.toString(),
       change: `${metrics.growthMetrics.opportunitiesGrowth >= 0 ? '+' : ''}${metrics.growthMetrics.opportunitiesGrowth.toFixed(1)}%`,
-      changeType: metrics.growthMetrics.opportunitiesGrowth >= 0 ? "increase" : "decrease",
+      changeType: metrics.growthMetrics.opportunitiesGrowth >= 0 ? 'increase' : 'decrease',
       icon: Target,
       subtitle: `${metrics.opportunitiesByStage['New Lead'] || 0} New Leads, ${metrics.opportunitiesByStage['Demo Scheduled'] || 0} Demo Scheduled`,
     },
@@ -74,15 +67,15 @@ export function StatsCards() {
       title: "This Week's Activities",
       value: metrics.thisWeekActivities.toString(),
       change: `${metrics.growthMetrics.interactionsGrowth >= 0 ? '+' : ''}${metrics.growthMetrics.interactionsGrowth.toFixed(1)}%`,
-      changeType: metrics.growthMetrics.interactionsGrowth >= 0 ? "increase" : "decrease",
+      changeType: metrics.growthMetrics.interactionsGrowth >= 0 ? 'increase' : 'decrease',
       icon: MessageSquare,
       subtitle: `${callCount} Calls, ${emailCount} Emails`,
     },
     {
-      title: "Active Contacts",
+      title: 'Active Contacts',
       value: metrics.totalContacts.toString(),
       change: `${metrics.growthMetrics.contactsGrowth >= 0 ? '+' : ''}${metrics.growthMetrics.contactsGrowth.toFixed(1)}%`,
-      changeType: metrics.growthMetrics.contactsGrowth >= 0 ? "increase" : "decrease",
+      changeType: metrics.growthMetrics.contactsGrowth >= 0 ? 'increase' : 'decrease',
       icon: Users,
       subtitle: `${primaryContactsCount} Primary Contacts`,
     },
@@ -93,30 +86,20 @@ export function StatsCards() {
       {stats.map((stat, index) => (
         <Card key={index} className="transition-shadow hover:shadow-md">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {stat.title}
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
             <stat.icon className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-primary">
-              {stat.value}
-            </div>
-            <p className="mb-2 text-xs text-muted-foreground">
-              {stat.subtitle}
-            </p>
+            <div className="text-2xl font-bold text-primary">{stat.value}</div>
+            <p className="mb-2 text-xs text-muted-foreground">{stat.subtitle}</p>
             <p className="flex items-center text-xs text-muted-foreground">
-              {stat.changeType === "increase" ? (
+              {stat.changeType === 'increase' ? (
                 <TrendingUp className="mr-1 size-3 text-success" />
               ) : (
                 <TrendingDown className="mr-1 size-3 text-destructive" />
               )}
               <span
-                className={
-                  stat.changeType === "increase"
-                    ? "text-success"
-                    : "text-destructive"
-                }
+                className={stat.changeType === 'increase' ? 'text-success' : 'text-destructive'}
               >
                 {stat.change}
               </span>

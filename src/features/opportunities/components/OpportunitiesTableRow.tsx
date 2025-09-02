@@ -30,18 +30,23 @@ export const OpportunitiesTableRow: React.FC<OpportunitiesTableRowProps> = ({
   getStageConfig,
   formatCurrency,
   formatActivityType,
-  isExpanded = false
+  isExpanded = false,
 }) => {
-  const stalled = isOpportunityStalled(opportunity.stage_updated_at || null, opportunity.created_at || '')
-  const stalledDays = stalled ? getStalledDays(opportunity.stage_updated_at || null, opportunity.created_at || '') : 0
+  const stalled = isOpportunityStalled(
+    opportunity.stage_updated_at || null,
+    opportunity.created_at || ''
+  )
+  const stalledDays = stalled
+    ? getStalledDays(opportunity.stage_updated_at || null, opportunity.created_at || '')
+    : 0
   const stageConfig = getStageConfig(opportunity.stage)
 
   return (
-    <TableRow 
+    <TableRow
       key={opportunity.id}
       className={cn(
-        "h-[52px] hover:bg-gray-50 transition-colors duration-150 border-b border-gray-100 cursor-pointer",
-        isExpanded && "bg-blue-50 hover:bg-blue-50 border-blue-200"
+        'h-[52px] hover:bg-gray-50 transition-colors duration-150 border-b border-gray-100 cursor-pointer',
+        isExpanded && 'bg-blue-50 hover:bg-blue-50 border-blue-200'
       )}
       onClick={() => onView?.(opportunity)}
     >
@@ -54,13 +59,9 @@ export const OpportunitiesTableRow: React.FC<OpportunitiesTableRowProps> = ({
               onView?.(opportunity)
             }}
             className="text-gray-400 transition-colors hover:text-gray-600"
-            aria-label={isExpanded ? "Collapse details" : "Expand details"}
+            aria-label={isExpanded ? 'Collapse details' : 'Expand details'}
           >
-            {isExpanded ? (
-              <ChevronDown className="size-4" />
-            ) : (
-              <ChevronRight className="size-4" />
-            )}
+            {isExpanded ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
           </button>
           <Checkbox
             checked={isSelected}
@@ -69,7 +70,7 @@ export const OpportunitiesTableRow: React.FC<OpportunitiesTableRowProps> = ({
           />
         </div>
       </TableCell>
-      
+
       {/* Company / Opportunity */}
       <TableCell className="px-6 py-2.5">
         <div>
@@ -81,13 +82,13 @@ export const OpportunitiesTableRow: React.FC<OpportunitiesTableRowProps> = ({
           </div>
         </div>
       </TableCell>
-      
+
       {/* Stage */}
       <TableCell className="px-6 py-2.5">
         <div className="flex items-center gap-1.5">
           {/* Stage color dot */}
-          <span className={cn("w-2 h-2 rounded-full", stageConfig.dot)}></span>
-          
+          <span className={cn('w-2 h-2 rounded-full', stageConfig.dot)}></span>
+
           {/* Stalled indicator - red pulsing dot */}
           {stalled && (
             <TooltipProvider>
@@ -101,12 +102,12 @@ export const OpportunitiesTableRow: React.FC<OpportunitiesTableRowProps> = ({
               </Tooltip>
             </TooltipProvider>
           )}
-          
+
           <span className="text-sm font-medium">{opportunity.stage}</span>
           <span className="text-xs text-gray-400">{stageConfig.position}/7</span>
         </div>
       </TableCell>
-      
+
       {/* Value / Probability */}
       <TableCell className="px-6 py-2.5 text-right">
         <div>
@@ -116,7 +117,7 @@ export const OpportunitiesTableRow: React.FC<OpportunitiesTableRowProps> = ({
           </div>
         </div>
       </TableCell>
-      
+
       {/* Last Activity */}
       <TableCell className="px-6 py-2.5 text-right">
         <div>
@@ -128,7 +129,7 @@ export const OpportunitiesTableRow: React.FC<OpportunitiesTableRowProps> = ({
           </div>
         </div>
       </TableCell>
-      
+
       {/* Actions */}
       <TableCell className="px-6 py-2.5 text-right" onClick={(e) => e.stopPropagation()}>
         <OpportunitiesTableActions

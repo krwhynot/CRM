@@ -8,9 +8,7 @@ interface UseContactsDisplayReturn {
   collapseAll: () => void
 }
 
-export const useContactsDisplay = (
-  contactIds: string[] = []
-): UseContactsDisplayReturn => {
+export const useContactsDisplay = (contactIds: string[] = []): UseContactsDisplayReturn => {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
 
   const toggleRowExpansion = (contactId: string) => {
@@ -40,6 +38,6 @@ export const useContactsDisplay = (
     toggleRowExpansion,
     isRowExpanded,
     expandAll,
-    collapseAll
+    collapseAll,
   }
 }

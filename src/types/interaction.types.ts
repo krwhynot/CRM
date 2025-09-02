@@ -19,117 +19,139 @@ export type InteractionWithRelations = Interaction & {
 // Interaction validation schema - ONLY specification fields
 export const interactionSchema = yup.object({
   // REQUIRED FIELDS per specification
-  type: yup.string()
-    .oneOf([
-      'call',
-      'email',
-      'meeting',
-      'demo',
-      'proposal',
-      'follow_up',
-      'trade_show',
-      'site_visit',
-      'contract_review'
-    ] as const, 'Invalid interaction type')
+  type: yup
+    .string()
+    .oneOf(
+      [
+        'call',
+        'email',
+        'meeting',
+        'demo',
+        'proposal',
+        'follow_up',
+        'trade_show',
+        'site_visit',
+        'contract_review',
+      ] as const,
+      'Invalid interaction type'
+    )
     .required('Interaction type is required'),
-  
-  interaction_date: yup.string()
-    .required('Interaction date is required'),
-  
-  subject: yup.string()
+
+  interaction_date: yup.string().required('Interaction date is required'),
+
+  subject: yup
+    .string()
     .required('Subject is required')
     .max(255, 'Subject must be 255 characters or less'),
-  
-  opportunity_id: yup.string()
-    .uuid('Invalid opportunity ID')
-    .required('Opportunity is required'),
+
+  opportunity_id: yup.string().uuid('Invalid opportunity ID').required('Opportunity is required'),
 
   // OPTIONAL FIELDS per specification
-  location: yup.string()
-    .max(255, 'Location must be 255 characters or less')
-    .nullable(),
-  
-  notes: yup.string()
-    .max(500, 'Notes must be 500 characters or less')
-    .nullable(),
-  
-  follow_up_required: yup.boolean()
-    .default(false),
-  
-  follow_up_date: yup.string()
+  location: yup.string().max(255, 'Location must be 255 characters or less').nullable(),
+
+  notes: yup.string().max(500, 'Notes must be 500 characters or less').nullable(),
+
+  follow_up_required: yup.boolean().default(false),
+
+  follow_up_date: yup
+    .string()
     .nullable()
     .when('follow_up_required', {
       is: true,
       then: (schema) => schema.required('Follow-up date is required when follow-up is needed'),
-      otherwise: (schema) => schema.nullable()
-    })
+      otherwise: (schema) => schema.nullable(),
+    }),
+
+  // Additional database fields
+  duration_minutes: yup.number().min(1, 'Duration must be at least 1 minute').nullable(),
+
+  contact_id: yup.string().uuid('Invalid contact ID').nullable(),
+
+  organization_id: yup.string().uuid('Invalid organization ID').nullable(),
+
+  description: yup.string().max(1000, 'Description must be 1000 characters or less').nullable(),
+
+  outcome: yup
+    .string()
+    .oneOf(['successful', 'follow_up_needed', 'not_interested', 'postponed', 'no_response'])
+    .nullable(),
+
+  follow_up_notes: yup
+    .string()
+    .max(500, 'Follow-up notes must be 500 characters or less')
+    .nullable(),
 })
 
 // Interaction with opportunity creation schema
 export const interactionWithOpportunitySchema = yup.object({
   ...interactionSchema.fields,
-  
+
   // Remove opportunity_id requirement since we're creating it
-  opportunity_id: yup.string()
-    .uuid('Invalid opportunity ID')
-    .nullable(),
-  
+  opportunity_id: yup.string().uuid('Invalid opportunity ID').nullable(),
+
   // Opportunity creation fields
-  create_opportunity: yup.boolean()
-    .default(false),
-  
-  organization_id: yup.string()
+  create_opportunity: yup.boolean().default(false),
+
+  organization_id: yup
+    .string()
     .uuid('Invalid organization ID')
     .required('Organization is required'),
-  
-  contact_id: yup.string()
-    .uuid('Invalid contact ID')
-    .nullable(),
-  
-  opportunity_name: yup.string()
+
+  contact_id: yup.string().uuid('Invalid contact ID').nullable(),
+
+  opportunity_name: yup
+    .string()
     .max(255, 'Opportunity name must be 255 characters or less')
     .when('create_opportunity', {
       is: true,
       then: (schema) => schema.required('Opportunity name is required when creating opportunity'),
-      otherwise: (schema) => schema.nullable()
+      otherwise: (schema) => schema.nullable(),
     }),
-  
-  opportunity_stage: yup.string()
-    .oneOf([
-      'New Lead',
-      'Initial Outreach', 
-      'Sample/Visit Offered',
-      'Awaiting Response',
-      'Feedback Logged',
-      'Demo Scheduled',
-      'Closed - Won'
-    ] as const, 'Invalid opportunity stage')
+
+  opportunity_stage: yup
+    .string()
+    .oneOf(
+      [
+        'New Lead',
+        'Initial Outreach',
+        'Sample/Visit Offered',
+        'Awaiting Response',
+        'Feedback Logged',
+        'Demo Scheduled',
+        'Closed - Won',
+      ] as const,
+      'Invalid opportunity stage'
+    )
     .when('create_opportunity', {
       is: true,
       then: (schema) => schema.required('Opportunity stage is required when creating opportunity'),
-      otherwise: (schema) => schema.nullable()
+      otherwise: (schema) => schema.nullable(),
     }),
-  
-  principal_organization_id: yup.string()
-    .uuid('Invalid principal organization ID')
+
+  principal_organization_id: yup.string().uuid('Invalid principal organization ID').nullable(),
+
+  opportunity_context: yup
+    .string()
+    .oneOf(
+      [
+        'Site Visit',
+        'Food Show',
+        'New Product Interest',
+        'Follow-up',
+        'Demo Request',
+        'Sampling',
+        'Custom',
+      ] as const,
+      'Invalid opportunity context'
+    )
     .nullable(),
-  
-  opportunity_context: yup.string()
-    .oneOf([
-      'Site Visit',
-      'Food Show', 
-      'New Product Interest',
-      'Follow-up',
-      'Demo Request',
-      'Sampling',
-      'Custom'
-    ] as const, 'Invalid opportunity context')
-    .nullable()
 })
 
 // Type inference from validation schemas
 export type InteractionFormData = yup.InferType<typeof interactionSchema>
-export type InteractionWithOpportunityFormData = yup.InferType<typeof interactionWithOpportunitySchema>
+export type InteractionWithOpportunityFormData = yup.InferType<
+  typeof interactionWithOpportunitySchema
+>
 
 // Interaction filters for queries
 export interface InteractionFilters {
@@ -147,28 +169,28 @@ export const MOBILE_INTERACTION_TEMPLATES = [
   {
     type: 'call' as InteractionType,
     subject: 'Follow-up call',
-    defaultNotes: 'Discussed product interest and next steps'
+    defaultNotes: 'Discussed product interest and next steps',
   },
   {
     type: 'email' as InteractionType,
     subject: 'Product information sent',
-    defaultNotes: 'Sent product specifications and pricing'
+    defaultNotes: 'Sent product specifications and pricing',
   },
   {
     type: 'site_visit' as InteractionType,
     subject: 'Site visit completed',
-    defaultNotes: 'Toured facility and met with decision makers'
+    defaultNotes: 'Toured facility and met with decision makers',
   },
   {
     type: 'demo' as InteractionType,
     subject: 'Product demonstration',
-    defaultNotes: 'Demonstrated product features and benefits'
+    defaultNotes: 'Demonstrated product features and benefits',
   },
   {
     type: 'follow_up' as InteractionType,
     subject: 'Follow-up contact',
-    defaultNotes: 'Checked on progress and answered questions'
-  }
+    defaultNotes: 'Checked on progress and answered questions',
+  },
 ] as const
 
-export type MobileInteractionTemplate = typeof MOBILE_INTERACTION_TEMPLATES[number]
+export type MobileInteractionTemplate = (typeof MOBILE_INTERACTION_TEMPLATES)[number]

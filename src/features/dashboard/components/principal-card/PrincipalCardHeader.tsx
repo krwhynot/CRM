@@ -12,7 +12,7 @@ interface PrincipalCardHeaderProps {
 export const PrincipalCardHeader: React.FC<PrincipalCardHeaderProps> = ({
   principal,
   priority,
-  priorityColor
+  priorityColor,
 }) => {
   return (
     <CardHeader className="pb-3">
@@ -24,15 +24,11 @@ export const PrincipalCardHeader: React.FC<PrincipalCardHeaderProps> = ({
           {priority}
         </Badge>
       </div>
-      
-      {principal.industry && (
-        <p className="text-sm text-muted-foreground">{principal.industry}</p>
-      )}
-      
+
+      {principal.industry && <p className="text-sm text-muted-foreground">{principal.industry}</p>}
+
       {principal.description && (
-        <p className="line-clamp-2 text-xs text-muted-foreground">
-          {principal.description}
-        </p>
+        <p className="line-clamp-2 text-xs text-muted-foreground">{principal.description}</p>
       )}
     </CardHeader>
   )

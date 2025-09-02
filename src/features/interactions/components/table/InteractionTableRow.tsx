@@ -26,12 +26,13 @@ export const InteractionTableRow: React.FC<InteractionTableRowProps> = ({
   onView,
   isSelected = false,
   onToggleSelection,
-  showSelection = false
+  showSelection = false,
 }) => {
-  const { getTypeColor, formatType, formatDate, formatDuration, isFollowUpOverdue } = useInteractionFormatting()
+  const { getTypeColor, formatType, formatDate, formatDuration, isFollowUpOverdue } =
+    useInteractionFormatting()
 
   return (
-    <TableRow className={isSelected ? "bg-muted/50" : ""}>
+    <TableRow className={isSelected ? 'bg-muted/50' : ''}>
       {showSelection && (
         <TableCell className="w-12">
           <Checkbox
@@ -52,42 +53,28 @@ export const InteractionTableRow: React.FC<InteractionTableRowProps> = ({
             </div>
           )}
           {interaction.opportunity && (
-            <div className="text-sm text-gray-500">
-              Opportunity: {interaction.opportunity.name}
-            </div>
+            <div className="text-sm text-gray-500">Opportunity: {interaction.opportunity.name}</div>
           )}
         </div>
       </TableCell>
-      {showOrganization && (
-        <TableCell>
-          {interaction.organization?.name || 'N/A'}
-        </TableCell>
-      )}
+      {showOrganization && <TableCell>{interaction.organization?.name || 'N/A'}</TableCell>}
       <TableCell>
-        <Badge className={getTypeColor(interaction.type)}>
-          {formatType(interaction.type)}
-        </Badge>
+        <Badge className={getTypeColor(interaction.type)}>{formatType(interaction.type)}</Badge>
       </TableCell>
       <TableCell>
         <div className="flex items-center">
           <Calendar className="mr-1 size-4 text-gray-400" />
-          <span className="text-sm">
-            {formatDate(interaction.interaction_date)}
-          </span>
+          <span className="text-sm">{formatDate(interaction.interaction_date)}</span>
         </div>
       </TableCell>
       <TableCell>
         <div className="flex items-center">
           <Clock className="mr-1 size-4 text-gray-400" />
-          <span className="text-sm">
-            {formatDuration(interaction.duration_minutes)}
-          </span>
+          <span className="text-sm">{formatDuration(interaction.duration_minutes)}</span>
         </div>
       </TableCell>
       <TableCell>
-        <Badge className="bg-green-100 text-green-800">
-          Completed
-        </Badge>
+        <Badge className="bg-green-100 text-green-800">Completed</Badge>
       </TableCell>
       <TableCell>
         {interaction.follow_up_required ? (
@@ -97,7 +84,9 @@ export const InteractionTableRow: React.FC<InteractionTableRowProps> = ({
             ) : (
               <Calendar className="mr-1 size-4 text-yellow-500" />
             )}
-            <span className={`text-sm ${isFollowUpOverdue(interaction.follow_up_date) ? 'font-medium text-red-600' : ''}`}>
+            <span
+              className={`text-sm ${isFollowUpOverdue(interaction.follow_up_date) ? 'font-medium text-red-600' : ''}`}
+            >
               {interaction.follow_up_date ? formatDate(interaction.follow_up_date) : 'Pending'}
             </span>
           </div>

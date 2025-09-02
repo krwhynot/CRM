@@ -78,7 +78,6 @@ export interface MetricsFilters {
 // UTILITY FUNCTIONS
 // ============================================================================
 
-
 /**
  * Safe date conversion with null handling
  */

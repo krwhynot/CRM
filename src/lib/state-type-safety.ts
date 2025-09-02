@@ -1,9 +1,9 @@
 /**
  * State Management Type Safety Utilities
- * 
+ *
  * Provides branded types and constraints to ensure proper separation
  * between client-side state (Zustand) and server-side state (TanStack Query)
- * 
+ *
  * Architecture Rules:
  * - Client state should only store UI state, preferences, and identifiers
  * - Server state should only be managed through TanStack Query hooks
@@ -61,29 +61,30 @@ export interface BaseClientState {
 }
 
 // Type constraints to prevent server data in client stores
-export type EnsureClientOnly<T> = T extends { data: unknown } 
-  ? never 
-  : T extends { isLoading: unknown } 
-  ? never 
-  : T extends { error: unknown } 
-  ? never 
-  : T extends { refetch: unknown } 
+export type EnsureClientOnly<T> = T extends { data: unknown }
   ? never
-  : T
+  : T extends { isLoading: unknown }
+    ? never
+    : T extends { error: unknown }
+      ? never
+      : T extends { refetch: unknown }
+        ? never
+        : T
 
 // Utility to extract only client-safe properties
-export type ExtractClientSafeProps<T> = Pick<T, {
-  [K in keyof T]: T[K] extends Function 
-    ? never 
-    : T[K] extends { __serverData: unknown }
-    ? never
-    : K
-}[keyof T]>
+export type ExtractClientSafeProps<T> = Pick<
+  T,
+  {
+    [K in keyof T]: T[K] extends Function
+      ? never
+      : T[K] extends { __serverData: unknown }
+        ? never
+        : K
+  }[keyof T]
+>
 
 // Type to ensure server hooks don't store client state
-export type EnsureServerOnly<T> = T extends { __clientState: unknown }
-  ? never
-  : T
+export type EnsureServerOnly<T> = T extends { __clientState: unknown } ? never : T
 
 /**
  * Helper type to create safe filter interfaces for client state
@@ -93,8 +94,8 @@ export type CreateClientFilters<T> = {
   readonly [K in keyof T]?: T[K] extends string | number | boolean | undefined | null
     ? T[K]
     : T[K] extends (string | number | boolean)[]
-    ? T[K]
-    : never
+      ? T[K]
+      : never
 }
 
 /**
@@ -102,41 +103,45 @@ export type CreateClientFilters<T> = {
  */
 export function isClientStateSafe(value: unknown): boolean {
   if (value === null || value === undefined) return true
-  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return true
-  
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean')
+    return true
+
   if (Array.isArray(value)) {
-    return value.every(item => 
-      typeof item === 'string' || 
-      typeof item === 'number' || 
-      typeof item === 'boolean'
+    return value.every(
+      (item) => typeof item === 'string' || typeof item === 'number' || typeof item === 'boolean'
     )
   }
-  
+
   if (typeof value === 'object') {
     // Check if it looks like server data (has common server data properties)
-    const serverDataKeys = ['id', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by']
+    const serverDataKeys = [
+      'id',
+      'created_at',
+      'updated_at',
+      'deleted_at',
+      'created_by',
+      'updated_by',
+    ]
     const objectKeys = Object.keys(value as object)
-    
+
     // If it has multiple server-like keys, it's probably server data
-    const serverLikeKeyCount = serverDataKeys.filter(key => objectKeys.includes(key)).length
+    const serverLikeKeyCount = serverDataKeys.filter((key) => objectKeys.includes(key)).length
     if (serverLikeKeyCount >= 2) {
       // Development warning for server data in client state
       return false
     }
-    
+
     // Check if all properties are client-safe
-    return Object.values(value as object).every(prop => isClientStateSafe(prop))
+    return Object.values(value as object).every((prop) => isClientStateSafe(prop))
   }
-  
+
   return false
 }
 
 /**
  * Runtime validation function for development
  */
-export function validateClientState<T extends Record<string, unknown>>(
-  state: T
-): void {
+export function validateClientState<T extends Record<string, unknown>>(state: T): void {
   if (process.env.NODE_ENV === 'development') {
     Object.entries(state).forEach(([, value]) => {
       if (!isClientStateSafe(value)) {

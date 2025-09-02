@@ -14,22 +14,22 @@ interface UseInteractionTimelineItemFormattingReturn {
 
 export const useInteractionTimelineItemFormatting = ({
   interactionDate,
-  interactionType
+  interactionType,
 }: UseInteractionTimelineItemFormattingProps): UseInteractionTimelineItemFormattingReturn => {
-  
   const { formattedDate, relativeTime, formattedType } = useMemo(() => {
     const date = new Date(interactionDate)
-    
+
     return {
       formattedDate: format(date, 'MMM d, yyyy'),
       relativeTime: formatDistanceToNow(date, { addSuffix: true }),
-      formattedType: interactionType.charAt(0).toUpperCase() + interactionType.slice(1).replace('_', ' ')
+      formattedType:
+        interactionType.charAt(0).toUpperCase() + interactionType.slice(1).replace('_', ' '),
     }
   }, [interactionDate, interactionType])
 
   return {
     formattedDate,
     relativeTime,
-    formattedType
+    formattedType,
   }
 }

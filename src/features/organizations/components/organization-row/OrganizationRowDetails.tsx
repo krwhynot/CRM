@@ -10,22 +10,20 @@ interface OrganizationRowDetailsProps {
   organization: Organization
 }
 
-export const OrganizationRowDetails: React.FC<OrganizationRowDetailsProps> = ({
-  organization
-}) => {
+export const OrganizationRowDetails: React.FC<OrganizationRowDetailsProps> = ({ organization }) => {
   return (
     <TableRow className="border-b-2 border-gray-100">
-      <TableCell 
-        colSpan={6} 
+      <TableCell
+        colSpan={6}
         className="border-l-4 border-mfb-green bg-mfb-sage-tint p-6 transition-all duration-300 ease-out"
       >
         <div className="space-y-6">
           <OrganizationAddressSection organization={organization} />
-          
+
           <OrganizationBusinessInfoSection organization={organization} />
-          
+
           <OrganizationContactInfoSection organization={organization} />
-          
+
           <OrganizationNotesSection organization={organization} />
         </div>
       </TableCell>

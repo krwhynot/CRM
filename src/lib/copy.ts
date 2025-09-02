@@ -5,8 +5,8 @@
 
 /** Terms config for consistent terminology */
 export const TERMS = {
-  ACTIVITY_SINGULAR: "Activity",
-  ACTIVITY_PLURAL: "Activities",
+  ACTIVITY_SINGULAR: 'Activity',
+  ACTIVITY_PLURAL: 'Activities',
 } as const
 
 export const COPY = {
@@ -23,7 +23,7 @@ export const COPY = {
   // Button Labels - Consistent Action Verbs
   BUTTONS: {
     ADD_ORGANIZATION: 'Add Organization',
-    ADD_CONTACT: 'Add Contact', 
+    ADD_CONTACT: 'Add Contact',
     ADD_PRODUCT: 'Add Product',
     ADD_OPPORTUNITY: 'Add Opportunity',
     LOG_ACTIVITY: 'Log Activity', // Standardized terminology
@@ -42,7 +42,7 @@ export const COPY = {
     CONTACT: 'Contact',
     CONTACTS: 'Contacts',
     PRODUCT: 'Product',
-    PRODUCTS: 'Products', 
+    PRODUCTS: 'Products',
     OPPORTUNITY: 'Opportunity',
     OPPORTUNITIES: 'Opportunities',
     ACTIVITY: 'Activity', // Standardized over "Interaction"
@@ -69,7 +69,8 @@ export const COPY = {
 
   // Confirmation Messages
   CONFIRMATIONS: {
-    DELETE_WARNING: 'This action will permanently delete "{name}". This action cannot be undone and will remove all associated data.',
+    DELETE_WARNING:
+      'This action will permanently delete "{name}". This action cannot be undone and will remove all associated data.',
     ARE_YOU_SURE: 'Are you sure?',
   },
 
@@ -153,10 +154,11 @@ export const getLoadingLabel = (action: keyof typeof COPY.LOADING): string => {
  * Helper function to get count display text
  */
 export const getCountDisplay = (count: number, entityType: keyof typeof COPY.ENTITIES): string => {
-  const entity = count === 1 ? 
-    COPY.ENTITIES[entityType].toLowerCase() : 
-    COPY.ENTITIES[entityType + 'S' as keyof typeof COPY.ENTITIES]?.toLowerCase() || 
-    COPY.ENTITIES[entityType].toLowerCase() + 's'
-  
+  const entity =
+    count === 1
+      ? COPY.ENTITIES[entityType].toLowerCase()
+      : COPY.ENTITIES[(entityType + 'S') as keyof typeof COPY.ENTITIES]?.toLowerCase() ||
+        COPY.ENTITIES[entityType].toLowerCase() + 's'
+
   return `${count} ${entity}`
 }

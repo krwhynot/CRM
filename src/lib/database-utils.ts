@@ -1,6 +1,6 @@
 /**
  * Database Utilities
- * 
+ *
  * Production-ready utilities for handling Supabase database responses,
  * null safety, and consistent error handling across the CRM system.
  */
@@ -28,9 +28,12 @@ export class DatabaseError extends Error {
   public readonly code?: string
 
   constructor(operation: string, originalError: PostgrestError | null, customMessage?: string) {
-    const message = customMessage || 
-      (originalError ? `Database error in ${operation}: ${originalError.message}` : `No data returned from ${operation}`)
-    
+    const message =
+      customMessage ||
+      (originalError
+        ? `Database error in ${operation}: ${originalError.message}`
+        : `No data returned from ${operation}`)
+
     super(message)
     this.name = 'DatabaseError'
     this.operation = operation
@@ -48,7 +51,7 @@ export class DatabaseError extends Error {
  * Enhanced version of the test utility for production use
  */
 export function checkResult<T>(
-  result: DatabaseResult<T>, 
+  result: DatabaseResult<T>,
   operation: string,
   options: {
     allowNull?: boolean
@@ -64,7 +67,11 @@ export function checkResult<T>(
 
   // Check for null data (unless explicitly allowed)
   if (!allowNull && result.data === null) {
-    throw new DatabaseError(operation, null, customErrorMessage || `No data returned from ${operation}`)
+    throw new DatabaseError(
+      operation,
+      null,
+      customErrorMessage || `No data returned from ${operation}`
+    )
   }
 
   return result.data as T
@@ -97,7 +104,9 @@ export function safeDataAccess<T, R>(
 /**
  * Type guard to check if result has valid data
  */
-export function hasValidData<T>(result: DatabaseResult<T>): result is DatabaseResult<T> & { data: T } {
+export function hasValidData<T>(
+  result: DatabaseResult<T>
+): result is DatabaseResult<T> & { data: T } {
   return result.error === null && result.data !== null
 }
 
@@ -113,13 +122,13 @@ export function safeArrayAccess<T>(
     console.warn(`Safe array access: ${operation} returned null/undefined, returning empty array`)
     return []
   }
-  
+
   if (!Array.isArray(data)) {
     // eslint-disable-next-line no-console
     console.warn(`Safe array access: ${operation} did not return an array, returning empty array`)
     return []
   }
-  
+
   return data
 }
 
@@ -181,7 +190,7 @@ export function handleSingleRecord<T>(
 }
 
 /**
- * Handle array queries with empty result protection  
+ * Handle array queries with empty result protection
  */
 export function handleArrayResult<T>(
   result: DatabaseResult<T[]>,
@@ -198,7 +207,7 @@ export function handleArrayResult<T>(
   }
 
   const data = safeArrayAccess(result.data, operation)
-  
+
   if (!allowEmpty && data.length === 0) {
     const message = emptyMessage || `No records found: ${operation}`
     throw new DatabaseError(operation, null, message)
@@ -216,7 +225,7 @@ export function validateAndTransform<T, R>(
   operation: string
 ): R {
   const validData = checkResult(result, operation)
-  
+
   try {
     return transformer(validData)
   } catch (error) {
@@ -246,15 +255,19 @@ export async function withDatabaseErrorHandling<T>(
       return checkResult(result, operationName)
     } catch (error) {
       lastError = error as Error
-      
+
       // Don't retry certain types of errors
-      if (error instanceof DatabaseError && error.code && ['23505', '23503', '42501'].includes(error.code)) {
+      if (
+        error instanceof DatabaseError &&
+        error.code &&
+        ['23505', '23503', '42501'].includes(error.code)
+      ) {
         throw error
       }
-      
+
       if (attempt < retries) {
         // Wait before retrying
-        await new Promise(resolve => setTimeout(resolve, 100 * (attempt + 1)))
+        await new Promise((resolve) => setTimeout(resolve, 100 * (attempt + 1)))
         continue
       }
     }
@@ -284,7 +297,7 @@ export function logDatabaseOperation<T>(
       errorMessage: result.error?.message,
       dataType: result.data ? typeof result.data : null,
       isArray: Array.isArray(result.data),
-      arrayLength: Array.isArray(result.data) ? result.data.length : null
+      arrayLength: Array.isArray(result.data) ? result.data.length : null,
     }
 
     // eslint-disable-next-line no-console
@@ -306,6 +319,5 @@ export type ExtractData<T> = T extends DatabaseResult<infer U> ? U : never
 /**
  * Make database result data non-nullable
  */
-export type RequiredData<T> = T extends DatabaseResult<infer U> 
-  ? DatabaseResult<NonNullable<U>>
-  : never
+export type RequiredData<T> =
+  T extends DatabaseResult<infer U> ? DatabaseResult<NonNullable<U>> : never

@@ -20,11 +20,11 @@ export const OrganizationsDataDisplay: React.FC<OrganizationsDataDisplayProps> =
   organizations,
   onEdit,
   onDelete,
-  onRefresh
+  onRefresh,
 }) => {
   if (isLoading) {
     return (
-      <LoadingState 
+      <LoadingState
         message="Loading organizations..."
         subtext="Fetching organization data from the database"
         variant="table"
@@ -44,11 +44,5 @@ export const OrganizationsDataDisplay: React.FC<OrganizationsDataDisplayProps> =
     )
   }
 
-  return (
-    <OrganizationsTable 
-      organizations={organizations}
-      onEdit={onEdit}
-      onDelete={onDelete}
-    />
-  )
+  return <OrganizationsTable organizations={organizations} onEdit={onEdit} onDelete={onDelete} />
 }

@@ -18,9 +18,9 @@ export function FormSubmitButton({
   loading = false,
   disabled = false,
   variant = 'default',
-  size = 'default', 
+  size = 'default',
   className,
-  type = 'submit'
+  type = 'submit',
 }: FormSubmitButtonProps) {
   return (
     <Button
@@ -28,7 +28,7 @@ export function FormSubmitButton({
       variant={variant}
       size={size}
       disabled={loading || disabled}
-      className={cn("h-11", className)}
+      className={cn('h-11', className)}
     >
       {loading && <Loader2 className="mr-2 size-4 animate-spin" />}
       {children}

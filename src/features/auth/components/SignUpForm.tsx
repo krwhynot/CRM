@@ -17,14 +17,10 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
       <SignUpFormLayout
         footer={
           <>
-            <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={loading}
-            >
+            <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Creating account...' : 'Create Account'}
             </Button>
-            
+
             {onToggleMode && (
               <div className="text-center text-sm text-gray-600">
                 Already have an account?{' '}
@@ -45,7 +41,7 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
       >
         {formState.error && <FormAlert type="error" message={formState.error} />}
         {formState.success && <FormAlert type="success" message={formState.success} />}
-        
+
         <div className="space-y-2">
           <label htmlFor="email" className="text-sm font-medium">
             Email
@@ -61,7 +57,7 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
             autoComplete="email"
           />
         </div>
-        
+
         <PasswordInput
           id="password"
           label="Password"
@@ -75,7 +71,7 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
           onChange={(value) => updateField('password', value)}
           onToggleVisibility={() => updateField('showPassword', !formState.showPassword)}
         />
-        
+
         <PasswordInput
           id="confirmPassword"
           label="Confirm Password"
@@ -86,7 +82,9 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
           required
           autoComplete="new-password"
           onChange={(value) => updateField('confirmPassword', value)}
-          onToggleVisibility={() => updateField('showConfirmPassword', !formState.showConfirmPassword)}
+          onToggleVisibility={() =>
+            updateField('showConfirmPassword', !formState.showConfirmPassword)
+          }
         />
       </SignUpFormLayout>
     </form>

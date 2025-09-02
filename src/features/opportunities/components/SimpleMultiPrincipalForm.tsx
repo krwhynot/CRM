@@ -6,10 +6,10 @@ import { useContacts } from '@/features/contacts/hooks/useContacts'
 import { useMultiPrincipalFormState } from '@/features/dashboard/hooks/useMultiPrincipalFormState'
 import { usePrincipalSelection } from '@/features/dashboard/hooks/usePrincipalSelection'
 import { useOpportunityFormSubmission } from '../hooks/useOpportunityFormSubmission'
-import { 
+import {
   OpportunityBasicFields,
   PrincipalSelector,
-  OpportunityFormActions 
+  OpportunityFormActions,
 } from './multi-principal-form'
 
 interface SimpleMultiPrincipalFormProps {
@@ -21,29 +21,25 @@ interface SimpleMultiPrincipalFormProps {
 export function SimpleMultiPrincipalForm({
   onSuccess,
   preselectedOrganization,
-  className
+  className,
 }: SimpleMultiPrincipalFormProps) {
   const { data: organizations = [] } = useOrganizations()
   const { data: contacts = [] } = useContacts()
-  
+
   const { form, watchedOrganization } = useMultiPrincipalFormState(preselectedOrganization)
-  
-  const {
-    selectedPrincipals,
-    principalOrganizations,
-    handleAddPrincipal,
-    handleRemovePrincipal
-  } = usePrincipalSelection(organizations, form)
-  
+
+  const { selectedPrincipals, principalOrganizations, handleAddPrincipal, handleRemovePrincipal } =
+    usePrincipalSelection(organizations, form)
+
   const { handleSubmit, isLoading, canSubmit } = useOpportunityFormSubmission(
     organizations,
     selectedPrincipals,
     onSuccess
   )
-  const filteredContacts = contacts.filter(contact => 
-    contact.organization_id === watchedOrganization
+  const filteredContacts = contacts.filter(
+    (contact) => contact.organization_id === watchedOrganization
   )
-  
+
   const submitCanSubmit = canSubmit(selectedPrincipals, form.formState.isValid)
 
   return (
@@ -58,12 +54,12 @@ export function SimpleMultiPrincipalForm({
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-            <OpportunityBasicFields 
+            <OpportunityBasicFields
               form={form}
               organizations={organizations}
               filteredContacts={filteredContacts}
             />
-            
+
             <PrincipalSelector
               principalOrganizations={principalOrganizations}
               selectedPrincipals={selectedPrincipals}
@@ -72,10 +68,7 @@ export function SimpleMultiPrincipalForm({
               onRemovePrincipal={handleRemovePrincipal}
             />
 
-            <OpportunityFormActions
-              canSubmit={submitCanSubmit}
-              isLoading={isLoading}
-            />
+            <OpportunityFormActions canSubmit={submitCanSubmit} isLoading={isLoading} />
           </form>
         </Form>
       </CardContent>

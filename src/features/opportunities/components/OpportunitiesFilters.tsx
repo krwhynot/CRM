@@ -12,7 +12,7 @@ export function OpportunitiesFilters({
   searchTerm,
   onSearchChange,
   totalOpportunities,
-  filteredCount
+  filteredCount,
 }: OpportunitiesFiltersProps) {
   return (
     <div className="flex items-center space-x-2">

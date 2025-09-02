@@ -7,18 +7,10 @@ import { ExportError } from '@/features/import-export/components/export/ExportEr
 import { ExportAction } from '@/features/import-export/components/export/ExportAction'
 
 export function OrganizationExporter() {
-  const {
-    exportOptions,
-    handleFieldToggle,
-    handleFormatChange,
-    handleIncludeInactiveChange
-  } = useExportConfiguration()
+  const { exportOptions, handleFieldToggle, handleFormatChange, handleIncludeInactiveChange } =
+    useExportConfiguration()
 
-  const {
-    exportProgress,
-    executeExport,
-    resetExport
-  } = useExportExecution(exportOptions)
+  const { exportProgress, executeExport, resetExport } = useExportExecution(exportOptions)
 
   return (
     <div className="space-y-6">
@@ -31,15 +23,9 @@ export function OrganizationExporter() {
 
       <ExportProgressComponent exportProgress={exportProgress} />
 
-      <ExportResults 
-        exportProgress={exportProgress}
-        onReset={resetExport}
-      />
+      <ExportResults exportProgress={exportProgress} onReset={resetExport} />
 
-      <ExportError 
-        exportProgress={exportProgress}
-        onReset={resetExport}
-      />
+      <ExportError exportProgress={exportProgress} onReset={resetExport} />
 
       <ExportAction
         exportOptions={exportOptions}

@@ -13,19 +13,24 @@ interface UseInteractionTimelineActionsReturn {
 
 export const useInteractionTimelineActions = ({
   onEditInteraction,
-  onDeleteInteraction
+  onDeleteInteraction,
 }: UseInteractionTimelineActionsProps): UseInteractionTimelineActionsReturn => {
-  
-  const handleEditInteraction = useCallback((interaction: InteractionWithRelations) => {
-    onEditInteraction(interaction)
-  }, [onEditInteraction])
+  const handleEditInteraction = useCallback(
+    (interaction: InteractionWithRelations) => {
+      onEditInteraction(interaction)
+    },
+    [onEditInteraction]
+  )
 
-  const handleDeleteInteraction = useCallback((interaction: InteractionWithRelations) => {
-    onDeleteInteraction(interaction)
-  }, [onDeleteInteraction])
+  const handleDeleteInteraction = useCallback(
+    (interaction: InteractionWithRelations) => {
+      onDeleteInteraction(interaction)
+    },
+    [onDeleteInteraction]
+  )
 
   return {
     handleEditInteraction,
-    handleDeleteInteraction
+    handleDeleteInteraction,
   }
 }

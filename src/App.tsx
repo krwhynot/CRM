@@ -33,15 +33,19 @@ const queryClient = new QueryClient({
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
-  
+
   if (loading) {
-    return <div role="status" aria-live="polite">Loading...</div>
+    return (
+      <div role="status" aria-live="polite">
+        Loading...
+      </div>
+    )
   }
-  
+
   if (!user) {
     return <Navigate to="/login" replace />
   }
-  
+
   return <>{children}</>
 }
 
@@ -58,95 +62,119 @@ function App() {
       <AuthProvider>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <TooltipProvider>
-          <Router>
-            <AuthCallbackHandler>
-            <CommandPalette open={commandPaletteOpen} setOpen={setCommandPaletteOpen} />
-            <Routes>
-              {/* Public auth routes - must come first */}
-              <Route path="/login" element={<AuthPage />} />
-              <Route path="/forgot-password" element={<AuthPage />} />
-              <Route path="/reset-password" element={<ResetPasswordPage />} />
-              
-              {/* Root redirect */}
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Suspense fallback={<LoadingSpinner />}>
-                      <HomePage />
-                    </Suspense>
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              
-              {/* Protected app routes */}
-              <Route path="/organizations" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Suspense fallback={<LoadingSpinner />}>
-                      <OrganizationsPage />
-                    </Suspense>
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/contacts" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Suspense fallback={<LoadingSpinner />}>
-                      <ContactsPage />
-                    </Suspense>
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/opportunities" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Suspense fallback={<LoadingSpinner />}>
-                      <OpportunitiesPage />
-                    </Suspense>
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/opportunities/new-multi-principal" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Suspense fallback={<LoadingSpinner />}>
-                      <MultiPrincipalOpportunityPage />
-                    </Suspense>
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/products" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Suspense fallback={<LoadingSpinner />}>
-                      <ProductsPage />
-                    </Suspense>
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/import-export" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Suspense fallback={<LoadingSpinner />}>
-                      <ImportExportPage />
-                    </Suspense>
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/style-test" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Suspense fallback={<LoadingSpinner />}>
-                      <StyleGuideTestPage />
-                    </Suspense>
-                  </Layout>
-                </ProtectedRoute>
-              } />
-            </Routes>
-            </AuthCallbackHandler>
-            <Toaster />
-            <ReactQueryDevtools initialIsOpen={false} />
-          </Router>
+            <Router>
+              <AuthCallbackHandler>
+                <CommandPalette open={commandPaletteOpen} setOpen={setCommandPaletteOpen} />
+                <Routes>
+                  {/* Public auth routes - must come first */}
+                  <Route path="/login" element={<AuthPage />} />
+                  <Route path="/forgot-password" element={<AuthPage />} />
+                  <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+                  {/* Root redirect */}
+                  <Route
+                    path="/"
+                    element={
+                      <ProtectedRoute>
+                        <Layout>
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <HomePage />
+                          </Suspense>
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+
+                  {/* Protected app routes */}
+                  <Route
+                    path="/organizations"
+                    element={
+                      <ProtectedRoute>
+                        <Layout>
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <OrganizationsPage />
+                          </Suspense>
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/contacts"
+                    element={
+                      <ProtectedRoute>
+                        <Layout>
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <ContactsPage />
+                          </Suspense>
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/opportunities"
+                    element={
+                      <ProtectedRoute>
+                        <Layout>
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <OpportunitiesPage />
+                          </Suspense>
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/opportunities/new-multi-principal"
+                    element={
+                      <ProtectedRoute>
+                        <Layout>
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <MultiPrincipalOpportunityPage />
+                          </Suspense>
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/products"
+                    element={
+                      <ProtectedRoute>
+                        <Layout>
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <ProductsPage />
+                          </Suspense>
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/import-export"
+                    element={
+                      <ProtectedRoute>
+                        <Layout>
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <ImportExportPage />
+                          </Suspense>
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/style-test"
+                    element={
+                      <ProtectedRoute>
+                        <Layout>
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <StyleGuideTestPage />
+                          </Suspense>
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+                </Routes>
+              </AuthCallbackHandler>
+              <Toaster />
+              <ReactQueryDevtools initialIsOpen={false} />
+            </Router>
           </TooltipProvider>
         </ThemeProvider>
       </AuthProvider>

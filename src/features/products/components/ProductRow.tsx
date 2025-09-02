@@ -14,7 +14,6 @@ interface ProductRowProps {
   onSelect?: () => void
 }
 
-
 export const ProductRow: React.FC<ProductRowProps> = ({
   product,
   isExpanded,
@@ -24,7 +23,7 @@ export const ProductRow: React.FC<ProductRowProps> = ({
   onView,
   onContactSupplier,
   isSelected,
-  onSelect
+  onSelect,
 }) => {
   return (
     <>
@@ -39,10 +38,8 @@ export const ProductRow: React.FC<ProductRowProps> = ({
         isSelected={isSelected}
         onSelect={onSelect}
       />
-      
-      {isExpanded && (
-        <ProductRowDetails product={product} />
-      )}
+
+      {isExpanded && <ProductRowDetails product={product} />}
     </>
   )
 }

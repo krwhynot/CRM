@@ -7,7 +7,7 @@ interface OrganizationNotesSectionProps {
 }
 
 export const OrganizationNotesSection: React.FC<OrganizationNotesSectionProps> = ({
-  organization
+  organization,
 }) => {
   if (!organization.notes) {
     return null
@@ -19,9 +19,7 @@ export const OrganizationNotesSection: React.FC<OrganizationNotesSectionProps> =
         <FileText className="size-4" />
         Notes
       </div>
-      <div className="pl-6 text-sm text-gray-600">
-        {organization.notes}
-      </div>
+      <div className="pl-6 text-sm text-gray-600">{organization.notes}</div>
     </div>
   )
 }

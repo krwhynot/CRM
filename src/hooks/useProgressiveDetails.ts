@@ -5,16 +5,16 @@ export const useProgressiveDetails = (initialStates: Record<string, boolean> = {
   const [states, setStates] = useState(initialStates)
 
   const toggle = (key: string) => {
-    setStates(prev => ({
+    setStates((prev) => ({
       ...prev,
-      [key]: !prev[key]
+      [key]: !prev[key],
     }))
   }
 
   const set = (key: string, value: boolean) => {
-    setStates(prev => ({
+    setStates((prev) => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }))
   }
 
@@ -29,6 +29,6 @@ export const useProgressiveDetails = (initialStates: Record<string, boolean> = {
     toggle,
     set,
     reset,
-    isOpen
+    isOpen,
   }
 }

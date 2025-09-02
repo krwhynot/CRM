@@ -1,6 +1,6 @@
 /**
  * Debug Utility for Development
- * 
+ *
  * Provides environment-aware debug logging that only outputs to console
  * in development mode. Replaces direct console.log/console.warn usage
  * to ensure clean production builds.

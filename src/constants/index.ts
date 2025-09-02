@@ -1,6 +1,6 @@
 /**
  * Constants Index
- * 
+ *
  * Centralized exports for all constants in the CRM system.
  * Provides clean imports and prevents react-refresh violations.
  */
@@ -12,7 +12,7 @@ export {
   VALID_DB_STAGES,
   type OpportunityContext,
   type OpportunityStageValue,
-  type DatabaseOpportunityStage
+  type DatabaseOpportunityStage,
 } from './opportunity.constants'
 
 // Organization constants
@@ -21,17 +21,11 @@ export {
   PRIORITY_VALUES,
   VALID_ORGANIZATION_TYPES,
   type OrganizationType,
-  type PriorityValue
+  type PriorityValue,
 } from './organization.constants'
 
 // Product constants
-export {
-  PRODUCT_CATEGORIES,
-  type ProductCategory
-} from './product.constants'
+export { PRODUCT_CATEGORIES, type ProductCategory } from './product.constants'
 
 // Interaction constants
-export {
-  INTERACTION_TYPES,
-  type InteractionType
-} from './interaction.constants'
+export { INTERACTION_TYPES, type InteractionType } from './interaction.constants'

@@ -1,10 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
-import type { 
-  ProductInsert, 
-  ProductUpdate, 
+import type {
+  ProductInsert,
+  ProductUpdate,
   ProductFilters,
-  ProductWithPrincipal 
+  ProductWithPrincipal,
 } from '@/types/entities'
 import type { Database } from '@/lib/database.types'
 
@@ -26,7 +26,8 @@ export function useProducts(filters?: ProductFilters) {
     queryFn: async () => {
       let query = supabase
         .from('products')
-        .select(`
+        .select(
+          `
           id,
           name,
           principal_id,
@@ -39,7 +40,8 @@ export function useProducts(filters?: ProductFilters) {
           min_order_quantity,
           created_at,
           principal:organizations!products_principal_id_fkey(id, name, type)
-        `)
+        `
+        )
         .is('deleted_at', null)
         .order('name')
         .limit(100)
@@ -58,7 +60,9 @@ export function useProducts(filters?: ProductFilters) {
       }
 
       if (filters?.search) {
-        query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,sku.ilike.%${filters.search}%`)
+        query = query.or(
+          `name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,sku.ilike.%${filters.search}%`
+        )
       }
 
       const { data, error } = await query
@@ -77,10 +81,12 @@ export function useProduct(id: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('products')
-        .select(`
+        .select(
+          `
           *,
           principal:organizations!products_principal_id_fkey(*)
-        `)
+        `
+        )
         .eq('id', id)
         .is('deleted_at', null)
         .single()
@@ -100,10 +106,12 @@ export function useProductsByPrincipal(principalId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('products')
-        .select(`
+        .select(
+          `
           *,
           principal:organizations!products_principal_id_fkey(*)
-        `)
+        `
+        )
         .eq('principal_id', principalId)
         .is('deleted_at', null)
         .order('name')
@@ -123,10 +131,12 @@ export function useProductsByCategory(category: Database['public']['Enums']['pro
     queryFn: async () => {
       const { data, error } = await supabase
         .from('products')
-        .select(`
+        .select(
+          `
           *,
           principal:organizations!products_principal_id_fkey(*)
-        `)
+        `
+        )
         .eq('category', category)
         .is('deleted_at', null)
         .order('name')
@@ -148,12 +158,16 @@ export function useSeasonalProducts() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('products')
-        .select(`
+        .select(
+          `
           *,
           principal:organizations!products_principal_id_fkey(*)
-        `)
+        `
+        )
         .is('deleted_at', null)
-        .or(`and(season_start.lte.${currentMonth},season_end.gte.${currentMonth}),and(season_start.is.null,season_end.is.null)`)
+        .or(
+          `and(season_start.lte.${currentMonth},season_end.gte.${currentMonth}),and(season_start.is.null,season_end.is.null)`
+        )
         .order('name')
 
       if (error) throw error
@@ -170,8 +184,11 @@ export function useCreateProduct() {
   return useMutation({
     mutationFn: async (product: ProductInsert) => {
       // Get current user ID for RLS policy compliance
-      const { data: { user }, error: authError } = await supabase.auth.getUser()
-      
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser()
+
       if (authError || !user) {
         throw new Error('Authentication required to create product')
       }
@@ -186,10 +203,12 @@ export function useCreateProduct() {
       const { data, error } = await supabase
         .from('products')
         .insert(productData)
-        .select(`
+        .select(
+          `
           *,
           principal:organizations!products_principal_id_fkey(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -201,7 +220,7 @@ export function useCreateProduct() {
       queryClient.invalidateQueries({ queryKey: productKeys.byPrincipal(newProduct.principal_id) })
       queryClient.invalidateQueries({ queryKey: productKeys.byCategory(newProduct.category) })
       queryClient.invalidateQueries({ queryKey: [...productKeys.all, 'seasonal'] })
-      
+
       // Add the new product to the cache
       queryClient.setQueryData(productKeys.detail(newProduct.id), newProduct)
     },
@@ -218,10 +237,12 @@ export function useUpdateProduct() {
         .from('products')
         .update({ ...updates, updated_at: new Date().toISOString() })
         .eq('id', id)
-        .select(`
+        .select(
+          `
           *,
           principal:organizations!products_principal_id_fkey(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -230,10 +251,12 @@ export function useUpdateProduct() {
     onSuccess: (updatedProduct) => {
       // Update all related queries
       queryClient.invalidateQueries({ queryKey: productKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: productKeys.byPrincipal(updatedProduct.principal_id) })
+      queryClient.invalidateQueries({
+        queryKey: productKeys.byPrincipal(updatedProduct.principal_id),
+      })
       queryClient.invalidateQueries({ queryKey: productKeys.byCategory(updatedProduct.category) })
       queryClient.invalidateQueries({ queryKey: [...productKeys.all, 'seasonal'] })
-      
+
       // Update the specific product in the cache
       queryClient.setQueryData(productKeys.detail(updatedProduct.id), updatedProduct)
     },
@@ -248,15 +271,17 @@ export function useDeleteProduct() {
     mutationFn: async (id: string) => {
       const { data, error } = await supabase
         .from('products')
-        .update({ 
+        .update({
           deleted_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', id)
-        .select(`
+        .select(
+          `
           *,
           principal:organizations!products_principal_id_fkey(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -265,10 +290,12 @@ export function useDeleteProduct() {
     onSuccess: (deletedProduct) => {
       // Invalidate all product lists
       queryClient.invalidateQueries({ queryKey: productKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: productKeys.byPrincipal(deletedProduct.principal_id) })
+      queryClient.invalidateQueries({
+        queryKey: productKeys.byPrincipal(deletedProduct.principal_id),
+      })
       queryClient.invalidateQueries({ queryKey: productKeys.byCategory(deletedProduct.category) })
       queryClient.invalidateQueries({ queryKey: [...productKeys.all, 'seasonal'] })
-      
+
       // Remove from individual cache
       queryClient.removeQueries({ queryKey: productKeys.detail(deletedProduct.id) })
     },
@@ -283,15 +310,17 @@ export function useRestoreProduct() {
     mutationFn: async (id: string) => {
       const { data, error } = await supabase
         .from('products')
-        .update({ 
+        .update({
           deleted_at: null,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', id)
-        .select(`
+        .select(
+          `
           *,
           principal:organizations!products_principal_id_fkey(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -300,10 +329,12 @@ export function useRestoreProduct() {
     onSuccess: (restoredProduct) => {
       // Invalidate all product lists
       queryClient.invalidateQueries({ queryKey: productKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: productKeys.byPrincipal(restoredProduct.principal_id) })
+      queryClient.invalidateQueries({
+        queryKey: productKeys.byPrincipal(restoredProduct.principal_id),
+      })
       queryClient.invalidateQueries({ queryKey: productKeys.byCategory(restoredProduct.category) })
       queryClient.invalidateQueries({ queryKey: [...productKeys.all, 'seasonal'] })
-      
+
       // Add back to individual cache
       queryClient.setQueryData(productKeys.detail(restoredProduct.id), restoredProduct)
     },
@@ -339,10 +370,12 @@ export function useDuplicateProduct() {
       const { data, error } = await supabase
         .from('products')
         .insert(newProductData)
-        .select(`
+        .select(
+          `
           *,
           principal:organizations!products_principal_id_fkey(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -351,10 +384,14 @@ export function useDuplicateProduct() {
     onSuccess: (duplicatedProduct) => {
       // Invalidate all product lists
       queryClient.invalidateQueries({ queryKey: productKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: productKeys.byPrincipal(duplicatedProduct.principal_id) })
-      queryClient.invalidateQueries({ queryKey: productKeys.byCategory(duplicatedProduct.category) })
+      queryClient.invalidateQueries({
+        queryKey: productKeys.byPrincipal(duplicatedProduct.principal_id),
+      })
+      queryClient.invalidateQueries({
+        queryKey: productKeys.byCategory(duplicatedProduct.category),
+      })
       queryClient.invalidateQueries({ queryKey: [...productKeys.all, 'seasonal'] })
-      
+
       // Add the duplicated product to the cache
       queryClient.setQueryData(productKeys.detail(duplicatedProduct.id), duplicatedProduct)
     },

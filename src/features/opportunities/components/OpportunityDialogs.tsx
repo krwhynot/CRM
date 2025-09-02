@@ -14,14 +14,14 @@ interface OpportunityDialogsProps {
   setIsCreateDialogOpen: (open: boolean) => void
   onCreateOpportunity: (data: OpportunityFormData) => Promise<void>
   createLoading: boolean
-  
+
   // Edit dialog
   isEditDialogOpen: boolean
   setIsEditDialogOpen: (open: boolean) => void
   editingOpportunity: Opportunity | null
   onUpdateOpportunity: (data: OpportunityFormData) => Promise<void>
   updateLoading: boolean
-  
+
   // Interaction dialog
   isInteractionDialogOpen: boolean
   setIsInteractionDialogOpen: (open: boolean) => void
@@ -38,13 +38,13 @@ export const OpportunityDialogs: React.FC<OpportunityDialogsProps> = ({
   setIsCreateDialogOpen,
   onCreateOpportunity,
   createLoading,
-  
+
   isEditDialogOpen,
   setIsEditDialogOpen,
   editingOpportunity,
   onUpdateOpportunity,
   updateLoading,
-  
+
   isInteractionDialogOpen,
   setIsInteractionDialogOpen,
   editingInteraction,
@@ -52,7 +52,7 @@ export const OpportunityDialogs: React.FC<OpportunityDialogsProps> = ({
   onCreateInteraction,
   onUpdateInteraction,
   createInteractionLoading,
-  updateInteractionLoading
+  updateInteractionLoading,
 }) => {
   return (
     <>
@@ -65,10 +65,7 @@ export const OpportunityDialogs: React.FC<OpportunityDialogsProps> = ({
         size="xl"
         scroll="content"
       >
-        <OpportunityForm 
-          onSubmit={onCreateOpportunity}
-          loading={createLoading}
-        />
+        <OpportunityForm onSubmit={onCreateOpportunity} loading={createLoading} />
       </StandardDialog>
 
       {/* Edit Opportunity Dialog */}
@@ -81,7 +78,7 @@ export const OpportunityDialogs: React.FC<OpportunityDialogsProps> = ({
         scroll="content"
       >
         {editingOpportunity && (
-          <OpportunityForm 
+          <OpportunityForm
             initialData={FormDataTransformer.toFormData(editingOpportunity)}
             onSubmit={onUpdateOpportunity}
             loading={updateLoading}
@@ -98,19 +95,25 @@ export const OpportunityDialogs: React.FC<OpportunityDialogsProps> = ({
         size="md"
         scroll="content"
       >
-        <InteractionForm 
+        <InteractionForm
           onSubmit={editingInteraction ? onUpdateInteraction : onCreateInteraction}
-          initialData={editingInteraction ? {
-            subject: editingInteraction.subject,
-            type: editingInteraction.type,
-            interaction_date: editingInteraction.interaction_date,
-            opportunity_id: editingInteraction.opportunity_id,
-            location: null, // Location not stored in database yet
-            notes: editingInteraction.description, // Map description to notes for form
-            follow_up_required: editingInteraction.follow_up_required || false,
-            follow_up_date: editingInteraction.follow_up_date
-          } : undefined}
-          defaultOpportunityId={!editingInteraction ? selectedOpportunityId || undefined : undefined}
+          initialData={
+            editingInteraction
+              ? {
+                  subject: editingInteraction.subject,
+                  type: editingInteraction.type,
+                  interaction_date: editingInteraction.interaction_date,
+                  opportunity_id: editingInteraction.opportunity_id,
+                  location: null, // Location not stored in database yet
+                  notes: editingInteraction.description, // Map description to notes for form
+                  follow_up_required: editingInteraction.follow_up_required || false,
+                  follow_up_date: editingInteraction.follow_up_date,
+                }
+              : undefined
+          }
+          defaultOpportunityId={
+            !editingInteraction ? selectedOpportunityId || undefined : undefined
+          }
           loading={editingInteraction ? updateInteractionLoading : createInteractionLoading}
           submitLabel={editingInteraction ? COPY.BUTTONS.UPDATE : COPY.BUTTONS.LOG_ACTIVITY}
         />

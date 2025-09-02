@@ -1,6 +1,6 @@
 /**
  * Form Handler Types
- * 
+ *
  * Comprehensive type definitions for form handling that eliminate the need for `any` types.
  * Provides type-safe interfaces for form submission, validation, and component props.
  */
@@ -33,7 +33,9 @@ export type TypedYupResolver<T extends FieldValues> = Resolver<T>
 /**
  * Creates a properly typed Yup resolver
  */
-export function createTypedYupResolver<T extends FieldValues>(schema: ObjectSchema<any>): TypedYupResolver<T> {
+export function createTypedYupResolver<T extends FieldValues>(
+  schema: ObjectSchema<any>
+): TypedYupResolver<T> {
   return yupResolver(schema) as TypedYupResolver<T>
 }
 

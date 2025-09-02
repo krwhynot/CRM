@@ -17,9 +17,10 @@ export const ProductBadges: React.FC<ProductBadgesProps> = ({
   shelfLifeDays,
   inStock,
   lowStock,
-  className = ""
+  className = '',
 }) => {
-  const { getCategoryBadge, getValueBadge, getFreshnessBadge, getAvailabilityBadge } = useProductsBadges()
+  const { getCategoryBadge, getValueBadge, getFreshnessBadge, getAvailabilityBadge } =
+    useProductsBadges()
 
   const categoryBadge = getCategoryBadge(category)
   const valueBadge = getValueBadge(price)
@@ -28,22 +29,10 @@ export const ProductBadges: React.FC<ProductBadgesProps> = ({
 
   return (
     <div className={`flex flex-wrap gap-1 ${className}`}>
-      <Badge className={categoryBadge.className}>
-        {categoryBadge.label}
-      </Badge>
-      {valueBadge && (
-        <Badge className={valueBadge.className}>
-          {valueBadge.label}
-        </Badge>
-      )}
-      {freshnessBadge && (
-        <Badge className={freshnessBadge.className}>
-          {freshnessBadge.label}
-        </Badge>
-      )}
-      <Badge className={availabilityBadge.className}>
-        {availabilityBadge.label}
-      </Badge>
+      <Badge className={categoryBadge.className}>{categoryBadge.label}</Badge>
+      {valueBadge && <Badge className={valueBadge.className}>{valueBadge.label}</Badge>}
+      {freshnessBadge && <Badge className={freshnessBadge.className}>{freshnessBadge.label}</Badge>}
+      <Badge className={availabilityBadge.className}>{availabilityBadge.label}</Badge>
     </div>
   )
 }

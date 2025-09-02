@@ -15,7 +15,6 @@ interface OrganizationRowProps {
   onSelect?: () => void
 }
 
-
 export const OrganizationRow: React.FC<OrganizationRowProps> = ({
   organization,
   isExpanded,
@@ -25,7 +24,7 @@ export const OrganizationRow: React.FC<OrganizationRowProps> = ({
   onView,
   onContact,
   isSelected,
-  onSelect
+  onSelect,
 }) => {
   return (
     <>
@@ -40,10 +39,8 @@ export const OrganizationRow: React.FC<OrganizationRowProps> = ({
         isSelected={isSelected}
         onSelect={onSelect}
       />
-      
-      {isExpanded && (
-        <OrganizationRowDetails organization={organization} />
-      )}
+
+      {isExpanded && <OrganizationRowDetails organization={organization} />}
     </>
   )
 }

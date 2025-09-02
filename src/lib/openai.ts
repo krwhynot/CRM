@@ -1,81 +1,80 @@
-import OpenAI from "openai";
-import { zodResponseFormat } from "openai/helpers/zod";
-import { 
-  FieldMappingResponse, 
-  BatchValidationResponse, 
+import OpenAI from 'openai'
+import { zodResponseFormat } from 'openai/helpers/zod'
+import {
+  FieldMappingResponse,
+  BatchValidationResponse,
   DuplicateDetectionResponse,
   type FieldMappingResponseType,
   type BatchValidationResponseType,
-  type DuplicateDetectionResponseType
-} from "./aiSchemas";
+  type DuplicateDetectionResponseType,
+} from './aiSchemas'
 
 // Type for CSV row data
 type CSVRowData = Record<string, string | number | null | undefined>
 
 // Lazy initialization of OpenAI client
-let client: OpenAI | null = null;
+let client: OpenAI | null = null
 
 function getOpenAIClient(): OpenAI {
   if (!client && import.meta.env.VITE_OPENAI_API_KEY) {
-    client = new OpenAI({ 
+    client = new OpenAI({
       apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-      dangerouslyAllowBrowser: true // Enable browser usage for client-side React app
-    });
+      dangerouslyAllowBrowser: true, // Enable browser usage for client-side React app
+    })
   }
-  
+
   if (!client) {
-    throw new Error('OpenAI API key not configured');
+    throw new Error('OpenAI API key not configured')
   }
-  
-  return client;
+
+  return client
 }
 
 // Configuration constants
-const CONF_HIGH = 0.85; // Auto-apply threshold
-const CONF_MEDIUM = 0.7; // User confirmation threshold  
-const CONF_MIN = 0.5;   // Minimum threshold for suggestions
+const CONF_HIGH = 0.85 // Auto-apply threshold
+const CONF_MEDIUM = 0.7 // User confirmation threshold
+const CONF_MIN = 0.5 // Minimum threshold for suggestions
 
 // Available CRM fields with descriptions for context
 const CRM_FIELD_CONTEXT = {
   organization: {
-    name: "Organization/company name",
-    website: "Company website or LinkedIn URL", 
-    phone: "Main organization phone number",
-    email: "Organization contact email",
-    address_line_1: "Street address line 1",
-    address_line_2: "Street address line 2 (optional)",
-    city: "City name",
-    state_province: "State or province",
-    postal_code: "ZIP/postal code",
-    country: "Country (usually US)",
-    notes: "General notes about the organization",
-    type: "Organization type (customer, distributor, etc.)",
-    priority: "Priority level (A, B, C, D)",
-    segment: "Business segment (e.g., Casual Dining)",
-    primary_manager_name: "Primary account manager name",
-    secondary_manager_name: "Secondary account manager name",
-    is_active: "Whether organization is active (true/false)"
+    name: 'Organization/company name',
+    website: 'Company website or LinkedIn URL',
+    phone: 'Main organization phone number',
+    email: 'Organization contact email',
+    address_line_1: 'Street address line 1',
+    address_line_2: 'Street address line 2 (optional)',
+    city: 'City name',
+    state_province: 'State or province',
+    postal_code: 'ZIP/postal code',
+    country: 'Country (usually US)',
+    notes: 'General notes about the organization',
+    type: 'Organization type (customer, distributor, etc.)',
+    priority: 'Priority level (A, B, C, D)',
+    segment: 'Business segment (e.g., Casual Dining)',
+    primary_manager_name: 'Primary account manager name',
+    secondary_manager_name: 'Secondary account manager name',
+    is_active: 'Whether organization is active (true/false)',
   },
   contact: {
-    contact_name: "Full name or first/last name combined",
+    contact_name: 'Full name or first/last name combined',
     contact_email: "Contact's email address",
     contact_phone: "Contact's phone number",
-    contact_title: "Job title or role"
-  }
-};
+    contact_title: 'Job title or role',
+  },
+}
 
 /**
  * Smart field mapping using OpenAI GPT-4o with structured outputs
  */
 export async function suggestFieldMappings(
-  headers: string[], 
+  headers: string[],
   sampleRows: CSVRowData[],
   entityType: 'organization' | 'contact' = 'organization'
 ): Promise<FieldMappingResponseType> {
-  
   const prompt = [
     {
-      role: "system" as const,
+      role: 'system' as const,
       content: `You are a CSV field mapping expert for CRM systems. Map CSV headers to standardized CRM fields.
       
 Available CRM fields:
@@ -87,41 +86,40 @@ Rules:
 - Consider semantic similarity, not just exact matches
 - Look at sample data to understand field content
 - Be conservative with confidence scores
-- Provide clear reasons for mappings`
+- Provide clear reasons for mappings`,
     },
     {
-      role: "user" as const,
+      role: 'user' as const,
       content: `Map these CSV headers to CRM fields:
       
 Headers: ${JSON.stringify(headers)}
 Sample data (first 3 rows): ${JSON.stringify(sampleRows.slice(0, 3))}
 Target entity type: ${entityType}
 
-Analyze the headers and sample data to suggest the best field mappings.`
-    }
-  ];
+Analyze the headers and sample data to suggest the best field mappings.`,
+    },
+  ]
 
   // Check if OpenAI is available first
   if (!isOpenAIAvailable()) {
-    throw new Error('AI field mapping unavailable - OpenAI API key not configured');
+    throw new Error('AI field mapping unavailable - OpenAI API key not configured')
   }
 
   try {
-    const openaiClient = getOpenAIClient();
+    const openaiClient = getOpenAIClient()
     const response = await openaiClient.chat.completions.create({
-      model: "gpt-4o-2024-08-06",
+      model: 'gpt-4o-2024-08-06',
       messages: prompt,
-      response_format: zodResponseFormat(FieldMappingResponse, "FieldMappingResponse"),
+      response_format: zodResponseFormat(FieldMappingResponse, 'FieldMappingResponse'),
       temperature: 0, // Deterministic responses
-      max_tokens: 2000
-    });
+      max_tokens: 2000,
+    })
 
-    const result = JSON.parse(response.choices[0].message.content!);
-    return result as FieldMappingResponseType;
-
+    const result = JSON.parse(response.choices[0].message.content!)
+    return result as FieldMappingResponseType
   } catch (error) {
     // OpenAI field mapping failed - handled
-    throw new Error('AI field mapping unavailable - falling back to manual mapping');
+    throw new Error('AI field mapping unavailable - falling back to manual mapping')
   }
 }
 
@@ -133,12 +131,11 @@ export async function validateRowsWithAI(
   fieldMappings: Record<string, string>,
   maxRows: number = 50
 ): Promise<BatchValidationResponseType> {
+  const sampleRows = rows.slice(0, maxRows)
 
-  const sampleRows = rows.slice(0, maxRows);
-  
   const prompt = [
     {
-      role: "system" as const,
+      role: 'system' as const,
       content: `You validate CRM organization data for quality issues. Check for:
       
 - Missing required fields (name is required)
@@ -148,40 +145,39 @@ export async function validateRowsWithAI(
 - Data type mismatches
 
 Classify issues as: error (blocks import), warning (should review), info (minor issue)
-Be specific about what's wrong and suggest fixes when possible.`
+Be specific about what's wrong and suggest fixes when possible.`,
     },
     {
-      role: "user" as const,
+      role: 'user' as const,
       content: `Validate these organization records:
 
 Field mappings: ${JSON.stringify(fieldMappings)}
 Data to validate: ${JSON.stringify(sampleRows)}
 
-Check each row for data quality issues and provide specific feedback.`
-    }
-  ];
+Check each row for data quality issues and provide specific feedback.`,
+    },
+  ]
 
   // Check if OpenAI is available first
   if (!isOpenAIAvailable()) {
-    throw new Error('AI validation unavailable - OpenAI API key not configured');
+    throw new Error('AI validation unavailable - OpenAI API key not configured')
   }
 
   try {
-    const openaiClient = getOpenAIClient();
+    const openaiClient = getOpenAIClient()
     const response = await openaiClient.chat.completions.create({
-      model: "gpt-4o-2024-08-06", 
+      model: 'gpt-4o-2024-08-06',
       messages: prompt,
-      response_format: zodResponseFormat(BatchValidationResponse, "BatchValidationResponse"),
+      response_format: zodResponseFormat(BatchValidationResponse, 'BatchValidationResponse'),
       temperature: 0,
-      max_tokens: 3000
-    });
+      max_tokens: 3000,
+    })
 
-    const result = JSON.parse(response.choices[0].message.content!);
-    return result as BatchValidationResponseType;
-
+    const result = JSON.parse(response.choices[0].message.content!)
+    return result as BatchValidationResponseType
   } catch (error) {
     // OpenAI validation failed - handled
-    throw new Error('AI validation unavailable - using basic validation only');
+    throw new Error('AI validation unavailable - using basic validation only')
   }
 }
 
@@ -192,12 +188,11 @@ export async function detectDuplicatesWithAI(
   rows: CSVRowData[],
   maxRows: number = 100
 ): Promise<DuplicateDetectionResponseType> {
+  const sampleRows = rows.slice(0, maxRows)
 
-  const sampleRows = rows.slice(0, maxRows);
-  
   const prompt = [
     {
-      role: "system" as const,
+      role: 'system' as const,
       content: `You detect duplicate organizations in CRM data. Look for:
       
 - Similar company names (Acme Corp vs Acme Corporation)  
@@ -209,39 +204,38 @@ Group potential duplicates and suggest the best action:
 - merge: combine the records
 - keep_first: use the first occurrence  
 - keep_last: use the last occurrence
-- manual_review: requires human decision`
+- manual_review: requires human decision`,
     },
     {
-      role: "user" as const,
+      role: 'user' as const,
       content: `Find potential duplicates in this organization data:
 
 ${JSON.stringify(sampleRows)}
 
-Group similar organizations and suggest how to handle each duplicate group.`
-    }
-  ];
+Group similar organizations and suggest how to handle each duplicate group.`,
+    },
+  ]
 
   // Check if OpenAI is available first
   if (!isOpenAIAvailable()) {
-    throw new Error('AI duplicate detection unavailable - OpenAI API key not configured');
+    throw new Error('AI duplicate detection unavailable - OpenAI API key not configured')
   }
 
   try {
-    const openaiClient = getOpenAIClient();
+    const openaiClient = getOpenAIClient()
     const response = await openaiClient.chat.completions.create({
-      model: "gpt-4o-2024-08-06",
-      messages: prompt, 
-      response_format: zodResponseFormat(DuplicateDetectionResponse, "DuplicateDetectionResponse"),
+      model: 'gpt-4o-2024-08-06',
+      messages: prompt,
+      response_format: zodResponseFormat(DuplicateDetectionResponse, 'DuplicateDetectionResponse'),
       temperature: 0,
-      max_tokens: 2500
-    });
+      max_tokens: 2500,
+    })
 
-    const result = JSON.parse(response.choices[0].message.content!);
-    return result as DuplicateDetectionResponseType;
-
+    const result = JSON.parse(response.choices[0].message.content!)
+    return result as DuplicateDetectionResponseType
   } catch (error) {
     // OpenAI duplicate detection failed - handled
-    throw new Error('AI duplicate detection unavailable');
+    throw new Error('AI duplicate detection unavailable')
   }
 }
 
@@ -249,7 +243,7 @@ Group similar organizations and suggest how to handle each duplicate group.`
  * Check if OpenAI API is available and configured
  */
 export function isOpenAIAvailable(): boolean {
-  return !!import.meta.env.VITE_OPENAI_API_KEY;
+  return !!import.meta.env.VITE_OPENAI_API_KEY
 }
 
 /**
@@ -257,6 +251,6 @@ export function isOpenAIAvailable(): boolean {
  */
 export const CONFIDENCE_THRESHOLDS = {
   HIGH: CONF_HIGH,
-  MEDIUM: CONF_MEDIUM, 
-  MIN: CONF_MIN
-} as const;
+  MEDIUM: CONF_MEDIUM,
+  MIN: CONF_MIN,
+} as const

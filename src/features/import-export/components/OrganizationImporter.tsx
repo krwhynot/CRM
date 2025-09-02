@@ -48,20 +48,20 @@ export function OrganizationImporter() {
       {fileUpload.uploadState.parsedData && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              File Processed Successfully
-            </CardTitle>
+            <CardTitle className="flex items-center gap-2">File Processed Successfully</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <DataPreviewTable parsedData={fileUpload.uploadState.parsedData} />
-              
+
               <ImportProgress
                 isImporting={importProgress.importState.isImporting}
                 importProgress={importProgress.importState.importProgress}
                 importResult={importProgress.importState.importResult}
                 validRowsCount={fileUpload.uploadState.parsedData.validRows.length}
-                onImport={() => importProgress.importOrganizations(fileUpload.uploadState.parsedData!.validRows)}
+                onImport={() =>
+                  importProgress.importOrganizations(fileUpload.uploadState.parsedData!.validRows)
+                }
                 onReset={handleReset}
               />
             </div>

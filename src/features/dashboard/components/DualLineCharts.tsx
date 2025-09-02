@@ -1,9 +1,5 @@
 import { useChartData } from '../hooks/useChartData'
-import { 
-  ChartLoadingSkeleton,
-  OpportunitiesChart,
-  ActivityChart 
-} from './charts'
+import { ChartLoadingSkeleton, OpportunitiesChart, ActivityChart } from './charts'
 import type { WeeklyData } from '@/lib/date-utils'
 
 interface DualLineChartsProps {
@@ -11,7 +7,6 @@ interface DualLineChartsProps {
   isLoading?: boolean
   className?: string
 }
-
 
 export function DualLineCharts({ data, isLoading = false, className }: DualLineChartsProps) {
   const { chartData, maxOpportunities, maxActivities } = useChartData(data)

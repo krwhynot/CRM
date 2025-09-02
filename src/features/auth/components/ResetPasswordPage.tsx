@@ -12,14 +12,13 @@ export function ResetPasswordPage() {
     authData,
     isAuthLoading,
     hasValidToken,
-    hasError
+    hasError,
   })
   const resetPasswordState = useResetPasswordState()
 
-
   if (isAuthLoading) {
     return (
-      <LoadingState 
+      <LoadingState
         title="Loading..."
         description="Verifying your password reset link"
         bgClassName="bg-mfb-cream"
@@ -33,10 +32,7 @@ export function ResetPasswordPage() {
 
   if (hasValidToken && !sessionInitialized && !sessionError) {
     return (
-      <LoadingState 
-        title="Initializing..."
-        description="Setting up your password reset session"
-      />
+      <LoadingState title="Initializing..." description="Setting up your password reset session" />
     )
   }
 

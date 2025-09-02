@@ -38,7 +38,7 @@ export interface DashboardProps {
 
 export interface FilterState {
   principal: string
-  product: string  
+  product: string
   weeks: string
 }
 
@@ -70,7 +70,7 @@ export interface UseDashboardDataReturn {
   opportunities: Opportunity[]
   principals: Principal[]
   products: Product[]
-  
+
   // Processed data
   filteredOpportunities: Opportunity[]
   opportunityChartData: DashboardChartDataPoint[]

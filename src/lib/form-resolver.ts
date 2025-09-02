@@ -6,7 +6,7 @@ import type React from 'react'
 /**
  * Creates a properly typed Yup resolver for React Hook Form
  * Eliminates the need for 'as any' casting while maintaining type safety
- * 
+ *
  * @param schema - Yup schema for validation
  * @returns Typed resolver that matches form data structure
  */
@@ -45,6 +45,6 @@ export interface TypedFormProps<T extends FieldValues> {
 export function createTypedFormHelper<T extends FieldValues>() {
   return {
     castForm: (form: any): TypedFormProps<T>['form'] => form,
-    createResolver: (schema: yup.ObjectSchema<T>) => createTypedYupResolver(schema)
+    createResolver: (schema: yup.ObjectSchema<T>) => createTypedYupResolver(schema),
   }
 }

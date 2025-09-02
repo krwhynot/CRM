@@ -14,7 +14,7 @@ export type {
   ContactWithPreferredPrincipals,
   ContactWithRelations,
   PurchaseInfluenceLevel,
-  DecisionAuthorityRole
+  DecisionAuthorityRole,
 } from './contact.types'
 
 export type {
@@ -23,7 +23,7 @@ export type {
   OrganizationUpdate,
   OrganizationWithContacts,
   OrganizationPriority,
-  FoodServiceSegment
+  FoodServiceSegment,
 } from './organization.types'
 
 export type {
@@ -32,7 +32,7 @@ export type {
   OpportunityUpdate,
   OpportunityWithRelations,
   OpportunityContext,
-  OpportunityStage
+  OpportunityStage,
 } from './opportunity.types'
 
 export type {
@@ -40,7 +40,7 @@ export type {
   InteractionInsert,
   InteractionUpdate,
   InteractionWithRelations,
-  InteractionType
+  InteractionType,
 } from './interaction.types'
 
 // Product entity types (unchanged in Principal CRM transformation)
@@ -50,13 +50,18 @@ export type ProductUpdate = Database['public']['Tables']['products']['Update']
 
 // Supporting junction table types
 export type OpportunityProduct = Database['public']['Tables']['opportunity_products']['Row']
-export type OpportunityProductInsert = Database['public']['Tables']['opportunity_products']['Insert']
-export type OpportunityProductUpdate = Database['public']['Tables']['opportunity_products']['Update']
+export type OpportunityProductInsert =
+  Database['public']['Tables']['opportunity_products']['Insert']
+export type OpportunityProductUpdate =
+  Database['public']['Tables']['opportunity_products']['Update']
 
 // Contact preferred principals junction table types
-export type ContactPreferredPrincipal = Database['public']['Tables']['contact_preferred_principals']['Row']
-export type ContactPreferredPrincipalInsert = Database['public']['Tables']['contact_preferred_principals']['Insert']
-export type ContactPreferredPrincipalUpdate = Database['public']['Tables']['contact_preferred_principals']['Update']
+export type ContactPreferredPrincipal =
+  Database['public']['Tables']['contact_preferred_principals']['Row']
+export type ContactPreferredPrincipalInsert =
+  Database['public']['Tables']['contact_preferred_principals']['Insert']
+export type ContactPreferredPrincipalUpdate =
+  Database['public']['Tables']['contact_preferred_principals']['Update']
 
 // Enum types for legacy compatibility
 export type ContactRole = Database['public']['Enums']['contact_role']
@@ -70,12 +75,13 @@ export type ProductWithPrincipal = Product & {
 }
 
 // Legacy opportunity types (for backward compatibility)
-export type OpportunityWithFoundingInteraction = Database['public']['Tables']['opportunities']['Row'] & {
-  organization?: Database['public']['Tables']['organizations']['Row']
-  contact?: Database['public']['Tables']['contacts']['Row']
-  principal_organization?: Database['public']['Tables']['organizations']['Row']
-  founding_interaction?: Database['public']['Tables']['interactions']['Row']
-}
+export type OpportunityWithFoundingInteraction =
+  Database['public']['Tables']['opportunities']['Row'] & {
+    organization?: Database['public']['Tables']['organizations']['Row']
+    contact?: Database['public']['Tables']['contacts']['Row']
+    principal_organization?: Database['public']['Tables']['organizations']['Row']
+    founding_interaction?: Database['public']['Tables']['interactions']['Row']
+  }
 
 export type OpportunityWithFullRelations = Database['public']['Tables']['opportunities']['Row'] & {
   organization?: Database['public']['Tables']['organizations']['Row']
@@ -94,12 +100,13 @@ export type InteractionWithOpportunityFlag = Database['public']['Tables']['inter
   is_founding_interaction?: boolean
 }
 
-export type InteractionWithFoundedOpportunities = Database['public']['Tables']['interactions']['Row'] & {
-  contact?: Database['public']['Tables']['contacts']['Row']
-  organization?: Database['public']['Tables']['organizations']['Row']
-  opportunity?: Database['public']['Tables']['opportunities']['Row']
-  founded_opportunities?: Database['public']['Tables']['opportunities']['Row'][]
-}
+export type InteractionWithFoundedOpportunities =
+  Database['public']['Tables']['interactions']['Row'] & {
+    contact?: Database['public']['Tables']['contacts']['Row']
+    organization?: Database['public']['Tables']['organizations']['Row']
+    opportunity?: Database['public']['Tables']['opportunities']['Row']
+    founded_opportunities?: Database['public']['Tables']['opportunities']['Row'][]
+  }
 
 // Re-export filter types from individual entity files
 export type { ContactFilters } from './contact.types'
@@ -124,10 +131,15 @@ export type {
   InteractionWithOpportunityFormData,
   ProductFormData,
   OpportunityProductFormData,
-  ContactPreferredPrincipalFormData
+  ContactPreferredPrincipalFormData,
 } from './validation'
 
 // Re-export helper functions from individual type files
-export { generateOpportunityName, getNextStage, getPreviousStage, OPPORTUNITY_STAGE_ORDER } from './opportunity.types'
+export {
+  generateOpportunityName,
+  getNextStage,
+  getPreviousStage,
+  OPPORTUNITY_STAGE_ORDER,
+} from './opportunity.types'
 export { MOBILE_INTERACTION_TEMPLATES } from './interaction.types'
 export { FOOD_SERVICE_SEGMENTS } from './organization.types'

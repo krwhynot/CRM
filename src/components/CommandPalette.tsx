@@ -30,14 +30,17 @@ export function CommandPalette({ open, setOpen }: CommandPaletteProps) {
     return () => document.removeEventListener('keydown', down)
   }, [open, setOpen])
 
-  const runCommand = React.useCallback((command: () => void) => {
-    setOpen(false)
-    command()
-  }, [setOpen])
+  const runCommand = React.useCallback(
+    (command: () => void) => {
+      setOpen(false)
+      command()
+    },
+    [setOpen]
+  )
 
   return (
-    <CommandDialog 
-      open={open} 
+    <CommandDialog
+      open={open}
       onOpenChange={setOpen}
       title="Search CRM"
       description="Quickly navigate to any section of your CRM"
@@ -45,7 +48,7 @@ export function CommandPalette({ open, setOpen }: CommandPaletteProps) {
       <CommandInput placeholder="Type a command or search..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
-        
+
         <CommandGroup heading="Navigation">
           <CommandItem onSelect={() => runCommand(() => navigate('/'))}>
             <Search className="mr-2 size-4" />
@@ -63,7 +66,9 @@ export function CommandPalette({ open, setOpen }: CommandPaletteProps) {
             <Target className="mr-2 size-4" />
             <span>Opportunities</span>
           </CommandItem>
-          <CommandItem onSelect={() => runCommand(() => navigate('/interactions'))}> {/* ui-audit: allow */}
+          <CommandItem onSelect={() => runCommand(() => navigate('/interactions'))}>
+            {' '}
+            {/* ui-audit: allow */}
             <MessageSquare className="mr-2 size-4" />
             <span>Activities</span>
           </CommandItem>
@@ -86,7 +91,9 @@ export function CommandPalette({ open, setOpen }: CommandPaletteProps) {
             <Target className="mr-2 size-4" />
             <span>{COPY.BUTTONS.ADD_OPPORTUNITY}</span>
           </CommandItem>
-          <CommandItem onSelect={() => runCommand(() => navigate('/interactions?action=create'))}> {/* ui-audit: allow */}
+          <CommandItem onSelect={() => runCommand(() => navigate('/interactions?action=create'))}>
+            {' '}
+            {/* ui-audit: allow */}
             <MessageSquare className="mr-2 size-4" />
             <span>{COPY.BUTTONS.LOG_ACTIVITY}</span>
           </CommandItem>

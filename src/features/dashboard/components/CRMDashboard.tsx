@@ -18,10 +18,10 @@ export const CRMDashboard: React.FC = () => {
     filteredOpportunities,
     opportunityChartData,
     interactionChartData,
-    activityItems
+    activityItems,
   } = useDashboardData(debouncedFilters)
   const { isInitialLoad, showEmptyState } = useDashboardLoading(debouncedFilters, activityItems)
-  
+
   // Show initial loading skeleton
   if (isInitialLoad) {
     return (
@@ -32,7 +32,7 @@ export const CRMDashboard: React.FC = () => {
       </div>
     )
   }
-  
+
   // Show empty state if no principal selected and no data would be visible
   if (showEmptyState) {
     return (
@@ -54,38 +54,34 @@ export const CRMDashboard: React.FC = () => {
       </div>
     )
   }
-  
+
   return (
     <div className="flex flex-1 flex-col">
-        {/* Filters - Sticky top bar */}
-        <DashboardFilters
-          filters={filters}
-          onFiltersChange={handleFiltersChange}
-          principals={principals}
-          products={products}
-          isLoading={isLoading}
-        />
-        
-        {/* Charts - Side by side on desktop, stacked on mobile */}
-        <DashboardCharts
-          opportunityChartData={opportunityChartData}
-          interactionChartData={interactionChartData}
-          isLoading={isLoading}
-        />
-        
-        {/* Opportunity Kanban - Sales Pipeline */}
-        <OpportunityKanban
-          opportunities={filteredOpportunities}
-          principals={principals}
-          loading={isLoading}
-        />
-        
-        {/* Activity Feed - Full width, paginated */}
-        <SimpleActivityFeed
-          activities={activityItems}
-          loading={isLoading}
-          className="w-full"
-        />
+      {/* Filters - Sticky top bar */}
+      <DashboardFilters
+        filters={filters}
+        onFiltersChange={handleFiltersChange}
+        principals={principals}
+        products={products}
+        isLoading={isLoading}
+      />
+
+      {/* Charts - Side by side on desktop, stacked on mobile */}
+      <DashboardCharts
+        opportunityChartData={opportunityChartData}
+        interactionChartData={interactionChartData}
+        isLoading={isLoading}
+      />
+
+      {/* Opportunity Kanban - Sales Pipeline */}
+      <OpportunityKanban
+        opportunities={filteredOpportunities}
+        principals={principals}
+        loading={isLoading}
+      />
+
+      {/* Activity Feed - Full width, paginated */}
+      <SimpleActivityFeed activities={activityItems} loading={isLoading} className="w-full" />
     </div>
   )
 }

@@ -22,7 +22,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({
   titleClassName,
   descriptionClassName,
   contentClassName,
-  children
+  children,
 }) => {
   return (
     <Card className={`${cardClassName} transition-shadow hover:shadow-lg`}>
@@ -31,13 +31,9 @@ export const ChartCard: React.FC<ChartCardProps> = ({
           {icon}
           {title}
         </CardTitle>
-        <p className={`text-sm text-muted-foreground ${descriptionClassName}`}>
-          {description}
-        </p>
+        <p className={`text-sm text-muted-foreground ${descriptionClassName}`}>{description}</p>
       </CardHeader>
-      <CardContent className={contentClassName}>
-        {children}
-      </CardContent>
+      <CardContent className={contentClassName}>{children}</CardContent>
     </Card>
   )
 }

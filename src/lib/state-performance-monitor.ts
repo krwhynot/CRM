@@ -1,6 +1,6 @@
 /**
  * State Management Performance Monitor
- * 
+ *
  * Tracks performance metrics for the new state architecture
  * to validate the benefits of separating client/server state
  */
@@ -19,7 +19,7 @@ class StatePerformanceMonitor {
     queryCacheSize: 0,
     clientStateUpdates: 0,
     averageQueryTime: 0,
-    cacheHitRate: 0
+    cacheHitRate: 0,
   }
 
   private queryTimes: number[] = []
@@ -35,7 +35,7 @@ class StatePerformanceMonitor {
       const duration = performance.now() - startTime
       this.queryTimes.push(duration)
       this.updateAverageQueryTime()
-      
+
       if (process.env.NODE_ENV === 'development') {
         console.log(`🔍 Query [${queryKey}] completed in ${duration.toFixed(2)}ms`)
       }
@@ -46,7 +46,7 @@ class StatePerformanceMonitor {
   trackCacheHit(queryKey: string) {
     this.cacheHits++
     this.updateCacheHitRate()
-    
+
     if (process.env.NODE_ENV === 'development') {
       console.log(`⚡ Cache hit for [${queryKey}]`)
     }
@@ -55,7 +55,7 @@ class StatePerformanceMonitor {
   trackCacheMiss(queryKey: string) {
     this.cacheMisses++
     this.updateCacheHitRate()
-    
+
     if (process.env.NODE_ENV === 'development') {
       console.log(`🌐 Cache miss for [${queryKey}] - fetching from server`)
     }
@@ -64,7 +64,7 @@ class StatePerformanceMonitor {
   // Track Zustand store updates
   trackClientStateUpdate(storeName: string, action: string) {
     this.metrics.clientStateUpdates++
-    
+
     if (process.env.NODE_ENV === 'development') {
       console.log(`🎨 Client state update: ${storeName}.${action}`)
     }
@@ -77,7 +77,7 @@ class StatePerformanceMonitor {
 
   private updateAverageQueryTime() {
     if (this.queryTimes.length === 0) return
-    
+
     const sum = this.queryTimes.reduce((acc, time) => acc + time, 0)
     this.metrics.averageQueryTime = sum / this.queryTimes.length
   }
@@ -95,7 +95,7 @@ class StatePerformanceMonitor {
   // Generate performance report
   generateReport(): string {
     const metrics = this.getMetrics()
-    
+
     return `
 📊 State Management Performance Report
 =====================================
@@ -124,18 +124,18 @@ class StatePerformanceMonitor {
   private getHealthScore(): number {
     const metrics = this.getMetrics()
     let score = 0
-    
+
     // Cache hit rate contributes 40 points
     score += Math.min(40, (metrics.cacheHitRate / 100) * 40)
-    
+
     // Fast queries contribute 30 points (under 100ms is excellent)
     const queryScore = Math.max(0, 30 - (metrics.averageQueryTime / 100) * 30)
     score += queryScore
-    
+
     // Good separation (client updates don't trigger server queries) contributes 30 points
     const separationRatio = metrics.clientStateUpdates / Math.max(1, metrics.queryHits)
     score += Math.min(30, separationRatio * 10) // More client updates relative to queries is good
-    
+
     return Math.round(score)
   }
 
@@ -146,7 +146,7 @@ class StatePerformanceMonitor {
       queryCacheSize: 0,
       clientStateUpdates: 0,
       averageQueryTime: 0,
-      cacheHitRate: 0
+      cacheHitRate: 0,
     }
     this.queryTimes = []
     this.cacheHits = 0
@@ -177,7 +177,7 @@ export function logStatePerformance() {
 // Integration with TanStack Query DevTools
 export function createQueryClientWithMonitoring() {
   if (typeof window === 'undefined') return null
-  
+
   // This could be integrated with the main QueryClient
   // to automatically track all query performance
   return {

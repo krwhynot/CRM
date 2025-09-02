@@ -15,13 +15,13 @@ export const ProductActions: React.FC<ProductActionsProps> = ({
   product,
   onEdit,
   onView,
-  onContactSupplier
+  onContactSupplier,
 }) => {
   return (
     <div className="flex gap-2">
       {onView && (
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="sm"
           onClick={() => onView(product)}
           className="h-8 px-3 transition-colors duration-200"
@@ -31,8 +31,8 @@ export const ProductActions: React.FC<ProductActionsProps> = ({
         </Button>
       )}
       {onContactSupplier && (
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="sm"
           onClick={() => onContactSupplier(product)}
           className="h-8 px-3 transition-colors duration-200"
@@ -42,8 +42,8 @@ export const ProductActions: React.FC<ProductActionsProps> = ({
         </Button>
       )}
       {onEdit && (
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="sm"
           onClick={() => onEdit(product)}
           className="h-8 px-3 transition-colors duration-200"

@@ -84,9 +84,7 @@ export const ProductRowMain: React.FC<ProductRowMainProps> = ({
         </div>
       </TableCell>
       <TableCell className="py-4">
-        <div className="text-sm text-gray-700">
-          {product.principal_name || <EmptyCell />}
-        </div>
+        <div className="text-sm text-gray-700">{product.principal_name || <EmptyCell />}</div>
       </TableCell>
       <TableCell className="py-4">
         <div className="text-sm text-gray-700">{product.brand || <EmptyCell />}</div>

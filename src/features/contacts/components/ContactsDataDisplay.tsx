@@ -20,11 +20,11 @@ export const ContactsDataDisplay: React.FC<ContactsDataDisplayProps> = ({
   contacts,
   onEdit,
   onDelete,
-  onRefresh
+  onRefresh,
 }) => {
   if (isLoading) {
     return (
-      <LoadingState 
+      <LoadingState
         message="Loading contacts..."
         subtext="Fetching contact data from the database"
         variant="table"
@@ -44,11 +44,5 @@ export const ContactsDataDisplay: React.FC<ContactsDataDisplayProps> = ({
     )
   }
 
-  return (
-    <ContactsTable 
-      contacts={contacts}
-      onEdit={onEdit}
-      onDelete={onDelete}
-    />
-  )
+  return <ContactsTable contacts={contacts} onEdit={onEdit} onDelete={onDelete} />
 }

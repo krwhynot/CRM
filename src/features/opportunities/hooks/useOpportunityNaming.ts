@@ -34,7 +34,9 @@ export function usePrincipalNames(principalIds: string[]) {
       // Maintain order based on input array with safe data access
       const safeData = safeArrayAccess(data, 'fetch principal names')
       const orderedNames = principalIds
-        .map((id) => safeFindInArray(safeData, (org) => org.id === id, 'find principal by id')?.name)
+        .map(
+          (id) => safeFindInArray(safeData, (org) => org.id === id, 'find principal by id')?.name
+        )
         .filter((name): name is string => Boolean(name))
 
       return orderedNames
@@ -155,12 +157,18 @@ export function useNamingData(organizationId: string, principalIds: string[]) {
           organizationName = result.data.name
         } else if (result.type === 'principals' && result.data && Array.isArray(result.data)) {
           // Maintain order based on input array with safe data access
-          const safeResultData = safeArrayAccess(result.data as OrganizationBasic[], 'naming data principals')
+          const safeResultData = safeArrayAccess(
+            result.data as OrganizationBasic[],
+            'naming data principals'
+          )
           principalNames = principalIds
             .map(
               (id) =>
-                safeFindInArray(safeResultData, (org: OrganizationBasic) => org.id === id, 'find principal in naming data')
-                  ?.name
+                safeFindInArray(
+                  safeResultData,
+                  (org: OrganizationBasic) => org.id === id,
+                  'find principal in naming data'
+                )?.name
             )
             .filter((name): name is string => Boolean(name))
         }

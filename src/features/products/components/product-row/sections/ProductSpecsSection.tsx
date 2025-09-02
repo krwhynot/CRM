@@ -17,9 +17,7 @@ export const ProductSpecsSection: React.FC<ProductSpecsSectionProps> = ({ produc
           <Package className="size-4" />
           Package Size
         </div>
-        <div className="pl-6 text-sm text-gray-600">
-          {product.package_size || <EmptyCell />}
-        </div>
+        <div className="pl-6 text-sm text-gray-600">{product.package_size || <EmptyCell />}</div>
       </div>
 
       {/* Unit of Measure */}
@@ -37,9 +35,7 @@ export const ProductSpecsSection: React.FC<ProductSpecsSectionProps> = ({ produc
           <Building2 className="size-4" />
           Origin
         </div>
-        <div className="pl-6 text-sm text-gray-600">
-          {product.origin_country || <EmptyCell />}
-        </div>
+        <div className="pl-6 text-sm text-gray-600">{product.origin_country || <EmptyCell />}</div>
       </div>
     </div>
   )

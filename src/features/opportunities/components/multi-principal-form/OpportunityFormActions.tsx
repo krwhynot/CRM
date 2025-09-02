@@ -10,7 +10,7 @@ interface OpportunityFormActionsProps {
 
 export const OpportunityFormActions: React.FC<OpportunityFormActionsProps> = ({
   canSubmit,
-  isLoading
+  isLoading,
 }) => {
   return (
     <div className="flex flex-col gap-4 border-t pt-4">

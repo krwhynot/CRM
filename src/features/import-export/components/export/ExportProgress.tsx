@@ -25,7 +25,9 @@ export const ExportProgressComponent: React.FC<ExportProgressProps> = ({ exportP
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
               <span>Processing records...</span>
-              <span>{exportProgress.recordsProcessed} / {exportProgress.totalRecords}</span>
+              <span>
+                {exportProgress.recordsProcessed} / {exportProgress.totalRecords}
+              </span>
             </div>
             <Progress value={exportProgress.progress} className="w-full" />
           </div>

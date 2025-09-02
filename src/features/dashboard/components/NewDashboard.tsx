@@ -20,7 +20,7 @@ export function NewDashboard() {
   const [filters, setFilters] = useState<FilterState>({
     principal: 'all',
     product: 'all',
-    weeks: 'Last 8 Weeks'
+    weeks: 'Last 8 Weeks',
   })
 
   // Data hooks
@@ -35,16 +35,16 @@ export function NewDashboard() {
   // Prepare filter options
   const principals = useMemo(() => {
     return organizations
-      .filter(org => org.type === 'principal')
-      .map(org => ({ id: org.id, name: org.name, company: org.name }))
+      .filter((org) => org.type === 'principal')
+      .map((org) => ({ id: org.id, name: org.name, company: org.name }))
   }, [organizations])
 
   const productOptions = useMemo(() => {
-    return products.map(product => ({
+    return products.map((product) => ({
       id: product.id,
       name: product.name,
       category: product.category,
-      principalId: product.principal_id || ''
+      principalId: product.principal_id || '',
     }))
   }, [products])
 
@@ -52,7 +52,7 @@ export function NewDashboard() {
   const weeklyData = useMemo(() => {
     const weekRange = parseInt(filters.weeks.match(/\d+/)?.[0] || '8')
     const weekRanges = generateWeekRanges(weekRange)
-    
+
     // For now, just create mock data structure - the actual implementation
     // would need proper type alignment with the aggregation functions
     const opportunityData = weekRanges.map(() => ({ opportunities: 0 }))
@@ -62,31 +62,43 @@ export function NewDashboard() {
     return weekRanges.map((week, index) => ({
       ...week,
       opportunities: opportunityData[index]?.opportunities || 0,
-      activities: activityData[index]?.activities || 0
+      activities: activityData[index]?.activities || 0,
     }))
   }, [filters])
 
-  const hasData = weeklyData.some(week => week.opportunities > 0 || week.activities > 0)
+  const hasData = weeklyData.some((week) => week.opportunities > 0 || week.activities > 0)
 
   return (
-    <div className={`flex-1 overflow-auto bg-gray-50 ${USE_NEW_STYLE ? "p-3 sm:p-4" : "p-4 sm:p-6"}`}>
+    <div
+      className={`flex-1 overflow-auto bg-gray-50 ${USE_NEW_STYLE ? 'p-3 sm:p-4' : 'p-4 sm:p-6'}`}
+    >
       {/* Dashboard Content Header */}
-      <div className={USE_NEW_STYLE ? "mb-3 sm:mb-4" : "mb-4 sm:mb-6"}>
-        <h1 className={`mb-1 ${USE_NEW_STYLE ? "text-lg font-bold text-foreground sm:text-xl" : "text-xl font-bold text-gray-900 sm:text-2xl"}`}>
+      <div className={USE_NEW_STYLE ? 'mb-3 sm:mb-4' : 'mb-4 sm:mb-6'}>
+        <h1
+          className={`mb-1 ${USE_NEW_STYLE ? 'text-lg font-bold text-foreground sm:text-xl' : 'text-xl font-bold text-gray-900 sm:text-2xl'}`}
+        >
           📊 CRM ANALYTICS DASHBOARD
         </h1>
-        <p className={USE_NEW_STYLE ? "text-xs text-muted-foreground sm:text-sm" : "text-sm text-gray-600 sm:text-base"}>
+        <p
+          className={
+            USE_NEW_STYLE
+              ? 'text-xs text-muted-foreground sm:text-sm'
+              : 'text-sm text-gray-600 sm:text-base'
+          }
+        >
           Welcome to Master Food Brokers CRM - Advanced Analytics & Insights
         </p>
       </div>
 
       {/* Stats Cards Grid */}
-      <div className={`${USE_NEW_STYLE ? "compact-grid mb-4" : "mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 tablet:grid-cols-2 laptop:grid-cols-4"}`}>
+      <div
+        className={`${USE_NEW_STYLE ? 'compact-grid mb-4' : 'mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 tablet:grid-cols-2 laptop:grid-cols-4'}`}
+      >
         <StatsCards />
       </div>
 
       {/* Filters Section */}
-      <div className={USE_NEW_STYLE ? "mb-4" : "mb-6"}>
+      <div className={USE_NEW_STYLE ? 'mb-4' : 'mb-6'}>
         <DashboardFilters
           filters={filters}
           onFiltersChange={setFilters}
@@ -97,32 +109,22 @@ export function NewDashboard() {
       </div>
 
       {/* Charts Section */}
-      <div className={USE_NEW_STYLE ? "mb-4" : "mb-6"}>
+      <div className={USE_NEW_STYLE ? 'mb-4' : 'mb-6'}>
         {hasData ? (
-          <DualLineCharts 
-            data={weeklyData} 
-            isLoading={isLoading}
-          />
+          <DualLineCharts data={weeklyData} isLoading={isLoading} />
         ) : !isLoading ? (
           <DualLineChartsEmpty />
         ) : (
-          <DualLineCharts 
-            data={weeklyData} 
-            isLoading={true}
-          />
+          <DualLineCharts data={weeklyData} isLoading={true} />
         )}
       </div>
 
       {/* Activity Feed Section */}
       <div className="grid grid-cols-1 gap-4 sm:gap-6 xl:grid-cols-3">
         <div className="xl:col-span-2">
-          <EnhancedActivityFeed 
-            limit={15}
-            showFilters={true}
-            className="h-fit"
-          />
+          <EnhancedActivityFeed limit={15} showFilters={true} className="h-fit" />
         </div>
-        
+
         {/* Additional Stats or Quick Actions could go here */}
         <div className="space-y-4">
           <div className="rounded-lg border bg-white p-4 shadow-sm">
@@ -161,7 +163,8 @@ export function NewDashboard() {
             <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
               <h3 className="mb-2 text-sm font-semibold text-primary">Principal Filter Active</h3>
               <p className="text-xs text-muted-foreground">
-                Viewing data for: <strong>{principals.find(p => p.id === filters.principal)?.name}</strong>
+                Viewing data for:{' '}
+                <strong>{principals.find((p) => p.id === filters.principal)?.name}</strong>
               </p>
             </div>
           )}
@@ -170,7 +173,8 @@ export function NewDashboard() {
             <div className="rounded-lg border border-secondary/20 bg-secondary/5 p-4">
               <h3 className="mb-2 text-sm font-semibold text-secondary">Product Filter Active</h3>
               <p className="text-xs text-muted-foreground">
-                Viewing data for: <strong>{productOptions.find(p => p.id === filters.product)?.name}</strong>
+                Viewing data for:{' '}
+                <strong>{productOptions.find((p) => p.id === filters.product)?.name}</strong>
               </p>
             </div>
           )}

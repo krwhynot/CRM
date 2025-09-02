@@ -1,17 +1,14 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { PriorityBadge } from '@/components/ui/new/PriorityBadge';
-import { PageContainer } from '@/components/layout/PageContainer';
-import { PageHeader } from '@/components/ui/new/PageHeader';
+import { Button } from '@/components/ui/button'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { PriorityBadge } from '@/components/ui/new/PriorityBadge'
+import { PageContainer } from '@/components/layout/PageContainer'
+import { PageHeader } from '@/components/ui/new/PageHeader'
 
 export function StyleGuideTest() {
   return (
     <PageContainer>
-      <PageHeader
-        title="Style Guide Test Page"
-        className="mb-6"
-      />
-      
+      <PageHeader title="Style Guide Test Page" className="mb-6" />
+
       <div className="grid grid-cols-2 gap-8">
         <div>
           <h2 className="mb-4 text-xl font-semibold">Current Style</h2>
@@ -36,7 +33,7 @@ export function StyleGuideTest() {
             </Card>
           </div>
         </div>
-        
+
         <div>
           <h2 className="mb-4 text-xl font-semibold">Consolidated Style</h2>
           {/* Consolidated components after refactoring */}
@@ -81,16 +78,17 @@ export function StyleGuideTest() {
             <div className="mt-4 space-y-3">
               <p className="text-sm text-success">Components successfully consolidated!</p>
               <p className="text-sm text-muted-foreground">
-                ✅ Button components merged<br/>
-                ✅ Semantic color tokens implemented<br/>
-                ✅ Atomic design templates created
+                ✅ Button components merged
+                <br />
+                ✅ Semantic color tokens implemented
+                <br />✅ Atomic design templates created
               </p>
             </div>
           </div>
         </div>
       </div>
     </PageContainer>
-  );
+  )
 }
 
-export default StyleGuideTest;
+export default StyleGuideTest

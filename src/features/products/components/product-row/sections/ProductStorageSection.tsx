@@ -17,9 +17,7 @@ export const ProductStorageSection: React.FC<ProductStorageSectionProps> = ({ pr
         <Package className="size-4" />
         Storage Requirements
       </div>
-      <div className="pl-6 text-sm text-gray-600">
-        {product.storage_requirements}
-      </div>
+      <div className="pl-6 text-sm text-gray-600">{product.storage_requirements}</div>
     </div>
   )
 }

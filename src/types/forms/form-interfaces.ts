@@ -1,215 +1,197 @@
 /**
- * Explicit Form Interfaces
- * 
- * These interfaces are designed to work perfectly with React Hook Form
- * while maintaining compatibility with Yup validation schemas.
- * They handle the optionality/nullability differences between Yup and RHF.
+ * Form Interface Definitions
+ *
+ * TypeScript interfaces for all CRM entity forms following the new architecture.
+ * These interfaces define the shape of form data for each entity type.
  */
 
-/**
- * Contact form interface optimized for React Hook Form
- * Handles nullable vs optional field differences
- */
-export interface ContactFormInterface {
-  // Required fields
-  first_name: string
-  last_name: string
-  organization_id: string
-  purchase_influence: 'High' | 'Medium' | 'Low' | 'Unknown'
-  decision_authority: 'Decision Maker' | 'Influencer' | 'End User' | 'Gatekeeper'
-  position: string
+import type { Database } from '@/lib/database.types'
 
-  // Conditionally required
-  custom_position?: string | null
-
-  // Optional fields (can be undefined, null, or value)
-  email?: string | null
-  title?: string | null
-  department?: string | null
-  phone?: string | null
-  mobile_phone?: string | null
-  linkedin_url?: string | null
-  is_primary_contact?: boolean
-  notes?: string | null
-
-  // Virtual fields
-  preferred_principals?: string[]
+// Base form interface with common fields
+interface BaseFormInterface {
+  id?: string
+  created_at?: string
+  updated_at?: string
+  deleted_at?: string | null
 }
 
 /**
- * Organization form interface optimized for React Hook Form
+ * Organization Form Interface
  */
-export interface OrganizationFormInterface {
-  // Required fields
+export interface OrganizationFormInterface extends BaseFormInterface {
   name: string
-  type: 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor'
-  priority: 'A' | 'B' | 'C' | 'D'
-  segment: string
+  type: Database['public']['Enums']['organization_type']
+  segment?: string | null
+  priority: string
 
-  // Boolean fields (auto-derived from type, but kept for database compatibility)
-  is_principal?: boolean
-  is_distributor?: boolean
+  // Organization Type Flags
+  is_principal?: boolean | null
+  is_distributor?: boolean | null
+  is_active?: boolean | null
 
-  // Optional fields
-  city?: string | null
-  state_province?: string | null
+  // Contact Information
+  email?: string | null
   phone?: string | null
   website?: string | null
-  account_manager?: string | null
-  notes?: string | null
-}
 
-/**
- * Opportunity form interface optimized for React Hook Form
- */
-export interface OpportunityFormInterface {
-  // Required fields
-  name: string
-  organization_id: string
-  estimated_value: number
-  stage: string
+  // Address Information
+  address_line_1?: string | null
+  address_line_2?: string | null
+  city?: string | null
+  state_province?: string | null
+  postal_code?: string | null
+  country?: string | null
 
-  // Optional fields
-  contact_id?: string | null
-  estimated_close_date?: string | null
+  // Business Information
+  annual_revenue?: number | null
+  employee_count?: number | null
+  industry?: string | null
   description?: string | null
   notes?: string | null
+  tags?: string[] | null
 
-  // Principal CRM fields (optional)
-  principals?: string[]
-  product_id?: string | null
-  opportunity_context?: string | null
-  auto_generated_name?: boolean
-  principal_id?: string | null
+  // Hierarchy
+  parent_organization_id?: string | null
+
+  // Manager Information
+  primary_manager_name?: string | null
+  secondary_manager_name?: string | null
+}
+
+/**
+ * Contact Form Interface
+ */
+export interface ContactFormInterface extends BaseFormInterface {
+  first_name: string
+  last_name: string
+  email?: string | null
+  phone?: string | null
+  mobile?: string | null
+
+  // Organization Relationship
+  organization_id?: string | null
+  position?: string | null
+  department?: string | null
+
+  // Contact Classification
+  role: Database['public']['Enums']['contact_role']
+  purchase_influence?: string | null
+  decision_authority?: string | null
+
+  // Additional Information
+  linkedin_url?: string | null
+  notes?: string | null
+  tags?: string[] | null
+  preferred_contact_method?: 'email' | 'phone' | 'mobile' | null
+}
+
+/**
+ * Product Form Interface
+ */
+export interface ProductFormInterface extends BaseFormInterface {
+  name: string
+  sku?: string | null
+  description?: string | null
+  category?: string | null
+
+  // Pricing Information
+  unit_price?: number | null
+  cost_price?: number | null
+  currency?: string | null
+
+  // Inventory Information
+  stock_quantity?: number | null
+  minimum_order_quantity?: number | null
+
+  // Product Details
+  brand?: string | null
+  manufacturer?: string | null
+  weight?: number | null
+  dimensions?: string | null
+
+  // Status and Availability
+  is_active: boolean
+  availability_status?: 'in_stock' | 'out_of_stock' | 'discontinued' | null
+
+  // Additional Information
+  tags?: string[] | null
+  notes?: string | null
+}
+
+/**
+ * Opportunity Form Interface
+ */
+export interface OpportunityFormInterface extends BaseFormInterface {
+  name: string
+  description?: string | null
+
+  // Opportunity Value and Timing
+  value?: number | null
+  currency?: string | null
   probability?: number | null
-  deal_owner?: string | null
+  expected_close_date?: string | null
+  actual_close_date?: string | null
+
+  // Status and Stage
+  status: Database['public']['Enums']['opportunity_status']
+  stage: Database['public']['Enums']['opportunity_stage']
+  lost_reason?: string | null
+
+  // Relationships
+  organization_id?: string | null
+  primary_contact_id?: string | null
+
+  // Products and Services
+  products?: string[] | null // Array of product IDs
+
+  // Additional Information
+  source?: string | null
+  competitor?: string | null
+  next_action?: string | null
+  next_action_date?: string | null
+
+  notes?: string | null
+  tags?: string[] | null
 }
 
 /**
- * Default values factory for Contact form interface
+ * Interaction Form Interface
  */
-export const createContactFormInterfaceDefaults = (
-  preselectedOrganization?: string,
-  initialData?: Partial<ContactFormInterface>
-): ContactFormInterface => ({
-  first_name: '',
-  last_name: '',
-  organization_id: preselectedOrganization || '',
-  purchase_influence: 'Unknown',
-  decision_authority: 'Gatekeeper',
-  position: '',
-  custom_position: null,
-  email: null,
-  title: null,
-  department: null,
-  phone: null,
-  mobile_phone: null,
-  linkedin_url: null,
-  is_primary_contact: false,
-  notes: null,
-  preferred_principals: [],
-  ...initialData
-})
+export interface InteractionFormInterface extends BaseFormInterface {
+  type: Database['public']['Enums']['interaction_type']
+  subject: string
+  description?: string | null
 
-/**
- * Default values factory for Organization form interface
- */
-export const createOrganizationFormInterfaceDefaults = (
-  initialData?: Partial<OrganizationFormInterface>
-): OrganizationFormInterface => {
-  // Start with base data including any provided initial data
-  const baseData = {
-    name: '',
-    type: 'customer' as const,
-    priority: 'C' as const,
-    segment: '',
-    city: null,
-    state_province: null,
-    phone: null,
-    website: null,
-    account_manager: null,
-    notes: null,
-    ...initialData
-  }
-  
-  // Auto-derive boolean flags from the type
-  // Import the function dynamically to avoid circular dependencies
-  const deriveFlags = (type: string) => ({
-    is_principal: type === 'principal',
-    is_distributor: type === 'distributor'
-  })
-  
-  const derivedFlags = deriveFlags(baseData.type)
-  
-  return { ...baseData, ...derivedFlags }
+  // Timing
+  interaction_date: string
+  follow_up_date?: string | null
+  duration_minutes?: number | null
+
+  // Relationships
+  contact_id?: string | null
+  organization_id?: string | null
+  opportunity_id?: string | null
+
+  // Outcome and Next Steps
+  outcome?: string | null
+  next_steps?: string | null
+
+  // Additional Information
+  location?: string | null
+  attendees?: string[] | null
+  notes?: string | null
+  tags?: string[] | null
+
+  // Attachments (file URLs or IDs)
+  attachments?: string[] | null
 }
 
-/**
- * Default values factory for Opportunity form interface
- */
-export const createOpportunityFormInterfaceDefaults = (
-  preselectedOrganization?: string,
-  initialData?: Partial<OpportunityFormInterface>
-): OpportunityFormInterface => ({
-  name: '',
-  organization_id: preselectedOrganization || '',
-  estimated_value: 0,
-  stage: 'Discovery',
-  contact_id: null,
-  estimated_close_date: null,
-  description: null,
-  notes: null,
-  principals: [],
-  product_id: null,
-  opportunity_context: null,
-  auto_generated_name: false,
-  principal_id: null,
-  probability: null,
-  deal_owner: null,
-  ...initialData
-})
+// Export utility types
+export type EntityFormInterface =
+  | OrganizationFormInterface
+  | ContactFormInterface
+  | ProductFormInterface
+  | OpportunityFormInterface
+  | InteractionFormInterface
 
-/**
- * Type guards for form interfaces
- */
-export const isContactFormInterface = (data: unknown): data is ContactFormInterface => {
-  return Boolean(
-    data &&
-    typeof data === 'object' &&
-    data !== null &&
-    'first_name' in data &&
-    'last_name' in data &&
-    'organization_id' in data &&
-    typeof (data as Record<string, unknown>).first_name === 'string' &&
-    typeof (data as Record<string, unknown>).last_name === 'string' &&
-    typeof (data as Record<string, unknown>).organization_id === 'string'
-  )
-}
-
-export const isOrganizationFormInterface = (data: unknown): data is OrganizationFormInterface => {
-  return Boolean(
-    data &&
-    typeof data === 'object' &&
-    data !== null &&
-    'name' in data &&
-    'type' in data &&
-    'priority' in data &&
-    typeof (data as Record<string, unknown>).name === 'string' &&
-    typeof (data as Record<string, unknown>).type === 'string' &&
-    typeof (data as Record<string, unknown>).priority === 'string'
-  )
-}
-
-export const isOpportunityFormInterface = (data: unknown): data is OpportunityFormInterface => {
-  return Boolean(
-    data &&
-    typeof data === 'object' &&
-    data !== null &&
-    'name' in data &&
-    'organization_id' in data &&
-    'estimated_value' in data &&
-    typeof (data as Record<string, unknown>).name === 'string' &&
-    typeof (data as Record<string, unknown>).organization_id === 'string' &&
-    typeof (data as Record<string, unknown>).estimated_value === 'number'
-  )
-}
+export type EntityType = 'organization' | 'contact' | 'product' | 'opportunity' | 'interaction'

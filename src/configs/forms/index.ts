@@ -1,4 +1,6 @@
-export { createOrganizationFormConfig, default as organizationFormConfig } from './organization.config'
+// Base configuration utilities for forms
+export * from './base.config'
 
-// Export types for form configurations
-export type { CoreFormLayoutProps, FormSection, FormFieldConfig, ConditionalSection, SelectOption } from '@/components/forms/CoreFormLayout'
+// Note: Entity-specific form configs have been removed as part of the
+// migration to SimpleForm architecture. Forms now use declarative
+// field definitions instead of complex configuration objects.

@@ -31,7 +31,7 @@ export const OrganizationsFilters: React.FC<OrganizationsFiltersProps> = ({
   filterPills,
   onAddNew,
   totalOrganizations,
-  filteredCount
+  filteredCount,
 }) => {
   return (
     <div className="space-y-4">
@@ -40,16 +40,18 @@ export const OrganizationsFilters: React.FC<OrganizationsFiltersProps> = ({
         <div>
           <h2 className="text-2xl font-semibold text-card-foreground">Organizations</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            {filteredCount === totalOrganizations 
-              ? `${totalOrganizations} organizations` 
-              : `${filteredCount} of ${totalOrganizations} organizations`
-            }
+            {filteredCount === totalOrganizations
+              ? `${totalOrganizations} organizations`
+              : `${filteredCount} of ${totalOrganizations} organizations`}
           </p>
         </div>
         {onAddNew && (
-          <Button onClick={onAddNew} className="focus-ring mobile-touch-target flex items-center gap-2">
+          <Button
+            onClick={onAddNew}
+            className="focus-ring mobile-touch-target flex items-center gap-2"
+          >
             <Plus className="size-4" />
-{COPY.BUTTONS.ADD_ORGANIZATION}
+            {COPY.BUTTONS.ADD_ORGANIZATION}
           </Button>
         )}
       </div>
@@ -82,12 +84,10 @@ export const OrganizationsFilters: React.FC<OrganizationsFiltersProps> = ({
             )}
           >
             {pill.label}
-            <span 
+            <span
               className={cn(
                 'ml-1 px-1.5 py-0.5 rounded-full text-xs font-medium',
-                activeFilter === pill.key
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-700'
+                activeFilter === pill.key ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
               )}
             >
               {pill.count}

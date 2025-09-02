@@ -41,26 +41,26 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   actions,
   meta,
   count,
-  className = ""
+  className = '',
 }) => {
   // Handle backward compatibility
   const displaySubtitle = subtitle || description
-  const displayMeta = meta || (count !== undefined && (
-    <span className="text-sm text-muted-foreground">({count})</span>
-  ))
+  const displayMeta =
+    meta ||
+    (count !== undefined && <span className="text-sm text-muted-foreground">({count})</span>)
 
   const renderBackButton = () => {
     if (!backButton) return null
 
     const buttonIcon = backButton.icon || <ArrowLeft className="size-4" />
-    const buttonLabel = backButton.label || "Back"
+    const buttonLabel = backButton.label || 'Back'
     const ariaLabel = backButton['aria-label'] || `Go back to previous page`
 
     const buttonProps = {
-      variant: "ghost" as const,
-      size: "sm" as const,
-      className: "mt-1",
-      'aria-label': ariaLabel
+      variant: 'ghost' as const,
+      size: 'sm' as const,
+      className: 'mt-1',
+      'aria-label': ariaLabel,
     }
 
     if (backButton.to) {
@@ -95,7 +95,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
           {actions.map((action, index) => {
             const key = `action-${index}`
             const ariaLabel = action['aria-label'] || action.label
-            
+
             if (action.type === 'link' && action.to) {
               return (
                 <Button
@@ -149,10 +149,8 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
           )}
         </div>
       </div>
-      
-      <div className="mt-2 shrink-0 sm:mt-0">
-        {renderActions()}
-      </div>
+
+      <div className="mt-2 shrink-0 sm:mt-0">{renderActions()}</div>
     </header>
   )
 }

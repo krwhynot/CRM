@@ -1,6 +1,6 @@
 /**
  * State Management Integration Tests
- * 
+ *
  * Verifies that the new architecture properly separates
  * server state (TanStack Query) from client state (Zustand)
  */
@@ -19,11 +19,11 @@ vi.mock('@/lib/supabase', () => ({
     from: vi.fn(() => ({
       select: vi.fn(() => ({
         is: vi.fn(() => ({
-          eq: vi.fn(() => Promise.resolve({ data: [], error: null }))
-        }))
-      }))
-    }))
-  }
+          eq: vi.fn(() => Promise.resolve({ data: [], error: null })),
+        })),
+      })),
+    })),
+  },
 }))
 
 describe('State Management Architecture', () => {
@@ -37,7 +37,6 @@ describe('State Management Architecture', () => {
       },
     })
   })
-
 
   describe('Client State Management (Zustand)', () => {
     it('should manage UI view state independently', () => {
@@ -128,7 +127,11 @@ describe('State Management Architecture', () => {
       expect(listKey).toEqual(['contact-advocacy', 'list', { filters: undefined }])
 
       const filteredKey = advocacyKeys.list({ contact_id: 'test-id' })
-      expect(filteredKey).toEqual(['contact-advocacy', 'list', { filters: { contact_id: 'test-id' } }])
+      expect(filteredKey).toEqual([
+        'contact-advocacy',
+        'list',
+        { filters: { contact_id: 'test-id' } },
+      ])
 
       const contactKey = advocacyKeys.byContact('contact-123')
       expect(contactKey).toEqual(['contact-advocacy', 'by-contact', 'contact-123'])
@@ -147,7 +150,7 @@ describe('State Management Architecture', () => {
       // Keys should be different because array order matters for our current implementation
       // This ensures cache consistency for the same logical filters
       expect(key1).not.toEqual(key2)
-      
+
       // But the same filter object should produce the same key
       const key3 = advocacyKeys.list(filters1)
       expect(key1).toEqual(key3)
@@ -178,7 +181,7 @@ describe('State Management Architecture', () => {
     it('should provide clear boundaries between state types', () => {
       // Client state hooks return only UI-related data
       const { result: viewResult } = renderHook(() => useAdvocacyView())
-      
+
       // Verify client state interface (no server data)
       expect(viewResult.current).toHaveProperty('viewMode')
       expect(viewResult.current).toHaveProperty('sortBy')
@@ -187,7 +190,7 @@ describe('State Management Architecture', () => {
       expect(viewResult.current).not.toHaveProperty('isLoading') // No loading states
 
       const { result: formResult } = renderHook(() => useAdvocacyForm())
-      
+
       expect(formResult.current).toHaveProperty('isFormOpen')
       expect(formResult.current).toHaveProperty('formMode')
       expect(formResult.current).toHaveProperty('openCreateForm')

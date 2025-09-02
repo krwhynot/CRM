@@ -10,10 +10,7 @@ interface ExportResultsProps {
   onReset: () => void
 }
 
-export const ExportResults: React.FC<ExportResultsProps> = ({ 
-  exportProgress, 
-  onReset 
-}) => {
+export const ExportResults: React.FC<ExportResultsProps> = ({ exportProgress, onReset }) => {
   if (!exportProgress.completed) return null
 
   return (
@@ -29,8 +26,8 @@ export const ExportResults: React.FC<ExportResultsProps> = ({
           <Alert>
             <CheckCircle className="size-4" />
             <AlertDescription>
-              Successfully exported {exportProgress.recordsProcessed} organizations. 
-              The file should have downloaded automatically.
+              Successfully exported {exportProgress.recordsProcessed} organizations. The file should
+              have downloaded automatically.
             </AlertDescription>
           </Alert>
           <Button onClick={onReset} variant="outline">

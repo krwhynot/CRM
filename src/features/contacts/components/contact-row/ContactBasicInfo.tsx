@@ -10,14 +10,12 @@ interface ContactBasicInfoProps {
   primaryContactInfo: string | null
 }
 
-const EmptyCell = () => (
-  <span className="text-sm italic text-muted-foreground">—</span>
-)
+const EmptyCell = () => <span className="text-sm italic text-muted-foreground">—</span>
 
 export const ContactBasicInfo: React.FC<ContactBasicInfoProps> = ({
   contact,
   showOrganization,
-  primaryContactInfo
+  primaryContactInfo,
 }) => {
   return (
     <>
@@ -27,26 +25,20 @@ export const ContactBasicInfo: React.FC<ContactBasicInfoProps> = ({
           <div className="text-base font-semibold text-foreground">
             {contact.first_name} {contact.last_name}
           </div>
-          {contact.is_primary_contact && (
-            <Star className="size-4 fill-current text-yellow-500" />
-          )}
+          {contact.is_primary_contact && <Star className="size-4 fill-current text-yellow-500" />}
         </div>
       </TableCell>
 
       {/* Organization */}
       {showOrganization && (
         <TableCell>
-          <span className="text-foreground">
-            {contact.organization?.name || <EmptyCell />}
-          </span>
+          <span className="text-foreground">{contact.organization?.name || <EmptyCell />}</span>
         </TableCell>
       )}
 
       {/* Position */}
       <TableCell>
-        <span className="text-foreground">
-          {contact.title || <EmptyCell />}
-        </span>
+        <span className="text-foreground">{contact.title || <EmptyCell />}</span>
       </TableCell>
 
       {/* Primary Contact Info */}
@@ -55,9 +47,7 @@ export const ContactBasicInfo: React.FC<ContactBasicInfoProps> = ({
           {primaryContactInfo ? (
             <>
               <Phone className="size-4 text-muted-foreground" />
-              <span className="font-mono text-sm text-muted-foreground">
-                {primaryContactInfo}
-              </span>
+              <span className="font-mono text-sm text-muted-foreground">{primaryContactInfo}</span>
             </>
           ) : (
             <EmptyCell />
@@ -67,7 +57,7 @@ export const ContactBasicInfo: React.FC<ContactBasicInfoProps> = ({
 
       {/* Status */}
       <TableCell className="text-center">
-        <ContactBadges 
+        <ContactBadges
           contact={contact}
           showPriority={true}
           showInfluence={false}

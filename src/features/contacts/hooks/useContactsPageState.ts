@@ -9,22 +9,22 @@ export const useContactsPageState = () => {
 
   const openCreateDialog = () => setIsCreateDialogOpen(true)
   const closeCreateDialog = () => setIsCreateDialogOpen(false)
-  
+
   const openEditDialog = (contact: Contact) => {
     setSelectedContact(contact)
     setIsEditDialogOpen(true)
   }
-  
+
   const closeEditDialog = () => {
     setIsEditDialogOpen(false)
     setSelectedContact(null)
   }
-  
+
   const openDeleteDialog = (contact: Contact) => {
     setSelectedContact(contact)
     setIsDeleteDialogOpen(true)
   }
-  
+
   const closeDeleteDialog = () => {
     setIsDeleteDialogOpen(false)
     setSelectedContact(null)
@@ -40,6 +40,6 @@ export const useContactsPageState = () => {
     openEditDialog,
     closeEditDialog,
     openDeleteDialog,
-    closeDeleteDialog
+    closeDeleteDialog,
   }
 }

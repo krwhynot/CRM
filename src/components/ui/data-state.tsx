@@ -17,11 +17,16 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
   subtext = 'This should only take a few seconds',
   variant = 'default',
   rows = 5,
-  className
+  className,
 }) => {
   if (variant === 'skeleton') {
     return (
-      <div className={cn("space-y-4", className)} role="status" aria-live="polite" aria-label={message}>
+      <div
+        className={cn('space-y-4', className)}
+        role="status"
+        aria-live="polite"
+        aria-label={message}
+      >
         {Array.from({ length: rows }, (_, index) => (
           <div key={index} className="space-y-2">
             <Skeleton className="h-4 w-full" />
@@ -35,7 +40,11 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
 
   if (variant === 'table') {
     return (
-      <div className={cn("text-center py-16 bg-card rounded-lg border shadow-sm", className)} role="status" aria-live="polite">
+      <div
+        className={cn('text-center py-16 bg-card rounded-lg border shadow-sm', className)}
+        role="status"
+        aria-live="polite"
+      >
         <div className="space-y-4">
           <div className="flex justify-center">
             <Loader2 className="size-8 animate-spin text-primary" />
@@ -51,7 +60,11 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
   }
 
   return (
-    <div className={cn("text-center py-12 bg-card rounded-lg border shadow-sm", className)} role="status" aria-live="polite">
+    <div
+      className={cn('text-center py-12 bg-card rounded-lg border shadow-sm', className)}
+      role="status"
+      aria-live="polite"
+    >
       <div className="space-y-4">
         <div className="flex justify-center">
           <Loader2 className="size-6 animate-spin text-primary" />
@@ -81,31 +94,38 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
   onRetry,
   retryLabel = 'Try again',
   variant = 'default',
-  className
+  className,
 }) => {
-  const iconColor = variant === 'destructive' ? 'text-destructive' : 
-                   variant === 'warning' ? 'text-warning-foreground' : 'text-muted-foreground'
-  
-  const titleColor = variant === 'destructive' ? 'text-destructive' : 
-                    variant === 'warning' ? 'text-warning-foreground' : 'text-card-foreground'
+  const iconColor =
+    variant === 'destructive'
+      ? 'text-destructive'
+      : variant === 'warning'
+        ? 'text-warning-foreground'
+        : 'text-muted-foreground'
+
+  const titleColor =
+    variant === 'destructive'
+      ? 'text-destructive'
+      : variant === 'warning'
+        ? 'text-warning-foreground'
+        : 'text-card-foreground'
 
   return (
-    <div className={cn("text-center py-12 bg-card rounded-lg border shadow-sm", className)} role="alert">
+    <div
+      className={cn('text-center py-12 bg-card rounded-lg border shadow-sm', className)}
+      role="alert"
+    >
       <div className="mx-auto max-w-md space-y-6">
         <div className="flex justify-center">
-          <AlertCircle className={cn("h-12 w-12", iconColor)} />
+          <AlertCircle className={cn('h-12 w-12', iconColor)} />
         </div>
         <div className="space-y-2">
-          <div className={cn("text-lg font-semibold", titleColor)}>
-            {title}
-          </div>
-          <div className="text-sm leading-relaxed text-muted-foreground">
-            {message}
-          </div>
+          <div className={cn('text-lg font-semibold', titleColor)}>{title}</div>
+          <div className="text-sm leading-relaxed text-muted-foreground">{message}</div>
         </div>
         {onRetry && (
           <div className="pt-2">
-            <Button 
+            <Button
               onClick={onRetry}
               variant={variant === 'destructive' ? 'destructive' : 'outline'}
               className="mobile-touch-target"
@@ -136,30 +156,19 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   message = 'Get started by adding your first item',
   icon,
   action,
-  className
+  className,
 }) => {
   return (
-    <div className={cn("text-center py-16 bg-card rounded-lg border shadow-sm", className)}>
+    <div className={cn('text-center py-16 bg-card rounded-lg border shadow-sm', className)}>
       <div className="mx-auto max-w-md space-y-6">
-        {icon && (
-          <div className="flex justify-center text-muted">
-            {icon}
-          </div>
-        )}
+        {icon && <div className="flex justify-center text-muted">{icon}</div>}
         <div className="space-y-2">
-          <div className="text-xl font-semibold text-card-foreground">
-            {title}
-          </div>
-          <div className="text-sm leading-relaxed text-muted-foreground">
-            {message}
-          </div>
+          <div className="text-xl font-semibold text-card-foreground">{title}</div>
+          <div className="text-sm leading-relaxed text-muted-foreground">{message}</div>
         </div>
         {action && (
           <div className="pt-2">
-            <Button 
-              onClick={action.onClick}
-              className="mobile-touch-target"
-            >
+            <Button onClick={action.onClick} className="mobile-touch-target">
               {action.label}
             </Button>
           </div>

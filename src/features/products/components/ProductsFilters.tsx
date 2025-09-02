@@ -30,7 +30,7 @@ export const ProductsFilters: React.FC<ProductsFiltersProps> = ({
   filterPills,
   onAddNew,
   totalProducts,
-  filteredCount
+  filteredCount,
 }) => {
   return (
     <div className="space-y-4">
@@ -39,10 +39,9 @@ export const ProductsFilters: React.FC<ProductsFiltersProps> = ({
         <div>
           <h2 className="text-2xl font-semibold text-card-foreground">Products</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            {filteredCount === totalProducts 
-              ? `${totalProducts} products` 
-              : `${filteredCount} of ${totalProducts} products`
-            }
+            {filteredCount === totalProducts
+              ? `${totalProducts} products`
+              : `${filteredCount} of ${totalProducts} products`}
           </p>
         </div>
         {onAddNew && (
@@ -81,12 +80,10 @@ export const ProductsFilters: React.FC<ProductsFiltersProps> = ({
             )}
           >
             {pill.label}
-            <span 
+            <span
               className={cn(
                 'ml-1 px-1.5 py-0.5 rounded-full text-xs font-medium',
-                activeFilter === pill.key
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-700'
+                activeFilter === pill.key ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
               )}
             >
               {pill.count}

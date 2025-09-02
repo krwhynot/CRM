@@ -6,12 +6,10 @@ interface OrganizationContactInfoSectionProps {
   organization: Organization
 }
 
-const EmptyCell = () => (
-  <span className="italic text-gray-400">Not provided</span>
-)
+const EmptyCell = () => <span className="italic text-gray-400">Not provided</span>
 
 export const OrganizationContactInfoSection: React.FC<OrganizationContactInfoSectionProps> = ({
-  organization
+  organization,
 }) => {
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -20,9 +18,7 @@ export const OrganizationContactInfoSection: React.FC<OrganizationContactInfoSec
           <Mail className="size-4" />
           Email
         </div>
-        <div className="pl-6 text-sm text-gray-600">
-          {organization.email || <EmptyCell />}
-        </div>
+        <div className="pl-6 text-sm text-gray-600">{organization.email || <EmptyCell />}</div>
       </div>
 
       <div className="space-y-2">

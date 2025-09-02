@@ -53,8 +53,7 @@ export const InteractionChart = React.memo(({ data, loading }: InteractionChartP
       return (
         <div className="rounded-lg border bg-background px-3 py-2 shadow-lg">
           <p className="text-sm font-medium">
-            {label}: {count} {count === 1 ? 'interaction' : 'interactions'}{' '}
-            {/* ui-audit: allow */}
+            {label}: {count} {count === 1 ? 'interaction' : 'interactions'} {/* ui-audit: allow */}
           </p>
         </div>
       )

@@ -9,7 +9,9 @@ interface UseHealthDashboardStateReturn {
   refreshStatus: () => void
 }
 
-export const useHealthDashboardState = (refreshInterval: number = 60000): UseHealthDashboardStateReturn => {
+export const useHealthDashboardState = (
+  refreshInterval: number = 60000
+): UseHealthDashboardStateReturn => {
   const { status, summary, isHealthy } = useHealthStatus()
   const [lastUpdated, setLastUpdated] = React.useState<Date>(new Date())
 
@@ -30,6 +32,6 @@ export const useHealthDashboardState = (refreshInterval: number = 60000): UseHea
     summary,
     isHealthy,
     lastUpdated,
-    refreshStatus
+    refreshStatus,
   }
 }

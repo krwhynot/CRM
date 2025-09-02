@@ -68,6 +68,36 @@ export type {
   FormPropsWithPreselection,
 } from './forms/'
 
+// New Form Architecture Types
+export type {
+  OrganizationFormInterface,
+  ContactFormInterface,
+  ProductFormInterface,
+  OpportunityFormInterface,
+  InteractionFormInterface,
+  EntityFormInterface,
+  EntityType,
+} from './forms/form-interfaces'
+
+export type {
+  DialogContextType,
+  FormSizeConfig,
+  FormContainerProps,
+  DialogHeightConfig,
+  FieldLayoutConfig,
+  ResponsiveConfig,
+  FormStateConfig,
+  FormThemeConfig,
+  AnimationConfig,
+  AccessibilityConfig,
+  FormLayoutMode,
+  FormGridType,
+  FormSpacingSize,
+  DialogFormProps,
+  PageFormProps,
+  ResponsiveFormProps,
+} from './forms/form-layout'
+
 export {
   defaultContactFormValues,
   createContactFormDefaults,

@@ -1,6 +1,6 @@
 /**
  * Dashboard Component Types
- * 
+ *
  * Type definitions for dashboard-specific components and interfaces
  * that extend the base entity types with dashboard-specific functionality.
  */
@@ -18,25 +18,25 @@ export type DashboardPriority = 'A+' | 'A' | 'B' | 'C' | 'D'
 export interface PrincipalMetrics {
   /** Total number of opportunities for this principal */
   opportunityCount: number
-  
+
   /** Total number of activities related to this principal */
   activityCount: number
-  
+
   /** Date of the most recent interaction, null if none */
   lastActivity: Date | null
-  
+
   /** Total estimated value of all opportunities */
   totalValue: number
-  
+
   /** Number of active (not closed) opportunities */
   activeOpportunities: number
-  
+
   /** Number of closed won opportunities */
   closedWonOpportunities?: number
-  
+
   /** Win rate percentage */
   winRate?: number
-  
+
   /** Average opportunity value */
   averageOpportunityValue?: number
 }
@@ -47,7 +47,7 @@ export interface PrincipalMetrics {
 export interface PrincipalWithMetrics extends Organization {
   /** Calculated metrics for this principal */
   metrics: PrincipalMetrics
-  
+
   /** Dashboard priority derived from organization size */
   dashboardPriority: DashboardPriority
 }
@@ -58,25 +58,25 @@ export interface PrincipalWithMetrics extends Organization {
 export interface DashboardStats {
   /** Total number of principal organizations */
   totalPrincipals: number
-  
+
   /** Number of active principal organizations */
   activePrincipals: number
-  
+
   /** Total number of opportunities across all principals */
   totalOpportunities: number
-  
+
   /** Total number of activities across all principals */
   totalActivities: number
-  
+
   /** Total estimated value across all opportunities */
   totalEstimatedValue: number
-  
+
   /** Number of active opportunities */
   activeOpportunities?: number
-  
+
   /** Total closed won value */
   totalClosedWonValue?: number
-  
+
   /** Overall win rate percentage */
   overallWinRate?: number
 }
@@ -87,16 +87,16 @@ export interface DashboardStats {
 export interface PrincipalCardProps {
   /** The principal organization to display */
   principal: Organization
-  
+
   /** Optional CSS classes for styling */
   className?: string
-  
+
   /** Optional click handler for navigation */
   onClick?: (principal: Organization) => void
-  
+
   /** Whether to show detailed metrics (default: true) */
   showDetailedMetrics?: boolean
-  
+
   /** Whether to show contact information (default: true) */
   showContactInfo?: boolean
 }
@@ -107,19 +107,19 @@ export interface PrincipalCardProps {
 export interface PrincipalCardsGridProps {
   /** Optional CSS classes for styling */
   className?: string
-  
+
   /** Optional limit on number of cards displayed */
   maxItems?: number
-  
+
   /** Optional filter function for principals */
   filter?: (principal: Organization) => boolean
-  
+
   /** Optional sort function for principals */
   sort?: (a: Organization, b: Organization) => number
-  
+
   /** Optional click handler for card selection */
   onPrincipalClick?: (principal: Organization) => void
-  
+
   /** Whether to show the item count footer */
   showItemCount?: boolean
 }
@@ -130,19 +130,19 @@ export interface PrincipalCardsGridProps {
 export interface PrincipalsDashboardProps {
   /** Optional CSS classes for styling */
   className?: string
-  
+
   /** Optional title override */
   title?: string
-  
+
   /** Optional description override */
   description?: string
-  
+
   /** Whether to show the add principal button */
   showAddButton?: boolean
-  
+
   /** Optional handler for add principal action */
   onAddPrincipal?: () => void
-  
+
   /** Optional handler for principal card clicks */
   onPrincipalClick?: (principal: Organization) => void
 }
@@ -181,22 +181,22 @@ export interface ErrorState {
 export interface DashboardFilters {
   /** Filter by priority levels */
   priorities?: DashboardPriority[]
-  
+
   /** Filter by active/inactive status */
   activeOnly?: boolean
-  
+
   /** Filter by organization size */
   sizes?: string[]
-  
+
   /** Filter by industry */
   industries?: string[]
-  
+
   /** Filter by minimum opportunity count */
   minOpportunities?: number
-  
+
   /** Filter by minimum estimated value */
   minEstimatedValue?: number
-  
+
   /** Search term for name/description */
   searchTerm?: string
 }
@@ -204,7 +204,7 @@ export interface DashboardFilters {
 /**
  * Sort options for principals
  */
-export type PrincipalSortOption = 
+export type PrincipalSortOption =
   | 'name-asc'
   | 'name-desc'
   | 'priority-desc'
@@ -232,10 +232,10 @@ export type ExportFormat = 'csv' | 'excel' | 'pdf' | 'json'
 export interface TimeRange {
   /** Start date */
   from: Date
-  
+
   /** End date */
   to: Date
-  
+
   /** Predefined range label */
   label?: string
 }
@@ -243,7 +243,7 @@ export interface TimeRange {
 /**
  * Predefined time range options
  */
-export type PredefinedTimeRange = 
+export type PredefinedTimeRange =
   | 'today'
   | 'yesterday'
   | 'last-7-days'

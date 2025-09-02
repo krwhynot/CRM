@@ -1,7 +1,13 @@
 import React from 'react'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { ProgressiveDetails } from '@/components/forms'
 import { Building2 } from 'lucide-react'
@@ -42,7 +48,7 @@ export const OrganizationModeSelector: React.FC<OrganizationModeSelectorProps> =
   setOrganizationMode,
   newOrgData,
   updateNewOrgField,
-  loading
+  loading,
 }) => {
   return (
     <div className="space-y-4 rounded-lg border p-4">
@@ -50,42 +56,56 @@ export const OrganizationModeSelector: React.FC<OrganizationModeSelectorProps> =
         <Building2 className="size-4" />
         Organization *
       </div>
-      
-      <RadioGroup 
-        value={organizationMode} 
+
+      <RadioGroup
+        value={organizationMode}
         onValueChange={(value: OrganizationMode) => setOrganizationMode(value)}
         className="flex gap-4"
       >
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="existing" id="existing" />
-          <label htmlFor="existing" className="text-sm">Select existing</label>
+          <label htmlFor="existing" className="text-sm">
+            Select existing
+          </label>
         </div>
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="new" id="new" />
-          <label htmlFor="new" className="text-sm">Add new</label>
+          <label htmlFor="new" className="text-sm">
+            Add new
+          </label>
         </div>
       </RadioGroup>
 
       {organizationMode === 'existing' ? (
-        <FormField control={form.control} name="organization_id" render={({ field }) => (
-          <FormItem>
-            <FormLabel>Select Organization *</FormLabel>
-            <Select onValueChange={field.onChange} value={field.value}>
-              <FormControl><SelectTrigger className="h-11"><SelectValue placeholder="Choose organization" /></SelectTrigger></FormControl>
-              <SelectContent>
-                {organizations.map((org) => (
-                  <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )} />
+        <FormField
+          control={form.control}
+          name="organization_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Select Organization *</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger className="h-11">
+                    <SelectValue placeholder="Choose organization" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {organizations.map((org) => (
+                    <SelectItem key={org.id} value={org.id}>
+                      {org.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       ) : (
         <div className="space-y-3">
           <div>
             <label className="text-sm font-medium">Organization Name *</label>
-            <Input 
+            <Input
               value={newOrgData.name}
               onChange={(e) => updateNewOrgField('name', e.target.value)}
               className="mt-1 h-11"
@@ -95,11 +115,11 @@ export const OrganizationModeSelector: React.FC<OrganizationModeSelectorProps> =
           </div>
           <div>
             <label className="text-sm font-medium">Organization Type *</label>
-            <Select 
+            <Select
               value={newOrgData.type}
-              onValueChange={(value: 'customer' | 'prospect' | 'vendor' | 'distributor' | 'principal') => 
-                updateNewOrgField('type', value)
-              }
+              onValueChange={(
+                value: 'customer' | 'prospect' | 'vendor' | 'distributor' | 'principal'
+              ) => updateNewOrgField('type', value)}
             >
               <SelectTrigger className="mt-1 h-11">
                 <SelectValue />
@@ -113,12 +133,12 @@ export const OrganizationModeSelector: React.FC<OrganizationModeSelectorProps> =
               </SelectContent>
             </Select>
           </div>
-          
+
           <ProgressiveDetails buttonText="Add Organization Details">
             <div className="space-y-3">
               <div>
                 <label className="text-sm font-medium">Phone</label>
-                <Input 
+                <Input
                   value={newOrgData.phone}
                   onChange={(e) => updateNewOrgField('phone', e.target.value)}
                   className="mt-1 h-9"
@@ -128,7 +148,7 @@ export const OrganizationModeSelector: React.FC<OrganizationModeSelectorProps> =
               </div>
               <div>
                 <label className="text-sm font-medium">Email</label>
-                <Input 
+                <Input
                   value={newOrgData.email}
                   onChange={(e) => updateNewOrgField('email', e.target.value)}
                   className="mt-1 h-9"
@@ -139,7 +159,7 @@ export const OrganizationModeSelector: React.FC<OrganizationModeSelectorProps> =
               </div>
               <div>
                 <label className="text-sm font-medium">Website</label>
-                <Input 
+                <Input
                   value={newOrgData.website}
                   onChange={(e) => updateNewOrgField('website', e.target.value)}
                   className="mt-1 h-9"

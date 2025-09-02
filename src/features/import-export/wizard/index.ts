@@ -8,8 +8,8 @@ export { useSmartImport } from './hooks/useSmartImport'
 
 // Types
 export type { WizardStep } from './components/SmartImportWizard'
-export type { 
+export type {
   SmartFieldMapping as SmartFieldMappingType,
   ImportConfig,
-  UseSmartImportReturn
+  UseSmartImportReturn,
 } from './hooks/useSmartImport'

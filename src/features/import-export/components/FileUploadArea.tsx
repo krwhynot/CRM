@@ -2,12 +2,7 @@ import React, { useRef, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import {
-  FileSpreadsheet,
-  AlertCircle,
-  X,
-  Download
-} from 'lucide-react'
+import { FileSpreadsheet, AlertCircle, X, Download } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface FileUploadAreaProps {
@@ -35,16 +30,19 @@ export function FileUploadArea({
   onDownloadTemplate,
   onDragOver,
   onDragLeave,
-  onDrop
+  onDrop,
 }: FileUploadAreaProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || [])
-    if (files.length > 0) {
-      onFileSelect(files[0])
-    }
-  }, [onFileSelect])
+  const handleFileInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = Array.from(e.target.files || [])
+      if (files.length > 0) {
+        onFileSelect(files[0])
+      }
+    },
+    [onFileSelect]
+  )
 
   const handleBrowseClick = useCallback(() => {
     fileInputRef.current?.click()
@@ -63,11 +61,9 @@ export function FileUploadArea({
       {/* Drag and Drop Area */}
       <div
         className={cn(
-          "border-2 border-dashed rounded-lg p-8 text-center transition-colors",
-          isDragOver
-            ? "border-blue-500 bg-blue-50"
-            : "border-gray-300 hover:border-gray-400",
-          file && "border-green-500 bg-green-50"
+          'border-2 border-dashed rounded-lg p-8 text-center transition-colors',
+          isDragOver ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400',
+          file && 'border-green-500 bg-green-50'
         )}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
@@ -77,12 +73,10 @@ export function FileUploadArea({
           <div className="mx-auto flex size-12 items-center justify-center rounded-lg bg-gray-100">
             <FileSpreadsheet className="size-6 text-gray-600" />
           </div>
-          
+
           {file ? (
             <div className="space-y-2">
-              <p className="text-sm font-medium text-green-700">
-                File selected: {file.name}
-              </p>
+              <p className="text-sm font-medium text-green-700">File selected: {file.name}</p>
               <p className="text-xs text-muted-foreground">
                 Size: {(file.size / 1024).toFixed(1)} KB
               </p>
@@ -103,9 +97,7 @@ export function FileUploadArea({
                   browse to upload
                 </button>
               </p>
-              <p className="text-xs text-muted-foreground">
-                Supports CSV files up to 5MB
-              </p>
+              <p className="text-xs text-muted-foreground">Supports CSV files up to 5MB</p>
             </div>
           )}
         </div>

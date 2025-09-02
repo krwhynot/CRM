@@ -18,7 +18,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   description,
   actionText,
   onAction,
-  className = ''
+  className = '',
 }) => {
   const getDefaultContent = () => {
     switch (type) {
@@ -26,7 +26,9 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         return {
           icon: <Building2 className="size-12 text-muted-foreground/50" />,
           title: title || 'Select a principal to view their activity',
-          description: description || 'Choose a principal from the filter above to see opportunities, activities, and trends.',
+          description:
+            description ||
+            'Choose a principal from the filter above to see opportunities, activities, and trends.',
           actionText: actionText || 'Browse Principals',
         }
       case 'chart':
@@ -40,7 +42,9 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         return {
           icon: <Activity className="size-8 text-muted-foreground/50" />,
           title: title || 'No activities to display',
-          description: description || 'Activities will appear here as opportunities and interactions are created.', /* ui-audit: allow */
+          description:
+            description ||
+            'Activities will appear here as opportunities and interactions are created.' /* ui-audit: allow */,
           actionText: actionText || 'Create Activity',
         }
       default:
@@ -57,7 +61,9 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 
   if (type === 'chart') {
     return (
-      <div className={`flex h-chart w-full items-center justify-center rounded-lg border border-dashed ${className}`}>
+      <div
+        className={`flex h-chart w-full items-center justify-center rounded-lg border border-dashed ${className}`}
+      >
         <div className="text-center text-muted-foreground">
           {content.icon}
           <div className="mt-2 text-sm">{content.title}</div>
@@ -74,12 +80,8 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       </CardHeader>
       <CardContent>
         <div className="py-12 text-center">
-          <div className="mb-4 flex justify-center">
-            {content.icon}
-          </div>
-          <h3 className="mb-2 text-lg font-semibold text-foreground">
-            {content.title}
-          </h3>
+          <div className="mb-4 flex justify-center">{content.icon}</div>
+          <h3 className="mb-2 text-lg font-semibold text-foreground">{content.title}</h3>
           <p className="mx-auto mb-6 max-w-md text-sm text-muted-foreground">
             {content.description}
           </p>
@@ -94,9 +96,9 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   )
 }
 
-export const ChartEmptyState: React.FC<{ title?: string; description?: string }> = ({ 
-  title = "No data available", 
-  description = "Select filters to view activity" 
+export const ChartEmptyState: React.FC<{ title?: string; description?: string }> = ({
+  title = 'No data available',
+  description = 'Select filters to view activity',
 }) => {
   return (
     <div className="flex h-chart w-full items-center justify-center rounded-lg border border-dashed">
@@ -109,9 +111,9 @@ export const ChartEmptyState: React.FC<{ title?: string; description?: string }>
   )
 }
 
-export const ActivityEmptyState: React.FC<{ title?: string; description?: string }> = ({ 
-  title = "No activities to display", 
-  description = "Select a principal to view their activity" 
+export const ActivityEmptyState: React.FC<{ title?: string; description?: string }> = ({
+  title = 'No activities to display',
+  description = 'Select a principal to view their activity',
 }) => {
   return (
     <div className="py-8 text-center text-muted-foreground">

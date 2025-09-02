@@ -20,92 +20,108 @@ export type OrganizationWithContacts = Organization & {
 // Organization validation schema - ONLY specification fields
 export const organizationSchema = yup.object({
   // REQUIRED FIELDS per specification
-  name: yup.string()
+  name: yup
+    .string()
     .required('Organization name is required')
     .max(255, 'Name must be 255 characters or less'),
-  
-  type: yup.string()
-    .oneOf(['customer', 'principal', 'distributor', 'prospect', 'vendor'] as const, 'Invalid organization type')
+
+  type: yup
+    .string()
+    .oneOf(
+      ['customer', 'principal', 'distributor', 'prospect', 'vendor'] as const,
+      'Invalid organization type'
+    )
     .required('Organization type is required'),
-  
-  priority: yup.string()
+
+  priority: yup
+    .string()
     .oneOf(['A', 'B', 'C', 'D'] as const, 'Invalid priority level')
     .required('Priority is required'),
-  
-  segment: yup.string()
+
+  segment: yup
+    .string()
     .required('Segment is required')
     .max(100, 'Segment must be 100 characters or less'),
 
   // IMPORTANT FIELDS per specification (auto-derived from type)
-  is_principal: yup.boolean()
-    .default(false),
-  
-  is_distributor: yup.boolean()
-    .default(false),
+  is_principal: yup.boolean().default(false),
+
+  is_distributor: yup.boolean().default(false),
 
   // OPTIONAL FIELDS per specification with transforms
-  description: yup.string()
+  description: yup
+    .string()
     .max(500, 'Description must be 500 characters or less')
     .nullable()
     .transform(FormTransforms.nullableString),
-  
-  email: yup.string()
+
+  email: yup
+    .string()
     .email('Invalid email address')
     .max(255, 'Email must be 255 characters or less')
     .nullable()
     .transform(FormTransforms.nullableEmail),
-  
-  phone: yup.string()
+
+  phone: yup
+    .string()
     .max(50, 'Phone must be 50 characters or less')
     .nullable()
     .transform(FormTransforms.nullablePhone),
-  
-  website: yup.string()
+
+  website: yup
+    .string()
     .url('Invalid website URL')
     .max(255, 'Website must be 255 characters or less')
     .nullable()
     .transform(FormTransforms.nullableUrl),
-  
-  address_line_1: yup.string()
+
+  address_line_1: yup
+    .string()
     .max(255, 'Address line 1 must be 255 characters or less')
     .nullable()
     .transform(FormTransforms.nullableString),
-  
-  address_line_2: yup.string()
+
+  address_line_2: yup
+    .string()
     .max(255, 'Address line 2 must be 255 characters or less')
     .nullable()
     .transform(FormTransforms.nullableString),
-  
-  city: yup.string()
+
+  city: yup
+    .string()
     .max(100, 'City must be 100 characters or less')
     .nullable()
     .transform(FormTransforms.nullableString),
-  
-  state_province: yup.string()
+
+  state_province: yup
+    .string()
     .max(100, 'State/Province must be 100 characters or less')
     .nullable()
     .transform(FormTransforms.nullableString),
-  
-  postal_code: yup.string()
+
+  postal_code: yup
+    .string()
     .max(20, 'Postal code must be 20 characters or less')
     .nullable()
     .transform(FormTransforms.nullableString),
-  
-  country: yup.string()
+
+  country: yup
+    .string()
     .max(100, 'Country must be 100 characters or less')
     .nullable()
     .transform(FormTransforms.nullableString),
-  
-  industry: yup.string()
+
+  industry: yup
+    .string()
     .max(100, 'Industry must be 100 characters or less')
     .nullable()
     .transform(FormTransforms.nullableString),
-  
-  
-  notes: yup.string()
+
+  notes: yup
+    .string()
     .max(500, 'Notes must be 500 characters or less')
     .nullable()
-    .transform(FormTransforms.nullableString)
+    .transform(FormTransforms.nullableString),
 })
 
 // Type inference from validation schema
@@ -113,7 +129,9 @@ export type OrganizationFormData = yup.InferType<typeof organizationSchema>
 
 // Organization filters for queries
 export interface OrganizationFilters {
-  type?: Database['public']['Enums']['organization_type'] | Database['public']['Enums']['organization_type'][]
+  type?:
+    | Database['public']['Enums']['organization_type']
+    | Database['public']['Enums']['organization_type'][]
   priority?: OrganizationPriority | OrganizationPriority[]
   segment?: string | string[]
   is_principal?: boolean
@@ -135,7 +153,7 @@ export const FOOD_SERVICE_SEGMENTS = [
   'Retail Food Service',
   'Government',
   'Senior Living',
-  'Other'
+  'Other',
 ] as const
 
-export type FoodServiceSegment = typeof FOOD_SERVICE_SEGMENTS[number]
+export type FoodServiceSegment = (typeof FOOD_SERVICE_SEGMENTS)[number]

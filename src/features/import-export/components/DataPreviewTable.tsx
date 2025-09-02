@@ -7,10 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  CheckCircle,
-  AlertCircle,
-} from 'lucide-react'
+import { CheckCircle, AlertCircle } from 'lucide-react'
 import type { Database } from '@/lib/database.types'
 
 interface CsvRow {
@@ -48,27 +45,20 @@ interface DataPreviewTableProps {
 }
 
 export function DataPreviewTable({ parsedData }: DataPreviewTableProps) {
-
   return (
     <div className="space-y-4">
       {/* Summary Stats */}
       <div className="grid grid-cols-3 gap-4">
         <div className="rounded-lg bg-blue-50 p-4 text-center">
-          <div className="text-2xl font-bold text-blue-600">
-            {parsedData.rows.length}
-          </div>
+          <div className="text-2xl font-bold text-blue-600">{parsedData.rows.length}</div>
           <div className="text-sm text-gray-600">Total Rows</div>
         </div>
         <div className="rounded-lg bg-green-50 p-4 text-center">
-          <div className="text-2xl font-bold text-green-600">
-            {parsedData.validRows.length}
-          </div>
+          <div className="text-2xl font-bold text-green-600">{parsedData.validRows.length}</div>
           <div className="text-sm text-gray-600">Valid Rows</div>
         </div>
         <div className="rounded-lg bg-red-50 p-4 text-center">
-          <div className="text-2xl font-bold text-red-600">
-            {parsedData.invalidRows.length}
-          </div>
+          <div className="text-2xl font-bold text-red-600">{parsedData.invalidRows.length}</div>
           <div className="text-sm text-gray-600">Invalid Rows</div>
         </div>
       </div>
@@ -157,15 +147,17 @@ export function DataPreviewTable({ parsedData }: DataPreviewTableProps) {
                       <TableCell>{row.phone || '-'}</TableCell>
                       <TableCell className="max-w-32 truncate">
                         {row.website ? (
-                          <a 
-                            href={row.website} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
+                          <a
+                            href={row.website}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="text-xs text-blue-600 hover:underline"
                           >
                             Website
                           </a>
-                        ) : '-'}
+                        ) : (
+                          '-'
+                        )}
                       </TableCell>
                       <TableCell className="max-w-32 truncate">
                         {row.address_line_1 || '-'}

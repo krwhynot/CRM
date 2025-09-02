@@ -10,7 +10,7 @@ interface ActivityFiltersProps {
 export const ActivityFilters: React.FC<ActivityFiltersProps> = ({
   selectedType,
   onTypeChange,
-  showFilters
+  showFilters,
 }) => {
   if (!showFilters) return null
 

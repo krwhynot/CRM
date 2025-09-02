@@ -221,9 +221,7 @@ export function ProductsTable({
       key: 'principal',
       header: 'Principal',
       cell: (product) => (
-        <div className="text-sm text-gray-700">
-          {product.principal_name || <EmptyCell />}
-        </div>
+        <div className="text-sm text-gray-700">{product.principal_name || <EmptyCell />}</div>
       ),
       className: 'min-w-28',
       hidden: { sm: true, md: true },

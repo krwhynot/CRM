@@ -8,7 +8,13 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
@@ -33,19 +39,17 @@ export function EnhancedFormField({ control, name, config, disabled }: EnhancedF
         <FormItem className={config.className}>
           <FormLabel className="text-sm font-medium text-gray-700">
             {config.label}
-            {config.required && <span className="text-mfb-clay ml-1">*</span>}
+            {config.required && <span className="ml-1 text-mfb-clay">*</span>}
           </FormLabel>
-          
-          <FormControl>
-            {renderFieldInput(field, config, disabled)}
-          </FormControl>
-          
+
+          <FormControl>{renderFieldInput(field, config, disabled)}</FormControl>
+
           {config.description && (
             <FormDescription className="text-xs text-muted-foreground">
               {config.description}
             </FormDescription>
           )}
-          
+
           <FormMessage className="text-xs" />
         </FormItem>
       )}
@@ -64,8 +68,8 @@ function renderFieldInput(field: any, config: FieldConfig, disabled?: boolean) {
   switch (config.type) {
     case 'select':
       return (
-        <Select 
-          value={field.value || ''} 
+        <Select
+          value={field.value || ''}
           onValueChange={field.onChange}
           disabled={commonProps.disabled}
         >
@@ -80,9 +84,7 @@ function renderFieldInput(field: any, config: FieldConfig, disabled?: boolean) {
                   <div className="flex flex-col">
                     <span>{option.label}</span>
                     {option.description && (
-                      <span className="text-xs text-muted-foreground">
-                        {option.description}
-                      </span>
+                      <span className="text-xs text-muted-foreground">{option.description}</span>
                     )}
                   </div>
                 </div>
@@ -91,16 +93,10 @@ function renderFieldInput(field: any, config: FieldConfig, disabled?: boolean) {
           </SelectContent>
         </Select>
       )
-    
+
     case 'textarea':
-      return (
-        <Textarea 
-          {...commonProps} 
-          rows={config.rows ?? 3}
-          className="resize-y min-h-[80px]"
-        />
-      )
-    
+      return <Textarea {...commonProps} rows={config.rows ?? 3} className="min-h-20 resize-y" />
+
     case 'radio':
       return (
         <RadioGroup
@@ -112,9 +108,9 @@ function renderFieldInput(field: any, config: FieldConfig, disabled?: boolean) {
           {config.options?.map((option) => (
             <div key={option.value} className="flex items-center space-x-2">
               <RadioGroupItem value={option.value} id={`${name}-${option.value}`} />
-              <Label 
-                htmlFor={`${name}-${option.value}`} 
-                className="text-sm font-normal cursor-pointer"
+              <Label
+                htmlFor={`${name}-${option.value}`}
+                className="cursor-pointer text-sm font-normal"
               >
                 {option.label}
               </Label>
@@ -122,11 +118,11 @@ function renderFieldInput(field: any, config: FieldConfig, disabled?: boolean) {
           ))}
         </RadioGroup>
       )
-    
+
     case 'switch':
       return (
         <div className="flex items-center space-x-3 py-2">
-          <Switch 
+          <Switch
             checked={field.value || false}
             onCheckedChange={field.onChange}
             disabled={commonProps.disabled}
@@ -136,82 +132,53 @@ function renderFieldInput(field: any, config: FieldConfig, disabled?: boolean) {
           )}
         </div>
       )
-    
+
     case 'date':
       return (
-        <Input 
-          {...commonProps} 
-          type="date"
-          value={field.value || ''}
-          onChange={field.onChange}
-        />
+        <Input {...commonProps} type="date" value={field.value || ''} onChange={field.onChange} />
       )
-    
+
     case 'email':
-      return (
-        <Input 
-          {...commonProps} 
-          type="email"
-          autoComplete="email"
-        />
-      )
-    
+      return <Input {...commonProps} type="email" autoComplete="email" />
+
     case 'phone':
-      return (
-        <Input 
-          {...commonProps} 
-          type="tel"
-          autoComplete="tel"
-        />
-      )
-    
+      return <Input {...commonProps} type="tel" autoComplete="tel" />
+
     case 'url':
-      return (
-        <Input 
-          {...commonProps} 
-          type="url"
-          autoComplete="url"
-        />
-      )
-    
+      return <Input {...commonProps} type="url" autoComplete="url" />
+
     case 'number':
       return (
-        <Input 
-          {...commonProps} 
+        <Input
+          {...commonProps}
           type="number"
           min={config.min}
           max={config.max}
           step={config.step}
         />
       )
-    
+
     default:
-      return (
-        <Input 
-          {...commonProps} 
-          type="text"
-          autoComplete={getAutoComplete(config.name)}
-        />
-      )
+      return <Input {...commonProps} type="text" autoComplete={getAutoComplete(config.name)} />
   }
 }
 
 // Helper function to provide appropriate autocomplete attributes
 function getAutoComplete(fieldName: string): string {
   const autoCompleteMap: Record<string, string> = {
-    'first_name': 'given-name',
-    'last_name': 'family-name', 
-    'email': 'email',
-    'phone': 'tel',
-    'website': 'url',
-    'address': 'street-address',
-    'city': 'address-level2',
-    'state': 'address-level1',
-    'zip_code': 'postal-code',
-    'company': 'organization',
-    'position': 'organization-title',
-    'title': 'organization-title',
+    first_name: 'given-name',
+    last_name: 'family-name',
+    email: 'email',
+    phone: 'tel',
+    website: 'url',
+    address: 'street-address',
+    city: 'address-level2',
+    state: 'address-level1',
+    zip_code: 'postal-code',
+    company: 'organization',
+    position: 'organization-title',
+    title: 'organization-title',
   }
-  
+
   return autoCompleteMap[fieldName] || 'off'
 }

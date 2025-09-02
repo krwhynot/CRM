@@ -20,9 +20,7 @@ interface OrganizationRowMainProps {
   onSelect?: () => void
 }
 
-const EmptyCell = () => (
-  <span className="italic text-gray-400">Not provided</span>
-)
+const EmptyCell = () => <span className="italic text-gray-400">Not provided</span>
 
 export const OrganizationRowMain: React.FC<OrganizationRowMainProps> = ({
   organization,
@@ -33,7 +31,7 @@ export const OrganizationRowMain: React.FC<OrganizationRowMainProps> = ({
   onView,
   onContact,
   isSelected = false,
-  onSelect
+  onSelect,
 }) => {
   const formatLocation = () => {
     if (organization.city && organization.state_province) {
@@ -54,18 +52,18 @@ export const OrganizationRowMain: React.FC<OrganizationRowMainProps> = ({
         {organization.primary_manager_name || <EmptyCell />}
       </div>
       {organization.secondary_manager_name && (
-        <div className="text-xs text-gray-600">
-          + {organization.secondary_manager_name}
-        </div>
+        <div className="text-xs text-gray-600">+ {organization.secondary_manager_name}</div>
       )}
     </div>
   )
 
   return (
-    <TableRow className={cn(
-      "hover:bg-gray-50 transition-colors duration-200 group",
-      isSelected && "bg-blue-50 hover:bg-blue-100"
-    )}>
+    <TableRow
+      className={cn(
+        'hover:bg-gray-50 transition-colors duration-200 group',
+        isSelected && 'bg-blue-50 hover:bg-blue-100'
+      )}
+    >
       <TableCell className="py-4">
         <Checkbox
           checked={isSelected}
@@ -74,9 +72,9 @@ export const OrganizationRowMain: React.FC<OrganizationRowMainProps> = ({
         />
       </TableCell>
       <TableCell className="py-4">
-        <Button 
-          variant="ghost" 
-          size="sm" 
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onToggleExpansion}
           className="h-auto p-0 hover:bg-transparent"
         >
@@ -99,16 +97,10 @@ export const OrganizationRowMain: React.FC<OrganizationRowMainProps> = ({
           />
         </div>
       </TableCell>
-      <TableCell className="py-4 text-gray-700">
-        {organization.phone || <EmptyCell />}
-      </TableCell>
+      <TableCell className="py-4 text-gray-700">{organization.phone || <EmptyCell />}</TableCell>
+      <TableCell className="py-4">{formatManagers()}</TableCell>
       <TableCell className="py-4">
-        {formatManagers()}
-      </TableCell>
-      <TableCell className="py-4">
-        <div className="text-sm text-gray-700">
-          {formatLocation()}
-        </div>
+        <div className="text-sm text-gray-700">{formatLocation()}</div>
       </TableCell>
       <TableCell className="py-4">
         <OrganizationActions

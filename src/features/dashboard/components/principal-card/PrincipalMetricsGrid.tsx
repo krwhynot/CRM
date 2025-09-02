@@ -17,7 +17,7 @@ interface PrincipalMetricsGridProps {
 
 export const PrincipalMetricsGrid: React.FC<PrincipalMetricsGridProps> = ({
   metrics,
-  isLoading
+  isLoading,
 }) => {
   return (
     <div className="space-y-4">
@@ -31,15 +31,13 @@ export const PrincipalMetricsGrid: React.FC<PrincipalMetricsGridProps> = ({
             <p className="text-lg font-medium">{metrics.opportunityCount}</p>
           )}
         </div>
-        
+
         <div className="space-y-1">
           <span className="text-muted-foreground">Active:</span>
           {isLoading ? (
             <Skeleton className="h-4 w-8" />
           ) : (
-            <p className="text-lg font-medium text-green-600">
-              {metrics.activeOpportunities}
-            </p>
+            <p className="text-lg font-medium text-green-600">{metrics.activeOpportunities}</p>
           )}
         </div>
       </div>
@@ -53,15 +51,13 @@ export const PrincipalMetricsGrid: React.FC<PrincipalMetricsGridProps> = ({
             <p className="font-medium">{metrics.interactionCount}</p>
           )}
         </div>
-        
+
         <div className="space-y-1">
           <span className="text-muted-foreground">Est. Value:</span>
           {isLoading ? (
             <Skeleton className="h-4 w-16" />
           ) : (
-            <p className="font-medium">
-              ${metrics.totalValue.toLocaleString()}
-            </p>
+            <p className="font-medium">${metrics.totalValue.toLocaleString()}</p>
           )}
         </div>
       </div>
@@ -72,9 +68,7 @@ export const PrincipalMetricsGrid: React.FC<PrincipalMetricsGridProps> = ({
         {isLoading ? (
           <Skeleton className="h-4 w-24" />
         ) : metrics.lastActivity ? (
-          <p className="text-sm font-medium">
-            {format(metrics.lastActivity, 'MMM d, yyyy')}
-          </p>
+          <p className="text-sm font-medium">{format(metrics.lastActivity, 'MMM d, yyyy')}</p>
         ) : (
           <p className="text-sm text-muted-foreground">No recent activity</p>
         )}

@@ -4,15 +4,15 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
-  Upload, 
-  FileText, 
-  Download, 
-  CheckCircle2, 
-  AlertCircle, 
+import {
+  Upload,
+  FileText,
+  Download,
+  CheckCircle2,
+  AlertCircle,
   X,
   Sparkles,
-  FileSpreadsheet
+  FileSpreadsheet,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ImportConfig } from '../hooks/useSmartImport'
@@ -35,15 +35,15 @@ const ENTITY_TYPE_OPTIONS = [
     label: 'Organizations',
     description: 'Companies, businesses, distributors',
     icon: '🏢',
-    examples: ['Company names', 'Contact info', 'Addresses']
+    examples: ['Company names', 'Contact info', 'Addresses'],
   },
   {
     value: 'contact' as const,
     label: 'Contacts',
     description: 'Individual people within organizations',
     icon: '👤',
-    examples: ['First/last names', 'Email addresses', 'Job titles']
-  }
+    examples: ['First/last names', 'Email addresses', 'Job titles'],
+  },
 ]
 
 const FILE_REQUIREMENTS = {
@@ -54,8 +54,8 @@ const FILE_REQUIREMENTS = {
     'CSV format with headers in first row',
     'UTF-8 encoding recommended',
     'Organization name column required',
-    'Maximum 5MB file size'
-  ]
+    'Maximum 5MB file size',
+  ],
 }
 
 export function SmartUploadStep({
@@ -67,9 +67,8 @@ export function SmartUploadStep({
   onConfigUpdate,
   onDownloadTemplate,
   onClearFile,
-  className
+  className,
 }: SmartUploadStepProps) {
-  
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isDragOver, setIsDragOver] = React.useState(false)
   const [uploadProgress] = React.useState(0)
@@ -87,24 +86,30 @@ export function SmartUploadStep({
     setIsDragOver(false)
   }, [])
 
-  const handleDrop = useCallback(async (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsDragOver(false)
+  const handleDrop = useCallback(
+    async (e: React.DragEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      setIsDragOver(false)
 
-    const files = Array.from(e.dataTransfer.files)
-    if (files.length > 0 && files[0].name.toLowerCase().endsWith('.csv')) {
-      await onFileUpload(files[0])
-    }
-  }, [onFileUpload])
+      const files = Array.from(e.dataTransfer.files)
+      if (files.length > 0 && files[0].name.toLowerCase().endsWith('.csv')) {
+        await onFileUpload(files[0])
+      }
+    },
+    [onFileUpload]
+  )
 
   // File input handler
-  const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0]
-    if (selectedFile) {
-      await onFileUpload(selectedFile)
-    }
-  }, [onFileUpload])
+  const handleFileSelect = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const selectedFile = e.target.files?.[0]
+      if (selectedFile) {
+        await onFileUpload(selectedFile)
+      }
+    },
+    [onFileUpload]
+  )
 
   const handleBrowseClick = () => {
     fileInputRef.current?.click()
@@ -119,8 +124,7 @@ export function SmartUploadStep({
   }
 
   return (
-    <div className={cn("space-y-6", className)}>
-      
+    <div className={cn('space-y-6', className)}>
       {/* Entity Type Selection */}
       <Card>
         <CardContent className="p-6">
@@ -133,12 +137,12 @@ export function SmartUploadStep({
                 key={option.value}
                 onClick={() => onConfigUpdate({ entityType: option.value })}
                 className={cn(
-                  "p-4 border-2 rounded-lg text-left transition-all",
-                  "min-h-[120px] touch-manipulation", // iPad optimization
-                  "hover:shadow-md active:scale-98",
+                  'p-4 border-2 rounded-lg text-left transition-all',
+                  'min-h-[120px] touch-manipulation', // iPad optimization
+                  'hover:shadow-md active:scale-98',
                   config.entityType === option.value
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:border-border/80"
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border hover:border-border/80'
                 )}
               >
                 <div className="flex items-start space-x-3">
@@ -170,7 +174,6 @@ export function SmartUploadStep({
       <Card>
         <CardContent className="p-6">
           <div className="space-y-4">
-            
             {!file ? (
               // Upload Interface
               <div
@@ -178,23 +181,25 @@ export function SmartUploadStep({
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 className={cn(
-                  "border-2 border-dashed rounded-lg p-8 text-center transition-colors",
-                  "min-h-[200px] flex flex-col justify-center",
+                  'border-2 border-dashed rounded-lg p-8 text-center transition-colors',
+                  'min-h-[200px] flex flex-col justify-center',
                   isDragOver
-                    ? "border-primary bg-primary/5"
-                    : "border-slate-300 hover:border-slate-400"
+                    ? 'border-primary bg-primary/5'
+                    : 'border-slate-300 hover:border-slate-400'
                 )}
               >
                 <div className="space-y-4">
                   <div className="flex justify-center">
-                    <div className={cn(
-                      "w-16 h-16 rounded-full flex items-center justify-center",
-                      isDragOver ? "bg-primary text-white" : "bg-muted text-muted-foreground"
-                    )}>
+                    <div
+                      className={cn(
+                        'w-16 h-16 rounded-full flex items-center justify-center',
+                        isDragOver ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'
+                      )}
+                    >
                       <Upload className="size-8" />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <h3 className="text-lg font-semibold text-foreground">
                       {isDragOver ? 'Drop your CSV file here' : 'Upload your CSV file'}
@@ -205,19 +210,15 @@ export function SmartUploadStep({
                   </div>
 
                   <div className="flex flex-col justify-center gap-3 sm:flex-row">
-                    <Button 
+                    <Button
                       onClick={handleBrowseClick}
                       className="h-12 px-6" // iPad touch-friendly
                     >
                       <FileSpreadsheet className="mr-2 size-4" />
                       Browse Files
                     </Button>
-                    
-                    <Button 
-                      variant="outline"
-                      onClick={onDownloadTemplate}
-                      className="h-12 px-6"
-                    >
+
+                    <Button variant="outline" onClick={onDownloadTemplate} className="h-12 px-6">
                       <Download className="mr-2 size-4" />
                       Download Template
                     </Button>
@@ -255,13 +256,8 @@ export function SmartUploadStep({
                         </div>
                       </div>
                     </div>
-                    
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={onClearFile}
-                      className="size-8 p-0"
-                    >
+
+                    <Button variant="ghost" size="sm" onClick={onClearFile} className="size-8 p-0">
                       <X className="size-4" />
                     </Button>
                   </div>
@@ -291,8 +287,8 @@ export function SmartUploadStep({
             <div>
               <h4 className="font-semibold text-foreground">AI-Enhanced Import</h4>
               <p className="mt-1 text-sm text-muted-foreground">
-                After uploading, our AI will automatically suggest field mappings and validate your data 
-                to ensure the best import quality.
+                After uploading, our AI will automatically suggest field mappings and validate your
+                data to ensure the best import quality.
               </p>
               <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
                 <li>• Smart field detection (Company → Organization Name)</li>
@@ -335,7 +331,9 @@ export function SmartUploadStep({
           <AlertDescription>
             <div className="space-y-1">
               {warnings.map((warning, idx) => (
-                <div key={idx} className="text-warning">{warning}</div>
+                <div key={idx} className="text-warning">
+                  {warning}
+                </div>
               ))}
             </div>
           </AlertDescription>

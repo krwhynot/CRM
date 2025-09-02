@@ -1,6 +1,6 @@
 /**
  * Monitoring & Health Types
- * 
+ *
  * Type definitions for system monitoring, health checks, and status reporting.
  */
 

@@ -16,28 +16,22 @@ interface UseInteractionTimelineDataReturn {
 
 export const useInteractionTimelineData = ({
   interactions,
-  showAllInteractions
+  showAllInteractions,
 }: UseInteractionTimelineDataProps): UseInteractionTimelineDataReturn => {
-  
   const displayedInteractions = useMemo(() => {
-    return showAllInteractions 
-      ? interactions 
-      : interactions.slice(0, INITIAL_DISPLAY_COUNT)
+    return showAllInteractions ? interactions : interactions.slice(0, INITIAL_DISPLAY_COUNT)
   }, [interactions, showAllInteractions])
 
-  const hasMore = useMemo(() => 
-    interactions.length > INITIAL_DISPLAY_COUNT, 
-    [interactions.length]
-  )
+  const hasMore = useMemo(() => interactions.length > INITIAL_DISPLAY_COUNT, [interactions.length])
 
-  const remaining = useMemo(() => 
-    interactions.length - INITIAL_DISPLAY_COUNT, 
+  const remaining = useMemo(
+    () => interactions.length - INITIAL_DISPLAY_COUNT,
     [interactions.length]
   )
 
   return {
     displayedInteractions,
     hasMore,
-    remaining
+    remaining,
   }
 }

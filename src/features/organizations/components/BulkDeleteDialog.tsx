@@ -24,10 +24,10 @@ export const BulkDeleteDialog = <T extends DeletableEntity = Organization>({
   onConfirm,
   isDeleting = false,
   entityType = 'organization',
-  entityTypePlural = 'organizations'
+  entityTypePlural = 'organizations',
 }: BulkDeleteDialogProps<T>) => {
   const entityCount = organizations.length
-  
+
   const handleConfirm = () => {
     if (!isDeleting) {
       onConfirm()
@@ -36,7 +36,8 @@ export const BulkDeleteDialog = <T extends DeletableEntity = Organization>({
 
   // Capitalize first letter for display
   const capitalizedEntityType = entityType.charAt(0).toUpperCase() + entityType.slice(1)
-  const capitalizedEntityTypePlural = entityTypePlural.charAt(0).toUpperCase() + entityTypePlural.slice(1)
+  const capitalizedEntityTypePlural =
+    entityTypePlural.charAt(0).toUpperCase() + entityTypePlural.slice(1)
 
   return (
     <StandardDialog
@@ -65,15 +66,13 @@ export const BulkDeleteDialog = <T extends DeletableEntity = Organization>({
                   </li>
                 ))}
                 {organizations.length > 5 && (
-                  <li className="italic text-gray-600">
-                    ...and {organizations.length - 5} more
-                  </li>
+                  <li className="italic text-gray-600">...and {organizations.length - 5} more</li>
                 )}
               </ul>
             </div>
           </div>
         )}
-        
+
         <p className="rounded bg-amber-50 p-2 text-sm font-medium text-amber-700">
           ⚠️ This action will soft-delete these {entityTypePlural} (they can be restored)
         </p>

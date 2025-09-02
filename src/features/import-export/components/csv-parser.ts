@@ -46,22 +46,22 @@ export function parseContactName(fullName: string): { first_name: string; last_n
   }
 
   const cleaned = fullName.trim().replace(/\s+/g, ' ')
-  
+
   // Handle "Last, First" format
   if (cleaned.includes(',')) {
-    const [last, first] = cleaned.split(',').map(s => s.trim())
-    return { 
-      first_name: first || '', 
-      last_name: last || '' 
+    const [last, first] = cleaned.split(',').map((s) => s.trim())
+    return {
+      first_name: first || '',
+      last_name: last || '',
     }
   }
-  
+
   // Handle "First Last" format
   const parts = cleaned.split(' ')
   if (parts.length === 1) {
     return { first_name: parts[0], last_name: '' }
   }
-  
+
   const first = parts[0]
   const last = parts.slice(1).join(' ')
   return { first_name: first, last_name: last }
@@ -72,9 +72,9 @@ export function parseContactName(fullName: string): { first_name: string; last_n
  */
 export function detectSegment(name: string): string {
   if (!name) return 'General'
-  
+
   const lowerName = name.toLowerCase()
-  
+
   if (/restaurant|cafe|grill|kitchen|diner|pizza|food|burger|taco/i.test(lowerName)) {
     return 'Restaurant'
   }
@@ -87,31 +87,34 @@ export function detectSegment(name: string): string {
   if (/hotel|inn|resort|lodge/i.test(lowerName)) {
     return 'Hospitality'
   }
-  
+
   return 'General'
 }
 
 /**
  * Determine organization type
  */
-export function determineOrganizationType(row: CsvRow, segment: string): Database['public']['Enums']['organization_type'] {
+export function determineOrganizationType(
+  row: CsvRow,
+  segment: string
+): Database['public']['Enums']['organization_type'] {
   // Check for distributor indicators
-  const distributorFields = Object.keys(row).filter(key => 
+  const distributorFields = Object.keys(row).filter((key) =>
     key.toLowerCase().includes('distributor')
   )
-  
+
   for (const field of distributorFields) {
     const value = row[field]?.toLowerCase()
     if (value && (value.includes('yes') || value.includes('distributor'))) {
       return 'distributor'
     }
   }
-  
+
   // Check segment for distributor
   if (segment?.toLowerCase().includes('distributor')) {
     return 'distributor'
   }
-  
+
   return 'customer'
 }
 
@@ -120,12 +123,12 @@ export function determineOrganizationType(row: CsvRow, segment: string): Databas
  */
 export function normalizePriority(priority: string | undefined): string {
   if (!priority) return 'C'
-  
+
   const normalized = priority.toUpperCase().trim()
   if (['A', 'B', 'C', 'D'].includes(normalized)) {
     return normalized
   }
-  
+
   return 'C'
 }
 

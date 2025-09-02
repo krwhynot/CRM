@@ -27,17 +27,14 @@ function MultiPrincipalOpportunityPage() {
         icon={<Users className="size-8 text-primary" />}
         backButton={{
           onClick: handleCancel,
-          label: "Back to Opportunities",
-          'aria-label': "Go back to opportunities page"
+          label: 'Back to Opportunities',
+          'aria-label': 'Go back to opportunities page',
         }}
       />
 
       {/* Main Form */}
       <div>
-        <SimpleMultiPrincipalForm
-          onSuccess={handleSuccess}
-          className="w-full"
-        />
+        <SimpleMultiPrincipalForm onSuccess={handleSuccess} className="w-full" />
       </div>
 
       {/* Help Text */}

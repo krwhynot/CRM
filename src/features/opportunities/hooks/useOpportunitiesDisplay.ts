@@ -8,7 +8,7 @@ export const useOpportunitiesDisplay = (opportunityIds: string[]) => {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
 
   const toggleRowExpansion = useCallback((opportunityId: string) => {
-    setExpandedRows(prev => {
+    setExpandedRows((prev) => {
       const newExpandedRows = new Set(prev)
       if (newExpandedRows.has(opportunityId)) {
         newExpandedRows.delete(opportunityId)
@@ -19,9 +19,12 @@ export const useOpportunitiesDisplay = (opportunityIds: string[]) => {
     })
   }, [])
 
-  const isRowExpanded = useCallback((opportunityId: string) => {
-    return expandedRows.has(opportunityId)
-  }, [expandedRows])
+  const isRowExpanded = useCallback(
+    (opportunityId: string) => {
+      return expandedRows.has(opportunityId)
+    },
+    [expandedRows]
+  )
 
   const collapseAllRows = useCallback(() => {
     setExpandedRows(new Set())
@@ -37,6 +40,6 @@ export const useOpportunitiesDisplay = (opportunityIds: string[]) => {
     collapseAllRows,
     expandAllRows,
     expandedRowsCount: expandedRows.size,
-    hasExpandedRows: expandedRows.size > 0
+    hasExpandedRows: expandedRows.size > 0,
   }
 }

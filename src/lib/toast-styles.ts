@@ -15,7 +15,7 @@ export const toast = {
       },
     })
   },
-  
+
   error: (message: string) => {
     return baseToast.error(message, {
       style: {
@@ -27,7 +27,7 @@ export const toast = {
       },
     })
   },
-  
+
   // Pass through other toast methods
   info: baseToast.info,
   warning: baseToast.warning,

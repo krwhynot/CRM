@@ -1,6 +1,6 @@
 import React from 'react'
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import { Search, X } from 'lucide-react'
 
 interface EntitySelectSearchBoxProps {
@@ -12,7 +12,7 @@ interface EntitySelectSearchBoxProps {
 export const EntitySelectSearchBox: React.FC<EntitySelectSearchBoxProps> = ({
   searchTerm,
   onSearchChange,
-  onClearSearch
+  onClearSearch,
 }) => {
   return (
     <div className="sticky top-0 z-10 border-b border-gray-100 bg-white p-2">

@@ -1,7 +1,14 @@
 // Smart field mappings for CSV columns
 export const FIELD_MAPPINGS = {
   // Organization field mappings
-  organization_name: ['Customer Name', 'Company', 'Business Name', 'Organization', 'Name', 'organizations'],
+  organization_name: [
+    'Customer Name',
+    'Company',
+    'Business Name',
+    'Organization',
+    'Name',
+    'organizations',
+  ],
   organization_phone: ['Customer Phone', 'Phone', 'Tel', 'Telephone', 'Organization Phone'],
   address: ['Address', 'Street', 'Address 1', 'Address Line 1', 'Street Address'],
   city: ['City'],
@@ -13,11 +20,11 @@ export const FIELD_MAPPINGS = {
   notes: ['Notes', 'Comments', 'Description'],
   primary_manager: ['Primary Acct. Manager', 'Primary Manager', 'Account Manager'],
   secondary_manager: ['Secondary Acct. Manager', 'Secondary Manager'],
-  
+
   // Contact field mappings
   contact_name: ['Attendee Name', 'Contact Name', 'Contact', 'Name'],
   contact_email: ['Attendee Email', 'Contact Email', 'Email'],
-  contact_phone: ['Attendee Phone', 'Contact Phone', 'Mobile', 'Cell']
+  contact_phone: ['Attendee Phone', 'Contact Phone', 'Mobile', 'Cell'],
 }
 
 export interface FieldMapping {
@@ -37,22 +44,22 @@ export interface FieldMappingOption {
  * Find the best matching CSV column for a target field
  */
 export function findBestMatch(headers: string[], targetPatterns: string[]): string | null {
-  const normalizedHeaders = headers.map(h => h.toLowerCase().trim())
-  
+  const normalizedHeaders = headers.map((h) => h.toLowerCase().trim())
+
   for (const pattern of targetPatterns) {
     const normalizedPattern = pattern.toLowerCase()
-    
+
     // Exact match
-    const exactMatch = normalizedHeaders.findIndex(h => h === normalizedPattern)
+    const exactMatch = normalizedHeaders.findIndex((h) => h === normalizedPattern)
     if (exactMatch !== -1) return headers[exactMatch]
-    
+
     // Partial match
-    const partialMatch = normalizedHeaders.findIndex(h => 
-      h.includes(normalizedPattern) || normalizedPattern.includes(h)
+    const partialMatch = normalizedHeaders.findIndex(
+      (h) => h.includes(normalizedPattern) || normalizedPattern.includes(h)
     )
     if (partialMatch !== -1) return headers[partialMatch]
   }
-  
+
   return null
 }
 
@@ -62,12 +69,12 @@ export function findBestMatch(headers: string[], targetPatterns: string[]): stri
 function getStringSimilarity(str1: string, str2: string): number {
   const a = str1.toLowerCase()
   const b = str2.toLowerCase()
-  
+
   if (a === b) return 1
   if (a.length === 0 || b.length === 0) return 0
-  
+
   const matrix = []
-  
+
   // Create matrix
   for (let i = 0; i <= b.length; i++) {
     matrix[i] = [i]
@@ -75,7 +82,7 @@ function getStringSimilarity(str1: string, str2: string): number {
   for (let j = 0; j <= a.length; j++) {
     matrix[0][j] = j
   }
-  
+
   // Fill matrix
   for (let i = 1; i <= b.length; i++) {
     for (let j = 1; j <= a.length; j++) {
@@ -90,7 +97,7 @@ function getStringSimilarity(str1: string, str2: string): number {
       }
     }
   }
-  
+
   const maxLength = Math.max(a.length, b.length)
   return (maxLength - matrix[b.length][a.length]) / maxLength
 }
@@ -100,22 +107,22 @@ function getStringSimilarity(str1: string, str2: string): number {
  */
 export function calculateMappingConfidence(csvHeader: string, targetPatterns: string[]): number {
   const normalized = csvHeader.toLowerCase().trim()
-  
+
   for (const pattern of targetPatterns) {
     const patternNorm = pattern.toLowerCase()
-    
+
     // Exact match
     if (normalized === patternNorm) return 100
-    
+
     // Contains/partial match
     if (normalized.includes(patternNorm) || patternNorm.includes(normalized)) return 75
-    
+
     // Fuzzy matching using string similarity
     const similarity = getStringSimilarity(normalized, patternNorm)
     if (similarity > 0.7) return Math.round(similarity * 80) // Scale to 56-80%
     if (similarity > 0.5) return Math.round(similarity * 60) // Scale to 30-60%
   }
-  
+
   return 0
 }
 
@@ -125,7 +132,7 @@ export function calculateMappingConfidence(csvHeader: string, targetPatterns: st
 function findBestFieldMapping(csvHeader: string): { field: string | null; confidence: number } {
   let bestField = null
   let bestConfidence = 0
-  
+
   // Check all field mapping categories
   const allMappings = {
     organization_name: FIELD_MAPPINGS.organization_name,
@@ -142,9 +149,9 @@ function findBestFieldMapping(csvHeader: string): { field: string | null; confid
     secondary_manager: FIELD_MAPPINGS.secondary_manager,
     contact_name: FIELD_MAPPINGS.contact_name,
     contact_email: FIELD_MAPPINGS.contact_email,
-    contact_phone: FIELD_MAPPINGS.contact_phone
+    contact_phone: FIELD_MAPPINGS.contact_phone,
   }
-  
+
   for (const [fieldName, patterns] of Object.entries(allMappings)) {
     const confidence = calculateMappingConfidence(csvHeader, patterns)
     if (confidence > bestConfidence) {
@@ -152,7 +159,7 @@ function findBestFieldMapping(csvHeader: string): { field: string | null; confid
       bestConfidence = confidence
     }
   }
-  
+
   return { field: bestField, confidence: bestConfidence }
 }
 
@@ -160,13 +167,13 @@ function findBestFieldMapping(csvHeader: string): { field: string | null; confid
  * Generate initial field mappings from CSV headers
  */
 export function generateInitialMappings(headers: string[]): FieldMapping[] {
-  return headers.map(header => {
+  return headers.map((header) => {
     const bestMatch = findBestFieldMapping(header)
     return {
       csvColumn: header,
       mapsTo: bestMatch.field || 'skip',
       confidence: bestMatch.confidence,
-      userOverridden: false
+      userOverridden: false,
     }
   })
 }
@@ -189,14 +196,14 @@ export function getFieldMappingOptions(): FieldMappingOption[] {
     { value: 'notes', label: 'Notes', category: 'organization' },
     { value: 'primary_manager', label: 'Primary Manager', category: 'organization' },
     { value: 'secondary_manager', label: 'Secondary Manager', category: 'organization' },
-    
+
     // Contact fields
     { value: 'contact_name', label: 'Contact: Full Name', category: 'contact' },
     { value: 'contact_email', label: 'Contact: Email', category: 'contact' },
     { value: 'contact_phone', label: 'Contact: Phone', category: 'contact' },
-    
+
     // System
-    { value: 'skip', label: 'Skip this field', category: 'system' }
+    { value: 'skip', label: 'Skip this field', category: 'system' },
   ]
 }
 
@@ -220,12 +227,12 @@ export function generateImportNotes(row: Record<string, string>, headers: string
     ...FIELD_MAPPINGS.secondary_manager,
     ...FIELD_MAPPINGS.contact_name,
     ...FIELD_MAPPINGS.contact_email,
-    ...FIELD_MAPPINGS.contact_phone
+    ...FIELD_MAPPINGS.contact_phone,
   ])
 
   const unmappedData: string[] = []
-  
-  headers.forEach(header => {
+
+  headers.forEach((header) => {
     const value = row[header]?.trim()
     if (value && !mappedFields.has(header)) {
       unmappedData.push(`${header}: ${value}`)

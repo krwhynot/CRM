@@ -14,15 +14,9 @@ export const PrincipalContactInfo: React.FC<PrincipalContactInfoProps> = ({ prin
   return (
     <div className="border-t border-border/50 pt-2">
       <div className="space-y-1 text-xs text-muted-foreground">
-        {principal.phone && (
-          <p>📞 {principal.phone}</p>
-        )}
-        {principal.email && (
-          <p>📧 {principal.email}</p>
-        )}
-        {principal.website && (
-          <p>🌐 {principal.website}</p>
-        )}
+        {principal.phone && <p>📞 {principal.phone}</p>}
+        {principal.email && <p>📧 {principal.email}</p>}
+        {principal.website && <p>🌐 {principal.website}</p>}
       </div>
     </div>
   )

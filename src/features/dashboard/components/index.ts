@@ -1,6 +1,6 @@
 /**
  * Dashboard Components Index
- * 
+ *
  * Centralized exports for all dashboard-related components
  * to maintain clean import statements and better organization.
  */
@@ -38,7 +38,7 @@ export type {
   DashboardView,
   ExportFormat,
   TimeRange,
-  PredefinedTimeRange
+  PredefinedTimeRange,
 } from './types'
 
 // Export ActivityFeed types

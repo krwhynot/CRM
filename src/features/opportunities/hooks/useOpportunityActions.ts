@@ -49,9 +49,10 @@ export const useOpportunityActions = (): UseOpportunityActionsReturn => {
           description: data.description || null,
           notes: data.notes || null,
           // Optional fields with proper null handling - use safe enum conversion
-          priority: 'priority' in data 
-            ? toPriorityLevel((data as { priority?: string }).priority, null) 
-            : null,
+          priority:
+            'priority' in data
+              ? toPriorityLevel((data as { priority?: string }).priority, null)
+              : null,
           probability: data.probability || null,
           opportunity_context: data.opportunity_context || null,
           principal_organization_id: data.principal_id || null,

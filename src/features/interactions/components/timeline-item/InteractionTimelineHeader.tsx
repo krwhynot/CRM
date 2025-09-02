@@ -2,13 +2,13 @@ import React from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { 
-  ChevronDown, 
-  ChevronRight, 
+import {
+  ChevronDown,
+  ChevronRight,
   MoreHorizontal,
   Pencil,
   Trash2,
-  CheckCircle
+  CheckCircle,
 } from 'lucide-react'
 import {
   DropdownMenu,
@@ -42,7 +42,7 @@ export const InteractionTimelineHeader: React.FC<InteractionTimelineHeaderProps>
   onToggleExpand,
   handleEdit,
   handleDelete,
-  handleMarkComplete
+  handleMarkComplete,
 }) => {
   return (
     <div className="flex items-start justify-between gap-2">
@@ -51,19 +51,22 @@ export const InteractionTimelineHeader: React.FC<InteractionTimelineHeaderProps>
           <h3 className="truncate text-sm font-medium text-gray-900 md:text-base">
             {interaction.subject}
           </h3>
-          <Badge 
-            variant="outline" 
+          <Badge
+            variant="outline"
             className={cn('text-xs flex-shrink-0', getInteractionTypeColor(interaction.type))}
           >
             {formattedType}
           </Badge>
           {interaction.follow_up_required && (
-            <Badge variant="outline" className="border-yellow-200 bg-yellow-50 text-xs text-yellow-700">
+            <Badge
+              variant="outline"
+              className="border-yellow-200 bg-yellow-50 text-xs text-yellow-700"
+            >
               Follow-up
             </Badge>
           )}
         </div>
-        
+
         <div className="flex items-center gap-2 text-xs text-gray-500">
           <span className="md:hidden">{relativeTime}</span>
           <span className="hidden md:inline">{formattedDate}</span>
@@ -72,7 +75,9 @@ export const InteractionTimelineHeader: React.FC<InteractionTimelineHeaderProps>
           {interaction.contact && (
             <>
               <span>•</span>
-              <span>{interaction.contact.first_name} {interaction.contact.last_name}</span>
+              <span>
+                {interaction.contact.first_name} {interaction.contact.last_name}
+              </span>
             </>
           )}
         </div>
@@ -86,11 +91,7 @@ export const InteractionTimelineHeader: React.FC<InteractionTimelineHeaderProps>
           className="size-6 p-0 text-gray-400 hover:text-gray-600"
           aria-label={isExpanded ? 'Collapse details' : 'Expand details'}
         >
-          {isExpanded ? (
-            <ChevronDown className="size-4" />
-          ) : (
-            <ChevronRight className="size-4" />
-          )}
+          {isExpanded ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
         </Button>
 
         <DropdownMenu>
@@ -116,10 +117,7 @@ export const InteractionTimelineHeader: React.FC<InteractionTimelineHeaderProps>
               </DropdownMenuItem>
             )}
             <DropdownMenuSeparator />
-            <DropdownMenuItem 
-              onClick={handleDelete}
-              className="text-red-600 focus:text-red-600"
-            >
+            <DropdownMenuItem onClick={handleDelete} className="text-red-600 focus:text-red-600">
               <Trash2 className="mr-2 size-4" />
               Delete
             </DropdownMenuItem>

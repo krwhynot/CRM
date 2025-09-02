@@ -1,6 +1,6 @@
 /**
  * Import/Export Type Definitions
- * 
+ *
  * Comprehensive type definitions for import/export functionality across all CRM entities.
  * Provides type-safe interfaces for file processing, field mapping, validation, and error handling.
  */
@@ -364,23 +364,23 @@ export interface InteractionImportData {
 /**
  * Generic import data type that can be any entity
  */
-export type ImportData = 
-  | OrganizationImportData 
-  | ContactImportData 
-  | ProductImportData 
-  | OpportunityImportData 
+export type ImportData =
+  | OrganizationImportData
+  | ContactImportData
+  | ProductImportData
+  | OpportunityImportData
   | InteractionImportData
 
 /**
  * File processing status
  */
-export type FileProcessingStatus = 
-  | 'pending' 
-  | 'uploading' 
-  | 'parsing' 
-  | 'validating' 
-  | 'importing' 
-  | 'completed' 
+export type FileProcessingStatus =
+  | 'pending'
+  | 'uploading'
+  | 'parsing'
+  | 'validating'
+  | 'importing'
+  | 'completed'
   | 'failed'
 
 /**

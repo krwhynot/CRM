@@ -20,7 +20,7 @@ export const InteractionActionsDropdown: React.FC<InteractionActionsDropdownProp
   interaction,
   onEdit,
   onDelete,
-  onView
+  onView,
 }) => {
   return (
     <DropdownMenu>
@@ -44,10 +44,7 @@ export const InteractionActionsDropdown: React.FC<InteractionActionsDropdownProp
           </DropdownMenuItem>
         )}
         {onDelete && (
-          <DropdownMenuItem 
-            onClick={() => onDelete(interaction)}
-            className="text-destructive"
-          >
+          <DropdownMenuItem onClick={() => onDelete(interaction)} className="text-destructive">
             <Trash2 className="mr-2 size-4" />
             Delete
           </DropdownMenuItem>

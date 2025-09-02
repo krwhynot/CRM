@@ -3,8 +3,17 @@ import { Download, Filter } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { AVAILABLE_FIELDS, type ExportOptions } from '@/features/import-export/hooks/useExportConfiguration'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  AVAILABLE_FIELDS,
+  type ExportOptions,
+} from '@/features/import-export/hooks/useExportConfiguration'
 
 interface ExportConfigurationProps {
   exportOptions: ExportOptions
@@ -17,7 +26,7 @@ export const ExportConfiguration: React.FC<ExportConfigurationProps> = ({
   exportOptions,
   handleFieldToggle,
   handleFormatChange,
-  handleIncludeInactiveChange
+  handleIncludeInactiveChange,
 }) => {
   return (
     <Card>
@@ -56,10 +65,7 @@ export const ExportConfiguration: React.FC<ExportConfigurationProps> = ({
               checked={exportOptions.includeInactive}
               onCheckedChange={handleIncludeInactiveChange}
             />
-            <label
-              htmlFor="include-inactive"
-              className="cursor-pointer text-sm font-normal"
-            >
+            <label htmlFor="include-inactive" className="cursor-pointer text-sm font-normal">
               Include inactive organizations
             </label>
           </div>
@@ -69,7 +75,7 @@ export const ExportConfiguration: React.FC<ExportConfigurationProps> = ({
         <div className="space-y-3">
           <label className="text-sm font-medium">Fields to Export</label>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-            {AVAILABLE_FIELDS.map(field => (
+            {AVAILABLE_FIELDS.map((field) => (
               <div key={field.id} className="flex items-center space-x-2">
                 <Checkbox
                   id={field.id}
@@ -82,7 +88,11 @@ export const ExportConfiguration: React.FC<ExportConfigurationProps> = ({
                   className={`cursor-pointer text-sm ${field.required ? 'font-medium text-gray-900' : 'font-normal'}`}
                 >
                   {field.label}
-                  {field.required && <Badge variant="secondary" className="ml-2 text-xs">Required</Badge>}
+                  {field.required && (
+                    <Badge variant="secondary" className="ml-2 text-xs">
+                      Required
+                    </Badge>
+                  )}
                 </label>
               </div>
             ))}
@@ -97,7 +107,9 @@ export const ExportConfiguration: React.FC<ExportConfigurationProps> = ({
           <label className="flex items-center gap-2 text-sm font-medium">
             <Filter className="size-4" />
             Filters
-            <Badge variant="outline" className="text-xs">Coming Soon</Badge>
+            <Badge variant="outline" className="text-xs">
+              Coming Soon
+            </Badge>
           </label>
           <div className="rounded-lg border border-dashed p-4 text-center text-sm text-muted-foreground">
             Advanced filtering options will be available in a future update

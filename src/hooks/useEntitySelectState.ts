@@ -8,7 +8,7 @@ export const useEntitySelectState = (
 ) => {
   const [isOpen, setIsOpen] = useState(false)
 
-  const selectedOption = options.find(option => option.id === value)
+  const selectedOption = options.find((option) => option.id === value)
 
   const handleSelectOption = (optionId: string) => {
     onValueChange(optionId)
@@ -19,6 +19,6 @@ export const useEntitySelectState = (
     isOpen,
     setIsOpen,
     selectedOption,
-    handleSelectOption
+    handleSelectOption,
   }
 }

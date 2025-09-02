@@ -1,13 +1,13 @@
-import React from "react"
-import { cn } from "@/lib/utils"
-import { 
-  Dialog, 
-  DialogContent as BaseDialogContent, 
-  DialogHeader, 
+import React from 'react'
+import { cn } from '@/lib/utils'
+import {
+  Dialog,
+  DialogContent as BaseDialogContent,
+  DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter
-} from "./dialog"
+  DialogFooter,
+} from './dialog'
 import {
   AlertDialog,
   AlertDialogContent,
@@ -17,14 +17,15 @@ import {
   AlertDialogFooter,
   AlertDialogAction,
   AlertDialogCancel,
-} from "./alert-dialog"
+} from './alert-dialog'
+import { DialogContextProvider } from '@/contexts/DialogContext'
 
 // Size mapping for consistent dialog sizing - using approved responsive ladder
 const sizeClasses = {
-  sm: "max-w-[96%] sm:max-w-sm",
-  md: "max-w-[96%] sm:max-w-lg", 
-  lg: "max-w-[96%] sm:max-w-lg md:max-w-2xl lg:max-w-4xl",
-  xl: "max-w-[96%] sm:max-w-lg md:max-w-2xl lg:max-w-4xl"
+  sm: 'max-w-[96%] sm:max-w-sm',
+  md: 'max-w-[96%] sm:max-w-lg',
+  lg: 'max-w-[96%] sm:max-w-lg md:max-w-2xl lg:max-w-4xl',
+  xl: 'max-w-[96%] sm:max-w-lg md:max-w-2xl lg:max-w-4xl',
 } as const
 
 // Base dialog props interface
@@ -41,7 +42,7 @@ interface BaseDialogProps {
 // Regular dialog props (for forms, content)
 interface RegularDialogProps extends BaseDialogProps {
   footer?: React.ReactNode
-  scroll?: "content" | "body"
+  scroll?: 'content' | 'body'
 }
 
 // Alert dialog props (for confirmations)
@@ -50,21 +51,21 @@ interface AlertDialogProps extends BaseDialogProps {
   onCancel?: () => void
   confirmText?: string
   cancelText?: string
-  confirmVariant?: "default" | "destructive"
+  confirmVariant?: 'default' | 'destructive'
   isLoading?: boolean
 }
 
 // Union type for StandardDialog props
-type StandardDialogProps = 
-  | (RegularDialogProps & { variant?: "dialog" })
-  | (AlertDialogProps & { variant: "alert" })
+type StandardDialogProps =
+  | (RegularDialogProps & { variant?: 'dialog' })
+  | (AlertDialogProps & { variant: 'alert' })
 
 /**
  * StandardDialog - Unified dialog component for the CRM system
- * 
+ *
  * Supports both regular dialogs (forms, content) and alert dialogs (confirmations)
  * with consistent sizing, scrolling patterns, and accessibility features.
- * 
+ *
  * @example Regular Dialog
  * <StandardDialog
  *   open={isOpen}
@@ -77,7 +78,7 @@ type StandardDialogProps =
  * >
  *   <ContactForm />
  * </StandardDialog>
- * 
+ *
  * @example Alert Dialog
  * <StandardDialog
  *   variant="alert"
@@ -95,82 +96,74 @@ type StandardDialogProps =
  * </StandardDialog>
  */
 export function StandardDialog(props: StandardDialogProps) {
-  const {
-    open,
-    onOpenChange,
-    title,
-    description,
-    size = "md",
-    headerActions,
-    children,
-  } = props
+  const { open, onOpenChange, title, description, size = 'md', headerActions, children } = props
 
   // Alert dialog variant
-  if (props.variant === "alert") {
+  if (props.variant === 'alert') {
     const {
       onConfirm,
       onCancel,
-      confirmText = "Confirm",
-      cancelText = "Cancel", 
-      confirmVariant = "default",
-      isLoading = false
+      confirmText = 'Confirm',
+      cancelText = 'Cancel',
+      confirmVariant = 'default',
+      isLoading = false,
     } = props
 
     return (
       <AlertDialog open={open} onOpenChange={onOpenChange}>
         <AlertDialogContent className={cn(sizeClasses[size])}>
-          <AlertDialogHeader className="flex items-start justify-between">
-            <div>
-              <AlertDialogTitle>{title}</AlertDialogTitle>
-              {description && (
-                <AlertDialogDescription>{description}</AlertDialogDescription>
-              )}
-            </div>
-            {headerActions}
-          </AlertDialogHeader>
-          
-          <div className="py-4">{children}</div>
-          
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={onCancel} disabled={isLoading}>
-              {cancelText}
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={onConfirm}
-              disabled={isLoading}
-              className={cn(
-                confirmVariant === "destructive" &&
-                "bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              )}
-            >
-              {isLoading ? "Loading..." : confirmText}
-            </AlertDialogAction>
-          </AlertDialogFooter>
+          <DialogContextProvider isInDialog={true} size={size} onClose={() => onOpenChange(false)}>
+            <AlertDialogHeader className="flex items-start justify-between">
+              <div>
+                <AlertDialogTitle>{title}</AlertDialogTitle>
+                {description && <AlertDialogDescription>{description}</AlertDialogDescription>}
+              </div>
+              {headerActions}
+            </AlertDialogHeader>
+
+            <div className="py-4">{children}</div>
+
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={onCancel} disabled={isLoading}>
+                {cancelText}
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={onConfirm}
+                disabled={isLoading}
+                className={cn(
+                  confirmVariant === 'destructive' &&
+                    'bg-destructive text-destructive-foreground hover:bg-destructive/90'
+                )}
+              >
+                {isLoading ? 'Loading...' : confirmText}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </DialogContextProvider>
         </AlertDialogContent>
       </AlertDialog>
     )
   }
 
   // Regular dialog variant (default)
-  const { footer, scroll = "content" } = props
-  const scrollClasses = scroll === "content" ? "max-h-dialog overflow-y-auto" : ""
+  const { footer, scroll = 'content' } = props
+  const scrollClasses = scroll === 'content' ? 'max-h-dialog overflow-y-auto' : ''
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <BaseDialogContent className={cn(sizeClasses[size])}>
-        <DialogHeader className="flex items-start justify-between">
-          <div>
-            <DialogTitle>{title}</DialogTitle>
-            {description && <DialogDescription>{description}</DialogDescription>}
-          </div>
-          {headerActions}
-        </DialogHeader>
-        
-        <div className={cn(scrollClasses, scroll === "content" && "pr-2")}>
-          {children}
-        </div>
-        
-        {footer && <DialogFooter>{footer}</DialogFooter>}
+        <DialogContextProvider isInDialog={true} size={size} onClose={() => onOpenChange(false)}>
+          <DialogHeader className="flex items-start justify-between">
+            <div>
+              <DialogTitle>{title}</DialogTitle>
+              {description && <DialogDescription>{description}</DialogDescription>}
+            </div>
+            {headerActions}
+          </DialogHeader>
+
+          <div className={cn(scrollClasses, scroll === 'content' && 'pr-2')}>{children}</div>
+
+          {footer && <DialogFooter>{footer}</DialogFooter>}
+        </DialogContextProvider>
       </BaseDialogContent>
     </Dialog>
   )
@@ -184,10 +177,14 @@ export { BaseDialogContent as DialogContent }
  * @deprecated Use StandardDialog instead of DialogScrollableContent
  * This component will be removed in a future version
  */
-export function DialogScrollableContent({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+export function DialogScrollableContent({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
   // DialogScrollableContent is deprecated. Use StandardDialog with scroll='content' instead.
   return (
-    <div className={cn("flex-1 overflow-y-auto pr-2", className)} {...props}>
+    <div className={cn('flex-1 overflow-y-auto pr-2', className)} {...props}>
       {children}
     </div>
   )

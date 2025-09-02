@@ -13,7 +13,7 @@ export const useOrganizationFormData = (
     return {
       name: organization.name,
       type: organization.type,
-      priority: organization.priority as 'A' | 'B' | 'C' | 'D',
+      priority: organization.priority,
       segment: organization.segment,
       is_principal: organization.is_principal ?? false,
       is_distributor: organization.is_distributor ?? false,

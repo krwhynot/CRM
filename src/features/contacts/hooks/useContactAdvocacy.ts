@@ -7,7 +7,7 @@ import type {
   Contact,
   Organization,
   PurchaseInfluenceLevel,
-  DecisionAuthorityRole
+  DecisionAuthorityRole,
 } from '@/types/entities'
 
 // Extended types for advocacy management
@@ -52,17 +52,17 @@ export interface AdvocacyMetrics {
 // Business Logic Constants
 const ADVOCACY_SCORING_WEIGHTS = {
   purchase_influence: {
-    'High': 1.0,
-    'Medium': 0.7,
-    'Low': 0.4,
-    'Unknown': 0.3
+    High: 1.0,
+    Medium: 0.7,
+    Low: 0.4,
+    Unknown: 0.3,
   },
   decision_authority: {
     'Decision Maker': 1.0,
-    'Influencer': 0.8,
+    Influencer: 0.8,
     'End User': 0.5,
-    'Gatekeeper': 0.6
-  }
+    Gatekeeper: 0.6,
+  },
 } as const
 
 const HIGH_ADVOCACY_THRESHOLD = 8
@@ -76,9 +76,8 @@ export const advocacyKeys = {
   byContact: (contactId: string) => [...advocacyKeys.all, 'by-contact', contactId] as const,
   byPrincipal: (principalId: string) => [...advocacyKeys.all, 'by-principal', principalId] as const,
   metrics: () => [...advocacyKeys.all, 'metrics'] as const,
-  validation: (contactId: string, principalId: string) => [
-    ...advocacyKeys.all, 'validation', contactId, principalId
-  ] as const,
+  validation: (contactId: string, principalId: string) =>
+    [...advocacyKeys.all, 'validation', contactId, principalId] as const,
 }
 
 // Utility function to compute advocacy score
@@ -87,13 +86,17 @@ export function computeAdvocacyScore(contact: Contact, advocacyStrength: number)
   const baseScore = advocacyStrength
 
   // Purchase influence weight
-  const influenceWeight = contact.purchase_influence 
-    ? ADVOCACY_SCORING_WEIGHTS.purchase_influence[contact.purchase_influence as PurchaseInfluenceLevel]
+  const influenceWeight = contact.purchase_influence
+    ? ADVOCACY_SCORING_WEIGHTS.purchase_influence[
+        contact.purchase_influence as PurchaseInfluenceLevel
+      ]
     : 0.3
 
   // Decision authority weight
   const authorityWeight = contact.decision_authority
-    ? ADVOCACY_SCORING_WEIGHTS.decision_authority[contact.decision_authority as DecisionAuthorityRole]
+    ? ADVOCACY_SCORING_WEIGHTS.decision_authority[
+        contact.decision_authority as DecisionAuthorityRole
+      ]
     : 0.5
 
   // Computed score: base score * influence factor * authority factor
@@ -109,11 +112,13 @@ export function useContactAdvocacyRelationships(filters?: AdvocacyFilters) {
     queryFn: async () => {
       let query = supabase
         .from('contact_preferred_principals')
-        .select(`
+        .select(
+          `
           *,
           contact:contacts!contact_preferred_principals_contact_id_fkey(*),
           principal_organization:organizations(*)
-        `)
+        `
+        )
         .is('deleted_at', null)
 
       // Apply filters
@@ -138,24 +143,28 @@ export function useContactAdvocacyRelationships(filters?: AdvocacyFilters) {
       }
 
       const { data, error } = await query
-      
+
       if (error) throw error
 
       // Compute advocacy scores for each relationship
-      const relationshipsWithScores = data.map(relationship => {
-        const computedScore = relationship.contact 
+      const relationshipsWithScores = data.map((relationship) => {
+        const computedScore = relationship.contact
           ? computeAdvocacyScore(relationship.contact, relationship.advocacy_strength || 5)
           : relationship.advocacy_strength || 5
 
         return {
           ...relationship,
           computed_advocacy_score: computedScore,
-          influence_weight: relationship.contact?.purchase_influence 
-            ? ADVOCACY_SCORING_WEIGHTS.purchase_influence[relationship.contact.purchase_influence as PurchaseInfluenceLevel]
+          influence_weight: relationship.contact?.purchase_influence
+            ? ADVOCACY_SCORING_WEIGHTS.purchase_influence[
+                relationship.contact.purchase_influence as PurchaseInfluenceLevel
+              ]
             : 0.3,
           authority_weight: relationship.contact?.decision_authority
-            ? ADVOCACY_SCORING_WEIGHTS.decision_authority[relationship.contact.decision_authority as DecisionAuthorityRole]
-            : 0.5
+            ? ADVOCACY_SCORING_WEIGHTS.decision_authority[
+                relationship.contact.decision_authority as DecisionAuthorityRole
+              ]
+            : 0.5,
         }
       })
 
@@ -172,21 +181,23 @@ export function useContactAdvocacyByContact(contactId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('contact_preferred_principals')
-        .select(`
+        .select(
+          `
           *,
           contact:contacts!contact_preferred_principals_contact_id_fkey(*),
           principal_organization:organizations(*)
-        `)
+        `
+        )
         .eq('contact_id', contactId)
         .is('deleted_at', null)
 
       if (error) throw error
 
-      const relationshipsWithScores = data.map(relationship => ({
+      const relationshipsWithScores = data.map((relationship) => ({
         ...relationship,
-        computed_advocacy_score: relationship.contact 
+        computed_advocacy_score: relationship.contact
           ? computeAdvocacyScore(relationship.contact, relationship.advocacy_strength || 5)
-          : relationship.advocacy_strength || 5
+          : relationship.advocacy_strength || 5,
       }))
 
       return relationshipsWithScores as ContactAdvocacyRelationship[]
@@ -203,21 +214,23 @@ export function useContactAdvocacyByPrincipal(principalId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('contact_preferred_principals')
-        .select(`
+        .select(
+          `
           *,
           contact:contacts!contact_preferred_principals_contact_id_fkey(*),
           principal_organization:organizations(*)
-        `)
+        `
+        )
         .eq('principal_organization_id', principalId)
         .is('deleted_at', null)
 
       if (error) throw error
 
-      const relationshipsWithScores = data.map(relationship => ({
+      const relationshipsWithScores = data.map((relationship) => ({
         ...relationship,
-        computed_advocacy_score: relationship.contact 
+        computed_advocacy_score: relationship.contact
           ? computeAdvocacyScore(relationship.contact, relationship.advocacy_strength || 5)
-          : relationship.advocacy_strength || 5
+          : relationship.advocacy_strength || 5,
       }))
 
       return relationshipsWithScores as ContactAdvocacyRelationship[]
@@ -247,7 +260,7 @@ export function useAdvocacyValidation(contactId: string, principalId: string) {
         if (existing) {
           return {
             valid: false,
-            reason: 'Advocacy relationship already exists between this contact and principal'
+            reason: 'Advocacy relationship already exists between this contact and principal',
           }
         }
 
@@ -262,7 +275,7 @@ export function useAdvocacyValidation(contactId: string, principalId: string) {
         if (contactError || !contact) {
           return {
             valid: false,
-            reason: 'Contact not found or inactive'
+            reason: 'Contact not found or inactive',
           }
         }
 
@@ -278,16 +291,15 @@ export function useAdvocacyValidation(contactId: string, principalId: string) {
         if (principalError || !principal) {
           return {
             valid: false,
-            reason: 'Principal organization not found or not a principal type'
+            reason: 'Principal organization not found or not a principal type',
           }
         }
 
         return { valid: true }
-
       } catch (error) {
         return {
           valid: false,
-          reason: error instanceof Error ? error.message : 'Validation failed'
+          reason: error instanceof Error ? error.message : 'Validation failed',
         }
       }
     },
@@ -299,7 +311,7 @@ export function useAdvocacyValidation(contactId: string, principalId: string) {
 // Hook to calculate advocacy metrics
 export function useAdvocacyMetrics() {
   const { data: relationships } = useContactAdvocacyRelationships()
-  
+
   return useQuery({
     queryKey: advocacyKeys.metrics(),
     queryFn: async (): Promise<AdvocacyMetrics> => {
@@ -312,53 +324,54 @@ export function useAdvocacyMetrics() {
           low_advocacy_count: 0,
           relationship_types: {},
           top_principals: [],
-          top_advocates: []
+          top_advocates: [],
         }
       }
 
       // Calculate basic metrics
       const totalRelationships = relationships.length
-      const averageAdvocacyStrength = relationships.reduce(
-        (sum, rel) => sum + (rel.advocacy_strength || 0), 0
-      ) / totalRelationships
+      const averageAdvocacyStrength =
+        relationships.reduce((sum, rel) => sum + (rel.advocacy_strength || 0), 0) /
+        totalRelationships
 
       const highAdvocacyCount = relationships.filter(
-        rel => (rel.advocacy_strength || 0) >= HIGH_ADVOCACY_THRESHOLD
+        (rel) => (rel.advocacy_strength || 0) >= HIGH_ADVOCACY_THRESHOLD
       ).length
 
-      const mediumAdvocacyCount = relationships.filter(
-        rel => {
-          const strength = rel.advocacy_strength || 0
-          return strength >= MEDIUM_ADVOCACY_THRESHOLD && strength < HIGH_ADVOCACY_THRESHOLD
-        }
-      ).length
+      const mediumAdvocacyCount = relationships.filter((rel) => {
+        const strength = rel.advocacy_strength || 0
+        return strength >= MEDIUM_ADVOCACY_THRESHOLD && strength < HIGH_ADVOCACY_THRESHOLD
+      }).length
 
       const lowAdvocacyCount = relationships.filter(
-        rel => (rel.advocacy_strength || 0) < MEDIUM_ADVOCACY_THRESHOLD
+        (rel) => (rel.advocacy_strength || 0) < MEDIUM_ADVOCACY_THRESHOLD
       ).length
 
       // Relationship types distribution
       const relationshipTypes: Record<string, number> = {}
-      relationships.forEach(rel => {
+      relationships.forEach((rel) => {
         const type = rel.relationship_type || 'unknown'
         relationshipTypes[type] = (relationshipTypes[type] || 0) + 1
       })
 
       // Top principals by relationship count and average strength
-      const principalStats: Record<string, { 
-        organization: Organization
-        count: number
-        totalStrength: number
-      }> = {}
+      const principalStats: Record<
+        string,
+        {
+          organization: Organization
+          count: number
+          totalStrength: number
+        }
+      > = {}
 
-      relationships.forEach(rel => {
+      relationships.forEach((rel) => {
         if (rel.principal_organization) {
           const id = rel.principal_organization.id
           if (!principalStats[id]) {
             principalStats[id] = {
               organization: rel.principal_organization,
               count: 0,
-              totalStrength: 0
+              totalStrength: 0,
             }
           }
           principalStats[id].count += 1
@@ -367,23 +380,26 @@ export function useAdvocacyMetrics() {
       })
 
       const topPrincipals = Object.values(principalStats)
-        .map(stat => ({
+        .map((stat) => ({
           organization: stat.organization,
           relationship_count: stat.count,
-          average_strength: stat.totalStrength / stat.count
+          average_strength: stat.totalStrength / stat.count,
         }))
         .sort((a, b) => b.relationship_count - a.relationship_count)
         .slice(0, 10)
 
       // Top advocates by relationship count and computed score
-      const contactStats: Record<string, {
-        contact: Contact
-        count: number
-        totalStrength: number
-        totalComputedScore: number
-      }> = {}
+      const contactStats: Record<
+        string,
+        {
+          contact: Contact
+          count: number
+          totalStrength: number
+          totalComputedScore: number
+        }
+      > = {}
 
-      relationships.forEach(rel => {
+      relationships.forEach((rel) => {
         if (rel.contact) {
           const id = rel.contact.id
           if (!contactStats[id]) {
@@ -391,7 +407,7 @@ export function useAdvocacyMetrics() {
               contact: rel.contact,
               count: 0,
               totalStrength: 0,
-              totalComputedScore: 0
+              totalComputedScore: 0,
             }
           }
           contactStats[id].count += 1
@@ -401,11 +417,11 @@ export function useAdvocacyMetrics() {
       })
 
       const topAdvocates = Object.values(contactStats)
-        .map(stat => ({
+        .map((stat) => ({
           contact: stat.contact,
           relationship_count: stat.count,
           average_strength: stat.totalStrength / stat.count,
-          computed_score: stat.totalComputedScore / stat.count
+          computed_score: stat.totalComputedScore / stat.count,
         }))
         .sort((a, b) => b.computed_score - a.computed_score)
         .slice(0, 10)
@@ -418,7 +434,7 @@ export function useAdvocacyMetrics() {
         low_advocacy_count: lowAdvocacyCount,
         relationship_types: relationshipTypes,
         top_principals: topPrincipals,
-        top_advocates: topAdvocates
+        top_advocates: topAdvocates,
       }
     },
     enabled: !!relationships,
@@ -433,8 +449,11 @@ export function useCreateAdvocacyRelationship() {
   return useMutation({
     mutationFn: async (data: ContactPreferredPrincipalInsert) => {
       // Get current user for audit fields
-      const { data: { user }, error: authError } = await supabase.auth.getUser()
-      
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser()
+
       if (authError || !user) {
         throw new Error('Authentication required to create advocacy relationship')
       }
@@ -449,11 +468,13 @@ export function useCreateAdvocacyRelationship() {
       const { data: newRelationship, error } = await supabase
         .from('contact_preferred_principals')
         .insert(relationshipData)
-        .select(`
+        .select(
+          `
           *,
           contact:contacts!contact_preferred_principals_contact_id_fkey(*),
           principal_organization:organizations(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -461,9 +482,9 @@ export function useCreateAdvocacyRelationship() {
       // Compute advocacy score
       const relationshipWithScore = {
         ...newRelationship,
-        computed_advocacy_score: newRelationship.contact 
+        computed_advocacy_score: newRelationship.contact
           ? computeAdvocacyScore(newRelationship.contact, newRelationship.advocacy_strength || 5)
-          : newRelationship.advocacy_strength || 5
+          : newRelationship.advocacy_strength || 5,
       }
 
       return relationshipWithScore as ContactAdvocacyRelationship
@@ -480,16 +501,24 @@ export function useUpdateAdvocacyRelationship() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, updates }: { id: string; updates: ContactPreferredPrincipalUpdate }) => {
+    mutationFn: async ({
+      id,
+      updates,
+    }: {
+      id: string
+      updates: ContactPreferredPrincipalUpdate
+    }) => {
       const { data: updatedRelationship, error } = await supabase
         .from('contact_preferred_principals')
         .update({ ...updates, updated_at: new Date().toISOString() })
         .eq('id', id)
-        .select(`
+        .select(
+          `
           *,
           contact:contacts!contact_preferred_principals_contact_id_fkey(*),
           principal_organization:organizations(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -497,9 +526,12 @@ export function useUpdateAdvocacyRelationship() {
       // Compute advocacy score
       const relationshipWithScore = {
         ...updatedRelationship,
-        computed_advocacy_score: updatedRelationship.contact 
-          ? computeAdvocacyScore(updatedRelationship.contact, updatedRelationship.advocacy_strength || 5)
-          : updatedRelationship.advocacy_strength || 5
+        computed_advocacy_score: updatedRelationship.contact
+          ? computeAdvocacyScore(
+              updatedRelationship.contact,
+              updatedRelationship.advocacy_strength || 5
+            )
+          : updatedRelationship.advocacy_strength || 5,
       }
 
       return relationshipWithScore as ContactAdvocacyRelationship
@@ -519,9 +551,9 @@ export function useDeleteAdvocacyRelationship() {
     mutationFn: async (id: string) => {
       const { error } = await supabase
         .from('contact_preferred_principals')
-        .update({ 
+        .update({
           deleted_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', id)
 
@@ -543,9 +575,9 @@ export function useBulkUpdateAdvocacyStrength() {
       const updates = relationships.map(async ({ id, advocacy_strength }) => {
         return supabase
           .from('contact_preferred_principals')
-          .update({ 
+          .update({
             advocacy_strength,
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
           })
           .eq('id', id)
       })

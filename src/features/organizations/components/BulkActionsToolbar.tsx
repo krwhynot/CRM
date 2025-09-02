@@ -20,16 +20,18 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
   onClearSelection,
   onSelectAll,
   onSelectNone,
-  className
+  className,
 }) => {
   if (selectedCount === 0) return null
 
   return (
-    <div className={cn(
-      "flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 p-3 bg-blue-50 border border-blue-200 rounded-lg",
-      "animate-in slide-in-from-top-2 duration-200",
-      className
-    )}>
+    <div
+      className={cn(
+        'flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 p-3 bg-blue-50 border border-blue-200 rounded-lg',
+        'animate-in slide-in-from-top-2 duration-200',
+        className
+      )}
+    >
       <div className="flex items-center gap-3">
         <span className="text-sm font-medium text-blue-900">
           {selectedCount} organization{selectedCount !== 1 ? 's' : ''} selected
@@ -44,7 +46,7 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
           <span className="sr-only">Clear selection</span>
         </Button>
       </div>
-      
+
       <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
         {/* Quick selection buttons */}
         {selectedCount < totalCount && onSelectAll && (
@@ -59,7 +61,7 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
             <span className="xs:hidden">All</span>
           </Button>
         )}
-        
+
         {selectedCount > 0 && onSelectNone && (
           <Button
             variant="ghost"
@@ -72,9 +74,9 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
             <span className="xs:hidden">None</span>
           </Button>
         )}
-        
+
         <div className="mx-1 hidden h-6 w-px bg-blue-300 sm:block" />
-        
+
         <Button
           variant="outline"
           size="sm"

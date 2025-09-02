@@ -9,10 +9,7 @@ interface TimelineHeaderProps {
   onAddNew: () => void
 }
 
-export const TimelineHeader: React.FC<TimelineHeaderProps> = ({
-  interactionCount,
-  onAddNew
-}) => {
+export const TimelineHeader: React.FC<TimelineHeaderProps> = ({ interactionCount, onAddNew }) => {
   return (
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
       <div className="flex items-center gap-2">
@@ -23,11 +20,7 @@ export const TimelineHeader: React.FC<TimelineHeaderProps> = ({
           </Badge>
         )}
       </div>
-      <Button 
-        onClick={onAddNew}
-        size="sm"
-        className="flex h-11 items-center gap-2 md:h-9"
-      >
+      <Button onClick={onAddNew} size="sm" className="flex h-11 items-center gap-2 md:h-9">
         <Plus className="size-4" />
         <span className="hidden sm:inline">Log Activity</span>
         <span className="sm:hidden">Log</span>

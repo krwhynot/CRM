@@ -1,6 +1,6 @@
 /**
  * Contact Form Types and Default Values
- * 
+ *
  * Provides type-safe default values that align with the contact schema expectations.
  * This ensures React Hook Form defaults match Yup schema validation rules.
  */
@@ -34,7 +34,7 @@ export const defaultContactFormValues: ContactFormData = {
   notes: null,
 
   // Virtual fields
-  preferred_principals: []
+  preferred_principals: [],
 }
 
 /**
@@ -46,7 +46,7 @@ export const createContactFormDefaults = (
 ): ContactFormData => {
   return {
     ...defaultContactFormValues,
-    ...overrides
+    ...overrides,
   }
 }
 
@@ -59,7 +59,7 @@ export const createContactFormDefaultsWithOrganization = (
 ): ContactFormData => {
   return createContactFormDefaults({
     organization_id: organizationId,
-    ...overrides
+    ...overrides,
   })
 }
 
@@ -69,15 +69,18 @@ export const createContactFormDefaultsWithOrganization = (
 export const isContactFormData = (data: unknown): data is ContactFormData => {
   return Boolean(
     data &&
-    typeof data === 'object' &&
-    data !== null &&
-    'first_name' in data &&
-    'last_name' in data &&
-    'organization_id' in data &&
-    typeof (data as Record<string, unknown>).first_name === 'string' &&
-    typeof (data as Record<string, unknown>).last_name === 'string' &&
-    typeof (data as Record<string, unknown>).organization_id === 'string' &&
-    ('role' in data ? ((data as Record<string, unknown>).role === null || typeof (data as Record<string, unknown>).role === 'string') : true)
+      typeof data === 'object' &&
+      data !== null &&
+      'first_name' in data &&
+      'last_name' in data &&
+      'organization_id' in data &&
+      typeof (data as Record<string, unknown>).first_name === 'string' &&
+      typeof (data as Record<string, unknown>).last_name === 'string' &&
+      typeof (data as Record<string, unknown>).organization_id === 'string' &&
+      ('role' in data
+        ? (data as Record<string, unknown>).role === null ||
+          typeof (data as Record<string, unknown>).role === 'string'
+        : true)
   )
 }
 

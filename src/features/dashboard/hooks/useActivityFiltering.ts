@@ -16,7 +16,7 @@ export interface UseActivityFilteringReturn {
 }
 
 export const useActivityFiltering = (
-  activityItems: ActivityItem[], 
+  activityItems: ActivityItem[],
   limit: number
 ): UseActivityFilteringReturn => {
   const [selectedType, setSelectedType] = useState<string>('all')
@@ -27,11 +27,11 @@ export const useActivityFiltering = (
     let filtered = activityItems
 
     if (selectedType !== 'all') {
-      filtered = filtered.filter(item => item.type === selectedType)
+      filtered = filtered.filter((item) => item.type === selectedType)
     }
 
     if (selectedPriority !== 'all') {
-      filtered = filtered.filter(item => item.priority === selectedPriority)
+      filtered = filtered.filter((item) => item.priority === selectedPriority)
     }
 
     return filtered.slice(0, limit)
@@ -42,6 +42,6 @@ export const useActivityFiltering = (
     selectedPriority,
     setSelectedType,
     setSelectedPriority,
-    filteredItems
+    filteredItems,
   }
 }

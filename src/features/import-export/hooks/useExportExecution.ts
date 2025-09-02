@@ -22,7 +22,11 @@ interface XLSXWorkbook {
 interface XLSXLibrary {
   utils: {
     json_to_sheet: (data: ExportDataRecord[]) => XLSXWorksheet
-    sheet_add_aoa: (worksheet: XLSXWorksheet, data: unknown[][], options?: { origin?: string }) => void
+    sheet_add_aoa: (
+      worksheet: XLSXWorksheet,
+      data: unknown[][],
+      options?: { origin?: string }
+    ) => void
     book_new: () => XLSXWorkbook
     book_append_sheet: (workbook: XLSXWorkbook, worksheet: XLSXWorksheet, sheetName: string) => void
   }

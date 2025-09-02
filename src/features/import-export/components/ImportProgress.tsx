@@ -1,12 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import {
-  CheckCircle,
-  AlertCircle,
-  Upload,
-  X
-} from 'lucide-react'
+import { CheckCircle, AlertCircle, Upload, X } from 'lucide-react'
 import type { ImportResult } from '@/types/import-export'
 
 interface ImportProgressProps {
@@ -24,7 +19,7 @@ export function ImportProgress({
   importResult,
   validRowsCount,
   onImport,
-  onReset
+  onReset,
 }: ImportProgressProps) {
   if (isImporting) {
     return (
@@ -38,9 +33,7 @@ export function ImportProgress({
         </div>
         <Alert>
           <AlertCircle className="size-4" />
-          <AlertDescription>
-            Import in progress. Please do not close this page.
-          </AlertDescription>
+          <AlertDescription>Import in progress. Please do not close this page.</AlertDescription>
         </Alert>
       </div>
     )
@@ -49,29 +42,23 @@ export function ImportProgress({
   if (importResult) {
     return (
       <div className="space-y-4 pt-4">
-        <Alert variant={importResult.success ? "default" : "destructive"}>
+        <Alert variant={importResult.success ? 'default' : 'destructive'}>
           {importResult.success ? (
             <CheckCircle className="size-4" />
           ) : (
             <AlertCircle className="size-4" />
           )}
-          <AlertDescription>
-            {importResult.message}
-          </AlertDescription>
+          <AlertDescription>{importResult.message}</AlertDescription>
         </Alert>
 
         {/* Import Summary */}
         <div className="grid grid-cols-2 gap-4">
           <div className="rounded-lg bg-green-50 p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">
-              {importResult.imported}
-            </div>
+            <div className="text-2xl font-bold text-green-600">{importResult.imported}</div>
             <div className="text-sm text-gray-600">Imported</div>
           </div>
           <div className="rounded-lg bg-red-50 p-4 text-center">
-            <div className="text-2xl font-bold text-red-600">
-              {importResult.failed}
-            </div>
+            <div className="text-2xl font-bold text-red-600">{importResult.failed}</div>
             <div className="text-sm text-gray-600">Failed</div>
           </div>
         </div>
@@ -100,7 +87,7 @@ export function ImportProgress({
           <Button onClick={onReset} className="flex-1">
             Import Another File
           </Button>
-          <Button variant="outline" onClick={() => window.location.href = '/organizations'}>
+          <Button variant="outline" onClick={() => (window.location.href = '/organizations')}>
             View Organizations
           </Button>
         </div>
@@ -112,11 +99,7 @@ export function ImportProgress({
   if (validRowsCount > 0) {
     return (
       <div className="flex gap-3 pt-4">
-        <Button 
-          className="flex-1" 
-          onClick={onImport}
-          disabled={isImporting}
-        >
+        <Button className="flex-1" onClick={onImport} disabled={isImporting}>
           <Upload className="mr-2 size-4" />
           Import {validRowsCount} Organizations
         </Button>

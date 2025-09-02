@@ -18,7 +18,7 @@ export const ContactActions: React.FC<ContactActionsProps> = ({
   onView,
   onContact,
   size = 'sm',
-  variant = 'ghost'
+  variant = 'ghost',
 }) => {
   return (
     <div className="flex items-center justify-center gap-1">
@@ -33,7 +33,7 @@ export const ContactActions: React.FC<ContactActionsProps> = ({
           <Pencil className="size-4" />
         </Button>
       )}
-      
+
       {onContact && (
         <Button
           variant={variant}
@@ -45,7 +45,7 @@ export const ContactActions: React.FC<ContactActionsProps> = ({
           <Phone className="size-4" />
         </Button>
       )}
-      
+
       {onView && (
         <Button
           variant={variant}

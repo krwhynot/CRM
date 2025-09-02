@@ -1,6 +1,6 @@
 /**
  * Product Type Extensions
- * 
+ *
  * Extended product types that include computed and joined fields
  * commonly used in product components and displays.
  */
@@ -115,18 +115,18 @@ export function createSafeProductDisplay(product: Product): ProductDisplayData {
   return {
     ...product,
     // Inventory defaults
-    in_stock: hasInventoryStatus(product) ? product.in_stock ?? true : true,
-    low_stock: hasInventoryStatus(product) ? product.low_stock ?? false : false,
+    in_stock: hasInventoryStatus(product) ? (product.in_stock ?? true) : true,
+    low_stock: hasInventoryStatus(product) ? (product.low_stock ?? false) : false,
     stock_quantity: hasInventoryStatus(product) ? product.stock_quantity : undefined,
-    
+
     // Principal defaults
     principal_name: hasPrincipalInfo(product) ? product.principal_name : undefined,
-    
+
     // Specification defaults
     package_size: hasSpecifications(product) ? product.package_size : undefined,
     origin_country: hasSpecifications(product) ? product.origin_country : undefined,
     brand: hasSpecifications(product) ? product.brand : undefined,
-    
+
     // Display defaults
     availability_status: determineAvailabilityStatus(product),
     price_display: formatPrice(product.list_price),

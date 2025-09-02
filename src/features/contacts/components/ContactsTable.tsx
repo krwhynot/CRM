@@ -19,14 +19,13 @@ interface ContactsTableProps {
   showOrganization?: boolean
 }
 
-
-export function ContactsTable({ 
-  contacts = DEFAULT_CONTACTS, 
-  loading = false, 
-  onEdit, 
+export function ContactsTable({
+  contacts = DEFAULT_CONTACTS,
+  loading = false,
+  onEdit,
   onView,
   onContact,
-  showOrganization = true
+  showOrganization = true,
 }: ContactsTableProps) {
   // Use custom hooks for all logic
   const {
@@ -35,18 +34,13 @@ export function ContactsTable({
     searchTerm,
     setSearchTerm,
     filteredContacts,
-    filterPills
+    filterPills,
   } = useContactsFiltering(contacts)
 
-  const {
-    toggleRowExpansion,
-    isRowExpanded
-  } = useContactsDisplay(contacts.map(c => c.id))
+  const { toggleRowExpansion, isRowExpanded } = useContactsDisplay(contacts.map((c) => c.id))
 
-  // Helper component for empty cell display  
-  const EmptyCell = () => (
-    <span className="text-sm italic text-muted-foreground">—</span>
-  )
+  // Helper component for empty cell display
+  const EmptyCell = () => <span className="text-sm italic text-muted-foreground">—</span>
 
   // Column definitions for DataTable
   const contactColumns: DataTableColumn<ContactWithOrganization>[] = [
@@ -60,13 +54,14 @@ export function ContactsTable({
           onClick={() => toggleRowExpansion(contact.id)}
           className="size-8 p-0 hover:bg-muted"
         >
-          {isRowExpanded(contact.id) ? 
-            <ChevronDown className="size-4 text-muted-foreground" /> : 
+          {isRowExpanded(contact.id) ? (
+            <ChevronDown className="size-4 text-muted-foreground" />
+          ) : (
             <ChevronRight className="size-4 text-muted-foreground" />
-          }
+          )}
         </Button>
       ),
-      className: "w-8"
+      className: 'w-8',
     },
     {
       key: 'contact',
@@ -76,32 +71,28 @@ export function ContactsTable({
           <div className="text-base font-semibold text-foreground">
             {contact.first_name} {contact.last_name}
           </div>
-          {contact.is_primary_contact && (
-            <span className="fill-current text-yellow-500">⭐</span>
-          )}
+          {contact.is_primary_contact && <span className="fill-current text-yellow-500">⭐</span>}
         </div>
       ),
-      className: "font-semibold"
+      className: 'font-semibold',
     },
-    ...(showOrganization ? [{
-      key: 'organization' as keyof ContactWithOrganization,
-      header: 'Organization',
-      cell: (contact: ContactWithOrganization) => (
-        <span className="text-foreground">
-          {contact.organization?.name || <EmptyCell />}
-        </span>
-      ),
-      hidden: { sm: true }
-    }] : []),
+    ...(showOrganization
+      ? [
+          {
+            key: 'organization' as keyof ContactWithOrganization,
+            header: 'Organization',
+            cell: (contact: ContactWithOrganization) => (
+              <span className="text-foreground">{contact.organization?.name || <EmptyCell />}</span>
+            ),
+            hidden: { sm: true },
+          },
+        ]
+      : []),
     {
       key: 'position',
       header: 'Position',
-      cell: (contact) => (
-        <span className="text-foreground">
-          {contact.title || <EmptyCell />}
-        </span>
-      ),
-      hidden: { sm: true }
+      cell: (contact) => <span className="text-foreground">{contact.title || <EmptyCell />}</span>,
+      hidden: { sm: true },
     },
     {
       key: 'primary_contact',
@@ -124,14 +115,14 @@ export function ContactsTable({
           </div>
         )
       },
-      hidden: { sm: true, md: true }
+      hidden: { sm: true, md: true },
     },
     {
       key: 'status',
       header: 'Status',
       cell: (contact) => (
         <div className="flex justify-center">
-          <ContactBadges 
+          <ContactBadges
             contact={contact}
             showPriority={true}
             showInfluence={false}
@@ -140,8 +131,8 @@ export function ContactsTable({
           />
         </div>
       ),
-      className: "text-center",
-      hidden: { sm: true }
+      className: 'text-center',
+      hidden: { sm: true },
     },
     {
       key: 'actions',
@@ -159,7 +150,7 @@ export function ContactsTable({
               ✏️
             </Button>
           )}
-          
+
           {onContact && (
             <Button
               variant="ghost"
@@ -171,7 +162,7 @@ export function ContactsTable({
               📞
             </Button>
           )}
-          
+
           {onView && (
             <Button
               variant="ghost"
@@ -185,8 +176,8 @@ export function ContactsTable({
           )}
         </div>
       ),
-      className: "w-32"
-    }
+      className: 'w-32',
+    },
   ]
 
   return (
@@ -211,16 +202,19 @@ export function ContactsTable({
           rowKey={(contact) => contact.id}
           empty={{
             title: activeFilter !== 'all' ? 'No contacts match your criteria' : 'No contacts found',
-            description: activeFilter !== 'all' ? 'Try adjusting your filters' : 'Get started by adding your first contact'
+            description:
+              activeFilter !== 'all'
+                ? 'Try adjusting your filters'
+                : 'Get started by adding your first contact',
           }}
         />
-        
+
         {/* Expanded Row Details */}
         {filteredContacts
           .filter((contact) => isRowExpanded(contact.id))
           .map((contact) => (
-            <div 
-              key={`${contact.id}-details`} 
+            <div
+              key={`${contact.id}-details`}
               className="-mt-px border-x border-b bg-muted/50 p-6"
               style={{ marginTop: '-1px' }}
             >
@@ -242,7 +236,9 @@ export function ContactsTable({
                     <div className="space-y-1 text-sm text-muted-foreground">
                       <div>Name: {contact.organization.name}</div>
                       <div>Type: {contact.organization.type}</div>
-                      {contact.organization.segment && <div>Segment: {contact.organization.segment}</div>}
+                      {contact.organization.segment && (
+                        <div>Segment: {contact.organization.segment}</div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -251,8 +247,12 @@ export function ContactsTable({
                 <div>
                   <h4 className="mb-2 font-medium text-foreground">Role Details</h4>
                   <div className="space-y-1 text-sm text-muted-foreground">
-                    {contact.purchase_influence && <div>Influence: {contact.purchase_influence}</div>}
-                    {contact.decision_authority && <div>Authority: {contact.decision_authority}</div>}
+                    {contact.purchase_influence && (
+                      <div>Influence: {contact.purchase_influence}</div>
+                    )}
+                    {contact.decision_authority && (
+                      <div>Authority: {contact.decision_authority}</div>
+                    )}
                     <div>Primary Contact: {contact.is_primary_contact ? 'Yes' : 'No'}</div>
                   </div>
                 </div>

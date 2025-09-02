@@ -9,7 +9,7 @@ import { OpportunityManagementTemplate } from '@/components/templates/EntityMana
 
 function OpportunitiesPage() {
   const { data: opportunities = [] } = useOpportunities()
-  
+
   // Custom hooks
   const pageState = useOpportunitiesPageState()
   const opportunityActions = useOpportunityActions()
@@ -22,7 +22,7 @@ function OpportunitiesPage() {
         onAddClick={() => pageState.setIsCreateDialogOpen(true)}
       >
         {/* Opportunities Table with Inline Details */}
-        <OpportunitiesTable 
+        <OpportunitiesTable
           onEdit={pageState.handleEditOpportunity}
           onDelete={opportunityActions.handleDeleteOpportunity}
           onAddNew={() => pageState.setIsCreateDialogOpen(true)}
@@ -34,33 +34,45 @@ function OpportunitiesPage() {
           onDeleteInteraction={interactionActions.handleDeleteInteraction}
           onInteractionItemClick={interactionActions.handleInteractionItemClick}
         />
-        
+
         <OpportunityDialogs
           isCreateDialogOpen={pageState.isCreateDialogOpen}
           setIsCreateDialogOpen={pageState.setIsCreateDialogOpen}
-          onCreateOpportunity={(data) => opportunityActions.handleCreateOpportunity(data, () => pageState.setIsCreateDialogOpen(false))}
+          onCreateOpportunity={(data) =>
+            opportunityActions.handleCreateOpportunity(data, () =>
+              pageState.setIsCreateDialogOpen(false)
+            )
+          }
           createLoading={opportunityActions.createOpportunityMutation.isPending}
-          
           isEditDialogOpen={pageState.isEditDialogOpen}
           setIsEditDialogOpen={pageState.setIsEditDialogOpen}
           editingOpportunity={pageState.editingOpportunity}
-          onUpdateOpportunity={(data) => opportunityActions.handleUpdateOpportunity(data, pageState.editingOpportunity!, () => {
-            pageState.setIsEditDialogOpen(false)
-            pageState.setEditingOpportunity(null)
-          })}
+          onUpdateOpportunity={(data) =>
+            opportunityActions.handleUpdateOpportunity(data, pageState.editingOpportunity!, () => {
+              pageState.setIsEditDialogOpen(false)
+              pageState.setEditingOpportunity(null)
+            })
+          }
           updateLoading={opportunityActions.updateOpportunityMutation.isPending}
-          
           isInteractionDialogOpen={pageState.isInteractionDialogOpen}
           setIsInteractionDialogOpen={pageState.setIsInteractionDialogOpen}
           editingInteraction={pageState.editingInteraction}
           selectedOpportunityId={pageState.selectedOpportunityId}
-          onCreateInteraction={(data) => interactionActions.handleCreateInteraction(data, pageState.selectedOpportunityId!, () => {
-            pageState.setIsInteractionDialogOpen(false)
-          })}
-          onUpdateInteraction={(data) => interactionActions.handleUpdateInteraction(data, pageState.editingInteraction!, () => {
-            pageState.setIsInteractionDialogOpen(false)
-            pageState.setEditingInteraction(null)
-          })}
+          onCreateInteraction={(data) =>
+            interactionActions.handleCreateInteraction(
+              data,
+              pageState.selectedOpportunityId!,
+              () => {
+                pageState.setIsInteractionDialogOpen(false)
+              }
+            )
+          }
+          onUpdateInteraction={(data) =>
+            interactionActions.handleUpdateInteraction(data, pageState.editingInteraction!, () => {
+              pageState.setIsInteractionDialogOpen(false)
+              pageState.setEditingInteraction(null)
+            })
+          }
           createInteractionLoading={interactionActions.createInteractionMutation.isPending}
           updateInteractionLoading={interactionActions.updateInteractionMutation.isPending}
         />

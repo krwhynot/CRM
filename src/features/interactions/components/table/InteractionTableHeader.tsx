@@ -24,7 +24,7 @@ export const InteractionTableHeader: React.FC<InteractionTableHeaderProps> = ({
   loading = false,
   useNewStyle,
   selectedCount = 0,
-  onBulkAction
+  onBulkAction,
 }) => {
   return (
     <div className="space-y-4">

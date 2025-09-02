@@ -2,7 +2,14 @@ import React, { useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
 
 interface ForgotPasswordFormProps {
@@ -29,13 +36,13 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
     }
 
     const { error: resetError } = await resetPassword(email)
-    
+
     if (resetError) {
       setError(resetError.message)
     } else {
       setSuccess('Password reset email sent! Please check your inbox for further instructions.')
     }
-    
+
     setLoading(false)
   }
 
@@ -47,7 +54,7 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
           Enter your email address and we&apos;ll send you a link to reset your password
         </CardDescription>
       </CardHeader>
-      
+
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           {error && (
@@ -56,14 +63,14 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
               {error}
             </div>
           )}
-          
+
           {success && (
             <div className="flex items-center gap-2 rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-600">
               <CheckCircle size={16} />
               {success}
             </div>
           )}
-          
+
           <div className="space-y-2">
             <label htmlFor="email" className="text-sm font-medium">
               Email
@@ -80,16 +87,12 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
             />
           </div>
         </CardContent>
-        
+
         <CardFooter className="flex flex-col gap-4">
-          <Button 
-            type="submit" 
-            className="w-full" 
-            disabled={loading}
-          >
+          <Button type="submit" className="w-full" disabled={loading}>
             {loading ? 'Sending...' : 'Send Reset Email'}
           </Button>
-          
+
           {onBackToLogin && (
             <Button
               type="button"

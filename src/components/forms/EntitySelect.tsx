@@ -1,9 +1,4 @@
-import { 
-  Select, 
-  SelectContent, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select"
+import { Select, SelectContent, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useEntitySelectSearch } from '@/hooks/useEntitySelectSearch'
 import { useEntitySelectState } from '@/hooks/useEntitySelectState'
 import { EntitySelectLoadingState } from './entity-select/EntitySelectLoadingState'
@@ -37,8 +32,8 @@ export function EntitySelect({
   searchable = true,
   disabled = false,
   loading = false,
-  emptyMessage = "No options found",
-  className
+  emptyMessage = 'No options found',
+  className,
 }: EntitySelectProps) {
   const { searchTerm, setSearchTerm, filteredOptions, clearSearch } = useEntitySelectSearch(options)
   const { isOpen, setIsOpen, selectedOption, handleSelectOption } = useEntitySelectState(
@@ -64,11 +59,9 @@ export function EntitySelect({
         onOpenChange={setIsOpen}
       >
         <SelectTrigger className="h-12 px-4 text-base focus:ring-2 focus:ring-blue-200">
-          <SelectValue placeholder={placeholder}>
-            {selectedOption?.name || placeholder}
-          </SelectValue>
+          <SelectValue placeholder={placeholder}>{selectedOption?.name || placeholder}</SelectValue>
         </SelectTrigger>
-        
+
         <SelectContent className="max-h-80 overflow-y-auto">
           {searchable && (
             <EntitySelectSearchBox
@@ -77,14 +70,10 @@ export function EntitySelect({
               onClearSearch={clearSearch}
             />
           )}
-          
-          <EntitySelectOptionsList
-            options={filteredOptions}
-            emptyMessage={emptyMessage}
-          />
+
+          <EntitySelectOptionsList options={filteredOptions} emptyMessage={emptyMessage} />
         </SelectContent>
       </Select>
     </div>
   )
 }
-

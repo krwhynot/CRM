@@ -26,7 +26,7 @@ export const InteractionDialogs: React.FC<InteractionDialogsProps> = ({
   onCreateDialogChange,
   onEditDialogChange,
   isCreating,
-  isUpdating
+  isUpdating,
 }) => {
   return (
     <>
@@ -39,10 +39,7 @@ export const InteractionDialogs: React.FC<InteractionDialogsProps> = ({
         size="xl"
         scroll="content"
       >
-        <InteractionForm 
-          onSubmit={onCreateSubmit}
-          loading={isCreating}
-        />
+        <InteractionForm onSubmit={onCreateSubmit} loading={isCreating} />
       </StandardDialog>
 
       {/* Edit Interaction Dialog */}
@@ -55,7 +52,7 @@ export const InteractionDialogs: React.FC<InteractionDialogsProps> = ({
         scroll="content"
       >
         {editingInteraction && (
-          <InteractionForm 
+          <InteractionForm
             initialData={FormDataTransformer.toFormData(editingInteraction)}
             onSubmit={(data) => onEditSubmit(editingInteraction, data)}
             loading={isUpdating}

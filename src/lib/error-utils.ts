@@ -19,7 +19,7 @@ export interface DatabaseError extends Error {
 export function surfaceError(err: unknown): string {
   // Type guard for database errors
   const dbError = err as DatabaseError
-  
+
   // Log the full error structure for debugging (development only)
   if (process.env.NODE_ENV === 'development') {
     console.error('DB ERROR DETAILS', {
@@ -27,7 +27,7 @@ export function surfaceError(err: unknown): string {
       message: dbError?.message,
       details: dbError?.details,
       hint: dbError?.hint,
-      status: dbError?.status
+      status: dbError?.status,
     })
   }
 
@@ -63,18 +63,23 @@ export function surfaceError(err: unknown): string {
 /**
  * Check if user is authenticated and session is valid
  */
-export async function validateAuthentication(supabase: SupabaseClient<Database>): Promise<{ user: User | null; error?: string }> {
+export async function validateAuthentication(
+  supabase: SupabaseClient<Database>
+): Promise<{ user: User | null; error?: string }> {
   try {
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-    
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession()
+
     if (sessionError) {
       return { user: null, error: 'Session validation failed' }
     }
-    
+
     if (!session?.user) {
       return { user: null, error: 'No active session found' }
     }
-    
+
     return { user: session.user }
   } catch (error) {
     return { user: null, error: 'Authentication check failed' }
@@ -84,9 +89,7 @@ export async function validateAuthentication(supabase: SupabaseClient<Database>)
 /**
  * Enhanced error wrapper for database mutations
  */
-export function wrapDatabaseError<T extends unknown[], R>(
-  fn: (...args: T) => Promise<R>
-) {
+export function wrapDatabaseError<T extends unknown[], R>(fn: (...args: T) => Promise<R>) {
   return async (...args: T): Promise<R> => {
     try {
       return await fn(...args)

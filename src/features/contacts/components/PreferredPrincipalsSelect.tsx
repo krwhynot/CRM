@@ -3,7 +3,14 @@ import { Check, ChevronsUpDown, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
 import type { Organization } from '@/types/entities'
@@ -20,14 +27,14 @@ export function PreferredPrincipalsSelect({
   value = [],
   onChange,
   disabled = false,
-  className
+  className,
 }: PreferredPrincipalsSelectProps) {
   const [open, setOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
   // Fetch only principal organizations
   const { data: allOrganizations = [], isLoading } = useOrganizations({
-    is_principal: true
+    is_principal: true,
   })
 
   // Filter principals based on search query
@@ -36,15 +43,13 @@ export function PreferredPrincipalsSelect({
   )
 
   // Get selected principals for display
-  const selectedPrincipals = allOrganizations.filter((org: Organization) =>
-    value.includes(org.id)
-  )
+  const selectedPrincipals = allOrganizations.filter((org: Organization) => value.includes(org.id))
 
   const handleSelect = (principalId: string) => {
     const isSelected = value.includes(principalId)
     if (isSelected) {
       // Remove from selection
-      onChange(value.filter(id => id !== principalId))
+      onChange(value.filter((id) => id !== principalId))
     } else {
       // Add to selection
       onChange([...value, principalId])
@@ -52,7 +57,7 @@ export function PreferredPrincipalsSelect({
   }
 
   const handleRemove = (principalId: string) => {
-    onChange(value.filter(id => id !== principalId))
+    onChange(value.filter((id) => id !== principalId))
   }
 
   const handleClearAll = () => {
@@ -65,11 +70,7 @@ export function PreferredPrincipalsSelect({
       {selectedPrincipals.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {selectedPrincipals.map((principal: Organization) => (
-            <Badge
-              key={principal.id}
-              variant="secondary"
-              className="group pr-1.5"
-            >
+            <Badge key={principal.id} variant="secondary" className="group pr-1.5">
               <span className="text-xs">{principal.name}</span>
               <button
                 type="button"
@@ -104,25 +105,21 @@ export function PreferredPrincipalsSelect({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className={cn(
-              'w-full h-11 justify-between',
-              !value.length && 'text-muted-foreground'
-            )}
+            className={cn('w-full h-11 justify-between', !value.length && 'text-muted-foreground')}
             disabled={disabled}
           >
-            {value.length === 0 
+            {value.length === 0
               ? 'Select preferred principals...'
               : value.length === 1
-              ? '1 principal selected'
-              : `${value.length} principals selected`
-            }
+                ? '1 principal selected'
+                : `${value.length} principals selected`}
             <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full p-0" align="start">
           <Command>
-            <CommandInput 
-              placeholder="Search principals..." 
+            <CommandInput
+              placeholder="Search principals..."
               value={searchQuery}
               onValueChange={setSearchQuery}
             />
@@ -142,10 +139,7 @@ export function PreferredPrincipalsSelect({
                         className="cursor-pointer"
                       >
                         <Check
-                          className={cn(
-                            'mr-2 h-4 w-4',
-                            isSelected ? 'opacity-100' : 'opacity-0'
-                          )}
+                          className={cn('mr-2 h-4 w-4', isSelected ? 'opacity-100' : 'opacity-0')}
                         />
                         <div className="flex flex-col">
                           <span className="font-medium">{principal.name}</span>

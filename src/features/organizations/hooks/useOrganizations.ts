@@ -105,19 +105,14 @@ export function useOrganizations(filters?: OrganizationFilters) {
 
   // Debug: Monitor query state changes
   React.useEffect(() => {
-    debugQueryState(
-      [...organizationKeys.list(filters)],
-      'useOrganizations',
-      queryResult.data,
-      {
-        isLoading: queryResult.isLoading,
-        isError: queryResult.isError,
-        error: queryResult.error || undefined,
-        dataUpdatedAt: queryResult.dataUpdatedAt,
-        status: queryResult.status,
-        fetchStatus: queryResult.fetchStatus,
-      }
-    )
+    debugQueryState([...organizationKeys.list(filters)], 'useOrganizations', queryResult.data, {
+      isLoading: queryResult.isLoading,
+      isError: queryResult.isError,
+      error: queryResult.error || undefined,
+      dataUpdatedAt: queryResult.dataUpdatedAt,
+      status: queryResult.status,
+      fetchStatus: queryResult.fetchStatus,
+    })
   }, [queryResult.data, queryResult.isLoading, queryResult.isError, filters, queryResult])
 
   return queryResult
@@ -245,6 +240,8 @@ export function useCreateOrganization() {
         ...derivedFlags,
         created_by: user.id,
         updated_by: user.id,
+        // Convert null to undefined for database compatibility
+        segment: organization.segment || undefined,
       }
 
       const { data, error } = await supabase
@@ -280,6 +277,8 @@ export function useUpdateOrganization() {
         ...updates,
         ...derivedFlags,
         updated_at: new Date().toISOString(),
+        // Convert null to undefined for database compatibility
+        segment: updates.segment || undefined,
       }
 
       const { data, error } = await supabase

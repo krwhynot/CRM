@@ -24,13 +24,13 @@ export function useAuthCallback() {
       try {
         // Check both hash and search params for auth data
         let authParams = new URLSearchParams()
-        
+
         // First, check URL hash (most common for Supabase)
         if (window.location.hash) {
           const hash = window.location.hash.substring(1)
           authParams = new URLSearchParams(hash)
         }
-        
+
         // Also check search params as fallback
         if (!authParams.toString() && window.location.search) {
           authParams = new URLSearchParams(window.location.search)
@@ -47,7 +47,7 @@ export function useAuthCallback() {
 
         // Auth callback data parsed successfully
         setData(authData)
-        
+
         // Clear the URL hash/params after parsing to clean up the URL
         if (window.location.hash || window.location.search) {
           const cleanUrl = `${window.location.origin}${window.location.pathname}`

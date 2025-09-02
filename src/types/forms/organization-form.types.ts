@@ -1,6 +1,6 @@
 /**
  * Organization Form Types and Default Values
- * 
+ *
  * Provides type-safe default values that align with the organization schema expectations.
  * This ensures React Hook Form defaults match Yup schema validation rules.
  */
@@ -35,7 +35,7 @@ export const defaultOrganizationFormValues: OrganizationFormData = {
   postal_code: null,
   country: null,
   industry: null,
-  notes: null
+  notes: null,
 }
 
 /**
@@ -47,7 +47,7 @@ export const createOrganizationFormDefaults = (
 ): OrganizationFormData => {
   return {
     ...defaultOrganizationFormValues,
-    ...overrides
+    ...overrides,
   }
 }
 
@@ -61,7 +61,7 @@ export const createPrincipalOrganizationDefaults = (
     type: 'principal',
     is_principal: true,
     priority: 'A',
-    ...overrides
+    ...overrides,
   })
 }
 
@@ -72,7 +72,7 @@ export const createDistributorOrganizationDefaults = (
     type: 'distributor',
     is_distributor: true,
     priority: 'B',
-    ...overrides
+    ...overrides,
   })
 }
 
@@ -82,7 +82,7 @@ export const createCustomerOrganizationDefaults = (
   return createOrganizationFormDefaults({
     type: 'customer',
     priority: 'C',
-    ...overrides
+    ...overrides,
   })
 }
 
@@ -92,16 +92,16 @@ export const createCustomerOrganizationDefaults = (
 export const isOrganizationFormData = (data: unknown): data is OrganizationFormData => {
   return Boolean(
     data &&
-    typeof data === 'object' &&
-    data !== null &&
-    'name' in data &&
-    'type' in data &&
-    'priority' in data &&
-    'segment' in data &&
-    typeof (data as Record<string, unknown>).name === 'string' &&
-    typeof (data as Record<string, unknown>).type === 'string' &&
-    typeof (data as Record<string, unknown>).priority === 'string' &&
-    typeof (data as Record<string, unknown>).segment === 'string'
+      typeof data === 'object' &&
+      data !== null &&
+      'name' in data &&
+      'type' in data &&
+      'priority' in data &&
+      'segment' in data &&
+      typeof (data as Record<string, unknown>).name === 'string' &&
+      typeof (data as Record<string, unknown>).type === 'string' &&
+      typeof (data as Record<string, unknown>).priority === 'string' &&
+      typeof (data as Record<string, unknown>).segment === 'string'
   )
 }
 

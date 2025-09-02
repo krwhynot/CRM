@@ -44,7 +44,7 @@ export const DashboardSkeleton: React.FC = () => {
               <div className="flex h-full items-end justify-between">
                 {Array.from({ length: 8 }).map((_, index) => (
                   <div key={index} className="flex flex-col items-center space-y-2">
-                    <Skeleton 
+                    <Skeleton
                       className="w-8 animate-pulse"
                       style={{ height: `${Math.random() * 150 + 50}px` }}
                     />
@@ -66,7 +66,7 @@ export const DashboardSkeleton: React.FC = () => {
               <div className="flex h-full items-end justify-between">
                 {Array.from({ length: 8 }).map((_, index) => (
                   <div key={index} className="flex flex-col items-center space-y-2">
-                    <Skeleton 
+                    <Skeleton
                       className="w-8 animate-pulse"
                       style={{ height: `${Math.random() * 150 + 50}px` }}
                     />
@@ -119,7 +119,7 @@ export const ChartSkeleton: React.FC = () => {
       <div className="flex h-full items-end justify-between">
         {Array.from({ length: 8 }).map((_, index) => (
           <div key={index} className="flex flex-col items-center space-y-2">
-            <Skeleton 
+            <Skeleton
               className="w-8 bg-muted/60"
               style={{ height: `${Math.random() * 150 + 50}px` }}
             />

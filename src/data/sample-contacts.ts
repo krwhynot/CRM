@@ -44,7 +44,7 @@ export const DEFAULT_CONTACTS: ContactWithOrganization[] = [
       segment: 'Fine Dining',
       primary_manager_name: null,
       search_tsv: null,
-      secondary_manager_name: null
+      secondary_manager_name: null,
     },
     department: 'Kitchen Operations',
     linkedin_url: 'https://linkedin.com/in/johnsmith-chef',
@@ -55,7 +55,7 @@ export const DEFAULT_CONTACTS: ContactWithOrganization[] = [
     deleted_at: null,
     role: null,
     search_tsv: null,
-    updated_by: ''
+    updated_by: '',
   },
   {
     id: '2',
@@ -98,7 +98,7 @@ export const DEFAULT_CONTACTS: ContactWithOrganization[] = [
       segment: 'Fast Casual',
       primary_manager_name: null,
       search_tsv: null,
-      secondary_manager_name: null
+      secondary_manager_name: null,
     },
     department: 'Operations',
     created_at: new Date().toISOString(),
@@ -110,7 +110,7 @@ export const DEFAULT_CONTACTS: ContactWithOrganization[] = [
     notes: null,
     role: null,
     search_tsv: null,
-    updated_by: ''
+    updated_by: '',
   },
   {
     id: '3',
@@ -153,7 +153,7 @@ export const DEFAULT_CONTACTS: ContactWithOrganization[] = [
       segment: 'Retail Food Service',
       primary_manager_name: null,
       search_tsv: null,
-      secondary_manager_name: null
+      secondary_manager_name: null,
     },
     department: 'Procurement',
     created_at: new Date().toISOString(),
@@ -165,6 +165,6 @@ export const DEFAULT_CONTACTS: ContactWithOrganization[] = [
     notes: null,
     role: null,
     search_tsv: null,
-    updated_by: ''
-  }
+    updated_by: '',
+  },
 ]

@@ -1,9 +1,9 @@
 /**
  * Opportunity Auto-Naming Store - Client-Side UI State Management
- * 
+ *
  * Manages client-side state for opportunity auto-naming functionality.
  * Server data (principals, organizations) is handled via TanStack Query hooks.
- * 
+ *
  * Key Features:
  * - Naming configuration and templates
  * - Preview and validation UI state
@@ -62,58 +62,58 @@ export interface OpportunityNamingUIState {
   // Templates (client-side)
   templates: NamingTemplate[]
   selectedTemplateId: string | null
-  
+
   // Configuration (client-side preferences)
   configuration: NamingConfiguration
-  
+
   // Preview and validation state
   currentPreview: NamePreview | null
   currentValidation: NameValidationResult | null
-  
+
   // Form state
   isPreviewMode: boolean
   showAdvancedOptions: boolean
-  
+
   // Generation state (for UI feedback)
   isGenerating: boolean
   isValidating: boolean
-  
+
   // Client-side actions
   actions: {
     // Template Management
     setSelectedTemplate: (templateId: string) => void
     addCustomTemplate: (template: Omit<NamingTemplate, 'id'>) => NamingTemplate
     removeTemplate: (templateId: string) => void
-    
+
     // Configuration Management
     updateConfiguration: (config: Partial<NamingConfiguration>) => void
     resetConfiguration: () => void
-    
+
     // Preview and Validation
     setCurrentPreview: (preview: NamePreview | null) => void
     setCurrentValidation: (validation: NameValidationResult | null) => void
-    
+
     // UI State Management
     setPreviewMode: (enabled: boolean) => void
     toggleAdvancedOptions: () => void
     setGenerating: (generating: boolean) => void
     setValidating: (validating: boolean) => void
-    
+
     // Utility Functions (client-side only)
     formatContext: (context: OpportunityContext, customContext?: string) => string
     formatDateForNaming: (format: 'MonthYear' | 'FullDate' | 'YearOnly') => string
     getContextAbbreviation: (context: OpportunityContext) => string
     optimizeNameLength: (name: string, maxLength: number) => string
     validateName: (name: string, maxLength?: number) => NameValidationResult
-    
+
     // Generate naming patterns (client-side logic)
     generateMultiPrincipalName: (
-      organizationName: string, 
-      principalNames: string[], 
-      context: OpportunityContext | string, 
+      organizationName: string,
+      principalNames: string[],
+      context: OpportunityContext | string,
       customContext?: string
     ) => string
-    
+
     // Reset and cleanup
     clearPreview: () => void
     clearValidation: () => void
@@ -127,29 +127,53 @@ const DEFAULT_TEMPLATES: NamingTemplate[] = [
     id: 'standard-single',
     name: 'Standard Single Principal',
     pattern: '{organization} - {principal} - {context} - {date}',
-    context_types: ['Site Visit', 'Food Show', 'New Product Interest', 'Follow-up', 'Demo Request', 'Sampling', 'Custom'],
+    context_types: [
+      'Site Visit',
+      'Food Show',
+      'New Product Interest',
+      'Follow-up',
+      'Demo Request',
+      'Sampling',
+      'Custom',
+    ],
     max_length: 255,
     supports_multi_principal: false,
-    description: 'Standard format for single principal opportunities'
+    description: 'Standard format for single principal opportunities',
   },
   {
     id: 'standard-multi',
     name: 'Standard Multi-Principal',
     pattern: '{organization} - Multi-Principal ({count}) - {context} - {date}',
-    context_types: ['Site Visit', 'Food Show', 'New Product Interest', 'Follow-up', 'Demo Request', 'Sampling', 'Custom'],
+    context_types: [
+      'Site Visit',
+      'Food Show',
+      'New Product Interest',
+      'Follow-up',
+      'Demo Request',
+      'Sampling',
+      'Custom',
+    ],
     max_length: 255,
     supports_multi_principal: true,
-    description: 'Standard format for multi-principal opportunities'
+    description: 'Standard format for multi-principal opportunities',
   },
   {
     id: 'abbreviated-multi',
     name: 'Abbreviated Multi-Principal',
     pattern: '{organization} - Multi ({count}) - {context_abbrev} - {date}',
-    context_types: ['Site Visit', 'Food Show', 'New Product Interest', 'Follow-up', 'Demo Request', 'Sampling', 'Custom'],
+    context_types: [
+      'Site Visit',
+      'Food Show',
+      'New Product Interest',
+      'Follow-up',
+      'Demo Request',
+      'Sampling',
+      'Custom',
+    ],
     max_length: 200,
     supports_multi_principal: true,
-    description: 'Abbreviated format for longer organization names'
-  }
+    description: 'Abbreviated format for longer organization names',
+  },
 ]
 
 // Default configuration
@@ -165,9 +189,9 @@ const DEFAULT_CONFIGURATION: NamingConfiguration = {
     'New Product Interest': 'NPI',
     'Follow-up': 'FU',
     'Demo Request': 'Demo',
-    'Sampling': 'Sample',
-    'Custom': 'Custom'
-  }
+    Sampling: 'Sample',
+    Custom: 'Custom',
+  },
 }
 
 // Business logic constants
@@ -185,7 +209,7 @@ const initialUIState: Omit<OpportunityNamingUIState, 'actions'> = {
   isPreviewMode: false,
   showAdvancedOptions: false,
   isGenerating: false,
-  isValidating: false
+  isValidating: false,
 }
 
 export const useOpportunityAutoNamingStore = create<OpportunityNamingUIState>()(
@@ -193,7 +217,7 @@ export const useOpportunityAutoNamingStore = create<OpportunityNamingUIState>()(
     persist(
       subscribeWithSelector((set, get) => ({
         ...initialUIState,
-        
+
         actions: {
           // Template Management
           setSelectedTemplate: (templateId: string) => {
@@ -203,36 +227,35 @@ export const useOpportunityAutoNamingStore = create<OpportunityNamingUIState>()(
           addCustomTemplate: (template: Omit<NamingTemplate, 'id'>) => {
             const newTemplate: NamingTemplate = {
               ...template,
-              id: `custom-${Date.now()}`
+              id: `custom-${Date.now()}`,
             }
 
-            set(state => ({
-              templates: [...state.templates, newTemplate]
+            set((state) => ({
+              templates: [...state.templates, newTemplate],
             }))
 
             return newTemplate
           },
 
           removeTemplate: (templateId: string) => {
-            set(state => ({
-              templates: state.templates.filter(t => t.id !== templateId),
-              selectedTemplateId: state.selectedTemplateId === templateId 
-                ? null 
-                : state.selectedTemplateId
+            set((state) => ({
+              templates: state.templates.filter((t) => t.id !== templateId),
+              selectedTemplateId:
+                state.selectedTemplateId === templateId ? null : state.selectedTemplateId,
             }))
           },
-          
+
           // Configuration Management
           updateConfiguration: (config: Partial<NamingConfiguration>) => {
-            set(state => ({
-              configuration: { ...state.configuration, ...config }
+            set((state) => ({
+              configuration: { ...state.configuration, ...config },
             }))
           },
 
           resetConfiguration: () => {
             set({ configuration: DEFAULT_CONFIGURATION })
           },
-          
+
           // Preview and Validation
           setCurrentPreview: (preview: NamePreview | null) => {
             set({ currentPreview: preview })
@@ -241,14 +264,14 @@ export const useOpportunityAutoNamingStore = create<OpportunityNamingUIState>()(
           setCurrentValidation: (validation: NameValidationResult | null) => {
             set({ currentValidation: validation })
           },
-          
+
           // UI State Management
           setPreviewMode: (enabled: boolean) => {
             set({ isPreviewMode: enabled })
           },
 
           toggleAdvancedOptions: () => {
-            set(state => ({ showAdvancedOptions: !state.showAdvancedOptions }))
+            set((state) => ({ showAdvancedOptions: !state.showAdvancedOptions }))
           },
 
           setGenerating: (generating: boolean) => {
@@ -258,7 +281,7 @@ export const useOpportunityAutoNamingStore = create<OpportunityNamingUIState>()(
           setValidating: (validating: boolean) => {
             set({ isValidating: validating })
           },
-          
+
           // Utility Functions (client-side only)
           formatContext: (context: OpportunityContext, customContext?: string) => {
             if (context === 'Custom' && customContext) {
@@ -271,12 +294,16 @@ export const useOpportunityAutoNamingStore = create<OpportunityNamingUIState>()(
 
           formatDateForNaming: (format: 'MonthYear' | 'FullDate' | 'YearOnly') => {
             const date = new Date()
-            
+
             switch (format) {
               case 'MonthYear':
                 return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
               case 'FullDate':
-                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                return date.toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                })
               case 'YearOnly':
                 return date.getFullYear().toString()
               default:
@@ -300,7 +327,7 @@ export const useOpportunityAutoNamingStore = create<OpportunityNamingUIState>()(
               if (parts[0].length > 30) {
                 parts[0] = parts[0].substring(0, 27) + '...'
               }
-              
+
               const optimized = parts.join(' - ')
               if (optimized.length <= maxLength) {
                 return optimized
@@ -351,36 +378,41 @@ export const useOpportunityAutoNamingStore = create<OpportunityNamingUIState>()(
               errors,
               warnings,
               final_length: trimmedName.length,
-              truncated: false
+              truncated: false,
             }
           },
-          
+
           // Generate naming patterns (client-side logic)
           generateMultiPrincipalName: (
-            organizationName: string, 
-            principalNames: string[], 
-            context: OpportunityContext | string, 
+            organizationName: string,
+            principalNames: string[],
+            context: OpportunityContext | string,
             customContext?: string
           ) => {
             const { configuration } = get()
-            
+
             // Truncate organization name if too long
-            const truncatedOrg = organizationName.length > ORGANIZATION_MAX_DISPLAY_LENGTH
-              ? organizationName.substring(0, ORGANIZATION_MAX_DISPLAY_LENGTH) + '...'
-              : organizationName
+            const truncatedOrg =
+              organizationName.length > ORGANIZATION_MAX_DISPLAY_LENGTH
+                ? organizationName.substring(0, ORGANIZATION_MAX_DISPLAY_LENGTH) + '...'
+                : organizationName
 
             // Handle principal display
             let principalDisplay: string
             if (principalNames.length === 1) {
-              principalDisplay = principalNames[0].length > PRINCIPAL_MAX_DISPLAY_LENGTH
-                ? principalNames[0].substring(0, PRINCIPAL_MAX_DISPLAY_LENGTH) + '...'
-                : principalNames[0]
+              principalDisplay =
+                principalNames[0].length > PRINCIPAL_MAX_DISPLAY_LENGTH
+                  ? principalNames[0].substring(0, PRINCIPAL_MAX_DISPLAY_LENGTH) + '...'
+                  : principalNames[0]
             } else {
               principalDisplay = `Multi-Principal (${principalNames.length})`
             }
 
             // Format context
-            const contextDisplay = get().actions.formatContext(context as OpportunityContext, customContext)
+            const contextDisplay = get().actions.formatContext(
+              context as OpportunityContext,
+              customContext
+            )
 
             // Format date
             const dateDisplay = get().actions.formatDateForNaming(configuration.include_date_format)
@@ -388,7 +420,7 @@ export const useOpportunityAutoNamingStore = create<OpportunityNamingUIState>()(
             // Combine components
             return `${truncatedOrg} - ${principalDisplay} - ${contextDisplay} - ${dateDisplay}`
           },
-          
+
           // Reset and cleanup
           clearPreview: () => {
             set({ currentPreview: null })
@@ -399,13 +431,13 @@ export const useOpportunityAutoNamingStore = create<OpportunityNamingUIState>()(
           },
 
           reset: () => {
-            set({ 
-              ...initialUIState, 
-              templates: DEFAULT_TEMPLATES, 
-              configuration: DEFAULT_CONFIGURATION 
+            set({
+              ...initialUIState,
+              templates: DEFAULT_TEMPLATES,
+              configuration: DEFAULT_CONFIGURATION,
             })
-          }
-        }
+          },
+        },
       })),
       {
         name: 'opportunity-naming-ui-store',
@@ -415,12 +447,12 @@ export const useOpportunityAutoNamingStore = create<OpportunityNamingUIState>()(
           templates: state.templates,
           selectedTemplateId: state.selectedTemplateId,
           showAdvancedOptions: state.showAdvancedOptions,
-          isPreviewMode: state.isPreviewMode
-        })
+          isPreviewMode: state.isPreviewMode,
+        }),
       }
     ),
     {
-      name: 'opportunity-naming-ui-store'
+      name: 'opportunity-naming-ui-store',
     }
   )
 )
@@ -433,7 +465,7 @@ export const useNamingTemplates = () => {
     selectedTemplateId: store.selectedTemplateId,
     setSelectedTemplate: store.actions.setSelectedTemplate,
     addCustomTemplate: store.actions.addCustomTemplate,
-    removeTemplate: store.actions.removeTemplate
+    removeTemplate: store.actions.removeTemplate,
   }
 }
 
@@ -442,7 +474,7 @@ export const useNamingConfiguration = () => {
   return {
     configuration: store.configuration,
     updateConfiguration: store.actions.updateConfiguration,
-    resetConfiguration: store.actions.resetConfiguration
+    resetConfiguration: store.actions.resetConfiguration,
   }
 }
 
@@ -458,7 +490,7 @@ export const useNamingPreview = () => {
     setGenerating: store.actions.setGenerating,
     setValidating: store.actions.setValidating,
     clearPreview: store.actions.clearPreview,
-    clearValidation: store.actions.clearValidation
+    clearValidation: store.actions.clearValidation,
   }
 }
 
@@ -470,7 +502,7 @@ export const useNamingUtilities = () => {
     getContextAbbreviation: store.actions.getContextAbbreviation,
     optimizeNameLength: store.actions.optimizeNameLength,
     validateName: store.actions.validateName,
-    generateMultiPrincipalName: store.actions.generateMultiPrincipalName
+    generateMultiPrincipalName: store.actions.generateMultiPrincipalName,
   }
 }
 
@@ -480,6 +512,6 @@ export const useNamingUI = () => {
     isPreviewMode: store.isPreviewMode,
     showAdvancedOptions: store.showAdvancedOptions,
     setPreviewMode: store.actions.setPreviewMode,
-    toggleAdvancedOptions: store.actions.toggleAdvancedOptions
+    toggleAdvancedOptions: store.actions.toggleAdvancedOptions,
   }
 }

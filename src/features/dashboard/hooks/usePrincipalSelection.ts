@@ -16,8 +16,8 @@ export const usePrincipalSelection = (
 ): UsePrincipalSelectionReturn => {
   const [selectedPrincipals, setSelectedPrincipals] = useState<string[]>([])
 
-  const principalOrganizations = organizations.filter(org => 
-    org.type && (org.type.toLowerCase() === 'principal')
+  const principalOrganizations = organizations.filter(
+    (org) => org.type && org.type.toLowerCase() === 'principal'
   )
 
   const handleAddPrincipal = (principalId: string) => {
@@ -29,7 +29,7 @@ export const usePrincipalSelection = (
   }
 
   const handleRemovePrincipal = (principalId: string) => {
-    const newPrincipals = selectedPrincipals.filter(id => id !== principalId)
+    const newPrincipals = selectedPrincipals.filter((id) => id !== principalId)
     setSelectedPrincipals(newPrincipals)
     form.setValue('principals', newPrincipals)
   }
@@ -38,6 +38,6 @@ export const usePrincipalSelection = (
     selectedPrincipals,
     principalOrganizations,
     handleAddPrincipal,
-    handleRemovePrincipal
+    handleRemovePrincipal,
   }
 }

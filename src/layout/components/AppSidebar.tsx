@@ -9,14 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
-import { 
-  Building2, 
-  Users, 
-  Package, 
-  Target, 
-  Home,
-  Upload
-} from 'lucide-react'
+import { Building2, Users, Package, Target, Home, Upload } from 'lucide-react'
 
 const menuItems = [
   { title: 'Dashboard', url: '/', icon: Home },
@@ -39,8 +32,8 @@ export function AppSidebar() {
             <SidebarMenu>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild 
+                  <SidebarMenuButton
+                    asChild
                     isActive={location.pathname === item.url}
                     tooltip={item.title}
                   >

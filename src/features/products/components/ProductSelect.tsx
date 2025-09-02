@@ -12,10 +12,7 @@ export interface ProductSelectProps extends Omit<EntitySelectProps, 'options'> {
   }>
 }
 
-export const ProductSelect: React.FC<ProductSelectProps> = ({ 
-  products, 
-  ...props 
-}) => {
+export const ProductSelect: React.FC<ProductSelectProps> = ({ products, ...props }) => {
   const options = transformProducts(products)
   return <EntitySelect options={options} {...props} />
 }

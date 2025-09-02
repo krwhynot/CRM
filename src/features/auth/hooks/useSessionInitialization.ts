@@ -23,7 +23,7 @@ export const useSessionInitialization = ({
   authData,
   isAuthLoading,
   hasValidToken,
-  hasError
+  hasError,
 }: UseSessionInitializationProps): UseSessionInitializationReturn => {
   const [sessionInitialized, setSessionInitialized] = useState(false)
   const [sessionError, setSessionError] = useState<string | null>(null)
@@ -32,11 +32,11 @@ export const useSessionInitialization = ({
     const initializeSession = async () => {
       if (authData.accessToken && authData.type === 'recovery' && !hasError) {
         // Initializing Supabase session for password reset
-        
+
         try {
           const { error: sessionError } = await supabase.auth.setSession({
             access_token: authData.accessToken,
-            refresh_token: authData.refreshToken || ''
+            refresh_token: authData.refreshToken || '',
           })
 
           if (sessionError) {
@@ -60,6 +60,6 @@ export const useSessionInitialization = ({
 
   return {
     sessionInitialized,
-    sessionError
+    sessionError,
   }
 }

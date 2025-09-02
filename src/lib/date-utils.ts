@@ -1,4 +1,14 @@
-import { format, startOfWeek, endOfWeek, subWeeks, isWithinInterval, parseISO, isToday, isYesterday, subDays } from 'date-fns'
+import {
+  format,
+  startOfWeek,
+  endOfWeek,
+  subWeeks,
+  isWithinInterval,
+  parseISO,
+  isToday,
+  isYesterday,
+  subDays,
+} from 'date-fns'
 
 export interface WeeklyData {
   weekStart: Date
@@ -32,25 +42,25 @@ export function getSundayOfWeek(date: Date): Date {
  */
 export function generateWeekRanges(weeksCount: number, endDate: Date = new Date()): WeeklyData[] {
   const weeks: WeeklyData[] = []
-  
+
   // Start from the Monday of the current week
   let currentWeekStart = getMondayOfWeek(endDate)
-  
+
   // Generate weeks going backwards
   for (let i = 0; i < weeksCount; i++) {
     const weekStart = subWeeks(currentWeekStart, weeksCount - 1 - i)
     const weekEnd = getSundayOfWeek(weekStart)
-    
+
     weeks.push({
       weekStart,
       weekEnd,
       weekLabel: format(weekStart, 'MMM d'),
       weekNumber: i + 1,
       opportunities: 0,
-      interactions: 0
+      interactions: 0,
     })
   }
-  
+
   return weeks
 }
 
@@ -83,40 +93,54 @@ export function aggregateOpportunitiesByWeek(
     product?: string
   }
 ): WeeklyData[] {
-  return weekRanges.map(week => {
-    const weekOpportunities = opportunities.filter(opp => {
+  return weekRanges.map((week) => {
+    const weekOpportunities = opportunities.filter((opp) => {
       // Check if opportunity falls within this week
       if (!isDateInWeek(opp.created_at, week.weekStart, week.weekEnd)) {
         return false
       }
-      
+
       // Apply filters
-      if (filters?.principal && filters.principal !== 'all' && opp.principal_id !== filters.principal) {
+      if (
+        filters?.principal &&
+        filters.principal !== 'all' &&
+        opp.principal_id !== filters.principal
+      ) {
         return false
       }
-      
+
       if (filters?.product && filters.product !== 'all' && opp.product_id !== filters.product) {
         return false
       }
-      
+
       return true
     })
-    
+
     return {
       ...week,
       opportunities: weekOpportunities.length,
-      principalBreakdown: filters?.principal === 'all' ? undefined : 
-        weekOpportunities.reduce((acc, opp) => {
-          const key = opp.principal_id || 'unknown'
-          acc[key] = (acc[key] || 0) + 1
-          return acc
-        }, {} as Record<string, number>),
-      productBreakdown: filters?.product === 'all' ? undefined :
-        weekOpportunities.reduce((acc, opp) => {
-          const key = opp.product_id || 'unknown'
-          acc[key] = (acc[key] || 0) + 1
-          return acc
-        }, {} as Record<string, number>)
+      principalBreakdown:
+        filters?.principal === 'all'
+          ? undefined
+          : weekOpportunities.reduce(
+              (acc, opp) => {
+                const key = opp.principal_id || 'unknown'
+                acc[key] = (acc[key] || 0) + 1
+                return acc
+              },
+              {} as Record<string, number>
+            ),
+      productBreakdown:
+        filters?.product === 'all'
+          ? undefined
+          : weekOpportunities.reduce(
+              (acc, opp) => {
+                const key = opp.product_id || 'unknown'
+                acc[key] = (acc[key] || 0) + 1
+                return acc
+              },
+              {} as Record<string, number>
+            ),
     }
   })
 }
@@ -134,23 +158,23 @@ export function aggregateInteractionsByWeek(
   }>,
   weekRanges: WeeklyData[]
 ): WeeklyData[] {
-  return weekRanges.map(week => {
-    const weekInteractions = interactions.filter(interaction => {
+  return weekRanges.map((week) => {
+    const weekInteractions = interactions.filter((interaction) => {
       // Check if interaction falls within this week
       if (!isDateInWeek(interaction.created_at, week.weekStart, week.weekEnd)) {
         return false
       }
-      
+
       // Note: For interactions, we might need to join with opportunities/contacts
       // to apply principal/product filters. For now, we'll include all interactions.
       // This can be enhanced based on your data relationships.
-      
+
       return true
     })
-    
+
     return {
       ...week,
-      interactions: weekInteractions.length
+      interactions: weekInteractions.length,
     }
   })
 }
@@ -163,7 +187,7 @@ export function formatWeekRange(weekStart: Date, weekEnd: Date): string {
   const endMonth = format(weekEnd, 'MMM')
   const startDay = format(weekStart, 'd')
   const endDay = format(weekEnd, 'd')
-  
+
   if (startMonth === endMonth) {
     return `${startMonth} ${startDay}-${endDay}`
   } else {
@@ -177,10 +201,10 @@ export function formatWeekRange(weekStart: Date, weekEnd: Date): string {
 export function getWeekOffset(date: Date, referenceDate: Date = new Date()): number {
   const refWeekStart = getMondayOfWeek(referenceDate)
   const dateWeekStart = getMondayOfWeek(date)
-  
+
   const diffInMs = dateWeekStart.getTime() - refWeekStart.getTime()
   const diffInWeeks = Math.round(diffInMs / (7 * 24 * 60 * 60 * 1000))
-  
+
   return diffInWeeks
 }
 

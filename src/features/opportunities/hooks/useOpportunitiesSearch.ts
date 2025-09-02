@@ -16,17 +16,22 @@ export const useOpportunitiesSearch = (
     if (!searchTerm.trim()) return opportunities
 
     const lowerSearchTerm = searchTerm.toLowerCase()
-    
-    return opportunities.filter(opportunity =>
-      opportunity.name.toLowerCase().includes(lowerSearchTerm) ||
-      (opportunity.organization?.name && opportunity.organization.name.toLowerCase().includes(lowerSearchTerm)) ||
-      (opportunity.contact && `${opportunity.contact.first_name} ${opportunity.contact.last_name}`.toLowerCase().includes(lowerSearchTerm))
+
+    return opportunities.filter(
+      (opportunity) =>
+        opportunity.name.toLowerCase().includes(lowerSearchTerm) ||
+        (opportunity.organization?.name &&
+          opportunity.organization.name.toLowerCase().includes(lowerSearchTerm)) ||
+        (opportunity.contact &&
+          `${opportunity.contact.first_name} ${opportunity.contact.last_name}`
+            .toLowerCase()
+            .includes(lowerSearchTerm))
     )
   }, [opportunities, searchTerm])
 
   return {
     searchTerm,
     setSearchTerm,
-    filteredOpportunities
+    filteredOpportunities,
   }
 }

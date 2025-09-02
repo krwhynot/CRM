@@ -20,11 +20,11 @@ export const ProductsDataDisplay: React.FC<ProductsDataDisplayProps> = ({
   products,
   onEdit,
   onDelete,
-  onRefresh
+  onRefresh,
 }) => {
   if (isLoading) {
     return (
-      <LoadingState 
+      <LoadingState
         message="Loading products..."
         subtext="Fetching product data from the database"
         variant="table"
@@ -44,11 +44,5 @@ export const ProductsDataDisplay: React.FC<ProductsDataDisplayProps> = ({
     )
   }
 
-  return (
-    <ProductsTable 
-      products={products}
-      onEdit={onEdit}
-      onDelete={onDelete}
-    />
-  )
+  return <ProductsTable products={products} onEdit={onEdit} onDelete={onDelete} />
 }

@@ -24,19 +24,12 @@ export function AuthPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md">
         {mode === 'login' && (
-          <LoginForm 
-            onToggleMode={handleToggleMode}
-            onForgotPassword={handleForgotPassword}
-          />
+          <LoginForm onToggleMode={handleToggleMode} onForgotPassword={handleForgotPassword} />
         )}
-        
-        {mode === 'signup' && (
-          <SignUpForm onToggleMode={handleToggleMode} />
-        )}
-        
-        {mode === 'forgot-password' && (
-          <ForgotPasswordForm onBackToLogin={handleBackToLogin} />
-        )}
+
+        {mode === 'signup' && <SignUpForm onToggleMode={handleToggleMode} />}
+
+        {mode === 'forgot-password' && <ForgotPasswordForm onBackToLogin={handleBackToLogin} />}
       </div>
     </div>
   )

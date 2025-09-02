@@ -11,9 +11,9 @@ export interface OrganizationSelectProps extends Omit<EntitySelectProps, 'option
   }>
 }
 
-export const OrganizationSelect: React.FC<OrganizationSelectProps> = ({ 
-  organizations, 
-  ...props 
+export const OrganizationSelect: React.FC<OrganizationSelectProps> = ({
+  organizations,
+  ...props
 }) => {
   const options = transformOrganizations(organizations)
   return <EntitySelect options={options} {...props} />

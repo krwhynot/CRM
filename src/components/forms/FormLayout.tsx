@@ -14,14 +14,14 @@ export function FormLayout<T extends FormData>({
   config,
   onSubmit,
   initialData,
-  loading = false
+  loading = false,
 }: FormLayoutProps<T>) {
   const [showOptionalSection, setShowOptionalSection] = useState(false)
-  
+
   const form = useForm<T>({
     resolver: yupResolver(config.schema) as any,
     defaultValues: config.defaultValues(initialData) as any,
-    mode: 'onBlur' // Better UX - validate on blur, not every keystroke
+    mode: 'onBlur', // Better UX - validate on blur, not every keystroke
   })
 
   const handleSubmit = async (data: T) => {
@@ -32,15 +32,15 @@ export function FormLayout<T extends FormData>({
 
   const shouldShowConditionalSection = (section: ConditionalSection) => {
     const currentValues = form.watch()
-    
+
     if (typeof section.condition === 'function') {
       return section.condition(currentValues)
     }
-    
+
     // String-based condition (field name)
     const fieldValue = currentValues[section.condition as keyof typeof currentValues]
     const showWhen = section.showWhen || 'truthy'
-    
+
     return showWhen === 'truthy' ? !!fieldValue : !fieldValue
   }
 
@@ -48,15 +48,15 @@ export function FormLayout<T extends FormData>({
     <Card className="mx-auto w-full max-w-4xl rounded-lg border bg-white shadow-sm">
       <CardHeader className="border-b bg-gray-50/50">
         <CardTitle className="flex items-center gap-3 text-xl font-semibold">
-          {config.icon && <config.icon className="h-6 w-6 text-primary" />}
+          {config.icon && <config.icon className="size-6 text-primary" />}
           {config.title}
         </CardTitle>
       </CardHeader>
 
       <CardContent className={`p-6 ${formTheme.spacing.section}`}>
         <Form {...form}>
-          <form 
-            onSubmit={form.handleSubmit(handleSubmit as any)} 
+          <form
+            onSubmit={form.handleSubmit(handleSubmit as any)}
             className={formTheme.spacing.section}
           >
             {/* Core Sections */}
@@ -70,9 +70,10 @@ export function FormLayout<T extends FormData>({
             ))}
 
             {/* Conditional Sections */}
-            {config.conditionalSections?.map((section) => (
-              shouldShowConditionalSection(section) && (
-                section.isCollapsible ? (
+            {config.conditionalSections?.map(
+              (section) =>
+                shouldShowConditionalSection(section) &&
+                (section.isCollapsible ? (
                   <CollapsibleFormSection
                     key={section.id}
                     section={section}
@@ -86,9 +87,8 @@ export function FormLayout<T extends FormData>({
                     form={form}
                     loading={loading}
                   />
-                )
-              )
-            ))}
+                ))
+            )}
 
             {/* Optional Section with Progressive Disclosure */}
             {config.optionalSection && (
@@ -97,14 +97,14 @@ export function FormLayout<T extends FormData>({
                   <Button
                     type="button"
                     variant="ghost"
-                    className="w-full justify-between p-3 h-auto border border-dashed border-gray-300 hover:border-gray-400 hover:bg-gray-50/50"
+                    className="h-auto w-full justify-between border border-dashed border-gray-300 p-3 hover:border-gray-400 hover:bg-gray-50/50"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center w-6 h-6 rounded border bg-gray-100">
+                      <div className="flex size-6 items-center justify-center rounded border bg-gray-100">
                         {showOptionalSection ? (
-                          <ChevronDown className="h-4 w-4" />
+                          <ChevronDown className="size-4" />
                         ) : (
-                          <ChevronRight className="h-4 w-4" />
+                          <ChevronRight className="size-4" />
                         )}
                       </div>
                       <div className="text-left">
@@ -118,7 +118,7 @@ export function FormLayout<T extends FormData>({
                     </div>
                   </Button>
                 </CollapsibleTrigger>
-                
+
                 <CollapsibleContent className={`${formTheme.spacing.field} pt-6`}>
                   <div className={`grid grid-cols-1 md:grid-cols-2 ${formTheme.spacing.inner}`}>
                     {config.optionalSection.fields.map((field) => (
@@ -136,7 +136,7 @@ export function FormLayout<T extends FormData>({
             )}
 
             {/* Form Actions */}
-            <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-6 border-t">
+            <div className="flex flex-col-reverse justify-end gap-3 border-t pt-6 sm:flex-row">
               <Button
                 type="button"
                 variant="outline"
@@ -146,14 +146,10 @@ export function FormLayout<T extends FormData>({
               >
                 Reset
               </Button>
-              <Button 
-                type="submit" 
-                disabled={loading}
-                className={formTheme.sizing.button}
-              >
+              <Button type="submit" disabled={loading} className={formTheme.sizing.button}>
                 {loading ? (
                   <>
-                    <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    <div className="mr-2 size-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                     Saving...
                   </>
                 ) : (
@@ -176,11 +172,7 @@ interface FormSectionRendererProps {
   loading: boolean
 }
 
-function FormSectionRenderer({ 
-  section, 
-  form, 
-  loading 
-}: FormSectionRendererProps) {
+function FormSectionRenderer({ section, form, loading }: FormSectionRendererProps) {
   return (
     <div className={formTheme.spacing.field}>
       {section.title && (
@@ -191,8 +183,12 @@ function FormSectionRenderer({
           )}
         </div>
       )}
-      
-      <div className={section.className || `grid grid-cols-1 md:grid-cols-2 ${formTheme.spacing.inner}`}>
+
+      <div
+        className={
+          section.className || `grid grid-cols-1 md:grid-cols-2 ${formTheme.spacing.inner}`
+        }
+      >
         {section.fields.map((field: any) => (
           <EnhancedFormField
             key={field.name}
@@ -215,11 +211,7 @@ interface CollapsibleFormSectionProps {
   loading: boolean
 }
 
-function CollapsibleFormSection({ 
-  section, 
-  form, 
-  loading 
-}: CollapsibleFormSectionProps) {
+function CollapsibleFormSection({ section, form, loading }: CollapsibleFormSectionProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -229,30 +221,32 @@ function CollapsibleFormSection({
           <Button
             type="button"
             variant="ghost"
-            className="w-full justify-between p-3 h-auto border border-dashed border-gray-300 hover:border-gray-400 hover:bg-gray-50/50"
+            className="h-auto w-full justify-between border border-dashed border-gray-300 p-3 hover:border-gray-400 hover:bg-gray-50/50"
           >
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-6 h-6 rounded border bg-gray-100">
+              <div className="flex size-6 items-center justify-center rounded border bg-gray-100">
                 {isOpen ? (
-                  <ChevronDown className="h-4 w-4" />
+                  <ChevronDown className="size-4" />
                 ) : (
-                  <ChevronRight className="h-4 w-4" />
+                  <ChevronRight className="size-4" />
                 )}
               </div>
               <div className="text-left">
                 <div className="font-medium">{section.title}</div>
                 {section.description && (
-                  <div className="text-sm text-muted-foreground">
-                    {section.description}
-                  </div>
+                  <div className="text-sm text-muted-foreground">{section.description}</div>
                 )}
               </div>
             </div>
           </Button>
         </CollapsibleTrigger>
-        
+
         <CollapsibleContent className={`${formTheme.spacing.field} pt-6`}>
-          <div className={section.className || `grid grid-cols-1 md:grid-cols-2 ${formTheme.spacing.inner}`}>
+          <div
+            className={
+              section.className || `grid grid-cols-1 md:grid-cols-2 ${formTheme.spacing.inner}`
+            }
+          >
             {section.fields.map((field: any) => (
               <EnhancedFormField
                 key={field.name}

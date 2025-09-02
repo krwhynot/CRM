@@ -11,11 +11,7 @@ interface ServiceStatusCardProps {
   }
 }
 
-export const ServiceStatusCard: React.FC<ServiceStatusCardProps> = ({
-  icon,
-  name,
-  status
-}) => {
+export const ServiceStatusCard: React.FC<ServiceStatusCardProps> = ({ icon, name, status }) => {
   const { getStatusIcon, getStatusColor } = useHealthStatusFormatting()
 
   return (
@@ -26,13 +22,8 @@ export const ServiceStatusCard: React.FC<ServiceStatusCardProps> = ({
           <span className="font-medium">{name}</span>
           {getStatusIcon(status.status)}
         </div>
-        <div className="text-sm text-gray-600">
-          {status.responseTime}ms response
-        </div>
-        <Badge 
-          variant="outline"
-          className={`text-xs ${getStatusColor(status.status)}`}
-        >
+        <div className="text-sm text-gray-600">{status.responseTime}ms response</div>
+        <Badge variant="outline" className={`text-xs ${getStatusColor(status.status)}`}>
           {status.status.toUpperCase()}
         </Badge>
       </div>

@@ -12,7 +12,7 @@ interface WizardStepFinancialProps {
 export const WizardStepFinancial: React.FC<WizardStepFinancialProps> = ({
   register,
   errors,
-  loading = false
+  loading = false,
 }) => {
   return (
     <div className="space-y-4">

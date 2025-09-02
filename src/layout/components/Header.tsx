@@ -1,6 +1,6 @@
-import { useState } from "react"
-import { Bell, Search } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useState } from 'react'
+import { Bell, Search } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,41 +8,42 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from '@/components/ui/dropdown-menu'
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet"
-import { Input } from "@/components/ui/input"
-import { SidebarTrigger } from "@/components/ui/sidebar"
-import { UserMenu } from "@/features/auth/components/UserMenu"
-import { ThemeToggle } from "@/components/theme-toggle"
+} from '@/components/ui/sheet'
+import { Input } from '@/components/ui/input'
+import { SidebarTrigger } from '@/components/ui/sidebar'
+import { UserMenu } from '@/features/auth/components/UserMenu'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 export function Header() {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
 
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b-2 border-primary-400 bg-gradient-to-r from-background to-primary-50 px-6" style={{ boxShadow: 'var(--header-shadow)' }}>
+    <header
+      className="flex h-16 shrink-0 items-center justify-between border-b-2 border-primary-400 bg-gradient-to-r from-background to-primary-50 px-6"
+      style={{ boxShadow: 'var(--header-shadow)' }}
+    >
       <div className="flex items-center gap-4">
         {/* Mobile menu toggle - hidden on larger screens since we use fixed sidebar */}
         <SidebarTrigger className="-ml-1" />
-        
+
         {/* MFB Branding */}
         <div className="flex items-center gap-2">
           <span className="rounded bg-primary px-2 py-1 text-sm font-bold italic text-primary-foreground">
             MFB
           </span>
-          <span className="font-semibold text-primary-600">
-            Master Food Brokers, Inc.
-          </span>
+          <span className="font-semibold text-primary-600">Master Food Brokers, Inc.</span>
           <span className="ml-2 hidden text-xs italic text-muted-foreground sm:inline">
             &ldquo;Partnering with Excellence&rdquo;
           </span>
         </div>
-        
+
         {/* Search bar - hidden on mobile */}
         <div className="relative ml-4 hidden md:block">
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
@@ -53,24 +54,28 @@ export function Header() {
           />
         </div>
       </div>
-      
+
       <div className="flex items-center gap-4">
         {/* Mobile Search Button - visible only on mobile */}
-        <Button 
-          variant="ghost" 
-          size="icon" 
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={() => setMobileSearchOpen(true)}
           className="focus-ring size-11 md:hidden"
           aria-label="Open search"
         >
           <Search className="size-4" />
         </Button>
-        
+
         <ThemeToggle />
         <UserMenu />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon" className="focus-ring size-11 rounded-full border-border hover:border-primary-400 hover:bg-primary-100 hover:text-primary-600">
+            <Button
+              variant="outline"
+              size="icon"
+              className="focus-ring size-11 rounded-full border-border hover:border-primary-400 hover:bg-primary-100 hover:text-primary-600"
+            >
               <Bell className="size-4" />
               <span className="sr-only">Toggle notifications</span>
             </Button>

@@ -18,7 +18,7 @@ export const useEnhancedContactFormState = (
   const [organizationMode, setOrganizationMode] = useState<OrganizationMode>(
     preselectedOrganization ? 'existing' : 'new'
   )
-  
+
   const form = useForm<ContactFormData>({
     resolver: yupResolver(contactSchema) as Resolver<ContactFormData>,
     defaultValues: {
@@ -36,13 +36,13 @@ export const useEnhancedContactFormState = (
       linkedin_url: initialData?.linkedin_url || null,
       is_primary_contact: initialData?.is_primary_contact || false,
       notes: initialData?.notes || null,
-      preferred_principals: initialData?.preferred_principals || []
-    }
+      preferred_principals: initialData?.preferred_principals || [],
+    },
   })
 
   return {
     form,
     organizationMode,
-    setOrganizationMode
+    setOrganizationMode,
   }
 }

@@ -31,14 +31,14 @@ export const TimelineItems: React.FC<TimelineItemsProps> = ({
   handleEditInteraction,
   handleDeleteInteraction,
   getInteractionIcon,
-  getInteractionTypeColor
+  getInteractionTypeColor,
 }) => {
   return (
     <div className="space-y-6 pb-4 md:pb-0">
       <div className="relative">
         {/* Timeline line */}
         <div className="absolute inset-y-0 left-4 w-0.5 bg-gray-200" />
-        
+
         {/* Timeline items */}
         <div className="space-y-6">
           {displayedInteractions.map((interaction: InteractionWithRelations) => (
