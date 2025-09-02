@@ -66,7 +66,7 @@ export type {
   AnyFormData,
   BaseFormProps as FormBaseProps, // Renamed to avoid conflict
   FormPropsWithPreselection,
-} from './forms'
+} from './forms/'
 
 export {
   defaultContactFormValues,
@@ -91,7 +91,7 @@ export {
   FormValidationPatterns,
   FormFieldRequirements,
   createTypedYupResolver,
-} from './forms'
+} from './forms/'
 
 // Form handler types with specific naming
 export type {

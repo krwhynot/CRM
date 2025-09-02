@@ -1,5 +1,5 @@
 import { User } from 'lucide-react'
-import { contactSchema, type ContactFormData, CONTACT_ROLES, type PurchaseInfluenceLevel, type DecisionAuthorityRole } from '@/types/contact.types'
+import { contactSchema, type ContactFormData, CONTACT_ROLES } from '@/types/contact.types'
 import type { CoreFormLayoutProps, SelectOption } from '@/components/forms/CoreFormLayout'
 
 // Purchase influence configuration

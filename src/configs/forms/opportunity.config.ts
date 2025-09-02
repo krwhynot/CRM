@@ -1,6 +1,6 @@
 import { Target } from 'lucide-react'
-import { opportunitySchema, type OpportunityFormData, type OpportunityContext } from '@/types/opportunity.types'
-import { DB_STAGES, DEFAULT_OPPORTUNITY_STAGE } from '@/lib/opportunity-stage-mapping'
+import { opportunitySchema, type OpportunityFormData } from '@/types/opportunity.types'
+import { DB_STAGES } from '@/lib/opportunity-stage-mapping'
 import type { CoreFormLayoutProps, SelectOption } from '@/components/forms/CoreFormLayout'
 
 // Opportunity stage configuration
