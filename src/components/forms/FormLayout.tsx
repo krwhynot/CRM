@@ -25,14 +25,9 @@ export function FormLayout<T extends FormData>({
   })
 
   const handleSubmit = async (data: T) => {
-    try {
-      // Apply business logic transformations if needed
-      const processedData = config.transformData?.(data) ?? data
-      await onSubmit(processedData)
-    } catch (error) {
-      // Re-throw error for parent component handling
-      throw error
-    }
+    // Apply business logic transformations if needed
+    const processedData = config.transformData?.(data) ?? data
+    await onSubmit(processedData)
   }
 
   const shouldShowConditionalSection = (section: ConditionalSection) => {
