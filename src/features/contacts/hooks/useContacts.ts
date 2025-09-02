@@ -36,7 +36,7 @@ export function useContacts(filters?: ContactFilters) {
         .select(
           `
           *,
-          organization:organizations(*)
+          organization:organizations!contacts_organization_id_fkey(*)
         `
         )
         .is('deleted_at', null)
@@ -83,7 +83,7 @@ export function useContact(id: string) {
         .select(
           `
           *,
-          organization:organizations(*)
+          organization:organizations!contacts_organization_id_fkey(*)
         `
         )
         .eq('id', id)
@@ -107,7 +107,7 @@ export function useContactsByOrganization(organizationId: string) {
         .select(
           `
           *,
-          organization:organizations(*)
+          organization:organizations!contacts_organization_id_fkey(*)
         `
         )
         .eq('organization_id', organizationId)
@@ -133,7 +133,7 @@ export function usePrimaryContacts() {
         .select(
           `
           *,
-          organization:organizations(*)
+          organization:organizations!contacts_organization_id_fkey(*)
         `
         )
         .eq('is_primary_contact', true)
@@ -176,7 +176,7 @@ export function useCreateContact() {
         .select(
           `
           *,
-          organization:organizations(*)
+          organization:organizations!contacts_organization_id_fkey(*)
         `
         )
         .single()
@@ -273,7 +273,7 @@ export function useCreateContactWithOrganization() {
           .select(
             `
             *,
-            organization:organizations(*)
+            organization:organizations!contacts_organization_id_fkey(*)
           `
           )
           .single()
@@ -381,7 +381,7 @@ export function useUpdateContact() {
         .select(
           `
           *,
-          organization:organizations(*)
+          organization:organizations!contacts_organization_id_fkey(*)
         `
         )
         .single()
@@ -419,7 +419,7 @@ export function useDeleteContact() {
         .select(
           `
           *,
-          organization:organizations(*)
+          organization:organizations!contacts_organization_id_fkey(*)
         `
         )
         .single()
@@ -457,7 +457,7 @@ export function useRestoreContact() {
         .select(
           `
           *,
-          organization:organizations(*)
+          organization:organizations!contacts_organization_id_fkey(*)
         `
         )
         .single()
@@ -516,7 +516,7 @@ export function useSetPrimaryContact() {
         .select(
           `
           *,
-          organization:organizations(*)
+          organization:organizations!contacts_organization_id_fkey(*)
         `
         )
         .single()

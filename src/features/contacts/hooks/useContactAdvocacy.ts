@@ -111,7 +111,7 @@ export function useContactAdvocacyRelationships(filters?: AdvocacyFilters) {
         .from('contact_preferred_principals')
         .select(`
           *,
-          contact:contacts(*),
+          contact:contacts!contact_preferred_principals_contact_id_fkey(*),
           principal_organization:organizations(*)
         `)
         .is('deleted_at', null)
@@ -174,7 +174,7 @@ export function useContactAdvocacyByContact(contactId: string) {
         .from('contact_preferred_principals')
         .select(`
           *,
-          contact:contacts(*),
+          contact:contacts!contact_preferred_principals_contact_id_fkey(*),
           principal_organization:organizations(*)
         `)
         .eq('contact_id', contactId)
@@ -205,7 +205,7 @@ export function useContactAdvocacyByPrincipal(principalId: string) {
         .from('contact_preferred_principals')
         .select(`
           *,
-          contact:contacts(*),
+          contact:contacts!contact_preferred_principals_contact_id_fkey(*),
           principal_organization:organizations(*)
         `)
         .eq('principal_organization_id', principalId)
@@ -451,7 +451,7 @@ export function useCreateAdvocacyRelationship() {
         .insert(relationshipData)
         .select(`
           *,
-          contact:contacts(*),
+          contact:contacts!contact_preferred_principals_contact_id_fkey(*),
           principal_organization:organizations(*)
         `)
         .single()
@@ -487,7 +487,7 @@ export function useUpdateAdvocacyRelationship() {
         .eq('id', id)
         .select(`
           *,
-          contact:contacts(*),
+          contact:contacts!contact_preferred_principals_contact_id_fkey(*),
           principal_organization:organizations(*)
         `)
         .single()

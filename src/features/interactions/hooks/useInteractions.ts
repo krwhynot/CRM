@@ -46,7 +46,7 @@ export function useInteractions(filters?: InteractionFilters) {
           contact_id,
           organization_id,
           created_at,
-          contact:contacts(id, first_name, last_name, title, organization_id),
+          contact:contacts!interactions_contact_id_fkey(id, first_name, last_name, title, organization_id),
           organization:organizations(id, name, type),
           opportunity:opportunities!interactions_opportunity_id_fkey(id, name, stage, organization_id)
         `)
@@ -105,7 +105,7 @@ export function useInteraction(id: string) {
         .from('interactions')
         .select(`
           *,
-          contact:contacts(*),
+          contact:contacts!interactions_contact_id_fkey(*),
           organization:organizations(*),
           opportunity:opportunities!interactions_opportunity_id_fkey(*)
         `)
@@ -130,7 +130,7 @@ export function useInteractionsByOrganization(organizationId: string) {
         .from('interactions')
         .select(`
           *,
-          contact:contacts(*),
+          contact:contacts!interactions_contact_id_fkey(*),
           organization:organizations(*),
           opportunity:opportunities!interactions_opportunity_id_fkey(*)
         `)
@@ -155,7 +155,7 @@ export function useInteractionsByContact(contactId: string) {
         .from('interactions')
         .select(`
           *,
-          contact:contacts(*),
+          contact:contacts!interactions_contact_id_fkey(*),
           organization:organizations(*),
           opportunity:opportunities!interactions_opportunity_id_fkey(*)
         `)
@@ -180,7 +180,7 @@ export function useInteractionsByOpportunity(opportunityId: string) {
         .from('interactions')
         .select(`
           *,
-          contact:contacts(*),
+          contact:contacts!interactions_contact_id_fkey(*),
           organization:organizations(*),
           opportunity:opportunities!interactions_opportunity_id_fkey(*)
         `)
@@ -205,7 +205,7 @@ export function useRecentActivity(limit: number = 50) {
         .from('interactions')
         .select(`
           *,
-          contact:contacts(*),
+          contact:contacts!interactions_contact_id_fkey(*),
           organization:organizations(*),
           opportunity:opportunities!interactions_opportunity_id_fkey(*)
         `)
@@ -231,7 +231,7 @@ export function useFollowUpInteractions() {
         .from('interactions')
         .select(`
           *,
-          contact:contacts(*),
+          contact:contacts!interactions_contact_id_fkey(*),
           organization:organizations(*),
           opportunity:opportunities!interactions_opportunity_id_fkey(*)
         `)
@@ -392,7 +392,7 @@ export function useUpdateInteraction() {
         .eq('id', id)
         .select(`
           *,
-          contact:contacts(*),
+          contact:contacts!interactions_contact_id_fkey(*),
           organization:organizations(*),
           opportunity:opportunities!interactions_opportunity_id_fkey(*)
         `)
@@ -441,7 +441,7 @@ export function useCompleteFollowUp() {
         .eq('id', id)
         .select(`
           *,
-          contact:contacts(*),
+          contact:contacts!interactions_contact_id_fkey(*),
           organization:organizations(*),
           opportunity:opportunities!interactions_opportunity_id_fkey(*)
         `)
@@ -476,7 +476,7 @@ export function useDeleteInteraction() {
         .eq('id', id)
         .select(`
           *,
-          contact:contacts(*),
+          contact:contacts!interactions_contact_id_fkey(*),
           organization:organizations(*),
           opportunity:opportunities!interactions_opportunity_id_fkey(*)
         `)
