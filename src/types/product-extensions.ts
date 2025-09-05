@@ -18,13 +18,28 @@ export interface ProductWithStatus extends Product {
 }
 
 /**
- * Product with principal organization details
+ * Product with principal organization details and inventory status
  */
 export interface ProductWithPrincipal extends Product {
+  // Principal organization info (flattened for display)
   principal_name?: string
   principal_contact?: string
   principal_phone?: string
   principal_email?: string
+  
+  // Inventory status fields
+  in_stock?: boolean
+  low_stock?: boolean
+  stock_quantity?: number
+  reorder_level?: number
+  
+  // Product specifications
+  brand?: string
+  package_size?: string
+  origin_country?: string
+  manufacturer?: string
+  certifications?: string[]
+  allergen_info?: string
 }
 
 /**

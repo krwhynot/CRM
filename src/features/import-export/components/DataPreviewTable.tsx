@@ -1,12 +1,5 @@
 import { Badge } from '@/components/ui/badge'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { DataTable, type Column } from '@/components/ui/DataTable'
 import { CheckCircle, AlertCircle } from 'lucide-react'
 import type { Database } from '@/lib/database.types'
 
@@ -44,6 +37,116 @@ interface DataPreviewTableProps {
   parsedData: ParsedData
 }
 
+// Column definitions for invalid rows table
+const invalidRowColumns: Column<{ row: CsvRow; errors: string[]; index: number }>[] = [
+  {
+    key: 'index',
+    header: 'Row',
+    cell: (item) => item.index + 1,
+  },
+  {
+    key: 'organizations',
+    header: 'Organization',
+    cell: (item) => item.row.organizations || '-',
+  },
+  {
+    key: 'priority',
+    header: 'Priority',
+    cell: (item) => item.row['priority-focus'] || '-',
+  },
+  {
+    key: 'errors',
+    header: 'Errors',
+    cell: (item) => (
+      <div className="space-y-1">
+        {item.errors.map((error, errorIndex) => (
+          <Badge key={errorIndex} variant="destructive" className="text-xs">
+            {error}
+          </Badge>
+        ))}
+      </div>
+    ),
+  },
+]
+
+// Column definitions for valid rows table
+const validRowColumns: Column<TransformedOrganizationRow>[] = [
+  {
+    key: 'name',
+    header: 'Organization',
+    cell: (row) => <span className="font-medium">{row.name}</span>,
+    className: 'min-w-36',
+  },
+  {
+    key: 'priority',
+    header: 'Priority',
+    cell: (row) => (
+      <Badge variant={row.priority === 'A' ? 'default' : 'outline'}>
+        {row.priority}
+      </Badge>
+    ),
+  },
+  {
+    key: 'type',
+    header: 'Type',
+    cell: (row) => <Badge variant="outline">{row.type}</Badge>,
+  },
+  {
+    key: 'phone',
+    header: 'Phone',
+    cell: (row) => row.phone || '-',
+  },
+  {
+    key: 'website',
+    header: 'Website',
+    cell: (row) => (
+      row.website ? (
+        <a
+          href={row.website}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs text-blue-600 hover:underline"
+        >
+          Website
+        </a>
+      ) : (
+        '-'
+      )
+    ),
+    className: 'min-w-32 max-w-32 truncate',
+  },
+  {
+    key: 'address_line_1',
+    header: 'Address',
+    cell: (row) => <span className="max-w-32 truncate">{row.address_line_1 || '-'}</span>,
+  },
+  {
+    key: 'city',
+    header: 'City',
+    cell: (row) => row.city || '-',
+  },
+  {
+    key: 'state_province',
+    header: 'State',
+    cell: (row) => row.state_province || '-',
+  },
+  {
+    key: 'postal_code',
+    header: 'Zip',
+    cell: (row) => row.postal_code || '-',
+  },
+  {
+    key: 'notes',
+    header: 'Notes',
+    cell: (row) => (
+      <span className="max-w-24 truncate" title={row.notes || ''}>
+        {row.notes || '-'}
+      </span>
+    ),
+    className: 'min-w-24',
+  },
+]
+
 export function DataPreviewTable({ parsedData }: DataPreviewTableProps) {
   return (
     <div className="space-y-4">
@@ -71,34 +174,15 @@ export function DataPreviewTable({ parsedData }: DataPreviewTableProps) {
             Invalid Rows (Need Correction)
           </h3>
           <div className="overflow-hidden rounded-lg border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Row</TableHead>
-                  <TableHead>Organization</TableHead>
-                  <TableHead>Priority</TableHead>
-                  <TableHead>Errors</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {parsedData.invalidRows.slice(0, 10).map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{item.row.organizations || '-'}</TableCell>
-                    <TableCell>{item.row['priority-focus'] || '-'}</TableCell>
-                    <TableCell>
-                      <div className="space-y-1">
-                        {item.errors.map((error, errorIndex) => (
-                          <Badge key={errorIndex} variant="destructive" className="text-xs">
-                            {error}
-                          </Badge>
-                        ))}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <DataTable
+              data={parsedData.invalidRows.slice(0, 10).map((item, index) => ({ ...item, index }))}
+              columns={invalidRowColumns}
+              rowKey={(item) => `invalid-${item.index}`}
+              empty={{
+                title: "No invalid rows",
+                description: "All rows are valid and ready for import"
+              }}
+            />
           </div>
           {parsedData.invalidRows.length > 10 && (
             <p className="text-sm text-muted-foreground">
@@ -117,61 +201,15 @@ export function DataPreviewTable({ parsedData }: DataPreviewTableProps) {
           </h3>
           <div className="overflow-hidden rounded-lg border">
             <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="min-w-36">Organization</TableHead>
-                    <TableHead>Priority</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Phone</TableHead>
-                    <TableHead className="min-w-32">Website</TableHead>
-                    <TableHead>Address</TableHead>
-                    <TableHead>City</TableHead>
-                    <TableHead>State</TableHead>
-                    <TableHead>Zip</TableHead>
-                    <TableHead className="min-w-24">Notes</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {parsedData.validRows.slice(0, 5).map((row, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-medium">{row.name}</TableCell>
-                      <TableCell>
-                        <Badge variant={row.priority === 'A' ? 'default' : 'outline'}>
-                          {row.priority}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{row.type}</Badge>
-                      </TableCell>
-                      <TableCell>{row.phone || '-'}</TableCell>
-                      <TableCell className="max-w-32 truncate">
-                        {row.website ? (
-                          <a
-                            href={row.website}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-blue-600 hover:underline"
-                          >
-                            Website
-                          </a>
-                        ) : (
-                          '-'
-                        )}
-                      </TableCell>
-                      <TableCell className="max-w-32 truncate">
-                        {row.address_line_1 || '-'}
-                      </TableCell>
-                      <TableCell>{row.city || '-'}</TableCell>
-                      <TableCell>{row.state_province || '-'}</TableCell>
-                      <TableCell>{row.postal_code || '-'}</TableCell>
-                      <TableCell className="max-w-24 truncate" title={row.notes || ''}>
-                        {row.notes || '-'}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <DataTable
+                data={parsedData.validRows.slice(0, 5)}
+                columns={validRowColumns}
+                rowKey={(row) => `valid-${row.name}-${parsedData.validRows.indexOf(row)}`}
+                empty={{
+                  title: "No valid rows",
+                  description: "No rows passed validation"
+                }}
+              />
             </div>
           </div>
           {parsedData.validRows.length > 5 && (

@@ -4,14 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+import { DataTable, type Column } from '@/components/ui/DataTable'
 import {
   Eye,
   AlertTriangle,
@@ -52,45 +45,51 @@ function DataPreviewTable({
   maxRows?: number
 }) {
   const mappedFields = fieldMappings.filter((m) => m.crmField && m.status !== 'skipped').slice(0, 6) // Limit columns for display
-
   const previewRows = data.rows.slice(0, maxRows)
 
+  // Build columns dynamically based on field mappings
+  const columns: Column<any>[] = [
+    {
+      key: 'rowIndex',
+      header: '#',
+      cell: (row) => <span className="text-muted-foreground">{previewRows.indexOf(row) + 1}</span>,
+      className: 'w-12',
+    },
+    ...mappedFields.map((mapping) => ({
+      key: mapping.csvHeader,
+      header: (
+        <div className="space-y-1">
+          <div className="font-medium">{mapping.csvHeader}</div>
+          <Badge variant="outline" className="text-xs">
+            {mapping.crmField}
+          </Badge>
+        </div>
+      ),
+      cell: (row: any) => (
+        <div className="max-w-48 truncate" title={row[mapping.csvHeader]}>
+          {row[mapping.csvHeader] || (
+            <span className="italic text-slate-400">empty</span>
+          )}
+        </div>
+      ),
+      className: 'min-w-36',
+    })),
+  ]
+
   return (
-    <div className="overflow-hidden rounded-lg border">
-      <div className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-muted/50">
-              <TableHead className="w-12">#</TableHead>
-              {mappedFields.map((mapping) => (
-                <TableHead key={mapping.csvHeader} className="min-w-36">
-                  <div className="space-y-1">
-                    <div className="font-medium">{mapping.csvHeader}</div>
-                    <Badge variant="outline" className="text-xs">
-                      {mapping.crmField}
-                    </Badge>
-                  </div>
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {previewRows.map((row, idx) => (
-              <TableRow key={idx}>
-                <TableCell className="text-muted-foreground">{idx + 1}</TableCell>
-                {mappedFields.map((mapping) => (
-                  <TableCell key={mapping.csvHeader} className="max-w-48">
-                    <div className="truncate" title={row[mapping.csvHeader]}>
-                      {row[mapping.csvHeader] || (
-                        <span className="italic text-slate-400">empty</span>
-                      )}
-                    </div>
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+    <div className="space-y-4">
+      <div className="overflow-hidden rounded-lg border">
+        <div className="overflow-x-auto">
+          <DataTable
+            data={previewRows}
+            columns={columns}
+            rowKey={(row) => `preview-${JSON.stringify(row).slice(0, 50)}`}
+            empty={{
+              title: "No data to preview",
+              description: "Upload a file to see data preview"
+            }}
+          />
+        </div>
       </div>
 
       {data.rows.length > maxRows && (

@@ -1,7 +1,6 @@
 // Organizations Feature - Main Exports
 export { OrganizationForm } from './components/OrganizationForm'
 export { OrganizationsTable } from './components/OrganizationsTable'
-export { OrganizationRow } from './components/OrganizationRow'
 export { OrganizationsFilters } from './components/OrganizationsFilters'
 export { OrganizationActions } from './components/OrganizationActions'
 export { OrganizationBadges } from './components/OrganizationBadges'

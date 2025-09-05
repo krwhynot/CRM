@@ -10,7 +10,6 @@ import { useOpportunitiesFormatting } from '../hooks/useOpportunitiesFormatting'
 import { useOpportunitiesDisplay } from '../hooks/useOpportunitiesDisplay'
 import { OpportunitiesFilters } from './OpportunitiesFilters'
 import { OpportunitiesTableActions } from './OpportunitiesTableActions'
-import { OpportunityRowDetails } from './OpportunityRowDetails'
 import { toast } from '@/lib/toast-styles'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
@@ -40,10 +39,10 @@ export function OpportunitiesTable({
   onDelete,
   onView: _onView, // eslint-disable-line @typescript-eslint/no-unused-vars
   onAddNew: _onAddNew, // eslint-disable-line @typescript-eslint/no-unused-vars
-  onAddInteraction,
-  onEditInteraction,
-  onDeleteInteraction,
-  onInteractionItemClick,
+  onAddInteraction: _onAddInteraction, // eslint-disable-line @typescript-eslint/no-unused-vars
+  onEditInteraction: _onEditInteraction, // eslint-disable-line @typescript-eslint/no-unused-vars
+  onDeleteInteraction: _onDeleteInteraction, // eslint-disable-line @typescript-eslint/no-unused-vars
+  onInteractionItemClick: _onInteractionItemClick, // eslint-disable-line @typescript-eslint/no-unused-vars
 }: OpportunitiesTableProps) {
   // Bulk delete state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -313,15 +312,44 @@ export function OpportunitiesTable({
               className="-mt-px border-x border-b bg-gray-50/50 p-6"
               style={{ marginTop: '-1px' }}
             >
-              <OpportunityRowDetails
-                opportunity={opportunity}
-                interactions={[]} // For now, pass empty - will be improved later
-                activitiesLoading={false}
-                onAddInteraction={() => onAddInteraction?.(opportunity.id)}
-                onEditInteraction={onEditInteraction}
-                onDeleteInteraction={onDeleteInteraction}
-                onInteractionItemClick={onInteractionItemClick}
-              />
+              <div className="space-y-6">
+                {/* Opportunity Details */}
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  <div>
+                    <h4 className="mb-2 font-medium text-gray-900">Opportunity Details</h4>
+                    <div className="space-y-1 text-sm text-gray-600">
+                      {opportunity.stage && <div>Stage: {opportunity.stage}</div>}
+                      {opportunity.name && <div>Name: {opportunity.name}</div>}
+                      {opportunity.created_at && (
+                        <div>Created: {new Date(opportunity.created_at).toLocaleDateString()}</div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="mb-2 font-medium text-gray-900">Financial</h4>
+                    <div className="space-y-1 text-sm text-gray-600">
+                      {opportunity.estimated_value && (
+                        <div>Estimated Value: ${opportunity.estimated_value}</div>
+                      )}
+                      {opportunity.probability && (
+                        <div>Probability: {opportunity.probability}%</div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="mb-2 font-medium text-gray-900">Notes</h4>
+                    <div className="space-y-1 text-sm text-gray-600">
+                      {opportunity.notes ? (
+                        <p>{opportunity.notes}</p>
+                      ) : (
+                        <span className="italic text-gray-400">No notes available</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           ))}
       </div>

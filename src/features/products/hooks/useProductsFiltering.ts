@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import type { ProductWithPrincipal } from '@/types/entities'
+import type { ProductWithPrincipal } from '@/types/product-extensions'
 
 export type ProductFilterType = 'all' | 'high-value' | 'dairy' | 'fresh-products' | 'recently-added'
 
@@ -74,7 +74,7 @@ export const useProductsFiltering = (
           product.sku?.toLowerCase().includes(term) ||
           product.description?.toLowerCase().includes(term) ||
           product.category?.toLowerCase().includes(term) ||
-          product.principal?.name?.toLowerCase().includes(term)
+          product.principal_name?.toLowerCase().includes(term)
       )
     }
 

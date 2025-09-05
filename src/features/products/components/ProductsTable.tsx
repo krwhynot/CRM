@@ -13,12 +13,11 @@ import { formatPrice } from '@/lib/product-formatters'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
 import { ChevronDown, ChevronRight } from 'lucide-react'
-import { ProductRowDetails } from './product-row/ProductRowDetails'
 import type { Product, Organization } from '@/types/entities'
-import type { ProductDisplayData } from '@/types/product-extensions'
+import type { ProductWithPrincipal } from '@/types/product-extensions'
 
 interface ProductsTableProps {
-  products?: ProductDisplayData[]
+  products?: ProductWithPrincipal[]
   loading?: boolean
   onEdit?: (product: Product) => void
   onDelete?: (product: Product) => void
@@ -27,7 +26,7 @@ interface ProductsTableProps {
   onAddNew?: () => void
 }
 
-const DEFAULT_PRODUCTS: ProductDisplayData[] = []
+const DEFAULT_PRODUCTS: ProductWithPrincipal[] = []
 
 export function ProductsTable({
   products = DEFAULT_PRODUCTS,
@@ -142,7 +141,7 @@ export function ProductsTable({
   const EmptyCell = () => <span className="italic text-gray-400">Not provided</span>
 
   // Column definitions for DataTable
-  const productColumns: DataTableColumn<ProductDisplayData>[] = [
+  const productColumns: DataTableColumn<ProductWithPrincipal>[] = [
     {
       key: 'selection',
       header: (
@@ -277,7 +276,7 @@ export function ProductsTable({
 
       {/* Table Container with Row Expansion */}
       <div className="space-y-0">
-        <DataTable<ProductDisplayData>
+        <DataTable<ProductWithPrincipal>
           data={filteredProducts}
           columns={productColumns}
           loading={loading}
@@ -300,7 +299,35 @@ export function ProductsTable({
               className="-mt-px border-x border-b border-l-4 border-l-mfb-green bg-mfb-sage-tint p-6 transition-all duration-300 ease-out"
               style={{ marginTop: '-1px' }}
             >
-              <ProductRowDetails product={product} />
+              <div className="space-y-6">
+                {/* Product Description */}
+                <div>
+                  <h4 className="mb-2 font-medium text-gray-900">Description</h4>
+                  <p className="text-sm text-gray-600">
+                    {product.description || 'No description available'}
+                  </p>
+                </div>
+
+                {/* Product Specifications */}
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <div>
+                    <h4 className="mb-2 font-medium text-gray-900">Specifications</h4>
+                    <div className="space-y-1 text-sm text-gray-600">
+                      {product.unit_of_measure && <div>Unit: {product.unit_of_measure}</div>}
+                      {product.category && <div>Category: {product.category}</div>}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="mb-2 font-medium text-gray-900">Storage & Handling</h4>
+                    <div className="space-y-1 text-sm text-gray-600">
+                      {product.description && (
+                        <div>Additional Info: {product.description}</div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           ))}
       </div>

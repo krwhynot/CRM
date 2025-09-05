@@ -9,13 +9,13 @@ import type {
   ContactWithOrganization,
   OpportunityWithRelations,
   InteractionWithRelations,
-  ProductWithPrincipal,
   OrganizationFilters,
   ContactFilters,
   ProductFilters,
   OpportunityFilters,
   InteractionFilters,
 } from './entities'
+import type { ProductDisplayData } from './product-extensions'
 
 // Base component props
 export interface BaseComponentProps {
@@ -230,8 +230,8 @@ export interface ContactTableProps
 }
 
 export interface ProductTableProps
-  extends Omit<DataTableProps<ProductWithPrincipal>, 'data' | 'columns'> {
-  products: ProductWithPrincipal[]
+  extends Omit<DataTableProps<ProductDisplayData>, 'data' | 'columns'> {
+  products: ProductDisplayData[]
   filters?: ProductFilters
   onFiltersChange?: (filters: ProductFilters) => void
 }

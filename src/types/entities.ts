@@ -68,10 +68,7 @@ export type OrganizationType = Database['public']['Enums']['organization_type']
 export type PriorityLevel = Database['public']['Enums']['priority_level']
 export type ProductCategory = Database['public']['Enums']['product_category']
 
-// Extended types
-export type ProductWithPrincipal = Product & {
-  principal?: Database['public']['Tables']['organizations']['Row']
-}
+// Extended types moved to product-extensions.ts for better organization
 
 
 // Re-export filter types from individual entity files

@@ -1,7 +1,8 @@
 import React from 'react'
 import { ProductsTable } from './ProductsTable'
 import { LoadingState, ErrorState } from '@/components/ui/data-state'
-import type { Product, ProductWithPrincipal } from '@/types/entities'
+import type { Product } from '@/types/entities'
+import type { ProductWithPrincipal } from '@/types/product-extensions'
 
 interface ProductsDataDisplayProps {
   isLoading: boolean

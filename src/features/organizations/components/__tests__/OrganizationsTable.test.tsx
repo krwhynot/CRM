@@ -43,28 +43,6 @@ vi.mock('../OrganizationsFilters', () => ({
   ),
 }))
 
-vi.mock('../OrganizationRow', () => ({
-  OrganizationRow: ({
-    organization,
-    onEdit,
-    onView,
-    onContact,
-  }: {
-    organization: Organization
-    onEdit?: (org: Organization) => void
-    onView?: (org: Organization) => void
-    onContact?: (org: Organization) => void
-  }) => (
-    <tr data-testid={`organization-row-${organization.id}`}>
-      <td>{organization.name}</td>
-      <td>
-        {onEdit && <button onClick={() => onEdit(organization)}>Edit</button>}
-        {onView && <button onClick={() => onView(organization)}>View</button>}
-        {onContact && <button onClick={() => onContact(organization)}>Contact</button>}
-      </td>
-    </tr>
-  ),
-}))
 
 const mockOrganizations: Organization[] = [
   createTestOrganization({

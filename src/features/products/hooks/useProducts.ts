@@ -4,8 +4,8 @@ import type {
   ProductInsert,
   ProductUpdate,
   ProductFilters,
-  ProductWithPrincipal,
 } from '@/types/entities'
+import type { ProductWithPrincipal } from '@/types/product-extensions'
 import type { Database } from '@/lib/database.types'
 
 // Query key factory
@@ -17,6 +17,20 @@ export const productKeys = {
   detail: (id: string) => [...productKeys.details(), id] as const,
   byPrincipal: (principalId: string) => [...productKeys.all, 'principal', principalId] as const,
   byCategory: (category: string) => [...productKeys.all, 'category', category] as const,
+}
+
+// Helper function to transform database results to ProductWithPrincipal
+function transformProductData<T extends { principal?: { name?: string } }>(data: T): T & ProductWithPrincipal {
+  return {
+    ...data,
+    principal_name: data.principal?.name,
+    // Remove nested principal object since we're flattening it
+    principal: undefined
+  } as T & ProductWithPrincipal
+}
+
+function transformProductArray<T extends { principal?: { name?: string } }>(data: T[]): (T & ProductWithPrincipal)[] {
+  return data.map(transformProductData)
 }
 
 // Hook to fetch all products with optional filtering
@@ -68,7 +82,8 @@ export function useProducts(filters?: ProductFilters) {
       const { data, error } = await query
 
       if (error) throw error
-      return data as ProductWithPrincipal[]
+      
+      return transformProductArray(data)
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
   })
@@ -92,7 +107,7 @@ export function useProduct(id: string) {
         .single()
 
       if (error) throw error
-      return data as ProductWithPrincipal
+      return transformProductData(data)
     },
     enabled: !!id,
     staleTime: 5 * 60 * 1000,
@@ -117,7 +132,7 @@ export function useProductsByPrincipal(principalId: string) {
         .order('name')
 
       if (error) throw error
-      return data as ProductWithPrincipal[]
+      return transformProductArray(data)
     },
     enabled: !!principalId,
     staleTime: 5 * 60 * 1000,
@@ -142,7 +157,7 @@ export function useProductsByCategory(category: Database['public']['Enums']['pro
         .order('name')
 
       if (error) throw error
-      return data as ProductWithPrincipal[]
+      return transformProductArray(data)
     },
     enabled: !!category,
     staleTime: 5 * 60 * 1000,
@@ -171,7 +186,7 @@ export function useSeasonalProducts() {
         .order('name')
 
       if (error) throw error
-      return data as ProductWithPrincipal[]
+      return transformProductArray(data)
     },
     staleTime: 1 * 60 * 60 * 1000, // 1 hour (seasonal data doesn't change often)
   })
@@ -212,7 +227,7 @@ export function useCreateProduct() {
         .single()
 
       if (error) throw error
-      return data as ProductWithPrincipal
+      return transformProductData(data)
     },
     onSuccess: (newProduct) => {
       // Invalidate all product lists
@@ -246,7 +261,7 @@ export function useUpdateProduct() {
         .single()
 
       if (error) throw error
-      return data as ProductWithPrincipal
+      return transformProductData(data)
     },
     onSuccess: (updatedProduct) => {
       // Update all related queries
@@ -285,7 +300,7 @@ export function useDeleteProduct() {
         .single()
 
       if (error) throw error
-      return data as ProductWithPrincipal
+      return transformProductData(data)
     },
     onSuccess: (deletedProduct) => {
       // Invalidate all product lists
@@ -324,7 +339,7 @@ export function useRestoreProduct() {
         .single()
 
       if (error) throw error
-      return data as ProductWithPrincipal
+      return transformProductData(data)
     },
     onSuccess: (restoredProduct) => {
       // Invalidate all product lists
@@ -379,7 +394,7 @@ export function useDuplicateProduct() {
         .single()
 
       if (error) throw error
-      return data as ProductWithPrincipal
+      return transformProductData(data)
     },
     onSuccess: (duplicatedProduct) => {
       // Invalidate all product lists
