@@ -111,7 +111,7 @@ export function StandardDialog(props: StandardDialogProps) {
 
     return (
       <AlertDialog open={open} onOpenChange={onOpenChange}>
-        <AlertDialogContent className={cn(sizeClasses[size])}>
+        <AlertDialogContent className={cn(sizeClasses[size], "flex flex-col")}>
           <DialogContextProvider isInDialog={true} size={size} onClose={() => onOpenChange(false)}>
             <AlertDialogHeader className="flex items-start justify-between">
               <div>
@@ -146,11 +146,11 @@ export function StandardDialog(props: StandardDialogProps) {
 
   // Regular dialog variant (default)
   const { footer, scroll = 'content' } = props
-  const scrollClasses = scroll === 'content' ? 'max-h-dialog overflow-y-auto' : ''
+  const scrollClasses = scroll === 'content' ? 'flex-1 min-h-0 overflow-y-auto' : ''
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <BaseDialogContent className={cn(sizeClasses[size])}>
+      <BaseDialogContent className={cn(sizeClasses[size], "flex flex-col")}>
         <DialogContextProvider isInDialog={true} size={size} onClose={() => onOpenChange(false)}>
           <DialogHeader className="flex items-start justify-between">
             <div>

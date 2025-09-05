@@ -29,7 +29,6 @@ export { EnhancedFormField } from './EnhancedFormField'
 
 // Legacy Components (deprecated - use SimpleForm instead)
 export { FormLayout } from './FormLayout'
-export { CoreFormLayout } from './CoreFormLayout' // DEPRECATED: Shows migration notice
 
 // Hooks
 export { useProgressiveDetails } from '@/hooks/useProgressiveDetails'

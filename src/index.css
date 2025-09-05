@@ -100,7 +100,7 @@
     
     /* Common Layout Dimensions */
     --header-height: 4rem;
-    --dialog-max-height: 24rem;
+    --dialog-max-height: min(80vh, 40rem); /* Responsive with 640px cap */
     --search-width-sm: 12rem;
     --search-width-lg: 18rem;
     --filter-width-sm: 8.75rem; /* 140px */
@@ -173,6 +173,20 @@
     
     /* Header Shadow - Dark mode */
     --header-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Responsive Dialog Heights - iPad optimized */
+  @media (min-width: 768px) and (min-height: 800px) {
+    :root {
+      --dialog-max-height: min(75vh, 45rem); /* 720px max on larger screens */
+    }
+  }
+
+  /* iPad-specific (portrait) - Conservative for keyboard */
+  @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    :root {
+      --dialog-max-height: min(70vh, 35rem); /* 560px for keyboard space */
+    }
   }
 }
 

@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -58,7 +59,8 @@ interface FormInputProps {
   disabled?: boolean
 }
 
-export function FormInput({ value, onChange, onBlur, name, config, disabled }: FormInputProps) {
+export const FormInput = React.forwardRef<HTMLElement, FormInputProps>(
+  ({ value, onChange, onBlur, name, config, disabled }, ref) => {
   const commonProps = {
     value: value || '',
     onChange,
@@ -72,7 +74,7 @@ export function FormInput({ value, onChange, onBlur, name, config, disabled }: F
     case 'select':
       return (
         <Select value={value || ''} onValueChange={onChange} disabled={commonProps.disabled}>
-          <SelectTrigger className="h-11">
+          <SelectTrigger ref={ref as React.RefObject<HTMLButtonElement>} className="h-11">
             <SelectValue placeholder={config.placeholder} />
           </SelectTrigger>
           <SelectContent>
@@ -96,6 +98,7 @@ export function FormInput({ value, onChange, onBlur, name, config, disabled }: F
     case 'textarea':
       return (
         <Textarea
+          ref={ref as React.RefObject<HTMLTextAreaElement>}
           {...commonProps}
           rows={config.rows ?? 3}
           className="min-h-20 resize-y"
@@ -106,6 +109,7 @@ export function FormInput({ value, onChange, onBlur, name, config, disabled }: F
     case 'radio':
       return (
         <RadioGroup
+          ref={ref as React.RefObject<HTMLDivElement>}
           value={value || ''}
           onValueChange={onChange}
           disabled={commonProps.disabled}
@@ -129,6 +133,7 @@ export function FormInput({ value, onChange, onBlur, name, config, disabled }: F
       return (
         <div className="flex items-center space-x-3 py-2">
           <Switch
+            ref={ref as React.RefObject<HTMLButtonElement>}
             checked={value || false}
             onCheckedChange={onChange}
             disabled={commonProps.disabled}
@@ -140,11 +145,19 @@ export function FormInput({ value, onChange, onBlur, name, config, disabled }: F
       )
 
     case 'date':
-      return <Input {...commonProps} type="date" onChange={(e) => onChange?.(e.target.value)} />
+      return (
+        <Input
+          ref={ref as React.RefObject<HTMLInputElement>}
+          {...commonProps}
+          type="date"
+          onChange={(e) => onChange?.(e.target.value)}
+        />
+      )
 
     case 'email':
       return (
         <Input
+          ref={ref as React.RefObject<HTMLInputElement>}
           {...commonProps}
           type="email"
           autoComplete="email"
@@ -155,6 +168,7 @@ export function FormInput({ value, onChange, onBlur, name, config, disabled }: F
     case 'tel':
       return (
         <Input
+          ref={ref as React.RefObject<HTMLInputElement>}
           {...commonProps}
           type="tel"
           autoComplete="tel"
@@ -165,6 +179,7 @@ export function FormInput({ value, onChange, onBlur, name, config, disabled }: F
     case 'url':
       return (
         <Input
+          ref={ref as React.RefObject<HTMLInputElement>}
           {...commonProps}
           type="url"
           autoComplete="url"
@@ -175,6 +190,7 @@ export function FormInput({ value, onChange, onBlur, name, config, disabled }: F
     case 'number':
       return (
         <Input
+          ref={ref as React.RefObject<HTMLInputElement>}
           {...commonProps}
           type="number"
           min={config.min}
@@ -187,14 +203,18 @@ export function FormInput({ value, onChange, onBlur, name, config, disabled }: F
     default:
       return (
         <Input
+          ref={ref as React.RefObject<HTMLInputElement>}
           {...commonProps}
           type="text"
           autoComplete={getAutoComplete(name || '')}
           onChange={(e) => onChange?.(e.target.value)}
         />
       )
+    }
   }
-}
+)
+
+FormInput.displayName = 'FormInput'
 
 // Helper function to provide appropriate autocomplete attributes
 function getAutoComplete(fieldName: string): string {
