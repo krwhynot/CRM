@@ -285,7 +285,7 @@ export const generateOpportunityName = (
 
 // Stage progression helpers
 export const OPPORTUNITY_STAGE_ORDER: Record<OpportunityStage, number> = {
-  // Legacy stages (original progression)
+  // Original stages
   'New Lead': 1,
   'Initial Outreach': 2,
   'Sample/Visit Offered': 3,
@@ -305,18 +305,7 @@ export const OPPORTUNITY_STAGE_ORDER: Record<OpportunityStage, number> = {
 }
 
 // Define progression paths for each stage family
-const LEGACY_STAGE_PROGRESSION: Record<string, string | null> = {
-  'New Lead': 'Initial Outreach',
-  'Initial Outreach': 'Sample/Visit Offered',
-  'Sample/Visit Offered': 'Awaiting Response',
-  'Awaiting Response': 'Feedback Logged',
-  'Feedback Logged': 'Demo Scheduled',
-  'Demo Scheduled': null, // Terminal - can go to Closed - Won or Closed - Lost manually
-  'Closed - Won': null, // Terminal
-  'Closed - Lost': null, // Terminal
-}
-
-const NEW_STAGE_PROGRESSION: Record<string, string | null> = {
+const STAGE_PROGRESSION: Record<string, string | null> = {
   lead: 'qualified',
   qualified: 'proposal',
   proposal: 'negotiation',
@@ -326,14 +315,8 @@ const NEW_STAGE_PROGRESSION: Record<string, string | null> = {
 }
 
 export const getNextStage = (currentStage: OpportunityStage): OpportunityStage | null => {
-  // Check legacy progression
-  if (currentStage in LEGACY_STAGE_PROGRESSION) {
-    return LEGACY_STAGE_PROGRESSION[currentStage] as OpportunityStage | null
-  }
-
-  // Check new progression
-  if (currentStage in NEW_STAGE_PROGRESSION) {
-    return NEW_STAGE_PROGRESSION[currentStage] as OpportunityStage | null
+  if (currentStage in STAGE_PROGRESSION) {
+    return STAGE_PROGRESSION[currentStage] as OpportunityStage | null
   }
 
   return null
@@ -341,16 +324,7 @@ export const getNextStage = (currentStage: OpportunityStage): OpportunityStage |
 
 export const getPreviousStage = (currentStage: OpportunityStage): OpportunityStage | null => {
   // Find the stage that has currentStage as its next stage
-
-  // Check legacy progression
-  for (const [stage, nextStage] of Object.entries(LEGACY_STAGE_PROGRESSION)) {
-    if (nextStage === currentStage) {
-      return stage as OpportunityStage
-    }
-  }
-
-  // Check new progression
-  for (const [stage, nextStage] of Object.entries(NEW_STAGE_PROGRESSION)) {
+  for (const [stage, nextStage] of Object.entries(STAGE_PROGRESSION)) {
     if (nextStage === currentStage) {
       return stage as OpportunityStage
     }

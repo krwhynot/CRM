@@ -50,9 +50,13 @@ npm run test:crud         # Test CRUD operations
 npm run test:dashboard    # Test dashboard functionality
 npm run test:mobile       # Test mobile optimization
 npm run test:backend      # Run backend/database tests (Vitest)
+npm run test:backend:watch # Run backend tests in watch mode
 npm run test:backend:coverage  # Backend tests with coverage
+npm run test:db           # Run database-specific tests only
 npm run test:performance  # Performance tests
 npm run test:security     # Security validation tests
+npm run test:integrity    # Data integrity tests
+npm run test:import-backend # Excel import backend tests
 npm run test:architecture # Architecture validation tests
 
 # Single test execution
@@ -60,6 +64,27 @@ npm run test:architecture:state      # Run state boundary tests only
 npm run test:architecture:components # Run component placement tests only
 npm run test:architecture:performance # Run performance pattern tests only
 npm run test:architecture:eslint    # Run ESLint architectural rules tests only
+
+# UI Testing and Validation
+npm run test:ui-compliance    # UI component compliance tests
+npm run test:ui-consistency   # UI design consistency tests
+npm run test:visual           # Visual regression tests (Playwright)
+npm run test:visual:update    # Update visual regression snapshots
+
+# Technical Debt Management
+npm run debt:audit        # Audit technical debt
+npm run debt:scan         # Scan for debt patterns
+npm run debt:report       # Generate debt reports
+npm run debt:validate     # Validate debt improvements
+npm run debt:issues       # Create GitHub issues for technical debt
+
+# Development Tools
+npm run dev:setup         # Set up development environment
+npm run dev:assist        # Development assistant for code analysis
+npm run dev:health        # Check development environment health
+npm run dev:fix           # Fix common development issues
+npm run hooks:install     # Install Git pre-commit hooks
+npm run prepare           # Set up Husky for Git hooks
 ```
 
 
@@ -251,6 +276,9 @@ npm run optimize:performance
 
 # Complete validation pipeline
 npm run validate
+npm run quality-gates        # Run comprehensive 6-stage quality gates
+npm run validate:architecture # Validate architectural patterns
+npm run validate:performance  # Validate performance benchmarks
 ```
 
 **📚 Complete Documentation**:
@@ -370,7 +398,7 @@ See `/docs/MCP_TOOL_REFERENCE_GUIDE.md` for comprehensive usage guidelines.
 ### Quality Gates & Testing
 **Before Committing:**
 - `npm run validate` - Complete validation pipeline (type-check + lint + build)
-- `./scripts/run-quality-gates.sh` - 6-stage comprehensive validation
+- `npm run quality-gates` or `./scripts/run-quality-gates.sh` - 6-stage comprehensive validation
 
 **Test Categories:**
 - `npm run test:mcp` - MCP tests (auth, CRUD, dashboard, mobile)

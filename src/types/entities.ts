@@ -1,6 +1,5 @@
 // Principal CRM Entity Types
-// This file re-exports entity types from individual type files and provides
-// legacy compatibility for the Principal CRM transformation
+// This file re-exports entity types from individual type files
 
 // Import database types for supporting entities
 import type { Database } from './database.types'
@@ -63,50 +62,17 @@ export type ContactPreferredPrincipalInsert =
 export type ContactPreferredPrincipalUpdate =
   Database['public']['Tables']['contact_preferred_principals']['Update']
 
-// Enum types for legacy compatibility
+// Enum types
 export type ContactRole = Database['public']['Enums']['contact_role']
 export type OrganizationType = Database['public']['Enums']['organization_type']
 export type PriorityLevel = Database['public']['Enums']['priority_level']
 export type ProductCategory = Database['public']['Enums']['product_category']
 
-// Legacy extended types for backward compatibility
+// Extended types
 export type ProductWithPrincipal = Product & {
   principal?: Database['public']['Tables']['organizations']['Row']
 }
 
-// Legacy opportunity types (for backward compatibility)
-export type OpportunityWithFoundingInteraction =
-  Database['public']['Tables']['opportunities']['Row'] & {
-    organization?: Database['public']['Tables']['organizations']['Row']
-    contact?: Database['public']['Tables']['contacts']['Row']
-    principal_organization?: Database['public']['Tables']['organizations']['Row']
-    founding_interaction?: Database['public']['Tables']['interactions']['Row']
-  }
-
-export type OpportunityWithFullRelations = Database['public']['Tables']['opportunities']['Row'] & {
-  organization?: Database['public']['Tables']['organizations']['Row']
-  contact?: Database['public']['Tables']['contacts']['Row']
-  principal_organization?: Database['public']['Tables']['organizations']['Row']
-  opportunity_products?: (OpportunityProduct & { product?: Product })[]
-  interactions?: Database['public']['Tables']['interactions']['Row'][]
-  founding_interaction?: Database['public']['Tables']['interactions']['Row']
-}
-
-// Legacy interaction types (for backward compatibility)
-export type InteractionWithOpportunityFlag = Database['public']['Tables']['interactions']['Row'] & {
-  contact?: Database['public']['Tables']['contacts']['Row']
-  organization?: Database['public']['Tables']['organizations']['Row']
-  opportunity?: Database['public']['Tables']['opportunities']['Row']
-  is_founding_interaction?: boolean
-}
-
-export type InteractionWithFoundedOpportunities =
-  Database['public']['Tables']['interactions']['Row'] & {
-    contact?: Database['public']['Tables']['contacts']['Row']
-    organization?: Database['public']['Tables']['organizations']['Row']
-    opportunity?: Database['public']['Tables']['opportunities']['Row']
-    founded_opportunities?: Database['public']['Tables']['opportunities']['Row'][]
-  }
 
 // Re-export filter types from individual entity files
 export type { ContactFilters } from './contact.types'

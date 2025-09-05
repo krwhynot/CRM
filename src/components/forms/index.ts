@@ -28,7 +28,6 @@ export { FormValidationFeedback } from './FormValidationFeedback'
 export { EnhancedFormField } from './EnhancedFormField'
 
 // Legacy Components (deprecated - use SimpleForm instead)
-export { FormLayout } from './FormLayout'
 
 // Hooks
 export { useProgressiveDetails } from '@/hooks/useProgressiveDetails'
