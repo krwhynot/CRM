@@ -34,7 +34,7 @@ export type TypedYupResolver<T extends FieldValues> = Resolver<T>
  * Creates a properly typed Yup resolver
  */
 export function createTypedYupResolver<T extends FieldValues>(
-  schema: ObjectSchema<any>
+  schema: ObjectSchema<Record<string, unknown>>
 ): TypedYupResolver<T> {
   return yupResolver(schema) as TypedYupResolver<T>
 }
@@ -147,7 +147,7 @@ export interface FormComponentRef<T> {
  * Type-safe form hook configuration
  */
 export interface TypedFormConfig<T> {
-  schema: ObjectSchema<any>
+  schema: ObjectSchema<Record<string, unknown>>
   defaultValues: T
   mode?: 'onChange' | 'onBlur' | 'onSubmit'
   reValidateMode?: 'onChange' | 'onBlur' | 'onSubmit'

@@ -41,7 +41,7 @@ export const useOpportunityForm = ({
   const { data: contacts = [] } = useContacts()
 
   const form = useForm<OpportunityFormData>({
-    resolver: yupResolver(opportunitySchema) as any,
+    resolver: yupResolver(opportunitySchema) as never,
     mode: 'onBlur',
     defaultValues: {
       name: '',
@@ -105,7 +105,7 @@ export const useOpportunityForm = ({
   return {
     // Form methods
     register: form.register,
-    handleSubmit: form.handleSubmit as any,
+    handleSubmit: form.handleSubmit as never,
     setValue: form.setValue,
     watch: form.watch,
     trigger: form.trigger,

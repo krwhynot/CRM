@@ -40,7 +40,7 @@ export function FormCard({ title, description, icon: Icon, children, className }
 
   // Get responsive classes based on context
   const containerClasses = getFormContainerClasses(isInDialog, size)
-  const cardClasses = getFormCardClasses(isInDialog, size)
+  const cardClasses = getFormCardClasses(isInDialog)
   const paddingClasses = getFormPaddingClasses(isInDialog)
   const headerSpacing = getFormHeaderSpacing(isInDialog)
 

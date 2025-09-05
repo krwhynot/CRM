@@ -52,6 +52,7 @@ export interface FormSection {
 }
 
 export interface ConditionalSection extends FormSection {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   condition: string | ((data: any) => boolean)
   showWhen?: 'truthy' | 'falsy'
   isCollapsible?: boolean

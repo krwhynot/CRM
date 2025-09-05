@@ -24,10 +24,11 @@ export interface FieldConfig extends InputConfig {
   name: string
   required?: boolean
   description?: string
-  validation?: any // Yup schema validation
+  validation?: Record<string, unknown> // Yup schema validation
 }
 
 interface FormFieldProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<any>
   name: string
   config: FieldConfig

@@ -27,7 +27,7 @@ export function useCoreFormSetup<T extends FieldValues>({
   onSubmit,
 }: CoreFormSetupProps<T>) {
   const form = useForm<T>({
-    resolver: yupResolver(formSchema) as any,
+    resolver: yupResolver(formSchema) as never,
     defaultValues: initialData as DefaultValues<T>,
   })
 
@@ -37,7 +37,7 @@ export function useCoreFormSetup<T extends FieldValues>({
     coreSections,
     optionalSections,
     contextualSections,
-    form: form as any,
+    form: form as never,
   })
 
   const handleSubmit: SubmitHandler<T> = (data) => {

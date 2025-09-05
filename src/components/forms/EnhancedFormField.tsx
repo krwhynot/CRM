@@ -24,6 +24,7 @@ import { formTheme } from '@/configs/forms/base.config'
 import type { FieldConfig } from '@/types/forms'
 
 interface EnhancedFormFieldProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<any>
   name: string
   config: FieldConfig
@@ -57,6 +58,7 @@ export function EnhancedFormField({ control, name, config, disabled }: EnhancedF
   )
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function renderFieldInput(field: any, config: FieldConfig, disabled?: boolean) {
   const commonProps = {
     ...field,

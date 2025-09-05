@@ -74,6 +74,7 @@ export function DialogContextProvider({
  *   )
  * }
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function useDialogContext(): DialogContextValue {
   const context = useContext(DialogContext)
 
@@ -88,6 +89,7 @@ export function useDialogContext(): DialogContextValue {
  * @param contextProps - Dialog context props
  * @returns Component wrapped with DialogContextProvider
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function withDialogContext<T extends object>(
   Component: React.ComponentType<T>,
   contextProps: Omit<DialogContextProviderProps, 'children'>

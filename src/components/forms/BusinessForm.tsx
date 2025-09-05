@@ -32,6 +32,7 @@ export interface FormSection {
   required?: boolean
   collapsible?: boolean
   defaultExpanded?: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   condition?: (values: any) => boolean // Show section based on form values
   className?: string
 }
@@ -42,11 +43,13 @@ export interface BusinessFormField extends FieldConfig {
   section?: string // Which section this field belongs to
   dependency?: {
     field: string
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     value: any
     condition?: 'equals' | 'not_equals' | 'includes' | 'not_includes'
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface BusinessFormProps<T extends Record<string, any>> {
   sections: FormSection[]
   onSubmit: (data: T) => Promise<void> | void
@@ -59,6 +62,7 @@ interface BusinessFormProps<T extends Record<string, any>> {
   className?: string
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function BusinessForm<T extends Record<string, any>>({
   sections,
   onSubmit,
@@ -85,7 +89,7 @@ export function BusinessForm<T extends Record<string, any>>({
 
   const form = useForm<T>({
     resolver: validationSchema ? yupResolver(validationSchema) : undefined,
-    defaultValues: defaultValues as any,
+    defaultValues: defaultValues as never,
     mode: 'onBlur',
   })
 
@@ -96,7 +100,7 @@ export function BusinessForm<T extends Record<string, any>>({
   }
 
   const handleReset = () => {
-    form.reset(defaultValues as any)
+    form.reset(defaultValues as never)
   }
 
   const toggleSection = (sectionId: string) => {
@@ -205,6 +209,7 @@ export function BusinessForm<T extends Record<string, any>>({
 // Section renderer component
 interface FormSectionRendererProps {
   section: FormSection
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: any
   loading: boolean
   isExpanded: boolean

@@ -84,7 +84,7 @@ export function getFormButtonClasses(isInDialog: boolean): string {
 }
 
 // Form card classes - integrate with existing Card component
-export function getFormCardClasses(isInDialog: boolean, _dialogSize?: DialogSize): string {
+export function getFormCardClasses(isInDialog: boolean): string {
   if (!isInDialog) {
     return 'mx-auto w-full max-w-4xl rounded-lg border bg-white shadow-sm'
   }

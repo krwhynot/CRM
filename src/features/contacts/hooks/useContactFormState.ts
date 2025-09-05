@@ -1,7 +1,7 @@
 import type React from 'react'
 import { useForm } from 'react-hook-form'
 import { contactSchema, type ContactFormData } from '@/types/contact.types'
-import { createTypedYupResolver } from '@/types/forms/'
+import { createTypedYupResolver } from '@/lib/form-resolver'
 
 interface UseContactFormStateProps {
   initialData?: Partial<ContactFormData>

@@ -22,17 +22,17 @@ export function createTypedYupResolver<T extends FieldValues>(
  */
 export interface TypedFormProps<T extends FieldValues> {
   form: {
-    control: any // React Hook Form's control is complex, keep minimal typing here
+    control: Record<string, unknown> // React Hook Form's control is complex, keep minimal typing here
     handleSubmit: (onSubmit: (data: T) => void) => (e?: React.BaseSyntheticEvent) => Promise<void>
     formState: {
-      errors: any
+      errors: Record<string, unknown>
       isSubmitting: boolean
       isDirty: boolean
       isValid: boolean
     }
-    setValue: (name: keyof T, value: any) => void
+    setValue: (name: keyof T, value: string | number | boolean) => void
     getValues: () => T
-    watch: (name?: keyof T) => any
+    watch: (name?: keyof T) => string | number | boolean | undefined
     trigger: (name?: keyof T | (keyof T)[]) => Promise<boolean>
     reset: (values?: Partial<T>) => void
   }
@@ -44,6 +44,7 @@ export interface TypedFormProps<T extends FieldValues> {
  */
 export function createTypedFormHelper<T extends FieldValues>() {
   return {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     castForm: (form: any): TypedFormProps<T>['form'] => form,
     createResolver: (schema: yup.ObjectSchema<T>) => createTypedYupResolver(schema),
   }

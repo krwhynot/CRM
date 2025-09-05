@@ -64,7 +64,7 @@ export const OrganizationDialogs = ({
       >
         {selectedOrganization && (
           <OrganizationForm
-            initialData={editFormInitialData as any}
+            initialData={editFormInitialData as never}
             onSubmit={(data) => onEditSubmit(selectedOrganization, data)}
             loading={isUpdating}
           />

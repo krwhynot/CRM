@@ -25,6 +25,7 @@ export interface SimpleFormField extends FieldConfig {
   label: string
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface SimpleFormProps<T extends Record<string, any>> {
   fields: SimpleFormField[]
   onSubmit: (data: T) => Promise<void> | void
@@ -37,6 +38,7 @@ interface SimpleFormProps<T extends Record<string, any>> {
   fieldClassName?: string
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function SimpleForm<T extends Record<string, any>>({
   fields,
   onSubmit,
@@ -55,7 +57,7 @@ export function SimpleForm<T extends Record<string, any>>({
 
   const form = useForm<T>({
     resolver: validationSchema ? yupResolver(validationSchema) : undefined,
-    defaultValues: defaultValues as any,
+    defaultValues: defaultValues as never,
     mode: 'onBlur', // Better UX - validate on blur, not every keystroke
   })
 
@@ -64,7 +66,7 @@ export function SimpleForm<T extends Record<string, any>>({
   }
 
   const handleReset = () => {
-    form.reset(defaultValues as any)
+    form.reset(defaultValues as never)
   }
 
   return (
@@ -112,90 +114,6 @@ export function SimpleForm<T extends Record<string, any>>({
   )
 }
 
-/**
- * Quick field builders for common use cases
- */
-export const createTextField = (
-  name: string,
-  label: string,
-  required = false
-): SimpleFormField => ({
-  name,
-  label,
-  type: 'text',
-  required,
-})
-
-export const createEmailField = (
-  name: string,
-  label: string,
-  required = false
-): SimpleFormField => ({
-  name,
-  label,
-  type: 'email',
-  required,
-})
-
-export const createSelectField = (
-  name: string,
-  label: string,
-  options: { value: string; label: string; description?: string }[],
-  required = false
-): SimpleFormField => ({
-  name,
-  label,
-  type: 'select',
-  options,
-  required,
-})
-
-export const createTextareaField = (
-  name: string,
-  label: string,
-  rows = 3,
-  required = false
-): SimpleFormField => ({
-  name,
-  label,
-  type: 'textarea',
-  rows,
-  required,
-})
-
-export const createNumberField = (
-  name: string,
-  label: string,
-  min?: number,
-  max?: number,
-  required = false
-): SimpleFormField => ({
-  name,
-  label,
-  type: 'number',
-  min,
-  max,
-  required,
-})
-
-export const createDateField = (
-  name: string,
-  label: string,
-  required = false
-): SimpleFormField => ({
-  name,
-  label,
-  type: 'date',
-  required,
-})
-
-export const createSwitchField = (
-  name: string,
-  label: string,
-  switchLabel?: string
-): SimpleFormField => ({
-  name,
-  label,
-  type: 'switch',
-  switchLabel,
-})
+// Export utility functions from separate file to avoid fast-refresh warnings
+// eslint-disable-next-line react-refresh/only-export-components
+export * from './form-field-builders'

@@ -19,8 +19,8 @@ export function FormLayout<T extends FormData>({
   const [showOptionalSection, setShowOptionalSection] = useState(false)
 
   const form = useForm<T>({
-    resolver: yupResolver(config.schema) as any,
-    defaultValues: config.defaultValues(initialData) as any,
+    resolver: yupResolver(config.schema) as never,
+    defaultValues: config.defaultValues(initialData) as never,
     mode: 'onBlur', // Better UX - validate on blur, not every keystroke
   })
 
@@ -56,7 +56,7 @@ export function FormLayout<T extends FormData>({
       <CardContent className={`p-6 ${formTheme.spacing.section}`}>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(handleSubmit as any)}
+            onSubmit={form.handleSubmit(handleSubmit as never)}
             className={formTheme.spacing.section}
           >
             {/* Core Sections */}
@@ -168,7 +168,8 @@ export function FormLayout<T extends FormData>({
 
 interface FormSectionRendererProps {
   section: FormSection
-  form: any // UseFormReturn<T> - using any to avoid complex typing here
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  form: any
   loading: boolean
 }
 
@@ -189,12 +190,12 @@ function FormSectionRenderer({ section, form, loading }: FormSectionRendererProp
           section.className || `grid grid-cols-1 md:grid-cols-2 ${formTheme.spacing.inner}`
         }
       >
-        {section.fields.map((field: any) => (
+        {section.fields.map((fieldConfig) => (
           <EnhancedFormField
-            key={field.name}
+            key={fieldConfig.name}
             control={form.control}
-            name={field.name}
-            config={field}
+            name={fieldConfig.name}
+            config={fieldConfig}
             disabled={loading}
           />
         ))}
@@ -207,7 +208,8 @@ function FormSectionRenderer({ section, form, loading }: FormSectionRendererProp
 
 interface CollapsibleFormSectionProps {
   section: ConditionalSection
-  form: any // UseFormReturn<T> - using any to avoid complex typing here
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  form: any
   loading: boolean
 }
 
@@ -247,12 +249,12 @@ function CollapsibleFormSection({ section, form, loading }: CollapsibleFormSecti
               section.className || `grid grid-cols-1 md:grid-cols-2 ${formTheme.spacing.inner}`
             }
           >
-            {section.fields.map((field: any) => (
+            {section.fields.map((fieldConfig) => (
               <EnhancedFormField
-                key={field.name}
+                key={fieldConfig.name}
                 control={form.control}
-                name={field.name}
-                config={field}
+                name={fieldConfig.name}
+                config={fieldConfig}
                 disabled={loading}
               />
             ))}
