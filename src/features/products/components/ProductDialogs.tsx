@@ -1,15 +1,65 @@
 import React from 'react'
 import { StandardDialog } from '@/components/ui/StandardDialog'
 import { ProductForm } from './ProductForm'
-import type { Product, ProductInsert, ProductUpdate } from '@/types/entities'
+import type { Product, ProductInsert, ProductUpdate, OrganizationInsert } from '@/types/entities'
 import type { ProductFormData } from '@/types/validation'
+import type { Database } from '@/lib/database.types'
+
+// Enhanced product creation interface for form data with principal details
+export interface ProductWithPrincipalData
+  extends Omit<ProductInsert, 'principal_id' | 'created_by' | 'updated_by'> {
+  // Principal can be provided as ID (existing) or details (new)
+  principal_id?: string
+  principal_name?: string
+  principal_segment?: string
+  principal_phone?: string
+  principal_email?: string
+  principal_website?: string
+  principal_data?: Partial<OrganizationInsert>
+}
+
+// Helper function to transform ProductFormData to ProductWithPrincipalData
+function transformProductFormData(formData: ProductFormData): ProductWithPrincipalData {
+  const { 
+    principal_mode, 
+    principal_name, 
+    principal_segment, 
+    principal_phone, 
+    principal_email, 
+    principal_website, 
+    ...productData 
+  } = formData
+
+  let result: ProductWithPrincipalData = {
+    ...productData,
+  }
+
+  // Handle principal data based on mode
+  if (principal_mode === 'existing') {
+    // Existing principal - use principal_id
+    result.principal_id = formData.principal_id || undefined
+  } else if (principal_mode === 'new') {
+    // New principal - use principal details
+    result.principal_name = principal_name || undefined
+    result.principal_segment = principal_segment || undefined
+    result.principal_data = {
+      type: 'principal' as Database['public']['Enums']['organization_type'],
+      segment: principal_segment || undefined,
+      phone: principal_phone || undefined,
+      email: principal_email || undefined,
+      website: principal_website || undefined,
+    }
+  }
+
+  return result
+}
 
 interface ProductDialogsProps {
   isCreateDialogOpen: boolean
   isEditDialogOpen: boolean
   isDeleteDialogOpen: boolean
   selectedProduct: Product | null
-  onCreateSubmit: (data: ProductInsert) => void
+  onCreateSubmit: (data: ProductWithPrincipalData) => void
   onEditSubmit: (data: ProductUpdate) => void
   onDeleteConfirm: (product: Product) => void
   onCreateDialogChange: (open: boolean) => void
@@ -49,7 +99,7 @@ export const ProductDialogs: React.FC<ProductDialogsProps> = ({
         scroll="content"
       >
         <ProductForm
-          onSubmit={(data: ProductFormData) => onCreateSubmit(data as ProductInsert)}
+          onSubmit={(data: ProductFormData) => onCreateSubmit(transformProductFormData(data))}
           loading={isCreating}
         />
       </StandardDialog>
@@ -66,7 +116,7 @@ export const ProductDialogs: React.FC<ProductDialogsProps> = ({
         {selectedProduct && (
           <ProductForm
             initialData={selectedProduct}
-            onSubmit={(data: ProductFormData) => onEditSubmit(data as ProductUpdate)}
+            onSubmit={(data: ProductFormData) => onEditSubmit(transformProductFormData(data) as ProductUpdate)}
             loading={isUpdating}
           />
         )}

@@ -5,10 +5,17 @@
  */
 
 export const PRODUCT_CATEGORIES = [
-  'dry_goods',
-  'refrigerated',
-  'frozen',
   'beverages',
+  'dairy',
+  'frozen',
+  'fresh_produce',
+  'meat_poultry',
+  'seafood',
+  'dry_goods',
+  'spices_seasonings',
+  'baking_supplies',
+  'cleaning_supplies',
+  'paper_products',
   'equipment',
 ] as const
 

@@ -22,9 +22,8 @@ import { cn } from '@/lib/utils'
  * Automatically adapts to dialog context for responsive behavior.
  */
 
-export interface SimpleFormField extends FieldConfig {
-  name: string
-  label: string
+export type SimpleFormField = FieldConfig & {
+  name?: string // Optional for heading fields
 }
 
 interface SimpleFormProps<T extends FieldValues = FieldValues> {
@@ -91,9 +90,27 @@ export function SimpleForm<T extends FieldValues = FieldValues>({
 
         {/* Form Fields */}
         <div className={cn(gridClasses, spacingClasses)}>
-          {fields.map((field) => {
+          {fields.map((field, index) => {
             // Check conditional visibility
             if (field.condition && !field.condition(form.watch())) {
+              return null
+            }
+            
+            // Handle heading fields
+            if (field.type === 'heading') {
+              return (
+                <FormFieldNew
+                  key={`heading-${index}`}
+                  config={field}
+                  disabled={loading}
+                  className={fieldClassName}
+                />
+              )
+            }
+            
+            // Handle regular fields
+            if (!field.name) {
+              // Skip fields without names (should not happen in normal usage)
               return null
             }
             

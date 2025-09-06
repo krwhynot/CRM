@@ -6,6 +6,7 @@ import { contactSchema } from './contact.types'
 import { organizationSchema } from './organization.types'
 import { opportunitySchema, multiPrincipalOpportunitySchema } from './opportunity.types'
 import { interactionSchema, interactionWithOpportunitySchema } from './interaction.types'
+import { PRODUCT_CATEGORIES } from '@/constants/product.constants'
 import * as yup from 'yup'
 
 // Re-export schemas for easy access
@@ -18,7 +19,7 @@ export {
   interactionWithOpportunitySchema,
 }
 
-// Product validation schema - kept as-is since products weren't changed in Principal CRM transformation
+// Product validation schema - enhanced with principal mode selection
 export const productSchema = yup.object({
   name: yup
     .string()
@@ -27,8 +28,15 @@ export const productSchema = yup.object({
   principal_id: yup
     .string()
     .uuid('Invalid principal ID')
-    .required('Principal organization is required'),
-  category: yup.string().required('Category is required'),
+    .when('principal_mode', {
+      is: 'existing',
+      then: (schema) => schema.required('Principal organization is required'),
+      otherwise: (schema) => schema.nullable(),
+    }),
+  category: yup.string().required('Category is required').oneOf(
+    PRODUCT_CATEGORIES,
+    'Invalid category'
+  ),
   description: yup.string().max(1000, 'Description must be 1000 characters or less').nullable(),
   sku: yup.string().max(100, 'SKU must be 100 characters or less').nullable(),
   unit_of_measure: yup.string().max(50, 'Unit of measure must be 50 characters or less').nullable(),
@@ -64,6 +72,54 @@ export const productSchema = yup.object({
     .string()
     .max(1000, 'Specifications must be 1000 characters or less')
     .nullable(),
+
+  // PRINCIPAL MODE FIELDS for new principal creation
+  principal_mode: yup
+    .string()
+    .oneOf(['existing', 'new'] as const, 'Invalid principal mode')
+    .default('existing'),
+  principal_name: yup
+    .string()
+    .max(255, 'Principal name must be 255 characters or less')
+    .when('principal_mode', {
+      is: 'new',
+      then: (schema) => schema.required('Principal name is required'),
+      otherwise: (schema) => schema.nullable(),
+    }),
+  principal_segment: yup
+    .string()
+    .max(100, 'Principal segment must be 100 characters or less')
+    .when('principal_mode', {
+      is: 'new',
+      then: (schema) => schema.nullable(),
+      otherwise: (schema) => schema.nullable(),
+    }),
+  principal_phone: yup
+    .string()
+    .max(50, 'Phone must be 50 characters or less')
+    .when('principal_mode', {
+      is: 'new',
+      then: (schema) => schema.nullable(),
+      otherwise: (schema) => schema.nullable(),
+    }),
+  principal_email: yup
+    .string()
+    .email('Invalid email address')
+    .max(255, 'Email must be 255 characters or less')
+    .when('principal_mode', {
+      is: 'new',
+      then: (schema) => schema.nullable(),
+      otherwise: (schema) => schema.nullable(),
+    }),
+  principal_website: yup
+    .string()
+    .url('Invalid website URL')
+    .max(255, 'Website must be 255 characters or less')
+    .when('principal_mode', {
+      is: 'new',
+      then: (schema) => schema.nullable(),
+      otherwise: (schema) => schema.nullable(),
+    }),
 })
 
 // Supporting schemas for junction tables and relationships

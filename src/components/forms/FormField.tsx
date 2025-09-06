@@ -19,18 +19,29 @@ import { FormInput, type InputConfig, type SelectOption } from './FormInput'
  * Automatically adapts to dialog context for responsive behavior.
  */
 
-export interface FieldConfig extends InputConfig {
+export interface BaseFieldConfig {
   label: string
+  condition?: (values: FieldValues) => boolean // Conditional field visibility
+  className?: string
+}
+
+export interface RegularFieldConfig extends BaseFieldConfig, InputConfig {
   name: string
   required?: boolean
   description?: string
   validation?: Record<string, unknown> // Yup schema validation
-  condition?: (values: FieldValues) => boolean // Conditional field visibility
 }
 
+export interface HeadingFieldConfig extends BaseFieldConfig {
+  type: 'heading'
+  level?: 2 | 3 | 4 // Optional heading level (defaults to 3)
+}
+
+export type FieldConfig = RegularFieldConfig | HeadingFieldConfig
+
 interface FormFieldProps<T extends FieldValues = FieldValues> {
-  control: Control<T>
-  name: Path<T>
+  control?: Control<T>
+  name?: Path<T>
   config: FieldConfig
   disabled?: boolean
   className?: string
@@ -40,6 +51,29 @@ export function FormFieldNew<T extends FieldValues = FieldValues>({ control, nam
   const { isInDialog } = useDialogContext()
   const spacingClasses = getFormSpacingClasses(isInDialog)
 
+  // Handle heading fields
+  if (config.type === 'heading') {
+    const headingConfig = config as HeadingFieldConfig
+    const level = headingConfig.level || 3
+    const HeadingTag = `h${level}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+    
+    return (
+      <div className={cn('col-span-full', config.className, className)}>
+        <HeadingTag className="text-md font-semibold mt-4 mb-2 text-gray-900 first:mt-0">
+          {config.label}
+        </HeadingTag>
+      </div>
+    )
+  }
+
+  // Handle regular fields
+  if (!control || !name) {
+    // This should not happen in normal usage
+    return null
+  }
+
+  const regularConfig = config as RegularFieldConfig
+
   return (
     <FormFieldPrimitive
       control={control}
@@ -48,16 +82,16 @@ export function FormFieldNew<T extends FieldValues = FieldValues>({ control, nam
         <FormItem className={cn(spacingClasses, config.className, className)}>
           <FormLabel className="text-sm font-medium text-gray-700">
             {config.label}
-            {config.required && <span className="ml-1 text-red-500">*</span>}
+            {regularConfig.required && <span className="ml-1 text-red-500">*</span>}
           </FormLabel>
 
           <FormControl>
-            <FormInput {...field} config={config} disabled={disabled} />
+            <FormInput {...field} config={regularConfig} disabled={disabled} />
           </FormControl>
 
-          {config.description && (
+          {regularConfig.description && (
             <FormDescription className="text-xs text-muted-foreground">
-              {config.description}
+              {regularConfig.description}
             </FormDescription>
           )}
 

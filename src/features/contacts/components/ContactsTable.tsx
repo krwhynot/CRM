@@ -134,6 +134,49 @@ export function ContactsTable({
   // Helper component for empty cell display
   const EmptyCell = () => <span className="text-sm italic text-muted">—</span>
 
+  // Expandable content renderer
+  const renderExpandableContent = (contact: ContactWithOrganization) => (
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {/* Contact Information */}
+      <div>
+        <h4 className="mb-2 font-medium text-foreground">Contact Information</h4>
+        <div className="space-y-1 text-sm text-muted-foreground">
+          {contact.email && <div>Email: {contact.email}</div>}
+          {contact.phone && <div>Phone: {contact.phone}</div>}
+          {contact.department && <div>Department: {contact.department}</div>}
+        </div>
+      </div>
+
+      {/* Organization Details */}
+      {contact.organization && (
+        <div>
+          <h4 className="mb-2 font-medium text-foreground">Organization</h4>
+          <div className="space-y-1 text-sm text-muted-foreground">
+            <div>Name: {contact.organization.name}</div>
+            <div>Type: {contact.organization.type}</div>
+            {contact.organization.segment && (
+              <div>Segment: {contact.organization.segment}</div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Authority & Influence */}
+      <div>
+        <h4 className="mb-2 font-medium text-foreground">Role Details</h4>
+        <div className="space-y-1 text-sm text-muted-foreground">
+          {contact.purchase_influence && (
+            <div>Influence: {contact.purchase_influence}</div>
+          )}
+          {contact.decision_authority && (
+            <div>Authority: {contact.decision_authority}</div>
+          )}
+          <div>Primary Contact: {contact.is_primary_contact ? 'Yes' : 'No'}</div>
+        </div>
+      </div>
+    </div>
+  )
+
   // Column definitions for DataTable
   const contactColumns: DataTableColumn<ContactWithOrganization>[] = [
     {
@@ -311,73 +354,25 @@ export function ContactsTable({
         onSelectNone={handleSelectNoneFromToolbar}
       />
 
-      {/* Table Container with Row Expansion */}
-      <div className="space-y-0">
-        <DataTable<ContactWithOrganization>
-          data={filteredContacts}
-          columns={contactColumns}
-          loading={loading}
-          rowKey={(contact) => contact.id}
-          empty={{
-            title: activeFilter !== 'all' ? 'No contacts match your criteria' : 'No contacts found',
-            description:
-              activeFilter !== 'all'
-                ? 'Try adjusting your filters'
-                : 'Get started by adding your first contact',
-          }}
-        />
-
-        {/* Expanded Row Details */}
-        {filteredContacts
+      {/* Table Container with Integrated Row Expansion */}
+      <DataTable<ContactWithOrganization>
+        data={filteredContacts}
+        columns={contactColumns}
+        loading={loading}
+        rowKey={(contact) => contact.id}
+        expandableContent={renderExpandableContent}
+        expandedRows={filteredContacts
           .filter((contact) => isRowExpanded(contact.id))
-          .map((contact) => (
-            <div
-              key={`${contact.id}-details`}
-              className="-mt-px border-x border-b bg-muted/50 p-6"
-              style={{ marginTop: '-1px' }}
-            >
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {/* Contact Information */}
-                <div>
-                  <h4 className="mb-2 font-medium text-foreground">Contact Information</h4>
-                  <div className="space-y-1 text-sm text-muted-foreground">
-                    {contact.email && <div>Email: {contact.email}</div>}
-                    {contact.phone && <div>Phone: {contact.phone}</div>}
-                    {contact.department && <div>Department: {contact.department}</div>}
-                  </div>
-                </div>
-
-                {/* Organization Details */}
-                {contact.organization && (
-                  <div>
-                    <h4 className="mb-2 font-medium text-foreground">Organization</h4>
-                    <div className="space-y-1 text-sm text-muted-foreground">
-                      <div>Name: {contact.organization.name}</div>
-                      <div>Type: {contact.organization.type}</div>
-                      {contact.organization.segment && (
-                        <div>Segment: {contact.organization.segment}</div>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* Authority & Influence */}
-                <div>
-                  <h4 className="mb-2 font-medium text-foreground">Role Details</h4>
-                  <div className="space-y-1 text-sm text-muted-foreground">
-                    {contact.purchase_influence && (
-                      <div>Influence: {contact.purchase_influence}</div>
-                    )}
-                    {contact.decision_authority && (
-                      <div>Authority: {contact.decision_authority}</div>
-                    )}
-                    <div>Primary Contact: {contact.is_primary_contact ? 'Yes' : 'No'}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-      </div>
+          .map((contact) => contact.id)}
+        onToggleRow={toggleRowExpansion}
+        empty={{
+          title: activeFilter !== 'all' ? 'No contacts match your criteria' : 'No contacts found',
+          description:
+            activeFilter !== 'all'
+              ? 'Try adjusting your filters'
+              : 'Get started by adding your first contact',
+        }}
+      />
 
       {/* Bulk Delete Dialog */}
       <BulkDeleteDialog

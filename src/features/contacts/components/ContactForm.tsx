@@ -19,9 +19,13 @@ export function ContactForm({
 }: ContactFormProps) {
   const { data: organizations = [] } = useOrganizations()
 
-  // Create field definitions using SimpleForm pattern
+  // Create field definitions using SimpleForm pattern with logical groupings
   const fields: SimpleFormField[] = [
-    // Basic Information
+    // Contact Info Section
+    {
+      type: 'heading',
+      label: 'Contact Info',
+    },
     {
       name: 'first_name',
       label: 'First Name',
@@ -42,6 +46,12 @@ export function ContactForm({
       type: 'text',
       placeholder: 'e.g. Sales Manager',
     },
+
+    // Communication Section
+    {
+      type: 'heading',
+      label: 'Communication',
+    },
     {
       name: 'email',
       label: 'Email Address',
@@ -61,7 +71,11 @@ export function ContactForm({
       placeholder: '(555) 123-4567',
     },
 
-    // Organization Mode Selection
+    // Organization Setup Section
+    {
+      type: 'heading',
+      label: 'Organization Setup',
+    },
     {
       name: 'organization_mode',
       label: 'Organization Setup',
@@ -132,7 +146,11 @@ export function ContactForm({
       condition: (values) => values.organization_mode === 'new',
     },
 
-    // Role Information
+    // CRM Role Section
+    {
+      type: 'heading',
+      label: 'CRM Role',
+    },
     {
       name: 'role',
       label: 'Contact Role',
@@ -200,7 +218,11 @@ export function ContactForm({
       placeholder: 'Select decision authority',
     },
 
-    // Additional Information
+    // Additional Info Section
+    {
+      type: 'heading',
+      label: 'Additional Info',
+    },
     {
       name: 'linkedin_url',
       label: 'LinkedIn Profile',

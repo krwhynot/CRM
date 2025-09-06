@@ -26,19 +26,27 @@ export function useFormProgress<T extends FieldValues = FieldValues>({
 
   return useMemo(() => {
     // Filter fields that are currently visible based on conditions
+    // Exclude heading fields from progress calculation
     const visibleFields = fields.filter((field) => {
+      // Skip heading fields
+      if (field.type === 'heading') return false
+      // Skip fields without names (they can't be tracked)
+      if (!field.name) return false
+      // Check conditions
       if (!field.condition) return true
       return field.condition(formValues)
     })
 
     // Get only required fields that are visible
-    const requiredFields = visibleFields.filter((field) => field.required)
+    const requiredFields = visibleFields.filter((field) => 'required' in field && field.required)
     
     // Calculate which required fields are completed
     const completedFields: string[] = []
     const remainingFields: string[] = []
 
     requiredFields.forEach((field) => {
+      if (!field.name) return // Skip fields without names
+      
       const value = formValues[field.name]
       const isCompleted = isFieldCompleted(value)
       

@@ -26,6 +26,10 @@ export interface DataTableProps<T> {
   }
   rowKey: (row: T) => string
   onRowClick?: (row: T) => void
+  // Expandable row support
+  expandableContent?: (row: T) => React.ReactNode
+  expandedRows?: string[]
+  onToggleRow?: (rowKey: string) => void
 }
 
 /**
@@ -71,6 +75,9 @@ export function DataTable<T>({
   },
   rowKey,
   onRowClick,
+  expandableContent,
+  expandedRows = [],
+  onToggleRow: _onToggleRow, // Available for column components but not directly used here
 }: DataTableProps<T>) {
   // Helper function to generate responsive column classes
   const getColumnClasses = (column: Column<T>): string => {
@@ -176,44 +183,61 @@ export function DataTable<T>({
                 </td>
               </tr>
             ) : (
-              data.map((row) => (
-                <tr
-                  key={rowKey(row)}
-                  className={cn(
-                    'border-b transition-colors hover:bg-muted/50',
-                    onRowClick && 'cursor-pointer'
-                  )}
-                  onClick={onRowClick ? () => onRowClick(row) : undefined}
-                  onKeyDown={
-                    onRowClick
-                      ? (e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault()
-                            onRowClick(row)
+              data.flatMap((row) => {
+                const rowKeyValue = rowKey(row)
+                const isExpanded = expandedRows.includes(rowKeyValue)
+                
+                const mainRow = (
+                  <tr
+                    key={rowKeyValue}
+                    className={cn(
+                      'border-b transition-colors hover:bg-muted/50',
+                      onRowClick && 'cursor-pointer'
+                    )}
+                    onClick={onRowClick ? () => onRowClick(row) : undefined}
+                    onKeyDown={
+                      onRowClick
+                        ? (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault()
+                              onRowClick(row)
+                            }
                           }
-                        }
-                      : undefined
-                  }
-                  tabIndex={onRowClick ? 0 : undefined}
-                  role={onRowClick ? 'button' : undefined}
-                  aria-label={onRowClick ? `Click to select row` : undefined}
-                >
-                  {columns.map((column, index) => (
-                    <td
-                      key={index}
-                      className={cn('px-4 py-3 align-middle', getColumnClasses(column))}
-                    >
-                      {column.cell
-                        ? column.cell(row)
-                        : String(
-                            (row as Record<string | number | symbol, unknown>)[
-                              column.key as keyof T
-                            ] || ''
-                          )}
+                        : undefined
+                    }
+                    tabIndex={onRowClick ? 0 : undefined}
+                    role={onRowClick ? 'button' : undefined}
+                    aria-label={onRowClick ? `Click to select row` : undefined}
+                  >
+                    {columns.map((column, index) => (
+                      <td
+                        key={index}
+                        className={cn('px-4 py-3 align-middle', getColumnClasses(column))}
+                      >
+                        {column.cell
+                          ? column.cell(row)
+                          : String(
+                              (row as Record<string | number | symbol, unknown>)[
+                                column.key as keyof T
+                              ] || ''
+                            )}
+                      </td>
+                    ))}
+                  </tr>
+                )
+
+                const expandedRow = isExpanded && expandableContent ? (
+                  <tr key={`${rowKeyValue}-expanded`} className="border-b bg-gray-50/50">
+                    <td colSpan={columns.length} className="px-0 py-0">
+                      <div className="px-6 py-6">
+                        {expandableContent(row)}
+                      </div>
                     </td>
-                  ))}
-                </tr>
-              ))
+                  </tr>
+                ) : null
+
+                return expandedRow ? [mainRow, expandedRow] : [mainRow]
+              })
             )}
           </tbody>
         </table>

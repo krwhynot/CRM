@@ -1,5 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
+import { resolveOrganization } from '@/lib/organization-resolution'
+import { validateAuthentication } from '@/lib/error-utils'
 import type {
   ProductInsert,
   ProductUpdate,
@@ -7,6 +9,7 @@ import type {
 } from '@/types/entities'
 import type { ProductWithPrincipal } from '@/types/product-extensions'
 import type { Database } from '@/lib/database.types'
+import type { ProductWithPrincipalData } from '../components/ProductDialogs'
 
 // Query key factory
 export const productKeys = {
@@ -228,6 +231,98 @@ export function useCreateProduct() {
 
       if (error) throw error
       return transformProductData(data)
+    },
+    onSuccess: (newProduct) => {
+      // Invalidate all product lists
+      queryClient.invalidateQueries({ queryKey: productKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: productKeys.byPrincipal(newProduct.principal_id) })
+      queryClient.invalidateQueries({ queryKey: productKeys.byCategory(newProduct.category) })
+      queryClient.invalidateQueries({ queryKey: [...productKeys.all, 'seasonal'] })
+
+      // Add the new product to the cache
+      queryClient.setQueryData(productKeys.detail(newProduct.id), newProduct)
+    },
+  })
+}
+
+// Hook to create a product with bulletproof principal resolution
+export function useCreateProductWithPrincipal() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (productData: ProductWithPrincipalData) => {
+      try {
+        // Validate authentication upfront
+        const { user, error: authError } = await validateAuthentication(supabase)
+        if (authError || !user) {
+          throw new Error(authError || 'Authentication required to create product')
+        }
+
+        let principalId: string
+
+        // Case 1: Principal ID provided directly (existing principal)
+        if (productData.principal_id) {
+          principalId = productData.principal_id
+        }
+        // Case 2: Principal name provided (find or create)
+        else if (productData.principal_name) {
+          const principalResult = await resolveOrganization(
+            productData.principal_name,
+            'principal',
+            productData.principal_data
+          )
+          principalId = principalResult.id
+        }
+        // Case 3: Neither provided - error
+        else {
+          throw new Error('Either principal_id or principal_name must be provided')
+        }
+
+        // Prepare product data with resolved principal_id and audit fields
+        // Extract virtual fields from product data
+        const {
+          principal_name: _principal_name, // eslint-disable-line @typescript-eslint/no-unused-vars
+          principal_segment: _principal_segment, // eslint-disable-line @typescript-eslint/no-unused-vars
+          principal_phone: _principal_phone, // eslint-disable-line @typescript-eslint/no-unused-vars
+          principal_email: _principal_email, // eslint-disable-line @typescript-eslint/no-unused-vars
+          principal_website: _principal_website, // eslint-disable-line @typescript-eslint/no-unused-vars
+          principal_data: _principal_data, // eslint-disable-line @typescript-eslint/no-unused-vars
+          ...cleanProductData
+        } = productData
+
+        const finalProductData: ProductInsert = {
+          ...cleanProductData,
+          principal_id: principalId,
+          created_by: user.id,
+          updated_by: user.id,
+        }
+
+        // Create the product
+        const { data, error } = await supabase
+          .from('products')
+          .insert(finalProductData)
+          .select(
+            `
+            *,
+            principal:organizations!products_principal_id_fkey(*)
+          `
+          )
+          .single()
+
+        if (error) {
+          throw error
+        }
+
+        if (!data) {
+          throw new Error('Product creation returned no data')
+        }
+
+        return transformProductData(data)
+      } catch (error) {
+        // Enhanced error handling with context
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+        throw new Error(`Product creation failed: ${errorMessage}`)
+      }
     },
     onSuccess: (newProduct) => {
       // Invalidate all product lists

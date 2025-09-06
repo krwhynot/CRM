@@ -83,9 +83,13 @@ export function OrganizationForm({
     onSubmit(submitData)
   }
 
-  // Create field definitions using SimpleForm pattern
+  // Create field definitions using SimpleForm pattern with logical groupings
   const fields: SimpleFormField[] = [
-    // Basic Information
+    // Organization Info Section
+    {
+      type: 'heading',
+      label: 'Organization Info',
+    },
     {
       name: 'name',
       label: 'Organization Name',
@@ -118,7 +122,11 @@ export function OrganizationForm({
       placeholder: 'Select market segment',
     },
 
-    // Business Information
+    // Business Details Section
+    {
+      type: 'heading',
+      label: 'Business Details',
+    },
     {
       name: 'industry',
       label: 'Industry',
@@ -133,7 +141,11 @@ export function OrganizationForm({
       placeholder: 'Brief description of the organization...',
     },
 
-    // Contact Information
+    // Contact Information Section
+    {
+      type: 'heading',
+      label: 'Contact Information',
+    },
     {
       name: 'email',
       label: 'Primary Email',
@@ -153,7 +165,11 @@ export function OrganizationForm({
       placeholder: 'https://www.organization.com',
     },
 
-    // Address Information
+    // Address Information Section
+    {
+      type: 'heading',
+      label: 'Address Information',
+    },
     {
       name: 'address_line_1',
       label: 'Address Line 1',
@@ -191,7 +207,11 @@ export function OrganizationForm({
       placeholder: 'Country name',
     },
 
-    // Additional Information
+    // Additional Information Section
+    {
+      type: 'heading',
+      label: 'Additional Notes',
+    },
     {
       name: 'notes',
       label: 'Notes',

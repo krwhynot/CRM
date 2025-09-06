@@ -118,6 +118,47 @@ export function OpportunitiesTable({
     }
   }
 
+  // Expandable content renderer
+  const renderExpandableContent = (opportunity: OpportunityWithLastActivity) => (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div>
+          <h4 className="mb-2 font-medium text-gray-900">Opportunity Details</h4>
+          <div className="space-y-1 text-sm text-gray-600">
+            {opportunity.stage && <div>Stage: {opportunity.stage}</div>}
+            {opportunity.name && <div>Name: {opportunity.name}</div>}
+            {opportunity.created_at && (
+              <div>Created: {new Date(opportunity.created_at).toLocaleDateString()}</div>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <h4 className="mb-2 font-medium text-gray-900">Financial</h4>
+          <div className="space-y-1 text-sm text-gray-600">
+            {opportunity.estimated_value && (
+              <div>Estimated Value: ${opportunity.estimated_value}</div>
+            )}
+            {opportunity.probability && (
+              <div>Probability: {opportunity.probability}%</div>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <h4 className="mb-2 font-medium text-gray-900">Notes</h4>
+          <div className="space-y-1 text-sm text-gray-600">
+            {opportunity.notes ? (
+              <p>{opportunity.notes}</p>
+            ) : (
+              <span className="italic text-gray-400">No notes available</span>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
   // Column definitions for DataTable
   const opportunityColumns: DataTableColumn<OpportunityWithLastActivity>[] = [
     {
@@ -276,69 +317,22 @@ export function OpportunitiesTable({
         onSelectNone={handleSelectNoneFromToolbar}
       />
 
-      {/* Table Container with Row Expansion */}
-      <div className="space-y-0">
-        <DataTable<OpportunityWithLastActivity>
-          data={sortedOpportunities}
-          columns={opportunityColumns}
-          loading={isLoading}
-          rowKey={(opportunity) => opportunity.id}
-          empty={{
-            title: emptyMessage,
-            description: emptySubtext,
-          }}
-        />
-
-        {/* Expanded Row Details */}
-        {sortedOpportunities
+      {/* Table Container with Integrated Row Expansion */}
+      <DataTable<OpportunityWithLastActivity>
+        data={sortedOpportunities}
+        columns={opportunityColumns}
+        loading={isLoading}
+        rowKey={(opportunity) => opportunity.id}
+        expandableContent={renderExpandableContent}
+        expandedRows={sortedOpportunities
           .filter((opportunity) => isRowExpanded(opportunity.id))
-          .map((opportunity) => (
-            <div
-              key={`${opportunity.id}-details`}
-              className="-mt-px border-x border-b bg-gray-50/50 p-6"
-              style={{ marginTop: '-1px' }}
-            >
-              <div className="space-y-6">
-                {/* Opportunity Details */}
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  <div>
-                    <h4 className="mb-2 font-medium text-gray-900">Opportunity Details</h4>
-                    <div className="space-y-1 text-sm text-gray-600">
-                      {opportunity.stage && <div>Stage: {opportunity.stage}</div>}
-                      {opportunity.name && <div>Name: {opportunity.name}</div>}
-                      {opportunity.created_at && (
-                        <div>Created: {new Date(opportunity.created_at).toLocaleDateString()}</div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="mb-2 font-medium text-gray-900">Financial</h4>
-                    <div className="space-y-1 text-sm text-gray-600">
-                      {opportunity.estimated_value && (
-                        <div>Estimated Value: ${opportunity.estimated_value}</div>
-                      )}
-                      {opportunity.probability && (
-                        <div>Probability: {opportunity.probability}%</div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="mb-2 font-medium text-gray-900">Notes</h4>
-                    <div className="space-y-1 text-sm text-gray-600">
-                      {opportunity.notes ? (
-                        <p>{opportunity.notes}</p>
-                      ) : (
-                        <span className="italic text-gray-400">No notes available</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-      </div>
+          .map((opportunity) => opportunity.id)}
+        onToggleRow={toggleRowExpansion}
+        empty={{
+          title: emptyMessage,
+          description: emptySubtext,
+        }}
+      />
 
       {/* Bulk Delete Dialog */}
       <BulkDeleteDialog

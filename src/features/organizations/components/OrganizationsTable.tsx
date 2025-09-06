@@ -236,6 +236,69 @@ export function OrganizationsTable({
   // Helper component for empty cell display
   const EmptyCell = () => <span className="italic text-gray-400">Not provided</span>
 
+  // Expandable content renderer
+  const renderExpandableContent = (organization: Organization) => (
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {/* Contact Information */}
+      <div>
+        <h4 className="mb-2 font-medium text-gray-900">Contact Information</h4>
+        <div className="space-y-1 text-sm text-gray-600">
+          {organization.phone && <div>Phone: {organization.phone}</div>}
+          {organization.website && (
+            <div>
+              Website:{' '}
+              <a
+                href={organization.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:text-primary/80"
+              >
+                {organization.website}
+              </a>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Address Information */}
+      <div>
+        <h4 className="mb-2 font-medium text-gray-900">Address</h4>
+        <div className="space-y-1 text-sm text-gray-600">
+          {organization.address_line_1 && <div>{organization.address_line_1}</div>}
+          {organization.address_line_2 && <div>{organization.address_line_2}</div>}
+          <div>
+            {organization.city && organization.state_province
+              ? `${organization.city}, ${organization.state_province}`
+              : organization.city || organization.state_province || 'Not provided'}
+          </div>
+          {organization.postal_code && <div>{organization.postal_code}</div>}
+        </div>
+      </div>
+
+      {/* Additional Details */}
+      <div>
+        <h4 className="mb-2 font-medium text-gray-900">Details</h4>
+        <div className="space-y-1 text-sm text-gray-600">
+          <div>
+            Priority: <span className="font-medium">{organization.priority}</span>
+          </div>
+          <div>
+            Type: <span className="font-medium">{organization.type}</span>
+          </div>
+          <div>
+            Segment: <span className="font-medium">{organization.segment}</span>
+          </div>
+          {organization.description && (
+            <div className="mt-2">
+              <span className="font-medium">Description:</span>
+              <p className="mt-1">{organization.description}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+
   // Column definitions for DataTable
   const organizationColumns: DataTableColumn<Organization>[] = [
     {
@@ -378,96 +441,28 @@ export function OrganizationsTable({
         onSelectNone={handleSelectNoneFromToolbar}
       />
 
-      {/* Table Container with Row Expansion */}
-      <div className="space-y-0">
-        <DataTable<Organization>
-          data={filteredOrganizations}
-          columns={organizationColumns}
-          loading={loading}
-          rowKey={(organization) => organization.id}
-          empty={{
-            title:
-              activeFilter !== 'all'
-                ? 'No organizations match your criteria'
-                : 'No organizations found',
-            description:
-              activeFilter !== 'all'
-                ? 'Try adjusting your filters'
-                : 'Get started by adding your first organization',
-          }}
-        />
-
-        {/* Expanded Row Details */}
-        {filteredOrganizations
+      {/* Table Container with Integrated Row Expansion */}
+      <DataTable<Organization>
+        data={filteredOrganizations}
+        columns={organizationColumns}
+        loading={loading}
+        rowKey={(organization) => organization.id}
+        expandableContent={renderExpandableContent}
+        expandedRows={filteredOrganizations
           .filter((organization) => isRowExpanded(organization.id))
-          .map((organization) => (
-            <div
-              key={`${organization.id}-details`}
-              className="-mt-px border-x border-b bg-gray-50/50 p-6"
-              style={{ marginTop: '-1px' }}
-            >
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {/* Contact Information */}
-                <div>
-                  <h4 className="mb-2 font-medium text-gray-900">Contact Information</h4>
-                  <div className="space-y-1 text-sm text-gray-600">
-                    {organization.phone && <div>Phone: {organization.phone}</div>}
-                    {organization.website && (
-                      <div>
-                        Website:{' '}
-                        <a
-                          href={organization.website}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary hover:text-primary/80"
-                        >
-                          {organization.website}
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Address Information */}
-                <div>
-                  <h4 className="mb-2 font-medium text-gray-900">Address</h4>
-                  <div className="space-y-1 text-sm text-gray-600">
-                    {organization.address_line_1 && <div>{organization.address_line_1}</div>}
-                    {organization.address_line_2 && <div>{organization.address_line_2}</div>}
-                    <div>
-                      {organization.city && organization.state_province
-                        ? `${organization.city}, ${organization.state_province}`
-                        : organization.city || organization.state_province || 'Not provided'}
-                    </div>
-                    {organization.postal_code && <div>{organization.postal_code}</div>}
-                  </div>
-                </div>
-
-                {/* Additional Details */}
-                <div>
-                  <h4 className="mb-2 font-medium text-gray-900">Details</h4>
-                  <div className="space-y-1 text-sm text-gray-600">
-                    <div>
-                      Priority: <span className="font-medium">{organization.priority}</span>
-                    </div>
-                    <div>
-                      Type: <span className="font-medium">{organization.type}</span>
-                    </div>
-                    <div>
-                      Segment: <span className="font-medium">{organization.segment}</span>
-                    </div>
-                    {organization.description && (
-                      <div className="mt-2">
-                        <span className="font-medium">Description:</span>
-                        <p className="mt-1">{organization.description}</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-      </div>
+          .map((organization) => organization.id)}
+        onToggleRow={toggleRowExpansion}
+        empty={{
+          title:
+            activeFilter !== 'all'
+              ? 'No organizations match your criteria'
+              : 'No organizations found',
+          description:
+            activeFilter !== 'all'
+              ? 'Try adjusting your filters'
+              : 'Get started by adding your first organization',
+        }}
+      />
 
       {/* Results Summary */}
       {filteredOrganizations.length > 0 && (

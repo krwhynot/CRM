@@ -140,6 +140,39 @@ export function ProductsTable({
   // Helper component for empty cell display
   const EmptyCell = () => <span className="italic text-gray-400">Not provided</span>
 
+  // Expandable content renderer
+  const renderExpandableContent = (product: ProductWithPrincipal) => (
+    <div className="space-y-6">
+      {/* Product Description */}
+      <div>
+        <h4 className="mb-2 font-medium text-gray-900">Description</h4>
+        <p className="text-sm text-gray-600">
+          {product.description || 'No description available'}
+        </p>
+      </div>
+
+      {/* Product Specifications */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div>
+          <h4 className="mb-2 font-medium text-gray-900">Specifications</h4>
+          <div className="space-y-1 text-sm text-gray-600">
+            {product.unit_of_measure && <div>Unit: {product.unit_of_measure}</div>}
+            {product.category && <div>Category: {product.category}</div>}
+          </div>
+        </div>
+
+        <div>
+          <h4 className="mb-2 font-medium text-gray-900">Storage & Handling</h4>
+          <div className="space-y-1 text-sm text-gray-600">
+            {product.description && (
+              <div>Additional Info: {product.description}</div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
   // Column definitions for DataTable
   const productColumns: DataTableColumn<ProductWithPrincipal>[] = [
     {
@@ -274,63 +307,25 @@ export function ProductsTable({
         onSelectNone={handleSelectNoneFromToolbar}
       />
 
-      {/* Table Container with Row Expansion */}
-      <div className="space-y-0">
-        <DataTable<ProductWithPrincipal>
-          data={filteredProducts}
-          columns={productColumns}
-          loading={loading}
-          rowKey={(product) => product.id}
-          empty={{
-            title: activeFilter !== 'all' ? 'No products match your criteria' : 'No products found',
-            description:
-              activeFilter !== 'all'
-                ? 'Try adjusting your filters'
-                : 'Get started by adding your first product',
-          }}
-        />
-
-        {/* Expanded Row Details */}
-        {filteredProducts
+      {/* Table Container with Integrated Row Expansion */}
+      <DataTable<ProductWithPrincipal>
+        data={filteredProducts}
+        columns={productColumns}
+        loading={loading}
+        rowKey={(product) => product.id}
+        expandableContent={renderExpandableContent}
+        expandedRows={filteredProducts
           .filter((product) => isRowExpanded(product.id))
-          .map((product) => (
-            <div
-              key={`${product.id}-details`}
-              className="-mt-px border-x border-b border-l-4 border-l-mfb-green bg-mfb-sage-tint p-6 transition-all duration-300 ease-out"
-              style={{ marginTop: '-1px' }}
-            >
-              <div className="space-y-6">
-                {/* Product Description */}
-                <div>
-                  <h4 className="mb-2 font-medium text-gray-900">Description</h4>
-                  <p className="text-sm text-gray-600">
-                    {product.description || 'No description available'}
-                  </p>
-                </div>
-
-                {/* Product Specifications */}
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  <div>
-                    <h4 className="mb-2 font-medium text-gray-900">Specifications</h4>
-                    <div className="space-y-1 text-sm text-gray-600">
-                      {product.unit_of_measure && <div>Unit: {product.unit_of_measure}</div>}
-                      {product.category && <div>Category: {product.category}</div>}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="mb-2 font-medium text-gray-900">Storage & Handling</h4>
-                    <div className="space-y-1 text-sm text-gray-600">
-                      {product.description && (
-                        <div>Additional Info: {product.description}</div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-      </div>
+          .map((product) => product.id)}
+        onToggleRow={toggleRowExpansion}
+        empty={{
+          title: activeFilter !== 'all' ? 'No products match your criteria' : 'No products found',
+          description:
+            activeFilter !== 'all'
+              ? 'Try adjusting your filters'
+              : 'Get started by adding your first product',
+        }}
+      />
 
       {/* Results Summary */}
       {filteredProducts.length > 0 && (

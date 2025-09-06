@@ -12,7 +12,7 @@ import {
   getFormSpacingClasses,
   getFormButtonClasses,
 } from '@/lib/utils/form-utils'
-import { FormFieldNew, type FieldConfig } from './FormField'
+import { FormFieldNew, type RegularFieldConfig } from './FormField'
 import { FormSubmitButton } from './FormSubmitButton'
 import type { AnyObjectSchema } from 'yup'
 import { cn } from '@/lib/utils'
@@ -36,9 +36,8 @@ export interface FormSection {
   className?: string
 }
 
-export interface BusinessFormField extends FieldConfig {
-  name: string
-  label: string
+export interface BusinessFormField extends RegularFieldConfig {
+  name: string // Required for business form fields
   section?: string // Which section this field belongs to
   dependency?: {
     field: string

@@ -1,26 +1,28 @@
 import { useCallback } from 'react'
 import { toast } from '@/lib/toast-styles'
-import { useCreateProduct, useUpdateProduct, useDeleteProduct } from './useProducts'
-import type { Product, ProductInsert, ProductUpdate } from '@/types/entities'
+import { useCreateProductWithPrincipal, useUpdateProduct, useDeleteProduct } from './useProducts'
+import type { Product, ProductUpdate } from '@/types/entities'
+import type { ProductWithPrincipalData } from '../components/ProductDialogs'
 
 export const useProductsPageActions = (
   closeCreateDialog: () => void,
   closeEditDialog: () => void,
   closeDeleteDialog: () => void
 ) => {
-  const createProductMutation = useCreateProduct()
+  const createProductMutation = useCreateProductWithPrincipal()
   const updateProductMutation = useUpdateProduct()
   const deleteProductMutation = useDeleteProduct()
 
   const handleCreate = useCallback(
-    async (data: ProductInsert) => {
+    async (data: ProductWithPrincipalData) => {
       try {
         await createProductMutation.mutateAsync(data)
         closeCreateDialog()
         toast.success('Product created successfully!')
       } catch (error) {
         // Failed to create product - error handled
-        toast.error('Failed to create product. Please try again.')
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+        toast.error(`Failed to create product: ${errorMessage}`)
       }
     },
     [createProductMutation, closeCreateDialog]
