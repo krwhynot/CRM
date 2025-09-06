@@ -62,7 +62,8 @@ export const contactSchema = yup.object({
   organization_id: yup
     .string()
     .uuid('Invalid organization ID')
-    .required('Organization is required'),
+    .nullable()
+    .transform(FormTransforms.nullableString),
 
   purchase_influence: yup
     .string()
@@ -142,6 +143,61 @@ export const contactSchema = yup.object({
     .of(yup.string().uuid('Invalid principal organization ID'))
     .default([])
     .transform(FormTransforms.optionalArray),
+
+  // ORGANIZATION MODE FIELDS for new organization creation
+  organization_mode: yup
+    .string()
+    .oneOf(['existing', 'new'] as const, 'Invalid organization mode')
+    .default('existing'),
+
+  organization_name: yup
+    .string()
+    .max(255, 'Organization name must be 255 characters or less')
+    .nullable()
+    .transform(FormTransforms.nullableString)
+    .when('organization_mode', {
+      is: 'new',
+      then: (schema) => schema.required('Organization name is required when creating a new organization'),
+    }),
+
+  organization_type: yup
+    .string()
+    .oneOf(
+      ['customer', 'principal', 'distributor', 'prospect', 'vendor'] as const,
+      'Invalid organization type'
+    )
+    .nullable()
+    .transform(FormTransforms.nullableString)
+    .when('organization_mode', {
+      is: 'new',
+      then: (schema) => schema.required('Organization type is required when creating a new organization'),
+    }),
+
+  organization_phone: yup
+    .string()
+    .max(50, 'Phone must be 50 characters or less')
+    .nullable()
+    .transform(FormTransforms.nullablePhone),
+
+  organization_email: yup
+    .string()
+    .email('Invalid email address')
+    .max(255, 'Email must be 255 characters or less')
+    .nullable()
+    .transform(FormTransforms.nullableEmail),
+
+  organization_website: yup
+    .string()
+    .url('Invalid website URL')
+    .max(500, 'Website must be 500 characters or less')
+    .nullable()
+    .transform(FormTransforms.nullableUrl),
+
+  organization_notes: yup
+    .string()
+    .max(500, 'Notes must be 500 characters or less')
+    .nullable()
+    .transform(FormTransforms.nullableString),
 })
 
 // Type inference from validation schema

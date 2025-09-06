@@ -72,3 +72,17 @@ tests.backup.*
 *-post-migration.*
 type-errors.log
 emergency-*.sh
+
+# Temporary development files that should not clutter root
+*.png
+*.jpg
+*.jpeg
+*.gif
+*-report*.md
+*-report*.html
+quality-gates-report-*.md
+accessibility-*.md
+accessibility-*.html
+README-*.md
+POST_MIGRATION_*.md
+*-template.md

@@ -1,7 +1,8 @@
 import { StandardDialog } from '@/components/ui/StandardDialog'
-import { EnhancedContactForm } from './EnhancedContactForm'
+import { ContactForm } from './ContactForm'
 import type { Contact, ContactUpdate } from '@/types/entities'
 import type { ContactWithOrganizationData } from '../hooks/useContacts'
+import type { ContactFormData } from '@/types/contact.types'
 import { FormDataTransformer } from '@/lib/form-data-transformer'
 
 interface ContactsDialogsProps {
@@ -19,6 +20,45 @@ interface ContactsDialogsProps {
   isCreating: boolean
   isUpdating: boolean
   isDeleting: boolean
+}
+
+// Helper function to convert ContactFormData to ContactWithOrganizationData
+const transformFormData = (data: ContactFormData): ContactWithOrganizationData => {
+  const {
+    preferred_principals,
+    organization_mode,
+    organization_name,
+    organization_type,
+    organization_phone,
+    organization_email,
+    organization_website,
+    organization_notes,
+    organization_id, // Extract to handle separately
+    ...contactData
+  } = data
+
+  let result: ContactWithOrganizationData = {
+    ...contactData,
+    preferred_principals: preferred_principals?.filter((id): id is string => typeof id === 'string' && id.length > 0) || []
+  }
+
+  // Handle organization data based on mode
+  if (organization_mode === 'existing') {
+    // Existing organization - use organization_id (convert null to undefined)
+    result.organization_id = organization_id || undefined
+  } else if (organization_mode === 'new') {
+    // New organization - use organization details
+    result.organization_name = organization_name || undefined
+    result.organization_type = organization_type as any || undefined
+    result.organization_data = {
+      phone: organization_phone || null,
+      email: organization_email || null,
+      website: organization_website || null,
+      notes: organization_notes || null,
+    }
+  }
+
+  return result
 }
 
 export const ContactsDialogs = ({
@@ -48,7 +88,7 @@ export const ContactsDialogs = ({
         size="lg"
         scroll="content"
       >
-        <EnhancedContactForm onSubmit={onCreateSubmit} loading={isCreating} />
+        <ContactForm onSubmit={(data) => onCreateSubmit(transformFormData(data))} loading={isCreating} />
       </StandardDialog>
 
       {/* Edit Dialog */}
@@ -61,9 +101,9 @@ export const ContactsDialogs = ({
         scroll="content"
       >
         {selectedContact && (
-          <EnhancedContactForm
+          <ContactForm
             initialData={FormDataTransformer.toFormData(selectedContact)}
-            onSubmit={(data) => onEditSubmit(selectedContact, data as ContactUpdate)}
+            onSubmit={(data) => onEditSubmit(selectedContact, transformFormData(data) as ContactUpdate)}
             loading={isUpdating}
           />
         )}

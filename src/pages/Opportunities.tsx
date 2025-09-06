@@ -25,14 +25,6 @@ function OpportunitiesPage() {
         <OpportunitiesTable
           onEdit={pageState.handleEditOpportunity}
           onDelete={opportunityActions.handleDeleteOpportunity}
-          onAddNew={() => pageState.setIsCreateDialogOpen(true)}
-          onAddInteraction={(opportunityId) => {
-            pageState.setSelectedOpportunityId(opportunityId)
-            pageState.handleAddInteraction()
-          }}
-          onEditInteraction={pageState.handleEditInteraction}
-          onDeleteInteraction={interactionActions.handleDeleteInteraction}
-          onInteractionItemClick={interactionActions.handleInteractionItemClick}
         />
 
         <OpportunityDialogs

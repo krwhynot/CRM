@@ -16,33 +16,19 @@ import { Button } from '@/components/ui/button'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn, formatTimeAgo, isOpportunityStalled, getStalledDays } from '@/lib/utils'
-import type { OpportunityFilters, InteractionWithRelations } from '@/types/entities'
+import type { OpportunityFilters } from '@/types/entities'
 import type { OpportunityWithLastActivity } from '@/types/opportunity.types'
 
 interface OpportunitiesTableProps {
   filters?: OpportunityFilters
   onEdit?: (opportunity: OpportunityWithLastActivity) => void
   onDelete?: (opportunity: OpportunityWithLastActivity) => void
-  onView?: (opportunity: OpportunityWithLastActivity) => void
-  onAddNew?: () => void
-
-  // Activity handlers for inline details
-  onAddInteraction?: (opportunityId: string) => void
-  onEditInteraction?: (interaction: InteractionWithRelations) => void
-  onDeleteInteraction?: (interaction: InteractionWithRelations) => void
-  onInteractionItemClick?: (interaction: InteractionWithRelations) => void
 }
 
 export function OpportunitiesTable({
   filters,
   onEdit,
   onDelete,
-  onView: _onView, // eslint-disable-line @typescript-eslint/no-unused-vars
-  onAddNew: _onAddNew, // eslint-disable-line @typescript-eslint/no-unused-vars
-  onAddInteraction: _onAddInteraction, // eslint-disable-line @typescript-eslint/no-unused-vars
-  onEditInteraction: _onEditInteraction, // eslint-disable-line @typescript-eslint/no-unused-vars
-  onDeleteInteraction: _onDeleteInteraction, // eslint-disable-line @typescript-eslint/no-unused-vars
-  onInteractionItemClick: _onInteractionItemClick, // eslint-disable-line @typescript-eslint/no-unused-vars
 }: OpportunitiesTableProps) {
   // Bulk delete state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)

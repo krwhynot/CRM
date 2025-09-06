@@ -19,7 +19,7 @@ export function ContactForm({
 }: ContactFormProps) {
   const { data: organizations = [] } = useOrganizations()
 
-  // Create field definitions using new SimpleForm pattern
+  // Create field definitions using SimpleForm pattern
   const fields: SimpleFormField[] = [
     // Basic Information
     {
@@ -61,18 +61,75 @@ export function ContactForm({
       placeholder: '(555) 123-4567',
     },
 
-    // Organization Assignment
+    // Organization Mode Selection
+    {
+      name: 'organization_mode',
+      label: 'Organization Setup',
+      type: 'radio',
+      options: [
+        { value: 'existing', label: 'Select Existing Organization' },
+        { value: 'new', label: 'Create New Organization' },
+      ],
+    },
+
+    // Existing Organization Selection (shown when mode = 'existing')
     {
       name: 'organization_id',
-      label: 'Organization',
+      label: 'Select Organization',
       type: 'select',
-      required: true,
       options: organizations.map((org) => ({
         value: org.id,
         label: org.name,
         description: `${org.type} - ${org.segment || 'No segment'}`,
       })),
       placeholder: 'Select organization',
+      condition: (values) => values.organization_mode === 'existing',
+    },
+
+    // New Organization Fields (shown when mode = 'new')
+    {
+      name: 'organization_name',
+      label: 'Organization Name',
+      type: 'text',
+      required: true,
+      placeholder: 'Enter organization name',
+      condition: (values) => values.organization_mode === 'new',
+    },
+    {
+      name: 'organization_type',
+      label: 'Organization Type',
+      type: 'select',
+      required: true,
+      options: [
+        { value: 'customer', label: 'Customer', description: 'Restaurant or food service establishment' },
+        { value: 'principal', label: 'Principal', description: 'Manufacturer or brand' },
+        { value: 'distributor', label: 'Distributor', description: 'Distribution company' },
+        { value: 'prospect', label: 'Prospect', description: 'Potential customer' },
+        { value: 'vendor', label: 'Vendor', description: 'Supplier or service provider' },
+      ],
+      placeholder: 'Select organization type',
+      condition: (values) => values.organization_mode === 'new',
+    },
+    {
+      name: 'organization_phone',
+      label: 'Organization Phone',
+      type: 'tel',
+      placeholder: '(555) 123-4567',
+      condition: (values) => values.organization_mode === 'new',
+    },
+    {
+      name: 'organization_email',
+      label: 'Organization Email',
+      type: 'email',
+      placeholder: 'contact@organization.com',
+      condition: (values) => values.organization_mode === 'new',
+    },
+    {
+      name: 'organization_website',
+      label: 'Organization Website',
+      type: 'url',
+      placeholder: 'https://www.organization.com',
+      condition: (values) => values.organization_mode === 'new',
     },
 
     // Role Information
@@ -159,10 +216,15 @@ export function ContactForm({
     },
   ]
 
-  // Handle preselected organization
-  const enhancedInitialData = preselectedOrganization
-    ? { ...initialData, organization_id: preselectedOrganization }
-    : initialData
+  // Handle preselected organization and set default organization mode
+  const enhancedInitialData = {
+    organization_mode: 'existing' as 'existing' | 'new', // Default to existing organization mode
+    ...initialData,
+    ...(preselectedOrganization && { 
+      organization_id: preselectedOrganization,
+      organization_mode: 'existing' as 'existing' | 'new'
+    }),
+  }
 
   return (
     <SimpleForm<ContactFormData>
@@ -173,6 +235,7 @@ export function ContactForm({
       loading={loading}
       submitLabel={submitLabel}
       showReset={true}
+      showProgress={true}
     />
   )
 }

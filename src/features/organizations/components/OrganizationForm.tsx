@@ -210,6 +210,7 @@ export function OrganizationForm({
       loading={loading}
       submitLabel={submitLabel}
       showReset={true}
+      showProgress={true}
     />
   )
 }

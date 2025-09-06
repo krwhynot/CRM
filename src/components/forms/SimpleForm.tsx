@@ -10,6 +10,8 @@ import {
 } from '@/lib/utils/form-utils'
 import { FormFieldNew, type FieldConfig } from './FormField'
 import { FormSubmitButton } from './FormSubmitButton'
+import { FormProgressBar } from './FormProgressBar'
+import { useFormProgress } from './hooks/useFormProgress'
 import type { AnyObjectSchema } from 'yup'
 import { cn } from '@/lib/utils'
 
@@ -33,6 +35,7 @@ interface SimpleFormProps<T extends FieldValues = FieldValues> {
   loading?: boolean
   submitLabel?: string
   showReset?: boolean
+  showProgress?: boolean
   className?: string
   fieldClassName?: string
 }
@@ -45,6 +48,7 @@ export function SimpleForm<T extends FieldValues = FieldValues>({
   loading = false,
   submitLabel = 'Save',
   showReset = true,
+  showProgress = false,
   className,
   fieldClassName,
 }: SimpleFormProps<T>) {
@@ -59,6 +63,12 @@ export function SimpleForm<T extends FieldValues = FieldValues>({
     mode: 'onBlur', // Better UX - validate on blur, not every keystroke
   })
 
+  // Progress tracking
+  const progress = useFormProgress({
+    control: form.control,
+    fields,
+  })
+
   const handleSubmit = async (data: T) => {
     await onSubmit(data)
   }
@@ -70,18 +80,34 @@ export function SimpleForm<T extends FieldValues = FieldValues>({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className={cn(spacingClasses, className)}>
+        {/* Progress Indicator */}
+        {showProgress && (
+          <FormProgressBar
+            completed={progress.completed}
+            total={progress.total}
+            className="mb-6"
+          />
+        )}
+
         {/* Form Fields */}
         <div className={cn(gridClasses, spacingClasses)}>
-          {fields.map((field) => (
-            <FormFieldNew
-              key={field.name}
-              control={form.control}
-              name={field.name as never}
-              config={field}
-              disabled={loading}
-              className={fieldClassName}
-            />
-          ))}
+          {fields.map((field) => {
+            // Check conditional visibility
+            if (field.condition && !field.condition(form.watch())) {
+              return null
+            }
+            
+            return (
+              <FormFieldNew
+                key={field.name}
+                control={form.control}
+                name={field.name as never}
+                config={field}
+                disabled={loading}
+                className={fieldClassName}
+              />
+            )
+          })}
         </div>
 
         {/* Form Actions */}

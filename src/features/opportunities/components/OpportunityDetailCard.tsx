@@ -91,7 +91,6 @@ export const OpportunityDetailCard = ({
           onItemClick={onInteractionItemClick}
           onEditInteraction={onEditInteraction}
           onDeleteInteraction={onDeleteInteraction}
-          opportunityId={opportunity.id}
           loading={activitiesLoading}
         />
       </CardContent>

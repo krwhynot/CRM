@@ -16,7 +16,6 @@ export interface InteractionTimelineProps extends React.HTMLAttributes<HTMLDivEl
   onItemClick: (interaction: InteractionWithRelations) => void
   onEditInteraction: (interaction: InteractionWithRelations) => void
   onDeleteInteraction: (interaction: InteractionWithRelations) => void
-  opportunityId: string
   loading?: boolean
   className?: string
 }
@@ -29,7 +28,6 @@ export const InteractionTimeline = forwardRef<HTMLDivElement, InteractionTimelin
       onItemClick,
       onEditInteraction,
       onDeleteInteraction,
-      opportunityId: _opportunityId, // eslint-disable-line @typescript-eslint/no-unused-vars
       loading = false,
       className,
       ...props

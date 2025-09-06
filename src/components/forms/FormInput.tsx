@@ -112,7 +112,6 @@ export const FormInput = React.forwardRef<HTMLElement, FormInputProps>(
     case 'radio':
       return (
         <RadioGroup
-          ref={ref as React.RefObject<HTMLDivElement>}
           value={stringValue}
           onValueChange={(val) => onChange?.(val || null)}
           disabled={commonDisabled}

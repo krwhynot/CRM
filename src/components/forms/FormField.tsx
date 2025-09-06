@@ -25,6 +25,7 @@ export interface FieldConfig extends InputConfig {
   required?: boolean
   description?: string
   validation?: Record<string, unknown> // Yup schema validation
+  condition?: (values: FieldValues) => boolean // Conditional field visibility
 }
 
 interface FormFieldProps<T extends FieldValues = FieldValues> {

@@ -8,6 +8,8 @@ export { FormSubmitButton } from './FormSubmitButton'
 
 // Form Builders
 export { SimpleForm, type SimpleFormField } from './SimpleForm'
+export { FormProgressBar } from './FormProgressBar'
+export { useFormProgress } from './hooks/useFormProgress'
 
 // Specialized Components
 export { EntitySelect } from './EntitySelect'

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, type ChangeEvent } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Select,
@@ -319,7 +319,7 @@ export function TemplateMatchingImport() {
   // File input handlers
   const handleBrowseClick = () => fileInputRef.current?.click()
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) handleFileUpload(file)
   }

@@ -205,6 +205,7 @@ export function OpportunityForm({
       loading={loading}
       submitLabel={submitLabel}
       showReset={true}
+      showProgress={true}
     />
   )
 }
