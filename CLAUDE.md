@@ -13,7 +13,76 @@ The codebase contains one main application:
 
 ## Development Commands
 
-### Root Application (Primary)
+### Essential Commands
+```bash
+# Development & Building
+npm run dev                    # Start development server (Vite)
+npm run build                  # Production build with optimizations
+npm run preview                # Preview production build locally
+npm run type-check             # TypeScript compilation check
+npm run lint                   # ESLint with architectural rules (max 20 warnings)
+npm run format                 # Prettier code formatting
+npm run validate               # Complete pipeline: type-check + lint + build
+
+# Quality & Architecture
+npm run quality-gates          # 6-stage comprehensive validation pipeline
+npm run validate:architecture  # Architecture pattern validation
+npm run validate:performance   # Performance baseline validation
+npm run lint:architecture      # Custom architectural lint rules
+npm run dev:health            # Development health check
+npm run dev:fix               # Auto-fix common development issues
+
+# Testing
+npm test                      # Run all MCP tests
+npm run test:backend          # Vitest unit/integration tests
+npm run test:backend:coverage # Backend tests with coverage
+npm run test:architecture     # Architecture boundary validation
+npm run test:db              # Database-specific tests
+npm run test:security        # Security validation tests
+
+# Bundle Analysis & Performance  
+npm run analyze              # Bundle visualizer with gzip analysis
+npm run optimize:performance # Performance optimization analysis
+npm run clean                # Clean build artifacts
+npm run fresh                # Clean install (removes node_modules)
+
+# Documentation
+npm run docs:lint           # Markdown linting
+npm run docs:validate       # Full documentation validation
+```
+
+### Single Test Execution
+```bash
+# Run specific test suites
+npm run test:auth           # Authentication flow tests
+npm run test:crud           # CRUD operation tests  
+npm run test:dashboard      # Dashboard functionality tests
+npm run test:mobile         # Mobile/responsive tests
+npm run test:performance    # Performance benchmark tests
+npm run test:integrity      # Data integrity validation
+
+# Architecture-specific tests
+npm run test:architecture:state      # State boundary validation
+npm run test:architecture:components # Component placement rules
+npm run test:architecture:performance # Performance patterns
+npm run test:architecture:eslint     # Custom ESLint rule validation
+```
+
+### Development Workflow Commands
+```bash
+# Pre-commit validation
+npm run hooks:install       # Install git hooks for validation
+npm run validate           # Run before committing (required)
+
+# Technical debt management  
+npm run debt:audit         # Technical debt analysis
+npm run debt:scan          # Scan for debt patterns
+npm run debt:report        # Generate debt report
+
+# UI compliance validation
+npm run test:ui-compliance    # UI design token compliance
+npm run validate:design-tokens # Design system validation
+```
 
 ## Architecture Guidelines
 
@@ -104,6 +173,41 @@ Provides consistent CRUD page structure across all entity types:
 - 40% reduction in duplicate page-level code
 - Unified responsive design patterns
 
+#### DataTable Component Architecture
+
+**Location**: `/src/components/ui/DataTable.tsx`
+
+The unified DataTable component consolidates all table functionality with TypeScript generics and expandable row support:
+
+```typescript
+// ✅ Standard table usage
+<DataTable<Organization>
+  data={organizations}
+  columns={columns}
+  rowKey={(row) => row.id}
+  loading={isLoading}
+/>
+
+// ✅ With expandable rows (integrated inline)
+<DataTable<Organization>
+  data={organizations}
+  columns={columns}
+  rowKey={(row) => row.id}
+  expandableContent={(row) => <DetailComponent {...row} />}
+  expandedRows={expandedRowIds}
+  onToggleRow={toggleRow}
+/>
+```
+
+**Key Features**:
+- **TypeScript Generics**: Full type safety for any entity type
+- **Expandable Rows**: Inline expansion within table structure (not separate DOM elements)
+- **Responsive Design**: Hide/show columns based on screen size via `hidden` prop
+- **Accessibility**: Full ARIA support, keyboard navigation, screen reader compatible
+- **Loading States**: Built-in skeleton loading with proper animations
+
+**Migration Pattern**: All table components (Organizations, Contacts, Products, Opportunities) use this unified pattern with expandable content rendered as additional `<tr>` elements using `flatMap()` for seamless DOM integration.
+
 ### Key Design Patterns
 
 1. **Component Composition**: Use shadcn/ui primitives wrapped in CRM-specific components
@@ -141,6 +245,30 @@ The system is built around 5 core entities:
 - **Import Alias**: Use `@/*` path alias for all imports (`@/components`, `@/lib`, `@/features`)
 - **Supabase Client**: Import from `@/lib/supabase` - pre-configured with proper auth settings
 - **Bundle Optimization**: Vite config includes code splitting and tree-shaking optimizations
+
+### Build Configuration & Performance
+
+**Vite Configuration** (`vite.config.ts`):
+- **Manual Chunks**: Optimized bundle splitting (vendor, ui, router, supabase, query)
+- **Tree Shaking**: Dead code elimination enabled
+- **Console Removal**: All console statements dropped in production
+- **Bundle Visualizer**: Integrated analysis with gzip size reporting
+- **Chunk Size Limit**: 1000KB warning threshold
+- **Path Aliases**: `@/` resolves to `./src/`
+
+**Production Optimizations**:
+- Bundle size kept under 3MB total
+- Manual chunk splitting for optimal caching
+- No source maps in production builds
+- SPA routing configured for proper fallback
+- Performance monitoring via Web Vitals integration
+
+**Environment Variables**:
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key  
+NODE_ENV=development  # Only development supported in .env
+```
 
 ## State Management Architecture
 
@@ -333,9 +461,19 @@ See `/docs/MCP_TOOL_REFERENCE_GUIDE.md` for comprehensive usage guidelines.
 - `npm run test:architecture` - Architecture validation (state boundaries, component placement)
 
 **Testing Infrastructure:**
-- **Backend Testing**: Vitest for unit/integration tests
+- **Backend Testing**: Vitest for unit/integration tests (`tests/backend/`)
+- **Architecture Testing**: Custom validation rules (`tests/architecture/`)
+- **MCP Testing**: Node.js-based integration tests (`tests/mcp/`)
 - **E2E Testing**: Playwright MCP tool only (no full Playwright installation)
 - **Production Monitoring**: `/scripts/production-monitor.sh`
+
+**Testing Architecture Patterns**:
+- **State Boundary Validation**: Ensures TanStack Query (server) vs Zustand (client) separation
+- **Component Placement Rules**: Validates feature vs shared component organization
+- **Performance Benchmarks**: Database query performance (<5ms), bundle size (<3MB)  
+- **ESLint Rule Testing**: Custom architectural rules validation with 80%+ health score requirement
+- **Security Testing**: RLS policy validation, auth flow testing
+- **Data Integrity Testing**: Soft delete preservation, UUID consistency, referential integrity
 
 #### Quality Gates (run-quality-gates.sh)
 1. **TypeScript Compilation** - Strict type checking
