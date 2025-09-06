@@ -1,31 +1,17 @@
 // Form Architecture: Modern Dialog + Form System
-// Use StandardDialog -> FormCard -> FormField/SimpleForm/BusinessForm pattern
+// Use StandardDialog -> SimpleForm pattern
 
-// Core Form Components
-export { FormCard } from './FormCard'
+// Core Form Components  
 export { FormFieldNew } from './FormField'
 export { FormInput } from './FormInput'
 export { FormSubmitButton } from './FormSubmitButton'
 
 // Form Builders
 export { SimpleForm, type SimpleFormField } from './SimpleForm'
-export { BusinessForm, type FormSection, type BusinessFormField } from './BusinessForm'
 
 // Specialized Components
 export { EntitySelect } from './EntitySelect'
-export {
-  ProgressiveDetails,
-  FormSectionDetails,
-  OptionalFields,
-  AdvancedOptions,
-  ContactDetails,
-  OrganizationDetails,
-  AddressDetails,
-} from './ProgressiveDetails'
-
-// Validation & Enhancement Components
-export { FormValidationFeedback } from './FormValidationFeedback'
-export { EnhancedFormField } from './EnhancedFormField'
+export { ProgressiveDetails } from './ProgressiveDetails'
 
 // All legacy form components have been successfully migrated
 
@@ -34,10 +20,5 @@ export { useProgressiveDetails } from '@/hooks/useProgressiveDetails'
 
 // Type Exports
 export type { EntityOption, EntitySelectProps } from './EntitySelect'
-export type {
-  ProgressiveDetailsProps,
-  FormSectionDetailsProps,
-  OptionalFieldsProps,
-  AdvancedOptionsProps,
-} from './ProgressiveDetails'
+export type { ProgressiveDetailsProps } from './ProgressiveDetails'
 export type { InputConfig, SelectOption } from './FormInput'
