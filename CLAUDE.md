@@ -14,79 +14,6 @@ The codebase contains one main application:
 ## Development Commands
 
 ### Root Application (Primary)
-```bash
-# Development server
-npm run dev
-
-# Build for production  
-npm run build
-
-# Lint code
-npm run lint
-
-# Type checking (included in build, but can be run standalone)
-npm run type-check
-
-# Preview production build
-npm run preview
-
-# Quality assurance and validation
-npm run validate           # Complete validation: type-check + lint + build
-npm run format            # Format code with Prettier
-npm run format:check      # Check code formatting
-npm run analyze           # Bundle analysis with visualizer
-
-# Documentation validation
-npm run docs:validate     # Validate documentation links and formatting
-
-# Maintenance commands
-npm run clean             # Clean build artifacts
-npm run fresh             # Clean install (removes node_modules)
-
-# Testing commands
-npm run test              # Run all MCP tests
-npm run test:auth         # Test authentication flows
-npm run test:crud         # Test CRUD operations
-npm run test:dashboard    # Test dashboard functionality
-npm run test:mobile       # Test mobile optimization
-npm run test:backend      # Run backend/database tests (Vitest)
-npm run test:backend:watch # Run backend tests in watch mode
-npm run test:backend:coverage  # Backend tests with coverage
-npm run test:db           # Run database-specific tests only
-npm run test:performance  # Performance tests
-npm run test:security     # Security validation tests
-npm run test:integrity    # Data integrity tests
-npm run test:import-backend # Excel import backend tests
-npm run test:architecture # Architecture validation tests
-
-# Single test execution
-npm run test:architecture:state      # Run state boundary tests only
-npm run test:architecture:components # Run component placement tests only
-npm run test:architecture:performance # Run performance pattern tests only
-npm run test:architecture:eslint    # Run ESLint architectural rules tests only
-
-# UI Testing and Validation
-npm run test:ui-compliance    # UI component compliance tests
-npm run test:ui-consistency   # UI design consistency tests
-npm run test:visual           # Visual regression tests (Playwright)
-npm run test:visual:update    # Update visual regression snapshots
-
-# Technical Debt Management
-npm run debt:audit        # Audit technical debt
-npm run debt:scan         # Scan for debt patterns
-npm run debt:report       # Generate debt reports
-npm run debt:validate     # Validate debt improvements
-npm run debt:issues       # Create GitHub issues for technical debt
-
-# Development Tools
-npm run dev:setup         # Set up development environment
-npm run dev:assist        # Development assistant for code analysis
-npm run dev:health        # Check development environment health
-npm run dev:fix           # Fix common development issues
-npm run hooks:install     # Install Git pre-commit hooks
-npm run prepare           # Set up Husky for Git hooks
-```
-
 
 ## Architecture Guidelines
 
@@ -446,3 +373,15 @@ See `/docs/MCP_TOOL_REFERENCE_GUIDE.md` for complete guidelines and `/docs/templ
 
 ### UI Component Documentation
 - **Dialog Patterns**: `/docs/ui/dialog.md` - StandardDialog API, migration guide, and best practices
+- Coding Rules:
+1. Write Code Like It’s Going to be Reviewed by Your Future Self
+2. DRY (Don’t Repeat Yourself), but Avoid “Magic”
+3. Comment for the “Why,” Not the “What”
+4. Single Responsibility Principle: Keep Functions Focused
+5. Version Control is Not Optional (and Commit with Care)
+6. Be Mindful of Dependencies
+7. Refactor Regularly and Ruthlessly
+8. Think in Systems, Not Just Code
+9. Think Before You Code
+10. Prioritize Small, Releasable Units
+

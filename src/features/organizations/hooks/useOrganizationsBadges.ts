@@ -60,7 +60,7 @@ export const useOrganizationsBadges = (): UseOrganizationsBadgesReturn => {
           }
         case 'distributor':
           return {
-            className: 'bg-green-100 text-green-800 border-green-200',
+            className: 'tag-in-stock',
             label: 'Distributor',
           }
         case 'principal':
@@ -118,7 +118,7 @@ export const useOrganizationsBadges = (): UseOrganizationsBadgesReturn => {
       // High-priority distributor
       if ((priority === 'A+' || priority === 'A') && type === 'distributor') {
         return {
-          className: 'bg-gradient-to-r from-green-400 to-emerald-500 text-white border-green-300',
+          className: 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-primary/30',
           label: 'Key Partner',
         }
       }

@@ -40,7 +40,7 @@ export function ContactsTable({
   const { toggleRowExpansion, isRowExpanded } = useContactsDisplay(contacts.map((c) => c.id))
 
   // Helper component for empty cell display
-  const EmptyCell = () => <span className="text-sm italic text-muted-foreground">—</span>
+  const EmptyCell = () => <span className="text-sm italic text-muted">—</span>
 
   // Column definitions for DataTable
   const contactColumns: DataTableColumn<ContactWithOrganization>[] = [
@@ -55,9 +55,9 @@ export function ContactsTable({
           className="size-8 p-0 hover:bg-muted"
         >
           {isRowExpanded(contact.id) ? (
-            <ChevronDown className="size-4 text-muted-foreground" />
+            <ChevronDown className="size-4 text-muted" />
           ) : (
-            <ChevronRight className="size-4 text-muted-foreground" />
+            <ChevronRight className="size-4 text-muted" />
           )}
         </Button>
       ),
@@ -68,7 +68,7 @@ export function ContactsTable({
       header: 'Contact',
       cell: (contact) => (
         <div className="flex items-center gap-2">
-          <div className="text-base font-semibold text-foreground">
+          <div className="text-base font-semibold text-primary">
             {contact.first_name} {contact.last_name}
           </div>
           {contact.is_primary_contact && <span className="fill-current text-yellow-500">⭐</span>}
@@ -82,7 +82,7 @@ export function ContactsTable({
             key: 'organization' as keyof ContactWithOrganization,
             header: 'Organization',
             cell: (contact: ContactWithOrganization) => (
-              <span className="text-foreground">{contact.organization?.name || <EmptyCell />}</span>
+              <span className="text-body">{contact.organization?.name || <EmptyCell />}</span>
             ),
             hidden: { sm: true },
           },
@@ -91,7 +91,7 @@ export function ContactsTable({
     {
       key: 'position',
       header: 'Position',
-      cell: (contact) => <span className="text-foreground">{contact.title || <EmptyCell />}</span>,
+      cell: (contact) => <span className="text-body">{contact.title || <EmptyCell />}</span>,
       hidden: { sm: true },
     },
     {
@@ -104,8 +104,8 @@ export function ContactsTable({
           <div className="flex items-center gap-2">
             {primaryContactInfo ? (
               <>
-                <span className="text-muted-foreground">📞</span>
-                <span className="font-mono text-sm text-muted-foreground">
+                <span className="text-muted">📞</span>
+                <span className="font-mono text-sm text-muted">
                   {primaryContactInfo}
                 </span>
               </>

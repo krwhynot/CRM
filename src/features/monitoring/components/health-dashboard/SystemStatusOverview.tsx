@@ -16,8 +16,8 @@ export const SystemStatusOverview: React.FC<SystemStatusOverviewProps> = ({
         <CardTitle className="flex items-center justify-between">
           <span>System Health Status</span>
           <Badge
-            variant={isHealthy ? 'default' : 'destructive'}
-            className={isHealthy ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}
+            variant={isHealthy ? 'success' : 'destructive'}
+            className={isHealthy ? 'tag-in-stock' : 'tag-out-of-stock'}
           >
             {summary.overallHealth}
           </Badge>
