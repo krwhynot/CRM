@@ -79,7 +79,7 @@ export const OrganizationsFilters: React.FC<OrganizationsFiltersProps> = ({
             className={cn(
               'flex items-center gap-1 transition-colors',
               activeFilter === pill.key
-                ? 'bg-blue-600 text-white hover:bg-blue-700'
+                ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
@@ -87,7 +87,9 @@ export const OrganizationsFilters: React.FC<OrganizationsFiltersProps> = ({
             <span
               className={cn(
                 'ml-1 px-1.5 py-0.5 rounded-full text-xs font-medium',
-                activeFilter === pill.key ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
+                activeFilter === pill.key
+                  ? 'bg-primary/80 text-primary-foreground'
+                  : 'bg-muted text-muted-foreground'
               )}
             >
               {pill.count}
