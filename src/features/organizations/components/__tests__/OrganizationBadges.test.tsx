@@ -7,24 +7,24 @@ import { vi } from 'vitest'
 vi.mock('@/features/organizations/hooks/useOrganizationsBadges', () => ({
   useOrganizationsBadges: () => ({
     getPriorityBadge: (priority: string | null) => ({
-      className: 'priority-badge',
+      props: { priority: priority ? priority.toLowerCase().replace('+', '-plus') : 'unassigned' },
       label: `Priority: ${priority || 'None'}`,
     }),
     getTypeBadge: (type: string | null) => ({
-      className: 'type-badge',
+      props: { orgType: type || 'unknown' },
       label: `Type: ${type || 'Unknown'}`,
     }),
     getSegmentBadge: (segment: string | null) =>
       segment
         ? {
-            className: 'segment-badge',
+            props: { segment: segment.toLowerCase() },
             label: `Segment: ${segment}`,
           }
         : null,
     getStatusBadge: (priority: string | null, type: string | null) =>
       priority === 'A+' && type === 'customer'
         ? {
-            className: 'status-badge-vip',
+            props: { priority: 'a-plus', orgType: 'customer' },
             label: 'VIP Customer',
           }
         : null,

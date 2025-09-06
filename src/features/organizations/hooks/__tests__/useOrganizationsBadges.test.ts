@@ -8,37 +8,37 @@ describe('useOrganizationsBadges', () => {
 
     // Test A+ priority
     expect(getPriorityBadge('A+')).toEqual({
-      className: 'bg-gradient-to-r from-red-500 to-pink-500 text-white border-red-300',
+      props: { priority: 'a-plus' },
       label: 'A+ Priority',
     })
 
     // Test A priority
     expect(getPriorityBadge('A')).toEqual({
-      className: 'bg-red-100 text-red-800 border-red-200',
+      props: { priority: 'a' },
       label: 'A Priority',
     })
 
     // Test B priority
     expect(getPriorityBadge('B')).toEqual({
-      className: 'bg-orange-100 text-orange-800 border-orange-200',
+      props: { priority: 'b' },
       label: 'B Priority',
     })
 
     // Test C priority
     expect(getPriorityBadge('C')).toEqual({
-      className: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+      props: { priority: 'c' },
       label: 'C Priority',
     })
 
     // Test D priority
     expect(getPriorityBadge('D')).toEqual({
-      className: 'bg-gray-100 text-gray-800 border-gray-200',
+      props: { priority: 'd' },
       label: 'D Priority',
     })
 
     // Test null/undefined priority
     expect(getPriorityBadge(null)).toEqual({
-      className: 'bg-gray-100 text-gray-600 border-gray-200',
+      props: { priority: 'unassigned' },
       label: 'Unassigned',
     })
   })
@@ -48,27 +48,27 @@ describe('useOrganizationsBadges', () => {
     const { getTypeBadge } = result.current
 
     expect(getTypeBadge('customer')).toEqual({
-      className: 'bg-blue-100 text-blue-800 border-blue-200',
+      props: { orgType: 'customer' },
       label: 'Customer',
     })
 
     expect(getTypeBadge('distributor')).toEqual({
-      className: 'bg-green-100 text-green-800 border-green-200',
+      props: { orgType: 'distributor' },
       label: 'Distributor',
     })
 
     expect(getTypeBadge('principal')).toEqual({
-      className: 'bg-purple-100 text-purple-800 border-purple-200',
+      props: { orgType: 'principal' },
       label: 'Principal',
     })
 
     expect(getTypeBadge('supplier')).toEqual({
-      className: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+      props: { orgType: 'supplier' },
       label: 'Supplier',
     })
 
     expect(getTypeBadge(null)).toEqual({
-      className: 'bg-gray-100 text-gray-800 border-gray-200',
+      props: { orgType: 'unknown' },
       label: 'Unknown Type',
     })
   })
@@ -78,25 +78,22 @@ describe('useOrganizationsBadges', () => {
     const { getSegmentBadge } = result.current
 
     expect(getSegmentBadge('Restaurant')).toEqual({
-      className: 'bg-amber-100 text-amber-800 border-amber-200',
+      props: { segment: 'restaurant' },
       label: 'Restaurant',
     })
 
-    expect(getSegmentBadge('Fine Dining')).toEqual({
-      className: 'bg-rose-100 text-rose-800 border-rose-200',
-      label: 'Fine Dining',
-    })
-
     expect(getSegmentBadge('Healthcare')).toEqual({
-      className: 'bg-cyan-100 text-cyan-800 border-cyan-200',
+      props: { segment: 'healthcare' },
       label: 'Healthcare',
     })
 
-    // Unknown segment should get default styling
-    expect(getSegmentBadge('Unknown Segment')).toEqual({
-      className: 'bg-slate-100 text-slate-800 border-slate-200',
-      label: 'Unknown Segment',
+    expect(getSegmentBadge('Education')).toEqual({
+      props: { segment: 'education' },
+      label: 'Education',
     })
+
+    // Unknown segment should return null (not mapped in variants)
+    expect(getSegmentBadge('Unknown Segment')).toBeNull()
 
     // Null segment should return null
     expect(getSegmentBadge(null)).toBeNull()
@@ -108,18 +105,19 @@ describe('useOrganizationsBadges', () => {
 
     // VIP Customer (A+ priority + customer type)
     expect(getStatusBadge('A+', 'customer')).toEqual({
-      className: 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-yellow-300',
+      props: { priority: 'a-plus', orgType: 'customer' },
       label: 'VIP Customer',
     })
 
-    // Key Partner (A/A+ priority + distributor type)
+    // Key Partner (A+ priority + distributor type)
     expect(getStatusBadge('A+', 'distributor')).toEqual({
-      className: 'bg-gradient-to-r from-green-400 to-emerald-500 text-white border-green-300',
+      props: { priority: 'a-plus', orgType: 'distributor' },
       label: 'Key Partner',
     })
 
+    // Key Partner (A priority + distributor type)
     expect(getStatusBadge('A', 'distributor')).toEqual({
-      className: 'bg-gradient-to-r from-green-400 to-emerald-500 text-white border-green-300',
+      props: { priority: 'a', orgType: 'distributor' },
       label: 'Key Partner',
     })
 

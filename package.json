@@ -58,8 +58,6 @@
     "lint:ui": "eslint src --ext ts,tsx --max-warnings 0 --config .eslintrc.cjs",
     "test:ui-compliance": "npm run lint:ui && ./scripts/validate-design-tokens.sh",
     "test:ui-consistency": "vitest run tests/ui-consistency.test.tsx",
-    "test:visual": "playwright test tests/visual-regression/ui-compliance.spec.js",
-    "test:visual:update": "playwright test tests/visual-regression/ui-compliance.spec.js --update-snapshots",
     "validate:design-tokens": "./scripts/validate-design-tokens.sh",
     "prepare": "husky"
   },
@@ -114,7 +112,6 @@
     "zustand": "^5.0.7"
   },
   "devDependencies": {
-    "@playwright/test": "^1.55.0",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.6.1",

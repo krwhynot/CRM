@@ -66,7 +66,8 @@ function getConfidenceBadge(confidence: number) {
   if (confidence >= CONFIDENCE_THRESHOLDS.HIGH) {
     return {
       variant: 'default' as const,
-      className: 'bg-success/20 text-success border-success/50',
+      status: 'active' as const,
+      className: '',
       label: 'High',
       icon: CheckCircle2,
     }
@@ -74,8 +75,9 @@ function getConfidenceBadge(confidence: number) {
 
   if (confidence >= CONFIDENCE_THRESHOLDS.MEDIUM) {
     return {
-      variant: 'secondary' as const,
-      className: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+      variant: 'outline' as const,
+      status: 'pending' as const,
+      className: '',
       label: 'Medium',
       icon: AlertTriangle,
     }
@@ -83,7 +85,8 @@ function getConfidenceBadge(confidence: number) {
 
   return {
     variant: 'outline' as const,
-    className: 'bg-red-50 text-red-700 border-red-200',
+    status: 'inactive' as const,
+    className: '',
     label: 'Low',
     icon: X,
   }
@@ -94,27 +97,29 @@ function getStatusBadge(status: SmartFieldMapping['status']) {
   switch (status) {
     case 'auto':
       return {
-        variant: 'default' as const,
+        variant: 'outline' as const,
+        status: 'active' as const,
         label: 'Auto-mapped',
-        className: 'bg-green-100 text-green-800',
+        className: '',
       }
     case 'confirmed':
       return {
         variant: 'default' as const,
         label: 'Confirmed',
-        className: 'bg-blue-100 text-blue-800',
+        className: '',
       }
     case 'needs_review':
       return {
         variant: 'outline' as const,
+        status: 'pending' as const,
         label: 'Needs Review',
-        className: 'bg-yellow-50 text-yellow-700 border-yellow-300',
+        className: '',
       }
     case 'skipped':
       return {
         variant: 'secondary' as const,
         label: 'Skipped',
-        className: 'bg-slate-100 text-slate-600',
+        className: '',
       }
     default:
       return { variant: 'outline' as const, label: 'Unknown', className: '' }
@@ -143,9 +148,9 @@ function MappingRow({
     <div
       className={cn(
         'grid grid-cols-1 md:grid-cols-12 gap-4 p-4 border rounded-lg bg-white',
-        mapping.status === 'needs_review' && 'border-yellow-300 bg-yellow-50/30',
-        mapping.status === 'auto' && 'border-green-300 bg-green-50/30',
-        mapping.status === 'confirmed' && 'border-blue-300 bg-blue-50/30'
+        mapping.status === 'needs_review' && 'border-warning/30 bg-warning/10',
+        mapping.status === 'auto' && 'border-success/30 bg-success/10',
+        mapping.status === 'confirmed' && 'border-primary/30 bg-primary/10'
       )}
     >
       {/* CSV Header */}
@@ -159,7 +164,7 @@ function MappingRow({
         <div className="flex flex-wrap gap-1">
           <Badge {...statusBadge}>{statusBadge.label}</Badge>
           {mapping.confidence > 0 && (
-            <Badge className={confidenceBadge.className}>
+            <Badge {...confidenceBadge}>
               <ConfidenceIcon className="mr-1 size-3" />
               {confidenceBadge.label} ({Math.round(mapping.confidence * 100)}%)
             </Badge>

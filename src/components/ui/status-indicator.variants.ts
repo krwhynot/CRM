@@ -7,9 +7,9 @@ export const statusIndicatorVariants = cva(
       variant: {
         default: 'bg-primary text-primary-foreground hover:bg-primary/90',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        success: 'border border-green-300 bg-green-100 text-green-800 hover:bg-green-200',
-        warning: 'border border-yellow-300 bg-yellow-100 text-yellow-800 hover:bg-yellow-200',
-        destructive: 'border border-red-300 bg-red-100 text-red-800 hover:bg-red-200',
+        success: 'border border-success bg-success text-success-foreground hover:bg-success/90',
+        warning: 'border border-warning bg-warning text-warning-foreground hover:bg-warning/90', 
+        destructive: 'border border-destructive bg-destructive text-destructive-foreground hover:bg-destructive/90',
         outline: 'border border-input text-foreground hover:bg-accent hover:text-accent-foreground',
       },
       size: {

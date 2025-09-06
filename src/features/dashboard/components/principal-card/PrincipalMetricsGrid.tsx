@@ -37,7 +37,7 @@ export const PrincipalMetricsGrid: React.FC<PrincipalMetricsGridProps> = ({
           {isLoading ? (
             <Skeleton className="h-4 w-8" />
           ) : (
-            <p className="text-lg font-medium text-green-600">{metrics.activeOpportunities}</p>
+            <p className="text-lg font-medium text-success">{metrics.activeOpportunities}</p>
           )}
         </div>
       </div>

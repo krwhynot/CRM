@@ -1,125 +1,80 @@
 import { useMemo } from 'react'
+import type { BadgeProps } from '@/components/ui/badge.variants'
 
-interface BadgeStyle {
-  className: string
+interface BadgeConfig {
+  props: Pick<BadgeProps, 'priority' | 'orgType' | 'segment' | 'status'>
   label: string
 }
 
 interface UseOrganizationsBadgesReturn {
-  getPriorityBadge: (priority: string | null) => BadgeStyle
-  getTypeBadge: (type: string | null) => BadgeStyle
-  getSegmentBadge: (segment: string | null) => BadgeStyle | null
-  getStatusBadge: (priority: string | null, type: string | null) => BadgeStyle | null
+  getPriorityBadge: (priority: string | null) => BadgeConfig
+  getTypeBadge: (type: string | null) => BadgeConfig
+  getSegmentBadge: (segment: string | null) => BadgeConfig | null
+  getStatusBadge: (priority: string | null, type: string | null) => BadgeConfig | null
 }
 
 export const useOrganizationsBadges = (): UseOrganizationsBadgesReturn => {
   const getPriorityBadge = useMemo(() => {
-    return (priority: string | null): BadgeStyle => {
-      switch (priority) {
-        case 'A+':
-          return {
-            className: 'bg-gradient-to-r from-red-500 to-pink-500 text-white border-red-300',
-            label: 'A+ Priority',
-          }
-        case 'A':
-          return {
-            className: 'bg-red-100 text-red-800 border-red-200',
-            label: 'A Priority',
-          }
-        case 'B':
-          return {
-            className: 'bg-orange-100 text-orange-800 border-orange-200',
-            label: 'B Priority',
-          }
-        case 'C':
-          return {
-            className: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-            label: 'C Priority',
-          }
-        case 'D':
-          return {
-            className: 'bg-gray-100 text-gray-800 border-gray-200',
-            label: 'D Priority',
-          }
-        default:
-          return {
-            className: 'bg-gray-100 text-gray-600 border-gray-200',
-            label: 'Unassigned',
-          }
+    return (priority: string | null): BadgeConfig => {
+      const priorityMap: Record<string, { props: BadgeConfig['props']; label: string }> = {
+        'A+': { props: { priority: 'a-plus' }, label: 'A+ Priority' },
+        'A': { props: { priority: 'a' }, label: 'A Priority' },
+        'B': { props: { priority: 'b' }, label: 'B Priority' },
+        'C': { props: { priority: 'c' }, label: 'C Priority' },
+        'D': { props: { priority: 'd' }, label: 'D Priority' },
+      }
+
+      return priorityMap[priority || ''] || { 
+        props: { priority: 'unassigned' }, 
+        label: 'Unassigned' 
       }
     }
   }, [])
 
   const getTypeBadge = useMemo(() => {
-    return (type: string | null): BadgeStyle => {
-      switch (type) {
-        case 'customer':
-          return {
-            className: 'bg-blue-100 text-blue-800 border-blue-200',
-            label: 'Customer',
-          }
-        case 'distributor':
-          return {
-            className: 'tag-in-stock',
-            label: 'Distributor',
-          }
-        case 'principal':
-          return {
-            className: 'bg-purple-100 text-purple-800 border-purple-200',
-            label: 'Principal',
-          }
-        case 'supplier':
-          return {
-            className: 'bg-indigo-100 text-indigo-800 border-indigo-200',
-            label: 'Supplier',
-          }
-        default:
-          return {
-            className: 'bg-gray-100 text-gray-800 border-gray-200',
-            label: 'Unknown Type',
-          }
+    return (type: string | null): BadgeConfig => {
+      const typeMap: Record<string, { props: BadgeConfig['props']; label: string }> = {
+        customer: { props: { orgType: 'customer' }, label: 'Customer' },
+        distributor: { props: { orgType: 'distributor' }, label: 'Distributor' },
+        principal: { props: { orgType: 'principal' }, label: 'Principal' },
+        supplier: { props: { orgType: 'supplier' }, label: 'Supplier' },
+      }
+
+      return typeMap[type || ''] || { 
+        props: { orgType: 'unknown' }, 
+        label: 'Unknown Type' 
       }
     }
   }, [])
 
   const getSegmentBadge = useMemo(() => {
-    return (segment: string | null): BadgeStyle | null => {
+    return (segment: string | null): BadgeConfig | null => {
       if (!segment) return null
 
-      // Common segment color mappings
-      const segmentColors: Record<string, string> = {
-        Restaurant: 'bg-amber-100 text-amber-800 border-amber-200',
-        'Fine Dining': 'bg-rose-100 text-rose-800 border-rose-200',
-        'Fast Food': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-        Distribution: 'bg-emerald-100 text-emerald-800 border-emerald-200',
-        Healthcare: 'bg-cyan-100 text-cyan-800 border-cyan-200',
-        Education: 'bg-violet-100 text-violet-800 border-violet-200',
-        Hospitality: 'bg-pink-100 text-pink-800 border-pink-200',
-        Retail: 'bg-orange-100 text-orange-800 border-orange-200',
+      const segmentMap: Record<string, { props: BadgeConfig['props']; label: string }> = {
+        'Restaurant': { props: { segment: 'restaurant' }, label: 'Restaurant' },
+        'Healthcare': { props: { segment: 'healthcare' }, label: 'Healthcare' },
+        'Education': { props: { segment: 'education' }, label: 'Education' },
       }
 
-      return {
-        className: segmentColors[segment] || 'bg-slate-100 text-slate-800 border-slate-200',
-        label: segment,
-      }
+      return segmentMap[segment] || null
     }
   }, [])
 
   const getStatusBadge = useMemo(() => {
-    return (priority: string | null, type: string | null): BadgeStyle | null => {
-      // High-value customer with A+ priority
+    return (priority: string | null, type: string | null): BadgeConfig | null => {
+      // Special compound variants
       if (priority === 'A+' && type === 'customer') {
         return {
-          className: 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-yellow-300',
-          label: 'VIP Customer',
+          props: { priority: 'a-plus', orgType: 'customer' },
+          label: 'VIP Customer'
         }
       }
 
-      // High-priority distributor
       if ((priority === 'A+' || priority === 'A') && type === 'distributor') {
         return {
-          className: 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-primary/30',
-          label: 'Key Partner',
+          props: { priority: priority === 'A+' ? 'a-plus' : 'a', orgType: 'distributor' },
+          label: 'Key Partner'
         }
       }
 

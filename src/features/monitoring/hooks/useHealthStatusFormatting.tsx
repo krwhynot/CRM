@@ -12,9 +12,9 @@ export const useHealthStatusFormatting = (): UseHealthStatusFormattingReturn => 
       getStatusIcon: (serviceStatus: string) => {
         switch (serviceStatus) {
           case 'healthy':
-            return <CheckCircle className="size-4 text-green-600" />
+            return <CheckCircle className="size-4 text-success" />
           case 'degraded':
-            return <AlertCircle className="size-4 text-yellow-600" />
+            return <AlertCircle className="size-4 text-warning" />
           case 'down':
             return <AlertCircle className="size-4 text-destructive" />
           default:
@@ -25,9 +25,9 @@ export const useHealthStatusFormatting = (): UseHealthStatusFormattingReturn => 
       getStatusColor: (serviceStatus: string) => {
         switch (serviceStatus) {
           case 'healthy':
-            return 'bg-green-50 text-green-700'
+            return 'bg-success/10 text-success'
           case 'degraded':
-            return 'bg-yellow-50 text-yellow-700'
+            return 'bg-warning/10 text-warning'
           case 'down':
             return 'bg-destructive/10 text-destructive'
           default:

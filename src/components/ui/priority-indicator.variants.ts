@@ -5,10 +5,10 @@ export const priorityIndicatorVariants = cva(
   {
     variants: {
       priority: {
-        low: 'border-gray-300 bg-gray-100 text-gray-700',
-        medium: 'border-blue-300 bg-blue-100 text-blue-700',
-        high: 'border-orange-300 bg-orange-100 text-orange-700',
-        critical: 'border-red-400 bg-red-100 text-red-800',
+        low: 'border-muted bg-muted text-muted-foreground',
+        medium: 'border-organization-customer bg-organization-customer text-organization-customer-foreground',
+        high: 'border-warning bg-warning text-warning-foreground',
+        critical: 'border-destructive bg-destructive text-destructive-foreground',
       },
       size: {
         sm: 'size-6 min-h-11 min-w-11 p-2',

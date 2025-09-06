@@ -33,6 +33,41 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Development auth bypass for localhost
+    const isDevelopment = import.meta.env.DEV
+    const bypassAuth = import.meta.env.VITE_DEV_BYPASS_AUTH === 'true'
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    
+    if (isDevelopment && bypassAuth && isLocalhost) {
+      console.warn('🚨 AUTH BYPASS ACTIVE: Development mode with bypassed authentication')
+      console.warn('🔓 This should NEVER be enabled in production!')
+      
+      // Create a mock user for development
+      const mockUser: User = {
+        id: 'dev-user-mock-id',
+        email: 'dev@localhost.com',
+        app_metadata: {},
+        user_metadata: {},
+        aud: 'authenticated',
+        created_at: new Date().toISOString(),
+      }
+      
+      // Create a mock session
+      const mockSession: Session = {
+        access_token: 'mock-access-token',
+        refresh_token: 'mock-refresh-token',
+        expires_in: 3600,
+        expires_at: Math.floor(Date.now() / 1000) + 3600,
+        token_type: 'bearer',
+        user: mockUser,
+      }
+      
+      setUser(mockUser)
+      setSession(mockSession)
+      setLoading(false)
+      return
+    }
+
     // Get initial session
     const getInitialSession = async () => {
       const {

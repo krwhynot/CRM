@@ -111,27 +111,35 @@ module.exports = {
           'danger': 'var(--mfb-danger)',
           'info': 'var(--mfb-info)',
         },
-        'priority': {
-          'critical': {
-            'bg': 'var(--priority-critical-bg)',
-            'text': 'var(--priority-critical-text)',
-          },
-          'high': {
-            'bg': 'var(--priority-high-bg)',
-            'text': 'var(--priority-high-text)',
-          },
-          'medium': {
-            'bg': 'var(--priority-medium-bg)',
-            'text': 'var(--priority-medium-text)',
-          },
-          'low': {
-            'bg': 'var(--priority-low-bg)',
-            'text': 'var(--priority-low-text)',
-          },
-          'minimal': {
-            'bg': 'var(--priority-minimal-bg)',
-            'text': 'var(--priority-minimal-text)',
-          },
+        priority: {
+          'a-plus': 'hsl(var(--priority-a-plus))',
+          'a-plus-foreground': 'hsl(var(--priority-a-plus-foreground))',
+          'a': 'hsl(var(--priority-a))',
+          'a-foreground': 'hsl(var(--priority-a-foreground))',
+          'b': 'hsl(var(--priority-b))',
+          'b-foreground': 'hsl(var(--priority-b-foreground))',
+          'c': 'hsl(var(--priority-c))',
+          'c-foreground': 'hsl(var(--priority-c-foreground))',
+          'd': 'hsl(var(--priority-d))',
+          'd-foreground': 'hsl(var(--priority-d-foreground))',
+        },
+        organization: {
+          'customer': 'hsl(var(--org-customer))',
+          'customer-foreground': 'hsl(var(--org-customer-foreground))',
+          'distributor': 'hsl(var(--org-distributor))',
+          'distributor-foreground': 'hsl(var(--org-distributor-foreground))',
+          'principal': 'hsl(var(--org-principal))',
+          'principal-foreground': 'hsl(var(--org-principal-foreground))',
+          'supplier': 'hsl(var(--org-supplier))',
+          'supplier-foreground': 'hsl(var(--org-supplier-foreground))',
+        },
+        segment: {
+          'restaurant': 'hsl(var(--segment-restaurant))',
+          'restaurant-foreground': 'hsl(var(--segment-restaurant-foreground))',
+          'healthcare': 'hsl(var(--segment-healthcare))',
+          'healthcare-foreground': 'hsl(var(--segment-healthcare-foreground))',
+          'education': 'hsl(var(--segment-education))',
+          'education-foreground': 'hsl(var(--segment-education-foreground))',
         },
       },
       fontFamily: {

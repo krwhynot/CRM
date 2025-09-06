@@ -73,7 +73,7 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity, onClick })
               )}
 
               {activity.follow_up_required && (
-                <Badge variant="outline" className="border-yellow-300 text-xs text-yellow-700">
+                <Badge variant="outline" status="pending" className="text-xs">
                   Follow-up Required
                 </Badge>
               )}

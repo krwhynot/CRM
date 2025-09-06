@@ -59,6 +59,40 @@
     --warning-foreground: 0 0% 98%;
     --info: 199 89% 48%;
     --info-foreground: 0 0% 98%;
+
+    /* CRM Priority System - A+ through D ratings */
+    --priority-a-plus: 0 84% 60%;           /* Red gradient base */
+    --priority-a-plus-foreground: 0 0% 98%;
+    --priority-a: 0 74% 42%;                /* Solid red */
+    --priority-a-foreground: 0 0% 98%;
+    --priority-b: 25 95% 53%;               /* Orange */
+    --priority-b-foreground: 0 0% 98%;
+    --priority-c: 45 93% 47%;               /* Yellow */
+    --priority-c-foreground: 240 10% 10%;
+    --priority-d: 220 9% 46%;               /* Gray */
+    --priority-d-foreground: 0 0% 98%;
+
+    /* Organization Type Colors */
+    --org-customer: 217 91% 60%;            /* Blue */
+    --org-customer-foreground: 0 0% 98%;
+    --org-distributor: 142 71% 45%;         /* Green */
+    --org-distributor-foreground: 0 0% 98%;
+    --org-principal: 262 83% 58%;           /* Purple */
+    --org-principal-foreground: 0 0% 98%;
+    --org-supplier: 238 84% 67%;            /* Indigo */
+    --org-supplier-foreground: 0 0% 98%;
+
+    /* Market Segment Colors */
+    --segment-restaurant: 45 93% 47%;       /* Amber */
+    --segment-restaurant-foreground: 240 10% 10%;
+    --segment-healthcare: 188 95% 68%;      /* Cyan */
+    --segment-healthcare-foreground: 0 0% 98%;
+    --segment-education: 258 90% 66%;       /* Violet */
+    --segment-education-foreground: 0 0% 98%;
+
+    /* Special Status Combinations */
+    --vip-customer: linear-gradient(45deg, hsl(45 93% 47%), hsl(25 95% 53%)); /* Gold gradient */
+    --key-partner: linear-gradient(45deg, hsl(142 71% 45%), hsl(160 84% 39%)); /* Green gradient */
     
     /* AAA Text Contrast Levels */
     --text-primary: 240 10% 10%;    /* Same as foreground - 15.8:1 ratio */
@@ -183,6 +217,40 @@
     --chart-3: 130 58% 51%; /* Medium Green - brighter */
     --chart-4: 160 42% 61%; /* Teal Green - brighter */
     --chart-5: 110 35% 47%; /* Olive Green - brighter */
+
+    /* CRM Priority System - Dark mode variants */
+    --priority-a-plus: 0 84% 65%;           /* Brighter red for dark mode */
+    --priority-a-plus-foreground: 0 0% 98%;
+    --priority-a: 0 74% 47%;                /* Brighter solid red */
+    --priority-a-foreground: 0 0% 98%;
+    --priority-b: 25 95% 58%;               /* Brighter orange */
+    --priority-b-foreground: 0 0% 98%;
+    --priority-c: 45 93% 52%;               /* Brighter yellow */
+    --priority-c-foreground: 240 10% 10%;
+    --priority-d: 220 9% 51%;               /* Brighter gray */
+    --priority-d-foreground: 0 0% 98%;
+
+    /* Organization Type Colors - Dark mode variants */
+    --org-customer: 217 91% 65%;            /* Brighter blue */
+    --org-customer-foreground: 0 0% 98%;
+    --org-distributor: 142 71% 50%;         /* Brighter green */
+    --org-distributor-foreground: 0 0% 98%;
+    --org-principal: 262 83% 63%;           /* Brighter purple */
+    --org-principal-foreground: 0 0% 98%;
+    --org-supplier: 238 84% 72%;            /* Brighter indigo */
+    --org-supplier-foreground: 0 0% 98%;
+
+    /* Market Segment Colors - Dark mode variants */
+    --segment-restaurant: 45 93% 52%;       /* Brighter amber */
+    --segment-restaurant-foreground: 240 10% 10%;
+    --segment-healthcare: 188 95% 73%;      /* Brighter cyan */
+    --segment-healthcare-foreground: 0 0% 98%;
+    --segment-education: 258 90% 71%;       /* Brighter violet */
+    --segment-education-foreground: 0 0% 98%;
+
+    /* Special Status Combinations - Dark mode variants */
+    --vip-customer: linear-gradient(45deg, hsl(45 93% 52%), hsl(25 95% 58%)); /* Brighter gold gradient */
+    --key-partner: linear-gradient(45deg, hsl(142 71% 50%), hsl(160 84% 44%)); /* Brighter green gradient */
     
     /* Header Shadow - Dark mode */
     --header-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);

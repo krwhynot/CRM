@@ -30,28 +30,28 @@ export const ContactBadges = ({
     <div className={`flex flex-wrap gap-1 ${className}`}>
       {/* Priority Badge (highest priority) */}
       {showPriority && priorityBadge && (
-        <Badge variant="outline" className={priorityBadge.className}>
+        <Badge {...priorityBadge.props}>
           {priorityBadge.label}
         </Badge>
       )}
 
       {/* Influence Badge */}
       {showInfluence && contact.purchase_influence && (
-        <Badge variant="outline" className={influenceBadge.className}>
+        <Badge {...influenceBadge.props}>
           {influenceBadge.label}
         </Badge>
       )}
 
       {/* Authority Badge */}
       {showAuthority && contact.decision_authority && (
-        <Badge variant="outline" className={authorityBadge.className}>
+        <Badge {...authorityBadge.props}>
           {authorityBadge.label}
         </Badge>
       )}
 
       {/* Primary Contact Badge (if not already shown as priority) */}
       {contact.is_primary_contact && !priorityBadge && (
-        <Badge variant="outline" className="border-blue-200 bg-blue-100 text-blue-800">
+        <Badge priority="a">
           Primary
         </Badge>
       )}

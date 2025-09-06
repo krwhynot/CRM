@@ -419,7 +419,7 @@ export function OrganizationsTable({
                           href={organization.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800"
+                          className="text-primary hover:text-primary/80"
                         >
                           {organization.website}
                         </a>

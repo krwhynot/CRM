@@ -87,47 +87,7 @@
     }
   }
 
-  /* Status Tag Semantic Colors - Accessible for Colorblind Users */
-  .tag-in-stock {
-    @apply bg-success/10 text-success border-success/20;
-  }
-
-  .tag-premium {
-    @apply bg-primary/10 text-primary border-primary/20;
-  }
-
-  .tag-out-of-stock {
-    @apply bg-destructive/10 text-destructive border-destructive/20;
-  }
-
-  .tag-warning {
-    @apply bg-warning/10 text-warning border-warning/20;
-  }
-
-  .tag-info {
-    @apply bg-info/10 text-info border-info/20;
-  }
-
-  /* Dark mode status tags */
-  .dark .tag-in-stock {
-    @apply bg-success/20 text-success border-success/30;
-  }
-
-  .dark .tag-premium {
-    @apply bg-primary/20 text-primary border-primary/30;
-  }
-
-  .dark .tag-out-of-stock {
-    @apply bg-destructive/20 text-destructive border-destructive/30;
-  }
-
-  .dark .tag-warning {
-    @apply bg-warning/20 text-warning border-warning/30;
-  }
-
-  .dark .tag-info {
-    @apply bg-info/20 text-info border-info/30;
-  }
+  /* Note: Legacy tag classes removed - now using Badge variant system */
 
   /* Accessible Loading States */
   .loading-shimmer {

@@ -29,7 +29,7 @@ export function StatsCards() {
 
   if (metrics.error) {
     return (
-      <div className="col-span-4 text-center text-red-500">Error loading dashboard metrics</div>
+      <div className="col-span-4 text-center text-destructive">Error loading dashboard metrics</div>
     )
   }
 

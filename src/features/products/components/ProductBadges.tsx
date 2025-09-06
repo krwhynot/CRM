@@ -29,10 +29,10 @@ export const ProductBadges: React.FC<ProductBadgesProps> = ({
 
   return (
     <div className={`flex flex-wrap gap-1 ${className}`}>
-      <Badge className={categoryBadge.className}>{categoryBadge.label}</Badge>
-      {valueBadge && <Badge className={valueBadge.className}>{valueBadge.label}</Badge>}
-      {freshnessBadge && <Badge className={freshnessBadge.className}>{freshnessBadge.label}</Badge>}
-      <Badge className={availabilityBadge.className}>{availabilityBadge.label}</Badge>
+      <Badge {...categoryBadge}>{categoryBadge.label}</Badge>
+      {valueBadge && <Badge {...valueBadge}>{valueBadge.label}</Badge>}
+      {freshnessBadge && <Badge {...freshnessBadge}>{freshnessBadge.label}</Badge>}
+      <Badge {...availabilityBadge}>{availabilityBadge.label}</Badge>
     </div>
   )
 }

@@ -166,9 +166,8 @@ export function PrincipalsDashboard() {
             </div>
             <div className="flex items-center gap-2">
               <StatusIndicator
-                variant="outline"
+                variant="warning"
                 size="sm"
-                className="border-yellow-300 bg-yellow-100 text-yellow-800"
               >
                 B
               </StatusIndicator>

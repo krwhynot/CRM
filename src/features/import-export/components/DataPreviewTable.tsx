@@ -105,7 +105,7 @@ const validRowColumns: Column<TransformedOrganizationRow>[] = [
           href={row.website}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs text-blue-600 hover:underline"
+          className="text-xs text-primary hover:underline"
         >
           Website
         </a>
@@ -152,11 +152,11 @@ export function DataPreviewTable({ parsedData }: DataPreviewTableProps) {
     <div className="space-y-4">
       {/* Summary Stats */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-lg bg-blue-50 p-4 text-center">
-          <div className="text-2xl font-bold text-blue-600">{parsedData.rows.length}</div>
+        <div className="rounded-lg bg-primary/10 p-4 text-center">
+          <div className="text-2xl font-bold text-primary">{parsedData.rows.length}</div>
           <div className="text-sm text-gray-600">Total Rows</div>
         </div>
-        <div className="rounded-lg bg-green-50 p-4 text-center">
+        <div className="rounded-lg bg-success/10 p-4 text-center">
           <div className="text-2xl font-bold text-green-600">{parsedData.validRows.length}</div>
           <div className="text-sm text-gray-600">Valid Rows</div>
         </div>

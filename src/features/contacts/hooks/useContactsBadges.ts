@@ -1,96 +1,53 @@
 import { useMemo } from 'react'
+import type { BadgeProps } from '@/components/ui/badge.variants'
 
-interface BadgeStyle {
-  className: string
+interface ContactBadgeConfig {
+  props: Pick<BadgeProps, 'influence' | 'status' | 'priority'>
   label: string
 }
 
-interface UseContactsBadgesReturn {
-  getInfluenceBadge: (influence: string | null) => BadgeStyle
-  getAuthorityBadge: (authority: string | null) => BadgeStyle
-  getPriorityBadge: (isPrimary: boolean, influence: string | null) => BadgeStyle | null
-}
-
-export const useContactsBadges = (): UseContactsBadgesReturn => {
+export const useContactsBadges = () => {
   const getInfluenceBadge = useMemo(() => {
-    return (influence: string | null): BadgeStyle => {
-      switch (influence) {
-        case 'High':
-          return {
-            className: 'bg-green-100 text-green-800 border-green-200',
-            label: 'High Influence',
-          }
-        case 'Medium':
-          return {
-            className: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-            label: 'Medium Influence',
-          }
-        case 'Low':
-          return {
-            className: 'bg-blue-100 text-blue-800 border-blue-200',
-            label: 'Low Influence',
-          }
-        default:
-          return {
-            className: 'bg-gray-100 text-gray-800 border-gray-200',
-            label: 'Unknown Influence',
-          }
+    return (influence: string | null): ContactBadgeConfig => {
+      const influenceMap: Record<string, ContactBadgeConfig> = {
+        high: { props: { influence: 'high' }, label: 'High Influence' },
+        medium: { props: { influence: 'medium' }, label: 'Medium Influence' },
+        low: { props: { influence: 'low' }, label: 'Low Influence' },
+      }
+
+      return influenceMap[influence?.toLowerCase() || ''] || { 
+        props: { influence: 'low' }, 
+        label: 'Unknown Influence' 
       }
     }
   }, [])
 
   const getAuthorityBadge = useMemo(() => {
-    return (authority: string | null): BadgeStyle => {
-      switch (authority) {
-        case 'Decision Maker':
-          return {
-            className: 'bg-red-100 text-red-800 border-red-200',
-            label: 'Decision Maker',
-          }
-        case 'Influencer':
-          return {
-            className: 'bg-purple-100 text-purple-800 border-purple-200',
-            label: 'Influencer',
-          }
-        case 'User':
-          return {
-            className: 'bg-indigo-100 text-indigo-800 border-indigo-200',
-            label: 'User',
-          }
-        case 'Gatekeeper':
-          return {
-            className: 'bg-orange-100 text-orange-800 border-orange-200',
-            label: 'Gatekeeper',
-          }
-        default:
-          return {
-            className: 'bg-gray-100 text-gray-800 border-gray-200',
-            label: 'Unknown Authority',
-          }
+    return (authority: string | null): ContactBadgeConfig => {
+      const authorityMap: Record<string, ContactBadgeConfig> = {
+        'decision maker': { props: { status: 'active' }, label: 'Decision Maker' },
+        influencer: { props: { status: 'pending' }, label: 'Influencer' },
+        user: { props: { status: 'inactive' }, label: 'User' },
+        gatekeeper: { props: { status: 'pending' }, label: 'Gatekeeper' },
+      }
+
+      return authorityMap[authority?.toLowerCase() || ''] || { 
+        props: { status: 'inactive' }, 
+        label: 'Unknown Authority' 
       }
     }
   }, [])
 
   const getPriorityBadge = useMemo(() => {
-    return (isPromary: boolean, influence: string | null): BadgeStyle | null => {
-      if (isPromary && influence === 'High') {
-        return {
-          className: 'bg-gradient-to-r from-red-500 to-pink-500 text-white border-red-300',
-          label: 'High Priority',
-        }
+    return (isPrimary: boolean, influence: string | null): ContactBadgeConfig | null => {
+      if (isPrimary && influence?.toLowerCase() === 'high') {
+        return { props: { priority: 'a-plus' }, label: 'Key Contact' }
       }
-      if (isPromary) {
-        return {
-          className: 'bg-blue-100 text-blue-800 border-blue-200',
-          label: 'Primary Contact',
-        }
+
+      if (isPrimary) {
+        return { props: { priority: 'a' }, label: 'Primary Contact' }
       }
-      if (influence === 'High') {
-        return {
-          className: 'bg-green-100 text-green-800 border-green-200',
-          label: 'Key Contact',
-        }
-      }
+
       return null
     }
   }, [])

@@ -25,10 +25,10 @@ export const OrganizationBadges: React.FC<OrganizationBadgesProps> = ({
 
   return (
     <div className={`flex flex-wrap gap-1 ${className}`}>
-      {statusBadge && <Badge className={statusBadge.className}>{statusBadge.label}</Badge>}
-      <Badge className={priorityBadge.className}>{priorityBadge.label}</Badge>
-      <Badge className={typeBadge.className}>{typeBadge.label}</Badge>
-      {segmentBadge && <Badge className={segmentBadge.className}>{segmentBadge.label}</Badge>}
+      {statusBadge && <Badge {...statusBadge.props}>{statusBadge.label}</Badge>}
+      <Badge {...priorityBadge.props}>{priorityBadge.label}</Badge>
+      <Badge {...typeBadge.props}>{typeBadge.label}</Badge>
+      {segmentBadge && <Badge {...segmentBadge.props}>{segmentBadge.label}</Badge>}
     </div>
   )
 }

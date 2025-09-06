@@ -16,8 +16,7 @@ export const SystemStatusOverview: React.FC<SystemStatusOverviewProps> = ({
         <CardTitle className="flex items-center justify-between">
           <span>System Health Status</span>
           <Badge
-            variant={isHealthy ? 'success' : 'destructive'}
-            className={isHealthy ? 'tag-in-stock' : 'tag-out-of-stock'}
+            status={isHealthy ? 'active' : 'inactive'}
           >
             {summary.overallHealth}
           </Badge>
@@ -26,7 +25,7 @@ export const SystemStatusOverview: React.FC<SystemStatusOverviewProps> = ({
       <CardContent>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <ServiceStatusCard
-            icon={<Database className="size-6 text-blue-500" />}
+            icon={<Database className="size-6 text-primary" />}
             name="Database"
             status={{
               status: status.database.status,
@@ -35,7 +34,7 @@ export const SystemStatusOverview: React.FC<SystemStatusOverviewProps> = ({
           />
 
           <ServiceStatusCard
-            icon={<Shield className="size-6 text-green-500" />}
+            icon={<Shield className="size-6 text-success" />}
             name="Authentication"
             status={{
               status: status.auth.status,
@@ -44,7 +43,7 @@ export const SystemStatusOverview: React.FC<SystemStatusOverviewProps> = ({
           />
 
           <ServiceStatusCard
-            icon={<Zap className="size-6 text-purple-500" />}
+            icon={<Zap className="size-6 text-secondary" />}
             name="API Endpoints"
             status={{
               status: status.api.status,

@@ -32,17 +32,17 @@ const getPriorityFromPriority = (priority: string): string => {
 const getPriorityColor = (priority: string): string => {
   switch (priority) {
     case 'A+':
-      return 'bg-red-500 hover:bg-red-600 text-white border-red-500'
+      return 'bg-destructive hover:bg-destructive/90 text-destructive-foreground border-destructive'
     case 'A':
-      return 'bg-orange-500 hover:bg-orange-600 text-white border-orange-500'
+      return 'bg-warning hover:bg-warning/90 text-warning-foreground border-warning'
     case 'B':
-      return 'bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-500'
+      return 'bg-warning hover:bg-warning/90 text-warning-foreground border-warning'
     case 'C':
-      return 'bg-blue-500 hover:bg-blue-600 text-white border-blue-500'
+      return 'bg-primary hover:bg-primary/90 text-primary-foreground border-primary'
     case 'D':
-      return 'bg-gray-500 hover:bg-gray-600 text-white border-gray-500'
+      return 'bg-muted hover:bg-muted/90 text-muted-foreground border-muted'
     default:
-      return 'bg-gray-500 hover:bg-gray-600 text-white border-gray-500'
+      return 'bg-muted hover:bg-muted/90 text-muted-foreground border-muted'
   }
 }
 
