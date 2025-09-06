@@ -1,4 +1,4 @@
-import { type Control } from 'react-hook-form'
+import { type Control, type FieldValues, type Path, type ControllerRenderProps } from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -23,15 +23,14 @@ import { cn } from '@/lib/utils'
 import { formTheme } from '@/configs/forms/base.config'
 import type { FieldConfig } from '@/types/forms'
 
-interface EnhancedFormFieldProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<any>
-  name: string
+interface EnhancedFormFieldProps<T extends FieldValues = FieldValues> {
+  control: Control<T>
+  name: Path<T>
   config: FieldConfig
   disabled?: boolean
 }
 
-export function EnhancedFormField({ control, name, config, disabled }: EnhancedFormFieldProps) {
+export function EnhancedFormField<T extends FieldValues = FieldValues>({ control, name, config, disabled }: EnhancedFormFieldProps<T>) {
   return (
     <FormFieldPrimitive
       control={control}
@@ -58,13 +57,12 @@ export function EnhancedFormField({ control, name, config, disabled }: EnhancedF
   )
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function renderFieldInput(field: any, config: FieldConfig, disabled?: boolean) {
+function renderFieldInput<T extends FieldValues>(field: ControllerRenderProps<T, Path<T>>, config: FieldConfig, disabled?: boolean) {
   const commonProps = {
     ...field,
     disabled: disabled || config.disabled,
     placeholder: config.placeholder,
-    className: cn(formTheme.sizing.input, field.className),
+    className: cn(formTheme.sizing.input, config.className),
   }
 
   switch (config.type) {

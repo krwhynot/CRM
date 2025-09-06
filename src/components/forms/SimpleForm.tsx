@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form'
+import { useForm, type FieldValues } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Form } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
@@ -25,8 +25,7 @@ export interface SimpleFormField extends FieldConfig {
   label: string
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface SimpleFormProps<T extends Record<string, any>> {
+interface SimpleFormProps<T extends FieldValues = FieldValues> {
   fields: SimpleFormField[]
   onSubmit: (data: T) => Promise<void> | void
   validationSchema?: AnyObjectSchema
@@ -38,8 +37,7 @@ interface SimpleFormProps<T extends Record<string, any>> {
   fieldClassName?: string
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function SimpleForm<T extends Record<string, any>>({
+export function SimpleForm<T extends FieldValues = FieldValues>({
   fields,
   onSubmit,
   validationSchema,
@@ -78,7 +76,7 @@ export function SimpleForm<T extends Record<string, any>>({
             <FormFieldNew
               key={field.name}
               control={form.control}
-              name={field.name}
+              name={field.name as never}
               config={field}
               disabled={loading}
               className={fieldClassName}

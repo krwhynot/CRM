@@ -51,10 +51,8 @@ export interface InputConfig {
 }
 
 interface FormInputProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value?: any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onChange?: (value: any) => void
+  value?: string | number | boolean | null | undefined
+  onChange?: (value: string | number | boolean | null | undefined) => void
   onBlur?: () => void
   name?: string
   config: InputConfig
@@ -63,19 +61,19 @@ interface FormInputProps {
 
 export const FormInput = React.forwardRef<HTMLElement, FormInputProps>(
   ({ value, onChange, onBlur, name, config, disabled }, ref) => {
-  const commonProps = {
-    value: value || '',
-    onChange,
-    onBlur,
-    disabled: disabled || config.disabled,
-    placeholder: config.placeholder,
-    className: cn('h-11', config.className),
-  }
+  const commonDisabled = disabled || config.disabled
+  const baseClassName = cn('h-11', config.className)
+  
+  const stringValue = value ? String(value) : ''
 
   switch (config.type) {
     case 'select':
       return (
-        <Select value={value || ''} onValueChange={onChange} disabled={commonProps.disabled}>
+        <Select 
+          value={stringValue} 
+          onValueChange={(val) => onChange?.(val || null)} 
+          disabled={commonDisabled}
+        >
           <SelectTrigger ref={ref as React.RefObject<HTMLButtonElement>} className="h-11">
             <SelectValue placeholder={config.placeholder} />
           </SelectTrigger>
@@ -101,10 +99,13 @@ export const FormInput = React.forwardRef<HTMLElement, FormInputProps>(
       return (
         <Textarea
           ref={ref as React.RefObject<HTMLTextAreaElement>}
-          {...commonProps}
+          value={stringValue}
+          onChange={(e) => onChange?.(e.target.value || null)}
+          onBlur={onBlur}
+          disabled={commonDisabled}
+          placeholder={config.placeholder}
           rows={config.rows ?? 3}
           className="min-h-20 resize-y"
-          onChange={(e) => onChange?.(e.target.value)}
         />
       )
 
@@ -112,9 +113,9 @@ export const FormInput = React.forwardRef<HTMLElement, FormInputProps>(
       return (
         <RadioGroup
           ref={ref as React.RefObject<HTMLDivElement>}
-          value={value || ''}
-          onValueChange={onChange}
-          disabled={commonProps.disabled}
+          value={stringValue}
+          onValueChange={(val) => onChange?.(val || null)}
+          disabled={commonDisabled}
           className={config.className}
         >
           {config.options?.map((option) => (
@@ -136,9 +137,9 @@ export const FormInput = React.forwardRef<HTMLElement, FormInputProps>(
         <div className="flex items-center space-x-3 py-2">
           <Switch
             ref={ref as React.RefObject<HTMLButtonElement>}
-            checked={value || false}
-            onCheckedChange={onChange}
-            disabled={commonProps.disabled}
+            checked={Boolean(value)}
+            onCheckedChange={(checked) => onChange?.(checked)}
+            disabled={commonDisabled}
           />
           {config.switchLabel && (
             <span className="text-sm text-gray-700">{config.switchLabel}</span>
@@ -150,9 +151,13 @@ export const FormInput = React.forwardRef<HTMLElement, FormInputProps>(
       return (
         <Input
           ref={ref as React.RefObject<HTMLInputElement>}
-          {...commonProps}
+          value={stringValue}
+          onChange={(e) => onChange?.(e.target.value || null)}
+          onBlur={onBlur}
+          disabled={commonDisabled}
+          placeholder={config.placeholder}
+          className={baseClassName}
           type="date"
-          onChange={(e) => onChange?.(e.target.value)}
         />
       )
 
@@ -160,10 +165,14 @@ export const FormInput = React.forwardRef<HTMLElement, FormInputProps>(
       return (
         <Input
           ref={ref as React.RefObject<HTMLInputElement>}
-          {...commonProps}
+          value={stringValue}
+          onChange={(e) => onChange?.(e.target.value || null)}
+          onBlur={onBlur}
+          disabled={commonDisabled}
+          placeholder={config.placeholder}
+          className={baseClassName}
           type="email"
           autoComplete="email"
-          onChange={(e) => onChange?.(e.target.value)}
         />
       )
 
@@ -171,10 +180,14 @@ export const FormInput = React.forwardRef<HTMLElement, FormInputProps>(
       return (
         <Input
           ref={ref as React.RefObject<HTMLInputElement>}
-          {...commonProps}
+          value={stringValue}
+          onChange={(e) => onChange?.(e.target.value || null)}
+          onBlur={onBlur}
+          disabled={commonDisabled}
+          placeholder={config.placeholder}
+          className={baseClassName}
           type="tel"
           autoComplete="tel"
-          onChange={(e) => onChange?.(e.target.value)}
         />
       )
 
@@ -182,10 +195,14 @@ export const FormInput = React.forwardRef<HTMLElement, FormInputProps>(
       return (
         <Input
           ref={ref as React.RefObject<HTMLInputElement>}
-          {...commonProps}
+          value={stringValue}
+          onChange={(e) => onChange?.(e.target.value || null)}
+          onBlur={onBlur}
+          disabled={commonDisabled}
+          placeholder={config.placeholder}
+          className={baseClassName}
           type="url"
           autoComplete="url"
-          onChange={(e) => onChange?.(e.target.value)}
         />
       )
 
@@ -193,23 +210,35 @@ export const FormInput = React.forwardRef<HTMLElement, FormInputProps>(
       return (
         <Input
           ref={ref as React.RefObject<HTMLInputElement>}
-          {...commonProps}
+          value={stringValue}
+          onChange={(e) => {
+            const numValue = parseFloat(e.target.value)
+            onChange?.(isNaN(numValue) ? null : numValue)
+          }}
+          onBlur={onBlur}
+          disabled={commonDisabled}
+          placeholder={config.placeholder}
+          className={baseClassName}
           type="number"
           min={config.min}
           max={config.max}
           step={config.step}
-          onChange={(e) => onChange?.(parseFloat(e.target.value) || 0)}
         />
       )
 
+    case 'text':
     default:
       return (
         <Input
           ref={ref as React.RefObject<HTMLInputElement>}
-          {...commonProps}
+          value={stringValue}
+          onChange={(e) => onChange?.(e.target.value || null)}
+          onBlur={onBlur}
+          disabled={commonDisabled}
+          placeholder={config.placeholder}
+          className={baseClassName}
           type="text"
           autoComplete={getAutoComplete(name || '')}
-          onChange={(e) => onChange?.(e.target.value)}
         />
       )
     }

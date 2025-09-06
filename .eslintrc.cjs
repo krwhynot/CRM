@@ -61,18 +61,21 @@ module.exports = {
     ],
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': 'warn',
-    '@typescript-eslint/no-explicit-any': 'warn', // TODO: Fix type safety post-deployment
+    '@typescript-eslint/no-explicit-any': 'error', // Type safety enforced - no explicit any allowed
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
     
     // Console usage warning - prevents console statements in production
     'no-console': 'warn',
     
-    // Technical Debt Management Rules
-    'no-warning-comments': ['warn', {
-      'terms': ['TODO', 'FIXME', 'HACK'],
-      'location': 'anywhere'
-    }],
+    // Technical Debt Management Rules - warn about unlinked TODO comments
+    'no-warning-comments': [
+      'warn',
+      {
+        terms: ['TODO', 'FIXME', 'HACK'],
+        location: 'anywhere',
+      },
+    ],
     
     // React 18 JSX Transform - disable unnecessary React import requirement
     'react/react-in-jsx-scope': 'off',

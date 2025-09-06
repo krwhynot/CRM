@@ -1,4 +1,4 @@
-import { type Control } from 'react-hook-form'
+import { type Control, type FieldValues, type Path } from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -27,16 +27,15 @@ export interface FieldConfig extends InputConfig {
   validation?: Record<string, unknown> // Yup schema validation
 }
 
-interface FormFieldProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<any>
-  name: string
+interface FormFieldProps<T extends FieldValues = FieldValues> {
+  control: Control<T>
+  name: Path<T>
   config: FieldConfig
   disabled?: boolean
   className?: string
 }
 
-export function FormFieldNew({ control, name, config, disabled, className }: FormFieldProps) {
+export function FormFieldNew<T extends FieldValues = FieldValues>({ control, name, config, disabled, className }: FormFieldProps<T>) {
   const { isInDialog } = useDialogContext()
   const spacingClasses = getFormSpacingClasses(isInDialog)
 

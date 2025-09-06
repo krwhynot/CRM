@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import type { FieldValues, Resolver } from 'react-hook-form'
+import type { FieldValues, Resolver, UseFormReturn } from 'react-hook-form'
 import type * as yup from 'yup'
 import type React from 'react'
 
@@ -30,9 +30,9 @@ export interface TypedFormProps<T extends FieldValues> {
       isDirty: boolean
       isValid: boolean
     }
-    setValue: (name: keyof T, value: string | number | boolean) => void
+    setValue: (name: keyof T, value: unknown) => void
     getValues: () => T
-    watch: (name?: keyof T) => string | number | boolean | undefined
+    watch: (name?: keyof T) => unknown
     trigger: (name?: keyof T | (keyof T)[]) => Promise<boolean>
     reset: (values?: Partial<T>) => void
   }
@@ -44,8 +44,7 @@ export interface TypedFormProps<T extends FieldValues> {
  */
 export function createTypedFormHelper<T extends FieldValues>() {
   return {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    castForm: (form: any): TypedFormProps<T>['form'] => form,
+    castForm: (form: UseFormReturn<T>): TypedFormProps<T>['form'] => form as TypedFormProps<T>['form'],
     createResolver: (schema: yup.ObjectSchema<T>) => createTypedYupResolver(schema),
   }
 }

@@ -34,6 +34,10 @@ interface SmartPreviewStepProps {
   className?: string
 }
 
+interface CsvRow {
+  [key: string]: string
+}
+
 // Preview data table component
 function DataPreviewTable({
   data,
@@ -48,7 +52,7 @@ function DataPreviewTable({
   const previewRows = data.rows.slice(0, maxRows)
 
   // Build columns dynamically based on field mappings
-  const columns: Column<any>[] = [
+  const columns: Column<CsvRow>[] = [
     {
       key: 'rowIndex',
       header: '#',
@@ -65,8 +69,8 @@ function DataPreviewTable({
           </Badge>
         </div>
       ),
-      cell: (row: any) => (
-        <div className="max-w-48 truncate" title={row[mapping.csvHeader]}>
+      cell: (row: CsvRow) => (
+        <div className="max-w-48 truncate" title={String(row[mapping.csvHeader] || '')}>
           {row[mapping.csvHeader] || (
             <span className="italic text-slate-400">empty</span>
           )}
@@ -80,8 +84,8 @@ function DataPreviewTable({
     <div className="space-y-4">
       <div className="overflow-hidden rounded-lg border">
         <div className="overflow-x-auto">
-          <DataTable
-            data={previewRows}
+          <DataTable<CsvRow>
+            data={previewRows as CsvRow[]}
             columns={columns}
             rowKey={(row) => `preview-${JSON.stringify(row).slice(0, 50)}`}
             empty={{

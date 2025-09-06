@@ -174,7 +174,7 @@ export function DataPreviewTable({ parsedData }: DataPreviewTableProps) {
             Invalid Rows (Need Correction)
           </h3>
           <div className="overflow-hidden rounded-lg border">
-            <DataTable
+            <DataTable<{ row: CsvRow; errors: string[]; index: number }>
               data={parsedData.invalidRows.slice(0, 10).map((item, index) => ({ ...item, index }))}
               columns={invalidRowColumns}
               rowKey={(item) => `invalid-${item.index}`}
@@ -201,7 +201,7 @@ export function DataPreviewTable({ parsedData }: DataPreviewTableProps) {
           </h3>
           <div className="overflow-hidden rounded-lg border">
             <div className="overflow-x-auto">
-              <DataTable
+              <DataTable<TransformedOrganizationRow>
                 data={parsedData.validRows.slice(0, 5)}
                 columns={validRowColumns}
                 rowKey={(row) => `valid-${row.name}-${parsedData.validRows.indexOf(row)}`}

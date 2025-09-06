@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, type FieldValues, type UseFormReturn, type Path } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { Form } from '@/components/ui/form'
@@ -32,8 +32,7 @@ export interface FormSection {
   required?: boolean
   collapsible?: boolean
   defaultExpanded?: boolean
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  condition?: (values: any) => boolean // Show section based on form values
+  condition?: <T extends FieldValues>(values: T) => boolean // Show section based on form values
   className?: string
 }
 
@@ -43,14 +42,12 @@ export interface BusinessFormField extends FieldConfig {
   section?: string // Which section this field belongs to
   dependency?: {
     field: string
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    value: any
+    value: string | number | boolean | null
     condition?: 'equals' | 'not_equals' | 'includes' | 'not_includes'
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface BusinessFormProps<T extends Record<string, any>> {
+interface BusinessFormProps<T extends FieldValues = FieldValues> {
   sections: FormSection[]
   onSubmit: (data: T) => Promise<void> | void
   validationSchema?: AnyObjectSchema
@@ -62,8 +59,7 @@ interface BusinessFormProps<T extends Record<string, any>> {
   className?: string
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function BusinessForm<T extends Record<string, any>>({
+export function BusinessForm<T extends FieldValues = FieldValues>({
   sections,
   onSubmit,
   validationSchema,
@@ -166,7 +162,7 @@ export function BusinessForm<T extends Record<string, any>>({
 
         {/* Form Sections */}
         {sections.filter(shouldShowSection).map((section) => (
-          <FormSectionRenderer
+          <FormSectionRenderer<T>
             key={section.id}
             section={section}
             form={form}
@@ -206,11 +202,10 @@ export function BusinessForm<T extends Record<string, any>>({
   )
 }
 
-// Section renderer component
-interface FormSectionRendererProps {
+// Section renderer component  
+interface FormSectionRendererProps<T extends FieldValues = FieldValues> {
   section: FormSection
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: any
+  form: UseFormReturn<T>
   loading: boolean
   isExpanded: boolean
   onToggle: () => void
@@ -218,7 +213,7 @@ interface FormSectionRendererProps {
   isInDialog: boolean
 }
 
-function FormSectionRenderer({
+function FormSectionRenderer<T extends FieldValues = FieldValues>({
   section,
   form,
   loading,
@@ -226,7 +221,7 @@ function FormSectionRenderer({
   onToggle,
   shouldShowField,
   isInDialog,
-}: FormSectionRendererProps) {
+}: FormSectionRendererProps<T>) {
   const gridClasses = getFormGridClasses(isInDialog, section.fields.length)
   const spacingClasses = getFormSpacingClasses(isInDialog)
 
@@ -240,7 +235,7 @@ function FormSectionRenderer({
         <FormFieldNew
           key={field.name}
           control={form.control}
-          name={field.name}
+          name={field.name as Path<T>}
           config={field}
           disabled={loading}
         />

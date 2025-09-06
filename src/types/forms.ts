@@ -51,9 +51,8 @@ export interface FormSection {
   fields: FieldConfig[]
 }
 
-export interface ConditionalSection extends FormSection {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  condition: string | ((data: any) => boolean)
+export interface ConditionalSection<T extends FieldValues = FieldValues> extends FormSection {
+  condition: string | ((data: T) => boolean)
   showWhen?: 'truthy' | 'falsy'
   isCollapsible?: boolean
 }

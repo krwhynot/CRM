@@ -258,13 +258,11 @@ export const dataTransformers = {
   /**
    * Converts empty strings to null for database storage
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  cleanEmptyStrings: <T extends Record<string, any>>(data: T): T => {
+  cleanEmptyStrings: <T extends Record<string, string | number | boolean | null>>(data: T): T => {
     const result = { ...data }
     for (const [key, value] of Object.entries(result)) {
       if (value === '') {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (result as any)[key] = null
+        (result as T)[key as keyof T] = null as T[keyof T]
       }
     }
     return result
@@ -273,13 +271,11 @@ export const dataTransformers = {
   /**
    * Trims whitespace from all string fields
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  trimStrings: <T extends Record<string, any>>(data: T): T => {
+  trimStrings: <T extends Record<string, string | number | boolean | null>>(data: T): T => {
     const result = { ...data }
     for (const [key, value] of Object.entries(result)) {
       if (typeof value === 'string') {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (result as any)[key] = value.trim()
+        (result as T)[key as keyof T] = value.trim() as T[keyof T]
       }
     }
     return result
@@ -288,8 +284,7 @@ export const dataTransformers = {
   /**
    * Combines common data transformations
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  standardTransform: <T extends Record<string, any>>(data: T): T => {
+  standardTransform: <T extends Record<string, string | number | boolean | null>>(data: T): T => {
     return dataTransformers.cleanEmptyStrings(dataTransformers.trimStrings(data))
   },
 }
