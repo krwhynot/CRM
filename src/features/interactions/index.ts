@@ -4,9 +4,11 @@ export { InteractionTimeline } from './components/InteractionTimeline'
 export { InteractionTimelineItem } from './components/InteractionTimelineItem'
 export { InteractionTimelineSkeleton } from './components/InteractionTimelineSkeleton'
 export { InteractionDialogs } from './components/InteractionDialogs'
+export { InteractionTimelineEmbed } from './components/InteractionTimelineEmbed'
+export { QuickInteractionBar } from './components/QuickInteractionBar'
 
 // Hooks
-export { useInteractions } from './hooks/useInteractions'
+export { useInteractions, useInteractionsByOpportunity } from './hooks/useInteractions'
 export { useInteractionFormatting } from './hooks/useInteractionFormatting'
 export { useInteractionActions } from './hooks/useInteractionActions'
 export { useInteractionIconMapping } from './hooks/useInteractionIconMapping'

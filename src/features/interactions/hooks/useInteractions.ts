@@ -182,7 +182,7 @@ export function useInteractionsByContact(contactId: string) {
 }
 
 // Hook to fetch interactions for a specific opportunity
-export function useInteractionsByOpportunity(opportunityId: string) {
+export function useInteractionsByOpportunity(opportunityId: string, options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: interactionKeys.byOpportunity(opportunityId),
     queryFn: async () => {
@@ -203,7 +203,7 @@ export function useInteractionsByOpportunity(opportunityId: string) {
       if (error) throw error
       return data as InteractionWithRelations[]
     },
-    enabled: !!opportunityId,
+    enabled: !!opportunityId && (options?.enabled !== false),
     staleTime: 2 * 60 * 1000,
   })
 }
