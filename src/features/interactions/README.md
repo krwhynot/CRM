@@ -1,6 +1,6 @@
 # Interactions Feature
 
-The interactions feature manages customer communication tracking and activity timelines within the CRM system. This module provides components and hooks for displaying, creating, and managing interactions linked to opportunities, contacts, and organizations.
+The interactions feature manages customer communication tracking and interaction timelines within the CRM system. This module provides components and hooks for displaying, creating, and managing interactions linked to opportunities, contacts, and organizations.
 
 ## Components
 

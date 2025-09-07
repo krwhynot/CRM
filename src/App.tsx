@@ -19,6 +19,7 @@ const ContactsPage = lazy(() => import('@/pages/Contacts'))
 const OpportunitiesPage = lazy(() => import('@/pages/Opportunities'))
 const MultiPrincipalOpportunityPage = lazy(() => import('@/pages/MultiPrincipalOpportunity'))
 const ProductsPage = lazy(() => import('@/pages/Products'))
+const InteractionsPage = lazy(() => import('@/pages/Interactions'))
 const ImportExportPage = lazy(() => import('@/pages/ImportExport'))
 const StyleGuideTestPage = lazy(() => import('@/pages/StyleGuideTest'))
 
@@ -141,6 +142,18 @@ function App() {
                         <Layout>
                           <Suspense fallback={<LoadingSpinner />}>
                             <ProductsPage />
+                          </Suspense>
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/interactions"
+                    element={
+                      <ProtectedRoute>
+                        <Layout>
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <InteractionsPage />
                           </Suspense>
                         </Layout>
                       </ProtectedRoute>

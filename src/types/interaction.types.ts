@@ -1,22 +1,48 @@
 import type { Database } from '../lib/database.types'
 import * as yup from 'yup'
 
-// Interaction type enum from database
+// Interaction type enum from database - enhanced to match user's spreadsheet data
 export type InteractionType = Database['public']['Enums']['interaction_type']
+
+// Priority levels for interactions (A+ highest priority to D lowest)
+export type InteractionPriority = 'A+' | 'A' | 'B' | 'C' | 'D'
+
+// Account manager names (based on user's spreadsheet)
+export type AccountManager = 'Sue' | 'Gary' | 'Dale' | string
+
+// Principal information structure
+export interface PrincipalInfo {
+  id: string
+  name: string
+  // Support for multiple principals as seen in user's data
+  principal2?: string
+  principal3?: string
+  principal4?: string
+}
 
 // Base interaction types from database
 export type Interaction = Database['public']['Tables']['interactions']['Row']
 export type InteractionInsert = Database['public']['Tables']['interactions']['Insert']
 export type InteractionUpdate = Database['public']['Tables']['interactions']['Update']
 
-// Interaction with relationships
+// Enhanced interaction with comprehensive relationships and new fields
 export type InteractionWithRelations = Interaction & {
-  contact?: Database['public']['Tables']['contacts']['Row']
-  organization?: Database['public']['Tables']['organizations']['Row']
+  contact?: Database['public']['Tables']['contacts']['Row'] & {
+    dropdown?: string // Additional field from user's spreadsheet
+  }
+  organization?: Database['public']['Tables']['organizations']['Row'] & {
+    formula?: string // Formula field like "Sysco Chicago"
+  }
   opportunity: Database['public']['Tables']['opportunities']['Row'] // Required relationship
+  
+  // New enhanced fields matching user's spreadsheet
+  priority?: InteractionPriority
+  account_manager?: AccountManager | string
+  principals?: PrincipalInfo[]
+  import_notes?: string // For data migration notes
 }
 
-// Interaction validation schema - ONLY specification fields
+// Interaction validation schema - Enhanced with user's spreadsheet fields
 export const interactionSchema = yup.object({
   // REQUIRED FIELDS per specification
   type: yup
@@ -26,12 +52,16 @@ export const interactionSchema = yup.object({
         'call',
         'email',
         'meeting',
-        'demo',
+        'demo', 
         'proposal',
         'follow_up',
         'trade_show',
         'site_visit',
         'contract_review',
+        // New types matching user's spreadsheet
+        'in_person',
+        'quoted',
+        'distribution',
       ] as const,
       'Invalid interaction type'
     )
@@ -79,6 +109,33 @@ export const interactionSchema = yup.object({
   follow_up_notes: yup
     .string()
     .max(500, 'Follow-up notes must be 500 characters or less')
+    .nullable(),
+
+  // Enhanced fields matching user's spreadsheet
+  priority: yup
+    .string()
+    .oneOf(['A+', 'A', 'B', 'C', 'D'], 'Invalid priority level')
+    .nullable(),
+
+  account_manager: yup
+    .string()
+    .max(100, 'Account manager name must be 100 characters or less')
+    .nullable(),
+
+  principals: yup
+    .array()
+    .of(yup.object({
+      id: yup.string().uuid('Invalid principal ID').required(),
+      name: yup.string().required('Principal name is required'),
+      principal2: yup.string().nullable(),
+      principal3: yup.string().nullable(),
+      principal4: yup.string().nullable(),
+    }))
+    .nullable(),
+
+  import_notes: yup
+    .string()
+    .max(1000, 'Import notes must be 1000 characters or less')
     .nullable(),
 })
 
@@ -164,33 +221,91 @@ export interface InteractionFilters {
   follow_up_required?: boolean
 }
 
-// Mobile quick templates for efficient field entry
+// Enhanced mobile quick templates matching user's spreadsheet data
 export const MOBILE_INTERACTION_TEMPLATES = [
+  {
+    type: 'in_person' as InteractionType,
+    subject: 'In-person meeting',
+    defaultNotes: 'Met with key decision makers to discuss opportunities',
+    priority: 'A' as InteractionPriority,
+  },
   {
     type: 'call' as InteractionType,
     subject: 'Follow-up call',
     defaultNotes: 'Discussed product interest and next steps',
+    priority: 'B' as InteractionPriority,
   },
   {
     type: 'email' as InteractionType,
-    subject: 'Product information sent',
-    defaultNotes: 'Sent product specifications and pricing',
+    subject: 'Email correspondence',
+    defaultNotes: 'Sent product specifications and pricing information',
+    priority: 'C' as InteractionPriority,
   },
   {
-    type: 'site_visit' as InteractionType,
-    subject: 'Site visit completed',
-    defaultNotes: 'Toured facility and met with decision makers',
+    type: 'quoted' as InteractionType,
+    subject: 'Quote provided',
+    defaultNotes: 'Provided pricing quote for requested products',
+    priority: 'A' as InteractionPriority,
   },
   {
     type: 'demo' as InteractionType,
     subject: 'Product demonstration',
     defaultNotes: 'Demonstrated product features and benefits',
+    priority: 'A' as InteractionPriority,
   },
   {
-    type: 'follow_up' as InteractionType,
-    subject: 'Follow-up contact',
-    defaultNotes: 'Checked on progress and answered questions',
+    type: 'distribution' as InteractionType,
+    subject: 'Distribution discussion',
+    defaultNotes: 'Discussed distribution strategy and logistics',
+    priority: 'B' as InteractionPriority,
+  },
+  {
+    type: 'meeting' as InteractionType,
+    subject: 'Meeting scheduled',
+    defaultNotes: 'Scheduled follow-up meeting to advance opportunity',
+    priority: 'B' as InteractionPriority,
   },
 ] as const
 
 export type MobileInteractionTemplate = (typeof MOBILE_INTERACTION_TEMPLATES)[number]
+
+// Priority color mapping for UI components using semantic tokens
+export const PRIORITY_COLORS = {
+  'A+': {
+    bg: 'bg-destructive/10',
+    text: 'text-destructive',
+    border: 'border-destructive/20',
+    badge: 'bg-destructive text-destructive-foreground',
+  },
+  'A': {
+    bg: 'bg-orange-50', 
+    text: 'text-orange-700',
+    border: 'border-orange-200',
+    badge: 'bg-orange-500 text-white',
+  },
+  'B': {
+    bg: 'bg-yellow-50',
+    text: 'text-yellow-700', 
+    border: 'border-yellow-200',
+    badge: 'bg-yellow-500 text-white',
+  },
+  'C': {
+    bg: 'bg-primary/10',
+    text: 'text-primary',
+    border: 'border-primary/20', 
+    badge: 'bg-primary text-primary-foreground',
+  },
+  'D': {
+    bg: 'bg-muted',
+    text: 'text-muted-foreground',
+    border: 'border-muted-foreground/20',
+    badge: 'bg-muted text-muted-foreground',
+  },
+} as const
+
+// Account manager list (can be expanded as needed)
+export const ACCOUNT_MANAGERS = [
+  'Sue',
+  'Gary', 
+  'Dale',
+] as const

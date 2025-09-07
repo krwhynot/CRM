@@ -34,12 +34,16 @@
 | secondary_manager_name | text | YES | | Secondary manager name (text field for Excel import compatibility) |
 | import_notes | text | YES | | Notes and unmapped data from Excel import process |
 | search_tsv | tsvector | YES | | Full-text search vector |
+| primary_manager_id | uuid | YES | | Foreign key to contacts table for primary manager |
+| secondary_manager_id | uuid | YES | | Foreign key to contacts table for secondary manager |
 
 ## Primary Key
 - organizations_pkey: (id)
 
 ## Foreign Keys
 - organizations_parent_organization_id_fkey: parent_organization_id → organizations(id)
+- fk_organizations_primary_manager: primary_manager_id → contacts(id)
+- fk_organizations_secondary_manager: secondary_manager_id → contacts(id)
 
 ## Check Constraints
 - organizations_priority_check: priority IN ('A', 'B', 'C', 'D')

@@ -21,7 +21,7 @@ export const interactionKeys = {
   byContact: (contactId: string) => [...interactionKeys.all, 'contact', contactId] as const,
   byOpportunity: (opportunityId: string) =>
     [...interactionKeys.all, 'opportunity', opportunityId] as const,
-  recentActivity: () => [...interactionKeys.all, 'recent'] as const,
+  recentInteractions: () => [...interactionKeys.all, 'recent'] as const,
   followUps: () => [...interactionKeys.all, 'followUps'] as const,
   stats: () => [...interactionKeys.all, 'stats'] as const,
 }
@@ -208,10 +208,10 @@ export function useInteractionsByOpportunity(opportunityId: string, options?: { 
   })
 }
 
-// Hook to fetch recent activity (last 50 interactions)
-export function useRecentActivity(limit: number = 50) {
+// Hook to fetch recent interactions (last 50 interactions)
+export function useRecentInteractions(limit: number = 50) {
   return useQuery({
-    queryKey: [...interactionKeys.recentActivity(), limit],
+    queryKey: [...interactionKeys.recentInteractions(), limit],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('interactions')
@@ -230,7 +230,7 @@ export function useRecentActivity(limit: number = 50) {
       if (error) throw error
       return data as InteractionWithRelations[]
     },
-    staleTime: 1 * 60 * 1000, // 1 minute for recent activity
+    staleTime: 1 * 60 * 1000, // 1 minute for recent interactions
   })
 }
 
@@ -281,7 +281,7 @@ export function useInteractionStats() {
           (i) =>
             i.follow_up_required && i.follow_up_date && new Date(i.follow_up_date) <= new Date()
         ).length,
-        recentActivity: data.filter(
+        recentInteractions: data.filter(
           (i) =>
             i.created_at && new Date(i.created_at) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
         ).length,
@@ -386,7 +386,7 @@ export function useCreateInteraction() {
     onSuccess: (newInteraction) => {
       // Invalidate all interaction lists
       queryClient.invalidateQueries({ queryKey: interactionKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: interactionKeys.recentActivity() })
+      queryClient.invalidateQueries({ queryKey: interactionKeys.recentInteractions() })
       queryClient.invalidateQueries({ queryKey: interactionKeys.followUps() })
       queryClient.invalidateQueries({ queryKey: interactionKeys.stats() })
 
@@ -439,7 +439,7 @@ export function useUpdateInteraction() {
     onSuccess: (updatedInteraction) => {
       // Update all related queries
       queryClient.invalidateQueries({ queryKey: interactionKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: interactionKeys.recentActivity() })
+      queryClient.invalidateQueries({ queryKey: interactionKeys.recentInteractions() })
       queryClient.invalidateQueries({ queryKey: interactionKeys.followUps() })
       queryClient.invalidateQueries({ queryKey: interactionKeys.stats() })
 
@@ -533,7 +533,7 @@ export function useDeleteInteraction() {
     onSuccess: (deletedInteraction) => {
       // Invalidate all interaction lists
       queryClient.invalidateQueries({ queryKey: interactionKeys.lists() })
-      queryClient.invalidateQueries({ queryKey: interactionKeys.recentActivity() })
+      queryClient.invalidateQueries({ queryKey: interactionKeys.recentInteractions() })
       queryClient.invalidateQueries({ queryKey: interactionKeys.followUps() })
       queryClient.invalidateQueries({ queryKey: interactionKeys.stats() })
 

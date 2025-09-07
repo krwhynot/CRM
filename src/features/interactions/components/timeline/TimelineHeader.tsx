@@ -13,7 +13,7 @@ export const TimelineHeader: React.FC<TimelineHeaderProps> = ({ interactionCount
   return (
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
       <div className="flex items-center gap-2">
-        <CardTitle className="font-nunito text-lg">Activity Timeline</CardTitle>
+        <CardTitle className="font-nunito text-lg">Interaction Timeline</CardTitle>
         {interactionCount > 0 && (
           <Badge variant="secondary" className="ml-2">
             {interactionCount}
@@ -22,7 +22,7 @@ export const TimelineHeader: React.FC<TimelineHeaderProps> = ({ interactionCount
       </div>
       <Button onClick={onAddNew} size="sm" className="flex h-11 items-center gap-2 md:h-9">
         <Plus className="size-4" />
-        <span className="hidden sm:inline">Log Activity</span>
+        <span className="hidden sm:inline">Log Interaction</span>
         <span className="sm:hidden">Log</span>
       </Button>
     </CardHeader>

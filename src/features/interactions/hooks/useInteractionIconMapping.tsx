@@ -7,7 +7,7 @@ import {
   Users,
   Calendar,
   FileText,
-  Activity,
+  MapPin,
 } from 'lucide-react'
 
 interface UseInteractionIconMappingReturn {
@@ -35,7 +35,7 @@ export const useInteractionIconMapping = (): UseInteractionIconMappingReturn => 
             return <Clock className="size-4" />
           case 'trade_show':
           case 'site_visit':
-            return <Activity className="size-4" />
+            return <MapPin className="size-4" />
           default:
             return <MessageSquare className="size-4" />
         }

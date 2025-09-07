@@ -5,8 +5,8 @@
 
 /** Terms config for consistent terminology */
 export const TERMS = {
-  ACTIVITY_SINGULAR: 'Activity',
-  ACTIVITY_PLURAL: 'Activities',
+  INTERACTION_SINGULAR: 'Interaction',
+  INTERACTION_PLURAL: 'Interactions',
 } as const
 
 export const COPY = {
@@ -26,7 +26,8 @@ export const COPY = {
     ADD_CONTACT: 'Add Contact',
     ADD_PRODUCT: 'Add Product',
     ADD_OPPORTUNITY: 'Add Opportunity',
-    LOG_ACTIVITY: 'Log Activity', // Standardized terminology
+    ADD_INTERACTION: 'Log Interaction',
+    LOG_INTERACTION: 'Log Interaction', // Standardized terminology
     SAVE: 'Save',
     CANCEL: 'Cancel',
     DELETE: 'Delete',
@@ -45,8 +46,11 @@ export const COPY = {
     PRODUCTS: 'Products',
     OPPORTUNITY: 'Opportunity',
     OPPORTUNITIES: 'Opportunities',
-    ACTIVITY: 'Activity', // Standardized over "Interaction"
-    ACTIVITIES: 'Activities',
+    INTERACTION: 'Interaction',
+    INTERACTIONS: 'Interactions',
+    // Legacy activity terms for backwards compatibility
+    ACTIVITY: 'Interaction',
+    ACTIVITIES: 'Interactions',
   },
 
   // Dialog Titles
@@ -63,8 +67,11 @@ export const COPY = {
     CREATE_OPPORTUNITY: 'Add Opportunity',
     EDIT_OPPORTUNITY: 'Edit Opportunity',
     DELETE_OPPORTUNITY: 'Delete Opportunity',
-    LOG_ACTIVITY: 'Log Activity',
-    EDIT_ACTIVITY: 'Edit Activity',
+    CREATE_INTERACTION: 'Log Interaction',
+    EDIT_INTERACTION: 'Edit Interaction',
+    DELETE_INTERACTION: 'Delete Interaction',
+    LOG_INTERACTION: 'Log Interaction',
+    EDIT_ACTIVITY: 'Edit Interaction', // Legacy support
   },
 
   // Confirmation Messages
@@ -88,9 +95,12 @@ export const COPY = {
     OPPORTUNITY_CREATED: 'Opportunity created successfully!',
     OPPORTUNITY_UPDATED: 'Opportunity updated successfully!',
     OPPORTUNITY_DELETED: 'Opportunity deleted successfully!',
-    ACTIVITY_LOGGED: 'Activity logged successfully!',
-    ACTIVITY_UPDATED: 'Activity updated successfully!',
-    ACTIVITY_DELETED: 'Activity deleted successfully!',
+    INTERACTION_CREATED: 'Interaction logged successfully!',
+    INTERACTION_UPDATED: 'Interaction updated successfully!',
+    INTERACTION_DELETED: 'Interaction deleted successfully!',
+    ACTIVITY_LOGGED: 'Interaction logged successfully!', // Legacy support
+    ACTIVITY_UPDATED: 'Interaction updated successfully!', // Legacy support
+    ACTIVITY_DELETED: 'Interaction deleted successfully!', // Legacy support
   },
 
   // Error Messages
@@ -108,9 +118,12 @@ export const COPY = {
     OPPORTUNITY_CREATE: 'Failed to create opportunity. Please try again.',
     OPPORTUNITY_UPDATE: 'Failed to update opportunity. Please try again.',
     OPPORTUNITY_DELETE: 'Failed to delete opportunity. Please try again.',
-    ACTIVITY_LOG: 'Failed to log activity. Please try again.',
-    ACTIVITY_UPDATE: 'Failed to update activity. Please try again.',
-    ACTIVITY_DELETE: 'Failed to delete activity. Please try again.',
+    INTERACTION_CREATE: 'Failed to log interaction. Please try again.',
+    INTERACTION_UPDATE: 'Failed to update interaction. Please try again.',
+    INTERACTION_DELETE: 'Failed to delete interaction. Please try again.',
+    ACTIVITY_LOG: 'Failed to log interaction. Please try again.', // Legacy support
+    ACTIVITY_UPDATE: 'Failed to update interaction. Please try again.', // Legacy support
+    ACTIVITY_DELETE: 'Failed to delete interaction. Please try again.', // Legacy support
   },
 
   // Form Labels and Placeholders
@@ -131,6 +144,8 @@ export const COPY = {
     PRODUCTS_SUBTITLE: 'Catalog & Inventory',
     OPPORTUNITIES_TITLE: 'Opportunities',
     OPPORTUNITIES_SUBTITLE: 'Track and manage your sales pipeline and deals',
+    INTERACTIONS_TITLE: 'Interaction Timeline',
+    INTERACTIONS_SUBTITLE: 'Track all customer interactions and touchpoints',
     IMPORT_EXPORT_TITLE: 'Import/Export',
     IMPORT_EXPORT_SUBTITLE: 'Import organizations and contacts from CSV files or export your data',
   },

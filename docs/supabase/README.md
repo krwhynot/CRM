@@ -38,15 +38,16 @@ This directory contains complete documentation of the KitchenPantry CRM database
 - `materialized-views.md` - Materialized views (1 view)
 
 ## Database Statistics
-- **Tables**: 26 total (16 base tables + 10 lookup/relationship tables)
+- **Tables**: 16 base tables total
 - **Core Entity Tables**: 5 (Organizations, Contacts, Products, Opportunities, Interactions)
-- **Functions**: 38 custom functions (excluding system/extension functions)
-- **RLS Policies**: 35 across 9 secured tables
-- **Views**: 7 (including materialized views and reporting views)
-- **Extensions**: 9 installed (citext, pg_trgm, uuid-ossp, hypopg, pg_stat_statements, pgcrypto, supabase_vault, pg_graphql, plpgsql)
-- **Enum Types**: 9 (contact_role, interaction_type, opportunity_stage, etc.)
-- **Indexes**: 42 performance-optimized indexes with GIN and trigram support
-- **Triggers**: 56 triggers for audit, validation, and business logic enforcement
+- **Lookup Tables**: 5 (interaction_type_lu, loss_reason_lu, source_lu, stage_lu, status_lu)
+- **Relationship Tables**: 6 (contact_preferred_principals, opportunity_participants, opportunity_products, organization_roles, principal_distributor_relationships, migration_control)
+- **Functions**: 72+ functions (including custom business logic, triggers, and security functions)
+- **RLS Policies**: 35 policies across 9 secured tables
+- **Extensions**: 8 installed (citext, hypopg, pg_graphql, pg_stat_statements, pg_trgm, pgcrypto, supabase_vault, uuid-ossp)
+- **Enum Types**: 8 (contact_role, interaction_type, opportunity_priority, opportunity_stage, opportunity_status, organization_type, priority_level, product_category)
+- **Indexes**: 74+ performance-optimized indexes with GIN and trigram support for full-text search
+- **Triggers**: Multiple triggers for audit trails, validation, and business logic enforcement
 
 ## Core Entity Relationships
 - **Organizations** → **Contacts** (1:many)

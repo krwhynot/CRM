@@ -90,7 +90,7 @@ export const OpportunityDialogs: React.FC<OpportunityDialogsProps> = ({
       <StandardDialog
         open={isInteractionDialogOpen}
         onOpenChange={setIsInteractionDialogOpen}
-        title={editingInteraction ? COPY.DIALOGS.EDIT_ACTIVITY : COPY.DIALOGS.LOG_ACTIVITY}
+        title={editingInteraction ? COPY.DIALOGS.EDIT_INTERACTION : COPY.DIALOGS.LOG_INTERACTION}
         description="Track customer interactions and communication history."
         size="md"
         scroll="content"
@@ -115,7 +115,7 @@ export const OpportunityDialogs: React.FC<OpportunityDialogsProps> = ({
             !editingInteraction ? selectedOpportunityId || undefined : undefined
           }
           loading={editingInteraction ? updateInteractionLoading : createInteractionLoading}
-          submitLabel={editingInteraction ? COPY.BUTTONS.UPDATE : COPY.BUTTONS.LOG_ACTIVITY}
+          submitLabel={editingInteraction ? COPY.BUTTONS.UPDATE : COPY.BUTTONS.LOG_INTERACTION}
         />
       </StandardDialog>
     </>

@@ -34,7 +34,7 @@ export const InteractionDialogs: React.FC<InteractionDialogsProps> = ({
       <StandardDialog
         open={isCreateDialogOpen}
         onOpenChange={onCreateDialogChange}
-        title="Log Activity"
+        title="Log Interaction"
         description="Record a new interaction with contacts or opportunities to track engagement history."
         size="xl"
         scroll="content"

@@ -95,7 +95,7 @@ export function CommandPalette({ open, setOpen }: CommandPaletteProps) {
             {' '}
             {/* ui-audit: allow */}
             <MessageSquare className="mr-2 size-4" />
-            <span>{COPY.BUTTONS.LOG_ACTIVITY}</span>
+            <span>{COPY.BUTTONS.LOG_INTERACTION}</span>
           </CommandItem>
         </CommandGroup>
       </CommandList>

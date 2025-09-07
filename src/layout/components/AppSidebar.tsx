@@ -9,7 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
-import { Building2, Users, Package, Target, Home, Upload } from 'lucide-react'
+import { Building2, Users, Package, Target, Home, Upload, MessageSquare } from 'lucide-react'
 
 const menuItems = [
   { title: 'Dashboard', url: '/', icon: Home },
@@ -17,6 +17,7 @@ const menuItems = [
   { title: 'Contacts', url: '/contacts', icon: Users },
   { title: 'Products', url: '/products', icon: Package },
   { title: 'Opportunities', url: '/opportunities', icon: Target },
+  { title: 'Interactions', url: '/interactions', icon: MessageSquare },
   { title: 'Import/Export', url: '/import-export', icon: Upload },
 ]
 

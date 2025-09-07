@@ -48,10 +48,10 @@ export const useInteractionActions = (): UseInteractionActionsReturn => {
 
         await createInteractionMutation.mutateAsync(interactionData)
         onSuccess()
-        toast.success('Activity logged successfully!')
+        toast.success('Interaction logged successfully!')
       } catch (error) {
         // Handle interaction creation errors
-        toast.error('Failed to log activity. Please try again.')
+        toast.error('Failed to log interaction. Please try again.')
       }
     },
     [createInteractionMutation]
@@ -78,10 +78,10 @@ export const useInteractionActions = (): UseInteractionActionsReturn => {
           updates: updateData,
         })
         onSuccess()
-        toast.success('Activity updated successfully!')
+        toast.success('Interaction updated successfully!')
       } catch (error) {
         // Handle interaction update errors
-        toast.error('Failed to update activity. Please try again.')
+        toast.error('Failed to update interaction. Please try again.')
       }
     },
     [updateInteractionMutation]
@@ -92,10 +92,10 @@ export const useInteractionActions = (): UseInteractionActionsReturn => {
       if (window.confirm(`Are you sure you want to delete this ${interaction.type}?`)) {
         try {
           await deleteInteractionMutation.mutateAsync(interaction.id)
-          toast.success('Activity deleted successfully!')
+          toast.success('Interaction deleted successfully!')
         } catch (error) {
           // Handle interaction deletion errors
-          toast.error('Failed to delete activity. Please try again.')
+          toast.error('Failed to delete interaction. Please try again.')
         }
       }
     },
