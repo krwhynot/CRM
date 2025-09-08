@@ -59,7 +59,7 @@ export function FormFieldNew<T extends FieldValues = FieldValues>({ control, nam
     
     return (
       <div className={cn('col-span-full', config.className, className)}>
-        <HeadingTag className="text-md font-semibold mt-4 mb-2 text-gray-900 first:mt-0">
+        <HeadingTag className="text-md mb-2 mt-4 font-semibold text-gray-900 first:mt-0">
           {config.label}
         </HeadingTag>
       </div>

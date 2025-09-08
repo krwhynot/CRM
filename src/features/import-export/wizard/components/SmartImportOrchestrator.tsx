@@ -1,12 +1,12 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { ArrowLeft, ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react'
+import { ArrowLeft, ArrowRight, CheckCircle2, AlertCircle, LogIn } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 import { SmartImportWizard } from './SmartImportWizard'
 import { getNextStep } from '../utils/wizard-steps'
 import { SmartUploadStep } from './SmartUploadStep'
 import { SmartFieldMapping } from './SmartFieldMapping'
-import { SmartPreviewStep } from './SmartPreviewStep'
 import { useSmartImport } from '../hooks/useSmartImport'
 import { useFileUpload } from '@/hooks/useFileUpload' // For template download
 import { Progress } from '@/components/ui/progress'
@@ -34,13 +34,42 @@ export function SmartImportOrchestrator({
 }: SmartImportOrchestratorProps) {
   const { state, actions } = useSmartImport()
   const { downloadTemplate } = useFileUpload() // Reuse existing template logic
+  const [authState, setAuthState] = useState<{
+    isAuthenticated: boolean
+    loading: boolean
+    error: string | null
+  }>({ isAuthenticated: false, loading: true, error: null })
+
+  // Check authentication status on mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser()
+        if (error) {
+          console.error('Auth check error:', error)
+          setAuthState({ isAuthenticated: false, loading: false, error: error.message })
+        } else {
+          setAuthState({ isAuthenticated: !!user, loading: false, error: null })
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error)
+        setAuthState({ 
+          isAuthenticated: false, 
+          loading: false, 
+          error: error instanceof Error ? error.message : 'Authentication check failed'
+        })
+      }
+    }
+    
+    checkAuth()
+  }, [])
 
   // Auto-generate AI mappings when file is uploaded
   useEffect(() => {
     if (state.parsedData && state.fieldMappings.length > 0 && !state.aiMappingResponse) {
       actions.generateAIMappings()
     }
-  }, [state.parsedData, state.fieldMappings, state.aiMappingResponse, actions])
+  }, [state.parsedData, state.fieldMappings.length, state.aiMappingResponse])
 
   // Handle import completion
   useEffect(() => {
@@ -49,18 +78,17 @@ export function SmartImportOrchestrator({
     }
   }, [state.importResult, onImportComplete])
 
-  // Navigation helpers
+  // Navigation helpers with better error messages - Updated for 3-step flow
   const canGoNext = () => {
     switch (state.currentStep) {
       case 'upload':
         return !!state.file && !!state.parsedData
-      case 'map':
+      case 'review':
         return (
+          authState.isAuthenticated &&
           state.fieldMappings.filter((m) => m.status === 'needs_review').length === 0 &&
           state.fieldMappings.some((m) => m.crmField && m.status !== 'skipped')
         )
-      case 'preview':
-        return !state.validationResults || state.validationResults.summary.errorRows === 0
       case 'import':
         return false // Can't go forward from import step
       case 'complete':
@@ -70,31 +98,79 @@ export function SmartImportOrchestrator({
     }
   }
 
+  const getNextStepMessage = () => {
+    // Check auth for import step
+    if (state.currentStep === 'review' && !authState.isAuthenticated) {
+      return 'You must be signed in to import data'
+    }
+    
+    switch (state.currentStep) {
+      case 'upload':
+        if (!state.file) return 'Please upload a CSV file'
+        if (!state.parsedData) return 'File is being processed...'
+        return null
+      case 'review':
+        const needsReview = state.fieldMappings.filter((m) => m.status === 'needs_review').length
+        const hasMapped = state.fieldMappings.some((m) => m.crmField && m.status !== 'skipped')
+        if (needsReview > 0) return `${needsReview} fields need review`
+        if (!hasMapped) return 'Please map at least one field'
+        return null
+      default:
+        return null
+    }
+  }
+
   const canGoPrevious = () => {
     return state.currentStep !== 'upload' && state.currentStep !== 'complete'
   }
 
-  const handleNext = () => {
+  const handleNext = async () => {
     const nextStep = getNextStep(state.currentStep)
     if (nextStep) {
-      // Auto-run validation when entering preview step
-      if (nextStep === 'preview') {
-        actions.validateData()
-        actions.checkDuplicates()
-      }
-      // Start import when entering import step
+      // Check auth before starting import
       if (nextStep === 'import') {
-        actions.executeImport()
+        if (!authState.isAuthenticated) {
+          setAuthState(prev => ({ 
+            ...prev, 
+            error: 'You must be signed in to import data. Please sign in and try again.'
+          }))
+          return
+        }
+        
+        // Double-check auth right before import
+        try {
+          const { data: { user }, error } = await supabase.auth.getUser()
+          if (error || !user) {
+            setAuthState(prev => ({ 
+              ...prev, 
+              error: 'Authentication expired. Please sign in again.'
+            }))
+            return
+          }
+          
+          actions.executeImport()
+        } catch (error) {
+          setAuthState(prev => ({ 
+            ...prev, 
+            error: 'Authentication check failed. Please try again.'
+          }))
+          return
+        }
       }
       actions.nextStep()
     }
+  }
+  
+  const handleSignIn = () => {
+    // Redirect to sign-in page or open auth modal
+    window.location.href = '/auth/login'
   }
 
   const handlePrevious = () => {
     actions.previousStep()
   }
 
-  // Render step content
+  // Render step content - Updated for 3-step flow
   const renderStepContent = () => {
     switch (state.currentStep) {
       case 'upload':
@@ -111,29 +187,25 @@ export function SmartImportOrchestrator({
           />
         )
 
-      case 'map':
+      case 'review':
         return (
           <SmartFieldMapping
+            parsedData={state.parsedData}
             mappings={state.fieldMappings}
             aiInProgress={state.mappingInProgress}
             onGenerateAIMappings={actions.generateAIMappings}
             onUpdateMapping={actions.updateFieldMapping}
             onConfirmMapping={actions.confirmMapping}
             onSkipField={actions.skipField}
-          />
-        )
-
-      case 'preview':
-        return (
-          <SmartPreviewStep
-            parsedData={state.parsedData}
-            fieldMappings={state.fieldMappings}
-            validationResults={state.validationResults}
-            duplicateResults={state.duplicateResults}
-            validationInProgress={state.validationInProgress}
-            config={state.config}
-            onRunValidation={actions.validateData}
-            onCheckDuplicates={actions.checkDuplicates}
+            onConfirmAll={() => {
+              // Confirm all mappings that need review
+              state.fieldMappings.forEach(mapping => {
+                if (mapping.status === 'needs_review' && mapping.crmField) {
+                  actions.confirmMapping(mapping.csvHeader)
+                }
+              })
+            }}
+            onProceedToImport={handleNext}
           />
         )
 
@@ -161,44 +233,98 @@ export function SmartImportOrchestrator({
     }
   }
 
+  // Render navigation buttons for header
+  const renderHeaderButtons = () => {
+    if (state.currentStep === 'import' || state.currentStep === 'complete') {
+      return null
+    }
+
+    return (
+      <div className="flex items-center space-x-2">
+        {/* Previous Button */}
+        {canGoPrevious() && (
+          <Button
+            variant="outline"
+            onClick={handlePrevious}
+            className="h-10 px-4"
+          >
+            <ArrowLeft className="mr-2 size-4" />
+            Previous
+          </Button>
+        )}
+
+        {/* Next Button */}
+        <div className="flex flex-col items-end space-y-1">
+          <Button onClick={handleNext} disabled={!canGoNext()} className="h-10 px-4">
+            {state.currentStep === 'review' ? 'Start Import' : 'Next'}
+            {state.currentStep !== 'review' && <ArrowRight className="ml-2 size-4" />}
+          </Button>
+          {!canGoNext() && getNextStepMessage() && (
+            <span className="max-w-40 text-right text-xs text-amber-600">
+              {getNextStepMessage()}
+            </span>
+          )}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={cn('w-full', className)}>
       <SmartImportWizard
         currentStep={state.currentStep}
         completedSteps={state.completedSteps}
         onStepClick={actions.goToStep}
+        rightHeaderContent={renderHeaderButtons()}
       >
         {renderStepContent()}
 
-        {/* Navigation Footer */}
-        <div className="mt-8 flex items-center justify-between border-t pt-6">
-          {/* Left side - Previous button */}
-          <div>
-            {canGoPrevious() ? (
-              <Button
-                variant="outline"
-                onClick={handlePrevious}
-                className="h-12 px-6" // iPad touch-friendly
-              >
-                <ArrowLeft className="mr-2 size-4" />
-                Previous
-              </Button>
-            ) : (
-              <div /> // Spacer
-            )}
+        {/* Minimal Footer */}
+        {onCancel && state.currentStep !== 'complete' && (
+          <div className="mt-6 flex justify-center border-t pt-4">
+            <Button variant="ghost" onClick={onCancel} className="h-10 px-4">
+              Cancel
+            </Button>
           </div>
+        )}
 
-          {/* Center - Status or warnings */}
-          <div className="mx-4 flex-1">
+        {/* Authentication Error */}
+        {authState.error && (
+          <div className="mt-4">
+            <Alert variant="destructive">
+              <LogIn className="size-4" />
+              <AlertDescription>
+                <div className="flex items-center justify-between">
+                  <span>{authState.error}</span>
+                  {!authState.isAuthenticated && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleSignIn}
+                      className="ml-4 shrink-0"
+                    >
+                      <LogIn className="mr-2 size-3" />
+                      Sign In
+                    </Button>
+                  )}
+                </div>
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
+        
+        {/* Errors/Warnings - Now separate section */}
+        {(state.error || state.warnings.length > 0) && (
+          <div className="mt-4">
             {state.error && (
-              <Alert variant="destructive" className="mb-0">
+              <Alert variant="destructive">
                 <AlertCircle className="size-4" />
                 <AlertDescription>{state.error}</AlertDescription>
               </Alert>
             )}
 
             {state.warnings.length > 0 && !state.error && (
-              <Alert className="mb-0 border-amber-200 bg-amber-50">
+              <Alert className="border-amber-200 bg-amber-50">
                 <AlertCircle className="size-4 text-amber-600" />
                 <AlertDescription>
                   <div className="space-y-1">
@@ -217,23 +343,7 @@ export function SmartImportOrchestrator({
               </Alert>
             )}
           </div>
-
-          {/* Right side - Next/Action buttons */}
-          <div className="flex space-x-3">
-            {onCancel && state.currentStep !== 'complete' && (
-              <Button variant="ghost" onClick={onCancel} className="h-12 px-6">
-                Cancel
-              </Button>
-            )}
-
-            {state.currentStep !== 'import' && state.currentStep !== 'complete' && (
-              <Button onClick={handleNext} disabled={!canGoNext()} className="h-12 px-6">
-                {state.currentStep === 'preview' ? 'Start Import' : 'Next'}
-                {state.currentStep !== 'preview' && <ArrowRight className="ml-2 size-4" />}
-              </Button>
-            )}
-          </div>
-        </div>
+        )}
       </SmartImportWizard>
     </div>
   )
@@ -262,9 +372,9 @@ function ImportProgressStep({
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-foreground">Importing your data...</h3>
+                <h3 className="text-lg font-semibold text-foreground">Adding your organizations...</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  This may take a few moments depending on the size of your file
+                  We're processing your data and adding it to the CRM
                 </p>
               </div>
 
@@ -304,15 +414,15 @@ function ImportProgressStep({
               )}
 
               <h3 className="text-lg font-semibold text-foreground">
-                {result.success ? 'Import Successful!' : 'Import Failed'}
+                {result.success ? 'Successfully Added to CRM!' : 'Import Had Issues'}
               </h3>
 
               <div className="mt-4 space-y-2">
                 <div className="text-sm text-muted-foreground">
-                  <strong>{result.imported}</strong> records imported successfully
+                  <strong>{result.imported}</strong> organizations added to your CRM
                   {result.failed > 0 && (
                     <span>
-                      , <strong className="text-destructive">{result.failed}</strong> failed
+                      , <strong className="text-destructive">{result.failed}</strong> could not be added
                     </span>
                   )}
                 </div>

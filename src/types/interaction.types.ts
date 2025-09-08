@@ -1,5 +1,6 @@
 import type { Database } from '../lib/database.types'
 import * as yup from 'yup'
+import type { InteractionWeeklyFilters } from './shared-filters.types'
 
 // Interaction type enum from database - enhanced to match user's spreadsheet data
 export type InteractionType = Database['public']['Enums']['interaction_type']
@@ -210,9 +211,9 @@ export type InteractionWithOpportunityFormData = yup.InferType<
   typeof interactionWithOpportunitySchema
 >
 
-// Interaction filters for queries
-export interface InteractionFilters {
-  type?: InteractionType | InteractionType[]
+// Interaction filters for queries - enhanced with weekly pattern
+export interface InteractionFilters extends InteractionWeeklyFilters {
+  // Keep existing filter fields
   organization_id?: string
   contact_id?: string
   opportunity_id?: string

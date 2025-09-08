@@ -115,7 +115,7 @@ export function TimeRangeFilter({
                         className={`h-8 px-3 ${isActive ? 'ring-2 ring-primary' : ''}`}
                         disabled={isLoading}
                       >
-                        <IconComponent className="size-3 mr-1" />
+                        <IconComponent className="mr-1 size-3" />
                         <span className="text-xs">{preset.label}</span>
                         {isActive && (
                           <Badge variant="secondary" className="ml-1 h-4 px-1">
@@ -150,7 +150,7 @@ export function TimeRangeFilter({
                         className={`h-7 px-2 text-xs ${isActive ? 'ring-2 ring-primary' : ''}`}
                         disabled={isLoading}
                       >
-                        <IconComponent className="size-3 mr-1" />
+                        <IconComponent className="mr-1 size-3" />
                         {preset.label}
                       </Button>
                     </TooltipTrigger>
@@ -199,7 +199,7 @@ export function TimeRangeFilter({
 
       {/* Custom Date Range Picker */}
       {value === 'custom' && (
-        <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
+        <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
           <Popover>
             <PopoverTrigger asChild>
               <Button

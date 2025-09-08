@@ -2,6 +2,7 @@ import type { Database } from '../lib/database.types'
 import * as yup from 'yup'
 import { FormTransforms } from '../lib/form-transforms'
 import { DB_STAGES, DEFAULT_OPPORTUNITY_STAGE } from '../lib/opportunity-stage-mapping'
+import type { OpportunityWeeklyFilters } from './shared-filters.types'
 
 // Principal CRM Business Logic Types
 export type OpportunityContext =
@@ -35,7 +36,7 @@ export type OpportunityWithLastActivity = OpportunityWithRelations & {
   last_activity_type?: string | null
   interaction_count?: number
   stage_updated_at?: string | null
-}
+} & import('./shared-filters.types').WeeklyContextIndicators
 
 // Opportunity validation schema - updated for form compatibility
 export const opportunitySchema = yup.object({
@@ -254,11 +255,10 @@ export type MultiPrincipalOpportunityFormData = yup.InferType<
   typeof multiPrincipalOpportunitySchema
 >
 
-// Opportunity filters for queries
-export interface OpportunityFilters {
-  stage?: OpportunityStage | OpportunityStage[]
+// Opportunity filters for queries - enhanced with weekly pattern
+export interface OpportunityFilters extends OpportunityWeeklyFilters {
+  // Keep existing filter fields
   organization_id?: string
-  principal_organization_id?: string
   distributor_organization_id?: string
   contact_id?: string
   opportunity_context?: OpportunityContext | OpportunityContext[]

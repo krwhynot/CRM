@@ -12,7 +12,7 @@ export const badgeVariants = cva(
         outline: 'text-foreground',
       },
       priority: {
-        'a-plus': 'border-priority-a-plus bg-priority-a-plus text-priority-a-plus-foreground shadow-lg bg-gradient-to-r from-priority-a-plus to-priority-a',
+        'a-plus': 'border-priority-a-plus bg-priority-a-plus bg-gradient-to-r from-priority-a-plus to-priority-a text-priority-a-plus-foreground shadow-lg',
         'a': 'border-priority-a bg-priority-a text-priority-a-foreground',
         'b': 'border-priority-b bg-priority-b text-priority-b-foreground',
         'c': 'border-priority-c bg-priority-c text-priority-c-foreground',
@@ -24,6 +24,8 @@ export const badgeVariants = cva(
         distributor: 'border-organization-distributor bg-organization-distributor text-organization-distributor-foreground',
         principal: 'border-organization-principal bg-organization-principal text-organization-principal-foreground',
         supplier: 'border-organization-supplier bg-organization-supplier text-organization-supplier-foreground',
+        vendor: 'border-organization-vendor bg-organization-vendor text-organization-vendor-foreground',
+        prospect: 'border-organization-prospect bg-organization-prospect text-organization-prospect-foreground',
         unknown: 'border-muted bg-muted text-muted-foreground',
       },
       segment: {
@@ -46,12 +48,12 @@ export const badgeVariants = cva(
       {
         priority: 'a-plus',
         orgType: 'customer',
-        className: 'bg-gradient-to-r from-yellow-400 to-orange-500 border-yellow-300 text-white shadow-lg'
+        className: 'border-yellow-300 bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-lg'
       },
       {
         priority: ['a-plus', 'a'],
         orgType: 'distributor',
-        className: 'bg-gradient-to-r from-green-400 to-emerald-500 border-green-300 text-white shadow-lg'
+        className: 'border-green-300 bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg'
       }
     ],
     defaultVariants: {

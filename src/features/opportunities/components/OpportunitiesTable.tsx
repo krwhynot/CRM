@@ -3,7 +3,6 @@ import { DataTable, type DataTableColumn } from '@/components/ui/DataTable'
 import { BulkActionsToolbar } from '@/features/organizations/components/BulkActionsToolbar'
 import { BulkDeleteDialog } from '@/features/organizations/components/BulkDeleteDialog'
 import { useOpportunitiesWithLastActivity, useDeleteOpportunity } from '../hooks/useOpportunities'
-import { useOpportunitiesSearch } from '../hooks/useOpportunitiesSearch'
 import { useOpportunitiesSelection } from '../hooks/useOpportunitiesSelection'
 import { useOpportunitiesSorting } from '../hooks/useOpportunitiesSorting'
 import { useOpportunitiesFormatting } from '../hooks/useOpportunitiesFormatting'
@@ -15,7 +14,8 @@ import { QuickInteractionBar } from '@/features/interactions/components/QuickInt
 import { toast } from '@/lib/toast-styles'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
-import { ChevronDown, ChevronRight, Plus, MessageSquare, FileText } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { ChevronDown, ChevronRight, Plus, MessageSquare, FileText, TrendingUp, Zap, Target } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn, formatTimeAgo, isOpportunityStalled, getStalledDays } from '@/lib/utils'
 import { useIsMobile, useIsIPad } from '@/hooks/useMediaQuery'
@@ -43,8 +43,20 @@ export function OpportunitiesTable({
   const [activeTabs, setActiveTabs] = useState<Record<string, 'interactions' | 'details'>>({})
   const [showQuickAdd, setShowQuickAdd] = useState<Record<string, boolean>>({})
 
-  // Hooks
-  const { data: opportunities = [], isLoading } = useOpportunitiesWithLastActivity(filters)
+  // Enhanced filtering state
+  const [opportunityFilters, setOpportunityFilters] = useState<OpportunityFilters>({
+    timeRange: 'this_month',
+    principal: 'all',
+    quickView: 'none',
+    search: '',
+    ...filters // merge any filters passed as props
+  })
+
+  // Hooks - combine component filters with prop filters
+  const { data: opportunities = [], isLoading } = useOpportunitiesWithLastActivity({
+    ...opportunityFilters,
+    ...filters // prop filters override component filters
+  })
   const deleteOpportunity = useDeleteOpportunity()
   const queryClient = useQueryClient()
   
@@ -52,12 +64,11 @@ export function OpportunitiesTable({
   const isMobile = useIsMobile()
   const isIPad = useIsIPad()
 
-  const { searchTerm, setSearchTerm, filteredOpportunities } = useOpportunitiesSearch(opportunities)
-
   const { selectedItems, handleSelectAll, handleSelectItem, clearSelection } =
     useOpportunitiesSelection()
 
-  const { sortedOpportunities } = useOpportunitiesSorting(filteredOpportunities)
+  // Use filtered data from the hook with the complete filters
+  const { sortedOpportunities } = useOpportunitiesSorting(opportunities)
 
   const { getStageConfig, formatCurrency, formatActivityType } = useOpportunitiesFormatting()
 
@@ -348,16 +359,74 @@ export function OpportunitiesTable({
     {
       key: 'company',
       header: 'Company / Opportunity',
-      cell: (opportunity) => (
-        <div>
-          <div className="text-sm font-medium text-gray-900">
-            {opportunity.organization?.name || 'No Organization'}
+      cell: (opportunity) => {
+        const getActivityIcon = () => {
+          switch (opportunity.weeklyActivity) {
+            case 'high': return <Zap className="size-3 text-green-500" />
+            case 'medium': return <Target className="size-3 text-yellow-500" />
+            default: return null
+          }
+        }
+        
+        const getActivityBadge = () => {
+          if (opportunity.weeklyActivity === 'high') {
+            return <Badge variant="secondary" className="border-green-200 bg-green-50 text-xs text-green-700">High Activity</Badge>
+          }
+          if (opportunity.weeklyActivity === 'medium') {
+            return <Badge variant="secondary" className="border-yellow-200 bg-yellow-50 text-xs text-yellow-700">Active</Badge>
+          }
+          return null
+        }
+        
+        return (
+          <div>
+            <div className="flex items-center gap-2">
+              <div className="text-sm font-medium text-gray-900">
+                {opportunity.organization?.name || 'No Organization'}
+              </div>
+              {opportunity.movedThisWeek && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center">
+                        <TrendingUp className="size-3 text-blue-500" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Stage moved this week</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+              {getActivityIcon()}
+            </div>
+            <div className="mt-0.5 flex items-center gap-2">
+              <span className="text-xs text-gray-500">
+                {opportunity.name} • {opportunity.interaction_count || 0} activities
+              </span>
+              {getActivityBadge()}
+            </div>
+            {opportunity.weeklyEngagementScore && opportunity.weeklyEngagementScore > 50 && (
+              <div className="mt-1 flex items-center gap-1">
+                <span className="text-xs text-gray-400">Engagement:</span>
+                <div className="flex items-center">
+                  <div className="h-1.5 w-12 overflow-hidden rounded-full bg-gray-200">
+                    <div 
+                      className={cn(
+                        "h-full rounded-full",
+                        opportunity.weeklyEngagementScore >= 80 ? "bg-green-500" :
+                        opportunity.weeklyEngagementScore >= 60 ? "bg-yellow-500" : "bg-blue-500"
+                      )}
+                      style={{ width: `${opportunity.weeklyEngagementScore}%` }}
+                    />
+                  </div>
+                  <span className="ml-1 text-xs text-gray-400">{opportunity.weeklyEngagementScore}</span>
+                </div>
+              </div>
+            )}
           </div>
-          <div className="mt-0.5 text-xs text-gray-500">
-            {opportunity.name} • {opportunity.interaction_count || 0} activities
-          </div>
-        </div>
-      ),
+        )
+      },
       className: 'w-[35%] px-6 py-3',
     },
     {
@@ -441,8 +510,8 @@ export function OpportunitiesTable({
     },
   ]
 
-  const emptyMessage = searchTerm ? 'No opportunities match your search.' : 'No opportunities yet'
-  const emptySubtext = searchTerm
+  const emptyMessage = opportunityFilters.search ? 'No opportunities match your search.' : 'No opportunities yet'
+  const emptySubtext = opportunityFilters.search
     ? 'Try adjusting your search terms'
     : 'Get started by adding your first opportunity'
 
@@ -450,10 +519,13 @@ export function OpportunitiesTable({
     <div className="space-y-4">
       {/* Filters */}
       <OpportunitiesFilters
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
+        filters={opportunityFilters}
+        onFiltersChange={setOpportunityFilters}
+        principals={[]} // TODO: Add principals data from hook
+        isLoading={isLoading}
         totalOpportunities={opportunities.length}
         filteredCount={sortedOpportunities.length}
+        showBadges={true}
       />
 
       {/* Bulk Actions Toolbar */}

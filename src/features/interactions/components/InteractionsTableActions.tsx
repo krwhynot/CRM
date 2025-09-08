@@ -42,26 +42,26 @@ export function InteractionsTableActions({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-          <MoreHorizontal className="h-4 w-4" />
+        <Button variant="ghost" size="sm" className="size-8 p-0">
+          <MoreHorizontal className="size-4" />
           <span className="sr-only">Open actions menu</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
         {onView && (
           <DropdownMenuItem onClick={() => onView(interaction)}>
-            <Eye className="h-4 w-4 mr-2" />
+            <Eye className="mr-2 size-4" />
             View Details
           </DropdownMenuItem>
         )}
         {onEdit && (
           <DropdownMenuItem onClick={() => onEdit(interaction)}>
-            <Edit className="h-4 w-4 mr-2" />
+            <Edit className="mr-2 size-4" />
             Edit
           </DropdownMenuItem>
         )}
         <DropdownMenuItem onClick={handleCopyDetails}>
-          <Copy className="h-4 w-4 mr-2" />
+          <Copy className="mr-2 size-4" />
           Copy Details
         </DropdownMenuItem>
         
@@ -69,18 +69,18 @@ export function InteractionsTableActions({
         
         {!interaction.follow_up_required && (
           <DropdownMenuItem>
-            <AlertCircle className="h-4 w-4 mr-2" />
+            <AlertCircle className="mr-2 size-4" />
             Add Follow-up
           </DropdownMenuItem>
         )}
         
         <DropdownMenuItem>
-          <CheckCircle className="h-4 w-4 mr-2" />
+          <CheckCircle className="mr-2 size-4" />
           Mark Complete
         </DropdownMenuItem>
         
         <DropdownMenuItem>
-          <Clock className="h-4 w-4 mr-2" />
+          <Clock className="mr-2 size-4" />
           Snooze
         </DropdownMenuItem>
         
@@ -91,7 +91,7 @@ export function InteractionsTableActions({
             onClick={() => onDelete(interaction)}
             className="text-destructive focus:text-destructive"
           >
-            <Trash className="h-4 w-4 mr-2" />
+            <Trash className="mr-2 size-4" />
             Delete
           </DropdownMenuItem>
         )}

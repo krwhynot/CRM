@@ -1,19 +1,33 @@
 // Dashboard Feature - Main Exports
 export { CRMDashboard } from './components/CRMDashboard'
-export { NewDashboard } from './components/NewDashboard'
-export { PrincipalsDashboard } from './components/PrincipalsDashboard'
 export { DashboardFilters } from './components/DashboardFilters'
-export { DashboardCharts } from './components/DashboardCharts'
-export { DualLineCharts } from './components/DualLineCharts'
+
+// Universal Filters Integration
+export {
+  UniversalFilters,
+  CompactUniversalFilters,
+  TimeRangeFilter,
+  FocusFilter,
+  QuickViewFilter,
+  useUniversalFilters,
+  useFilterChangeHandler,
+  useActiveFilterCount,
+  DEFAULT_UNIVERSAL_FILTERS
+} from '@/components/filters'
+export type {
+  UniversalFilterState,
+  UniversalFiltersProps,
+  TimeRangeType,
+  FocusType,
+  QuickViewType,
+  UseUniversalFiltersReturn
+} from '@/components/filters'
+// Legacy DualLineCharts removed - replaced by ChartsGrid with chart visibility controls
 export { PrincipalCard } from './components/PrincipalCard'
 export { PrincipalCardsGrid } from './components/PrincipalCardsGrid'
-export { ActivityFeed } from './components/ActivityFeed'
 export { EnhancedActivityFeed } from './components/EnhancedActivityFeed'
 export { SimpleActivityFeed } from './components/SimpleActivityFeed'
 export { OpportunityKanban } from './components/OpportunityKanban'
-export { OpportunityChart } from './components/OpportunityChart'
-export { InteractionChart } from './components/InteractionChart'
-export { ChartCard } from './components/ChartCard'
 export { DashboardSkeleton } from './components/DashboardSkeleton'
 export { EmptyState } from './components/EmptyState'
 
@@ -34,6 +48,4 @@ export { useActivityFormatting } from './hooks/useActivityFormatting'
 export { useActivityFiltering } from './hooks/useActivityFiltering'
 export { useActivityRealTime } from './hooks/useActivityRealTime'
 export { useEnhancedActivityData } from './hooks/useEnhancedActivityData'
-export { useDualLineChartsState } from './hooks/useDualLineChartsState'
-export { useDualLineChartsStyle } from './hooks/useDualLineChartsStyle'
 export { useMultiPrincipalFormState } from './hooks/useMultiPrincipalFormState'

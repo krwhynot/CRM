@@ -16,7 +16,7 @@ class MCPAuthTests {
 
   async runMCPCommand(tool, params) {
     return new Promise((resolve, reject) => {
-      const claude = spawn('claude', ['code', '--tools-only'], {
+      const claude = spawn('claude', ['--permission-mode', 'plan'], {
         stdio: ['pipe', 'pipe', 'pipe']
       });
 

@@ -165,7 +165,7 @@ export function UniversalFiltersDemo() {
           {/* Filter State Display */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Current Filter State:</label>
-            <div className="bg-muted/30 rounded-md p-3 text-xs font-mono">
+            <div className="rounded-md bg-muted/30 p-3 font-mono text-xs">
               <pre>{JSON.stringify(filters, null, 2)}</pre>
             </div>
           </div>
@@ -204,7 +204,7 @@ export function UniversalFiltersDemo() {
           <CardTitle>Phase 3 Features</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <div className="space-y-2">
               <h4 className="text-sm font-semibold">Responsive Grid Layout</h4>
               <p className="text-xs text-muted-foreground">

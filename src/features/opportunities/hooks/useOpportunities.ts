@@ -8,6 +8,67 @@ import type {
   OpportunityWithLastActivity,
 } from '@/types/opportunity.types'
 import type { Database } from '@/lib/database.types'
+import type { WeeklyContextIndicators } from '@/types/shared-filters.types'
+
+// Utility function to calculate weekly context indicators
+function calculateWeeklyContext(
+  opportunity: OpportunityWithRelations,
+  lastActivityDate: string | null,
+  lastActivityType: string | null,
+  interactionCount: number,
+  stageUpdatedAt: string | null
+): WeeklyContextIndicators {
+  const now = new Date()
+  const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay())
+  
+  // Check if stage was updated this week
+  const movedThisWeek = stageUpdatedAt ? 
+    new Date(stageUpdatedAt) >= weekStart : false
+  
+  // Calculate stage changes (simplified - could be enhanced with history tracking)
+  const stageChanges = movedThisWeek ? 1 : 0
+  
+  // Determine weekly activity level based on interaction count and recency
+  let weeklyActivity: 'high' | 'medium' | 'low' = 'low'
+  if (lastActivityDate) {
+    const lastActivity = new Date(lastActivityDate)
+    const daysSinceActivity = Math.floor((now.getTime() - lastActivity.getTime()) / (1000 * 60 * 60 * 24))
+    
+    if (daysSinceActivity <= 2 && interactionCount >= 3) {
+      weeklyActivity = 'high'
+    } else if (daysSinceActivity <= 7 && interactionCount >= 1) {
+      weeklyActivity = 'medium'
+    }
+  }
+  
+  // Get principal context
+  const principalContext = opportunity.principal_organization?.name || undefined
+  
+  // Calculate engagement score (0-100)
+  let weeklyEngagementScore = 0
+  if (interactionCount > 0) {
+    weeklyEngagementScore += Math.min(interactionCount * 10, 40) // Up to 40 points for interactions
+    if (lastActivityDate) {
+      const daysSinceActivity = Math.floor((now.getTime() - new Date(lastActivityDate).getTime()) / (1000 * 60 * 60 * 24))
+      weeklyEngagementScore += Math.max(20 - daysSinceActivity * 2, 0) // Up to 20 points for recency
+    }
+    if (movedThisWeek) {
+      weeklyEngagementScore += 20 // 20 points for stage movement
+    }
+    if (opportunity.estimated_value && opportunity.estimated_value > 10000) {
+      weeklyEngagementScore += 20 // 20 points for high value opportunities
+    }
+  }
+  
+  return {
+    movedThisWeek,
+    stageChanges,
+    weeklyActivity,
+    lastActivity: lastActivityDate ? new Date(lastActivityDate) : undefined,
+    principalContext,
+    weeklyEngagementScore: Math.min(weeklyEngagementScore, 100)
+  }
+}
 
 // Query key factory
 export const opportunityKeys = {
@@ -44,9 +105,9 @@ export function useOpportunities(filters?: OpportunityFilters) {
       // Apply filters
       if (filters?.stage) {
         if (Array.isArray(filters.stage)) {
-          query = query.in('stage', filters.stage)
+          query = query.in('stage', filters.stage as any)
         } else {
-          query = query.eq('stage', filters.stage)
+          query = query.eq('stage', filters.stage as any)
         }
       }
 
@@ -88,6 +149,61 @@ export function useOpportunities(filters?: OpportunityFilters) {
 
       if (filters?.probability_max) {
         query = query.lte('probability', filters.probability_max)
+      }
+
+      // Weekly time range filtering
+      if (filters?.timeRange && filters.timeRange !== 'this_month') {
+        const now = new Date()
+        let startDate: Date
+        let endDate: Date = now
+
+        switch (filters.timeRange) {
+          case 'this_week':
+            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay())
+            break
+          case 'last_week':
+            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() - 7)
+            endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() - 1)
+            break
+          case 'last_2_weeks':
+            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 14)
+            break
+          case 'last_4_weeks':
+            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 28)
+            break
+          case 'last_month':
+            startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+            endDate = new Date(now.getFullYear(), now.getMonth(), 0)
+            break
+          case 'this_quarter':
+            const quarterStart = Math.floor(now.getMonth() / 3) * 3
+            startDate = new Date(now.getFullYear(), quarterStart, 1)
+            break
+          case 'last_quarter':
+            const lastQuarterStart = Math.floor(now.getMonth() / 3) * 3 - 3
+            startDate = new Date(now.getFullYear(), lastQuarterStart, 1)
+            endDate = new Date(now.getFullYear(), lastQuarterStart + 3, 0)
+            break
+          case 'custom':
+            if (filters.dateFrom) startDate = new Date(filters.dateFrom)
+            if (filters.dateTo) endDate = new Date(filters.dateTo)
+            break
+          default:
+            startDate = new Date(now.getFullYear(), now.getMonth(), 1) // Default to this month
+        }
+
+        if (startDate!) {
+          query = query.gte('created_at', startDate.toISOString())
+        }
+        if (endDate && filters.timeRange !== 'this_week' && filters.timeRange !== 'this_quarter') {
+          query = query.lte('created_at', endDate.toISOString())
+        }
+      }
+
+      // Search functionality
+      if (filters?.search) {
+        // Use text search across name, description, and notes
+        query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,notes.ilike.%${filters.search}%`)
       }
 
       query = query.order('created_at', { ascending: false })
@@ -593,9 +709,9 @@ export function useOpportunitiesWithLastActivity(filters?: OpportunityFilters) {
       // Apply filters (same as useOpportunities)
       if (filters?.stage) {
         if (Array.isArray(filters.stage)) {
-          opportunityQuery = opportunityQuery.in('stage', filters.stage)
+          opportunityQuery = opportunityQuery.in('stage', filters.stage as any)
         } else {
-          opportunityQuery = opportunityQuery.eq('stage', filters.stage)
+          opportunityQuery = opportunityQuery.eq('stage', filters.stage as any)
         }
       }
 
@@ -636,6 +752,61 @@ export function useOpportunitiesWithLastActivity(filters?: OpportunityFilters) {
 
       if (filters?.probability_max) {
         opportunityQuery = opportunityQuery.lte('probability', filters.probability_max)
+      }
+
+      // Weekly time range filtering
+      if (filters?.timeRange && filters.timeRange !== 'this_month') {
+        const now = new Date()
+        let startDate: Date
+        let endDate: Date = now
+
+        switch (filters.timeRange) {
+          case 'this_week':
+            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay())
+            break
+          case 'last_week':
+            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() - 7)
+            endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() - 1)
+            break
+          case 'last_2_weeks':
+            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 14)
+            break
+          case 'last_4_weeks':
+            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 28)
+            break
+          case 'last_month':
+            startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+            endDate = new Date(now.getFullYear(), now.getMonth(), 0)
+            break
+          case 'this_quarter':
+            const quarterStart = Math.floor(now.getMonth() / 3) * 3
+            startDate = new Date(now.getFullYear(), quarterStart, 1)
+            break
+          case 'last_quarter':
+            const lastQuarterStart = Math.floor(now.getMonth() / 3) * 3 - 3
+            startDate = new Date(now.getFullYear(), lastQuarterStart, 1)
+            endDate = new Date(now.getFullYear(), lastQuarterStart + 3, 0)
+            break
+          case 'custom':
+            if (filters.dateFrom) startDate = new Date(filters.dateFrom)
+            if (filters.dateTo) endDate = new Date(filters.dateTo)
+            break
+          default:
+            startDate = new Date(now.getFullYear(), now.getMonth(), 1) // Default to this month
+        }
+
+        if (startDate!) {
+          opportunityQuery = opportunityQuery.gte('created_at', startDate.toISOString())
+        }
+        if (endDate && filters.timeRange !== 'this_week' && filters.timeRange !== 'this_quarter') {
+          opportunityQuery = opportunityQuery.lte('created_at', endDate.toISOString())
+        }
+      }
+
+      // Search functionality
+      if (filters?.search) {
+        // Use text search across name, description, and notes
+        opportunityQuery = opportunityQuery.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,notes.ilike.%${filters.search}%`)
       }
 
       const { data: opportunities, error: oppError } = await opportunityQuery
@@ -707,18 +878,34 @@ export function useOpportunitiesWithLastActivity(filters?: OpportunityFilters) {
         }
       })
 
-      // Merge opportunities with their last activity data
+      // Merge opportunities with their last activity data and weekly context
       const result: OpportunityWithLastActivity[] = opportunities.map((opp) => {
         const activity = lastActivityMap.get(opp.id)
+        const lastActivityDate = activity?.date || null
+        const lastActivityType = activity?.type || null
+        const interactionCount = activity?.count || 0
+        const stageUpdatedAt = null // Future: Add stage tracking in future iteration
+        
+        // Calculate weekly context indicators
+        const weeklyContext = calculateWeeklyContext(
+          opp,
+          lastActivityDate,
+          lastActivityType,
+          interactionCount,
+          stageUpdatedAt
+        )
+        
         return {
           ...opp,
           organization: opp.organization || undefined,
           contact: opp.contact || undefined,
           principal_organization: opp.principal_organization || undefined,
-          last_activity_date: activity?.date || null,
-          last_activity_type: activity?.type || null,
-          interaction_count: activity?.count || 0,
-          stage_updated_at: null, // Future: Add stage tracking in future iteration
+          last_activity_date: lastActivityDate,
+          last_activity_type: lastActivityType,
+          interaction_count: interactionCount,
+          stage_updated_at: stageUpdatedAt,
+          // Add weekly context indicators
+          ...weeklyContext
         }
       })
 

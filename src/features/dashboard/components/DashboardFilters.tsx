@@ -7,6 +7,8 @@ import { useDashboardFiltersStyle } from '../hooks/useDashboardFiltersStyle'
 import { PrincipalFilter } from './dashboard-filters/PrincipalFilter'
 import { ProductFilter } from './dashboard-filters/ProductFilter'
 import { WeeksFilter } from './dashboard-filters/WeeksFilter'
+import { FocusFilter } from './dashboard-filters/FocusFilter'
+import { QuickViewFilter } from './dashboard-filters/QuickViewFilter'
 import { ActiveFiltersSummary } from './dashboard-filters/ActiveFiltersSummary'
 import type { FilterState, Principal, Product } from '@/types/dashboard'
 
@@ -66,6 +68,12 @@ export function DashboardFilters({
               isLoading={isLoading}
               onFilterChange={handleFilterChange}
             />
+
+            <FocusFilter
+              localFilters={localFilters}
+              isLoading={isLoading}
+              onFilterChange={handleFilterChange}
+            />
           </div>
 
           {/* Reset Button */}
@@ -78,6 +86,15 @@ export function DashboardFilters({
           >
             Reset
           </Button>
+        </div>
+
+        {/* Quick View Filters Row */}
+        <div className="mt-3 border-t border-border/50 pt-3">
+          <QuickViewFilter
+            localFilters={localFilters}
+            isLoading={isLoading}
+            onFilterChange={handleFilterChange}
+          />
         </div>
 
         <ActiveFiltersSummary

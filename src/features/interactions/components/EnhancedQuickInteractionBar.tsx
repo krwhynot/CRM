@@ -325,7 +325,7 @@ export function EnhancedQuickInteractionBar({
               size={isMobile ? "default" : "sm"}
               onClick={onCancel}
               disabled={createInteraction.isPending}
-              className={isMobile ? "flex-1 h-12" : ""}
+              className={isMobile ? "h-12 flex-1" : ""}
             >
               <X className={cn(
                 isMobile ? "h-5 w-5 mr-2" : "h-4 w-4 mr-1"
@@ -337,7 +337,7 @@ export function EnhancedQuickInteractionBar({
             type="submit"
             size={isMobile ? "default" : "sm"}
             disabled={createInteraction.isPending || !subject.trim() || !type}
-            className={isMobile ? "flex-1 h-12" : ""}
+            className={isMobile ? "h-12 flex-1" : ""}
           >
             <Send className={cn(
               isMobile ? "h-5 w-5 mr-2" : "h-4 w-4 mr-1"
@@ -349,7 +349,7 @@ export function EnhancedQuickInteractionBar({
 
       {/* Priority and Account Manager Preview */}
       {(priority || accountManager) && (
-        <div className="flex items-center gap-2 pt-2 border-t">
+        <div className="flex items-center gap-2 border-t pt-2">
           <span className="text-sm text-gray-600">Preview:</span>
           {priority && (
             <Badge className={cn(
@@ -361,7 +361,7 @@ export function EnhancedQuickInteractionBar({
           )}
           {accountManager && (
             <Badge variant="outline" className="text-xs">
-              <Users className="h-3 w-3 mr-1" />
+              <Users className="mr-1 size-3" />
               {accountManager}
             </Badge>
           )}

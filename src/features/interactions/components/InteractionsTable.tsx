@@ -158,7 +158,7 @@ export function InteractionsTable({
               </div>
               {interaction.duration_minutes && (
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Clock className="h-3 w-3" />
+                  <Clock className="size-3" />
                   {interaction.duration_minutes}m
                 </div>
               )}
@@ -173,18 +173,18 @@ export function InteractionsTable({
       header: 'Details',
       cell: (interaction) => (
         <div className="space-y-1">
-          <div className="font-medium text-sm">
+          <div className="text-sm font-medium">
             {interaction.subject || 'No subject'}
           </div>
           {interaction.description && (
-            <div className="text-xs text-muted-foreground line-clamp-2">
+            <div className="line-clamp-2 text-xs text-muted-foreground">
               {interaction.description}
             </div>
           )}
           <div className="flex items-center gap-2">
             {interaction.follow_up_required && (
               <Badge variant="destructive" className="text-xs">
-                <AlertCircle className="h-3 w-3 mr-1" />
+                <AlertCircle className="mr-1 size-3" />
                 Follow-up needed
               </Badge>
             )}
@@ -212,13 +212,13 @@ export function InteractionsTable({
           )}
           {interaction.organization && (
             <div className="flex items-center gap-1 text-muted-foreground">
-              <Building className="h-3 w-3" />
+              <Building className="size-3" />
               <span className="truncate">{interaction.organization.name}</span>
             </div>
           )}
           {interaction.contact && (
             <div className="flex items-center gap-1 text-muted-foreground">
-              <User className="h-3 w-3" />
+              <User className="size-3" />
               <span>{interaction.contact.first_name} {interaction.contact.last_name}</span>
             </div>
           )}
@@ -231,9 +231,9 @@ export function InteractionsTable({
       key: 'date',
       header: 'Date & Time',
       cell: (interaction) => (
-        <div className="text-sm space-y-1">
+        <div className="space-y-1 text-sm">
           <div className="flex items-center gap-1">
-            <Calendar className="h-3 w-3 text-muted-foreground" />
+            <Calendar className="size-3 text-muted-foreground" />
             <span className="font-medium">
               {format(parseISO(interaction.interaction_date), 'MMM d, yyyy')}
             </span>
@@ -267,37 +267,37 @@ export function InteractionsTable({
 
   // Expandable content for each row
   const renderExpandableContent = (interaction: InteractionWithRelations) => (
-    <div className="p-6 bg-muted/30 border-l-4 border-primary/20">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="border-l-4 border-primary/20 bg-muted/30 p-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {/* Full Description */}
         <div className="md:col-span-2 lg:col-span-2">
-          <h4 className="font-medium text-foreground mb-3">Full Details</h4>
+          <h4 className="mb-3 font-medium text-foreground">Full Details</h4>
           <div className="space-y-3">
             {interaction.subject && (
               <div>
-                <span className="font-medium text-sm">Subject: </span>
+                <span className="text-sm font-medium">Subject: </span>
                 <span className="text-sm text-muted-foreground">{interaction.subject}</span>
               </div>
             )}
             {interaction.description && (
               <div>
-                <span className="font-medium text-sm">Description: </span>
-                <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">
+                <span className="text-sm font-medium">Description: </span>
+                <p className="mt-1 whitespace-pre-wrap text-sm text-muted-foreground">
                   {interaction.description}
                 </p>
               </div>
             )}
             {interaction.notes && (
               <div>
-                <span className="font-medium text-sm">Notes: </span>
-                <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">
+                <span className="text-sm font-medium">Notes: </span>
+                <p className="mt-1 whitespace-pre-wrap text-sm text-muted-foreground">
                   {interaction.notes}
                 </p>
               </div>
             )}
             {interaction.outcome && (
               <div>
-                <span className="font-medium text-sm">Outcome: </span>
+                <span className="text-sm font-medium">Outcome: </span>
                 <Badge variant="outline" className="capitalize">
                   {interaction.outcome.replace('_', ' ')}
                 </Badge>
@@ -305,7 +305,7 @@ export function InteractionsTable({
             )}
             {interaction.location && (
               <div>
-                <span className="font-medium text-sm">Location: </span>
+                <span className="text-sm font-medium">Location: </span>
                 <span className="text-sm text-muted-foreground">{interaction.location}</span>
               </div>
             )}
@@ -314,13 +314,13 @@ export function InteractionsTable({
 
         {/* Follow-up Information */}
         <div>
-          <h4 className="font-medium text-foreground mb-3">Follow-up</h4>
+          <h4 className="mb-3 font-medium text-foreground">Follow-up</h4>
           <div className="space-y-2 text-sm">
             {interaction.follow_up_required ? (
               <>
                 <div className="flex items-center gap-2">
-                  <AlertCircle className="h-4 w-4 text-destructive" />
-                  <span className="text-destructive font-medium">Follow-up Required</span>
+                  <AlertCircle className="size-4 text-destructive" />
+                  <span className="font-medium text-destructive">Follow-up Required</span>
                 </div>
                 {interaction.follow_up_date && (
                   <div>
@@ -329,7 +329,7 @@ export function InteractionsTable({
                   </div>
                 )}
                 {interaction.follow_up_notes && (
-                  <div className="text-muted-foreground mt-2 p-2 bg-muted rounded">
+                  <div className="mt-2 rounded bg-muted p-2 text-muted-foreground">
                     {interaction.follow_up_notes}
                   </div>
                 )}
@@ -342,7 +342,7 @@ export function InteractionsTable({
 
         {/* Metadata */}
         <div className="lg:col-span-1">
-          <h4 className="font-medium text-foreground mb-3">Information</h4>
+          <h4 className="mb-3 font-medium text-foreground">Information</h4>
           <div className="space-y-2 text-sm text-muted-foreground">
             {interaction.duration_minutes && (
               <div>

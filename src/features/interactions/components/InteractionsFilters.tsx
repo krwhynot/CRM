@@ -1,100 +1,144 @@
+import React from 'react'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Search } from 'lucide-react'
 import { 
-  Search, Filter, Calendar, Users, Building, 
-  Phone, Mail, MessageSquare, MapPin, AlertCircle 
-} from 'lucide-react'
+  GenericWeeksFilter,
+  GenericPrincipalFilter, 
+  GenericQuickViewFilter,
+  createQuickViewOptions
+} from '@/components/filters/shared'
+import type { WeeklyFilterComponentProps, InteractionWeeklyFilters } from '@/types/shared-filters.types'
+import type { InteractionFilters } from '@/types/interaction.types'
 
-interface InteractionsFiltersProps {
-  searchTerm: string
-  onSearchChange: (value: string) => void
-  interactionCount: number
-  totalCount?: number
+interface InteractionsFiltersProps extends WeeklyFilterComponentProps<InteractionFilters> {
+  totalInteractions: number
+  filteredCount: number
+  showBadges?: boolean
 }
 
-export function InteractionsFilters({
-  searchTerm,
-  onSearchChange,
-  interactionCount,
-  totalCount,
-}: InteractionsFiltersProps) {
-  const showingFiltered = totalCount !== undefined && interactionCount !== totalCount
+export const InteractionsFilters: React.FC<InteractionsFiltersProps> = ({
+  filters,
+  onFiltersChange,
+  principals = [],
+  isLoading = false,
+  totalInteractions,
+  filteredCount,
+  showBadges = false,
+  className = '',
+}) => {
+  const handleSearchChange = (search: string) => {
+    onFiltersChange({ ...filters, search })
+  }
+
+  const handleTimeRangeChange = (timeRange: string) => {
+    onFiltersChange({ 
+      ...filters, 
+      timeRange: timeRange as InteractionWeeklyFilters['timeRange']
+    })
+  }
+
+  const handlePrincipalChange = (principal: string) => {
+    onFiltersChange({ 
+      ...filters, 
+      principal: principal
+    })
+  }
+
+  const handleQuickViewChange = (quickView: string | 'none') => {
+    onFiltersChange({ 
+      ...filters, 
+      quickView: quickView as InteractionWeeklyFilters['quickView']
+    })
+  }
+
+  const quickViewOptions = createQuickViewOptions('interactions')
+
+  // Calculate active filter count
+  const activeFilterCount = [
+    filters.timeRange && filters.timeRange !== 'this_month',
+    filters.principal && filters.principal !== 'all',
+    filters.quickView && filters.quickView !== 'none',
+    filters.search,
+    filters.type,
+    filters.organization_id,
+    filters.contact_id,
+    filters.opportunity_id,
+    filters.follow_up_required
+  ].filter(Boolean).length
 
   return (
-    <div className="space-y-4">
-      {/* Search and Count */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <div className="relative flex-1 sm:w-[350px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              value={searchTerm}
-              onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Search interactions, contacts, organizations..."
-              className="pl-9"
-            />
-          </div>
-          <div className="flex items-center gap-2">
-            {showingFiltered ? (
-              <>
-                <Badge variant="secondary">{interactionCount} shown</Badge>
-                <Badge variant="outline">{totalCount} total</Badge>
-              </>
-            ) : (
-              <Badge variant="secondary">{interactionCount} interactions</Badge>
-            )}
-          </div>
+    <div className={`space-y-4 ${className}`}>
+      {/* Primary Filters Row */}
+      <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+        {/* Weekly Time Range */}
+        <GenericWeeksFilter
+          value={filters.timeRange || 'this_month'}
+          options={[
+            { value: 'this_week', label: 'This Week' },
+            { value: 'last_week', label: 'Last Week' },
+            { value: 'last_2_weeks', label: 'Last 2 Weeks' },
+            { value: 'last_4_weeks', label: 'Last 4 Weeks' },
+            { value: 'this_month', label: 'This Month' },
+            { value: 'last_month', label: 'Last Month' },
+            { value: 'this_quarter', label: 'This Quarter' },
+            { value: 'last_quarter', label: 'Last Quarter' },
+            { value: 'custom', label: 'Custom Range' },
+          ]}
+          isLoading={isLoading}
+          onChange={handleTimeRangeChange}
+          className="w-full sm:w-auto"
+        />
+
+        {/* Principal Filter */}
+        <GenericPrincipalFilter
+          value={filters.principal || 'all'}
+          principals={principals}
+          isLoading={isLoading}
+          onChange={handlePrincipalChange}
+          className="w-full sm:w-auto"
+        />
+
+        {/* Quick View Filter */}
+        <GenericQuickViewFilter
+          value={filters.quickView || 'none'}
+          options={quickViewOptions}
+          isLoading={isLoading}
+          showBadges={showBadges}
+          onChange={handleQuickViewChange}
+          className="w-full sm:w-auto"
+        />
+
+        {/* Search */}
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          <Search className="size-4 shrink-0 text-muted-foreground" />
+          <Input
+            placeholder="Search interactions, contacts, organizations..."
+            value={filters.search || ''}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="min-w-0 max-w-80 flex-1"
+          />
         </div>
       </div>
 
-      {/* Quick Filters */}
-      <div className="flex flex-wrap gap-2">
-        <Button variant="outline" size="sm" className="h-8">
-          <Calendar className="h-3 w-3 mr-1" />
-          Date Range
-        </Button>
-        <Button variant="outline" size="sm" className="h-8">
-          <Filter className="h-3 w-3 mr-1" />
-          Type
-        </Button>
-        <Button variant="outline" size="sm" className="h-8">
-          <AlertCircle className="h-3 w-3 mr-1" />
-          Follow-up Required
-        </Button>
-        <Button variant="outline" size="sm" className="h-8">
-          <Users className="h-3 w-3 mr-1" />
-          Contact
-        </Button>
-        <Button variant="outline" size="sm" className="h-8">
-          <Building className="h-3 w-3 mr-1" />
-          Organization
-        </Button>
-      </div>
-
-      {/* Type Quick Filters */}
-      <div className="flex flex-wrap gap-2">
-        <Button variant="ghost" size="sm" className="h-7 text-xs">
-          <Phone className="h-3 w-3 mr-1" />
-          Calls
-        </Button>
-        <Button variant="ghost" size="sm" className="h-7 text-xs">
-          <Mail className="h-3 w-3 mr-1" />
-          Emails
-        </Button>
-        <Button variant="ghost" size="sm" className="h-7 text-xs">
-          <Users className="h-3 w-3 mr-1" />
-          Meetings
-        </Button>
-        <Button variant="ghost" size="sm" className="h-7 text-xs">
-          <MessageSquare className="h-3 w-3 mr-1" />
-          Notes
-        </Button>
-        <Button variant="ghost" size="sm" className="h-7 text-xs">
-          <MapPin className="h-3 w-3 mr-1" />
-          Site Visits
-        </Button>
-      </div>
+      {/* Filter Summary */}
+      {(activeFilterCount > 0 || filters.search) && (
+        <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            {activeFilterCount > 0 && (
+              <span>
+                {activeFilterCount} filter{activeFilterCount !== 1 ? 's' : ''} active
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary">{filteredCount} interactions</Badge>
+            {filteredCount !== totalInteractions && (
+              <Badge variant="outline">of {totalInteractions} total</Badge>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

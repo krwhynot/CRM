@@ -38,6 +38,20 @@ export {
   type NamePreview,
 } from './opportunityAutoNamingStore'
 
+// Dashboard Chart Visibility Store - Client-side UI state only
+export {
+  useDashboardChartVisibilityStore,
+  useChartVisibility,
+  useChartVisibilityBulk,
+  useChartVisibilityPreferences,
+  getVisibleCharts,
+  type DashboardChartVisibilityUIState,
+  type ChartId,
+  type ChartVisibilityState,
+  type ChartMetadata,
+  CHART_METADATA,
+} from './dashboardChartVisibilityStore'
+
 // Store utilities and types
 export type StoreActions<T> = T extends { actions: infer A } ? A : never
 export type StoreState<T> = Omit<T, 'actions'>

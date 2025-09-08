@@ -63,7 +63,7 @@ export function ManagerSelector({
               ) : (
                 <Users className="size-4" />
               )}
-              <span className="truncate max-w-[120px]">{getDisplayText()}</span>
+              <span className="max-w-[120px] truncate">{getDisplayText()}</span>
               {showBadges && value !== 'all' && (
                 <Badge variant="secondary" className="ml-1">
                   {value === 'my_activity' ? currentUserName : '1'}
@@ -127,7 +127,7 @@ export function ManagerSelector({
                 onClick={() => handleSelect(manager)}
                 className={value === manager ? 'bg-accent' : ''}
               >
-                <div className="flex items-center justify-between w-full">
+                <div className="flex w-full items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Users className="size-4" />
                     <div className="flex flex-col">
@@ -147,7 +147,7 @@ export function ManagerSelector({
           
           {managers.length === 0 && !isLoading && (
             <DropdownMenuItem disabled>
-              <span className="text-xs text-muted-foreground italic">
+              <span className="text-xs italic text-muted-foreground">
                 No managers found in organization data
               </span>
             </DropdownMenuItem>
@@ -155,7 +155,7 @@ export function ManagerSelector({
           
           {isLoading && (
             <DropdownMenuItem disabled>
-              <span className="text-xs text-muted-foreground italic">
+              <span className="text-xs italic text-muted-foreground">
                 Loading managers...
               </span>
             </DropdownMenuItem>

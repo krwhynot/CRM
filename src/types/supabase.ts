@@ -1258,7 +1258,7 @@ export type Database = {
         | 'Closed - Lost'
         | 'Nurturing'
         | 'Qualified'
-      organization_type: 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor'
+      organization_type: 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor' | 'unknown'
       priority_level: 'low' | 'medium' | 'high' | 'critical'
       product_category:
         | 'beverages'
@@ -1429,7 +1429,7 @@ export const Constants = {
         'Nurturing',
         'Qualified',
       ],
-      organization_type: ['customer', 'principal', 'distributor', 'prospect', 'vendor'],
+      organization_type: ['customer', 'principal', 'distributor', 'prospect', 'vendor', 'unknown'],
       priority_level: ['low', 'medium', 'high', 'critical'],
       product_category: [
         'beverages',

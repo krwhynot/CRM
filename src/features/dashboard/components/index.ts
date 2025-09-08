@@ -5,23 +5,18 @@
  * to maintain clean import statements and better organization.
  */
 
+// Existing dashboard components
 export { PrincipalCard } from './PrincipalCard'
 export { PrincipalCardsGrid } from './PrincipalCardsGrid'
-export { PrincipalsDashboard } from './PrincipalsDashboard'
-export { ActivityFeed } from './ActivityFeed'
-
-// Dashboard-specific components (moved from shared components)
-export { ChartCard } from './ChartCard'
 export { QuickActions } from './QuickActions'
 export { StatsCards } from './StatsCards'
+
+// Note: ChartCard moved to ./charts/ subdirectory
 
 // Chart Components (organized in subdirectory)
 export * from './charts'
 
-// Activity Components (organized in subdirectory)
-export * from './activity'
-
-// Export types for TypeScript usage
+// Export types for TypeScript usage  
 export type {
   DashboardPriority,
   PrincipalMetrics,
@@ -29,7 +24,6 @@ export type {
   DashboardStats,
   PrincipalCardProps,
   PrincipalCardsGridProps,
-  PrincipalsDashboardProps,
   PriorityConfig,
   LoadingState,
   ErrorState,
@@ -40,6 +34,3 @@ export type {
   TimeRange,
   PredefinedTimeRange,
 } from './types'
-
-// Export ActivityFeed types
-export type { ActivityFeedProps } from './ActivityFeed'

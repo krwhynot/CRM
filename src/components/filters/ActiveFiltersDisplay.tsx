@@ -226,7 +226,7 @@ export function ActiveFiltersDisplay({
 
       {/* Filter Summary */}
       {!compact && (
-        <div className="text-xs text-muted-foreground bg-muted/30 rounded-md px-3 py-2">
+        <div className="rounded-md bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
           Showing: {computed.filterSummary}
         </div>
       )}
@@ -237,14 +237,14 @@ export function ActiveFiltersDisplay({
           <div key={`${badge.key}-${index}`} className="flex items-center">
             <Badge
               variant={badge.variant}
-              className="px-2 py-1 text-xs flex items-center space-x-1"
+              className="flex items-center space-x-1 px-2 py-1 text-xs"
             >
               <span className="font-medium">{badge.label}:</span>
               <span>{badge.value}</span>
               {badge.removable && (
                 <button
                   onClick={() => handleClearFilter(badge.key)}
-                  className="ml-1 hover:bg-background/20 rounded p-0.5 transition-colors"
+                  className="ml-1 rounded p-0.5 transition-colors hover:bg-background/20"
                 >
                   <X className="size-2.5" />
                 </button>
@@ -284,7 +284,7 @@ export function ActiveFiltersDisplay({
             onClick={onClearAllFilters}
             className="h-6 px-2 text-xs"
           >
-            <RotateCcw className="size-3 mr-1" />
+            <RotateCcw className="mr-1 size-3" />
             Clear All
           </Button>
         </div>

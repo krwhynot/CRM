@@ -98,7 +98,7 @@ export function EnhancedInteractionTimelineEmbed({
       <div className={cn("space-y-4", className)}>
         {[1, 2, 3].map((i) => (
           <div key={i} className="flex gap-3">
-            <Skeleton className="h-10 w-10 rounded-full" />
+            <Skeleton className="size-10 rounded-full" />
             <div className="flex-1 space-y-2">
               <Skeleton className="h-4 w-1/3" />
               <Skeleton className="h-3 w-full" />
@@ -113,9 +113,9 @@ export function EnhancedInteractionTimelineEmbed({
   if (error) {
     return (
       <div className={cn("text-center py-6 text-red-600", className)}>
-        <AlertCircle className="h-8 w-8 mx-auto mb-2" />
+        <AlertCircle className="mx-auto mb-2 size-8" />
         <p className="text-sm font-medium">Failed to load interactions</p>
-        <p className="text-xs mt-1">Please try refreshing the page</p>
+        <p className="mt-1 text-xs">Please try refreshing the page</p>
       </div>
     )
   }
@@ -123,10 +123,10 @@ export function EnhancedInteractionTimelineEmbed({
   if (!interactions?.length) {
     return (
       <div className={cn("text-center py-12", className)}>
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
-          <FileText className="h-8 w-8 text-gray-400" />
+        <div className="mb-4 inline-flex size-16 items-center justify-center rounded-full bg-gray-100">
+          <FileText className="size-8 text-gray-400" />
         </div>
-        <p className="text-gray-600 font-medium mb-1">No interactions yet</p>
+        <p className="mb-1 font-medium text-gray-600">No interactions yet</p>
         <p className="text-sm text-gray-500">
           Start tracking customer touchpoints to see them here
         </p>
@@ -158,15 +158,15 @@ export function EnhancedInteractionTimelineEmbed({
         {Object.entries(groupedInteractions).map(([groupName, groupInteractions]) => (
           <div key={groupName}>
             {showGrouping && (
-              <div className="sticky top-0 bg-white z-10 pb-2 mb-3">
-                <h4 className="text-sm font-semibold text-gray-600 flex items-center gap-2">
-                  <Clock className="h-3 w-3" />
+              <div className="sticky top-0 z-10 mb-3 bg-white pb-2">
+                <h4 className="flex items-center gap-2 text-sm font-semibold text-gray-600">
+                  <Clock className="size-3" />
                   {groupName}
                   <Badge variant="secondary" className="ml-auto">
                     {groupInteractions.length}
                   </Badge>
                 </h4>
-                <div className="h-px bg-gray-200 mt-2" />
+                <div className="mt-2 h-px bg-gray-200" />
               </div>
             )}
             
@@ -188,7 +188,7 @@ export function EnhancedInteractionTimelineEmbed({
             <Button
               variant="outline"
               onClick={() => setShowAll(!showAll)}
-              className="flex items-center gap-2 w-full md:w-auto"
+              className="flex w-full items-center gap-2 md:w-auto"
             >
               {showAll ? (
                 <>
@@ -223,7 +223,7 @@ function InteractionCard({
   const priorityColors = interaction.priority ? PRIORITY_COLORS[interaction.priority as InteractionPriority] : null
   
   return (
-    <div className="group relative flex gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors border border-gray-100">
+    <div className="group relative flex gap-3 rounded-lg border border-gray-100 p-3 transition-colors hover:bg-gray-50">
       {/* Priority Badge */}
       {interaction.priority && (
         <div className="absolute -left-2 top-3">
@@ -239,20 +239,20 @@ function InteractionCard({
         "bg-blue-100 text-blue-600",
         interaction.priority && "ml-4" // Offset for priority badge
       )}>
-        <Icon className="h-5 w-5" />
+        <Icon className="size-5" />
       </div>
       
       {/* Content */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         {/* Header Row */}
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <p className="font-medium text-sm text-gray-900 capitalize">
+            <div className="mb-1 flex items-center gap-2">
+              <p className="text-sm font-medium capitalize text-gray-900">
                 {interaction.type.replace('_', ' ')}
               </p>
               {interaction.subject && (
-                <span className="text-gray-600 text-sm">• {interaction.subject}</span>
+                <span className="text-sm text-gray-600">• {interaction.subject}</span>
               )}
             </div>
             
@@ -261,7 +261,7 @@ function InteractionCard({
               {/* Organization */}
               {interaction.organization && (
                 <span className="flex items-center gap-1">
-                  <Building className="h-3 w-3" />
+                  <Building className="size-3" />
                   {interaction.organization.name}
                   {interaction.organization.formula && (
                     <span className="text-gray-400">({interaction.organization.formula})</span>
@@ -272,7 +272,7 @@ function InteractionCard({
               {/* Contact */}
               {interaction.contact && (
                 <span className="flex items-center gap-1">
-                  <User className="h-3 w-3" />
+                  <User className="size-3" />
                   {interaction.contact.first_name} {interaction.contact.last_name}
                   {interaction.contact.dropdown && (
                     <span className="text-gray-400">- {interaction.contact.dropdown}</span>
@@ -284,14 +284,14 @@ function InteractionCard({
           
           {/* Time & Toggle */}
           <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-400 whitespace-nowrap">
+            <span className="whitespace-nowrap text-xs text-gray-400">
               {format(parseISO(interaction.interaction_date), 'h:mm a')}
             </span>
             <Button
               variant="ghost"
               size="sm"
               onClick={onToggleExpand}
-              className="h-6 w-6 p-0"
+              className="size-6 p-0"
             >
               <ChevronRight className={cn(
                 "h-3 w-3 transition-transform",
@@ -303,7 +303,7 @@ function InteractionCard({
         
         {/* Expanded Content */}
         {isExpanded && (
-          <div className="mt-3 space-y-3 pl-2 border-l-2 border-gray-100">
+          <div className="mt-3 space-y-3 border-l-2 border-gray-100 pl-2">
             {/* Account Manager */}
             {interaction.account_manager && (
               <div className="flex items-center gap-2">
@@ -347,7 +347,7 @@ function InteractionCard({
             
             {/* Description/Notes */}
             {(interaction.description || interaction.notes) && (
-              <div className="bg-gray-50 rounded p-2 text-sm text-gray-700">
+              <div className="rounded bg-gray-50 p-2 text-sm text-gray-700">
                 {interaction.description || interaction.notes}
               </div>
             )}
@@ -355,7 +355,7 @@ function InteractionCard({
             {/* Follow-up indicator */}
             {interaction.follow_up_required && (
               <div className="flex items-center gap-1 text-xs text-orange-600">
-                <AlertCircle className="h-3 w-3" />
+                <AlertCircle className="size-3" />
                 Follow-up required
                 {interaction.follow_up_date && (
                   <span className="text-gray-500">
@@ -367,7 +367,7 @@ function InteractionCard({
             
             {/* Import Notes */}
             {interaction.import_notes && (
-              <div className="text-xs text-gray-400 italic">
+              <div className="text-xs italic text-gray-400">
                 Import notes: {interaction.import_notes}
               </div>
             )}

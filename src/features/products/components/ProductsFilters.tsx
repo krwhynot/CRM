@@ -2,38 +2,72 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search, Plus } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import type { ProductFilterType } from '@/features/products/hooks/useProductsFiltering'
+import { 
+  GenericWeeksFilter,
+  GenericPrincipalFilter, 
+  GenericQuickViewFilter,
+  createQuickViewOptions
+} from '@/components/filters/shared'
+import type { WeeklyFilterComponentProps, ProductWeeklyFilters } from '@/types/shared-filters.types'
 
-interface FilterPill {
-  key: ProductFilterType
-  label: string
-  count: number
-}
-
-interface ProductsFiltersProps {
-  activeFilter: ProductFilterType
-  onFilterChange: (filter: ProductFilterType) => void
-  searchTerm: string
-  onSearchChange: (term: string) => void
-  filterPills: FilterPill[]
-  onAddNew?: () => void
+interface ProductsFiltersProps extends WeeklyFilterComponentProps<ProductWeeklyFilters> {
   totalProducts: number
   filteredCount: number
+  showBadges?: boolean
+  onAddNew?: () => void
 }
 
 export const ProductsFilters: React.FC<ProductsFiltersProps> = ({
-  activeFilter,
-  onFilterChange,
-  searchTerm,
-  onSearchChange,
-  filterPills,
-  onAddNew,
+  filters,
+  onFiltersChange,
+  principals = [],
+  isLoading = false,
   totalProducts,
   filteredCount,
+  showBadges = false,
+  onAddNew,
+  className = '',
 }) => {
+  const handleSearchChange = (search: string) => {
+    onFiltersChange({ ...filters, search })
+  }
+
+  const handleTimeRangeChange = (timeRange: string) => {
+    onFiltersChange({ 
+      ...filters, 
+      timeRange: timeRange as ProductWeeklyFilters['timeRange']
+    })
+  }
+
+  const handlePrincipalChange = (principal: string) => {
+    onFiltersChange({ 
+      ...filters, 
+      principal_id: principal === 'all' ? undefined : principal,
+      principal: principal
+    })
+  }
+
+  const handleQuickViewChange = (quickView: string | 'none') => {
+    onFiltersChange({ 
+      ...filters, 
+      quickView: quickView as ProductWeeklyFilters['quickView']
+    })
+  }
+
+  const quickViewOptions = createQuickViewOptions('products')
+
+  // Calculate active filter count
+  const activeFilterCount = [
+    filters.timeRange && filters.timeRange !== 'this_month',
+    filters.principal && filters.principal !== 'all',
+    filters.quickView && filters.quickView !== 'none',
+    filters.search,
+    filters.category,
+    filters.principal_id
+  ].filter(Boolean).length
+
   return (
-    <div className="space-y-4">
+    <div className={`space-y-4 ${className}`}>
       {/* Header with Add New button */}
       <div className="flex items-center justify-between">
         <div>
@@ -52,47 +86,73 @@ export const ProductsFilters: React.FC<ProductsFiltersProps> = ({
         )}
       </div>
 
-      {/* Search Bar */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
-        <Input
-          type="text"
-          placeholder="Search products by name, SKU, category, brand, or principal..."
-          value={searchTerm}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className="w-full py-2 pl-10 pr-4"
+      {/* Primary Filters Row */}
+      <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+        {/* Weekly Time Range */}
+        <GenericWeeksFilter
+          value={filters.timeRange || 'this_month'}
+          options={[
+            { value: 'this_week', label: 'This Week' },
+            { value: 'last_week', label: 'Last Week' },
+            { value: 'last_2_weeks', label: 'Last 2 Weeks' },
+            { value: 'last_4_weeks', label: 'Last 4 Weeks' },
+            { value: 'this_month', label: 'This Month' },
+            { value: 'last_month', label: 'Last Month' },
+            { value: 'this_quarter', label: 'This Quarter' },
+            { value: 'last_quarter', label: 'Last Quarter' },
+            { value: 'custom', label: 'Custom Range' },
+          ]}
+          isLoading={isLoading}
+          onChange={handleTimeRangeChange}
+          className="w-full sm:w-auto"
         />
+
+        {/* Principal Filter */}
+        <GenericPrincipalFilter
+          value={filters.principal || 'all'}
+          principals={principals}
+          isLoading={isLoading}
+          onChange={handlePrincipalChange}
+          className="w-full sm:w-auto"
+        />
+
+        {/* Quick View Filter */}
+        <GenericQuickViewFilter
+          value={filters.quickView || 'none'}
+          options={quickViewOptions}
+          isLoading={isLoading}
+          showBadges={showBadges}
+          onChange={handleQuickViewChange}
+          className="w-full sm:w-auto"
+        />
+
+        {/* Search */}
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          <Search className="size-4 shrink-0 text-muted-foreground" />
+          <Input
+            placeholder="Search products..."
+            value={filters.search || ''}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="min-w-0 max-w-64 flex-1"
+          />
+        </div>
       </div>
 
-      {/* Filter Pills */}
-      <div className="flex flex-wrap gap-2">
-        {filterPills.map((pill) => (
-          <Button
-            key={pill.key}
-            variant={activeFilter === pill.key ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => onFilterChange(pill.key)}
-            className={cn(
-              'flex items-center gap-1 transition-colors',
-              activeFilter === pill.key
-                ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                : 'text-muted-foreground hover:text-foreground'
+      {/* Filter Summary */}
+      {(activeFilterCount > 0 || filters.search) && (
+        <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            {activeFilterCount > 0 && (
+              <span>
+                {activeFilterCount} filter{activeFilterCount !== 1 ? 's' : ''} active
+              </span>
             )}
-          >
-            {pill.label}
-            <span
-              className={cn(
-                'ml-1 px-1.5 py-0.5 rounded-full text-xs font-medium',
-                activeFilter === pill.key
-                  ? 'bg-primary/80 text-primary-foreground'
-                  : 'bg-muted text-muted-foreground'
-              )}
-            >
-              {pill.count}
-            </span>
-          </Button>
-        ))}
-      </div>
+          </div>
+          <span>
+            {filteredCount} of {totalProducts} products
+          </span>
+        </div>
+      )}
     </div>
   )
 }

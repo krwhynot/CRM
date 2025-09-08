@@ -117,7 +117,7 @@ export function QuickViewsSection({
               onClick={() => onQuickViewChange('none')}
               className="h-6 px-2 text-xs"
             >
-              <X className="size-3 mr-1" />
+              <X className="mr-1 size-3" />
               Clear
             </Button>
           )}
@@ -156,7 +156,7 @@ export function QuickViewsSection({
                       {showBadges && badgeCount > 0 && (
                         <Badge 
                           variant="secondary" 
-                          className="ml-auto shrink-0 h-5 px-1.5 text-xs"
+                          className="ml-auto h-5 shrink-0 px-1.5 text-xs"
                         >
                           {loadingBadges ? '...' : badgeCount}
                         </Badge>
@@ -221,11 +221,11 @@ export function QuickViewsSection({
                 Workflows
               </span>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               {Object.entries(WORKFLOW_PRESETS).slice(0, 2).map(([key, workflow]) => (
                 <div 
                   key={key} 
-                  className="p-2 border rounded-md bg-muted/30 hover:bg-muted/50 cursor-pointer transition-colors"
+                  className="cursor-pointer rounded-md border bg-muted/30 p-2 transition-colors hover:bg-muted/50"
                   onClick={() => {
                     // Apply the first preset from the workflow
                     if (workflow.presets.length > 0) {
@@ -234,12 +234,12 @@ export function QuickViewsSection({
                   }}
                 >
                   <div className="text-xs font-medium">{workflow.name}</div>
-                  <div className="text-xs text-muted-foreground mb-1">
+                  <div className="mb-1 text-xs text-muted-foreground">
                     {workflow.description}
                   </div>
                   <div className="flex flex-wrap gap-1">
                     {workflow.presets.slice(0, 2).map((preset) => (
-                      <Badge key={preset} variant="outline" className="text-xs h-4 px-1">
+                      <Badge key={preset} variant="outline" className="h-4 px-1 text-xs">
                         {QUICK_VIEW_LABELS[preset].split(' ')[0]}
                       </Badge>
                     ))}

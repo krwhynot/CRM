@@ -93,20 +93,20 @@ export function StyleGuideTest() {
                 <p className="text-sm text-muted-foreground">Organization Types:</p>
                 <div className="flex flex-wrap gap-2">
                   <div className="flex items-center gap-2 rounded-lg border p-3">
-                    <div className="h-4 w-4 rounded bg-organization-customer"></div>
-                    <span className="text-sm font-medium text-organization-customer-foreground bg-organization-customer px-2 py-1 rounded">Customer</span>
+                    <div className="size-4 rounded bg-organization-customer"></div>
+                    <span className="rounded bg-organization-customer px-2 py-1 text-sm font-medium text-organization-customer-foreground">Customer</span>
                   </div>
                   <div className="flex items-center gap-2 rounded-lg border p-3">
-                    <div className="h-4 w-4 rounded bg-organization-distributor"></div>
-                    <span className="text-sm font-medium text-organization-distributor-foreground bg-organization-distributor px-2 py-1 rounded">Distributor</span>
+                    <div className="size-4 rounded bg-organization-distributor"></div>
+                    <span className="rounded bg-organization-distributor px-2 py-1 text-sm font-medium text-organization-distributor-foreground">Distributor</span>
                   </div>
                   <div className="flex items-center gap-2 rounded-lg border p-3">
-                    <div className="h-4 w-4 rounded bg-organization-principal"></div>
-                    <span className="text-sm font-medium text-organization-principal-foreground bg-organization-principal px-2 py-1 rounded">Principal</span>
+                    <div className="size-4 rounded bg-organization-principal"></div>
+                    <span className="rounded bg-organization-principal px-2 py-1 text-sm font-medium text-organization-principal-foreground">Principal</span>
                   </div>
                   <div className="flex items-center gap-2 rounded-lg border p-3">
-                    <div className="h-4 w-4 rounded bg-organization-supplier"></div>
-                    <span className="text-sm font-medium text-organization-supplier-foreground bg-organization-supplier px-2 py-1 rounded">Supplier</span>
+                    <div className="size-4 rounded bg-organization-supplier"></div>
+                    <span className="rounded bg-organization-supplier px-2 py-1 text-sm font-medium text-organization-supplier-foreground">Supplier</span>
                   </div>
                 </div>
               </div>
@@ -115,16 +115,16 @@ export function StyleGuideTest() {
                 <p className="text-sm text-muted-foreground">Market Segments:</p>
                 <div className="flex flex-wrap gap-2">
                   <div className="flex items-center gap-2 rounded-lg border p-3">
-                    <div className="h-4 w-4 rounded bg-segment-restaurant"></div>
-                    <span className="text-sm font-medium text-segment-restaurant-foreground bg-segment-restaurant px-2 py-1 rounded">Restaurant</span>
+                    <div className="size-4 rounded bg-segment-restaurant"></div>
+                    <span className="rounded bg-segment-restaurant px-2 py-1 text-sm font-medium text-segment-restaurant-foreground">Restaurant</span>
                   </div>
                   <div className="flex items-center gap-2 rounded-lg border p-3">
-                    <div className="h-4 w-4 rounded bg-segment-healthcare"></div>
-                    <span className="text-sm font-medium text-segment-healthcare-foreground bg-segment-healthcare px-2 py-1 rounded">Healthcare</span>
+                    <div className="size-4 rounded bg-segment-healthcare"></div>
+                    <span className="rounded bg-segment-healthcare px-2 py-1 text-sm font-medium text-segment-healthcare-foreground">Healthcare</span>
                   </div>
                   <div className="flex items-center gap-2 rounded-lg border p-3">
-                    <div className="h-4 w-4 rounded bg-segment-education"></div>
-                    <span className="text-sm font-medium text-segment-education-foreground bg-segment-education px-2 py-1 rounded">Education</span>
+                    <div className="size-4 rounded bg-segment-education"></div>
+                    <span className="rounded bg-segment-education px-2 py-1 text-sm font-medium text-segment-education-foreground">Education</span>
                   </div>
                 </div>
               </div>
@@ -133,24 +133,24 @@ export function StyleGuideTest() {
                 <p className="text-sm text-muted-foreground">Priority System (Updated):</p>
                 <div className="flex flex-wrap gap-2">
                   <div className="flex items-center gap-2 rounded-lg border p-3">
-                    <div className="h-4 w-4 rounded bg-priority-a-plus"></div>
-                    <span className="text-sm font-medium text-priority-a-plus-foreground bg-priority-a-plus px-2 py-1 rounded">A+ Priority</span>
+                    <div className="size-4 rounded bg-priority-a-plus"></div>
+                    <span className="rounded bg-priority-a-plus px-2 py-1 text-sm font-medium text-priority-a-plus-foreground">A+ Priority</span>
                   </div>
                   <div className="flex items-center gap-2 rounded-lg border p-3">
-                    <div className="h-4 w-4 rounded bg-priority-a"></div>
-                    <span className="text-sm font-medium text-priority-a-foreground bg-priority-a px-2 py-1 rounded">A Priority</span>
+                    <div className="size-4 rounded bg-priority-a"></div>
+                    <span className="rounded bg-priority-a px-2 py-1 text-sm font-medium text-priority-a-foreground">A Priority</span>
                   </div>
                   <div className="flex items-center gap-2 rounded-lg border p-3">
-                    <div className="h-4 w-4 rounded bg-priority-b"></div>
-                    <span className="text-sm font-medium text-priority-b-foreground bg-priority-b px-2 py-1 rounded">B Priority</span>
+                    <div className="size-4 rounded bg-priority-b"></div>
+                    <span className="rounded bg-priority-b px-2 py-1 text-sm font-medium text-priority-b-foreground">B Priority</span>
                   </div>
                   <div className="flex items-center gap-2 rounded-lg border p-3">
-                    <div className="h-4 w-4 rounded bg-priority-c"></div>
-                    <span className="text-sm font-medium text-priority-c-foreground bg-priority-c px-2 py-1 rounded">C Priority</span>
+                    <div className="size-4 rounded bg-priority-c"></div>
+                    <span className="rounded bg-priority-c px-2 py-1 text-sm font-medium text-priority-c-foreground">C Priority</span>
                   </div>
                   <div className="flex items-center gap-2 rounded-lg border p-3">
-                    <div className="h-4 w-4 rounded bg-priority-d"></div>
-                    <span className="text-sm font-medium text-priority-d-foreground bg-priority-d px-2 py-1 rounded">D Priority</span>
+                    <div className="size-4 rounded bg-priority-d"></div>
+                    <span className="rounded bg-priority-d px-2 py-1 text-sm font-medium text-priority-d-foreground">D Priority</span>
                   </div>
                 </div>
               </div>

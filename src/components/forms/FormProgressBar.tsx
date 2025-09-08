@@ -66,7 +66,7 @@ export function FormProgressBar({
         {/* Progress Bar */}
         <Progress 
           value={percentage} 
-          className="flex-1 h-1.5"
+          className="h-1.5 flex-1"
           style={{
             // @ts-ignore - CSS custom properties are valid
             '--progress-background': getProgressColor()
@@ -74,12 +74,12 @@ export function FormProgressBar({
         />
         
         {/* Completion Count */}
-        <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
+        <span className="whitespace-nowrap text-xs font-medium text-muted-foreground">
           {completed}/{total}
         </span>
         
         {/* Percentage */}
-        <span className="text-xs font-semibold text-foreground whitespace-nowrap min-w-[2.5rem] text-right">
+        <span className="min-w-10 whitespace-nowrap text-right text-xs font-semibold text-foreground">
           {percentage}%
         </span>
         
@@ -98,7 +98,7 @@ export function FormProgressBar({
       
       {/* Celebration animation for completion */}
       {isComplete && (
-        <div className="animate-pulse mt-1">
+        <div className="mt-1 animate-pulse">
           <div className="h-0.5 w-full rounded-full bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600" />
         </div>
       )}

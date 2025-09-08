@@ -38,6 +38,9 @@ export const useOrganizationsBadges = (): UseOrganizationsBadgesReturn => {
         distributor: { props: { orgType: 'distributor' }, label: 'Distributor' },
         principal: { props: { orgType: 'principal' }, label: 'Principal' },
         supplier: { props: { orgType: 'supplier' }, label: 'Supplier' },
+        vendor: { props: { orgType: 'vendor' }, label: 'Vendor' },
+        prospect: { props: { orgType: 'prospect' }, label: 'Prospect' },
+        unknown: { props: { orgType: 'unknown' }, label: 'Unknown Type' },
       }
 
       return typeMap[type || ''] || { 

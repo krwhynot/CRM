@@ -91,7 +91,7 @@ export function EnhancedUniversalFiltersDemo() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Computed Properties Display */}
         <Card>
           <CardHeader>
@@ -116,12 +116,12 @@ export function EnhancedUniversalFiltersDemo() {
             <Separator />
 
             <div>
-              <div className="text-sm font-medium text-muted-foreground mb-2">Filter Summary</div>
+              <div className="mb-2 text-sm font-medium text-muted-foreground">Filter Summary</div>
               <Badge variant="outline">{computed.filterSummary}</Badge>
             </div>
 
             <div>
-              <div className="text-sm font-medium text-muted-foreground mb-2">Date Range</div>
+              <div className="mb-2 text-sm font-medium text-muted-foreground">Date Range</div>
               <Badge variant="secondary">{computed.dateRangeText}</Badge>
             </div>
 
@@ -139,7 +139,7 @@ export function EnhancedUniversalFiltersDemo() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <div className="text-sm font-medium text-muted-foreground mb-2">Time Range Updates</div>
+              <div className="mb-2 text-sm font-medium text-muted-foreground">Time Range Updates</div>
               <div className="flex flex-wrap gap-2">
                 <Button
                   size="sm"
@@ -168,7 +168,7 @@ export function EnhancedUniversalFiltersDemo() {
             <Separator />
 
             <div>
-              <div className="text-sm font-medium text-muted-foreground mb-2">Focus Updates</div>
+              <div className="mb-2 text-sm font-medium text-muted-foreground">Focus Updates</div>
               <div className="flex flex-wrap gap-2">
                 <Button
                   size="sm"
@@ -197,7 +197,7 @@ export function EnhancedUniversalFiltersDemo() {
             <Separator />
 
             <div>
-              <div className="text-sm font-medium text-muted-foreground mb-2">Quick View Presets</div>
+              <div className="mb-2 text-sm font-medium text-muted-foreground">Quick View Presets</div>
               <div className="flex flex-wrap gap-2">
                 <Button
                   size="sm"
@@ -240,7 +240,7 @@ export function EnhancedUniversalFiltersDemo() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Organization Integration */}
         <Card>
           <CardHeader>
@@ -248,15 +248,15 @@ export function EnhancedUniversalFiltersDemo() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <div className="text-sm font-medium text-muted-foreground mb-2">
+              <div className="mb-2 text-sm font-medium text-muted-foreground">
                 Principals ({principals.length})
               </div>
-              <div className="max-h-32 overflow-y-auto space-y-1">
+              <div className="max-h-32 space-y-1 overflow-y-auto">
                 {principals.slice(0, 5).map(principal => (
                   <button
                     key={principal.id}
                     onClick={() => updatePrincipal(principal.id)}
-                    className="block w-full text-left text-sm p-2 hover:bg-accent rounded text-muted-foreground hover:text-foreground"
+                    className="block w-full rounded p-2 text-left text-sm text-muted-foreground hover:bg-accent hover:text-foreground"
                   >
                     {principal.name}
                   </button>
@@ -267,21 +267,21 @@ export function EnhancedUniversalFiltersDemo() {
             <Separator />
 
             <div>
-              <div className="text-sm font-medium text-muted-foreground mb-2">
+              <div className="mb-2 text-sm font-medium text-muted-foreground">
                 Managers ({managers.length})
               </div>
-              <div className="max-h-32 overflow-y-auto space-y-1">
+              <div className="max-h-32 space-y-1 overflow-y-auto">
                 {managers.slice(0, 5).map(manager => (
                   <button
                     key={manager}
                     onClick={() => updateManager(manager)}
-                    className="block w-full text-left text-sm p-2 hover:bg-accent rounded text-muted-foreground hover:text-foreground"
+                    className="block w-full rounded p-2 text-left text-sm text-muted-foreground hover:bg-accent hover:text-foreground"
                   >
                     {manager}
                   </button>
                 ))}
                 {managers.length === 0 && (
-                  <div className="text-xs text-muted-foreground italic">
+                  <div className="text-xs italic text-muted-foreground">
                     No managers found in organization data
                   </div>
                 )}
@@ -297,7 +297,7 @@ export function EnhancedUniversalFiltersDemo() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <div className="text-sm font-medium text-muted-foreground mb-2">
+              <div className="mb-2 text-sm font-medium text-muted-foreground">
                 Suggested Presets (Time-based)
               </div>
               <div className="flex flex-wrap gap-2">
@@ -317,14 +317,14 @@ export function EnhancedUniversalFiltersDemo() {
             <Separator />
 
             <div>
-              <div className="text-sm font-medium text-muted-foreground mb-2">
+              <div className="mb-2 text-sm font-medium text-muted-foreground">
                 Workflow Presets
               </div>
               <div className="space-y-2">
                 {Object.entries(WORKFLOW_PRESETS).map(([key, workflow]) => (
-                  <div key={key} className="p-2 border rounded">
-                    <div className="font-medium text-sm">{workflow.name}</div>
-                    <div className="text-xs text-muted-foreground mb-2">
+                  <div key={key} className="rounded border p-2">
+                    <div className="text-sm font-medium">{workflow.name}</div>
+                    <div className="mb-2 text-xs text-muted-foreground">
                       {workflow.description}
                     </div>
                     <div className="flex flex-wrap gap-1">
@@ -348,16 +348,16 @@ export function EnhancedUniversalFiltersDemo() {
           <CardTitle>Current State</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <div>
-              <div className="text-sm font-medium text-muted-foreground mb-2">Real-time Filters</div>
-              <pre className="text-xs bg-muted p-2 rounded overflow-auto">
+              <div className="mb-2 text-sm font-medium text-muted-foreground">Real-time Filters</div>
+              <pre className="overflow-auto rounded bg-muted p-2 text-xs">
                 {JSON.stringify(filters, null, 2)}
               </pre>
             </div>
             <div>
-              <div className="text-sm font-medium text-muted-foreground mb-2">Debounced Filters (API)</div>
-              <pre className="text-xs bg-muted p-2 rounded overflow-auto">
+              <div className="mb-2 text-sm font-medium text-muted-foreground">Debounced Filters (API)</div>
+              <pre className="overflow-auto rounded bg-muted p-2 text-xs">
                 {JSON.stringify(debouncedFilters, null, 2)}
               </pre>
             </div>

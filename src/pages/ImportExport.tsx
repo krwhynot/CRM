@@ -1,4 +1,4 @@
-import { TemplateMatchingImport } from '@/features/import-export/components/TemplateMatchingImport'
+import { SmartImportOrchestrator } from '@/features/import-export/wizard/components/SmartImportOrchestrator'
 import { PageContainer } from '@/components/layout'
 import { PageHeader } from '@/components/ui/new/PageHeader'
 import { COPY } from '@/lib/copy'
@@ -11,8 +11,8 @@ export default function ImportExportPage() {
         subtitle={COPY.PAGES.IMPORT_EXPORT_SUBTITLE}
       />
 
-      {/* Main Import Component */}
-      <TemplateMatchingImport />
+      {/* AI-Powered Smart Import Orchestrator */}
+      <SmartImportOrchestrator />
     </PageContainer>
   )
 }

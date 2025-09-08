@@ -82,6 +82,7 @@ interface UseFileUploadReturn {
 
 // Field mappings (moved from component)
 const EXCEL_FIELD_MAPPINGS: Record<string, keyof TransformedOrganizationRow> = {
+  // Original lowercase mappings for backward compatibility
   organizations: 'name',
   'priority-focus': 'priority',
   segment: 'segment',
@@ -95,10 +96,105 @@ const EXCEL_FIELD_MAPPINGS: Record<string, keyof TransformedOrganizationRow> = {
   state: 'state_province',
   'zip code': 'postal_code',
   notes: 'notes',
+  
+  // Actual CSV headers from your organization data
+  'Organizations': 'name',
+  'PRIORITY-FOCUS (A-D) A-highest\n(DropDown)': 'priority',
+  'SEGMENT\n(DropDown)': 'segment',
+  'DISTRIBUTOR \n(DropDown)': 'type',
+  'Distr Rep': 'secondary_manager_name',
+  'PRIMARY ACCT. MANAGER \n(DropDown)': 'primary_manager_name',
+  'SECONDARY ACCT. MANAGER \n(DropDown)': 'secondary_manager_name',
+  'LINKEDIN': 'website',
+  'PHONE': 'phone',
+  'STREET ADDRESS': 'address_line_1',
+  'CITY': 'city',
+  'STATE\n(DropDown)': 'state_province',
+  'Zip Code': 'postal_code',
+  'NOTES': 'notes',
+  
+  // Handle variations without newlines  
+  'PRIORITY-FOCUS (A-D) A-highest (DropDown)': 'priority',
+  'SEGMENT (DropDown)': 'segment',
+  'DISTRIBUTOR (DropDown)': 'type',
+  'PRIMARY ACCT. MANAGER (DropDown)': 'primary_manager_name',
+  'SECONDARY ACCT. MANAGER (DropDown)': 'secondary_manager_name',
+  'STATE (DropDown)': 'state_province',
+  
+  // Note: 'Row_Number' (first column) is intentionally not mapped as it's just a row identifier
 } as const
 
 const PRIORITY_VALUES = ['A', 'B', 'C', 'D'] as const
 type PriorityValue = (typeof PRIORITY_VALUES)[number]
+
+// Priority mapping for common CSV values to database format
+const PRIORITY_MAPPING: Record<string, PriorityValue> = {
+  'high': 'A',
+  'a': 'A',
+  'priority a': 'A',
+  'top': 'A',
+  '1': 'A',
+  'medium-high': 'B', 
+  'b': 'B',
+  'priority b': 'B',
+  'above average': 'B',
+  '2': 'B',
+  'medium': 'C',
+  'c': 'C', 
+  'priority c': 'C',
+  'standard': 'C',
+  'average': 'C',
+  '3': 'C',
+  'low': 'D',
+  'd': 'D',
+  'priority d': 'D',
+  'minimal': 'D',
+  '4': 'D',
+} as const
+
+// Organization type mapping for common CSV values to database format
+const ORGANIZATION_TYPE_MAPPING: Record<string, Database['public']['Enums']['organization_type']> = {
+  // Direct mappings
+  'customer': 'customer',
+  'principal': 'principal', 
+  'distributor': 'distributor',
+  'prospect': 'prospect',
+  'vendor': 'vendor',
+  'unknown': 'unknown',
+  
+  // Common variations
+  'dist': 'distributor',
+  'distribution': 'distributor',
+  'distrib': 'distributor',
+  'client': 'customer',
+  'account': 'customer',
+  'restaurant': 'customer',
+  'foodservice': 'customer',
+  'food service': 'customer',
+  'manufacturer': 'principal',
+  'brand': 'principal',
+  'producer': 'principal',
+  'supplier': 'vendor',
+  'vendor': 'vendor',
+  'service provider': 'vendor',
+  'lead': 'prospect',
+  'potential': 'prospect',
+  'potential customer': 'prospect',
+  
+  // Special cases that should be noted but mapped to unknown
+  'key partner': 'unknown',
+  'strategic partner': 'unknown',
+  'preferred partner': 'unknown',
+  'vip': 'unknown',
+  'premium': 'unknown',
+  'priority': 'unknown',
+  'tier 1': 'unknown',
+  'tier 2': 'unknown',
+  'tier 3': 'unknown',
+  'gold': 'unknown',
+  'silver': 'unknown',
+  'bronze': 'unknown',
+} as const
 
 const EXPECTED_COLUMNS = {
   required: ['organizations'],
@@ -127,35 +223,107 @@ export const useFileUpload = (): UseFileUploadReturn => {
     return null
   }, [])
 
-  // Validate CSV row data
+  // Helper function to normalize priority values
+  const normalizePriority = useCallback((priorityValue: string): PriorityValue => {
+    const normalized = priorityValue.toLowerCase().trim()
+    return PRIORITY_MAPPING[normalized] || 'C'
+  }, [])
+
+  // Helper function to normalize organization type values
+  const normalizeOrganizationType = useCallback((
+    typeValue: string
+  ): { 
+    type: Database['public']['Enums']['organization_type'], 
+    originalValue?: string,
+    shouldAddToNotes?: boolean 
+  } => {
+    const normalized = typeValue.toLowerCase().trim()
+    const mappedType = ORGANIZATION_TYPE_MAPPING[normalized]
+    
+    if (mappedType) {
+      // Check if this is a special case that should be noted
+      const specialCases = ['key partner', 'strategic partner', 'preferred partner', 'vip', 'premium', 'priority', 'tier 1', 'tier 2', 'tier 3', 'gold', 'silver', 'bronze']
+      const shouldAddToNotes = specialCases.includes(normalized) && mappedType === 'unknown'
+      
+      return {
+        type: mappedType,
+        originalValue: shouldAddToNotes ? typeValue : undefined,
+        shouldAddToNotes
+      }
+    }
+    
+    // Fallback to unknown for unrecognized values
+    return {
+      type: 'unknown',
+      originalValue: typeValue,
+      shouldAddToNotes: true
+    }
+  }, [])
+
+  // Validate CSV row data with enhanced priority validation
   const validateRow = useCallback((row: CsvRow): string[] => {
     const errors: string[] = []
+    
+    // Organization name is required
     if (!row.organizations?.trim()) {
       errors.push('Organization name is required')
     }
+    
+    // Priority validation - now more flexible
     if (row['priority-focus']?.trim()) {
-      const priority = row['priority-focus'].trim().toUpperCase()
-      if (!PRIORITY_VALUES.includes(priority as PriorityValue)) {
-        errors.push(`Priority must be one of: ${PRIORITY_VALUES.join(', ')}`)
+      const priorityValue = row['priority-focus'].trim()
+      
+      // Only warn if we couldn't normalize it and it's not already a valid single character  
+      if (!PRIORITY_VALUES.includes(priorityValue.toUpperCase() as PriorityValue) && 
+          !PRIORITY_MAPPING[priorityValue.toLowerCase()]) {
+        errors.push(`Priority "${priorityValue}" not recognized. Will default to 'C'. Expected: ${Object.keys(PRIORITY_MAPPING).slice(0, 8).join(', ')}, etc.`)
       }
     }
+    
     return errors
-  }, [])
+  }, [normalizePriority])
 
   // Helper function to detect if a row has meaningful content
   const hasContent = useCallback((row: string[]): boolean => {
     return row.some((cell) => cell && cell.trim().length > 0)
   }, [])
 
-  // Helper function to find first data row
-  const findDataStartRow = useCallback(
+  // Helper function to find the header row (row with most non-empty cells)
+  const findHeaderRow = useCallback(
     (allRows: string[][]): number => {
-      for (let i = 0; i < allRows.length; i++) {
+      let bestRowIndex = 0
+      let maxNonEmptyCells = 0
+      
+      // Look at first 10 rows to find the one with the most content
+      for (let i = 0; i < Math.min(10, allRows.length); i++) {
+        const nonEmptyCells = allRows[i].filter(cell => 
+          cell && 
+          cell.trim().length > 0 && 
+          !cell.startsWith('=') && // Skip Excel formulas
+          !cell.toLowerCase().includes('instruction') // Skip instruction rows
+        ).length
+        
+        if (nonEmptyCells > maxNonEmptyCells) {
+          maxNonEmptyCells = nonEmptyCells
+          bestRowIndex = i
+        }
+      }
+      
+      return bestRowIndex
+    },
+    []
+  )
+  
+  // Helper function to find first data row (after headers)
+  const findDataStartRow = useCallback(
+    (allRows: string[][], headerRowIndex: number): number => {
+      // Start looking for data after the header row
+      for (let i = headerRowIndex + 1; i < allRows.length; i++) {
         if (hasContent(allRows[i])) {
           return i
         }
       }
-      return 0 // If no content found, start from beginning
+      return headerRowIndex + 1 // Default to row after headers
     },
     [hasContent]
   )
@@ -191,39 +359,46 @@ export const useFileUpload = (): UseFileUploadReturn => {
           complete: (firstPass: PapaParseResult<string[]>) => {
           try {
             const allRows = firstPass.data
-            const dataStartIndex = findDataStartRow(allRows)
+            const headerRowIndex = findHeaderRow(allRows)
+            const dataStartIndex = findDataStartRow(allRows, headerRowIndex)
 
-            if (dataStartIndex >= allRows.length) {
+            if (headerRowIndex >= allRows.length || dataStartIndex >= allRows.length) {
               setUploadState((prev) => ({
                 ...prev,
                 isUploading: false,
-                error: 'No data found in CSV file. Please check your file contains valid data.',
+                error: 'No valid headers or data found in CSV file. Please check your file format.',
               }))
               return
             }
 
-            // Second pass: Parse with headers starting from data row
-            const headerRow = allRows[dataStartIndex]
-            const dataRows = allRows.slice(dataStartIndex + 1)
+            // Direct data object building - no CSV reconstruction needed
+            const headerRow = allRows[headerRowIndex]
+            const dataRows = allRows.slice(dataStartIndex)
 
-            // Convert back to CSV format for Papa.parse with headers
-            const csvContent = [headerRow.join(','), ...dataRows.map((row) => row.join(','))].join(
-              '\n'
-            )
+            // Process headers directly to avoid PapaParse "_1" generation
+            const processedHeaders = headerRow.map((header, index) => {
+              const trimmed = header ? header.trim() : ''
+              if (!trimmed) {
+                // Use context-aware names for empty headers
+                if (index === 0) return 'Row_Number' // First column appears to be row identifier
+                return `Column_${index + 1}`
+              }
+              return trimmed // Keep actual header text (including multi-line)
+            })
 
-            const blob = new Blob([csvContent], { type: 'text/csv' })
-            const tempFile = new File([blob], file.name, { type: 'text/csv' })
+            // Build data objects directly
+            const rows: CsvRow[] = dataRows
+              .filter(row => row.some(cell => cell && cell.trim().length > 0)) // Skip empty rows
+              .map(row => {
+                const rowObj: CsvRow = {}
+                processedHeaders.forEach((header, index) => {
+                  rowObj[header] = (row[index] && row[index].trim()) || ''
+                })
+                return rowObj
+              })
 
-            Papa.parse<CsvRow>(tempFile, {
-              header: true,
-              skipEmptyLines: true,
-              transformHeader: (header: string) => header.toLowerCase().trim(),
-              complete: (results: PapaParseResult<CsvRow>) => {
-                try {
-                  const headers = results.meta.fields || []
-                  const rows = results.data.filter((row) =>
-                    Object.values(row).some((value) => value && value.trim().length > 0)
-                  )
+            try {
+              const headers = processedHeaders
 
                   // Check for required columns
                   const missingRequired = EXPECTED_COLUMNS.required.filter(
@@ -269,10 +444,21 @@ export const useFileUpload = (): UseFileUploadReturn => {
                         const value = row[excelCol]?.trim()
                         if (dbField in transformedRow && value) {
                           if (dbField === 'type') {
-                            transformedRow.type =
-                              value as Database['public']['Enums']['organization_type']
+                            const typeResult = normalizeOrganizationType(value)
+                            transformedRow.type = typeResult.type
+                            
+                            // If this should be noted, add to notes
+                            if (typeResult.shouldAddToNotes && typeResult.originalValue) {
+                              const noteText = `Import notes: Original type was '${typeResult.originalValue}'`
+                              transformedRow.import_notes = transformedRow.import_notes 
+                                ? `${transformedRow.import_notes}; ${noteText}` 
+                                : noteText
+                            }
                           } else if (dbField === 'is_active') {
                             transformedRow.is_active = Boolean(value)
+                          } else if (dbField === 'priority') {
+                            // Use the priority normalization function
+                            transformedRow.priority = normalizePriority(value)
                           } else {
                             const key = dbField as keyof TransformedOrganizationRow
                             if (key in transformedRow) {
@@ -282,26 +468,28 @@ export const useFileUpload = (): UseFileUploadReturn => {
                         }
                       })
 
-                      // Business logic transformations
-                      if (transformedRow.priority) {
-                        const upperPriority = (transformedRow.priority as string).toUpperCase()
-                        transformedRow.priority = PRIORITY_VALUES.includes(
-                          upperPriority as PriorityValue
-                        )
-                          ? (upperPriority as PriorityValue)
-                          : ('C' as PriorityValue)
-                      } else {
+                      // Ensure priority has a valid default if not set
+                      if (!transformedRow.priority) {
                         transformedRow.priority = 'C' as PriorityValue
                       }
 
-                      // Determine organization type
-                      if (
-                        row['distributor']?.toLowerCase().includes('distributor') ||
-                        row['segment']?.toLowerCase().includes('distributor')
-                      ) {
-                        transformedRow.type = 'distributor'
-                      } else {
-                        transformedRow.type = 'customer'
+                      // Fallback organization type determination if not set via field mapping
+                      if (!transformedRow.type) {
+                        if (
+                          row['distributor']?.toLowerCase().includes('distributor') ||
+                          row['segment']?.toLowerCase().includes('distributor')
+                        ) {
+                          transformedRow.type = 'distributor'
+                        } else {
+                          // Use unknown as the fallback instead of customer
+                          transformedRow.type = 'unknown'
+                          
+                          // Add note about fallback assignment
+                          const noteText = 'Import notes: Type could not be determined from data, assigned as Unknown'
+                          transformedRow.import_notes = transformedRow.import_notes 
+                            ? `${transformedRow.import_notes}; ${noteText}` 
+                            : noteText
+                        }
                       }
 
                       // Set defaults
@@ -327,28 +515,19 @@ export const useFileUpload = (): UseFileUploadReturn => {
 
                   const parsedData: ParsedData = { headers, rows, validRows, invalidRows }
 
-                  setUploadState((prev) => ({
-                    ...prev,
-                    isUploading: false,
-                    uploadProgress: 100,
-                    parsedData,
-                  }))
-                } catch (error) {
-                  setUploadState((prev) => ({
-                    ...prev,
-                    isUploading: false,
-                    error: 'Failed to parse CSV file. Please check the file format.',
-                  }))
-                }
-              },
-              error: (error: unknown) => {
-                setUploadState((prev) => ({
-                  ...prev,
-                  isUploading: false,
-                  error: `CSV parsing error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-                }))
-              },
-            })
+              setUploadState((prev) => ({
+                ...prev,
+                isUploading: false,
+                uploadProgress: 100,
+                parsedData,
+              }))
+            } catch (error) {
+              setUploadState((prev) => ({
+                ...prev,
+                isUploading: false,
+                error: `Failed to process CSV data: ${error instanceof Error ? error.message : 'Please check the file format.'}`,
+              }))
+            }
           } catch (error) {
             setUploadState((prev) => ({
               ...prev,
@@ -373,7 +552,7 @@ export const useFileUpload = (): UseFileUploadReturn => {
         }))
       }
     },
-    [validateRow, findDataStartRow]
+    [validateRow, findHeaderRow, findDataStartRow, normalizePriority]
   )
 
   // File selection handler

@@ -10,4 +10,7 @@ export * from './error-boundaries'
 // Form System - Generic form components for all features
 export * from './forms'
 
+// Universal Filters - Reusable filtering components
+export * from './filters'
+
 // Note: UI components available at @/components/ui/* - not re-exported to avoid conflicts

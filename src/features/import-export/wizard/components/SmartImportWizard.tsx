@@ -27,16 +27,18 @@ interface SmartImportWizardProps {
   children: React.ReactNode
   onStepClick?: (step: WizardStep) => void
   className?: string
+  rightHeaderContent?: React.ReactNode
 }
 
 export function SmartImportWizard({
   currentStep,
   completedSteps,
-  title = 'Smart Import Wizard',
-  subtitle = 'Import your data with AI-powered field mapping and validation',
+  title = 'Import Organizations',
+  subtitle = 'Upload your spreadsheet and we\'ll handle the rest - just 3 simple steps',
   children,
   onStepClick,
   className,
+  rightHeaderContent,
 }: SmartImportWizardProps) {
   // Calculate progress percentage
   const currentStepIndex = STEP_ORDER.indexOf(currentStep)
@@ -81,7 +83,7 @@ export function SmartImportWizard({
       {/* Step Indicators - iPad touch-friendly */}
       <Card className="border-slate-200 bg-slate-50">
         <CardContent className="p-4">
-          <div className="grid grid-cols-5 gap-2 md:gap-4">
+          <div className="grid grid-cols-4 gap-2 md:gap-4">
             {steps.map((step) => {
               const Icon = step.icon
               const isClickable = step.completed || step.current
@@ -157,16 +159,25 @@ export function SmartImportWizard({
       {/* Main Content Area */}
       <Card className="min-h-96">
         <CardHeader className="pb-4">
-          <div className="flex items-center space-x-3">
-            {/* Current Step Icon */}
-            <div className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
-              {React.createElement(STEP_CONFIGS[currentStep].icon, { className: 'w-5 h-5' })}
-            </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              {/* Current Step Icon */}
+              <div className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                {React.createElement(STEP_CONFIGS[currentStep].icon, { className: 'w-5 h-5' })}
+              </div>
 
-            <div>
-              <CardTitle className="text-lg">{STEP_CONFIGS[currentStep].title}</CardTitle>
-              <CardDescription>{STEP_CONFIGS[currentStep].description}</CardDescription>
+              <div>
+                <CardTitle className="text-lg">{STEP_CONFIGS[currentStep].title}</CardTitle>
+                <CardDescription>{STEP_CONFIGS[currentStep].description}</CardDescription>
+              </div>
             </div>
+            
+            {/* Right side content (like Next button) */}
+            {rightHeaderContent && (
+              <div className="shrink-0">
+                {rightHeaderContent}
+              </div>
+            )}
           </div>
         </CardHeader>
 
@@ -179,8 +190,8 @@ export function SmartImportWizard({
       {/* Footer - Mobile/iPad optimized */}
       <div className="flex justify-center">
         <div className="max-w-md text-center text-xs text-slate-500">
-          <p>AI-powered import with smart field mapping and data validation.</p>
-          <p className="mt-1">Need help? Check our import guide or contact support.</p>
+          <p>We automatically detect your data fields and prepare everything for import.</p>
+          <p className="mt-1">Need help? Contact support or check our user guide.</p>
         </div>
       </div>
     </div>

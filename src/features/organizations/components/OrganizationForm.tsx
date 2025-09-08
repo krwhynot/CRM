@@ -42,6 +42,11 @@ export function OrganizationForm({
       label: 'Vendor',
       description: 'Supplier or service provider to the business',
     },
+    {
+      value: 'unknown',
+      label: 'Unknown',
+      description: 'Type needs to be classified or determined',
+    },
   ]
 
   // Priority level options

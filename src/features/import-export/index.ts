@@ -1,15 +1,10 @@
 // Import-Export Feature - Main Exports
-export { DataPreviewTable } from './components/DataPreviewTable'
 export { FileUploadArea } from './components/FileUploadArea'
 export { ImportProgress } from './components/ImportProgress'
 export { OrganizationExporter } from './components/OrganizationExporter'
-export { OrganizationImporter } from './components/OrganizationImporter'
+// Legacy import components removed - functionality moved to wizard/
 
-// Utilities
-export * from './components/csv-parser'
-export * from './components/field-mapping'
-export * from './components/import-utils'
-export * from './components/validation'
+// Legacy utilities removed - functionality moved to wizard/hooks/useSmartImport.ts
 
 // Hooks
 export { useImportProgress } from './hooks/useImportProgress'

@@ -57,7 +57,7 @@ export function PrincipalSelector({
           >
             <div className="flex items-center space-x-2">
               <Building2 className="size-4" />
-              <span className="truncate max-w-[120px]">{displayText}</span>
+              <span className="max-w-[120px] truncate">{displayText}</span>
               {showBadges && value !== 'all' && (
                 <Badge variant="secondary" className="ml-1">
                   1
@@ -98,12 +98,12 @@ export function PrincipalSelector({
                 onClick={() => handleSelect(principal.id)}
                 className={value === principal.id ? 'bg-accent' : ''}
               >
-                <div className="flex items-center justify-between w-full">
+                <div className="flex w-full items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Building2 className="size-4" />
                     <div className="flex flex-col">
                       <span className="font-medium">{principal.name}</span>
-                      <span className="text-xs text-muted-foreground capitalize">
+                      <span className="text-xs capitalize text-muted-foreground">
                         {principal.type}
                       </span>
                     </div>
@@ -118,7 +118,7 @@ export function PrincipalSelector({
           
           {principals.length === 0 && !isLoading && (
             <DropdownMenuItem disabled>
-              <span className="text-xs text-muted-foreground italic">
+              <span className="text-xs italic text-muted-foreground">
                 No principals available
               </span>
             </DropdownMenuItem>
@@ -126,7 +126,7 @@ export function PrincipalSelector({
           
           {isLoading && (
             <DropdownMenuItem disabled>
-              <span className="text-xs text-muted-foreground italic">
+              <span className="text-xs italic text-muted-foreground">
                 Loading principals...
               </span>
             </DropdownMenuItem>

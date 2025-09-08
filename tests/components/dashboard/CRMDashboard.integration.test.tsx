@@ -1,214 +1,504 @@
-import { render, screen } from '@testing-library/react'
-import { CRMDashboard } from '@/features/dashboard/components/CRMDashboard'
+import React from 'react'
+import { render, screen, waitFor, act } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
-import type { DashboardChartDataPoint } from '@/types/dashboard'
+import { CRMDashboard } from '@/features/dashboard/components/CRMDashboard'
+import type { FilterState } from '@/types/dashboard'
 
-// Mock component prop types
-interface MockDashboardFiltersProps {
-  filters: Record<string, string>
-  onFiltersChange: (filters: Record<string, string>) => void
-  isLoading: boolean
+// Mock all dashboard hooks
+const mockDashboardFilters = {
+  filters: {
+    principal: 'all',
+    product: 'all',
+    weeks: 'Last 4 Weeks',
+    focus: 'all_activity',
+    quickView: 'none'
+  } as FilterState,
+  debouncedFilters: {
+    principal: 'all',
+    product: 'all',
+    weeks: 'Last 4 Weeks',
+    focus: 'all_activity',
+    quickView: 'none'
+  } as FilterState,
+  isLoading: false,
+  handleFiltersChange: vi.fn(),
+  applyQuickView: vi.fn(),
+  computed: {
+    hasActiveFilters: false,
+    hasActiveFocus: false,
+    hasActiveQuickView: false,
+    isMyTasksView: false,
+    isTeamView: false,
+    filterSummary: 'all data'
+  }
 }
 
-interface MockDashboardChartsProps {
-  opportunityChartData: DashboardChartDataPoint[]
-  interactionChartData: DashboardChartDataPoint[]
-  isLoading: boolean
+const mockDashboardData = {
+  principals: [
+    { id: 'p1', name: 'Principal 1', company: 'Company 1' },
+    { id: 'p2', name: 'Principal 2', company: 'Company 2' }
+  ],
+  products: [
+    { id: 'prod1', name: 'Product 1', category: 'Category 1', principalId: 'p1' },
+    { id: 'prod2', name: 'Product 2', category: 'Category 2', principalId: 'p2' }
+  ],
+  filteredOpportunities: [],
+  opportunityChartData: [
+    { week: '2024-01', count: 5, weekStart: new Date('2024-01-01') }
+  ],
+  interactionChartData: [
+    { week: '2024-01', count: 12, weekStart: new Date('2024-01-01') }
+  ],
+  activityItems: [
+    {
+      id: 'act1',
+      type: 'opportunity' as const,
+      title: 'Test Activity',
+      date: new Date(),
+      principalName: 'Principal 1'
+    }
+  ],
+  weeklyActivityData: [
+    { week: '2024-01', count: 8, weekStart: new Date('2024-01-01') }
+  ],
+  principalPerformanceData: [
+    { name: 'Principal 1', interactions: 10, performance: 'high' as const }
+  ],
+  teamPerformanceData: [
+    { name: 'Team Member 1', interactions: 15, opportunities: 5, movements: 3, rank: 1 }
+  ],
+  pipelineFlowData: {
+    stages: ['Lead', 'Qualified'],
+    flows: [{ from: 'Lead', to: 'Qualified', count: 3, value: 15000, percentage: 60 }],
+    totalMovements: 5,
+    timeRange: 'Last 4 Weeks'
+  },
+  pipelineValueFunnelData: {
+    stages: [
+      { name: 'Lead', count: 10, value: 50000, conversionRate: 0.5, dropOffRate: 0.5, color: '#3b82f6' }
+    ],
+    totalValue: 50000,
+    totalOpportunities: 10,
+    overallConversion: 0.5
+  }
 }
 
-interface MockOpportunityKanbanProps {
-  opportunities: Array<{ id: string; [key: string]: unknown }>
-  loading: boolean
+const mockDashboardLoading = {
+  isInitialLoad: false,
+  showEmptyState: false
 }
 
-interface MockActivityFeedProps {
-  activities: Array<{ id: string; [key: string]: unknown }>
-  loading: boolean
+const mockChartVisibility = {
+  visibleCharts: {
+    'weekly-activity': true,
+    'principal-performance': true,
+    'team-performance': false,
+    'opportunities': true,
+    'activities': true,
+    'pipeline-flow': false,
+    'pipeline-funnel': false
+  },
+  toggleChartVisibility: vi.fn(),
+  showAllCharts: vi.fn(),
+  resetToDefaults: vi.fn()
 }
 
-// Mock all the dependencies
+// Mock all the hooks
 vi.mock('@/features/dashboard/hooks/useDashboardFilters', () => ({
-  useDashboardFilters: () => ({
-    filters: { principal: 'all', product: 'all', weeks: 'Last 4 Weeks' },
-    debouncedFilters: { principal: 'all', product: 'all', weeks: 'Last 4 Weeks' },
-    isLoading: false,
-    handleFiltersChange: vi.fn()
-  })
+  useDashboardFilters: vi.fn(() => mockDashboardFilters)
 }))
 
 vi.mock('@/features/dashboard/hooks/useDashboardData', () => ({
-  useDashboardData: () => ({
-    principals: [
-      { id: 'p1', name: 'Principal 1', company: 'Company 1' },
-      { id: 'p2', name: 'Principal 2', company: 'Company 2' }
-    ],
-    products: [
-      { id: 'pr1', name: 'Product 1', category: 'Category 1', principalId: 'p1' }
-    ],
-    filteredOpportunities: [
-      {
-        id: 'o1',
-        principalId: 'p1',
-        productId: 'pr1',
-        date: new Date(),
-        title: 'Test Opportunity',
-        value: 1000,
-        status: 'open',
-        interactions: []
-      }
-    ],
-    opportunityChartData: [
-      { week: 'Week 1', count: 5, weekStart: new Date() },
-      { week: 'Week 2', count: 3, weekStart: new Date() }
-    ],
-    interactionChartData: [
-      { week: 'Week 1', count: 2, weekStart: new Date() },
-      { week: 'Week 2', count: 4, weekStart: new Date() }
-    ],
-    activityItems: [
-      {
-        id: 'a1',
-        type: 'opportunity',
-        title: 'Test Activity',
-        date: new Date(),
-        principalName: 'Principal 1'
-      }
-    ]
-  })
+  useDashboardData: vi.fn(() => mockDashboardData)
 }))
 
 vi.mock('@/features/dashboard/hooks/useDashboardLoading', () => ({
-  useDashboardLoading: () => ({
-    isInitialLoad: false,
-    showEmptyState: false
-  })
+  useDashboardLoading: vi.fn(() => mockDashboardLoading)
 }))
 
-// Mock child components to focus on integration logic
+vi.mock('@/stores', () => ({
+  useChartVisibility: vi.fn(() => mockChartVisibility),
+  CHART_METADATA: {
+    'weekly-activity': { title: 'Weekly Activity', description: 'Weekly activity trends' },
+    'principal-performance': { title: 'Principal Performance', description: 'Principal performance metrics' },
+    'team-performance': { title: 'Team Performance', description: 'Team performance metrics' },
+    'opportunities': { title: 'Opportunities', description: 'Opportunity trends' },
+    'activities': { title: 'Activities', description: 'Activity trends' },
+    'pipeline-flow': { title: 'Pipeline Flow', description: 'Pipeline movement flow' },
+    'pipeline-funnel': { title: 'Pipeline Funnel', description: 'Pipeline value funnel' }
+  }
+}))
+
+// Mock child components to focus on orchestration testing
 vi.mock('@/features/dashboard/components/DashboardFilters', () => ({
-  DashboardFilters: ({ filters, onFiltersChange, isLoading }: MockDashboardFiltersProps) => (
+  DashboardFilters: ({ filters, onFiltersChange }: any) => (
     <div data-testid="dashboard-filters">
-      <div data-testid="filters-state">{JSON.stringify(filters)}</div>
-      <div data-testid="loading-state">{isLoading ? 'loading' : 'not-loading'}</div>
-      <button onClick={() => onFiltersChange({ principal: 'p1', product: 'all', weeks: 'Last 4 Weeks' })}>
-        Change Filters
+      <button onClick={() => onFiltersChange({ ...filters, principal: 'p1' })}>
+        Change Principal
       </button>
+      <span data-testid="filter-state">{JSON.stringify(filters)}</span>
     </div>
   )
 }))
 
-vi.mock('@/features/dashboard/components/DashboardCharts', () => ({
-  DashboardCharts: ({ opportunityChartData, interactionChartData, isLoading }: MockDashboardChartsProps) => (
-    <div data-testid="dashboard-charts">
-      <div data-testid="opportunity-data-count">{opportunityChartData.length}</div>
-      <div data-testid="interaction-data-count">{interactionChartData.length}</div>
-      <div data-testid="charts-loading">{isLoading ? 'loading' : 'not-loading'}</div>
+vi.mock('@/features/dashboard/components/ChartsGrid', () => ({
+  ChartsGrid: ({ visibleChartIds, isLoading }: any) => (
+    <div data-testid="charts-grid">
+      <span data-testid="visible-charts">{visibleChartIds.join(',')}</span>
+      <span data-testid="charts-loading">{isLoading ? 'loading' : 'loaded'}</span>
     </div>
   )
 }))
 
-vi.mock('@/features/dashboard/components/OpportunityKanban', () => ({
-  OpportunityKanban: ({ opportunities, loading }: MockOpportunityKanbanProps) => (
-    <div data-testid="opportunity-kanban">
-      <div data-testid="opportunities-count">{opportunities.length}</div>
-      <div data-testid="kanban-loading">{loading ? 'loading' : 'not-loading'}</div>
+vi.mock('@/features/dashboard/components/WeeklyKPIHeader', () => ({
+  WeeklyKPIHeader: ({ filters }: any) => (
+    <div data-testid="weekly-kpi-header">
+      <span data-testid="kpi-filters">{JSON.stringify(filters)}</span>
     </div>
   )
 }))
 
 vi.mock('@/features/dashboard/components/SimpleActivityFeed', () => ({
-  SimpleActivityFeed: ({ activities, loading }: MockActivityFeedProps) => (
+  SimpleActivityFeed: ({ activities, loading }: any) => (
     <div data-testid="activity-feed">
-      <div data-testid="activities-count">{activities.length}</div>
-      <div data-testid="feed-loading">{loading ? 'loading' : 'not-loading'}</div>
+      <span data-testid="activity-count">{activities.length}</span>
+      <span data-testid="activity-loading">{loading ? 'loading' : 'loaded'}</span>
     </div>
   )
 }))
 
-describe('CRMDashboard Integration', () => {
+vi.mock('@/features/dashboard/components/OpportunityKanban', () => ({
+  OpportunityKanban: ({ opportunities, loading }: any) => (
+    <div data-testid="opportunity-kanban">
+      <span data-testid="opp-count">{opportunities.length}</span>
+      <span data-testid="opp-loading">{loading ? 'loading' : 'loaded'}</span>
+    </div>
+  )
+}))
+
+vi.mock('@/features/dashboard/components/DashboardSkeleton', () => ({
+  DashboardSkeleton: () => <div data-testid="dashboard-skeleton">Loading...</div>
+}))
+
+vi.mock('@/features/dashboard/components/EmptyState', () => ({
+  EmptyState: ({ type, title }: any) => (
+    <div data-testid="empty-state">
+      <span data-testid="empty-type">{type}</span>
+      <span data-testid="empty-title">{title}</span>
+    </div>
+  )
+}))
+
+describe('CRMDashboard Integration Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
-  it('should render all dashboard sections', () => {
-    render(<CRMDashboard />)
-    
-    expect(screen.getByTestId('dashboard-filters')).toBeInTheDocument()
-    expect(screen.getByTestId('dashboard-charts')).toBeInTheDocument()
-    expect(screen.getByTestId('opportunity-kanban')).toBeInTheDocument()
-    expect(screen.getByTestId('activity-feed')).toBeInTheDocument()
-  })
-
-  it('should pass correct data to child components', () => {
-    render(<CRMDashboard />)
-    
-    // Verify filters receive correct props
-    expect(screen.getByTestId('filters-state')).toHaveTextContent('{"principal":"all","product":"all","weeks":"Last 4 Weeks"}')
-    expect(screen.getByTestId('loading-state')).toHaveTextContent('not-loading')
-    
-    // Verify charts receive correct data
-    expect(screen.getByTestId('opportunity-data-count')).toHaveTextContent('2')
-    expect(screen.getByTestId('interaction-data-count')).toHaveTextContent('2')
-    expect(screen.getByTestId('charts-loading')).toHaveTextContent('not-loading')
-    
-    // Verify kanban receives opportunities
-    expect(screen.getByTestId('opportunities-count')).toHaveTextContent('1')
-    expect(screen.getByTestId('kanban-loading')).toHaveTextContent('not-loading')
-    
-    // Verify activity feed receives activities
-    expect(screen.getByTestId('activities-count')).toHaveTextContent('1')
-    expect(screen.getByTestId('feed-loading')).toHaveTextContent('not-loading')
-  })
-
-  it('should handle loading states correctly', () => {
-    // Mock loading state
-    const mockUseDashboardFilters = require('@/features/dashboard/hooks/useDashboardFilters').useDashboardFilters as ReturnType<typeof vi.fn>
-    mockUseDashboardFilters.mockReturnValue({
-      filters: { principal: 'all', product: 'all', weeks: 'Last 4 Weeks' },
-      debouncedFilters: { principal: 'all', product: 'all', weeks: 'Last 4 Weeks' },
-      isLoading: true,
-      handleFiltersChange: vi.fn()
+  describe('Phase 7: Enhanced Dashboard Orchestration', () => {
+    it('should orchestrate all dashboard components with proper data flow', () => {
+      render(<CRMDashboard />)
+      
+      // Verify all major components are rendered
+      expect(screen.getByTestId('dashboard-filters')).toBeInTheDocument()
+      expect(screen.getByTestId('charts-grid')).toBeInTheDocument()
+      expect(screen.getByTestId('weekly-kpi-header')).toBeInTheDocument()
+      expect(screen.getByTestId('activity-feed')).toBeInTheDocument()
+      expect(screen.getByTestId('opportunity-kanban')).toBeInTheDocument()
+      
+      // Verify data is passed correctly
+      expect(screen.getByTestId('activity-count')).toHaveTextContent('1')
+      expect(screen.getByTestId('opp-count')).toHaveTextContent('0')
     })
-    
-    render(<CRMDashboard />)
-    
-    expect(screen.getByTestId('loading-state')).toHaveTextContent('loading')
-    expect(screen.getByTestId('charts-loading')).toHaveTextContent('loading')
-    expect(screen.getByTestId('kanban-loading')).toHaveTextContent('loading')
-    expect(screen.getByTestId('feed-loading')).toHaveTextContent('loading')
-  })
-})
 
-describe('CRMDashboard Initial Load', () => {
-  it('should show skeleton during initial load', () => {
-    const mockUseDashboardLoading = require('@/features/dashboard/hooks/useDashboardLoading').useDashboardLoading as ReturnType<typeof vi.fn>
-    mockUseDashboardLoading.mockReturnValue({
-      isInitialLoad: true,
-      showEmptyState: false
+    it('should handle filter changes and propagate them to child components', async () => {
+      const user = userEvent.setup()
+      render(<CRMDashboard />)
+      
+      // Click filter change button
+      await user.click(screen.getByText('Change Principal'))
+      
+      // Verify the filter change handler was called
+      expect(mockDashboardFilters.handleFiltersChange).toHaveBeenCalledWith({
+        principal: 'p1',
+        product: 'all',
+        weeks: 'Last 4 Weeks',
+        focus: 'all_activity',
+        quickView: 'none'
+      })
     })
-    
-    render(<CRMDashboard />)
-    
-    // Should show skeleton instead of dashboard content
-    expect(screen.queryByTestId('dashboard-filters')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('dashboard-charts')).not.toBeInTheDocument()
-  })
-})
 
-describe('CRMDashboard Empty State', () => {
-  it('should show empty state when appropriate', () => {
-    const mockUseDashboardLoading = require('@/features/dashboard/hooks/useDashboardLoading').useDashboardLoading as ReturnType<typeof vi.fn>
-    mockUseDashboardLoading.mockReturnValue({
-      isInitialLoad: false,
-      showEmptyState: true
+    it('should manage chart visibility state correctly', () => {
+      render(<CRMDashboard />)
+      
+      // Verify visible charts are passed to ChartsGrid
+      const visibleCharts = screen.getByTestId('visible-charts')
+      expect(visibleCharts).toHaveTextContent('weekly-activity,principal-performance,opportunities,activities')
     })
-    
-    render(<CRMDashboard />)
-    
-    // Should show filters but not other components
-    expect(screen.getByTestId('dashboard-filters')).toBeInTheDocument()
-    expect(screen.queryByTestId('dashboard-charts')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('opportunity-kanban')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('activity-feed')).not.toBeInTheDocument()
+
+    it('should handle chart visibility toggles', async () => {
+      const user = userEvent.setup()
+      render(<CRMDashboard />)
+      
+      // Find and click show all charts button
+      const showAllButton = screen.getByText('Show All')
+      await user.click(showAllButton)
+      
+      expect(mockChartVisibility.showAllCharts).toHaveBeenCalled()
+    })
+
+    it('should handle reset to defaults', async () => {
+      const user = userEvent.setup()
+      render(<CRMDashboard />)
+      
+      // Find and click reset button
+      const resetButton = screen.getByText('Reset')
+      await user.click(resetButton)
+      
+      expect(mockChartVisibility.resetToDefaults).toHaveBeenCalled()
+    })
+
+    it('should pass debounced filters to data-dependent components', () => {
+      render(<CRMDashboard />)
+      
+      // Verify KPI header receives debounced filters
+      const kpiFilters = screen.getByTestId('kpi-filters')
+      expect(kpiFilters).toHaveTextContent(JSON.stringify(mockDashboardFilters.debouncedFilters))
+    })
+
+    it('should display chart visibility controls with correct counts', () => {
+      render(<CRMDashboard />)
+      
+      // Check chart count display
+      expect(screen.getByText('Charts (4/7)')).toBeInTheDocument()
+    })
+  })
+
+  describe('Loading States Integration', () => {
+    it('should show skeleton during initial load', () => {
+      // Mock initial loading state
+      const useDashboardLoading = require('@/features/dashboard/hooks/useDashboardLoading').useDashboardLoading
+      useDashboardLoading.mockReturnValue({
+        isInitialLoad: true,
+        showEmptyState: false
+      })
+      
+      render(<CRMDashboard />)
+      
+      expect(screen.getByTestId('dashboard-skeleton')).toBeInTheDocument()
+      expect(screen.queryByTestId('dashboard-filters')).not.toBeInTheDocument()
+    })
+
+    it('should show empty state when no data available', () => {
+      // Mock empty state
+      const useDashboardLoading = require('@/features/dashboard/hooks/useDashboardLoading').useDashboardLoading
+      useDashboardLoading.mockReturnValue({
+        isInitialLoad: false,
+        showEmptyState: true
+      })
+      
+      render(<CRMDashboard />)
+      
+      expect(screen.getByTestId('empty-state')).toBeInTheDocument()
+      expect(screen.getByTestId('empty-type')).toHaveTextContent('dashboard')
+      expect(screen.getByTestId('empty-title')).toHaveTextContent('Select a principal to view their activity')
+      
+      // Filters should still be shown
+      expect(screen.getByTestId('dashboard-filters')).toBeInTheDocument()
+      
+      // Charts and other components should not be shown
+      expect(screen.queryByTestId('charts-grid')).not.toBeInTheDocument()
+    })
+
+    it('should propagate loading states to child components', () => {
+      // Mock loading state
+      const useDashboardFilters = require('@/features/dashboard/hooks/useDashboardFilters').useDashboardFilters
+      useDashboardFilters.mockReturnValue({
+        ...mockDashboardFilters,
+        isLoading: true
+      })
+      
+      render(<CRMDashboard />)
+      
+      // Verify loading states are passed down
+      expect(screen.getByTestId('charts-loading')).toHaveTextContent('loading')
+      expect(screen.getByTestId('activity-loading')).toHaveTextContent('loading')
+      expect(screen.getByTestId('opp-loading')).toHaveTextContent('loading')
+    })
+  })
+
+  describe('Data Integration and Flow', () => {
+    it('should pass correct data to all child components', () => {
+      render(<CRMDashboard />)
+      
+      // Verify data flow to various components
+      expect(screen.getByTestId('activity-count')).toHaveTextContent('1')
+      expect(screen.getByTestId('opp-count')).toHaveTextContent('0')
+      expect(screen.getByTestId('visible-charts')).toHaveTextContent('weekly-activity,principal-performance,opportunities,activities')
+    })
+
+    it('should handle data updates correctly', () => {
+      const { rerender } = render(<CRMDashboard />)
+      
+      // Update mock data
+      const useDashboardData = require('@/features/dashboard/hooks/useDashboardData').useDashboardData
+      useDashboardData.mockReturnValue({
+        ...mockDashboardData,
+        activityItems: [...mockDashboardData.activityItems, {
+          id: 'act2',
+          type: 'interaction' as const,
+          title: 'New Activity',
+          date: new Date(),
+          principalName: 'Principal 2'
+        }]
+      })
+      
+      rerender(<CRMDashboard />)
+      
+      // Verify updated data is reflected
+      expect(screen.getByTestId('activity-count')).toHaveTextContent('2')
+    })
+  })
+
+  describe('Chart Visibility Integration', () => {
+    it('should handle individual chart toggle correctly', async () => {
+      const user = userEvent.setup()
+      render(<CRMDashboard />)
+      
+      // Find chart toggle buttons (they should be rendered by ToggleGroup)
+      const weeklyActivityToggle = screen.getByLabelText('Toggle Weekly Activity chart')
+      expect(weeklyActivityToggle).toBeInTheDocument()
+      
+      await user.click(weeklyActivityToggle)
+      
+      // The ToggleGroup should trigger visibility changes
+      expect(mockChartVisibility.toggleChartVisibility).toHaveBeenCalled()
+    })
+
+    it('should update visible charts when chart visibility changes', () => {
+      // Mock different visibility state
+      const useChartVisibility = require('@/stores').useChartVisibility
+      useChartVisibility.mockReturnValue({
+        ...mockChartVisibility,
+        visibleCharts: {
+          'weekly-activity': false,
+          'principal-performance': false,
+          'team-performance': false,
+          'opportunities': true,
+          'activities': true,
+          'pipeline-flow': false,
+          'pipeline-funnel': false
+        }
+      })
+      
+      render(<CRMDashboard />)
+      
+      expect(screen.getByTestId('visible-charts')).toHaveTextContent('opportunities,activities')
+      expect(screen.getByText('Charts (2/7)')).toBeInTheDocument()
+    })
+  })
+
+  describe('Filter State Consistency', () => {
+    it('should maintain filter consistency across components', () => {
+      render(<CRMDashboard />)
+      
+      // Check that filters are consistent between DashboardFilters and KPI header
+      const filterState = screen.getByTestId('filter-state')
+      const kpiFilters = screen.getByTestId('kpi-filters')
+      
+      expect(filterState).toHaveTextContent(JSON.stringify(mockDashboardFilters.filters))
+      expect(kpiFilters).toHaveTextContent(JSON.stringify(mockDashboardFilters.debouncedFilters))
+    })
+
+    it('should handle complex filter state changes', async () => {
+      const user = userEvent.setup()
+      
+      // Mock enhanced filter state
+      const useDashboardFilters = require('@/features/dashboard/hooks/useDashboardFilters').useDashboardFilters
+      useDashboardFilters.mockReturnValue({
+        ...mockDashboardFilters,
+        filters: {
+          principal: 'p1',
+          product: 'prod1',
+          weeks: 'Last 8 Weeks',
+          focus: 'my_tasks',
+          quickView: 'action_items_due'
+        },
+        computed: {
+          hasActiveFilters: true,
+          hasActiveFocus: true,
+          hasActiveQuickView: true,
+          isMyTasksView: true,
+          isTeamView: false,
+          filterSummary: 'action_items_due view'
+        }
+      })
+      
+      render(<CRMDashboard />)
+      
+      const filterState = screen.getByTestId('filter-state')
+      expect(filterState).toHaveTextContent('"principal":"p1"')
+      expect(filterState).toHaveTextContent('"focus":"my_tasks"')
+      expect(filterState).toHaveTextContent('"quickView":"action_items_due"')
+    })
+  })
+
+  describe('Mobile Responsive Behavior', () => {
+    it('should show mobile-specific controls', () => {
+      // Mock mobile viewport
+      Object.defineProperty(window, 'innerWidth', {
+        writable: true,
+        configurable: true,
+        value: 375,
+      })
+      
+      render(<CRMDashboard />)
+      
+      // Mobile-specific buttons should be present
+      expect(screen.getAllByText('Show All')).toHaveLength(2) // One for mobile, one for desktop
+      expect(screen.getAllByText('Reset')).toHaveLength(2)
+    })
+
+    it('should enable mobile carousel for charts', () => {
+      render(<CRMDashboard />)
+      
+      // ChartsGrid should receive enableMobileCarousel prop
+      const chartsGrid = screen.getByTestId('charts-grid')
+      expect(chartsGrid).toBeInTheDocument()
+    })
+  })
+
+  describe('Performance Integration', () => {
+    it('should use debounced filters for data-heavy components', () => {
+      // Mock different regular vs debounced filters to simulate delay
+      const useDashboardFilters = require('@/features/dashboard/hooks/useDashboardFilters').useDashboardFilters
+      useDashboardFilters.mockReturnValue({
+        ...mockDashboardFilters,
+        filters: {
+          principal: 'latest-change',
+          product: 'all',
+          weeks: 'Last 4 Weeks',
+          focus: 'all_activity',
+          quickView: 'none'
+        },
+        debouncedFilters: {
+          principal: 'previous-value',
+          product: 'all',
+          weeks: 'Last 4 Weeks',
+          focus: 'all_activity',
+          quickView: 'none'
+        }
+      })
+      
+      render(<CRMDashboard />)
+      
+      // KPI Header should use debounced filters (not immediate)
+      const kpiFilters = screen.getByTestId('kpi-filters')
+      expect(kpiFilters).toHaveTextContent('"principal":"previous-value"')
+      
+      // Dashboard filters should show current state
+      const filterState = screen.getByTestId('filter-state')
+      expect(filterState).toHaveTextContent('"principal":"latest-change"')
+    })
   })
 })

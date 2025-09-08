@@ -1,8 +1,8 @@
 import type React from 'react'
 import { Upload, Map, Eye, Download, CheckCircle } from 'lucide-react'
 
-// Wizard step definitions
-export type WizardStep = 'upload' | 'map' | 'preview' | 'import' | 'complete'
+// Simplified 3-step wizard
+export type WizardStep = 'upload' | 'review' | 'import' | 'complete'
 
 interface WizardStepConfig {
   id: WizardStep
@@ -13,38 +13,32 @@ interface WizardStepConfig {
   current: boolean
 }
 
-// Wizard step configuration and utilities
-export const STEP_ORDER: WizardStep[] = ['upload', 'map', 'preview', 'import', 'complete']
+// Streamlined wizard step configuration - merged mapping and preview into "review"
+export const STEP_ORDER: WizardStep[] = ['upload', 'review', 'import', 'complete']
 
 export const STEP_CONFIGS: Record<WizardStep, Omit<WizardStepConfig, 'completed' | 'current'>> = {
   upload: {
     id: 'upload',
-    title: 'Upload File',
-    description: 'Select CSV file to import',
+    title: 'Upload',
+    description: 'Choose your file',
     icon: Upload,
   },
-  map: {
-    id: 'map',
-    title: 'Map Fields',
-    description: 'AI-powered field mapping',
-    icon: Map,
-  },
-  preview: {
-    id: 'preview',
-    title: 'Preview Data',
-    description: 'Review before importing',
+  review: {
+    id: 'review',
+    title: 'Review',
+    description: 'Preview & confirm data',
     icon: Eye,
   },
   import: {
     id: 'import',
     title: 'Import',
-    description: 'Processing your data',
+    description: 'Adding to CRM',
     icon: Download,
   },
   complete: {
     id: 'complete',
-    title: 'Complete',
-    description: 'Import finished',
+    title: 'Done',
+    description: 'Import completed',
     icon: CheckCircle,
   },
 }

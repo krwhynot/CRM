@@ -29,32 +29,16 @@ interface SmartUploadStepProps {
   className?: string
 }
 
-const ENTITY_TYPE_OPTIONS = [
-  {
-    value: 'organization' as const,
-    label: 'Organizations',
-    description: 'Companies, businesses, distributors',
-    icon: '🏢',
-    examples: ['Company names', 'Contact info', 'Addresses'],
-  },
-  {
-    value: 'contact' as const,
-    label: 'Contacts',
-    description: 'Individual people within organizations',
-    icon: '👤',
-    examples: ['First/last names', 'Email addresses', 'Job titles'],
-  },
-]
-
 const FILE_REQUIREMENTS = {
   formats: ['.csv'],
   maxSize: '5MB',
   encoding: 'UTF-8',
   requirements: [
-    'CSV format with headers in first row',
-    'UTF-8 encoding recommended',
-    'Organization name column required',
-    'Maximum 5MB file size',
+    'Spreadsheet saved as CSV format',
+    'First row should contain column headers', 
+    'Must include company/organization names',
+    'Files up to 5MB accepted',
+    'Large files may take a few minutes to process',
   ],
 }
 
@@ -123,57 +107,31 @@ export function SmartUploadStep({
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
   }
 
+  const getProcessingEstimate = (bytes: number) => {
+    // Rough estimate: 1MB = ~10,000 rows, ~30 seconds processing
+    const mbSize = bytes / (1024 * 1024)
+    if (mbSize < 0.5) return 'Less than 1 minute'
+    if (mbSize < 2) return '1-2 minutes'
+    if (mbSize < 5) return '2-5 minutes'
+    return '5+ minutes'
+  }
+
+  const isLargeFile = file && file.size > 1024 * 1024 // 1MB threshold
+
+  // Auto-set entity type to organization (simplified UX)
+  React.useEffect(() => {
+    if (config.entityType !== 'organization') {
+      onConfigUpdate({ entityType: 'organization' })
+    }
+  }, [config.entityType, onConfigUpdate])
+
   return (
-    <div className={cn('space-y-6', className)}>
-      {/* Entity Type Selection */}
-      <Card>
-        <CardContent className="p-6">
-          <h3 className="mb-4 text-lg font-semibold text-card-foreground">
-            What type of data are you importing?
-          </h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {ENTITY_TYPE_OPTIONS.map((option) => (
-              <button
-                key={option.value}
-                onClick={() => onConfigUpdate({ entityType: option.value })}
-                className={cn(
-                  'p-4 border-2 rounded-lg text-left transition-all',
-                  'min-h-[120px] touch-manipulation', // iPad optimization
-                  'hover:shadow-md active:scale-98',
-                  config.entityType === option.value
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border hover:border-border/80'
-                )}
-              >
-                <div className="flex items-start space-x-3">
-                  <span className="text-2xl">{option.icon}</span>
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <h4 className="font-semibold text-card-foreground">{option.label}</h4>
-                      {config.entityType === option.value && (
-                        <CheckCircle2 className="size-4 text-primary" />
-                      )}
-                    </div>
-                    <p className="text-sm text-muted-foreground">{option.description}</p>
-                    <div className="flex flex-wrap gap-1">
-                      {option.examples.map((example, idx) => (
-                        <Badge key={idx} variant="secondary" className="text-xs">
-                          {example}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+    <div className={cn('space-y-3', className)}>
 
       {/* File Upload Area */}
       <Card>
-        <CardContent className="p-6">
-          <div className="space-y-4">
+        <CardContent className="p-3">
+          <div className="space-y-2">
             {!file ? (
               // Upload Interface
               <div
@@ -181,57 +139,57 @@ export function SmartUploadStep({
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 className={cn(
-                  'border-2 border-dashed rounded-lg p-8 text-center transition-colors',
-                  'min-h-[200px] flex flex-col justify-center',
+                  'border-2 border-dashed rounded-lg p-4 text-center transition-colors',
+                  'min-h-[100px] flex flex-col justify-center',
                   isDragOver
                     ? 'border-primary bg-primary/5'
                     : 'border-slate-300 hover:border-slate-400'
                 )}
               >
-                <div className="space-y-4">
+                <div className="space-y-2">
                   <div className="flex justify-center">
                     <div
                       className={cn(
-                        'w-16 h-16 rounded-full flex items-center justify-center',
+                        'w-10 h-10 rounded-full flex items-center justify-center',
                         isDragOver ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'
                       )}
                     >
-                      <Upload className="size-8" />
+                      <Upload className="size-5" />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-foreground">
-                      {isDragOver ? 'Drop your CSV file here' : 'Upload your CSV file'}
+                  <div>
+                    <h3 className="text-sm font-semibold text-foreground">
+                      {isDragOver ? 'Drop your file here' : 'Choose your organization data'}
                     </h3>
-                    <p className="text-sm text-muted-foreground">
-                      Drag and drop your file here, or click to browse
+                    <p className="text-xs text-muted-foreground">
+                      Drag & drop your spreadsheet or browse to select
                     </p>
                   </div>
 
-                  <div className="flex flex-col justify-center gap-3 sm:flex-row">
+                  <div className="flex flex-col justify-center gap-2 sm:flex-row">
                     <Button
                       onClick={handleBrowseClick}
-                      className="h-12 px-6" // iPad touch-friendly
+                      className="h-8 px-3 text-sm"
                     >
                       <FileSpreadsheet className="mr-2 size-4" />
                       Browse Files
                     </Button>
 
-                    <Button variant="outline" onClick={onDownloadTemplate} className="h-12 px-6">
+                    <Button variant="outline" onClick={onDownloadTemplate} className="h-8 px-3 text-sm">
                       <Download className="mr-2 size-4" />
                       Download Template
                     </Button>
                   </div>
 
                   {/* File Requirements */}
-                  <div className="pt-4 text-xs text-muted-foreground">
-                    <div className="flex items-center justify-center space-x-4 text-xs">
-                      <span>Max {FILE_REQUIREMENTS.maxSize}</span>
+                  <div className="text-xs text-muted-foreground">
+                    <div className="flex items-center justify-center space-x-3 text-xs">
+                      <span>Excel or CSV files</span>
                       <span>•</span>
-                      <span>{FILE_REQUIREMENTS.formats.join(', ')} files</span>
+                      <span>Up to {FILE_REQUIREMENTS.maxSize}</span>
                       <span>•</span>
-                      <span>{FILE_REQUIREMENTS.encoding} encoding</span>
+                      <span>Include company names</span>
                     </div>
                   </div>
                 </div>
@@ -254,6 +212,14 @@ export function SmartUploadStep({
                           <CheckCircle2 className="size-4 text-success" />
                           <span className="text-sm text-success">File uploaded successfully</span>
                         </div>
+                        {isLargeFile && (
+                          <div className="mt-2 flex items-center space-x-2">
+                            <AlertCircle className="size-4 text-amber-500" />
+                            <span className="text-sm text-amber-600">
+                              Large file detected - estimated processing time: {getProcessingEstimate(file.size)}
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -279,42 +245,34 @@ export function SmartUploadStep({
         </CardContent>
       </Card>
 
-      {/* AI Enhancement Notice */}
-      <Card className="border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50">
-        <CardContent className="p-4">
-          <div className="flex items-start space-x-3">
-            <Sparkles className="mt-0.5 size-5 text-amber-500" />
-            <div>
-              <h4 className="font-semibold text-foreground">AI-Enhanced Import</h4>
-              <p className="mt-1 text-sm text-muted-foreground">
-                After uploading, our AI will automatically suggest field mappings and validate your
-                data to ensure the best import quality.
-              </p>
-              <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
-                <li>• Smart field detection (Company → Organization Name)</li>
-                <li>• Data quality validation and suggestions</li>
-                <li>• Duplicate detection and handling</li>
-                <li>• Confidence scoring for all mappings</li>
-              </ul>
+      {/* Compact AI Enhancement & Requirements */}
+      <div className="grid gap-2 md:grid-cols-2">
+        {/* AI Enhancement Notice */}
+        <Card className="border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50">
+          <CardContent className="p-3">
+            <div className="flex items-center space-x-2">
+              <Sparkles className="size-4 text-amber-500" />
+              <h4 className="text-sm font-medium text-foreground">AI-Enhanced</h4>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Smart mapping & validation
+            </p>
+          </CardContent>
+        </Card>
 
-      {/* File Requirements Card */}
-      <Card className="bg-muted/50">
-        <CardContent className="p-4">
-          <h4 className="mb-3 font-medium text-foreground">File Requirements</h4>
-          <div className="space-y-2 text-sm text-muted-foreground">
-            {FILE_REQUIREMENTS.requirements.map((req, idx) => (
-              <div key={idx} className="flex items-center space-x-2">
-                <div className="size-1.5 rounded-full bg-muted-foreground" />
-                <span>{req}</span>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+        {/* File Requirements Card */}
+        <Card className="bg-muted/50">
+          <CardContent className="p-3">
+            <div className="flex items-center space-x-2">
+              <FileSpreadsheet className="size-4 text-muted-foreground" />
+              <h4 className="text-sm font-medium text-foreground">Requirements</h4>
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">
+              CSV • Max 5MB • UTF-8
+            </p>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Error Display */}
       {error && (

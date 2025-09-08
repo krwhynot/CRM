@@ -3,7 +3,7 @@ export { SmartImportOrchestrator as default } from './components/SmartImportOrch
 export { SmartImportWizard } from './components/SmartImportWizard'
 export { SmartFieldMapping } from './components/SmartFieldMapping'
 export { SmartUploadStep } from './components/SmartUploadStep'
-export { SmartPreviewStep } from './components/SmartPreviewStep'
+// SmartPreviewStep removed - functionality consolidated into SmartFieldMapping
 export { useSmartImport } from './hooks/useSmartImport'
 
 // Types

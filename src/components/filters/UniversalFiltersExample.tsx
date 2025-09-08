@@ -30,20 +30,20 @@ export function UniversalFiltersExample() {
         compact={false}
       />
 
-      <div className="mt-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-md">
-        <h3 className="text-sm font-medium mb-2">Current Filters (Real-time):</h3>
+      <div className="mt-4 rounded-md bg-gray-100 p-4 dark:bg-gray-800">
+        <h3 className="mb-2 text-sm font-medium">Current Filters (Real-time):</h3>
         <pre className="text-xs">{JSON.stringify(filters, null, 2)}</pre>
       </div>
 
-      <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
-        <h3 className="text-sm font-medium mb-2">Debounced Filters (For API calls):</h3>
+      <div className="mt-4 rounded-md bg-blue-50 p-4 dark:bg-blue-900/20">
+        <h3 className="mb-2 text-sm font-medium">Debounced Filters (For API calls):</h3>
         <pre className="text-xs">{JSON.stringify(debouncedFilters, null, 2)}</pre>
       </div>
 
       <div className="flex space-x-2">
         <button
           onClick={resetFilters}
-          className="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
+          className="rounded bg-gray-200 px-3 py-1 text-sm hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
         >
           Reset All Filters
         </button>
@@ -54,7 +54,7 @@ export function UniversalFiltersExample() {
             focus: 'high_priority',
             quickView: 'action_items_due'
           })}
-          className="px-3 py-1 text-sm bg-blue-200 dark:bg-blue-700 rounded hover:bg-blue-300 dark:hover:bg-blue-600"
+          className="rounded bg-blue-200 px-3 py-1 text-sm hover:bg-blue-300 dark:bg-blue-700 dark:hover:bg-blue-600"
         >
           Set Example Filters
         </button>

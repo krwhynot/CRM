@@ -228,8 +228,8 @@ export function DataTable<T>({
 
                 const expandedRow = isExpanded && expandableContent ? (
                   <tr key={`${rowKeyValue}-expanded`} className="border-b bg-gray-50/50">
-                    <td colSpan={columns.length} className="px-0 py-0">
-                      <div className="px-6 py-6">
+                    <td colSpan={columns.length} className="p-0">
+                      <div className="p-6">
                         {expandableContent(row)}
                       </div>
                     </td>

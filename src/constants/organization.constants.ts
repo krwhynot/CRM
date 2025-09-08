@@ -10,6 +10,7 @@ export const ORGANIZATION_TYPES = [
   'distributor',
   'prospect',
   'vendor',
+  'unknown',
 ] as const
 
 export const PRIORITY_VALUES = ['A', 'B', 'C', 'D'] as const
@@ -20,6 +21,7 @@ export const VALID_ORGANIZATION_TYPES = [
   'distributor',
   'prospect',
   'vendor',
+  'unknown',
 ] as const
 
 export type OrganizationType = (typeof ORGANIZATION_TYPES)[number]
