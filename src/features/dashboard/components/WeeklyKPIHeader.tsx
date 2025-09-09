@@ -1,13 +1,18 @@
-import { 
-  TrendingUp, 
-  MessageSquare, 
-  Clock, 
-  DollarSign, 
-  AlertTriangle, 
-  CheckCircle 
+import {
+  TrendingUp,
+  MessageSquare,
+  Clock,
+  DollarSign,
+  AlertTriangle,
+  CheckCircle,
 } from 'lucide-react'
-import { KPITile, SuccessKPITile, WarningKPITile, ErrorKPITile } from './kpi-tiles/KPITile'
-import { KPITileSkeletonGrid } from './kpi-tiles/KPITileSkeleton'
+import {
+  KpiCard,
+  SuccessKpiCard,
+  WarningKpiCard,
+  ErrorKpiCard,
+  KpiGridSkeleton,
+} from '@/components/dashboard'
 import { useWeeklyKPIData } from '../hooks/useWeeklyKPIData'
 import { cn } from '@/lib/utils'
 import type { FilterState } from '@/types/dashboard'
@@ -18,11 +23,7 @@ interface WeeklyKPIHeaderProps {
   compact?: boolean
 }
 
-export function WeeklyKPIHeader({ 
-  filters, 
-  className,
-  compact = false 
-}: WeeklyKPIHeaderProps) {
+export function WeeklyKPIHeader({ filters, className, compact = false }: WeeklyKPIHeaderProps) {
   const {
     opportunitiesMoved,
     interactionsLogged,
@@ -31,7 +32,7 @@ export function WeeklyKPIHeader({
     overdueItems,
     completedTasks,
     isLoading,
-    error
+    error,
   } = useWeeklyKPIData(filters)
 
   // Show loading skeleton while data loads
@@ -41,12 +42,10 @@ export function WeeklyKPIHeader({
         {!compact && (
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold">Weekly KPIs</h2>
-            <div className="text-xs text-muted-foreground">
-              Loading performance metrics...
-            </div>
+            <div className="text-xs text-muted-foreground">Loading performance metrics...</div>
           </div>
         )}
-        <KPITileSkeletonGrid count={6} />
+        <KpiGridSkeleton count={6} />
       </div>
     )
   }
@@ -55,17 +54,14 @@ export function WeeklyKPIHeader({
   if (error) {
     return (
       <div className={cn('space-y-4', className)}>
-        {!compact && (
-          <h2 className="text-lg font-semibold">Weekly KPIs</h2>
-        )}
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+        {!compact && <h2 className="text-lg font-semibold">Weekly KPIs</h2>}
+        <div className="dashboard-grid dashboard-grid-kpi">
           {Array.from({ length: 6 }).map((_, index) => (
-            <KPITile
+            <ErrorKpiCard
               key={index}
               title="Error"
               value="--"
               icon={AlertTriangle}
-              variant="error"
               subtitle="Failed to load"
               isLoading={false}
             />
@@ -102,77 +98,93 @@ export function WeeklyKPIHeader({
       )}
 
       {/* KPI Grid */}
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+      <div className="dashboard-grid dashboard-grid-kpi">
         {/* 1. Opportunities Moved */}
-        <KPITile
+        <KpiCard
           title="Opportunities Moved"
           value={opportunitiesMoved.count}
           icon={TrendingUp}
           variant={opportunitiesMoved.trend.value > 0 ? 'success' : 'default'}
-          trend={{
-            value: opportunitiesMoved.trend.value,
-            label: opportunitiesMoved.trend.label
-          }}
+          trend={
+            opportunitiesMoved.trend.value > 0
+              ? 'up'
+              : opportunitiesMoved.trend.value < 0
+                ? 'down'
+                : 'neutral'
+          }
+          change={opportunitiesMoved.trend.value}
+          changeLabel={opportunitiesMoved.trend.label}
           subtitle={`${opportunitiesMoved.stageChanges} stage changes`}
         />
 
         {/* 2. Interactions Logged */}
-        <KPITile
+        <KpiCard
           title="Interactions Logged"
           value={interactionsLogged.count}
           icon={MessageSquare}
-          trend={{
-            value: interactionsLogged.trend.value,
-            label: interactionsLogged.trend.label
-          }}
+          trend={
+            interactionsLogged.trend.value > 0
+              ? 'up'
+              : interactionsLogged.trend.value < 0
+                ? 'down'
+                : 'neutral'
+          }
+          change={interactionsLogged.trend.value}
+          changeLabel={interactionsLogged.trend.label}
           subtitle={`${interactionsLogged.thisWeek} this week`}
         />
 
         {/* 3. Action Items Due */}
-        <WarningKPITile
+        <WarningKpiCard
           title="Action Items Due"
           value={actionItemsDue.count}
           icon={Clock}
           subtitle={
-            actionItemsDue.count > 0 
-              ? `${actionItemsDue.dueToday} due today`
-              : 'All caught up!'
+            actionItemsDue.count > 0 ? `${actionItemsDue.dueToday} due today` : 'All caught up!'
           }
         />
 
         {/* 4. Pipeline Value */}
-        <SuccessKPITile
+        <SuccessKpiCard
           title="Pipeline Value"
           value={formatCurrency(pipelineValue.total)}
           icon={DollarSign}
-          trend={{
-            value: pipelineValue.trend.value,
-            label: pipelineValue.trend.label
-          }}
+          trend={
+            pipelineValue.trend.value > 0
+              ? 'up'
+              : pipelineValue.trend.value < 0
+                ? 'down'
+                : 'neutral'
+          }
+          change={pipelineValue.trend.value}
+          changeLabel={pipelineValue.trend.label}
           subtitle={`${pipelineValue.opportunityCount} opportunities`}
         />
 
         {/* 5. Overdue Items */}
-        <ErrorKPITile
+        <ErrorKpiCard
           title="Overdue Items"
           value={overdueItems.count}
           icon={AlertTriangle}
           subtitle={
-            overdueItems.count > 0
-              ? `${overdueItems.oldestDays} days oldest`
-              : 'No overdue items'
+            overdueItems.count > 0 ? `${overdueItems.oldestDays} days oldest` : 'No overdue items'
           }
         />
 
         {/* 6. Completed Tasks */}
-        <SuccessKPITile
+        <SuccessKpiCard
           title="Completed Tasks"
           value={completedTasks.count}
           icon={CheckCircle}
-          trend={{
-            value: completedTasks.trend.value,
-            label: completedTasks.trend.label
-          }}
+          trend={
+            completedTasks.trend.value > 0
+              ? 'up'
+              : completedTasks.trend.value < 0
+                ? 'down'
+                : 'neutral'
+          }
+          change={completedTasks.trend.value}
+          changeLabel={completedTasks.trend.label}
           subtitle={`${completedTasks.completionRate}% completion rate`}
         />
       </div>

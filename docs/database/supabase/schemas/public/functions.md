@@ -49,10 +49,16 @@
 - **Purpose**: Validates UI readiness before removing legacy database columns
 
 ### create_contact_with_org
-- **Arguments**: p_org_name text, p_contact_data jsonb, p_org_type text DEFAULT 'customer', p_org_data jsonb DEFAULT '{}'
-- **Returns**: TABLE(contact_id uuid, contact_data jsonb, organization_id uuid, organization_data jsonb, is_new_org boolean)
+- **Arguments**: p_org_name text, p_org_type text, p_org_data jsonb, p_contact_data jsonb
+- **Returns**: TABLE(contact_id uuid, contact_data jsonb, organization_id uuid, organization_data jsonb, is_new_organization boolean)
 - **Language**: plpgsql
 - **Purpose**: Creates a contact with associated organization, handling organization creation if needed
+
+### get_dashboard_metrics
+- **Arguments**: p_principal_ids uuid[] DEFAULT NULL::uuid[], p_date_from date DEFAULT NULL::date, p_date_to date DEFAULT NULL::date
+- **Returns**: TABLE(total_organizations bigint, total_contacts bigint, total_opportunities bigint, total_interactions bigint, total_products bigint, principals_count bigint, distributors_count bigint, active_opportunities bigint, total_pipeline_value numeric, active_pipeline_value numeric, conversion_rate numeric, average_opportunity_value numeric, recent_interactions bigint, this_week_interactions bigint, this_month_interactions bigint, avg_interactions_per_opportunity numeric, principals_with_active_opportunities bigint, avg_opportunities_per_principal numeric, last_activity_date timestamp with time zone, opportunities_by_stage jsonb, opportunity_values_by_stage jsonb, interactions_by_type jsonb, top_principals_by_value jsonb)
+- **Language**: plpgsql
+- **Purpose**: Returns comprehensive dashboard metrics with optional filtering by principal IDs and date ranges
 
 ### get_enum_display_info
 - **Arguments**: enum_type text, enum_value text  
@@ -80,13 +86,13 @@
 
 ### validate_enum_governance
 - **Arguments**: none
-- **Returns**: record (table format)
+- **Returns**: TABLE(enum_type text, enum_values text, lookup_table_exists boolean, values_in_sync boolean, recommendation text)
 - **Language**: plpgsql
 - **Purpose**: Validates enum governance and consistency across the database
 
 ### validate_schema_migration_success
 - **Arguments**: none
-- **Returns**: record (table format)
+- **Returns**: TABLE(validation_category text, check_name text, status text, details text)
 - **Language**: plpgsql
 - **Purpose**: Validates successful completion of schema migrations
 

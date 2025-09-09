@@ -79,6 +79,7 @@ Defines the business relationship type for organizations.
 - **distributor** - Distribution partner
 - **prospect** - Potential customer
 - **vendor** - Service or supply vendor
+- **unknown** - Unknown or undefined organization type
 
 ## priority_level
 Generic priority classification used across multiple entities.

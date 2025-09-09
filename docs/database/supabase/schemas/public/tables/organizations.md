@@ -36,6 +36,7 @@
 | search_tsv | tsvector | YES | | Full-text search vector |
 | primary_manager_id | uuid | YES | | Foreign key to contacts table for primary manager |
 | secondary_manager_id | uuid | YES | | Foreign key to contacts table for secondary manager |
+| import_session_id | uuid | YES | | Tracks which import session created this record |
 
 ## Primary Key
 - organizations_pkey: (id)

@@ -10,10 +10,16 @@ import { cn } from '@/lib/utils'
 import { formatDistanceToNow, format, parseISO } from 'date-fns'
 import { toast } from '@/lib/toast-styles'
 import type { InteractionWithRelations, InteractionFilters } from '@/types/interaction.types'
+import { DEFAULT_WEEKLY_FILTERS } from '@/types/shared-filters.types'
 import { useInteractionIconMapping } from '@/features/interactions/hooks/useInteractionIconMapping'
-import { 
-  ChevronDown, ChevronRight, Building, User, 
-  AlertCircle, Calendar, Clock
+import {
+  ChevronDown,
+  ChevronRight,
+  Building,
+  User,
+  AlertCircle,
+  Calendar,
+  Clock,
 } from 'lucide-react'
 
 interface InteractionsTableProps {
@@ -26,39 +32,43 @@ interface InteractionsTableProps {
 }
 
 const INTERACTION_COLORS = {
-  'call': 'bg-primary/10 text-primary border-primary/20',
-  'email': 'bg-secondary text-secondary-foreground border-secondary',
-  'meeting': 'bg-primary/20 text-primary border-primary/30',
-  'note': 'bg-muted text-muted-foreground border-muted',
-  'demo': 'bg-accent text-accent-foreground border-accent',
-  'site_visit': 'bg-primary/15 text-primary border-primary/25',
-  'follow_up': 'bg-accent/50 text-accent-foreground border-accent',
-  'proposal': 'bg-primary/25 text-primary border-primary/35',
-  'trade_show': 'bg-secondary/50 text-secondary-foreground border-secondary',
-  'contract_review': 'bg-destructive/10 text-destructive border-destructive/20',
-  'in_person': 'bg-primary/30 text-primary border-primary/40',
-  'quoted': 'bg-accent/30 text-accent-foreground border-accent/50',
-  'distribution': 'bg-secondary/30 text-secondary-foreground border-secondary/50',
+  call: 'bg-primary/10 text-primary border-primary/20',
+  email: 'bg-secondary text-secondary-foreground border-secondary',
+  meeting: 'bg-primary/20 text-primary border-primary/30',
+  note: 'bg-muted text-muted-foreground border-muted',
+  demo: 'bg-accent text-accent-foreground border-accent',
+  site_visit: 'bg-primary/15 text-primary border-primary/25',
+  follow_up: 'bg-accent/50 text-accent-foreground border-accent',
+  proposal: 'bg-primary/25 text-primary border-primary/35',
+  trade_show: 'bg-secondary/50 text-secondary-foreground border-secondary',
+  contract_review: 'bg-destructive/10 text-destructive border-destructive/20',
+  in_person: 'bg-primary/30 text-primary border-primary/40',
+  quoted: 'bg-accent/30 text-accent-foreground border-accent/50',
+  distribution: 'bg-secondary/30 text-secondary-foreground border-secondary/50',
 } as const
 
-export function InteractionsTable({ 
-  interactions = [], 
-  filters, 
+export function InteractionsTable({
+  interactions = [],
+  filters: propFilters,
   loading = false,
-  onEdit, 
+  onEdit,
   onDelete,
-  onView 
+  onView,
 }: InteractionsTableProps) {
-  const [searchTerm, setSearchTerm] = useState('')
+  // ✨ Updated to use proper filters state
+  const [filters, setFilters] = useState<InteractionFilters>(() => ({
+    ...DEFAULT_WEEKLY_FILTERS,
+    ...propFilters,
+  }))
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set())
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
   const { getInteractionIcon } = useInteractionIconMapping()
 
-  // Filter interactions by search
+  // ✨ Updated filter logic to use filters.search
   const filteredInteractions = useMemo(() => {
-    if (!searchTerm) return interactions
-    
-    const term = searchTerm.toLowerCase()
+    if (!filters?.search) return interactions
+
+    const term = filters.search.toLowerCase()
     return interactions.filter((interaction) => {
       return (
         interaction.subject?.toLowerCase().includes(term) ||
@@ -72,10 +82,10 @@ export function InteractionsTable({
         interaction.outcome?.toLowerCase().includes(term)
       )
     })
-  }, [interactions, searchTerm])
+  }, [interactions, filters?.search])
 
   const toggleRowExpansion = (id: string) => {
-    setExpandedRows(prev => {
+    setExpandedRows((prev) => {
       const newSet = new Set(prev)
       if (newSet.has(id)) {
         newSet.delete(id)
@@ -88,7 +98,7 @@ export function InteractionsTable({
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedItems(new Set(filteredInteractions.map(i => i.id)))
+      setSelectedItems(new Set(filteredInteractions.map((i) => i.id)))
     } else {
       setSelectedItems(new Set())
     }
@@ -145,13 +155,12 @@ export function InteractionsTable({
       header: 'Type',
       cell: (interaction) => {
         const icon = getInteractionIcon(interaction.type)
-        const colorClass = INTERACTION_COLORS[interaction.type] || 'bg-gray-100 text-gray-700 border-gray-200'
-        
+        const colorClass =
+          INTERACTION_COLORS[interaction.type] || 'bg-gray-100 text-gray-700 border-gray-200'
+
         return (
           <div className="flex items-center gap-2">
-            <div className={cn('p-2 rounded-lg border', colorClass)}>
-              {icon}
-            </div>
+            <div className={cn('p-2 rounded-lg border', colorClass)}>{icon}</div>
             <div className="space-y-1">
               <div className="text-sm font-medium capitalize">
                 {interaction.type.replace('_', ' ')}
@@ -173,9 +182,7 @@ export function InteractionsTable({
       header: 'Details',
       cell: (interaction) => (
         <div className="space-y-1">
-          <div className="text-sm font-medium">
-            {interaction.subject || 'No subject'}
-          </div>
+          <div className="text-sm font-medium">{interaction.subject || 'No subject'}</div>
           {interaction.description && (
             <div className="line-clamp-2 text-xs text-muted-foreground">
               {interaction.description}
@@ -219,7 +226,9 @@ export function InteractionsTable({
           {interaction.contact && (
             <div className="flex items-center gap-1 text-muted-foreground">
               <User className="size-3" />
-              <span>{interaction.contact.first_name} {interaction.contact.last_name}</span>
+              <span>
+                {interaction.contact.first_name} {interaction.contact.last_name}
+              </span>
             </div>
           )}
         </div>
@@ -370,10 +379,11 @@ export function InteractionsTable({
     <div className="space-y-4">
       {/* Filters */}
       <InteractionsFilters
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        interactionCount={filteredInteractions.length}
-        totalCount={interactions.length}
+        filters={filters}
+        onFiltersChange={setFilters}
+        totalInteractions={interactions.length}
+        filteredCount={filteredInteractions.length}
+        isLoading={loading}
       />
 
       {/* Bulk Actions */}
@@ -399,7 +409,11 @@ export function InteractionsTable({
             {
               label: 'Delete',
               onClick: () => {
-                if (confirm(`Delete ${selectedItems.size} interactions? This action cannot be undone.`)) {
+                if (
+                  confirm(
+                    `Delete ${selectedItems.size} interactions? This action cannot be undone.`
+                  )
+                ) {
                   toast.success(`Deleted ${selectedItems.size} interactions`)
                   setSelectedItems(new Set())
                 }

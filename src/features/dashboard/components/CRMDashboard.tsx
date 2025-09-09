@@ -32,14 +32,10 @@ export const CRMDashboard: React.FC = () => {
     pipelineValueFunnelData,
   } = useDashboardData(debouncedFilters)
   const { isInitialLoad, showEmptyState } = useDashboardLoading(debouncedFilters, activityItems)
-  
+
   // Chart visibility controls
-  const {
-    visibleCharts,
-    toggleChartVisibility,
-    showAllCharts,
-    resetToDefaults,
-  } = useChartVisibility()
+  const { visibleCharts, toggleChartVisibility, showAllCharts, resetToDefaults } =
+    useChartVisibility()
 
   // Get array of visible chart IDs for filtering
   const visibleChartIds = Object.entries(visibleCharts)
@@ -54,7 +50,7 @@ export const CRMDashboard: React.FC = () => {
     'opportunities',
     'activities',
     'pipeline-flow',
-    'pipeline-funnel'
+    'pipeline-funnel',
   ]
 
   // Show initial loading skeleton
@@ -101,15 +97,14 @@ export const CRMDashboard: React.FC = () => {
         isLoading={isLoading}
       />
 
-      {/* KPI Header - Weekly performance metrics */}
-      <div className="p-6 pb-3">
+      {/* Main Content Area with Executive Chef spacing */}
+      <main className="container mx-auto max-w-7xl space-y-8 p-6 lg:p-8">
+        {/* KPI Header - Weekly performance metrics */}
         <WeeklyKPIHeader filters={debouncedFilters} />
-      </div>
 
-      {/* Chart Visibility Controls - Toggle which charts are displayed */}
-      <div className="px-6 pb-4">
-        <Card>
-          <CardContent className="p-4">
+        {/* Chart Visibility Controls - Toggle which charts are displayed */}
+        <Card className="dashboard-card">
+          <CardContent className="space-y-3">
             <div className="flex flex-col space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0">
               {/* Header and bulk actions */}
               <div className="flex items-center justify-between">
@@ -120,20 +115,10 @@ export const CRMDashboard: React.FC = () => {
                   </span>
                 </div>
                 <div className="flex space-x-2 md:hidden">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={showAllCharts}
-                    className="text-xs"
-                  >
+                  <Button variant="outline" size="sm" onClick={showAllCharts} className="text-xs">
                     Show All
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={resetToDefaults}
-                    className="text-xs"
-                  >
+                  <Button variant="outline" size="sm" onClick={resetToDefaults} className="text-xs">
                     Reset
                   </Button>
                 </div>
@@ -184,7 +169,7 @@ export const CRMDashboard: React.FC = () => {
                     Show All
                   </Button>
                   <Button
-                    variant="outline" 
+                    variant="outline"
                     size="sm"
                     onClick={resetToDefaults}
                     className="whitespace-nowrap"
@@ -197,10 +182,8 @@ export const CRMDashboard: React.FC = () => {
             </div>
           </CardContent>
         </Card>
-      </div>
 
-      {/* Charts Grid - Responsive grid layout with filtered charts */}
-      <div className="p-6 pt-0">
+        {/* Charts Grid - Responsive grid layout with filtered charts */}
         <ChartsGrid
           data={[]} // Legacy WeeklyData - now using specific chart data props
           opportunityChartData={opportunityChartData}
@@ -214,17 +197,24 @@ export const CRMDashboard: React.FC = () => {
           enableMobileCarousel={true}
           visibleChartIds={visibleChartIds} // Pass visible chart IDs for filtering
         />
-      </div>
 
-      {/* Opportunity Kanban - Sales Pipeline */}
-      <OpportunityKanban
-        opportunities={filteredOpportunities}
-        principals={principals}
-        loading={isLoading}
-      />
+        {/* Bottom Section - Pipeline & Activity with breathing room */}
+        <div className="dashboard-grid grid-cols-1 lg:grid-cols-3">
+          {/* Pipeline Kanban - 2 columns wide */}
+          <div className="lg:col-span-2">
+            <OpportunityKanban
+              opportunities={filteredOpportunities}
+              principals={principals}
+              loading={isLoading}
+            />
+          </div>
 
-      {/* Activity Feed - Full width, paginated */}
-      <SimpleActivityFeed activities={activityItems} loading={isLoading} className="w-full" />
+          {/* Activity Feed - 1 column */}
+          <div>
+            <SimpleActivityFeed activities={activityItems} loading={isLoading} className="h-full" />
+          </div>
+        </div>
+      </main>
     </div>
   )
 }

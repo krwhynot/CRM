@@ -2,13 +2,16 @@ import React from 'react'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Search } from 'lucide-react'
-import { 
+import {
   GenericWeeksFilter,
-  GenericPrincipalFilter, 
+  GenericPrincipalFilter,
   GenericQuickViewFilter,
-  createQuickViewOptions
+  createQuickViewOptions,
 } from '@/components/filters/shared'
-import type { WeeklyFilterComponentProps, InteractionWeeklyFilters } from '@/types/shared-filters.types'
+import type {
+  WeeklyFilterComponentProps,
+  InteractionWeeklyFilters,
+} from '@/types/shared-filters.types'
 import type { InteractionFilters } from '@/types/interaction.types'
 
 interface InteractionsFiltersProps extends WeeklyFilterComponentProps<InteractionFilters> {
@@ -27,44 +30,49 @@ export const InteractionsFilters: React.FC<InteractionsFiltersProps> = ({
   showBadges = false,
   className = '',
 }) => {
+  // ✨ Defensive programming: handle undefined filters
+  if (!filters) {
+    console.warn('InteractionsFilters: filters prop is undefined, returning null')
+    return null
+  }
   const handleSearchChange = (search: string) => {
     onFiltersChange({ ...filters, search })
   }
 
   const handleTimeRangeChange = (timeRange: string) => {
-    onFiltersChange({ 
-      ...filters, 
-      timeRange: timeRange as InteractionWeeklyFilters['timeRange']
+    onFiltersChange({
+      ...filters,
+      timeRange: timeRange as InteractionWeeklyFilters['timeRange'],
     })
   }
 
   const handlePrincipalChange = (principal: string) => {
-    onFiltersChange({ 
-      ...filters, 
-      principal: principal
+    onFiltersChange({
+      ...filters,
+      principal: principal,
     })
   }
 
   const handleQuickViewChange = (quickView: string | 'none') => {
-    onFiltersChange({ 
-      ...filters, 
-      quickView: quickView as InteractionWeeklyFilters['quickView']
+    onFiltersChange({
+      ...filters,
+      quickView: quickView as InteractionWeeklyFilters['quickView'],
     })
   }
 
   const quickViewOptions = createQuickViewOptions('interactions')
 
-  // Calculate active filter count
+  // Calculate active filter count with safe property access
   const activeFilterCount = [
-    filters.timeRange && filters.timeRange !== 'this_month',
-    filters.principal && filters.principal !== 'all',
-    filters.quickView && filters.quickView !== 'none',
-    filters.search,
-    filters.type,
-    filters.organization_id,
-    filters.contact_id,
-    filters.opportunity_id,
-    filters.follow_up_required
+    filters?.timeRange && filters.timeRange !== 'this_month',
+    filters?.principal && filters.principal !== 'all',
+    filters?.quickView && filters.quickView !== 'none',
+    filters?.search,
+    filters?.type,
+    filters?.organization_id,
+    filters?.contact_id,
+    filters?.opportunity_id,
+    filters?.follow_up_required,
   ].filter(Boolean).length
 
   return (

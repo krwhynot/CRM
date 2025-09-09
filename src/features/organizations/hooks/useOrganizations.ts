@@ -166,9 +166,10 @@ export function useOrganization(id: string) {
         )
         .eq('id', id)
         .is('deleted_at', null)
-        .single()
+        .maybeSingle()
 
       if (error) throw error
+      if (!data) throw new Error(`Organization with id ${id} not found`)
       return data as Organization
     },
     enabled: !!id,
@@ -248,9 +249,10 @@ export function useCreateOrganization() {
         .from('organizations')
         .insert(organizationData)
         .select()
-        .single()
+        .maybeSingle()
 
       if (error) throw error
+      if (!data) throw new Error('Failed to create organization')
       return data as Organization
     },
     onSuccess: (newOrganization) => {
@@ -286,9 +288,10 @@ export function useUpdateOrganization() {
         .update(updateData)
         .eq('id', id)
         .select()
-        .single()
+        .maybeSingle()
 
       if (error) throw error
+      if (!data) throw new Error(`Organization with id ${id} not found for update`)
       return data as Organization
     },
     onSuccess: (updatedOrganization) => {
@@ -317,9 +320,10 @@ export function useDeleteOrganization() {
         })
         .eq('id', id)
         .select()
-        .single()
+        .maybeSingle()
 
       if (error) throw error
+      if (!data) throw new Error(`Organization with id ${id} not found for deletion`)
       return data as Organization
     },
     onSuccess: (deletedOrganization) => {
@@ -348,9 +352,10 @@ export function useRestoreOrganization() {
         })
         .eq('id', id)
         .select()
-        .single()
+        .maybeSingle()
 
       if (error) throw error
+      if (!data) throw new Error(`Organization with id ${id} not found for restoration`)
       return data as Organization
     },
     onSuccess: (restoredOrganization) => {

@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Activity } from 'lucide-react'
 import { ChartTooltip } from './ChartTooltip'
 import { useChartStyling } from '../../hooks/useChartStyling'
+import { chartColors } from '@/components/dashboard'
 import type { ChartDataPoint } from '../../hooks/useChartData'
 
 interface ActivityChartProps {
@@ -56,17 +57,17 @@ export function ActivityChart({ data, maxValue }: ActivityChartProps) {
               <Line
                 type="monotone"
                 dataKey="activities"
-                stroke="hsl(var(--primary))"
+                stroke={chartColors.success}
                 strokeWidth={3}
                 dot={{
-                  fill: 'hsl(var(--primary))',
+                  fill: chartColors.success,
                   strokeWidth: 2,
                   stroke: 'hsl(var(--background))',
                   r: 4,
                 }}
                 activeDot={{
                   r: 6,
-                  fill: 'hsl(var(--primary))',
+                  fill: chartColors.success,
                   stroke: 'hsl(var(--background))',
                   strokeWidth: 2,
                 }}

@@ -139,6 +139,26 @@
     /* Header Shadow */
     --header-shadow: 0 2px 8px rgba(141, 198, 63, 0.15);
     
+    /* Executive Chef Design System */
+    --spacing-xs: 0.5rem;     /* 8px */
+    --spacing-sm: 1rem;       /* 16px */
+    --spacing-md: 1.5rem;     /* 24px - Primary card padding */
+    --spacing-lg: 2rem;       /* 32px */
+    --spacing-xl: 3rem;       /* 48px */
+    
+    /* Visual Hierarchy */
+    --radius-card: 0.75rem;   /* 12px - Professional rounded corners */
+    --shadow-subtle: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+    --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    
+    /* Executive Chef Chart Colors (compatible with existing MFB palette) */
+    --chart-primary: 95 71% 56%;      /* MFB Green - Primary brand */
+    --chart-success: 142 76% 52%;     /* Success Green - Emerald */
+    --chart-warning: 38 92% 50%;      /* Warning Amber */
+    --chart-info: 217 91% 60%;        /* Info Blue */
+    --chart-accent: 262 83% 58%;      /* Purple accent */
+    
     /* Common Layout Dimensions */
     --header-height: 4rem;
     --dialog-max-height: min(80vh, 40rem); /* Responsive with 640px cap */
@@ -321,6 +341,43 @@
 }
 
 @layer components {
+  /* Executive Chef Card System */
+  .dashboard-card {
+    @apply bg-card rounded-xl border border-border shadow-sm;
+    @apply transition-all duration-200 ease-in-out;
+    @apply hover:shadow-md hover:border-primary/20;
+    padding: var(--spacing-md); /* 24px consistent padding */
+    border-radius: var(--radius-card); /* 12px professional corners */
+  }
+
+  .dashboard-grid {
+    @apply grid gap-6; /* Consistent 24px gaps */
+  }
+
+  .dashboard-grid-kpi {
+    @apply grid-cols-1 md:grid-cols-2 lg:grid-cols-4;
+  }
+
+  .dashboard-grid-charts {
+    @apply grid-cols-1 lg:grid-cols-2;
+  }
+
+  /* Typography Scale for Visual Hierarchy */
+  .text-metric {
+    @apply text-3xl font-bold tracking-tight;
+    color: hsl(var(--foreground));
+  }
+
+  .text-label {
+    @apply text-xs font-medium uppercase tracking-wider;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .text-value {
+    @apply text-2xl font-semibold;
+    color: hsl(var(--primary));
+  }
+
   /* Standardized Button Classes */
   .btn-primary {
     @apply inline-flex items-center justify-center whitespace-nowrap;

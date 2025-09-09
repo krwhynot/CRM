@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Target } from 'lucide-react'
 import { ChartTooltip } from './ChartTooltip'
 import { useChartStyling } from '../../hooks/useChartStyling'
+import { chartColors } from '@/components/dashboard'
 import type { ChartDataPoint } from '../../hooks/useChartData'
 
 interface OpportunitiesChartProps {
@@ -56,17 +57,17 @@ export function OpportunitiesChart({ data, maxValue }: OpportunitiesChartProps) 
               <Line
                 type="monotone"
                 dataKey="opportunities"
-                stroke="hsl(var(--primary))"
+                stroke={chartColors.primary}
                 strokeWidth={3}
                 dot={{
-                  fill: 'hsl(var(--primary))',
+                  fill: chartColors.primary,
                   strokeWidth: 2,
                   stroke: 'hsl(var(--background))',
                   r: 4,
                 }}
                 activeDot={{
                   r: 6,
-                  fill: 'hsl(var(--primary))',
+                  fill: chartColors.primary,
                   stroke: 'hsl(var(--background))',
                   strokeWidth: 2,
                 }}

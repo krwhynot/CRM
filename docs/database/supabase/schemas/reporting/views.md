@@ -36,6 +36,14 @@ This document covers all views in the CRM database, including reporting views an
 - **Purpose**: Organization roles view with aggregated data
 - **Usage**: Role-based organization querying
 
+### hypopg_hidden_indexes
+- **Purpose**: Extension view for hypothetical hidden indexes
+- **Usage**: Database performance analysis and index optimization (part of hypopg extension)
+
+### hypopg_list_indexes
+- **Purpose**: Extension view for listing hypothetical indexes
+- **Usage**: Database performance analysis and index optimization (part of hypopg extension)
+
 ## Reporting Schema Views
 
 ### latest_interaction
@@ -59,6 +67,10 @@ SELECT DISTINCT ON (opportunity_id) opportunity_id,
 
 ### Purpose
 Returns the most recent interaction for each opportunity
+
+### mv_health_check
+- **Purpose**: Health check view for system monitoring
+- **Usage**: Database health monitoring and system validation
 
 ## pipeline_full
 
