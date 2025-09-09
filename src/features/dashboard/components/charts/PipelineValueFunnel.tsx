@@ -32,7 +32,7 @@ const generateMockFunnelData = (): PipelineValueFunnelData => {
       value: 675000,
       conversionRate: 100,
       dropOffRate: 0,
-      color: 'from-blue-500 to-blue-600'
+      color: 'from-blue-500 to-blue-600',
     },
     {
       name: 'Qualified',
@@ -40,7 +40,7 @@ const generateMockFunnelData = (): PipelineValueFunnelData => {
       value: 498000,
       conversionRate: 71,
       dropOffRate: 29,
-      color: 'from-blue-600 to-indigo-600'
+      color: 'from-blue-600 to-indigo-600',
     },
     {
       name: 'Proposal',
@@ -48,7 +48,7 @@ const generateMockFunnelData = (): PipelineValueFunnelData => {
       value: 391000,
       conversionRate: 75,
       dropOffRate: 25,
-      color: 'from-indigo-600 to-purple-600'
+      color: 'from-indigo-600 to-purple-600',
     },
     {
       name: 'Negotiation',
@@ -56,7 +56,7 @@ const generateMockFunnelData = (): PipelineValueFunnelData => {
       value: 296000,
       conversionRate: 67,
       dropOffRate: 33,
-      color: 'from-purple-600 to-pink-500'
+      color: 'from-purple-600 to-pink-500',
     },
     {
       name: 'Closed Won',
@@ -64,15 +64,15 @@ const generateMockFunnelData = (): PipelineValueFunnelData => {
       value: 234000,
       conversionRate: 75,
       dropOffRate: 25,
-      color: 'from-green-500 to-green-600'
-    }
+      color: 'from-green-500 to-green-600',
+    },
   ]
 
   return {
     stages,
     totalValue: 234000,
     totalOpportunities: 45,
-    overallConversion: (12 / 45) * 100 // 27%
+    overallConversion: (12 / 45) * 100, // 27%
   }
 }
 
@@ -86,16 +86,16 @@ const formatPercentage = (value: number): string => {
   return `${Math.round(value)}%`
 }
 
-export function PipelineValueFunnel({ 
+export function PipelineValueFunnel({
   data,
   loading = false,
-  className
+  className,
 }: PipelineValueFunnelProps) {
   const funnelData = data || generateMockFunnelData()
-  
+
   if (loading) {
     return (
-      <div className={cn("w-full h-[400px] animate-pulse", className)}>
+      <div className={cn('w-full h-[400px] animate-pulse', className)}>
         <div className="h-full rounded-lg bg-muted" />
       </div>
     )
@@ -104,11 +104,11 @@ export function PipelineValueFunnel({
   const maxCount = funnelData.stages[0]?.count || 1
 
   return (
-    <div className={cn("p-4 bg-white rounded-lg border", className)}>
+    <div className={cn('p-4 bg-card rounded-lg border border-border', className)}>
       {/* Header */}
       <div className="mb-6">
         <h3 className="mb-2 text-lg font-semibold">Pipeline Funnel</h3>
-        <div className="space-y-1 text-sm text-gray-600">
+        <div className="space-y-1 text-sm text-muted-foreground">
           <div>Pipeline Value Funnel</div>
           <div className="flex items-center gap-4">
             <span>{formatPercentage(funnelData.overallConversion)} overall conversion</span>
@@ -125,25 +125,25 @@ export function PipelineValueFunnel({
           const nextStage = funnelData.stages[index + 1]
           const isFirstStage = index === 0
           const isLastStage = index === funnelData.stages.length - 1
-          
+
           return (
             <div key={stage.name} className="relative">
               {/* Funnel Stage Bar */}
               <div className="relative flex items-center">
                 {/* True funnel shape using clip-path */}
-                <div 
+                <div
                   className={cn(
-                    "relative h-12 bg-gradient-to-r rounded-md transition-all duration-300 hover:shadow-md",
+                    'relative h-12 bg-gradient-to-r rounded-md transition-all duration-300 hover:shadow-md',
                     `bg-gradient-to-r ${stage.color}`
                   )}
-                  style={{ 
+                  style={{
                     width: `${Math.max(widthPercentage * 0.85, 25)}%`,
-                    clipPath: isFirstStage 
+                    clipPath: isFirstStage
                       ? 'polygon(0 0, 100% 0, 95% 100%, 0% 100%)'
                       : isLastStage
                         ? 'polygon(5% 0, 100% 0, 100% 100%, 0% 100%)'
                         : 'polygon(5% 0, 100% 0, 95% 100%, 0% 100%)',
-                    marginLeft: isFirstStage ? '0%' : '2%'
+                    marginLeft: isFirstStage ? '0%' : '2%',
                   }}
                 >
                   {/* Stage Content */}
@@ -158,7 +158,7 @@ export function PipelineValueFunnel({
 
                   {/* Start indicator */}
                   {isFirstStage && (
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-8 text-sm text-gray-500">
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-8 text-sm text-muted-foreground">
                       Start
                     </div>
                   )}
@@ -166,7 +166,7 @@ export function PipelineValueFunnel({
 
                 {/* Conversion Rate */}
                 {!isFirstStage && (
-                  <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 text-sm font-medium text-green-600">
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-6 text-sm font-medium text-success">
                     ↗ {formatPercentage(stage.conversionRate)}
                   </div>
                 )}
@@ -175,8 +175,9 @@ export function PipelineValueFunnel({
               {/* Drop-off Indicator */}
               {!isLastStage && stage.dropOffRate > 0 && (
                 <div className="mb-2 mt-1 flex justify-center">
-                  <span className="text-sm text-red-600">
-                    ↘ {formatPercentage(stage.dropOffRate)} drop-off ({stage.count - (nextStage?.count || 0)} lost)
+                  <span className="text-sm text-destructive">
+                    ↘ {formatPercentage(stage.dropOffRate)} drop-off (
+                    {stage.count - (nextStage?.count || 0)} lost)
                   </span>
                 </div>
               )}
@@ -186,49 +187,42 @@ export function PipelineValueFunnel({
       </div>
 
       {/* Summary Statistics */}
-      <div className="grid grid-cols-3 gap-8 border-t border-gray-200 pt-4">
+      <div className="grid grid-cols-3 gap-8 border-t border-border pt-4">
         <div className="text-center">
-          <div className="text-2xl font-bold text-gray-900">
-            {funnelData.totalOpportunities}
-          </div>
-          <div className="text-sm text-gray-600">
-            Total Leads
-          </div>
+          <div className="text-2xl font-bold text-foreground">{funnelData.totalOpportunities}</div>
+          <div className="text-sm text-muted-foreground">Total Leads</div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-bold text-green-600">
+          <div className="text-2xl font-bold text-success">
             {funnelData.stages[funnelData.stages.length - 1].count}
           </div>
-          <div className="text-sm text-gray-600">
-            Closed Won
-          </div>
+          <div className="text-sm text-muted-foreground">Closed Won</div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-bold text-gray-900">
+          <div className="text-2xl font-bold text-foreground">
             {formatPercentage(funnelData.overallConversion)}
           </div>
-          <div className="text-sm text-gray-600">
-            Win Rate
-          </div>
+          <div className="text-sm text-muted-foreground">Win Rate</div>
         </div>
       </div>
 
       {/* Key Insights */}
-      <div className="mt-6 border-t border-gray-200 pt-4">
-        <div className="mb-2 text-sm font-medium text-gray-700">Key Insights:</div>
+      <div className="mt-6 border-t border-border pt-4">
+        <div className="mb-2 text-sm font-medium text-foreground">Key Insights:</div>
         <div className="space-y-1">
           {funnelData.stages
-            .filter(stage => stage.dropOffRate > 30)
+            .filter((stage) => stage.dropOffRate > 30)
             .slice(0, 1)
             .map((stage, index) => (
-              <div key={index} className="flex items-center gap-2 text-sm text-orange-600">
+              <div key={index} className="flex items-center gap-2 text-sm text-warning">
                 <span>↘</span>
-                <span>High drop-off at {stage.name} stage ({formatPercentage(stage.dropOffRate)})</span>
+                <span>
+                  High drop-off at {stage.name} stage ({formatPercentage(stage.dropOffRate)})
+                </span>
               </div>
-            ))
-          }
-          {funnelData.stages.every(stage => stage.dropOffRate <= 30) && (
-            <div className="flex items-center gap-2 text-sm text-green-600">
+            ))}
+          {funnelData.stages.every((stage) => stage.dropOffRate <= 30) && (
+            <div className="flex items-center gap-2 text-sm text-success">
               <span>↗</span>
               <span>Healthy conversion rates across all stages</span>
             </div>

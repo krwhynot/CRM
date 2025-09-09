@@ -22,7 +22,7 @@ export const ActivityGroup: React.FC<ActivityGroupProps> = ({ groupKey, activiti
       <CollapsibleTrigger asChild>
         <Button variant="ghost" className="h-auto w-full justify-between p-2 text-left font-medium">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-gray-900">{groupKey}</span>
+            <span className="text-sm font-semibold text-foreground">{groupKey}</span>
             <Badge variant="secondary" className="text-xs">
               {activities.length}
             </Badge>

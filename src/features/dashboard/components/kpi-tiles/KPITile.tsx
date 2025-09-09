@@ -25,26 +25,26 @@ const variantStyles = {
     card: 'border-border hover:border-primary/20 bg-background',
     title: 'text-muted-foreground',
     value: 'text-primary',
-    icon: 'text-muted-foreground'
+    icon: 'text-muted-foreground',
   },
   success: {
     card: 'border-success/20 hover:border-success/30 bg-success/5',
     title: 'text-success',
     value: 'text-success-foreground',
-    icon: 'text-success'
+    icon: 'text-success',
   },
   warning: {
     card: 'border-warning/20 hover:border-warning/30 bg-warning/5',
     title: 'text-warning',
     value: 'text-warning-foreground',
-    icon: 'text-warning'
+    icon: 'text-warning',
   },
   error: {
     card: 'border-destructive/20 hover:border-destructive/30 bg-destructive/5',
     title: 'text-destructive',
     value: 'text-destructive-foreground',
-    icon: 'text-destructive'
-  }
+    icon: 'text-destructive',
+  },
 }
 
 export function KPITile({
@@ -56,7 +56,7 @@ export function KPITile({
   subtitle,
   isLoading = false,
   className,
-  onClick
+  onClick,
 }: KPITileProps) {
   const styles = variantStyles[variant]
 
@@ -92,22 +92,26 @@ export function KPITile({
 
   const getTrendIcon = () => {
     if (!trend) return null
-    
+
     if (trend.value > 0) {
-      return <TrendingUp className="size-3 text-green-600" />
+      return <TrendingUp className="size-3 text-success" />
     } else if (trend.value < 0) {
-      return <TrendingDown className="size-3 text-red-600" />
+      return <TrendingDown className="size-3 text-destructive" />
     }
     return null
   }
 
   const getTrendColor = () => {
     if (!trend) return 'text-muted-foreground'
-    return trend.value > 0 ? 'text-success' : trend.value < 0 ? 'text-destructive' : 'text-muted-foreground'
+    return trend.value > 0
+      ? 'text-success'
+      : trend.value < 0
+        ? 'text-destructive'
+        : 'text-muted-foreground'
   }
 
   return (
-    <Card 
+    <Card
       className={cn(
         'h-24 transition-all duration-200',
         styles.card,
@@ -119,9 +123,7 @@ export function KPITile({
       <CardContent className="flex h-full flex-col justify-between p-4">
         {/* Header */}
         <div className="mb-2 flex items-center justify-between">
-          <h3 className={cn('text-xs font-medium truncate', styles.title)}>
-            {title}
-          </h3>
+          <h3 className={cn('text-xs font-medium truncate', styles.title)}>{title}</h3>
           <Icon className={cn('size-4 shrink-0', styles.icon)} />
         </div>
 
@@ -140,7 +142,7 @@ export function KPITile({
               </div>
             )}
           </div>
-          
+
           {/* Subtitle or Trend Label */}
           {(subtitle || trend?.label) && (
             <p className="mt-1 truncate text-xs text-muted-foreground">

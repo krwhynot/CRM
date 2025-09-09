@@ -60,8 +60,8 @@ export const ActivityFiltersComponent: React.FC<ActivityFiltersProps> = ({
     <>
       {/* Filter Header */}
       <div className="flex items-center gap-2">
-        <Filter className="size-4 text-gray-500" />
-        <span className="mr-2 text-sm text-gray-500">Filter</span>
+        <Filter className="size-4 text-muted-foreground" />
+        <span className="mr-2 text-sm text-muted-foreground">Filter</span>
       </div>
 
       {/* Filter Controls */}

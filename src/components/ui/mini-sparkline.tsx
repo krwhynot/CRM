@@ -33,10 +33,10 @@ export const MiniSparkline: React.FC<MiniSparklineProps> = ({
     .join(' ')
 
   const colorClasses = {
-    blue: 'stroke-blue-500',
-    green: 'stroke-green-500',
-    yellow: 'stroke-yellow-500',
-    red: 'stroke-red-500',
+    blue: 'stroke-primary',
+    green: 'stroke-success',
+    yellow: 'stroke-warning',
+    red: 'stroke-destructive',
     gray: 'stroke-muted-foreground',
   }
 

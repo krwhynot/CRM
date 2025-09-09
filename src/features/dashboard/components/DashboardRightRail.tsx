@@ -155,11 +155,11 @@ export const DashboardRightRail: React.FC<DashboardRightRailProps> = ({
           </div>
 
           <div className="grid grid-cols-2 gap-3 text-sm">
-            <div className="rounded bg-muted/50 p-2 text-center">
+            <div className="rounded bg-muted/20 p-2 text-center">
               <div className="text-lg font-semibold">{topAM.interactions}</div>
               <div className="text-xs text-muted-foreground">Interactions</div>
             </div>
-            <div className="rounded bg-muted/50 p-2 text-center">
+            <div className="rounded bg-muted/20 p-2 text-center">
               <div className="text-lg font-semibold">{topAM.opportunities}</div>
               <div className="text-xs text-muted-foreground">Opportunities</div>
             </div>
@@ -183,7 +183,7 @@ export const DashboardRightRail: React.FC<DashboardRightRailProps> = ({
         <CardContent className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <AlertCircle className="size-4 text-yellow-500" />
+              <AlertCircle className="size-4 text-warning" />
               <span className="text-sm">Due Today</span>
             </div>
             <Badge variant={kpiData.actionItemsDue.dueToday > 0 ? 'destructive' : 'secondary'}>
@@ -201,7 +201,7 @@ export const DashboardRightRail: React.FC<DashboardRightRailProps> = ({
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <AlertCircle className="size-4 text-red-500" />
+              <AlertCircle className="size-4 text-destructive" />
               <span className="text-sm">Overdue</span>
             </div>
             <div className="text-right">

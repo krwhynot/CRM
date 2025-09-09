@@ -194,19 +194,19 @@ export function WeeklyKPIHeader({ filters, className, compact = false }: WeeklyK
         <div className="flex items-center justify-center space-x-6 border-t pt-2 text-sm text-muted-foreground">
           {opportunitiesMoved.count > 0 && (
             <span className="flex items-center space-x-1">
-              <TrendingUp className="size-3 text-green-600" />
+              <TrendingUp className="size-3 text-success" />
               <span>{opportunitiesMoved.count} opportunities advanced</span>
             </span>
           )}
           {overdueItems.count > 0 && (
             <span className="flex items-center space-x-1">
-              <AlertTriangle className="size-3 text-red-600" />
+              <AlertTriangle className="size-3 text-destructive" />
               <span>{overdueItems.count} items need attention</span>
             </span>
           )}
           {overdueItems.count === 0 && actionItemsDue.count === 0 && (
             <span className="flex items-center space-x-1">
-              <CheckCircle className="size-3 text-green-600" />
+              <CheckCircle className="size-3 text-success" />
               <span>All tasks up to date</span>
             </span>
           )}

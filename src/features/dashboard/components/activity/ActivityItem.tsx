@@ -24,7 +24,7 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity, onClick })
   return (
     <div
       className={`flex items-start gap-3 rounded-lg border p-3 transition-colors ${
-        onClick ? 'cursor-pointer hover:bg-gray-50' : ''
+        onClick ? 'cursor-pointer hover:bg-muted/50' : ''
       }`}
       onClick={handleClick}
     >
@@ -39,16 +39,16 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity, onClick })
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between">
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-gray-900">{activity.subject}</p>
+            <p className="truncate text-sm font-medium text-foreground">{activity.subject}</p>
 
             {/* Context Information */}
             {contextInfo.length > 0 && (
               <div className="mt-1 flex flex-wrap items-center gap-1">
                 {contextInfo.map((info, index) => (
                   <React.Fragment key={index}>
-                    <span className="text-xs text-gray-500">{info}</span>
+                    <span className="text-xs text-muted-foreground">{info}</span>
                     {index < contextInfo.length - 1 && (
-                      <span className="text-xs text-gray-300">•</span>
+                      <span className="text-xs text-muted-foreground/50">•</span>
                     )}
                   </React.Fragment>
                 ))}
@@ -57,7 +57,9 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity, onClick })
 
             {/* Description */}
             {activity.description && (
-              <p className="mt-1 line-clamp-2 text-xs text-gray-600">{activity.description}</p>
+              <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                {activity.description}
+              </p>
             )}
 
             {/* Activity Metadata */}
@@ -67,7 +69,7 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity, onClick })
               </Badge>
 
               {activity.duration_minutes && (
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-muted-foreground">
                   {formatActivityDuration(activity.duration_minutes)}
                 </span>
               )}
@@ -82,7 +84,7 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity, onClick })
 
           {/* Timestamp */}
           <div className="ml-2 shrink-0">
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-muted-foreground">
               {formatDistanceToNow(parseISO(activity.interaction_date), { addSuffix: true })}
             </span>
           </div>
