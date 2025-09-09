@@ -57,17 +57,17 @@ export function ActivityChart({ data, maxValue }: ActivityChartProps) {
               <Line
                 type="monotone"
                 dataKey="activities"
-                stroke={chartColors.success}
+                stroke={chartColors.primary}
                 strokeWidth={3}
                 dot={{
-                  fill: chartColors.success,
+                  fill: chartColors.primary,
                   strokeWidth: 2,
                   stroke: 'hsl(var(--background))',
                   r: 4,
                 }}
                 activeDot={{
                   r: 6,
-                  fill: chartColors.success,
+                  fill: chartColors.primary,
                   stroke: 'hsl(var(--background))',
                   strokeWidth: 2,
                 }}

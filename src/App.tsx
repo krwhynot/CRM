@@ -62,15 +62,10 @@ function App() {
     setupPerformanceMonitoring()
   }, [])
 
-  // Log cache warming status
+  // Cache warming status tracking (console logs removed for production)
   React.useEffect(() => {
-    if (isWarmed) {
-      console.log('✅ Static data cache warmed successfully')
-    } else if (cacheError) {
-      console.warn('⚠️ Cache warming failed:', cacheError)
-    } else if (isWarming) {
-      console.log('🔄 Warming static data cache...')
-    }
+    // Cache warming status is tracked internally
+    // Future: could add user-facing loading indicators here
   }, [isWarming, isWarmed, cacheError])
 
   return (

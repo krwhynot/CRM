@@ -2,7 +2,10 @@ import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { useOpportunities } from '@/features/opportunities/hooks/useOpportunities'
-import { useInteractions, useFollowUpInteractions } from '@/features/interactions/hooks/useInteractions'
+import {
+  useInteractions,
+  useFollowUpInteractions,
+} from '@/features/interactions/hooks/useInteractions'
 import { calculateDateRange } from '@/lib/date-range-utils'
 import type { UniversalFilterState } from '@/types/filters.types'
 import type { FilterState } from '@/types/dashboard'
@@ -67,7 +70,7 @@ export interface WeeklyKPIData {
 }
 
 // Type guard to check if filters is UniversalFilterState
-const isUniversalFilterState = (filters: any): filters is UniversalFilterState => {
+const isUniversalFilterState = (filters: unknown): filters is UniversalFilterState => {
   return filters && typeof filters === 'object' && 'timeRange' in filters
 }
 
@@ -76,42 +79,59 @@ export function useWeeklyKPIData(filters?: UniversalFilterState | FilterState): 
   // Calculate date ranges for current and previous periods
   const dateRanges = useMemo(() => {
     // Convert FilterState to UniversalFilterState-like object
-    const universalFilters = isUniversalFilterState(filters) 
-      ? filters 
+    const universalFilters = isUniversalFilterState(filters)
+      ? filters
       : { ...filters, timeRange: 'this_week' as const }
-    
+
     const timeRange = universalFilters?.timeRange || 'this_week'
-    const current = calculateDateRange(timeRange, 
-      universalFilters?.dateFrom && universalFilters?.dateTo 
+    const current = calculateDateRange(
+      timeRange,
+      universalFilters?.dateFrom && universalFilters?.dateTo
         ? { start: universalFilters.dateFrom, end: universalFilters.dateTo }
         : undefined
     )
-    
+
     // Calculate previous period for comparison
     const periodLength = current.end.getTime() - current.start.getTime()
     const previousEnd = new Date(current.start.getTime() - 1) // Day before current start
     const previousStart = new Date(previousEnd.getTime() - periodLength)
-    
+
     return {
       current,
-      previous: { start: previousStart, end: previousEnd }
+      previous: { start: previousStart, end: previousEnd },
     }
-  }, [filters?.timeRange || 'this_week', isUniversalFilterState(filters) ? filters.dateFrom : undefined, isUniversalFilterState(filters) ? filters.dateTo : undefined])
+  }, [
+    filters?.timeRange || 'this_week',
+    isUniversalFilterState(filters) ? filters.dateFrom : undefined,
+    isUniversalFilterState(filters) ? filters.dateTo : undefined,
+  ])
 
   // Fetch opportunities with date filtering
-  const { data: currentOpportunities = [], isLoading: oppLoading, error: oppError } = useOpportunities({
-    principal_organization_id: filters?.principal !== 'all' ? filters?.principal : undefined
+  const {
+    data: currentOpportunities = [],
+    isLoading: oppLoading,
+    error: oppError,
+  } = useOpportunities({
+    principal_organization_id: filters?.principal !== 'all' ? filters?.principal : undefined,
   })
 
   // Fetch interactions with date filtering
-  const { data: currentInteractions = [], isLoading: intLoading, error: intError } = useInteractions({
+  const {
+    data: currentInteractions = [],
+    isLoading: intLoading,
+    error: intError,
+  } = useInteractions({
     interaction_date_from: dateRanges.current.start.toISOString().split('T')[0],
     interaction_date_to: dateRanges.current.end.toISOString().split('T')[0],
-    organization_id: filters?.principal !== 'all' ? filters?.principal : undefined
+    organization_id: filters?.principal !== 'all' ? filters?.principal : undefined,
   })
 
   // Fetch follow-up interactions for action items and overdue tracking
-  const { data: followUpInteractions = [], isLoading: followUpLoading, error: followUpError } = useFollowUpInteractions()
+  const {
+    data: followUpInteractions = [],
+    isLoading: followUpLoading,
+    error: followUpError,
+  } = useFollowUpInteractions()
 
   // Query for previous period interactions (for trend calculation)
   const { data: previousInteractions = [] } = useQuery({
@@ -127,7 +147,7 @@ export function useWeeklyKPIData(filters?: UniversalFilterState | FilterState): 
       if (error) throw error
       return data as InteractionWithRelations[]
     },
-    staleTime: 5 * 60 * 1000 // 5 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes
   })
 
   // Query for stage changes (opportunities modified in date range)
@@ -145,7 +165,7 @@ export function useWeeklyKPIData(filters?: UniversalFilterState | FilterState): 
       if (error) throw error
       return data
     },
-    staleTime: 2 * 60 * 1000 // 2 minutes
+    staleTime: 2 * 60 * 1000, // 2 minutes
   })
 
   // Calculate KPIs
@@ -153,36 +173,41 @@ export function useWeeklyKPIData(filters?: UniversalFilterState | FilterState): 
     const today = new Date()
     const startOfWeek = new Date(today)
     startOfWeek.setDate(today.getDate() - today.getDay())
-    
+
     const endOfWeek = new Date(startOfWeek)
     endOfWeek.setDate(startOfWeek.getDate() + 6)
 
     // 1. Opportunities Moved KPI
     const opportunitiesMovedCount = stageChanges.length
     const previousOpportunitiesMovedCount = 0 // Would need similar query for previous period
-    const opportunitiesMovedTrend = previousOpportunitiesMovedCount > 0 
-      ? ((opportunitiesMovedCount - previousOpportunitiesMovedCount) / previousOpportunitiesMovedCount) * 100
-      : 0
+    const opportunitiesMovedTrend =
+      previousOpportunitiesMovedCount > 0
+        ? ((opportunitiesMovedCount - previousOpportunitiesMovedCount) /
+            previousOpportunitiesMovedCount) *
+          100
+        : 0
 
     // 2. Interactions Logged KPI
     const interactionsLoggedCount = currentInteractions.length
-    const thisWeekInteractions = currentInteractions.filter(interaction => {
+    const thisWeekInteractions = currentInteractions.filter((interaction) => {
       const interactionDate = new Date(interaction.interaction_date)
       return interactionDate >= startOfWeek && interactionDate <= endOfWeek
     }).length
-    
-    const interactionsLoggedTrend = previousInteractions.length > 0
-      ? ((interactionsLoggedCount - previousInteractions.length) / previousInteractions.length) * 100
-      : 0
+
+    const interactionsLoggedTrend =
+      previousInteractions.length > 0
+        ? ((interactionsLoggedCount - previousInteractions.length) / previousInteractions.length) *
+          100
+        : 0
 
     // 3. Action Items Due KPI
-    const actionItemsDueList = followUpInteractions.filter(interaction => {
+    const actionItemsDueList = followUpInteractions.filter((interaction) => {
       if (!interaction.follow_up_date) return false
       const followUpDate = new Date(interaction.follow_up_date)
       return followUpDate <= endOfWeek && followUpDate >= startOfWeek
     })
-    
-    const dueToday = actionItemsDueList.filter(interaction => {
+
+    const dueToday = actionItemsDueList.filter((interaction) => {
       if (!interaction.follow_up_date) return false
       const followUpDate = new Date(interaction.follow_up_date)
       const todayStr = today.toDateString()
@@ -190,27 +215,30 @@ export function useWeeklyKPIData(filters?: UniversalFilterState | FilterState): 
     }).length
 
     // 4. Pipeline Value KPI
-    const activeOpportunities = currentOpportunities.filter(opp => 
-      opp.stage !== 'Closed - Won' && opp.stage !== 'Closed - Lost'
+    const activeOpportunities = currentOpportunities.filter(
+      (opp) => opp.stage !== 'Closed - Won' && opp.stage !== 'Closed - Lost'
     )
-    const totalPipelineValue = activeOpportunities.reduce((sum, opp) => 
-      sum + (opp.estimated_value || 0), 0
+    const totalPipelineValue = activeOpportunities.reduce(
+      (sum, opp) => sum + (opp.estimated_value || 0),
+      0
     )
-    
+
     // Simple trend calculation (would be more sophisticated in production)
     const pipelineValueTrend = 5.2 // Mock positive trend
 
     // 5. Overdue Items KPI
-    const overdueItemsList = followUpInteractions.filter(interaction => {
+    const overdueItemsList = followUpInteractions.filter((interaction) => {
       if (!interaction.follow_up_date) return false
       const followUpDate = new Date(interaction.follow_up_date)
       return followUpDate < today
     })
-    
+
     const oldestOverdue = overdueItemsList.reduce((oldest, interaction) => {
       if (!interaction.follow_up_date) return oldest
       const followUpDate = new Date(interaction.follow_up_date)
-      const daysDiff = Math.floor((today.getTime() - followUpDate.getTime()) / (1000 * 60 * 60 * 24))
+      const daysDiff = Math.floor(
+        (today.getTime() - followUpDate.getTime()) / (1000 * 60 * 60 * 24)
+      )
       return Math.max(oldest, daysDiff)
     }, 0)
 
@@ -228,43 +256,50 @@ export function useWeeklyKPIData(filters?: UniversalFilterState | FilterState): 
         stageChanges: opportunitiesMovedCount,
         trend: {
           value: opportunitiesMovedTrend,
-          label: 'vs last period'
-        }
+          label: 'vs last period',
+        },
       },
       interactionsLogged: {
         count: interactionsLoggedCount,
         thisWeek: thisWeekInteractions,
         trend: {
           value: interactionsLoggedTrend,
-          label: 'vs last period'
-        }
+          label: 'vs last period',
+        },
       },
       actionItemsDue: {
         count: actionItemsDueList.length,
-        dueToday
+        dueToday,
       },
       pipelineValue: {
         total: totalPipelineValue,
         opportunityCount: activeOpportunities.length,
         trend: {
           value: pipelineValueTrend,
-          label: 'vs last period'
-        }
+          label: 'vs last period',
+        },
       },
       overdueItems: {
         count: overdueItemsList.length,
-        oldestDays: oldestOverdue
+        oldestDays: oldestOverdue,
       },
       completedTasks: {
         count: completedTasksCount,
         completionRate,
         trend: {
           value: completedTasksTrend,
-          label: 'vs last period'
-        }
-      }
+          label: 'vs last period',
+        },
+      },
     }
-  }, [currentOpportunities, currentInteractions, followUpInteractions, previousInteractions, stageChanges, dateRanges])
+  }, [
+    currentOpportunities,
+    currentInteractions,
+    followUpInteractions,
+    previousInteractions,
+    stageChanges,
+    dateRanges,
+  ])
 
   const isLoading = oppLoading || intLoading || followUpLoading
   const error = oppError || intError || followUpError
@@ -272,6 +307,6 @@ export function useWeeklyKPIData(filters?: UniversalFilterState | FilterState): 
   return {
     ...kpiData,
     isLoading,
-    error
+    error,
   }
 }

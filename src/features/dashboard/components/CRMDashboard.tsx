@@ -98,7 +98,7 @@ export const CRMDashboard: React.FC = () => {
       />
 
       {/* Main Content Area with Executive Chef spacing */}
-      <main className="container mx-auto max-w-7xl space-y-8 p-6 lg:p-8">
+      <main className="dashboard-container space-y-8">
         {/* KPI Header - Weekly performance metrics */}
         <WeeklyKPIHeader filters={debouncedFilters} />
 
@@ -184,19 +184,24 @@ export const CRMDashboard: React.FC = () => {
         </Card>
 
         {/* Charts Grid - Responsive grid layout with filtered charts */}
-        <ChartsGrid
-          data={[]} // Legacy WeeklyData - now using specific chart data props
-          opportunityChartData={opportunityChartData}
-          interactionChartData={interactionChartData}
-          weeklyActivityData={weeklyActivityData}
-          principalPerformanceData={principalPerformanceData}
-          teamPerformanceData={teamPerformanceData}
-          pipelineFlowData={pipelineFlowData}
-          pipelineValueFunnelData={pipelineValueFunnelData}
-          isLoading={isLoading}
-          enableMobileCarousel={true}
-          visibleChartIds={visibleChartIds} // Pass visible chart IDs for filtering
-        />
+        <div className="section-spacing">
+          <ChartsGrid
+            data={[]} // Legacy WeeklyData - now using specific chart data props
+            opportunityChartData={opportunityChartData}
+            interactionChartData={interactionChartData}
+            weeklyActivityData={weeklyActivityData}
+            principalPerformanceData={principalPerformanceData}
+            teamPerformanceData={teamPerformanceData}
+            pipelineFlowData={pipelineFlowData}
+            pipelineValueFunnelData={pipelineValueFunnelData}
+            isLoading={isLoading}
+            enableMobileCarousel={true}
+            visibleChartIds={visibleChartIds} // Pass visible chart IDs for filtering
+          />
+        </div>
+
+        {/* Section Divider */}
+        <div className="section-divider"></div>
 
         {/* Bottom Section - Pipeline & Activity with breathing room */}
         <div className="dashboard-grid grid-cols-1 lg:grid-cols-3">

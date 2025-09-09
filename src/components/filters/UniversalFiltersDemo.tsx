@@ -8,7 +8,7 @@ import {
   CompactUniversalFilters,
   InlineUniversalFilters,
   MinimalUniversalFilters,
-  FullFeaturedUniversalFilters
+  FullFeaturedUniversalFilters,
 } from './UniversalFilters'
 import { useUniversalFiltersWithOrganizations } from '@/hooks/useUniversalFiltersWithOrganizations'
 import type { UniversalFilterState, FilterOrganizationData } from '@/types/filters.types'
@@ -17,22 +17,20 @@ import type { UniversalFilterState, FilterOrganizationData } from '@/types/filte
 const mockPrincipals: FilterOrganizationData[] = [
   { id: '1', name: 'Acme Foods Inc.', type: 'principal' },
   { id: '2', name: 'Global Distributors LLC', type: 'principal' },
-  { id: '3', name: 'Premium Food Partners', type: 'principal' }
+  { id: '3', name: 'Premium Food Partners', type: 'principal' },
 ]
 
 const mockManagers = ['John Smith', 'Sarah Johnson', 'Mike Davis', 'Lisa Chen']
 
 export function UniversalFiltersDemo() {
-  const [selectedVariant, setSelectedVariant] = useState<'enhanced' | 'compact' | 'inline' | 'minimal' | 'full'>('enhanced')
+  const [selectedVariant, setSelectedVariant] = useState<
+    'enhanced' | 'compact' | 'inline' | 'minimal' | 'full'
+  >('enhanced')
   const [isLoading, setIsLoading] = useState(false)
 
   // Use the enhanced hook with organization data
-  const {
-    filters,
-    handleFiltersChange,
-    resetFilters,
-    computed
-  } = useUniversalFiltersWithOrganizations()
+  const { filters, handleFiltersChange, resetFilters, computed } =
+    useUniversalFiltersWithOrganizations()
 
   const handleClearFilter = (filterKey: keyof UniversalFilterState) => {
     const newFilters = { ...filters }
@@ -50,9 +48,9 @@ export function UniversalFiltersDemo() {
     resetFilters()
   }
 
-  const handleSavePreset = (_preset: Partial<UniversalFilterState>) => {
+  const handleSavePreset = (preset: Partial<UniversalFilterState>) => {
     // NOTE: Preset saving will be implemented in a future iteration
-    // _preset will be saved to user preferences or backend
+    console.log('Saving preset:', preset)
   }
 
   const variants = {
@@ -121,7 +119,7 @@ export function UniversalFiltersDemo() {
         onClearAllFilters={handleClearAllFilters}
         onSavePreset={handleSavePreset}
       />
-    )
+    ),
   }
 
   return (
@@ -139,9 +137,13 @@ export function UniversalFiltersDemo() {
               {Object.keys(variants).map((variant) => (
                 <Button
                   key={variant}
-                  variant={selectedVariant === variant ? "default" : "outline"}
+                  variant={selectedVariant === variant ? 'default' : 'outline'}
                   size="sm"
-                  onClick={() => setSelectedVariant(variant as 'enhanced' | 'compact' | 'inline' | 'minimal' | 'full')}
+                  onClick={() =>
+                    setSelectedVariant(
+                      variant as 'enhanced' | 'compact' | 'inline' | 'minimal' | 'full'
+                    )
+                  }
                   className="capitalize"
                 >
                   {variant}
@@ -152,18 +154,10 @@ export function UniversalFiltersDemo() {
 
           {/* Demo Controls */}
           <div className="flex flex-wrap gap-2">
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => setIsLoading(!isLoading)}
-            >
+            <Button variant="outline" size="sm" onClick={() => setIsLoading(!isLoading)}>
               Toggle Loading: {isLoading ? 'ON' : 'OFF'}
             </Button>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={resetFilters}
-            >
+            <Button variant="outline" size="sm" onClick={resetFilters}>
               Reset All Filters
             </Button>
           </div>
@@ -182,16 +176,14 @@ export function UniversalFiltersDemo() {
           <div className="space-y-2">
             <label className="text-sm font-medium">Computed Properties:</label>
             <div className="flex flex-wrap gap-2">
-              <Badge variant={computed.hasActiveFilters ? "default" : "outline"}>
+              <Badge variant={computed.hasActiveFilters ? 'default' : 'outline'}>
                 Active Filters: {computed.activeFilterCount}
               </Badge>
-              <Badge variant={computed.isMyTasksView ? "default" : "outline"}>
-                My Tasks View: {computed.isMyTasksView ? "Yes" : "No"}
+              <Badge variant={computed.isMyTasksView ? 'default' : 'outline'}>
+                My Tasks View: {computed.isMyTasksView ? 'Yes' : 'No'}
               </Badge>
             </div>
-            <p className="text-xs text-muted-foreground">
-              {computed.filterSummary}
-            </p>
+            <p className="text-xs text-muted-foreground">{computed.filterSummary}</p>
           </div>
         </CardContent>
       </Card>
@@ -201,9 +193,7 @@ export function UniversalFiltersDemo() {
         <CardHeader>
           <CardTitle className="capitalize">{selectedVariant} Variant</CardTitle>
         </CardHeader>
-        <CardContent>
-          {variants[selectedVariant]}
-        </CardContent>
+        <CardContent>{variants[selectedVariant]}</CardContent>
       </Card>
 
       {/* Features Showcase */}
@@ -219,35 +209,35 @@ export function UniversalFiltersDemo() {
                 1-5 column responsive grid that adapts to screen size and component count
               </p>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="text-sm font-semibold">Enhanced Components</h4>
               <p className="text-xs text-muted-foreground">
                 Principal/Manager selectors, Quick Views with badges, Time Range presets
               </p>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="text-sm font-semibold">Active Filter Management</h4>
               <p className="text-xs text-muted-foreground">
                 Individual clear buttons, save presets, comprehensive filter summary
               </p>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="text-sm font-semibold">Component Variants</h4>
               <p className="text-xs text-muted-foreground">
                 Card, Inline, Minimal variants with different feature sets
               </p>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="text-sm font-semibold">Compact Modes</h4>
               <p className="text-xs text-muted-foreground">
                 Minimal, Standard, Full modes for different use cases
               </p>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="text-sm font-semibold">Organization Integration</h4>
               <p className="text-xs text-muted-foreground">

@@ -350,6 +350,86 @@
     border-radius: var(--radius-card); /* 12px professional corners */
   }
 
+  /* KPI Card Consistency - Force uniform 180px height */
+  .kpi-card-container {
+    @apply grid gap-6;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  .kpi-card {
+    height: 180px !important; /* Force uniform height */
+    @apply flex flex-col;
+    padding: 24px !important; /* Consistent 24px padding */
+    @apply bg-white border border-border rounded-xl;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  .kpi-card:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    @apply border-primary;
+    transform: translateY(-2px);
+  }
+
+  /* KPI Card Typography */
+  .kpi-value {
+    @apply text-3xl font-bold text-foreground;
+    margin: 0.5rem 0;
+    line-height: 1;
+  }
+
+  .kpi-label {
+    @apply text-xs font-medium uppercase tracking-wider text-muted-foreground;
+  }
+
+  .kpi-change {
+    @apply text-sm font-medium;
+  }
+
+  /* Dashboard Container Spacing */
+  .dashboard-container {
+    max-width: 1600px; /* Increased for Executive Chef breathing room */
+    margin: 0 auto;
+    padding: 2rem 1.5rem; /* Professional padding with responsive margins */
+  }
+  
+  /* Executive Chef spacing system */
+  @media (min-width: 768px) {
+    .dashboard-container {
+      padding: 2rem 2rem; /* More breathing room on tablets+ */
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .dashboard-container {
+      padding: 2rem 3rem; /* Generous breathing room on desktop */
+    }
+  }
+
+  .section-spacing {
+    margin-bottom: 2rem;
+  }
+
+  /* Section dividers between major sections */
+  .section-divider {
+    height: 1px;
+    @apply bg-border;
+    margin: 2rem 0;
+  }
+
+  /* Activity Feed Improvements */
+  .activity-feed-item {
+    @apply p-4;
+    border-left: 3px solid transparent;
+    @apply mb-3;
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  .activity-feed-item:hover {
+    @apply bg-muted/50;
+    border-left-color: var(--chart-primary, #3B82F6);
+  }
+
   .dashboard-grid {
     @apply grid gap-6; /* Consistent 24px gaps */
   }

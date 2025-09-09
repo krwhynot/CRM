@@ -67,7 +67,7 @@ export function KpiCard({
 
   if (isLoading) {
     return (
-      <Card className={cn('dashboard-card h-[180px] flex flex-col justify-between', className)}>
+      <Card className={cn('kpi-card justify-between', className)}>
         <CardHeader className="pb-2">
           <div className="animate-pulse">
             <div className="mb-2 flex items-center justify-between">
@@ -102,7 +102,7 @@ export function KpiCard({
   return (
     <Card
       className={cn(
-        'dashboard-card h-[180px] flex flex-col justify-between transition-all duration-200',
+        'kpi-card justify-between',
         styles.card,
         onClick && 'cursor-pointer hover:shadow-lg hover:-translate-y-1',
         className
@@ -111,7 +111,7 @@ export function KpiCard({
     >
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className={cn('text-label truncate', styles.title)}>{title}</CardTitle>
+          <CardTitle className={cn('kpi-label truncate', styles.title)}>{title}</CardTitle>
           {Icon && (
             <div className={cn('shrink-0', styles.icon)}>
               <Icon className="size-5" />
@@ -122,9 +122,9 @@ export function KpiCard({
       <CardContent className="flex flex-1 flex-col justify-center">
         <div className="space-y-2">
           <div className="flex items-baseline space-x-2">
-            <p className={cn('text-metric', styles.value)}>{formatValue(value)}</p>
+            <p className={cn('kpi-value', styles.value)}>{formatValue(value)}</p>
             {change !== undefined && (
-              <div className={cn('flex items-center gap-1 text-sm', trendColors[trend])}>
+              <div className={cn('kpi-change flex items-center gap-1', trendColors[trend])}>
                 {trend === 'up' && <ArrowUpIcon className="size-3" />}
                 {trend === 'down' && <ArrowDownIcon className="size-3" />}
                 <span className="font-medium">
