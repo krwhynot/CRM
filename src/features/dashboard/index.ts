@@ -12,7 +12,7 @@ export {
   useUniversalFilters,
   useFilterChangeHandler,
   useActiveFilterCount,
-  DEFAULT_UNIVERSAL_FILTERS
+  DEFAULT_UNIVERSAL_FILTERS,
 } from '@/components/filters'
 export type {
   UniversalFilterState,
@@ -20,12 +20,10 @@ export type {
   TimeRangeType,
   FocusType,
   QuickViewType,
-  UseUniversalFiltersReturn
+  UseUniversalFiltersReturn,
 } from '@/components/filters'
-// Legacy DualLineCharts removed - replaced by ChartsGrid with chart visibility controls
 export { PrincipalCard } from './components/PrincipalCard'
 export { PrincipalCardsGrid } from './components/PrincipalCardsGrid'
-export { EnhancedActivityFeed } from './components/EnhancedActivityFeed'
 export { SimpleActivityFeed } from './components/SimpleActivityFeed'
 export { OpportunityKanban } from './components/OpportunityKanban'
 export { DashboardSkeleton } from './components/DashboardSkeleton'

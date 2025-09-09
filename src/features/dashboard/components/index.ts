@@ -8,15 +8,11 @@
 // Existing dashboard components
 export { PrincipalCard } from './PrincipalCard'
 export { PrincipalCardsGrid } from './PrincipalCardsGrid'
-export { QuickActions } from './QuickActions'
-export { StatsCards } from './StatsCards'
-
-// Note: ChartCard moved to ./charts/ subdirectory
 
 // Chart Components (organized in subdirectory)
 export * from './charts'
 
-// Export types for TypeScript usage  
+// Export types for TypeScript usage
 export type {
   DashboardPriority,
   PrincipalMetrics,
