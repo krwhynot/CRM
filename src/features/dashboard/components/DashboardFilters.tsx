@@ -9,6 +9,7 @@ import { ProductFilter } from './dashboard-filters/ProductFilter'
 import { WeeksFilter } from './dashboard-filters/WeeksFilter'
 import { FocusFilter } from './dashboard-filters/FocusFilter'
 import { QuickViewFilter } from './dashboard-filters/QuickViewFilter'
+import { AccountManagerFilter } from './dashboard-filters/AccountManagerFilter'
 import { ActiveFiltersSummary } from './dashboard-filters/ActiveFiltersSummary'
 import type { FilterState, Principal, Product } from '@/types/dashboard'
 
@@ -39,56 +40,72 @@ export function DashboardFilters({
   return (
     <Card className={`${USE_NEW_STYLE ? 'border-primary/10 shadow-sm' : 'shadow-md'}`}>
       <CardContent className={`${USE_NEW_STYLE ? 'p-4' : 'p-6'}`}>
-        <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-          {/* Header */}
-          <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-            <Filter className="size-4" />
-            <span>Filters</span>
+        <div className="flex flex-col items-start gap-4 lg:flex-row lg:items-center lg:justify-between">
+          {/* Left: Weekly Overview Title */}
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg font-semibold">Weekly Overview</h2>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Filter className="size-4" />
+              <span>Filters</span>
+            </div>
           </div>
 
-          {/* Filter Controls */}
-          <div className="flex flex-1 flex-col gap-3 sm:flex-row">
-            <PrincipalFilter
-              localFilters={localFilters}
-              principals={principals}
-              isLoading={isLoading}
-              onFilterChange={handleFilterChange}
-            />
+          {/* Right: Filter Controls */}
+          <div className="flex flex-1 flex-col gap-3 lg:flex-row lg:items-center lg:justify-end lg:gap-4">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
+              <WeeksFilter
+                localFilters={localFilters}
+                weekOptions={weekOptions}
+                isLoading={isLoading}
+                onFilterChange={handleFilterChange}
+              />
 
-            <ProductFilter
-              localFilters={localFilters}
-              filteredProducts={filteredProducts}
-              isLoading={isLoading}
-              onFilterChange={handleFilterChange}
-            />
+              <PrincipalFilter
+                localFilters={localFilters}
+                principals={principals}
+                isLoading={isLoading}
+                onFilterChange={handleFilterChange}
+              />
 
-            <WeeksFilter
-              localFilters={localFilters}
-              weekOptions={weekOptions}
-              isLoading={isLoading}
-              onFilterChange={handleFilterChange}
-            />
+              <ProductFilter
+                localFilters={localFilters}
+                filteredProducts={filteredProducts}
+                isLoading={isLoading}
+                onFilterChange={handleFilterChange}
+              />
 
-            <FocusFilter
-              localFilters={localFilters}
-              isLoading={isLoading}
-              onFilterChange={handleFilterChange}
-            />
+              <AccountManagerFilter
+                localFilters={localFilters}
+                isLoading={isLoading}
+                onFilterChange={handleFilterChange}
+              />
+
+              <FocusFilter
+                localFilters={localFilters}
+                isLoading={isLoading}
+                onFilterChange={handleFilterChange}
+              />
+            </div>
+
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={resetFilters}
+                className="shrink-0"
+                disabled={isLoading}
+              >
+                Reset
+              </Button>
+
+              <Button variant="outline" size="sm" disabled={isLoading} className="shrink-0">
+                Export
+              </Button>
+            </div>
           </div>
-
-          {/* Reset Button */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={resetFilters}
-            className="shrink-0"
-            disabled={isLoading}
-          >
-            Reset
-          </Button>
         </div>
 
-        {/* Quick View Filters Row */}
+        {/* Quick View Filters - Compact Row */}
         <div className="mt-3 border-t border-border/50 pt-3">
           <QuickViewFilter
             localFilters={localFilters}

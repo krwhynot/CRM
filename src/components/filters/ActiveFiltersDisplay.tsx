@@ -2,16 +2,15 @@ import { useState } from 'react'
 import { X, RotateCcw, Save } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { StandardDialog } from '@/components/ui/StandardDialog'
 import { getQuickViewPreset } from '@/lib/quick-view-presets'
 import { getDateRangeDescription } from '@/lib/date-range-utils'
-import type { UniversalFilterState, QuickViewType, ComputedFilterProperties } from '@/types/filters.types'
+import type {
+  UniversalFilterState,
+  QuickViewType,
+  ComputedFilterProperties,
+} from '@/types/filters.types'
 
 interface ActiveFiltersDisplayProps {
   filters: UniversalFilterState
@@ -40,10 +39,10 @@ export function ActiveFiltersDisplay({
   onSavePreset,
   compact = false,
   showActions = true,
-  maxDisplayedFilters = 8
+  maxDisplayedFilters = 8,
 }: ActiveFiltersDisplayProps) {
   const [showClearConfirm, setShowClearConfirm] = useState(false)
-  
+
   // Generate filter badge information
   const getActiveFilterBadges = (): FilterBadgeInfo[] => {
     const badges: FilterBadgeInfo[] = []
@@ -53,13 +52,14 @@ export function ActiveFiltersDisplay({
       badges.push({
         key: 'timeRange',
         label: 'Time',
-        value: getDateRangeDescription(filters.timeRange, 
-          filters.dateFrom && filters.dateTo 
-            ? { start: filters.dateFrom, end: filters.dateTo } 
+        value: getDateRangeDescription(
+          filters.timeRange,
+          filters.dateFrom && filters.dateTo
+            ? { start: filters.dateFrom, end: filters.dateTo }
             : undefined
         ),
         variant: 'secondary',
-        removable: true
+        removable: true,
       })
     }
 
@@ -70,7 +70,7 @@ export function ActiveFiltersDisplay({
         label: 'Focus',
         value: filters.focus.replace('_', ' '),
         variant: filters.focus === 'my_tasks' ? 'default' : 'secondary',
-        removable: true
+        removable: true,
       })
     }
 
@@ -82,18 +82,25 @@ export function ActiveFiltersDisplay({
         label: 'Quick View',
         value: preset?.name || filters.quickView.replace('_', ' '),
         variant: 'default',
-        removable: true
+        removable: true,
       })
     }
 
     // Principal filter
-    if (filters.principal !== 'all') {
+    if (
+      Array.isArray(filters.principal)
+        ? filters.principal.length > 0 && !filters.principal.includes('all')
+        : filters.principal !== 'all'
+    ) {
+      const principalValue = Array.isArray(filters.principal)
+        ? filters.principal.join(', ')
+        : filters.principal
       badges.push({
         key: 'principal',
         label: 'Principal',
-        value: filters.principal,
+        value: principalValue,
         variant: 'outline',
-        removable: true
+        removable: true,
       })
     }
 
@@ -104,7 +111,7 @@ export function ActiveFiltersDisplay({
         label: 'Product',
         value: filters.product,
         variant: 'outline',
-        removable: true
+        removable: true,
       })
     }
 
@@ -129,13 +136,13 @@ export function ActiveFiltersDisplay({
       const presetData: Partial<UniversalFilterState> = {
         timeRange: filters.timeRange,
         focus: filters.focus,
-        quickView: filters.quickView
+        quickView: filters.quickView,
       }
-      
+
       // Only include non-default values
       if (filters.principal !== 'all') presetData.principal = filters.principal
       if (filters.product !== 'all') presetData.product = filters.product
-      
+
       onSavePreset(presetData)
     }
   }
@@ -146,14 +153,12 @@ export function ActiveFiltersDisplay({
       {!compact && (
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <span className="text-xs font-medium text-muted-foreground">
-              Active Filters
-            </span>
+            <span className="text-xs font-medium text-muted-foreground">Active Filters</span>
             <Badge variant="outline" className="text-xs">
               {computed.activeFilterCount}
             </Badge>
           </div>
-          
+
           {showActions && (
             <div className="flex items-center space-x-1">
               {onSavePreset && (
@@ -175,7 +180,7 @@ export function ActiveFiltersDisplay({
                   </Tooltip>
                 </TooltipProvider>
               )}
-              
+
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -193,7 +198,7 @@ export function ActiveFiltersDisplay({
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-              
+
               <StandardDialog
                 variant="alert"
                 open={showClearConfirm}
@@ -242,7 +247,7 @@ export function ActiveFiltersDisplay({
             </Badge>
           </div>
         ))}
-        
+
         {hiddenCount > 0 && (
           <TooltipProvider>
             <Tooltip>

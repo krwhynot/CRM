@@ -37,9 +37,10 @@ export interface DashboardProps {
 }
 
 export interface FilterState {
-  principal: string
+  principal: string | string[] // Support multi-select
   product: string
   weeks: string
+  accountManagers?: string[] // Add account manager filter array
   // Phase 5: Weekly-specific enhancements
   focus?: 'all_activity' | 'my_tasks' | 'team_overview' | 'high_priority' | 'overdue'
   quickView?: 'action_items_due' | 'pipeline_movers' | 'recent_wins' | 'needs_attention' | 'none'
@@ -72,6 +73,8 @@ export interface UseDashboardFiltersReturn {
     hasActiveFilters: boolean
     hasActiveFocus: boolean
     hasActiveQuickView: boolean
+    hasAccountManagerFilters: boolean // NEW: Account manager filtering active
+    isMultiPrincipalView: boolean // NEW: Multiple principals selected
     isMyTasksView: boolean
     isTeamView: boolean
     filterSummary: string
@@ -105,7 +108,7 @@ export interface UseDashboardDataReturn {
     rank: number
     isCurrentUser?: boolean
   }>
-  
+
   // Pipeline chart data
   pipelineFlowData?: PipelineFlowData
   pipelineValueFunnelData?: PipelineValueFunnelData

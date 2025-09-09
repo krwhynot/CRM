@@ -3,12 +3,7 @@ import { Filter, RotateCcw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger 
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { TimeRangeFilter } from './TimeRangeFilter'
 import { FocusFilter } from './FocusFilter'
 import { QuickViewFilter } from './QuickViewFilter'
@@ -42,7 +37,7 @@ export function EnhancedUniversalFilters({
   onManagerChange,
   onClearFilter,
   onClearAllFilters,
-  onSavePreset
+  onSavePreset,
 }: EnhancedUniversalFiltersProps) {
   const handleFieldChange = useFilterChangeHandler(filters, onFiltersChange)
   const activeFilterCount = useActiveFilterCount(filters)
@@ -51,21 +46,23 @@ export function EnhancedUniversalFilters({
   const getGridColumns = () => {
     const components = [
       showTimeRange,
-      showFocus, 
+      showFocus,
       showQuickView,
       showPrincipalSelector,
-      showManagerSelector
+      showManagerSelector,
     ].filter(Boolean).length
-    
+
     const effectiveColumns = Math.min(maxColumns, components)
-    
-    return {
-      1: 'grid-cols-1',
-      2: 'grid-cols-1 md:grid-cols-2',
-      3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-      4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
-      5: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5'
-    }[effectiveColumns] || 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+
+    return (
+      {
+        1: 'grid-cols-1',
+        2: 'grid-cols-1 md:grid-cols-2',
+        3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+        4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
+        5: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5',
+      }[effectiveColumns] || 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+    )
   }
 
   // Handle individual filter clearing
@@ -79,7 +76,7 @@ export function EnhancedUniversalFilters({
         focus: 'all_activity',
         quickView: 'none',
         principal: 'all',
-        product: 'all'
+        product: 'all',
       }
       handleFieldChange(filterKey, defaultValues[filterKey as keyof typeof defaultValues])
     }
@@ -92,7 +89,7 @@ export function EnhancedUniversalFilters({
     activeFilterCount,
     filterSummary: `${activeFilterCount} active filters`,
     dateRangeText: filters.timeRange.replace('_', ' '),
-    effectiveTimeRange: { start: new Date(), end: new Date() } // Would be calculated properly
+    effectiveTimeRange: { start: new Date(), end: new Date() }, // Would be calculated properly
   }
 
   // Container component based on variant
@@ -106,10 +103,8 @@ export function EnhancedUniversalFilters({
       default:
         return (
           <Card className="border-primary/10 shadow-sm">
-            <CardContent className={compact || compactMode === 'minimal' ? "p-3" : "p-4"}>
-              <div className="space-y-4">
-                {children}
-              </div>
+            <CardContent className={compact || compactMode === 'minimal' ? 'p-3' : 'p-4'}>
+              <div className="space-y-4">{children}</div>
             </CardContent>
           </Card>
         )
@@ -130,10 +125,10 @@ export function EnhancedUniversalFilters({
               </Badge>
             )}
           </div>
-          
+
           <div className="flex items-center space-x-2">
             {headerActions}
-            
+
             {onClearAllFilters && (
               <TooltipProvider>
                 <Tooltip>
@@ -192,9 +187,7 @@ export function EnhancedUniversalFilters({
         {showFocus && (
           <div className="flex flex-col space-y-1">
             {!compact && compactMode !== 'minimal' && (
-              <label className="text-xs font-medium text-muted-foreground">
-                Focus
-              </label>
+              <label className="text-xs font-medium text-muted-foreground">Focus</label>
             )}
             <FocusFilter
               value={filters.focus}
@@ -210,9 +203,7 @@ export function EnhancedUniversalFilters({
         {showQuickView && !showQuickViews && (
           <div className="flex flex-col space-y-1">
             {!compact && compactMode !== 'minimal' && (
-              <label className="text-xs font-medium text-muted-foreground">
-                Quick View
-              </label>
+              <label className="text-xs font-medium text-muted-foreground">Quick View</label>
             )}
             <QuickViewFilter
               value={filters.quickView}
@@ -227,7 +218,11 @@ export function EnhancedUniversalFilters({
         {/* Principal Selector */}
         {showPrincipalSelector && (
           <PrincipalSelector
-            value={filters.principal || 'all'}
+            value={
+              Array.isArray(filters.principal)
+                ? filters.principal[0] || 'all'
+                : filters.principal || 'all'
+            }
             onChange={(value) => {
               handleFieldChange('principal', value)
               onPrincipalChange?.(value)
@@ -295,9 +290,9 @@ export function MinimalUniversalFilters(props: EnhancedUniversalFiltersProps) {
 
 export function FullFeaturedUniversalFilters(props: EnhancedUniversalFiltersProps) {
   return (
-    <EnhancedUniversalFilters 
-      {...props} 
-      compactMode="full" 
+    <EnhancedUniversalFilters
+      {...props}
+      compactMode="full"
       showQuickViews={true}
       enableActiveFilterManagement={true}
       maxColumns={4}

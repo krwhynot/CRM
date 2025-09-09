@@ -1,7 +1,8 @@
 import React from 'react'
 import { DashboardFilters } from './DashboardFilters'
-import { ChartsGrid } from './ChartsGrid'
-import { WeeklyKPIHeader } from './WeeklyKPIHeader'
+import { WeeklyHeroChart } from './WeeklyHeroChart'
+import { DashboardTabs } from './DashboardTabs'
+import { DashboardRightRail } from './DashboardRightRail'
 import { SimpleActivityFeed } from './SimpleActivityFeed'
 import { OpportunityKanban } from './OpportunityKanban'
 import { DashboardSkeleton } from './DashboardSkeleton'
@@ -9,11 +10,7 @@ import { EmptyState } from './EmptyState'
 import { useDashboardFilters } from '../hooks/useDashboardFilters'
 import { useDashboardData } from '../hooks/useDashboardData'
 import { useDashboardLoading } from '../hooks/useDashboardLoading'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { useChartVisibility, CHART_METADATA, type ChartId } from '@/stores'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Eye, EyeOff } from 'lucide-react'
+import { useWeeklyKPIData } from '../hooks/useWeeklyKPIData'
 
 export const CRMDashboard: React.FC = () => {
   // Use custom hooks for all logic
@@ -32,18 +29,10 @@ export const CRMDashboard: React.FC = () => {
     pipelineValueFunnelData,
   } = useDashboardData(debouncedFilters)
   const { isInitialLoad, showEmptyState } = useDashboardLoading(debouncedFilters, activityItems)
+  const kpiData = useWeeklyKPIData(debouncedFilters)
 
-  // Chart visibility controls
-  const { visibleCharts, toggleChartVisibility, showAllCharts, resetToDefaults } =
-    useChartVisibility()
-
-  // Get array of visible chart IDs for filtering
-  const visibleChartIds = Object.entries(visibleCharts)
-    .filter(([, visible]) => visible)
-    .map(([chartId]) => chartId as ChartId)
-
-  // Chart metadata in display order (matching ChartsGrid order)
-  const chartOrder: ChartId[] = [
+  // Get array of all visible chart IDs (simplified - all charts visible)
+  const visibleChartIds = [
     'weekly-activity',
     'principal-performance',
     'team-performance',
@@ -88,138 +77,74 @@ export const CRMDashboard: React.FC = () => {
 
   return (
     <div className="flex flex-1 flex-col">
-      {/* Filters - Sticky top bar */}
-      <DashboardFilters
-        filters={filters}
-        onFiltersChange={handleFiltersChange}
-        principals={principals}
-        products={products}
-        isLoading={isLoading}
-      />
+      {/* Weekly Overview Header */}
+      <div className="border-b">
+        <DashboardFilters
+          filters={filters}
+          onFiltersChange={handleFiltersChange}
+          principals={principals}
+          products={products}
+          isLoading={isLoading}
+        />
+      </div>
 
-      {/* Main Content Area with Executive Chef spacing */}
-      <main className="dashboard-container space-y-8">
-        {/* KPI Header - Weekly performance metrics */}
-        <WeeklyKPIHeader filters={debouncedFilters} />
+      {/* Two Column Layout */}
+      {/* eslint-disable-next-line tailwindcss/no-arbitrary-value */}
+      <div className="grid grid-cols-1 gap-6 p-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+        {/* Main Content */}
+        <div className="min-w-0 space-y-6">
+          {/* Hero Chart Section */}
+          <WeeklyHeroChart
+            weeklyActivityData={weeklyActivityData}
+            interactionChartData={interactionChartData}
+            isLoading={isLoading}
+            filters={debouncedFilters}
+          />
 
-        {/* Chart Visibility Controls - Toggle which charts are displayed */}
-        <Card className="dashboard-card">
-          <CardContent className="space-y-3">
-            <div className="flex flex-col space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0">
-              {/* Header and bulk actions */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Eye className="size-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">
-                    Charts ({visibleChartIds.length}/{chartOrder.length})
-                  </span>
-                </div>
-                <div className="flex space-x-2 md:hidden">
-                  <Button variant="outline" size="sm" onClick={showAllCharts} className="text-xs">
-                    Show All
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={resetToDefaults} className="text-xs">
-                    Reset
-                  </Button>
-                </div>
-              </div>
-
-              {/* Desktop chart toggles */}
-              <div className="flex flex-wrap gap-2 md:flex-nowrap">
-                <ToggleGroup
-                  type="multiple"
-                  value={visibleChartIds}
-                  onValueChange={(value: string[]) => {
-                    // Handle toggle group value change
-                    chartOrder.forEach((chartId) => {
-                      const shouldBeVisible = value.includes(chartId)
-                      if (visibleCharts[chartId] !== shouldBeVisible) {
-                        toggleChartVisibility(chartId)
-                      }
-                    })
-                  }}
-                  variant="outline"
-                  size="sm"
-                  className="flex-wrap justify-start"
-                >
-                  {chartOrder.map((chartId) => {
-                    const metadata = CHART_METADATA[chartId]
-                    return (
-                      <ToggleGroupItem
-                        key={chartId}
-                        value={chartId}
-                        aria-label={`Toggle ${metadata.title} chart`}
-                        className="whitespace-nowrap text-xs"
-                      >
-                        {metadata.title}
-                      </ToggleGroupItem>
-                    )
-                  })}
-                </ToggleGroup>
-
-                {/* Desktop bulk actions */}
-                <div className="hidden space-x-2 md:flex">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={showAllCharts}
-                    className="whitespace-nowrap"
-                  >
-                    <Eye className="mr-1 size-3" />
-                    Show All
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={resetToDefaults}
-                    className="whitespace-nowrap"
-                  >
-                    <EyeOff className="mr-1 size-3" />
-                    Reset
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Charts Grid - Responsive grid layout with filtered charts */}
-        <div className="section-spacing">
-          <ChartsGrid
-            data={[]} // Legacy WeeklyData - now using specific chart data props
+          {/* Tabs Section - Main Dashboard Content */}
+          <DashboardTabs
+            weeklyActivityData={weeklyActivityData}
             opportunityChartData={opportunityChartData}
             interactionChartData={interactionChartData}
-            weeklyActivityData={weeklyActivityData}
             principalPerformanceData={principalPerformanceData}
             teamPerformanceData={teamPerformanceData}
             pipelineFlowData={pipelineFlowData}
             pipelineValueFunnelData={pipelineValueFunnelData}
             isLoading={isLoading}
-            enableMobileCarousel={true}
-            visibleChartIds={visibleChartIds} // Pass visible chart IDs for filtering
+            visibleChartIds={visibleChartIds}
+            filters={debouncedFilters}
+            // Pass additional props for migration
+            filteredOpportunities={filteredOpportunities}
+            activityItems={activityItems}
+            principals={principals}
           />
+
+          {/* Bottom Section - Pipeline & Activity with breathing room */}
+          {/* Note: Components will be removed once fully migrated to tabs */}
+          <div className="dashboard-grid grid-cols-1 lg:grid-cols-3">
+            {/* Pipeline Kanban - 2 columns wide */}
+            <div className="lg:col-span-2">
+              <OpportunityKanban
+                opportunities={filteredOpportunities}
+                principals={principals}
+                loading={isLoading}
+              />
+            </div>
+
+            {/* Activity Feed - 1 column */}
+            <div>
+              <SimpleActivityFeed
+                activities={activityItems}
+                loading={isLoading}
+                className="h-full"
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Section Divider */}
-        <div className="section-divider"></div>
-
-        {/* Bottom Section - Pipeline & Activity with breathing room */}
-        <div className="dashboard-grid grid-cols-1 lg:grid-cols-3">
-          {/* Pipeline Kanban - 2 columns wide */}
-          <div className="lg:col-span-2">
-            <OpportunityKanban
-              opportunities={filteredOpportunities}
-              principals={principals}
-              loading={isLoading}
-            />
-          </div>
-
-          {/* Activity Feed - 1 column */}
-          <div>
-            <SimpleActivityFeed activities={activityItems} loading={isLoading} className="h-full" />
-          </div>
-        </div>
-      </main>
+        {/* Right Rail - Sticky */}
+        <DashboardRightRail kpiData={kpiData} filters={filters} principals={principals} />
+      </div>
     </div>
   )
 }

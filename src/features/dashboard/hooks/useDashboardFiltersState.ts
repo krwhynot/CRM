@@ -23,18 +23,20 @@ export const useDashboardFiltersState = (
   }, [filters])
 
   const handleFilterChange = (key: keyof FilterState, value: FilterState[keyof FilterState]) => {
-    const stringValue = String(value)
+    // Handle arrays (like accountManagers) vs strings
+    const processedValue = key === 'accountManagers' ? value : String(value)
+
     // Reset product when principal changes
-    if (key === 'principal' && stringValue !== localFilters.principal) {
+    if (key === 'principal' && String(processedValue) !== localFilters.principal) {
       setLocalFilters({
         ...localFilters,
-        [key]: stringValue,
+        [key]: processedValue,
         product: 'all',
       })
     } else {
       setLocalFilters({
         ...localFilters,
-        [key]: stringValue,
+        [key]: processedValue,
       })
     }
   }
@@ -43,7 +45,10 @@ export const useDashboardFiltersState = (
     const resetState: FilterState = {
       principal: 'all',
       product: 'all',
-      weeks: 'Last 4 Weeks',
+      weeks: 'Current Week',
+      accountManagers: [],
+      focus: 'all_activity',
+      quickView: 'none',
     }
     setLocalFilters(resetState)
     onFiltersChange(resetState)
