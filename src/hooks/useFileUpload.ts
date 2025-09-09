@@ -175,7 +175,6 @@ const ORGANIZATION_TYPE_MAPPING: Record<string, Database['public']['Enums']['org
   'brand': 'principal',
   'producer': 'principal',
   'supplier': 'vendor',
-  'vendor': 'vendor',
   'service provider': 'vendor',
   'lead': 'prospect',
   'potential': 'prospect',
@@ -288,6 +287,93 @@ export const useFileUpload = (): UseFileUploadReturn => {
     return row.some((cell) => cell && cell.trim().length > 0)
   }, [])
 
+  // Enhanced preprocessing for complex Excel CSV files
+  const preprocessCSVData = useCallback((allRows: string[][]): { headerRow: string[], dataRows: string[][] } => {
+    // Skip instruction rows and find actual header
+    const cleanRows = allRows.filter(row => {
+      const firstCell = row[0] || ''
+      const rowText = row.join(' ').toLowerCase()
+      
+      // Skip instruction rows, empty rows, and Excel metadata
+      return !(
+        rowText.includes('instruction') ||
+        rowText.includes('enter your') ||
+        rowText.includes('dropdown') ||
+        firstCell.startsWith('=') ||
+        row.every(cell => !cell || cell.trim() === '' || cell === ',')
+      )
+    })
+
+    // Find header row - look for row with organization-related keywords
+    let headerRowIndex = 0
+    let maxScore = 0
+    
+    for (let i = 0; i < Math.min(5, cleanRows.length); i++) {
+      const row = cleanRows[i]
+      let score = 0
+      
+      // Score based on presence of expected column names
+      row.forEach(cell => {
+        const cellLower = (cell || '').toLowerCase()
+        if (cellLower.includes('organization') || cellLower.includes('priority')) score += 10
+        if (cellLower.includes('segment') || cellLower.includes('manager')) score += 5
+        if (cellLower.includes('phone') || cellLower.includes('address')) score += 3
+        if (cell && cell.trim().length > 0) score += 1
+      })
+      
+      if (score > maxScore) {
+        maxScore = score
+        headerRowIndex = i
+      }
+    }
+
+    const headerRow = cleanRows[headerRowIndex] || []
+    const dataRows = cleanRows.slice(headerRowIndex + 1).filter(row => 
+      row.some(cell => cell && cell.trim().length > 0)
+    )
+
+    return { headerRow, dataRows }
+  }, [])
+
+  // Helper function to normalize column headers for field mapping
+  const normalizeHeader = useCallback((header: string): string => {
+    if (!header) return ''
+    
+    // Handle multi-line headers by taking the key part
+    const normalized = header.toLowerCase()
+      .replace(/\n/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+    
+    // Map common Excel header variations to our expected fields
+    const headerMappings: Record<string, string> = {
+      'organizations': 'organizations',
+      'organization name': 'organizations',
+      'company': 'organizations',
+      'priority-focus': 'priority-focus',
+      'priority': 'priority-focus', 
+      'segment': 'segment',
+      'primary acct. manager': 'primary-manager',
+      'primary manager': 'primary-manager',
+      'manager': 'primary-manager',
+      'secondary acct. manager': 'secondary-manager',
+      'secondary manager': 'secondary-manager',
+      'phone': 'phone',
+      'city': 'city',
+      'state': 'state',
+      'notes': 'notes'
+    }
+    
+    // Find best match
+    for (const [key, value] of Object.entries(headerMappings)) {
+      if (normalized.includes(key)) {
+        return value
+      }
+    }
+    
+    return header // Return original if no mapping found
+  }, [])
+
   // Helper function to find the header row (row with most non-empty cells)
   const findHeaderRow = useCallback(
     (allRows: string[][]): number => {
@@ -359,10 +445,11 @@ export const useFileUpload = (): UseFileUploadReturn => {
           complete: (firstPass: PapaParseResult<string[]>) => {
           try {
             const allRows = firstPass.data
-            const headerRowIndex = findHeaderRow(allRows)
-            const dataStartIndex = findDataStartRow(allRows, headerRowIndex)
+            
+            // Use enhanced preprocessing for complex Excel CSV files
+            const { headerRow, dataRows } = preprocessCSVData(allRows)
 
-            if (headerRowIndex >= allRows.length || dataStartIndex >= allRows.length) {
+            if (!headerRow.length || !dataRows.length) {
               setUploadState((prev) => ({
                 ...prev,
                 isUploading: false,
@@ -371,11 +458,7 @@ export const useFileUpload = (): UseFileUploadReturn => {
               return
             }
 
-            // Direct data object building - no CSV reconstruction needed
-            const headerRow = allRows[headerRowIndex]
-            const dataRows = allRows.slice(dataStartIndex)
-
-            // Process headers directly to avoid PapaParse "_1" generation
+            // Process headers with normalization for better field mapping
             const processedHeaders = headerRow.map((header, index) => {
               const trimmed = header ? header.trim() : ''
               if (!trimmed) {
@@ -383,7 +466,25 @@ export const useFileUpload = (): UseFileUploadReturn => {
                 if (index === 0) return 'Row_Number' // First column appears to be row identifier
                 return `Column_${index + 1}`
               }
-              return trimmed // Keep actual header text (including multi-line)
+              
+              // Check if this header has a direct mapping in our field mappings
+              if (EXCEL_FIELD_MAPPINGS[trimmed]) {
+                return trimmed // Keep exact match for direct mapping
+              }
+              
+              // Try to normalize and find a mapping
+              const normalized = normalizeHeader(trimmed)
+              if (normalized !== trimmed) {
+                // Find the original field key that maps to this normalized value
+                const mappingKey = Object.keys(EXCEL_FIELD_MAPPINGS).find(key => 
+                  normalizeHeader(key) === normalized
+                )
+                if (mappingKey) {
+                  return mappingKey // Use the mapping key for consistency
+                }
+              }
+              
+              return trimmed // Keep original if no mapping found
             })
 
             // Build data objects directly
@@ -552,7 +653,7 @@ export const useFileUpload = (): UseFileUploadReturn => {
         }))
       }
     },
-    [validateRow, findHeaderRow, findDataStartRow, normalizePriority]
+    [validateRow, findHeaderRow, findDataStartRow, normalizePriority, preprocessCSVData, normalizeHeader, normalizeOrganizationType]
   )
 
   // File selection handler

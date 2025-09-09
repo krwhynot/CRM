@@ -1,15 +1,5 @@
 {
     "mcpServers": {
-        "exa": {
-            "command": "exa-mcp-server",
-            "args": [
-                "--tools=web_search_exa,github_search"
-            ],
-            "env": {
-                "EXA_API_KEY": "ec834474-736b-4070-a6cb-265ab6225e89"
-            },
-            "disabled": true
-        },
         "supabase": {
             "command": "mcp-server-supabase",
             "args": [],
@@ -37,15 +27,6 @@
             "priority": "optional",
             "timeout": 15000
         },
-        "filesystem": {
-            "command": "mcp-server-filesystem",
-            "args": [
-                "/home/krwhynot/Projects"
-            ],
-            "startupDelay": 700,
-            "priority": "essential",
-            "timeout": 30000
-        },
         "vercel": {
             "command": "vercel",
             "args": [],
@@ -65,16 +46,6 @@
             "startupDelay": 1100,
             "priority": "optional",
             "timeout": 30000
-        },
-        "postgres": {
-            "command": "postgres-mcp",
-            "args": [
-                "--access-mode=unrestricted"
-            ],
-            "env": {
-                "DATABASE_URI": "postgresql://postgres.ixitjldcdvbazvjsnkao:Schererville85%24@aws-0-us-east-2.pooler.supabase.com:6543/postgres"
-            },
-              "disabled": true
         },
         "perplexity-ask": {
             "command": "npx",

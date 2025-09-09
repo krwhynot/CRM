@@ -43,8 +43,8 @@ export const CRMDashboard: React.FC = () => {
 
   // Get array of visible chart IDs for filtering
   const visibleChartIds = Object.entries(visibleCharts)
-    .filter(([_, visible]) => visible)
-    .map(([chartId, _]) => chartId as ChartId)
+    .filter(([, visible]) => visible)
+    .map(([chartId]) => chartId as ChartId)
 
   // Chart metadata in display order (matching ChartsGrid order)
   const chartOrder: ChartId[] = [

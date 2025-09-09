@@ -121,8 +121,8 @@ export function ChartsGrid({
     scrollToChart(newIndex)
   }
 
-  // Transform DashboardChartDataPoint to ChartDataPoint format for existing charts
-  const transformToChartData = (dashboardData: DashboardChartDataPoint[]) => {
+  // Transform DashboardChartDataPoint to legacy ChartDataPoint format for existing charts
+  const transformToLegacyChartData = (dashboardData: DashboardChartDataPoint[]) => {
     return dashboardData.map(item => ({
       weekLabel: item.week,
       weekStart: item.weekStart,
@@ -134,9 +134,9 @@ export function ChartsGrid({
   }
 
   // Use provided data or fall back to existing/mock data
-  const finalOpportunityData = opportunityChartData ? transformToChartData(opportunityChartData) : chartData
-  const finalInteractionData = interactionChartData ? transformToChartData(interactionChartData) : chartData
-  const finalWeeklyActivityData = weeklyActivityData || chartData
+  const finalOpportunityData = opportunityChartData ? transformToLegacyChartData(opportunityChartData) : chartData
+  const finalInteractionData = interactionChartData ? transformToLegacyChartData(interactionChartData) : chartData
+  const finalWeeklyActivityData = weeklyActivityData || []
   const finalPrincipalData = principalPerformanceData || generatePrincipalData()
   const finalTeamData = teamPerformanceData || generateTeamData()
 
@@ -178,7 +178,6 @@ export function ChartsGrid({
       component: <TeamPerformanceChart 
         data={finalTeamData} 
         loading={false}
-        showUserHighlight={true}
       />
     },
     {

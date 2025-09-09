@@ -89,8 +89,7 @@ const formatPercentage = (value: number): string => {
 export function PipelineValueFunnel({ 
   data,
   loading = false,
-  className,
-  showValues = true
+  className
 }: PipelineValueFunnelProps) {
   const funnelData = data || generateMockFunnelData()
   

@@ -52,10 +52,14 @@ export const PrincipalPerformanceChart = React.memo(({
     )
   }
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: {
+    active?: boolean
+    payload?: Array<{ payload: PrincipalData, value: number }>
+    label?: string
+  }) => {
     if (active && payload && payload.length) {
       const data = payload[0]
-      const performance = data.payload.performance
+      const performance = data.payload.performance as 'high' | 'medium' | 'low'
       
       return (
         <div className="rounded-lg border bg-background px-3 py-2 shadow-lg">
@@ -83,9 +87,10 @@ export const PrincipalPerformanceChart = React.memo(({
     return null
   }
 
-  const handleBarClick = (data: any) => {
-    if (onPrincipalClick) {
-      onPrincipalClick(data.name)
+  const handleBarClick = (data: unknown) => {
+    if (onPrincipalClick && data && typeof data === 'object' && data !== null && 'payload' in data) {
+      const payload = (data as { payload: PrincipalData }).payload
+      onPrincipalClick(payload.name)
     }
   }
 

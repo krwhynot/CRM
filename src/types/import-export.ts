@@ -75,6 +75,10 @@ export interface ImportResult {
   skippedRecords?: SkippedRecord[]
   /** Total processing time in milliseconds */
   processingTime?: number
+  /** Import session identifier for traceability */
+  sessionId?: string
+  /** Critical failure message if import was terminated due to critical error */
+  criticalFailure?: string
 }
 
 /**

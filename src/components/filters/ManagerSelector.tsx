@@ -63,7 +63,7 @@ export function ManagerSelector({
               ) : (
                 <Users className="size-4" />
               )}
-              <span className="max-w-[120px] truncate">{getDisplayText()}</span>
+              <span className="max-w-32 truncate">{getDisplayText()}</span>
               {showBadges && value !== 'all' && (
                 <Badge variant="secondary" className="ml-1">
                   {value === 'my_activity' ? currentUserName : '1'}

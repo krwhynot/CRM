@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ChevronDown, ChevronRight, Shield, Crown, Users, Star } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { cn, formatTimeAgo } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { useContactsDisplay } from '@/features/contacts/hooks/useContactsDisplay'
 import { useContactsSelection } from '@/features/contacts/hooks/useContactsSelection'
 import { useDeleteContact } from '@/features/contacts/hooks/useContacts'
@@ -255,8 +255,8 @@ export function ContactsTable({
                   <div 
                     className={cn(
                       "h-full rounded-full",
-                      contact.purchase_influence_score >= 80 ? "bg-green-500" :
-                      contact.purchase_influence_score >= 60 ? "bg-yellow-500" : "bg-red-500"
+                      contact.purchase_influence_score >= 80 ? "bg-success" :
+                      contact.purchase_influence_score >= 60 ? "bg-warning" : "bg-destructive"
                     )}
                     style={{ width: `${contact.purchase_influence_score}%` }}
                   />

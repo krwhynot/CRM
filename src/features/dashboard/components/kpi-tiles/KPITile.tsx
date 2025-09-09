@@ -28,22 +28,22 @@ const variantStyles = {
     icon: 'text-muted-foreground'
   },
   success: {
-    card: 'border-green-200 hover:border-green-300 bg-green-50/50',
-    title: 'text-green-700',
-    value: 'text-green-800',
-    icon: 'text-green-600'
+    card: 'border-success/20 hover:border-success/30 bg-success/5',
+    title: 'text-success',
+    value: 'text-success-foreground',
+    icon: 'text-success'
   },
   warning: {
-    card: 'border-yellow-200 hover:border-yellow-300 bg-yellow-50/50',
-    title: 'text-yellow-700',
-    value: 'text-yellow-800',
-    icon: 'text-yellow-600'
+    card: 'border-warning/20 hover:border-warning/30 bg-warning/5',
+    title: 'text-warning',
+    value: 'text-warning-foreground',
+    icon: 'text-warning'
   },
   error: {
-    card: 'border-red-200 hover:border-red-300 bg-red-50/50',
-    title: 'text-red-700',
-    value: 'text-red-800',
-    icon: 'text-red-600'
+    card: 'border-destructive/20 hover:border-destructive/30 bg-destructive/5',
+    title: 'text-destructive',
+    value: 'text-destructive-foreground',
+    icon: 'text-destructive'
   }
 }
 
@@ -103,7 +103,7 @@ export function KPITile({
 
   const getTrendColor = () => {
     if (!trend) return 'text-muted-foreground'
-    return trend.value > 0 ? 'text-green-600' : trend.value < 0 ? 'text-red-600' : 'text-muted-foreground'
+    return trend.value > 0 ? 'text-success' : trend.value < 0 ? 'text-destructive' : 'text-muted-foreground'
   }
 
   return (

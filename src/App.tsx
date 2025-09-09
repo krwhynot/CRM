@@ -11,6 +11,7 @@ import { AuthPage, ResetPasswordPage, AuthCallbackHandler } from '@/features/aut
 import { CommandPalette } from '@/components/CommandPalette'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { setupPerformanceMonitoring } from '@/lib/performance'
+import { useCacheWarming } from '@/hooks/useStaticDataCache'
 
 // Lazy load main pages for code splitting
 const HomePage = lazy(() => import('@/pages/Home'))
@@ -53,10 +54,24 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function App() {
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
 
+  // Initialize cache warming for static data
+  const { isWarming, isWarmed, error: cacheError } = useCacheWarming()
+
   // Set up performance monitoring
   React.useEffect(() => {
     setupPerformanceMonitoring()
   }, [])
+
+  // Log cache warming status
+  React.useEffect(() => {
+    if (isWarmed) {
+      console.log('✅ Static data cache warmed successfully')
+    } else if (cacheError) {
+      console.warn('⚠️ Cache warming failed:', cacheError)
+    } else if (isWarming) {
+      console.log('🔄 Warming static data cache...')
+    }
+  }, [isWarming, isWarmed, cacheError])
 
   return (
     <QueryClientProvider client={queryClient}>

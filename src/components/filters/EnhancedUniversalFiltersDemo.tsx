@@ -31,8 +31,7 @@ export function EnhancedUniversalFiltersDemo() {
     managers,
     isLoadingOrganizations,
     updatePrincipal,
-    updateManager,
-    getPrincipalName
+    updateManager
   } = useUniversalFiltersWithOrganizations({
     timeRange: 'this_week',
     focus: 'my_tasks'

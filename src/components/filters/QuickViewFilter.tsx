@@ -130,7 +130,7 @@ export function QuickViewFilter({
               <Zap className="size-4" />
             }
             <span>{getDisplayText()}</span>
-            {showBadges && isActive && value !== 'none' && quickViewCounts[value as QuickViewType] && (
+            {showBadges && isActive && quickViewCounts && value !== 'none' && quickViewCounts[value as QuickViewType] && (
               <Badge variant="secondary" className="ml-1">
                 {quickViewCounts[value as QuickViewType]}
               </Badge>

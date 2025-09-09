@@ -32,15 +32,15 @@ export function FormProgressBar({
   }
 
   const getProgressColor = () => {
-    if (isComplete) return "bg-emerald-500"
-    if (percentage >= 75) return "bg-amber-500" 
-    if (percentage >= 50) return "bg-blue-500"
+    if (isComplete) return "bg-success"
+    if (percentage >= 75) return "bg-warning" 
+    if (percentage >= 50) return "bg-primary"
     return "bg-muted-foreground"
   }
 
   const getBackgroundColor = () => {
-    if (isComplete) return "bg-emerald-50 border-emerald-200"
-    if (isNearCompletion) return "bg-amber-50 border-amber-200"
+    if (isComplete) return "bg-success/10 border-success/20"
+    if (isNearCompletion) return "bg-warning/10 border-warning/20"
     return "bg-muted border-border"
   }
 
@@ -87,8 +87,8 @@ export function FormProgressBar({
         {showDetails && (
           <span className={cn(
             "text-xs font-medium whitespace-nowrap hidden sm:inline",
-            isComplete ? "text-emerald-700" : 
-            isNearCompletion ? "text-amber-700" : 
+            isComplete ? "text-success" : 
+            isNearCompletion ? "text-warning" : 
             "text-muted-foreground"
           )}>
             {getCompactMessage()}

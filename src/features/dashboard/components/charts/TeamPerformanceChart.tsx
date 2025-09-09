@@ -16,7 +16,6 @@ interface TeamData {
 interface TeamPerformanceChartProps {
   data: TeamData[]
   loading?: boolean
-  showUserHighlight?: boolean
 }
 
 // Chart configuration for stacked bars
@@ -37,8 +36,7 @@ const chartConfig = {
 
 export const TeamPerformanceChart = React.memo(({ 
   data, 
-  loading, 
-  showUserHighlight = true 
+  loading
 }: TeamPerformanceChartProps) => {
   if (loading) {
     return (
@@ -62,10 +60,14 @@ export const TeamPerformanceChart = React.memo(({
   // Sort by rank for display
   const sortedData = [...data].sort((a, b) => a.rank - b.rank)
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: {
+    active?: boolean
+    payload?: Array<{ payload: TeamData, value: number, dataKey: string }>
+    label?: string
+  }) => {
     if (active && payload && payload.length) {
       const teamMember = payload[0].payload
-      const total = payload.reduce((sum: number, entry: any) => sum + entry.value, 0)
+      const total = payload.reduce((sum: number, entry) => sum + entry.value, 0)
       
       return (
         <div className="rounded-lg border bg-background px-3 py-2 shadow-lg">
@@ -81,9 +83,9 @@ export const TeamPerformanceChart = React.memo(({
               </Badge>
             )}
           </div>
-          {payload.map((entry: any, index: number) => (
-            <p key={index} className="text-sm" style={{ color: entry.color }}>
-              {entry.name}: {entry.value}
+          {payload.map((entry, index: number) => (
+            <p key={index} className="text-sm" style={{ color: (entry as { color?: string }).color || '#666' }}>
+              {(entry as { dataKey?: string }).dataKey || 'Value'}: {entry.value}
             </p>
           ))}
           <p className="mt-1 border-t pt-1 text-sm font-medium">
@@ -95,11 +97,11 @@ export const TeamPerformanceChart = React.memo(({
     return null
   }
 
-  const CustomLegend = (props: any) => {
+  const CustomLegend = (props: { payload?: Array<{ value: string, color: string }> }) => {
     const { payload } = props
     return (
       <div className="mt-2 flex justify-center gap-4">
-        {payload.map((entry: any, index: number) => (
+        {payload?.map((entry, index: number) => (
           <div key={index} className="flex items-center gap-1">
             <div 
               className="size-3 rounded-sm" 
@@ -112,22 +114,6 @@ export const TeamPerformanceChart = React.memo(({
     )
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const CustomBar = (props: any) => {
-    const { payload } = props
-    return (
-      <g>
-        <Bar 
-          {...props}
-          fill={payload?.isCurrentUser && showUserHighlight 
-            ? 'hsl(var(--primary))' 
-            : props.fill
-          }
-          opacity={payload?.isCurrentUser && showUserHighlight ? 1 : 0.8}
-        />
-      </g>
-    )
-  }
 
   return (
     <ChartContainer config={chartConfig} className="h-chart w-full">

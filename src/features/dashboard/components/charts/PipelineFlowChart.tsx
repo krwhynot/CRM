@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChevronRight, TrendingUp, TrendingDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -103,7 +102,7 @@ export function PipelineFlowChart({
 
       {/* Simplified Sankey Flow Visualization */}
       <div className="space-y-3">
-        {pipelineData.stages.slice(0, -2).map((stage, _stageIndex) => {
+        {pipelineData.stages.slice(0, -2).map((stage) => {
           const stageFlows = flowsByStage[stage] || []
           if (stageFlows.length === 0) return null
 

@@ -57,7 +57,7 @@ export interface FeatureQuickViewOption {
   description?: string
   icon?: string
   badge?: string | number
-  filterPreset?: Record<string, any>
+  filterPreset?: Record<string, string | number | boolean | null>
 }
 
 // Hook return interface for consistent filter management

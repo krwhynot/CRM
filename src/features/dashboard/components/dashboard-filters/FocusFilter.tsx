@@ -17,7 +17,7 @@ const focusOptions = [
 
 export function FocusFilter({ localFilters, isLoading, onFilterChange }: FocusFilterProps) {
   return (
-    <div className="min-w-0 flex-1 sm:min-w-[140px] sm:flex-none">
+    <div className="min-w-0 flex-1 sm:min-w-36 sm:flex-none">
       <Select
         value={localFilters.focus || 'all_activity'}
         onValueChange={(value) => onFilterChange('focus', value)}

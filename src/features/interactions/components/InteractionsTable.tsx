@@ -411,7 +411,7 @@ export function InteractionsTable({
       )}
 
       {/* Data Table */}
-      <DataTable
+      <DataTable<InteractionWithRelations>
         data={filteredInteractions}
         columns={columns}
         loading={loading}

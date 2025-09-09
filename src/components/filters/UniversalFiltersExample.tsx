@@ -1,7 +1,5 @@
-import { useState } from 'react'
 import { UniversalFilters } from './UniversalFilters'
-import { useUniversalFilters, DEFAULT_UNIVERSAL_FILTERS } from '@/hooks/useUniversalFilters'
-import type { UniversalFilterState } from '@/types/filters.types'
+import { useUniversalFilters } from '@/hooks/useUniversalFilters'
 
 export function UniversalFiltersExample() {
   const {
@@ -11,7 +9,6 @@ export function UniversalFiltersExample() {
     handleFiltersChange,
     resetFilters
   } = useUniversalFilters({
-    ...DEFAULT_UNIVERSAL_FILTERS,
     timeRange: 'this_week',
     focus: 'my_tasks'
   })

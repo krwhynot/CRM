@@ -49,7 +49,7 @@ const transformFormData = (data: ContactFormData): ContactWithOrganizationData =
   } else if (organization_mode === 'new') {
     // New organization - use organization details
     result.organization_name = organization_name || undefined
-    result.organization_type = organization_type as any || undefined
+    result.organization_type = organization_type as 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor' | undefined
     result.organization_data = {
       phone: organization_phone || null,
       email: organization_email || null,

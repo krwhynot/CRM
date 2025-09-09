@@ -1,8 +1,8 @@
-import { Filter, RotateCcw, Settings, Grid, Layout, Minimize2 } from 'lucide-react'
+import React from 'react'
+import { Filter, RotateCcw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
 import { 
   Tooltip, 
   TooltipContent, 
@@ -31,7 +31,6 @@ export function EnhancedUniversalFilters({
   compactMode = 'standard',
   principals = [],
   managers = [],
-  availableFocusOptions,
   availableQuickViews,
   showPrincipalSelector = false,
   showManagerSelector = false,
@@ -277,7 +276,7 @@ export function EnhancedUniversalFilters({
 }
 
 // Legacy component for backward compatibility
-export function UniversalFilters(props: any) {
+export function UniversalFilters(props: EnhancedUniversalFiltersProps) {
   return <EnhancedUniversalFilters {...props} />
 }
 

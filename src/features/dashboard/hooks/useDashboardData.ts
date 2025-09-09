@@ -188,7 +188,7 @@ export const useDashboardData = (debouncedFilters: FilterState): UseDashboardDat
         value: totalOpportunities * 15000,
         conversionRate: 100,
         dropOffRate: 0,
-        color: 'bg-blue-500'
+        color: 'bg-chart-1'
       },
       {
         name: 'Qualified',
@@ -196,7 +196,7 @@ export const useDashboardData = (debouncedFilters: FilterState): UseDashboardDat
         value: Math.floor(totalOpportunities * 0.71) * 16000,
         conversionRate: 71,
         dropOffRate: 29,
-        color: 'bg-indigo-500'
+        color: 'bg-chart-2'
       },
       {
         name: 'Proposal',

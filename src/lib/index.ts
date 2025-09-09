@@ -5,6 +5,7 @@
 export * from './supabase'
 export * from './database.types'
 export * from './utils'
+export * from './cache'
 
 // Form & Validation
 export * from './form-data-transformer'

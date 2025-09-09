@@ -22,18 +22,19 @@ export const useDashboardFiltersState = (
     setLocalFilters(filters)
   }, [filters])
 
-  const handleFilterChange = (key: keyof FilterState, value: string) => {
+  const handleFilterChange = (key: keyof FilterState, value: FilterState[keyof FilterState]) => {
+    const stringValue = String(value)
     // Reset product when principal changes
-    if (key === 'principal' && value !== localFilters.principal) {
+    if (key === 'principal' && stringValue !== localFilters.principal) {
       setLocalFilters({
         ...localFilters,
-        [key]: value,
+        [key]: stringValue,
         product: 'all',
       })
     } else {
       setLocalFilters({
         ...localFilters,
-        [key]: value,
+        [key]: stringValue,
       })
     }
   }

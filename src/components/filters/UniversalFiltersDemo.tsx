@@ -31,20 +31,28 @@ export function UniversalFiltersDemo() {
     filters,
     handleFiltersChange,
     resetFilters,
-    clearFilter,
-    clearAllFilters,
-    computed,
-    principals,
-    managers
+    computed
   } = useUniversalFiltersWithOrganizations()
 
   const handleClearFilter = (filterKey: keyof UniversalFilterState) => {
-    clearFilter(filterKey)
+    const newFilters = { ...filters }
+    if (filterKey === 'timeRange') {
+      newFilters.timeRange = 'this_week'
+    } else if (filterKey === 'focus') {
+      newFilters.focus = 'all_activity'
+    } else if (filterKey === 'quickView') {
+      newFilters.quickView = 'none'
+    }
+    handleFiltersChange(newFilters)
   }
 
-  const handleSavePreset = (preset: Partial<UniversalFilterState>) => {
-    console.log('Saving preset:', preset)
-    // In a real implementation, this would save to user preferences or backend
+  const handleClearAllFilters = () => {
+    resetFilters()
+  }
+
+  const handleSavePreset = (_preset: Partial<UniversalFilterState>) => {
+    // NOTE: Preset saving will be implemented in a future iteration
+    // _preset will be saved to user preferences or backend
   }
 
   const variants = {
@@ -63,7 +71,7 @@ export function UniversalFiltersDemo() {
         enableActiveFilterManagement={true}
         variant="card"
         onClearFilter={handleClearFilter}
-        onClearAllFilters={clearAllFilters}
+        onClearAllFilters={handleClearAllFilters}
         onSavePreset={handleSavePreset}
       />
     ),
@@ -110,7 +118,7 @@ export function UniversalFiltersDemo() {
         showPrincipalSelector={true}
         showManagerSelector={true}
         onClearFilter={handleClearFilter}
-        onClearAllFilters={clearAllFilters}
+        onClearAllFilters={handleClearAllFilters}
         onSavePreset={handleSavePreset}
       />
     )
@@ -133,7 +141,7 @@ export function UniversalFiltersDemo() {
                   key={variant}
                   variant={selectedVariant === variant ? "default" : "outline"}
                   size="sm"
-                  onClick={() => setSelectedVariant(variant as any)}
+                  onClick={() => setSelectedVariant(variant as 'enhanced' | 'compact' | 'inline' | 'minimal' | 'full')}
                   className="capitalize"
                 >
                   {variant}

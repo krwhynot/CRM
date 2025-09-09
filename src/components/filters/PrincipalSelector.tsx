@@ -57,7 +57,7 @@ export function PrincipalSelector({
           >
             <div className="flex items-center space-x-2">
               <Building2 className="size-4" />
-              <span className="max-w-[120px] truncate">{displayText}</span>
+              <span className="max-w-32 truncate">{displayText}</span>
               {showBadges && value !== 'all' && (
                 <Badge variant="secondary" className="ml-1">
                   1

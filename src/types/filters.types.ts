@@ -1,3 +1,4 @@
+import React from 'react'
 import type { FilterState } from './dashboard'
 
 // Time range options for universal filtering

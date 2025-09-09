@@ -220,7 +220,7 @@ export function SmartPreviewComponent({
         </CardHeader>
         <CardContent>
           {previewData.length > 0 ? (
-            <DataTable
+            <DataTable<PreviewRow>
               data={previewData}
               columns={columns}
               rowKey={(row) => `preview-${row._originalRowIndex}`}

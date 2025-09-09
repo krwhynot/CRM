@@ -58,9 +58,6 @@ export const GenericQuickViewFilter: React.FC<GenericQuickViewFilterProps> = ({
     return selectedOption?.shortLabel || selectedOption?.label || placeholder
   }
 
-  const getButtonVariant = () => {
-    return isActive ? 'default' : 'outline'
-  }
 
   return (
     <div className={`flex min-w-0 items-center gap-2 ${className}`}>

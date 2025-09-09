@@ -1,24 +1,14 @@
-import { X, RotateCcw, Save, History } from 'lucide-react'
+import { useState } from 'react'
+import { X, RotateCcw, Save } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger
 } from '@/components/ui/tooltip'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
+import { StandardDialog } from '@/components/ui/StandardDialog'
 import { getQuickViewPreset } from '@/lib/quick-view-presets'
 import { getDateRangeDescription } from '@/lib/date-range-utils'
 import type { UniversalFilterState, QuickViewType, ComputedFilterProperties } from '@/types/filters.types'
@@ -52,6 +42,7 @@ export function ActiveFiltersDisplay({
   showActions = true,
   maxDisplayedFilters = 8
 }: ActiveFiltersDisplayProps) {
+  const [showClearConfirm, setShowClearConfirm] = useState(false)
   
   // Generate filter badge information
   const getActiveFilterBadges = (): FilterBadgeInfo[] => {
@@ -185,40 +176,39 @@ export function ActiveFiltersDisplay({
                 </TooltipProvider>
               )}
               
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-6 px-2"
-                        >
-                          <RotateCcw className="size-3" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Clear all filters</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Clear All Filters?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This will reset all filters to their default values. You can't undo this action.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={onClearAllFilters}>
-                      Clear All Filters
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 px-2"
+                      onClick={() => setShowClearConfirm(true)}
+                    >
+                      <RotateCcw className="size-3" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Clear all filters</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              
+              <StandardDialog
+                variant="alert"
+                open={showClearConfirm}
+                onOpenChange={setShowClearConfirm}
+                title="Clear All Filters?"
+                description="This will reset all filters to their default values. You cannot undo this action."
+                confirmText="Clear All Filters"
+                confirmVariant="destructive"
+                onConfirm={() => {
+                  onClearAllFilters()
+                  setShowClearConfirm(false)
+                }}
+              >
+                <div></div>
+              </StandardDialog>
             </div>
           )}
         </div>
