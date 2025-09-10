@@ -39,7 +39,7 @@ export function DashboardFilters({
 
   return (
     <Card className={`${USE_NEW_STYLE ? 'border-primary/10 shadow-sm' : 'shadow-md'}`}>
-      <CardContent className={`${USE_NEW_STYLE ? 'p-4' : 'p-6'}`}>
+      <CardContent className={`${USE_NEW_STYLE ? 'p-4' : 'p-4'}`}>
         <div className="flex flex-col items-start gap-4 lg:flex-row lg:items-center lg:justify-between">
           {/* Left: Weekly Overview Title */}
           <div className="flex items-center gap-3">

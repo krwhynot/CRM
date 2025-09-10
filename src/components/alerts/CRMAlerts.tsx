@@ -4,8 +4,8 @@ import {
   AlertTriangle, 
   CheckCircle, 
   Info, 
-  XCircle, 
-  Clock, 
+  XCircle,
+  Clock,
   TrendingUp,
   Users,
   Calendar,
@@ -14,14 +14,13 @@ import {
   Shield,
   Lightbulb
 } from 'lucide-react'
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 // Enhanced Alert Variants for CRM Context
 const crmAlertVariants = cva(
-  "relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current",
+  "relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[1rem_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current",
   {
     variants: {
       variant: {
@@ -423,6 +422,10 @@ export function AlertContainer({
 export function useCRMAlerts() {
   const [alerts, setAlerts] = React.useState<Array<CRMAlertProps & { id: string }>>([])
 
+  const removeAlert = React.useCallback((id: string) => {
+    setAlerts(prev => prev.filter(alert => alert.id !== id))
+  }, [])
+
   const addAlert = React.useCallback((alert: Omit<CRMAlertProps, 'dismissible' | 'onDismiss'>) => {
     const id = Date.now().toString()
     setAlerts(prev => [...prev, {
@@ -432,11 +435,7 @@ export function useCRMAlerts() {
       onDismiss: () => removeAlert(id),
       timestamp: new Date()
     }])
-  }, [])
-
-  const removeAlert = React.useCallback((id: string) => {
-    setAlerts(prev => prev.filter(alert => alert.id !== id))
-  }, [])
+  }, [removeAlert])
 
   const clearAlerts = React.useCallback(() => {
     setAlerts([])

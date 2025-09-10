@@ -324,7 +324,7 @@ export function useAccessibleDialog(initialOpen = false) {
 /**
  * Hook for form dialog with validation and submission handling
  */
-export function useAccessibleFormDialog<T = any>(
+export function useAccessibleFormDialog<T = Record<string, unknown>>(
   onSubmit: (data: T) => Promise<void> | void,
   options: {
     successMessage?: string

@@ -46,7 +46,7 @@ export const CRMDashboard: React.FC = () => {
   if (isInitialLoad) {
     return (
       <div className="flex flex-1 flex-col">
-        <div className="flex-1 overflow-auto p-6">
+        <div className="flex-1 overflow-auto p-4">
           <DashboardSkeleton />
         </div>
       </div>
@@ -90,9 +90,9 @@ export const CRMDashboard: React.FC = () => {
 
       {/* Two Column Layout */}
       {/* eslint-disable-next-line tailwindcss/no-arbitrary-value */}
-      <div className="grid grid-cols-1 gap-6 p-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+      <div className="grid grid-cols-1 gap-4 p-4 lg:grid-cols-[minmax(0,1fr)_380px]">
         {/* Main Content */}
-        <div className="min-w-0 space-y-6">
+        <div className="min-w-0 space-y-4">
           {/* Hero Chart Section */}
           <WeeklyHeroChart
             weeklyActivityData={weeklyActivityData}

@@ -520,7 +520,7 @@ export function useExpandableRows() {
     })
   }, [])
 
-  const expandAll = useCallback((data: any[], rowKey: (row: any) => string) => {
+  const expandAll = useCallback((data: unknown[], rowKey: (row: unknown) => string) => {
     const allKeys = data.map(rowKey)
     setExpandedRows(new Set(allKeys))
   }, [])

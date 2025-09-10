@@ -82,5 +82,5 @@ export const validateAllConfigurations = () => {
   validateEnvironment()
   
   // Additional validations can be added here
-  console.log('✅ All configurations validated successfully')
+  // Configuration validated successfully
 }

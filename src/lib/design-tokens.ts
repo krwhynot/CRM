@@ -261,7 +261,7 @@ export const radius = {
   // Component-specific radius
   component: {
     button: 'var(--radius)',
-    input: 'calc(var(--radius) - 2px)',
+    input: 'var(--radius-sm)',
     card: 'var(--radius)',
     dialog: 'var(--radius)',
   }

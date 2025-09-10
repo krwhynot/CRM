@@ -58,7 +58,7 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({
 }) => {
   const kpiData = useWeeklyKPIData(filters)
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <Tabs defaultValue="weekly" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="weekly">Weekly</TabsTrigger>
@@ -66,7 +66,7 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({
           <TabsTrigger value="principals">Principals</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="weekly" className="space-y-6 duration-300 animate-in fade-in-50">
+        <TabsContent value="weekly" className="space-y-4 duration-300 animate-in fade-in-50">
           {/* KPI Cards Grid */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <KpiCard
@@ -139,10 +139,10 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({
           )}
 
           {/* Pipeline Movement Section */}
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid gap-4 lg:grid-cols-2">
             {visibleChartIds.includes('pipeline-flow') && (
               <Card className="dashboard-card">
-                <CardContent className="pt-6">
+                <CardContent className="pt-4">
                   <PipelineFlowChart data={pipelineFlowData} loading={isLoading} />
                 </CardContent>
               </Card>
@@ -150,7 +150,7 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({
 
             {visibleChartIds.includes('pipeline-funnel') && (
               <Card className="dashboard-card">
-                <CardContent className="pt-6">
+                <CardContent className="pt-4">
                   <PipelineValueFunnel data={pipelineValueFunnelData} loading={isLoading} />
                 </CardContent>
               </Card>
@@ -160,10 +160,10 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({
           {/* Weekly Activity Charts Row */}
           {(visibleChartIds.includes('activities') ||
             visibleChartIds.includes('opportunities')) && (
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-2">
               {visibleChartIds.includes('activities') && (
                 <Card className="dashboard-card">
-                  <CardContent className="pt-6">
+                  <CardContent className="pt-4">
                     <ActivityChart data={interactionChartData} loading={isLoading} />
                   </CardContent>
                 </Card>
@@ -171,7 +171,7 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({
 
               {visibleChartIds.includes('opportunities') && (
                 <Card className="dashboard-card">
-                  <CardContent className="pt-6">
+                  <CardContent className="pt-4">
                     <OpportunitiesChart data={opportunityChartData} loading={isLoading} />
                   </CardContent>
                 </Card>
@@ -180,7 +180,7 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({
           )}
         </TabsContent>
 
-        <TabsContent value="team" className="space-y-6 duration-300 animate-in fade-in-50">
+        <TabsContent value="team" className="space-y-4 duration-300 animate-in fade-in-50">
           {/* Team Activity Feed - Main content */}
           {activityItems && (
             <SimpleActivityFeed activities={activityItems} loading={isLoading} className="h-full" />
@@ -196,7 +196,7 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({
           )}
         </TabsContent>
 
-        <TabsContent value="principals" className="space-y-6 duration-300 animate-in fade-in-50">
+        <TabsContent value="principals" className="space-y-4 duration-300 animate-in fade-in-50">
           {/* Principal Cards Grid */}
           <PrincipalCardsGrid />
 

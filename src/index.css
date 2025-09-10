@@ -172,9 +172,9 @@
     --table-min-width-lg: 14rem;
     
     /* Chart and Feed Heights */
-    --chart-height: 18.75rem; /* 300px */
-    --chart-height-sm: 15.625rem; /* 250px */
-    --chart-height-lg: 23.75rem; /* 380px */
+    --chart-height: 15rem; /* 240px - reduced from 300px */
+    --chart-height-sm: 12.5rem; /* 200px - reduced from 250px */
+    --chart-height-lg: 17.5rem; /* 280px - reduced from 380px */
     --activity-feed-height: 25rem; /* 400px */
     --kanban-column-min-width: 8.125rem; /* 130px */
     --kanban-content-height: 11.25rem; /* 180px */

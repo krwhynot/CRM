@@ -116,7 +116,7 @@ export const WeeklyHeroChart: React.FC<WeeklyHeroChartProps> = ({
       </CardHeader>
 
       <CardContent className="pt-0">
-        <div className="h-96">
+        <div className="h-72">
           <WeeklyActivityChart data={getChartData()} loading={isLoading} />
         </div>
       </CardContent>

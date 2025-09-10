@@ -47,6 +47,7 @@ import {
   ExternalLink,
   Copy,
   Download,
+  Archive,
   Upload,
   Edit,
   Trash2,
@@ -759,7 +760,7 @@ export function CRMTooltipExample() {
                         placeholder="Enter email address"
                         value="john@acme.com"
                         onChange={(e) => setEmailValid(e.target.value.includes('@') && e.target.value.includes('.'))}
-                        className={emailValid ? 'border-green-500' : 'border-red-500'}
+                        className={emailValid ? 'border-success' : 'border-destructive'}
                       />
                       <FieldValidationTooltip
                         rules={validationRules}
@@ -789,7 +790,7 @@ export function CRMTooltipExample() {
                         type="password"
                         placeholder="Enter password"
                         onChange={(e) => setPasswordValid(e.target.value.length >= 8)}
-                        className={passwordValid ? 'border-green-500' : 'border-red-500'}
+                        className={passwordValid ? 'border-success' : 'border-destructive'}
                       />
                       <FieldValidationTooltip
                         rules={passwordRules}

@@ -162,7 +162,7 @@ export const getPlaceholder = (field: string, context: 'contact' | 'organization
   return contextPlaceholders[field] || `Enter ${field}...`
 }
 
-export const getValidationMessage = (rule: keyof typeof validationMessages, ...params: any[]): string => {
+export const getValidationMessage = (rule: keyof typeof validationMessages, ...params: unknown[]): string => {
   const message = validationMessages[rule]
   return typeof message === 'function' ? (message as Function)(...params) : message
 }

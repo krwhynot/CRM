@@ -28,7 +28,7 @@ export function PrincipalCardsGrid({ className, maxItems }: PrincipalCardsGridPr
   if (isLoading) {
     return (
       <div
-        className={`grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${className || ''}`}
+        className={`grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${className || ''}`}
       >
         {Array.from({ length: 8 }).map((_, index) => (
           <div key={index} className="space-y-4">
@@ -44,7 +44,7 @@ export function PrincipalCardsGrid({ className, maxItems }: PrincipalCardsGridPr
     return (
       <div className={`${className || ''}`}>
         <Card className="border-destructive/50 bg-destructive/10">
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <div className="text-destructive">
               <h3 className="font-semibold">Failed to load principal organizations</h3>
               <p className="mt-1 text-sm">Please try again later.</p>
@@ -100,7 +100,7 @@ export function PrincipalCardsGrid({ className, maxItems }: PrincipalCardsGridPr
 
   return (
     <div
-      className={`grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${className || ''}`}
+      className={`grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${className || ''}`}
     >
       {sortedPrincipals.map((principal) => (
         <PrincipalCard key={principal.id} principal={principal} className="h-full" />

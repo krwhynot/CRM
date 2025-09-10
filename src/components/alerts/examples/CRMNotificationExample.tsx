@@ -104,7 +104,7 @@ export function CRMNotificationExample() {
 
   const showEntityToasts = () => {
     // Contact toasts
-    entity.contact.created("John Doe", () => console.log("Navigate to contact"))
+    entity.contact.created("John Doe", () => {})
     
     setTimeout(() => {
       entity.contact.called("Jane Smith", "15 minutes")
@@ -137,7 +137,7 @@ export function CRMNotificationExample() {
     }, 1000)
   }
 
-  const showProgressToast = () => {
+  const showProgressExample = () => {
     const progressToast = showProgressToast(
       "Data Export",
       "Exporting organization data"
@@ -428,7 +428,7 @@ export function CRMNotificationExample() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={showProgressToast}
+                  onClick={showProgressExample}
                   className="w-full"
                 >
                   Start Progress Demo
