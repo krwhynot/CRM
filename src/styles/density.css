@@ -1,0 +1,416 @@
+/* Dashboard Density Mode CSS Variables */
+
+/* Field Mode (Compact) - Optimized for mobile sales workflow */
+.density-compact {
+  /* Core Layout Variables */
+  --kpi-height: 80px;
+  --card-padding: 12px;
+  --section-gap: 12px;
+  --chart-height: 200px;
+  --chart-height-sm: 160px;
+  --chart-height-lg: 240px;
+  --rail-width: 280px;
+  
+  /* Typography Scale */
+  --font-scale: 0.9;
+  --font-size-xs: 0.675rem;  /* 10.8px */
+  --font-size-sm: 0.765rem;  /* 12.24px */
+  --font-size-base: 0.9rem;  /* 14.4px */
+  --font-size-lg: 1.035rem;  /* 16.56px */
+  
+  /* Spacing Scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  
+  /* Component-Specific */
+  --activity-feed-height: 320px;
+  --kanban-content-height: 400px;
+  --kanban-column-min-width: 240px;
+  --dialog-max-height: 80vh;
+  
+  /* Interactive Elements */
+  --button-height-sm: 32px;
+  --button-height-md: 36px;
+  --button-height-lg: 40px;
+  
+  /* Dashboard Grid */
+  --dashboard-grid-gap: 12px;
+  --principal-card-height: 140px;
+}
+
+/* Office Mode (Comfortable) - Standard daily workflow */
+.density-comfortable {
+  /* Core Layout Variables */
+  --kpi-height: 96px;
+  --card-padding: 16px;
+  --section-gap: 16px;
+  --chart-height: 250px;
+  --chart-height-sm: 200px;
+  --chart-height-lg: 300px;
+  --rail-width: 320px;
+  
+  /* Typography Scale */
+  --font-scale: 1;
+  --font-size-xs: 0.75rem;   /* 12px */
+  --font-size-sm: 0.875rem;  /* 14px */
+  --font-size-base: 1rem;    /* 16px */
+  --font-size-lg: 1.125rem;  /* 18px */
+  
+  /* Spacing Scale */
+  --space-xs: 6px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 20px;
+  --space-xl: 24px;
+  
+  /* Component-Specific */
+  --activity-feed-height: 400px;
+  --kanban-content-height: 500px;
+  --kanban-column-min-width: 280px;
+  --dialog-max-height: 85vh;
+  
+  /* Interactive Elements */
+  --button-height-sm: 36px;
+  --button-height-md: 40px;
+  --button-height-lg: 44px;
+  
+  /* Dashboard Grid */
+  --dashboard-grid-gap: 16px;
+  --principal-card-height: 160px;
+}
+
+/* Presentation Mode (Spacious) - Client meetings and detailed reviews */
+.density-spacious {
+  /* Core Layout Variables */
+  --kpi-height: 120px;
+  --card-padding: 24px;
+  --section-gap: 24px;
+  --chart-height: 300px;
+  --chart-height-sm: 250px;
+  --chart-height-lg: 350px;
+  --rail-width: 380px;
+  
+  /* Typography Scale */
+  --font-scale: 1.1;
+  --font-size-xs: 0.825rem;  /* 13.2px */
+  --font-size-sm: 0.9625rem; /* 15.4px */
+  --font-size-base: 1.1rem;  /* 17.6px */
+  --font-size-lg: 1.2375rem; /* 19.8px */
+  
+  /* Spacing Scale */
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 28px;
+  --space-xl: 32px;
+  
+  /* Component-Specific */
+  --activity-feed-height: 480px;
+  --kanban-content-height: 600px;
+  --kanban-column-min-width: 320px;
+  --dialog-max-height: 90vh;
+  
+  /* Interactive Elements */
+  --button-height-sm: 40px;
+  --button-height-md: 44px;
+  --button-height-lg: 48px;
+  
+  /* Dashboard Grid */
+  --dashboard-grid-gap: 24px;
+  --principal-card-height: 180px;
+}
+
+/* Apply density-aware styles to components */
+
+/* KPI Tiles */
+.density-aware-kpi {
+  height: var(--kpi-height);
+  padding: var(--space-md);
+}
+
+.density-aware-kpi .kpi-title {
+  font-size: var(--font-size-xs);
+}
+
+.density-aware-kpi .kpi-value {
+  font-size: calc(var(--font-size-lg) * 1.5);
+}
+
+/* KPI Grid Layouts - Responsive per density */
+.density-kpi-grid {
+  display: grid;
+  gap: var(--dashboard-grid-gap);
+}
+
+/* Compact Mode: Single row layout (4 cards horizontal) */
+.density-compact .density-kpi-grid {
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-sm);
+}
+
+@media (max-width: 768px) {
+  .density-compact .density-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-xs);
+  }
+}
+
+/* Comfortable Mode: 2x2 on tablet, 1x4 on desktop */
+.density-comfortable .density-kpi-grid {
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+}
+
+@media (max-width: 1024px) {
+  .density-comfortable .density-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .density-comfortable .density-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Spacious Mode: Generous spacing, larger cards */
+.density-spacious .density-kpi-grid {
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+}
+
+@media (max-width: 1024px) {
+  .density-spacious .density-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .density-spacious .density-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dashboard Cards */
+.density-aware-card {
+  padding: var(--card-padding);
+}
+
+.density-aware-card + .density-aware-card {
+  margin-top: var(--section-gap);
+}
+
+/* Chart Containers */
+.density-aware-chart {
+  height: var(--chart-height);
+}
+
+.density-aware-chart-sm {
+  height: var(--chart-height-sm);
+}
+
+.density-aware-chart-lg {
+  height: var(--chart-height-lg);
+}
+
+/* Right Rail */
+.density-aware-rail {
+  width: var(--rail-width);
+}
+
+/* Dashboard Grid */
+.density-aware-grid {
+  gap: var(--dashboard-grid-gap);
+}
+
+/* Activity Feed */
+.density-aware-activity-feed {
+  height: var(--activity-feed-height);
+}
+
+/* Kanban Board */
+.density-aware-kanban {
+  height: var(--kanban-content-height);
+}
+
+.density-aware-kanban-column {
+  min-width: var(--kanban-column-min-width);
+}
+
+/* Principal Cards */
+.density-aware-principal-card {
+  min-height: var(--principal-card-height);
+}
+
+/* Typography Scaling */
+.density-text-xs { font-size: var(--font-size-xs); }
+.density-text-sm { font-size: var(--font-size-sm); }
+.density-text-base { font-size: var(--font-size-base); }
+.density-text-lg { font-size: var(--font-size-lg); }
+
+/* Spacing Utilities */
+.density-space-xs { margin: var(--space-xs); }
+.density-space-sm { margin: var(--space-sm); }
+.density-space-md { margin: var(--space-md); }
+.density-space-lg { margin: var(--space-lg); }
+.density-space-xl { margin: var(--space-xl); }
+
+.density-gap-xs { gap: var(--space-xs); }
+.density-gap-sm { gap: var(--space-sm); }
+.density-gap-md { gap: var(--space-md); }
+.density-gap-lg { gap: var(--space-lg); }
+.density-gap-xl { gap: var(--space-xl); }
+
+/* Responsive Adaptations */
+@media (max-width: 768px) {
+  .density-compact {
+    --rail-width: 100%;
+    --chart-height: 180px;
+    --kpi-height: 72px;
+  }
+  
+  .density-comfortable {
+    --rail-width: 100%;
+    --chart-height: 200px;
+    --kpi-height: 80px;
+  }
+  
+  .density-spacious {
+    --rail-width: 100%;
+    --chart-height: 220px;
+    --kpi-height: 88px;
+  }
+}
+
+/* Enhanced transition animations for density mode changes */
+.density-transition {
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.density-transition * {
+  transition: inherit;
+}
+
+/* Visual consistency enhancements for density-aware components */
+.density-consistency {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+/* Coordinated density animations across component types */
+.density-transition .kanban-section {
+  transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.1s,
+              padding 0.3s ease-out 0.05s,
+              border-radius 0.2s ease-out 0.3s;
+}
+
+.density-transition .dashboard-card {
+  transition: padding 0.3s ease-out 0.05s, 
+              margin 0.3s ease-out 0.1s, 
+              box-shadow 0.2s ease-out 0.25s,
+              height 0.35s cubic-bezier(0.4, 0, 0.2, 1) 0.15s;
+}
+
+/* Staggered animations for different component types */
+.density-transition .density-aware-card {
+  transition: padding 0.3s ease-out, margin 0.3s ease-out 0.1s, 
+              box-shadow 0.2s ease-out 0.2s;
+}
+
+.density-transition .density-aware-chart {
+  transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.15s,
+              width 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.15s;
+}
+
+.density-transition .density-aware-rail {
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1) 0.05s,
+              transform 0.3s ease-out 0.1s;
+}
+
+.density-transition .density-aware-kpi {
+  transition: height 0.3s ease-out 0.2s,
+              padding 0.25s ease-out 0.1s,
+              font-size 0.2s ease-out 0.25s;
+}
+
+/* Density selector specific animations */
+.density-selector-button {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
+}
+
+.density-selector-button:hover {
+  transform: translateY(-1px) scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.density-selector-button:active {
+  transform: translateY(0) scale(0.95);
+  transition-duration: 0.1s;
+}
+
+/* Active state with subtle glow */
+.density-selector-button[data-state="active"]::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-400)) 100%);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  opacity: 0.6;
+  animation: subtle-pulse 2s ease-in-out infinite;
+}
+
+@keyframes subtle-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+/* Toast notification styling for density changes */
+.density-change-toast {
+  border-left: 4px solid hsl(var(--primary));
+  background: hsl(var(--background)) !important;
+  backdrop-filter: blur(8px);
+}
+
+.density-change-toast [data-icon] {
+  color: hsl(var(--primary));
+}
+
+/* Enhanced focus states for density-aware components */
+.density-focus {
+  transition: all 0.2s ease-in-out;
+}
+
+.density-focus:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px hsl(var(--primary) / 0.1);
+}
+
+/* Responsive transition adjustments */
+@media (max-width: 768px) {
+  .density-transition {
+    transition-duration: 0.25s;
+  }
+  
+  .density-transition * {
+    transition-duration: inherit;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .density-transition,
+  .density-transition *,
+  .density-selector-button {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

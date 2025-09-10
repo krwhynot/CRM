@@ -1,5 +1,8 @@
 import React from 'react'
 import type { Opportunity } from '@/types/dashboard'
+import { CollapsibleSection } from '@/components/ui/CollapsibleSection'
+import { useDashboardDensity } from '../hooks/useDashboardDensity'
+import { cn } from '@/lib/utils'
 
 interface OpportunityKanbanProps {
   opportunities: Opportunity[]
@@ -68,6 +71,40 @@ export const OpportunityKanban: React.FC<OpportunityKanbanProps> = ({
   principals = [],
   loading,
 }) => {
+  const { density } = useDashboardDensity()
+
+  // Density-specific configurations for the kanban
+  const densityConfig = {
+    compact: {
+      layout: 'horizontal',
+      visibleStages: 3,
+      cardStyle: 'mini', // title + amount only
+      showContacts: false,
+      showDetails: false,
+      stageWidth: '240px',
+      cardHeight: '60px'
+    },
+    comfortable: {
+      layout: 'vertical',
+      visibleStages: 4,
+      cardStyle: 'standard', // key fields visible
+      showContacts: false,
+      showDetails: true,
+      stageWidth: '280px',
+      cardHeight: '120px'
+    },
+    spacious: {
+      layout: 'vertical',
+      visibleStages: 6,
+      cardStyle: 'expanded', // all info + contacts
+      showContacts: true,
+      showDetails: true,
+      stageWidth: '320px',
+      cardHeight: '160px'
+    }
+  }
+
+  const config = densityConfig[density]
   // Map opportunity status to pipeline stages for demo purposes
   const getStageFromStatus = (_status: string, index: number): string => {
     // Distribute opportunities across stages for visual demo
@@ -103,88 +140,265 @@ export const OpportunityKanban: React.FC<OpportunityKanbanProps> = ({
   }
 
   const totalOpportunities = opportunities.length
+  
+  // Calculate total pipeline value 
+  const totalPipelineValue = opportunities.reduce((sum, opp) => {
+    return sum + (opp.value || 0)
+  }, 0)
 
-  return (
-    <div className="kanban-section">
-      {/* Section Header */}
-      <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-foreground">
-          Sales Pipeline ({totalOpportunities} opportunities)
-        </h3>
-        <button className="text-xs text-muted-foreground hover:text-foreground">Expand ↕</button>
+  // Create a collapsed preview showing stage summaries + pipeline value
+  const collapsedPreview = (
+    <div className="space-y-2">
+      {/* Pipeline Value Summary */}
+      <div className="flex items-center justify-between rounded border border-primary/20 bg-primary/5 p-2">
+        <span className="text-xs font-medium text-foreground">Total Pipeline Value</span>
+        <span className="text-sm font-semibold text-primary">
+          ${(totalPipelineValue / 1000000).toFixed(1)}M
+        </span>
       </div>
-
-      {/* Compact Pipeline Container */}
-      <div className="h-chart-sm overflow-hidden rounded-lg border border-border bg-muted/30 p-2 shadow-sm">
-        <div className="flex h-full gap-1">
-          {STAGE_ORDER.map((stage) => {
-            const stageOpportunities = opportunitiesByStage[stage] || []
-            const colors = ELEVATED_STAGE_COLORS[stage as keyof typeof ELEVATED_STAGE_COLORS]
-            const stageCount = stageOpportunities.length
-
-            return (
-              <div
-                key={stage}
-                className="flex min-w-kanban-column flex-1 flex-col overflow-hidden rounded border bg-card"
-                style={{
-                  borderColor: colors.border,
-                }}
-                role="region"
-                aria-label={`${stage} column with ${stageCount} opportunities`}
-              >
-                {/* Elevated Sticky Header */}
-                <div
-                  className="sticky top-0 z-10 flex items-center justify-between border-b-2 px-3 py-2 text-sm font-semibold text-white"
-                  style={{
-                    backgroundColor: colors.dark,
-                    borderBottomColor: colors.border,
-                  }}
-                >
-                  <span>{stage}</span>
-                  <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-normal">
-                    {stageCount}
-                  </span>
-                </div>
-
-                {/* Scrollable Cards Container */}
-                <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400 max-h-kanban-content flex-1 overflow-y-auto p-2">
-                  {stageOpportunities.map((opportunity) => {
-                    const principal = principals.find((p) => p.id === opportunity.principalId)
-                    const organizationName =
-                      principal?.company || principal?.name || 'Unknown Organization'
-
-                    return (
-                      <div
-                        key={opportunity.id}
-                        className="mb-1.5 cursor-grab rounded px-2 py-1.5 transition-all duration-200 hover:-translate-y-px hover:shadow-sm"
-                        style={{
-                          backgroundColor: colors.light,
-                          color: colors.text,
-                          border: `1px solid ${colors.border}`,
-                        }}
-                        role="button"
-                        tabIndex={0}
-                        aria-label={`Opportunity: ${opportunity.title} - ${organizationName}`}
-                      >
-                        <div className="truncate text-xs font-medium">{organizationName}</div>
-                        <div className="truncate text-xs opacity-75">{opportunity.title}</div>
-                      </div>
-                    )
-                  })}
-
-                  {/* Empty State */}
-                  {stageOpportunities.length === 0 && (
-                    <div className="py-4 text-center text-xs text-muted-foreground">
-                      No opportunities
-                    </div>
-                  )}
-                </div>
-              </div>
-            )
-          })}
-        </div>
+      
+      {/* Stage Summary */}
+      <div className="flex gap-2 rounded-lg border border-border bg-muted/30 p-3">
+        {STAGE_ORDER.map((stage) => {
+          const stageOpportunities = opportunitiesByStage[stage] || []
+          const colors = ELEVATED_STAGE_COLORS[stage as keyof typeof ELEVATED_STAGE_COLORS]
+          const stageCount = stageOpportunities.length
+          
+          if (stageCount === 0) return null
+          
+          return (
+            <div
+              key={stage}
+              className="flex items-center gap-1 rounded px-2 py-1 text-xs"
+              style={{
+                backgroundColor: colors.light,
+                color: colors.text,
+                border: `1px solid ${colors.border}`,
+              }}
+            >
+              <span className="font-medium">{stage}</span>
+              <span className="opacity-75">({stageCount})</span>
+            </div>
+          )
+        })}
       </div>
     </div>
+  )
+
+  return (
+    <CollapsibleSection
+      sectionId="pipeline-kanban"
+      title="Sales Pipeline"
+      badge={`${totalOpportunities} opportunities`}
+      priority="medium"
+      className="kanban-section density-transition"
+      collapsedPreview={collapsedPreview}
+    >
+      {/* Density-Aware Pipeline Container */}
+      <div 
+        className={cn(
+          "overflow-hidden rounded-lg border border-border bg-muted/30 shadow-sm density-transition",
+          density === 'compact' ? 'h-[240px] p-2' : 
+          density === 'spacious' ? 'h-[400px] p-4' : 'h-[300px] p-3'
+        )}
+        style={{ height: `${config.layout === 'horizontal' ? 240 : density === 'spacious' ? 400 : 300}px` }}
+      >
+        {config.layout === 'horizontal' ? (
+          /* Compact: Horizontal Layout - Single scrollable row */
+          <div className="flex h-full gap-2 overflow-x-auto pb-2 horizontal-scroll-fade">
+            {STAGE_ORDER.slice(0, config.visibleStages).map((stage) => {
+              const stageOpportunities = opportunitiesByStage[stage] || []
+              const colors = ELEVATED_STAGE_COLORS[stage as keyof typeof ELEVATED_STAGE_COLORS]
+              const stageCount = stageOpportunities.length
+
+              if (stageCount === 0) return null
+
+              return (
+                <div
+                  key={stage}
+                  className={cn("flex flex-col rounded border bg-card density-transition", 
+                    config.stageWidth ? `min-w-[${config.stageWidth}]` : 'min-w-[240px]'
+                  )}
+                  style={{
+                    borderColor: colors.border,
+                    minWidth: config.stageWidth,
+                  }}
+                  role="region"
+                  aria-label={`${stage} column with ${stageCount} opportunities`}
+                >
+                  {/* Compact Stage Header */}
+                  <div
+                    className="flex items-center justify-between rounded-t px-2 py-1.5 text-xs font-semibold text-white"
+                    style={{
+                      backgroundColor: colors.dark,
+                    }}
+                  >
+                    <span className="truncate">{stage}</span>
+                    <span className="rounded-full bg-white/20 px-1.5 py-0.5 text-xs font-normal">
+                      {stageCount}
+                    </span>
+                  </div>
+
+                  {/* Vertically Scrollable Cards */}
+                  <div className="flex flex-1 flex-col gap-1 overflow-y-auto p-1">
+                    {stageOpportunities.map((opportunity) => {
+                      const principal = principals.find((p) => p.id === opportunity.principalId)
+                      const organizationName =
+                        principal?.company || principal?.name || 'Unknown Organization'
+
+                      return (
+                        <div
+                          key={opportunity.id}
+                          className="cursor-grab rounded px-2 py-1.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm"
+                          style={{
+                            backgroundColor: colors.light,
+                            color: colors.text,
+                            border: `1px solid ${colors.border}`,
+                            height: config.cardHeight,
+                          }}
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`Opportunity: ${opportunity.title} - ${organizationName}`}
+                        >
+                          <div className="truncate text-xs font-medium">{organizationName}</div>
+                          {config.cardStyle !== 'mini' && (
+                            <div className="truncate text-xs opacity-75 mt-0.5">{opportunity.title}</div>
+                          )}
+                          {opportunity.value && (
+                            <div className="text-xs font-semibold mt-0.5" style={{ color: colors.text }}>
+                              ${(opportunity.value / 1000).toFixed(0)}K
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        ) : (
+          /* Comfortable/Spacious: Vertical Layout - Horizontal swimlanes */
+          <div className="flex h-full flex-col gap-2 overflow-y-auto">
+            {STAGE_ORDER.slice(0, config.visibleStages).map((stage) => {
+              const stageOpportunities = opportunitiesByStage[stage] || []
+              const colors = ELEVATED_STAGE_COLORS[stage as keyof typeof ELEVATED_STAGE_COLORS]
+              const stageCount = stageOpportunities.length
+
+              if (stageCount === 0) return null
+
+              return (
+                <div
+                  key={stage}
+                  className={cn(
+                    "flex items-center gap-3 rounded border bg-card density-transition",
+                    density === 'comfortable' ? 'min-h-[60px] p-2' : 'min-h-[80px] p-3'
+                  )}
+                  style={{
+                    borderColor: colors.border,
+                  }}
+                  role="region"
+                  aria-label={`${stage} swimlane with ${stageCount} opportunities`}
+                >
+                  {/* Stage Label (Left side) */}
+                  <div
+                    className={cn(
+                      "flex items-center justify-between rounded text-sm font-semibold text-white",
+                      density === 'comfortable' ? 
+                        'min-w-[140px] max-w-[140px] px-3 py-2' : 
+                        'min-w-[160px] max-w-[160px] px-4 py-3'
+                    )}
+                    style={{
+                      backgroundColor: colors.dark,
+                    }}
+                  >
+                    <span className="truncate">{stage}</span>
+                    <span className={cn(
+                      "rounded-full bg-white/20 font-normal",
+                      density === 'comfortable' ? 'px-2 py-0.5 text-xs' : 'px-2.5 py-1 text-sm'
+                    )}>
+                      {stageCount}
+                    </span>
+                  </div>
+
+                  {/* Horizontally Scrollable Cards Container */}
+                  <div className="flex flex-1 gap-2 overflow-x-auto pb-2 pipeline-swimlane-scroll horizontal-scroll-fade">
+                    {stageOpportunities.map((opportunity) => {
+                      const principal = principals.find((p) => p.id === opportunity.principalId)
+                      const organizationName =
+                        principal?.company || principal?.name || 'Unknown Organization'
+
+                      return (
+                        <div
+                          key={opportunity.id}
+                          className={cn(
+                            "cursor-grab rounded transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm",
+                            config.cardStyle === 'standard' ? 'min-w-[160px] max-w-[200px] px-3 py-2' :
+                            config.cardStyle === 'expanded' ? 'min-w-[180px] max-w-[220px] px-4 py-3' :
+                            'min-w-[140px] max-w-[180px] px-2 py-1.5'
+                          )}
+                          style={{
+                            backgroundColor: colors.light,
+                            color: colors.text,
+                            border: `1px solid ${colors.border}`,
+                          }}
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`Opportunity: ${opportunity.title} - ${organizationName}`}
+                        >
+                          <div className={cn(
+                            "truncate font-medium",
+                            config.cardStyle === 'expanded' ? 'text-sm' : 'text-sm'
+                          )}>{organizationName}</div>
+                          
+                          {config.showDetails && (
+                            <div className={cn(
+                              "truncate opacity-75 mt-1",
+                              config.cardStyle === 'expanded' ? 'text-sm' : 'text-xs'
+                            )}>{opportunity.title}</div>
+                          )}
+                          
+                          {opportunity.value && (
+                            <div className={cn(
+                              "font-semibold mt-1",
+                              config.cardStyle === 'expanded' ? 'text-sm' : 'text-xs'
+                            )} style={{ color: colors.text }}>
+                              ${(opportunity.value / 1000).toFixed(0)}K
+                            </div>
+                          )}
+
+                          {config.showContacts && config.cardStyle === 'expanded' && principal && (
+                            <div className="text-xs opacity-60 mt-1 truncate">
+                              Contact: {principal.name}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })}
+
+            {/* Empty State for all visible stages */}
+            {STAGE_ORDER.slice(0, config.visibleStages).every(stage => (opportunitiesByStage[stage] || []).length === 0) && (
+              <div className="flex h-full items-center justify-center text-center text-muted-foreground">
+                <div>
+                  <p className={cn(
+                    "font-medium",
+                    density === 'compact' ? 'text-xs' : density === 'spacious' ? 'text-base' : 'text-sm'
+                  )}>No opportunities in pipeline</p>
+                  <p className={cn(
+                    "opacity-75",
+                    density === 'compact' ? 'text-xs' : density === 'spacious' ? 'text-sm' : 'text-xs'
+                  )}>Opportunities will appear here when created</p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </CollapsibleSection>
   )
 }
 

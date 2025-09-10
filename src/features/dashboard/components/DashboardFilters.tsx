@@ -50,16 +50,10 @@ export function DashboardFilters({
             </div>
           </div>
 
-          {/* Right: Filter Controls */}
-          <div className="flex flex-1 flex-col gap-3 lg:flex-row lg:items-center lg:justify-end lg:gap-4">
-            <div className="flex flex-wrap gap-2 sm:gap-3">
-              <WeeksFilter
-                localFilters={localFilters}
-                weekOptions={weekOptions}
-                isLoading={isLoading}
-                onFilterChange={handleFilterChange}
-              />
-
+          {/* Right: Filters + Actions */}
+          <div className="flex w-full flex-col gap-3 lg:w-auto lg:flex-row lg:items-center">
+            {/* Main filters grid */}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5 lg:gap-2">
               <PrincipalFilter
                 localFilters={localFilters}
                 principals={principals}
@@ -74,8 +68,9 @@ export function DashboardFilters({
                 onFilterChange={handleFilterChange}
               />
 
-              <AccountManagerFilter
+              <WeeksFilter
                 localFilters={localFilters}
+                weekOptions={weekOptions}
                 isLoading={isLoading}
                 onFilterChange={handleFilterChange}
               />
@@ -85,28 +80,34 @@ export function DashboardFilters({
                 isLoading={isLoading}
                 onFilterChange={handleFilterChange}
               />
+
+              <AccountManagerFilter
+                localFilters={localFilters}
+                isLoading={isLoading}
+                onFilterChange={handleFilterChange}
+              />
             </div>
 
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={resetFilters}
-                className="shrink-0"
-                disabled={isLoading}
-              >
-                Reset
-              </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={resetFilters}
+                  className="shrink-0"
+                  disabled={isLoading}
+                >
+                  Reset
+                </Button>
 
-              <Button variant="outline" size="sm" disabled={isLoading} className="shrink-0">
-                Export
-              </Button>
+                <Button variant="outline" size="sm" disabled={isLoading} className="shrink-0">
+                  Export
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
 
         {/* Quick View Filters - Compact Row */}
-        <div className="mt-3 border-t border-border/50 pt-3">
+        <div className="mt-2 border-t border-border/50 pt-2">
           <QuickViewFilter
             localFilters={localFilters}
             isLoading={isLoading}

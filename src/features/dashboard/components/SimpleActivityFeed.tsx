@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import type { ActivityItem } from '@/types/dashboard'
 import { getRelativeTime } from '@/utils/dateUtils'
+import { CollapsibleSection } from '@/components/ui/CollapsibleSection'
+import { useDashboardDensity } from '@/features/dashboard/hooks/useDashboardDensity'
 
 interface SimpleActivityFeedProps {
   activities: ActivityItem[]
@@ -17,6 +19,12 @@ export const SimpleActivityFeed = React.memo(
   ({ activities, loading, className }: SimpleActivityFeedProps) => {
     const [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE)
     const [loadingMore, setLoadingMore] = useState(false)
+    const { density } = useDashboardDensity()
+    
+    // Density-aware priority: low in compact mode, medium otherwise
+    const getPriority = (): 'low' | 'medium' => {
+      return density === 'compact' ? 'low' : 'medium'
+    }
 
     // Sort activities by date (newest first)
     const sortedActivities = useMemo(() => {
@@ -35,6 +43,10 @@ export const SimpleActivityFeed = React.memo(
       }, 500)
     }
 
+    // Create collapsed preview showing last 3 activities
+    const previewActivities = sortedActivities.slice(0, 3)
+    const newActivityCount = Math.max(0, sortedActivities.length - 7) // Simulate "new" activities
+
     const getActivityIcon = (type: 'opportunity' | 'activity' | 'interaction') => {
       switch (type) {
         case 'opportunity':
@@ -47,6 +59,28 @@ export const SimpleActivityFeed = React.memo(
           return '⚪'
       }
     }
+
+    // Create collapsed preview
+    const collapsedPreview = (
+      <div className="space-y-2 rounded-lg border border-border bg-muted/30 p-3">
+        {previewActivities.map((activity) => (
+          <div key={activity.id} className="flex items-center gap-2 text-xs">
+            <div>{getActivityIcon(activity.type)}</div>
+            <div className="min-w-0 flex-1 truncate text-muted-foreground">
+              {activity.title} - {activity.principalName}
+            </div>
+            <div className="whitespace-nowrap text-muted-foreground">
+              {getRelativeTime(activity.date)}
+            </div>
+          </div>
+        ))}
+        {sortedActivities.length > 3 && (
+          <div className="pt-1 text-center text-xs text-muted-foreground">
+            +{sortedActivities.length - 3} more activities
+          </div>
+        )}
+      </div>
+    )
 
     if (loading) {
       return (
@@ -74,31 +108,35 @@ export const SimpleActivityFeed = React.memo(
 
     if (sortedActivities.length === 0) {
       return (
-        <Card className={className}>
-          <CardHeader>
-            <CardTitle>Activity Feed</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="py-8 text-center text-muted-foreground">
-              <div className="text-sm">No activities to display</div>
-              <div className="mt-1 text-xs">Select a principal to view their activity</div>
-            </div>
-          </CardContent>
-        </Card>
+        <CollapsibleSection
+          sectionId="activity-feed"
+          title="Activity Feed"
+          priority={getPriority()}
+          className={className}
+        >
+          <Card className="dashboard-card">
+            <CardContent className="pt-4">
+              <div className="py-8 text-center text-muted-foreground">
+                <div className="text-sm">No activities to display</div>
+                <div className="mt-1 text-xs">Select a principal to view their activity</div>
+              </div>
+            </CardContent>
+          </Card>
+        </CollapsibleSection>
       )
     }
 
     return (
-      <Card className={`dashboard-card ${className}`}>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            Activity Feed
-            <span className="text-sm font-normal text-muted-foreground">
-              {visibleActivities.length} of {sortedActivities.length}
-            </span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+      <CollapsibleSection
+        sectionId="activity-feed"
+        title="Activity Feed"
+        badge={`${sortedActivities.length} activities${newActivityCount > 0 ? ` (${newActivityCount} new)` : ''}`}
+        priority={getPriority()}
+        className={className}
+        collapsedPreview={collapsedPreview}
+      >
+        <Card className="dashboard-card">
+          <CardContent className="pt-4">
           <ScrollArea className="h-activity-feed w-full">
             <div className="space-y-2">
               {visibleActivities.map((activity) => (
@@ -150,6 +188,7 @@ export const SimpleActivityFeed = React.memo(
           </ScrollArea>
         </CardContent>
       </Card>
+    </CollapsibleSection>
     )
   }
 )

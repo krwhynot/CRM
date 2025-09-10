@@ -150,3 +150,53 @@ export interface UseDashboardLoadingReturn {
   isInitialLoad: boolean
   showEmptyState: boolean
 }
+
+// Dashboard Mode Types
+export type DashboardMode = 'activity' | 'team' | 'principal'
+
+export interface DashboardModeConfig {
+  value: DashboardMode
+  label: string
+  description: string
+  icon: string
+  shortcut: string
+}
+
+export interface UseDashboardModeReturn {
+  mode: DashboardMode
+  setMode: (mode: DashboardMode, showToast?: boolean, isAutoSwitch?: boolean) => void
+  getModeConfig: (targetMode?: DashboardMode) => DashboardModeConfig
+  allConfigs: Record<DashboardMode, DashboardModeConfig>
+  deviceContext: string
+  isAutoSwitchEnabled: boolean
+  recommendedMode: DashboardMode
+}
+
+// Team Mode Activity Types
+export interface ActivityTableRow {
+  id: string
+  date: Date
+  type: 'interaction' | 'opportunity_created' | 'opportunity_updated'
+  principal: string
+  company: string
+  description: string
+  value?: number // for opportunities
+  priority?: 'A+' | 'A' | 'B' | 'C' | 'D' // for interactions
+  status: string
+  accountManager: string
+}
+
+export interface ActivityChartData {
+  date: string
+  interactions: number
+  opportunities: number
+  total: number
+}
+
+export interface MetricCardData {
+  title: string
+  value: string | number
+  trend?: 'up' | 'down' | 'neutral'
+  trendValue?: string
+  subtitle?: string
+}

@@ -1,6 +1,7 @@
 @import './styles/compact.css';
 @import './styles/mobile.css';
 @import './styles/accessibility.css';
+@import './styles/density.css';
 
 @tailwind base;
 @tailwind components;
@@ -439,7 +440,11 @@
   }
 
   .dashboard-grid-charts {
-    @apply grid-cols-1 lg:grid-cols-2;
+    @apply grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3;
+  }
+
+  .dashboard-grid-charts-wide {
+    @apply grid-cols-1 md:grid-cols-2 2xl:grid-cols-3;
   }
 
   /* Typography Scale for Visual Hierarchy */
@@ -571,6 +576,57 @@
   
   .cursor-grab:active { 
     cursor: grabbing; 
+  }
+
+  /* Horizontal Pipeline Scrolling */
+  .pipeline-swimlane-scroll {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+  }
+
+  .pipeline-swimlane-scroll::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .pipeline-swimlane-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .pipeline-swimlane-scroll::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 2px;
+    transition: background-color 0.2s ease;
+  }
+
+  .pipeline-swimlane-scroll:hover::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  /* Horizontal scroll fade indicators */
+  .horizontal-scroll-fade {
+    position: relative;
+  }
+
+  .horizontal-scroll-fade::before,
+  .horizontal-scroll-fade::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1rem;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .horizontal-scroll-fade::before {
+    left: 0;
+    background: linear-gradient(to right, hsl(var(--card)), transparent);
+  }
+
+  .horizontal-scroll-fade::after {
+    right: 0;
+    background: linear-gradient(to left, hsl(var(--card)), transparent);
   }
 }
 

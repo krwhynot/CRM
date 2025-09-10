@@ -70,3 +70,28 @@ export const useIsIPad = () => {
   
   return isIPad
 }
+
+/**
+ * Additional viewport and device detection hooks
+ */
+export const useLargeDesktop = () => useMediaQuery('(min-width: 1440px)')
+export const useOrientation = () => {
+  const isPortrait = useMediaQuery('(orientation: portrait)')
+  return isPortrait ? 'portrait' : 'landscape'
+}
+
+/**
+ * Comprehensive device type detection
+ */
+export const useDeviceType = () => {
+  const isMobile = useIsMobile()
+  const isTablet = useIsTablet()
+  const isDesktop = useIsDesktop()
+  const isLargeDesktop = useLargeDesktop()
+  
+  if (isMobile) return 'mobile'
+  if (isTablet) return 'tablet'
+  if (isLargeDesktop) return 'large-desktop'
+  if (isDesktop) return 'desktop'
+  return 'desktop' // fallback
+}

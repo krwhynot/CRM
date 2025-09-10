@@ -2,6 +2,11 @@
 export { CRMDashboard } from './components/CRMDashboard'
 export { DashboardFilters } from './components/DashboardFilters'
 
+// Team Mode Components (for use within DashboardTabs)
+export { ActivityTable } from './components/modes/ActivityTable'
+export { ActivityChart } from './components/modes/ActivityChart'
+export { MetricCard } from './components/modes/MetricCard'
+
 // Universal Filters Integration
 export {
   UniversalFilters,

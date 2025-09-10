@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export const DashboardSkeleton: React.FC = () => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Filters Skeleton */}
       <Card>
         <CardContent className="p-4">
@@ -33,7 +33,7 @@ export const DashboardSkeleton: React.FC = () => {
       </Card>
 
       {/* Charts Skeleton */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Opportunity Chart Skeleton */}
         <Card>
           <CardHeader>

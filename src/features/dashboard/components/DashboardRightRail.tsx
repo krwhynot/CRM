@@ -14,6 +14,8 @@ import {
 } from 'lucide-react'
 import { MiniSparkline } from '@/components/ui/mini-sparkline'
 import { formatCurrency } from '@/lib/metrics-utils'
+import { useDashboardDensity } from '../hooks/useDashboardDensity'
+import { cn } from '@/lib/utils'
 import type { WeeklyKPIData } from '../hooks/useWeeklyKPIData'
 import type { FilterState, Principal } from '@/types/dashboard'
 
@@ -28,6 +30,47 @@ export const DashboardRightRail: React.FC<DashboardRightRailProps> = ({
   filters,
   principals,
 }) => {
+  const { density } = useDashboardDensity()
+
+  // Density-specific configurations for right rail content
+  const densityConfig = {
+    compact: {
+      showSparklines: false,
+      showTopAM: false,
+      showSubtitles: false,
+      maxCards: 2, // Only essential cards
+      cardSpacing: 'space-y-2',
+      textSize: 'text-xs',
+      iconSize: 'size-3',
+      buttonSize: 'sm' as const,
+      badgeSize: 'text-[10px]',
+    },
+    comfortable: {
+      showSparklines: true,
+      showTopAM: true,
+      showSubtitles: true,
+      maxCards: 4, // Standard cards
+      cardSpacing: 'space-y-4',
+      textSize: 'text-sm',
+      iconSize: 'size-4',
+      buttonSize: 'sm' as const,
+      badgeSize: 'text-xs',
+    },
+    spacious: {
+      showSparklines: true,
+      showTopAM: true,
+      showSubtitles: true,
+      maxCards: 5, // All cards including extras
+      cardSpacing: 'space-y-6',
+      textSize: 'text-sm',
+      iconSize: 'size-5',
+      buttonSize: 'default' as const,
+      badgeSize: 'text-sm',
+    }
+  }
+
+  const config = densityConfig[density]
+
   // Get active filter count
   const getActiveFilterCount = () => {
     let count = 0
@@ -63,218 +106,336 @@ export const DashboardRightRail: React.FC<DashboardRightRailProps> = ({
   }
 
   return (
-    <aside className="space-y-4 lg:sticky lg:top-6 lg:h-fit">
-      {/* This Week Totals Card */}
-      <Card className="dashboard-card">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <CalendarDays className="size-4" />
-            This Week Totals
+    <aside className={cn("density-aware-rail density-transition lg:sticky lg:top-6 lg:h-fit", config.cardSpacing)}>
+      {/* This Week Totals Card - Always show in priority order */}
+      <Card className="density-aware-card dashboard-card density-transition">
+        <CardHeader className={cn(
+          "density-aware-card density-transition",
+          density === 'compact' ? 'pb-1' : density === 'spacious' ? 'pb-4' : 'pb-3'
+        )}>
+          <CardTitle className={cn("flex items-center gap-2", 
+            density === 'compact' ? 'text-sm' : density === 'spacious' ? 'text-lg' : 'text-base'
+          )}>
+            <CalendarDays className={config.iconSize} />
+            {density === 'compact' ? 'This Week' : 'This Week Totals'}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className={cn(
+          density === 'compact' ? 'space-y-1' : density === 'spacious' ? 'space-y-4' : 'space-y-3'
+        )}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Activity className="size-4 text-muted-foreground" />
-              <span className="text-sm">Interactions</span>
+              <Activity className={cn(config.iconSize, "text-muted-foreground")} />
+              <span className={config.textSize}>Interactions</span>
             </div>
-            <div className="flex items-center gap-3">
-              <MiniSparkline
-                data={mockTrendData.interactions}
-                color="blue"
-                height={16}
-                width={40}
-              />
+            <div className={cn("flex items-center", config.showSparklines ? "gap-3" : "gap-0")}>
+              {config.showSparklines && (
+                <MiniSparkline
+                  data={mockTrendData.interactions}
+                  color="blue"
+                  height={density === 'spacious' ? 20 : 16}
+                  width={density === 'spacious' ? 50 : 40}
+                />
+              )}
               <div className="text-right">
-                <div className="font-semibold">{kpiData.interactionsLogged.thisWeek}</div>
-                <div className="text-xs text-muted-foreground">
-                  {kpiData.interactionsLogged.count} total
-                </div>
+                <div className={cn("font-semibold", 
+                  density === 'compact' ? 'text-sm' : density === 'spacious' ? 'text-lg' : 'text-base'
+                )}>{kpiData.interactionsLogged.thisWeek}</div>
+                {config.showSubtitles && (
+                  <div className={cn("text-muted-foreground", 
+                    density === 'compact' ? 'text-[10px]' : 'text-xs'
+                  )}>
+                    {kpiData.interactionsLogged.count} total
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <TrendingUp className="size-4 text-muted-foreground" />
-              <span className="text-sm">Opportunities</span>
+              <TrendingUp className={cn(config.iconSize, "text-muted-foreground")} />
+              <span className={config.textSize}>Opportunities</span>
             </div>
-            <div className="flex items-center gap-3">
-              <MiniSparkline
-                data={mockTrendData.opportunities}
-                color="green"
-                height={16}
-                width={40}
-              />
+            <div className={cn("flex items-center", config.showSparklines ? "gap-3" : "gap-0")}>
+              {config.showSparklines && (
+                <MiniSparkline
+                  data={mockTrendData.opportunities}
+                  color="green"
+                  height={density === 'spacious' ? 20 : 16}
+                  width={density === 'spacious' ? 50 : 40}
+                />
+              )}
               <div className="text-right">
-                <div className="font-semibold">{kpiData.opportunitiesMoved.count}</div>
-                <div className="text-xs text-muted-foreground">
-                  {kpiData.opportunitiesMoved.stageChanges} moved
-                </div>
+                <div className={cn("font-semibold", 
+                  density === 'compact' ? 'text-sm' : density === 'spacious' ? 'text-lg' : 'text-base'
+                )}>{kpiData.opportunitiesMoved.count}</div>
+                {config.showSubtitles && (
+                  <div className={cn("text-muted-foreground", 
+                    density === 'compact' ? 'text-[10px]' : 'text-xs'
+                  )}>
+                    {kpiData.opportunitiesMoved.stageChanges} moved
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <DollarSign className="size-4 text-muted-foreground" />
-              <span className="text-sm">Pipeline Value</span>
+              <DollarSign className={cn(config.iconSize, "text-muted-foreground")} />
+              <span className={config.textSize}>Pipeline Value</span>
             </div>
-            <div className="flex items-center gap-3">
-              <MiniSparkline
-                data={mockTrendData.pipelineValue}
-                color="blue"
-                height={16}
-                width={40}
-              />
+            <div className={cn("flex items-center", config.showSparklines ? "gap-3" : "gap-0")}>
+              {config.showSparklines && (
+                <MiniSparkline
+                  data={mockTrendData.pipelineValue}
+                  color="blue"
+                  height={density === 'spacious' ? 20 : 16}
+                  width={density === 'spacious' ? 50 : 40}
+                />
+              )}
               <div className="text-right">
-                <div className="font-semibold">{formatCurrency(kpiData.pipelineValue.total)}</div>
-                <div className="text-xs text-muted-foreground">
-                  {kpiData.pipelineValue.opportunityCount} opps
-                </div>
+                <div className={cn("font-semibold", 
+                  density === 'compact' ? 'text-sm' : density === 'spacious' ? 'text-lg' : 'text-base'
+                )}>{formatCurrency(kpiData.pipelineValue.total)}</div>
+                {config.showSubtitles && (
+                  <div className={cn("text-muted-foreground", 
+                    density === 'compact' ? 'text-[10px]' : 'text-xs'
+                  )}>
+                    {kpiData.pipelineValue.opportunityCount} opps
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Top AM Card */}
-      <Card className="dashboard-card">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Users className="size-4" />
-            Top AM This Week
+      {/* Top AM Card - Show only in comfortable/spacious modes */}
+      {config.showTopAM && (
+        <Card className="density-aware-card dashboard-card density-transition">
+          <CardHeader className={cn(
+            "density-aware-card density-transition",
+            density === 'compact' ? 'pb-1' : density === 'spacious' ? 'pb-4' : 'pb-3'
+          )}>
+            <CardTitle className={cn("flex items-center gap-2", 
+              density === 'compact' ? 'text-sm' : density === 'spacious' ? 'text-lg' : 'text-base'
+            )}>
+              <Users className={config.iconSize} />
+              Top AM This Week
+            </CardTitle>
+          </CardHeader>
+          <CardContent className={cn(
+            density === 'compact' ? 'space-y-1' : density === 'spacious' ? 'space-y-4' : 'space-y-3'
+          )}>
+            <div className="flex items-center justify-between">
+              <div className={cn("font-medium", 
+                density === 'compact' ? 'text-xs' : density === 'spacious' ? 'text-base' : 'text-sm'
+              )}>{topAM.name}</div>
+              <Badge variant="secondary" className={config.badgeSize}>
+                {topAM.completionRate}% complete
+              </Badge>
+            </div>
+
+            <div className={cn(
+              "grid gap-3",
+              density === 'spacious' ? 'grid-cols-1 space-y-2' : 'grid-cols-2'
+            )}>
+              <div className={cn(
+                "rounded bg-muted/20 text-center",
+                density === 'compact' ? 'p-1' : density === 'spacious' ? 'p-4' : 'p-2'
+              )}>
+                <div className={cn("font-semibold", 
+                  density === 'compact' ? 'text-sm' : density === 'spacious' ? 'text-xl' : 'text-lg'
+                )}>{topAM.interactions}</div>
+                {config.showSubtitles && (
+                  <div className={cn("text-muted-foreground", 
+                    density === 'compact' ? 'text-[10px]' : 'text-xs'
+                  )}>Interactions</div>
+                )}
+              </div>
+              <div className={cn(
+                "rounded bg-muted/20 text-center",
+                density === 'compact' ? 'p-1' : density === 'spacious' ? 'p-4' : 'p-2'
+              )}>
+                <div className={cn("font-semibold", 
+                  density === 'compact' ? 'text-sm' : density === 'spacious' ? 'text-xl' : 'text-lg'
+                )}>{topAM.opportunities}</div>
+                {config.showSubtitles && (
+                  <div className={cn("text-muted-foreground", 
+                    density === 'compact' ? 'text-[10px]' : 'text-xs'
+                  )}>Opportunities</div>
+                )}
+              </div>
+            </div>
+
+            <div className="text-center">
+              <div className={cn("font-semibold", 
+                density === 'compact' ? 'text-base' : density === 'spacious' ? 'text-2xl' : 'text-lg'
+              )}>{formatCurrency(topAM.pipelineValue)}</div>
+              {config.showSubtitles && (
+                <div className={cn("text-muted-foreground", 
+                  density === 'compact' ? 'text-[10px]' : 'text-xs'
+                )}>Pipeline Value</div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Action Items Card - Priority card, always show but condense in compact */}
+      <Card className="density-aware-card dashboard-card density-transition">
+        <CardHeader className={cn(
+          "density-aware-card density-transition",
+          density === 'compact' ? 'pb-1' : density === 'spacious' ? 'pb-4' : 'pb-3'
+        )}>
+          <CardTitle className={cn("flex items-center gap-2", 
+            density === 'compact' ? 'text-sm' : density === 'spacious' ? 'text-lg' : 'text-base'
+          )}>
+            <CheckCircle2 className={config.iconSize} />
+            {density === 'compact' ? 'Tasks' : 'Action Items'}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="font-medium">{topAM.name}</div>
-            <Badge variant="secondary" className="text-xs">
-              {topAM.completionRate}% complete
-            </Badge>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 text-sm">
-            <div className="rounded bg-muted/20 p-2 text-center">
-              <div className="text-lg font-semibold">{topAM.interactions}</div>
-              <div className="text-xs text-muted-foreground">Interactions</div>
-            </div>
-            <div className="rounded bg-muted/20 p-2 text-center">
-              <div className="text-lg font-semibold">{topAM.opportunities}</div>
-              <div className="text-xs text-muted-foreground">Opportunities</div>
-            </div>
-          </div>
-
-          <div className="text-center">
-            <div className="text-lg font-semibold">{formatCurrency(topAM.pipelineValue)}</div>
-            <div className="text-xs text-muted-foreground">Pipeline Value</div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* To-Dos Card */}
-      <Card className="dashboard-card">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <CheckCircle2 className="size-4" />
-            Action Items
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className={cn(
+          density === 'compact' ? 'space-y-1' : density === 'spacious' ? 'space-y-4' : 'space-y-3'
+        )}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <AlertCircle className="size-4 text-warning" />
-              <span className="text-sm">Due Today</span>
+              <AlertCircle className={cn(config.iconSize, "text-warning")} />
+              <span className={config.textSize}>Due Today</span>
             </div>
-            <Badge variant={kpiData.actionItemsDue.dueToday > 0 ? 'destructive' : 'secondary'}>
+            <Badge 
+              variant={kpiData.actionItemsDue.dueToday > 0 ? 'destructive' : 'secondary'}
+              className={config.badgeSize}
+            >
               {kpiData.actionItemsDue.dueToday}
             </Badge>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <CalendarDays className="size-4 text-muted-foreground" />
-              <span className="text-sm">This Week</span>
-            </div>
-            <Badge variant="outline">{kpiData.actionItemsDue.count}</Badge>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <AlertCircle className="size-4 text-destructive" />
-              <span className="text-sm">Overdue</span>
-            </div>
-            <div className="text-right">
-              <Badge variant={kpiData.overdueItems.count > 0 ? 'destructive' : 'secondary'}>
-                {kpiData.overdueItems.count}
-              </Badge>
-              {kpiData.overdueItems.oldestDays > 0 && (
-                <div className="mt-1 text-xs text-muted-foreground">
-                  Oldest: {kpiData.overdueItems.oldestDays}d
+          {/* Show weekly and overdue items unless compact mode and limited space */}
+          {density !== 'compact' && (
+            <>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <CalendarDays className={cn(config.iconSize, "text-muted-foreground")} />
+                  <span className={config.textSize}>This Week</span>
                 </div>
-              )}
-            </div>
-          </div>
+                <Badge variant="outline" className={config.badgeSize}>
+                  {kpiData.actionItemsDue.count}
+                </Badge>
+              </div>
 
-          <Button size="sm" variant="outline" className="w-full">
-            View All Tasks
-          </Button>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <AlertCircle className={cn(config.iconSize, "text-destructive")} />
+                  <span className={config.textSize}>Overdue</span>
+                </div>
+                <div className="text-right">
+                  <Badge 
+                    variant={kpiData.overdueItems.count > 0 ? 'destructive' : 'secondary'}
+                    className={config.badgeSize}
+                  >
+                    {kpiData.overdueItems.count}
+                  </Badge>
+                  {config.showSubtitles && kpiData.overdueItems.oldestDays > 0 && (
+                    <div className={cn("mt-1 text-muted-foreground", 
+                      density === 'compact' ? 'text-[10px]' : 'text-xs'
+                    )}>
+                      Oldest: {kpiData.overdueItems.oldestDays}d
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Compact mode: show summary only */}
+          {density === 'compact' && (
+            <div className="flex items-center justify-between">
+              <span className={config.textSize}>Week/Overdue</span>
+              <div className="flex gap-1">
+                <Badge variant="outline" className={config.badgeSize}>
+                  {kpiData.actionItemsDue.count}
+                </Badge>
+                <Badge 
+                  variant={kpiData.overdueItems.count > 0 ? 'destructive' : 'secondary'}
+                  className={config.badgeSize}
+                >
+                  {kpiData.overdueItems.count}
+                </Badge>
+              </div>
+            </div>
+          )}
+
+          {density !== 'compact' && (
+            <Button size={config.buttonSize} variant="outline" className="w-full">
+              View All Tasks
+            </Button>
+          )}
         </CardContent>
       </Card>
 
-      {/* Active Filters Card */}
-      {getActiveFilterCount() > 0 && (
-        <Card className="dashboard-card">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Filter className="size-4" />
+      {/* Active Filters Card - Show unless maxCards limit reached or compact with limited space */}
+      {getActiveFilterCount() > 0 && density !== 'compact' && (
+        <Card className="density-aware-card dashboard-card density-transition">
+          <CardHeader className={cn(
+            "density-aware-card density-transition",
+            density === 'compact' ? 'pb-1' : density === 'spacious' ? 'pb-4' : 'pb-3'
+          )}>
+            <CardTitle className={cn("flex items-center gap-2", 
+              density === 'compact' ? 'text-sm' : density === 'spacious' ? 'text-lg' : 'text-base'
+            )}>
+              <Filter className={config.iconSize} />
               Active Filters
-              <Badge variant="secondary" className="ml-auto">
+              <Badge variant="secondary" className={cn("ml-auto", config.badgeSize)}>
                 {getActiveFilterCount()}
               </Badge>
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className={cn(
+            density === 'compact' ? 'space-y-1' : density === 'spacious' ? 'space-y-3' : 'space-y-2'
+          )}>
             {filters.principal !== 'all' && (
-              <div className="flex items-center justify-between text-sm">
+              <div className={cn("flex items-center justify-between", config.textSize)}>
                 <span className="text-muted-foreground">Principal</span>
-                <Badge variant="outline" className="text-xs">
-                  {getSelectedPrincipalName()}
+                <Badge variant="outline" className={config.badgeSize}>
+                  {density === 'spacious' ? getSelectedPrincipalName() : 'Selected'}
                 </Badge>
               </div>
             )}
 
             {filters.product.length > 0 && (
-              <div className="flex items-center justify-between text-sm">
+              <div className={cn("flex items-center justify-between", config.textSize)}>
                 <span className="text-muted-foreground">Products</span>
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className={config.badgeSize}>
                   {filters.product.length} selected
                 </Badge>
               </div>
             )}
 
             {filters.weeks !== 4 && (
-              <div className="flex items-center justify-between text-sm">
+              <div className={cn("flex items-center justify-between", config.textSize)}>
                 <span className="text-muted-foreground">Time Range</span>
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className={config.badgeSize}>
                   {filters.weeks} weeks
                 </Badge>
               </div>
             )}
 
             {filters.focus !== 'all' && (
-              <div className="flex items-center justify-between text-sm">
+              <div className={cn("flex items-center justify-between", config.textSize)}>
                 <span className="text-muted-foreground">Focus</span>
-                <Badge variant="outline" className="text-xs capitalize">
+                <Badge variant="outline" className={cn(config.badgeSize, "capitalize")}>
                   {filters.focus}
                 </Badge>
               </div>
             )}
 
             {filters.quickView !== 'all' && (
-              <div className="flex items-center justify-between text-sm">
+              <div className={cn("flex items-center justify-between", config.textSize)}>
                 <span className="text-muted-foreground">Quick View</span>
-                <Badge variant="outline" className="text-xs capitalize">
+                <Badge variant="outline" className={cn(config.badgeSize, "capitalize")}>
                   {filters.quickView}
                 </Badge>
               </div>

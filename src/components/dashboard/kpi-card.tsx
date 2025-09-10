@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowUpIcon, ArrowDownIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { LucideIcon } from 'lucide-react'
+import { useDashboardDensity } from '@/features/dashboard/hooks/useDashboardDensity'
 
 interface KpiCardProps {
   title: string
@@ -15,6 +16,7 @@ interface KpiCardProps {
   isLoading?: boolean
   className?: string
   onClick?: () => void
+  size?: 'default' | 'compact'
 }
 
 const variantStyles = {
@@ -56,8 +58,10 @@ export function KpiCard({
   isLoading = false,
   className,
   onClick,
+  size = 'default',
 }: KpiCardProps) {
   const styles = variantStyles[variant]
+  const { density } = useDashboardDensity()
 
   const trendColors = {
     up: 'text-success',
@@ -65,7 +69,29 @@ export function KpiCard({
     neutral: 'text-muted-foreground',
   }
 
+  // Use density to override size if not explicitly set
+  const effectiveSize = size !== 'default' ? size : 
+    density === 'compact' ? 'compact' : 'default'
+
   if (isLoading) {
+    if (effectiveSize === 'compact') {
+      return (
+        <Card className={cn('kpi-card density-transition justify-between', 
+          density === 'compact' ? 'h-16' : 'h-20', className)}>
+          <CardContent className={cn('flex items-center justify-between', 
+            density === 'compact' ? 'p-2' : 'p-3')}>
+            <div className="animate-pulse space-y-1">
+              <div className={cn('rounded bg-muted-foreground/20', 
+                density === 'compact' ? 'h-2.5 w-12' : 'h-3 w-16')}></div>
+              <div className={cn('rounded bg-muted-foreground/20', 
+                density === 'compact' ? 'h-5 w-10' : 'h-6 w-12')}></div>
+            </div>
+            <div className={cn('animate-pulse rounded bg-muted-foreground/20', 
+              density === 'compact' ? 'size-4' : 'size-5')}></div>
+          </CardContent>
+        </Card>
+      )
+    }
     return (
       <Card className={cn('kpi-card justify-between', className)}>
         <CardHeader className="pb-2">
@@ -97,6 +123,59 @@ export function KpiCard({
       return val.toString()
     }
     return val
+  }
+
+  if (effectiveSize === 'compact') {
+    const trendTooltip = change !== undefined ? 
+      `${change > 0 ? '+' : ''}${change}% ${changeLabel || 'change'}` : 
+      undefined
+
+    return (
+      <Card
+        className={cn(
+          'kpi-card density-transition justify-between group relative',
+          density === 'compact' ? 'h-16' : density === 'spacious' ? 'h-24' : 'h-20',
+          styles.card,
+          onClick && 'cursor-pointer hover:shadow-lg hover:-translate-y-1',
+          className
+        )}
+        onClick={onClick}
+        title={trendTooltip}
+      >
+        <CardContent className={cn('flex items-center justify-between', 
+          density === 'compact' ? 'p-2' : density === 'spacious' ? 'p-4' : 'p-3')}>
+          <div className="space-y-0.5">
+            <p className={cn('truncate font-medium', styles.title,
+              density === 'compact' ? 'text-[10px]' : 
+              density === 'spacious' ? 'text-sm' : 'text-xs'
+            )}>{title}</p>
+            <p className={cn('font-bold', styles.value,
+              density === 'compact' ? 'text-lg' : 
+              density === 'spacious' ? 'text-2xl' : 'text-xl'
+            )}>{formatValue(value)}</p>
+            {density !== 'compact' && subtitle && (
+              <p className={cn('text-muted-foreground truncate',
+                density === 'spacious' ? 'text-sm' : 'text-xs'
+              )}>{subtitle}</p>
+            )}
+          </div>
+          <div className="flex flex-col items-center space-y-1">
+            {Icon && (
+              <div className={cn('shrink-0', styles.icon)}>
+                <Icon className="size-5" />
+              </div>
+            )}
+            {change !== undefined && (
+              <div className={cn('flex items-center gap-0.5 text-xs opacity-0 group-hover:opacity-100 transition-opacity', trendColors[trend])}>
+                {trend === 'up' && <ArrowUpIcon className="size-3" />}
+                {trend === 'down' && <ArrowDownIcon className="size-3" />}
+                <span className="font-medium">{change > 0 ? '+' : ''}{change}%</span>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    )
   }
 
   return (
