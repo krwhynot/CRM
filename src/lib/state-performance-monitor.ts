@@ -5,6 +5,8 @@
  * to validate the benefits of separating client/server state
  */
 
+import { isDevelopment } from '@/config/environment'
+
 interface PerformanceMetrics {
   queryHits: number
   queryCacheSize: number
@@ -36,7 +38,7 @@ class StatePerformanceMonitor {
       this.queryTimes.push(duration)
       this.updateAverageQueryTime()
 
-      if (process.env.NODE_ENV === 'development') {
+      if (isDevelopment) {
         console.log(`🔍 Query [${queryKey}] completed in ${duration.toFixed(2)}ms`)
       }
     }
@@ -47,7 +49,7 @@ class StatePerformanceMonitor {
     this.cacheHits++
     this.updateCacheHitRate()
 
-    if (process.env.NODE_ENV === 'development') {
+    if (isDevelopment) {
       console.log(`⚡ Cache hit for [${queryKey}]`)
     }
   }
@@ -56,7 +58,7 @@ class StatePerformanceMonitor {
     this.cacheMisses++
     this.updateCacheHitRate()
 
-    if (process.env.NODE_ENV === 'development') {
+    if (isDevelopment) {
       console.log(`🌐 Cache miss for [${queryKey}] - fetching from server`)
     }
   }
@@ -65,7 +67,7 @@ class StatePerformanceMonitor {
   trackClientStateUpdate(storeName: string, action: string) {
     this.metrics.clientStateUpdates++
 
-    if (process.env.NODE_ENV === 'development') {
+    if (isDevelopment) {
       console.log(`🎨 Client state update: ${storeName}.${action}`)
     }
   }
@@ -155,7 +157,7 @@ class StatePerformanceMonitor {
 
   // Log report to console (development only)
   logReport() {
-    if (process.env.NODE_ENV === 'development') {
+    if (isDevelopment) {
       console.log(this.generateReport())
     }
   }

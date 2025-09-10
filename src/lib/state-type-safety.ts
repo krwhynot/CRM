@@ -11,6 +11,8 @@
  * - No direct server operations should occur in client state
  */
 
+import { isDevelopment } from '@/config/environment'
+
 // Branded types to enforce boundaries
 export type ClientState<T = unknown> = T & { readonly __clientState: unique symbol }
 export type ServerData<T = unknown> = T & { readonly __serverData: unique symbol }
@@ -142,7 +144,7 @@ export function isClientStateSafe(value: unknown): boolean {
  * Runtime validation function for development
  */
 export function validateClientState<T extends Record<string, unknown>>(state: T): void {
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopment) {
     Object.entries(state).forEach(([, value]) => {
       if (!isClientStateSafe(value)) {
         // Invalid client state detected - should be handled in development

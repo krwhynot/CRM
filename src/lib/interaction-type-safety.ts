@@ -13,6 +13,7 @@
  */
 
 import type { Interaction, InteractionWithRelations } from '@/types/entities'
+import { isDevelopment } from '@/config/environment'
 import { debugWarn, debugLog } from '@/utils/debug'
 
 /**
@@ -137,7 +138,7 @@ export const debugInteractionType = (
   interaction: Interaction | InteractionWithRelations,
   context?: string
 ): void => {
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopment) {
     const hasRelations = isInteractionWithRelations(interaction)
     debugLog(`[${context || 'InteractionTypeCheck'}] Interaction type:`, {
       hasRelations,

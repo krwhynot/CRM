@@ -4,6 +4,7 @@
  */
 
 import type { QueryKey, Query } from '@tanstack/react-query'
+import { isDevelopment } from '@/config/environment'
 
 export interface QueryDebugInfo {
   queryKey: QueryKey
@@ -57,7 +58,7 @@ export function debugQueryState(
     fetchStatus: queryState.fetchStatus,
   }
 
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopment) {
     console.log(`🔍 [${hookName}] Query State:`, debugInfo)
 
     // Warn about potential issues
@@ -108,7 +109,7 @@ export function compareQueryStates(
     },
   }
 
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopment) {
     console.log(`🔀 Comparing query states: ${component1} vs ${component2}`)
     console.table(comparison)
 
@@ -147,7 +148,7 @@ export function monitorQueryCache(
       query.queryKey.some((key: unknown) => typeof key === 'string' && keyPattern.includes(key))
   )
 
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopment) {
     console.log(`📊 Query Cache Analysis for pattern [${keyPattern.join(', ')}]:`)
     console.log(`Total queries in cache: ${queries.length}`)
     console.log(`Matching queries: ${matchingQueries.length}`)
@@ -184,7 +185,7 @@ export function logNetworkRequest(
   response?: unknown,
   error?: NetworkError
 ) {
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopment) {
     const timestamp = new Date().toISOString()
 
     if (error) {
@@ -216,7 +217,7 @@ export function measureQueryPerformance(operationName: string) {
     end: () => {
       const endTime = performance.now()
       const duration = endTime - startTime
-      if (process.env.NODE_ENV === 'development') {
+      if (isDevelopment) {
         console.log(`⏱️  [${operationName}] took ${duration.toFixed(2)}ms`)
       }
       return duration

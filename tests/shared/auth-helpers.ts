@@ -4,6 +4,8 @@
  * Can be used by both Vitest and Playwright tests
  */
 
+import { getTestEnvironment as getCentralizedTestEnv, testConfig } from '@/config/environment'
+
 export interface TestCredentials {
   email: string;
   password: string;
@@ -24,9 +26,9 @@ export interface AuthState {
  * Get test credentials from environment variables
  */
 export function getTestCredentials(): TestCredentials | null {
-  const email = process.env.TEST_USER_EMAIL;
-  const password = process.env.TEST_USER_PASSWORD;
-  const role = (process.env.TEST_USER_ROLE as 'admin' | 'user' | 'manager') || 'user';
+  const email = testConfig.userEmail;
+  const password = testConfig.userPassword;
+  const role = testConfig.userRole;
   
   if (!email || !password) {
     return null;
@@ -91,12 +93,11 @@ export function getTestEnvironment(): {
   isCI: boolean;
   environment: string;
 } {
+  const centralizedEnv = getCentralizedTestEnv();
   return {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || 
-             process.env.VITE_BASE_URL || 
-             'http://localhost:5173',
-    isCI: !!process.env.CI,
-    environment: process.env.NODE_ENV || 'test',
+    baseURL: centralizedEnv.baseURL,
+    isCI: centralizedEnv.isCI,
+    environment: centralizedEnv.environment,
   };
 }
 

@@ -963,16 +963,31 @@ class TypeScriptErrorAgent {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TypeScript Error Prevention Agent Report</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
-        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        /* Styles using centralized design tokens with fallbacks */
+        :root {
+            --dev-bg-primary: #f5f5f5;
+            --dev-bg-secondary: white;
+            --dev-bg-accent: #f8f9fa;
+            --dev-text-primary: #2563eb;
+            --dev-error: #dc2626;
+            --dev-error-bg: #fee2e2;
+            --dev-warning: #d97706;
+            --dev-warning-bg: #fef3c7;
+            --dev-success: #059669;
+            --dev-success-bg: #d1fae5;
+            --dev-code-bg: #f3f4f6;
+        }
+        
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: var(--dev-bg-primary); }
+        .container { max-width: 1200px; margin: 0 auto; background: var(--dev-bg-secondary); padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .header { text-align: center; margin-bottom: 30px; }
         .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: #f8f9fa; padding: 20px; border-radius: 6px; text-align: center; }
-        .stat-number { font-size: 2em; font-weight: bold; color: #2563eb; }
-        .error { background: #fee2e2; border-left: 4px solid #dc2626; padding: 15px; margin: 10px 0; }
-        .warning { background: #fef3c7; border-left: 4px solid #d97706; padding: 15px; margin: 10px 0; }
-        .success { background: #d1fae5; border-left: 4px solid #059669; padding: 15px; margin: 10px 0; }
-        .code { background: #f3f4f6; padding: 10px; border-radius: 4px; font-family: monospace; overflow-x: auto; }
+        .stat-card { background: var(--dev-bg-accent); padding: 20px; border-radius: 6px; text-align: center; }
+        .stat-number { font-size: 2em; font-weight: bold; color: var(--dev-text-primary); }
+        .error { background: var(--dev-error-bg); border-left: 4px solid var(--dev-error); padding: 15px; margin: 10px 0; }
+        .warning { background: var(--dev-warning-bg); border-left: 4px solid var(--dev-warning); padding: 15px; margin: 10px 0; }
+        .success { background: var(--dev-success-bg); border-left: 4px solid var(--dev-success); padding: 15px; margin: 10px 0; }
+        .code { background: var(--dev-code-bg); padding: 10px; border-radius: 4px; font-family: monospace; overflow-x: auto; }
     </style>
 </head>
 <body>

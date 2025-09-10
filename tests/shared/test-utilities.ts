@@ -7,6 +7,8 @@
  */
 
 import type { Database } from '@/types/database.types'
+import { isTest, testConfig as centralizedTestConfig } from '@/config/environment'
+import { testUrls, testConfig, testDataUrls, mockData } from '../config/test-constants'
 
 // Type definitions for entity data
 type OrganizationTestData = Partial<Database['public']['Tables']['organizations']['Insert']>
@@ -344,21 +346,20 @@ export const ArrayUtils = {
  */
 export const EnvUtils = {
   isTest: (): boolean => {
-    return process.env.NODE_ENV === 'test';
+    return isTest;
   },
 
   isCI: (): boolean => {
-    return !!process.env.CI;
+    return centralizedTestConfig.isCI;
   },
 
   getBaseUrl: (): string => {
-    return process.env.PLAYWRIGHT_BASE_URL || 
-           process.env.VITE_BASE_URL || 
-           'http://localhost:5173';
+    return centralizedTestConfig.playwrightBaseUrl || 
+           testUrls.development;
   },
 
   getTestTimeout: (): number => {
-    return parseInt(process.env.TEST_TIMEOUT || '30000', 10);
+    return parseInt(process.env.TEST_TIMEOUT || String(testConfig.timeouts.pageLoad * 6), 10);
   },
 };
 
@@ -485,7 +486,7 @@ export const CRM_CONSTANTS = {
     DASHBOARD_QUERY: 150, // ms
     SEARCH_QUERY: 100, // ms
     PAGE_LOAD: 3000, // ms
-    API_RESPONSE: 1000, // ms
+    API_RESPONSE: testConfig.timeouts.apiResponse, // ms
   },
   
   // Test user IDs for consistent testing

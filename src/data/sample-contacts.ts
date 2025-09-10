@@ -1,4 +1,5 @@
 import type { ContactWithOrganization } from '@/types/entities'
+import { externalUrls } from '@/config/urls'
 
 // Sample data matching CRM requirements for ContactsTable
 export const DEFAULT_CONTACTS: ContactWithOrganization[] = [
@@ -47,7 +48,7 @@ export const DEFAULT_CONTACTS: ContactWithOrganization[] = [
       secondary_manager_name: null,
     },
     department: 'Kitchen Operations',
-    linkedin_url: 'https://linkedin.com/in/johnsmith-chef',
+    linkedin_url: `${externalUrls.linkedin.profile}/johnsmith-chef`,
     notes: 'Key decision maker for all kitchen equipment purchases',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),

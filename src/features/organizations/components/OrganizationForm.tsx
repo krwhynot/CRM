@@ -1,6 +1,7 @@
 import { SimpleForm, type SimpleFormField } from '@/components/forms'
 import { organizationSchema, type OrganizationFormData, FOOD_SERVICE_SEGMENTS } from '@/types/organization.types'
 import { deriveOrganizationFlags } from '@/lib/organization-utils'
+import { placeholderUrls } from '@/config/urls'
 
 interface OrganizationFormProps {
   onSubmit: (data: OrganizationFormData) => Promise<void> | void
@@ -167,7 +168,7 @@ export function OrganizationForm({
       name: 'website',
       label: 'Website',
       type: 'url',
-      placeholder: 'https://www.organization.com',
+      placeholder: placeholderUrls.organization,
     },
 
     // Address Information Section

@@ -1,39 +1,68 @@
-// Executive Chef Professional Chart Colors
-export const chartColors = {
-  // Primary colors - deeper, more professional tones
-  primary: '#1E40AF', // Blue 800 - Deep professional blue
-  success: '#059669', // Emerald 600 - Professional success (no more bright green)
-  warning: '#D97706', // Amber 600 - Professional warning
-  info: '#4338CA', // Indigo 700 - Deep information blue
-  accent: '#7C3AED', // Violet 600 - Professional purple accent
-  muted: '#E5E7EB', // Light gray for backgrounds
+/**
+ * Executive Chef Professional Chart Colors
+ * 
+ * Uses CSS custom properties from the design system for consistency
+ * and theme compatibility. All colors reference the variables defined
+ * in src/index.css to maintain design token integrity.
+ */
 
-  // Professional series colors - harmonized blue-dominant palette
+// Helper function to get CSS variable value
+const getCSSVar = (variable: string): string => `hsl(var(${variable}))`
+
+export const chartColors = {
+  // Primary colors using design system variables
+  primary: getCSSVar('--chart-primary'),
+  success: getCSSVar('--chart-success'), 
+  warning: getCSSVar('--chart-warning'),
+  info: getCSSVar('--chart-info'),
+  accent: getCSSVar('--chart-accent'),
+  muted: getCSSVar('--muted'),
+
+  // Professional series colors using chart variables
   series: [
-    '#1E40AF', // Blue 800 - Primary deep blue
-    '#3B82F6', // Blue 500 - Medium blue
-    '#60A5FA', // Blue 400 - Light blue
-    '#059669', // Emerald 600 - Professional success green
-    '#D97706', // Amber 600 - Professional warning
-    '#7C3AED', // Violet 600 - Professional purple
-    '#0891B2', // Cyan 600 - Professional teal
+    getCSSVar('--chart-1'),
+    getCSSVar('--chart-2'), 
+    getCSSVar('--chart-3'),
+    getCSSVar('--chart-4'),
+    getCSSVar('--chart-5'),
+    getCSSVar('--chart-success'),
+    getCSSVar('--chart-info'),
   ],
 
-  // Bar chart gradient colors - professional blue progression
-  barColors: ['#1E40AF', '#3B82F6', '#60A5FA', '#93C5FD'],
+  // Bar chart gradient colors using primary palette
+  barColors: [
+    getCSSVar('--primary-600'),
+    getCSSVar('--primary'),
+    getCSSVar('--primary-400'),
+    getCSSVar('--primary-100'),
+  ],
 
-  // Pipeline funnel colors - professional business stages
+  // Pipeline funnel colors using semantic variables
   pipeline: {
-    qualified: '#1E40AF', // Blue 800 - Deep blue for new opportunities
-    proposal: '#3B82F6', // Blue 500 - Medium blue for proposals
-    negotiation: '#D97706', // Amber 600 - Professional amber for negotiations
-    closed: '#059669', // Emerald 600 - Professional green for closed won
+    qualified: getCSSVar('--chart-info'),     // Deep blue for new opportunities
+    proposal: getCSSVar('--chart-primary'),  // Primary green for proposals
+    negotiation: getCSSVar('--chart-warning'), // Warning amber for negotiations
+    closed: getCSSVar('--chart-success'),    // Success green for closed won
   },
 
-  // Activity type colors - distinct and professional
+  // Activity type colors using semantic variables
   activity: {
-    opportunity: '#1E40AF', // Deep blue for opportunities
-    interaction: '#D97706', // Professional amber for interactions
-    task: '#059669', // Professional emerald for tasks
+    opportunity: getCSSVar('--chart-info'),     // Info blue for opportunities
+    interaction: getCSSVar('--chart-warning'),  // Warning amber for interactions
+    task: getCSSVar('--chart-success'),         // Success green for tasks
   },
 }
+
+// Legacy support - direct CSS variable access for components that need it
+export const cssVariables = {
+  chartPrimary: '--chart-primary',
+  chartSuccess: '--chart-success',
+  chartWarning: '--chart-warning',
+  chartInfo: '--chart-info',
+  chartAccent: '--chart-accent',
+  chart1: '--chart-1',
+  chart2: '--chart-2',
+  chart3: '--chart-3',
+  chart4: '--chart-4',
+  chart5: '--chart-5',
+} as const

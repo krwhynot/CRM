@@ -23,6 +23,7 @@ const ProductsPage = lazy(() => import('@/pages/Products'))
 const InteractionsPage = lazy(() => import('@/pages/Interactions'))
 const ImportExportPage = lazy(() => import('@/pages/ImportExport'))
 const StyleGuideTestPage = lazy(() => import('@/pages/StyleGuideTest'))
+const StyleGuide = lazy(() => import('@/pages/StyleGuide'))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -188,6 +189,18 @@ function App() {
                         <Layout>
                           <Suspense fallback={<LoadingSpinner />}>
                             <StyleGuideTestPage />
+                          </Suspense>
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/style-guide"
+                    element={
+                      <ProtectedRoute>
+                        <Layout>
+                          <Suspense fallback={<LoadingSpinner />}>
+                            <StyleGuide />
                           </Suspense>
                         </Layout>
                       </ProtectedRoute>

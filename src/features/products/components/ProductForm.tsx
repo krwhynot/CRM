@@ -3,6 +3,7 @@ import { productSchema, type ProductFormData } from '@/types/validation'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
 import { PRODUCT_CATEGORIES } from '@/constants/product.constants'
 import { FOOD_SERVICE_SEGMENTS } from '@/types/organization.types'
+import { placeholderUrls } from '@/config/urls'
 
 interface ProductFormProps {
   onSubmit: (data: ProductFormData) => Promise<void> | void
@@ -162,7 +163,7 @@ export function ProductForm({
       name: 'principal_website',
       label: 'Principal Website',
       type: 'url',
-      placeholder: 'https://www.principal.com',
+      placeholder: placeholderUrls.principal,
       condition: (values) => values.principal_mode === 'new',
     },
 

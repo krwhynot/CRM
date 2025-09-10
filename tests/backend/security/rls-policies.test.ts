@@ -8,6 +8,7 @@
 import { describe, test, expect, beforeAll, afterAll, beforeEach } from 'vitest'
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/lib/database.types'
+import { supabaseConfig } from '@/config/environment'
 
 describe('Row Level Security (RLS) Policies', () => {
   let user1Client: any
@@ -23,8 +24,8 @@ describe('Row Level Security (RLS) Policies', () => {
 
   beforeAll(async () => {
     // Create separate Supabase clients for different users
-    const supabaseUrl = process.env.VITE_SUPABASE_URL
-    const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY
+    const supabaseUrl = supabaseConfig.url
+    const supabaseAnonKey = supabaseConfig.anonKey
 
     if (!supabaseUrl || !supabaseAnonKey) {
       throw new Error('Supabase URL and Anon key must be provided in environment variables for RLS tests')

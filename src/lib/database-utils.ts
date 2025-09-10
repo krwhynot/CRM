@@ -6,6 +6,7 @@
  */
 
 import type { PostgrestError } from '@supabase/supabase-js'
+import { isDevelopment } from '@/config/environment'
 
 // ============================================================================
 // TYPES
@@ -288,7 +289,7 @@ export function logDatabaseOperation<T>(
   operation: string,
   level: 'info' | 'warn' | 'error' = 'info'
 ): DatabaseResult<T> {
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopment) {
     const logData = {
       operation,
       hasError: !!result.error,

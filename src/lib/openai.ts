@@ -8,6 +8,7 @@ import {
   type BatchValidationResponseType,
   type DuplicateDetectionResponseType,
 } from './aiSchemas'
+import { openaiConfig, hasOptionalFeatures } from '@/config/environment'
 
 // Type for CSV row data
 type CSVRowData = Record<string, string | number | null | undefined>
@@ -16,9 +17,9 @@ type CSVRowData = Record<string, string | number | null | undefined>
 let client: OpenAI | null = null
 
 function getOpenAIClient(): OpenAI {
-  if (!client && import.meta.env.VITE_OPENAI_API_KEY) {
+  if (!client && openaiConfig.apiKey) {
     client = new OpenAI({
-      apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+      apiKey: openaiConfig.apiKey,
       dangerouslyAllowBrowser: true, // Enable browser usage for client-side React app
     })
   }
@@ -243,7 +244,7 @@ Group similar organizations and suggest how to handle each duplicate group.`,
  * Check if OpenAI API is available and configured
  */
 export function isOpenAIAvailable(): boolean {
-  return !!import.meta.env.VITE_OPENAI_API_KEY
+  return hasOptionalFeatures.openai
 }
 
 /**

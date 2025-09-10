@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
+import { isDevelopment } from '@/config/environment'
 
 // Debounce utility for search inputs and API calls
 export function useDebounce<T>(value: T, delay: number): T {
@@ -188,7 +189,7 @@ export function usePerformanceMonitoring(componentName: string) {
     renderCount.current++
     const renderTime = performance.now() - renderStartTime.current
 
-    if (process.env.NODE_ENV === 'development') {
+    if (isDevelopment) {
       console.debug(
         `${componentName} rendered in ${renderTime.toFixed(2)}ms (render #${renderCount.current})`
       )

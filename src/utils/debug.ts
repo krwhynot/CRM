@@ -6,7 +6,7 @@
  * to ensure clean production builds.
  */
 
-const isDevelopment = process.env.NODE_ENV === 'development'
+import { isDevelopment } from '@/config/environment'
 
 /**
  * Debug log function that only outputs in development mode

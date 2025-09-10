@@ -4,6 +4,8 @@
  * Comprehensive monitoring system for KitchenPantry CRM production environment
  */
 
+import { isProduction } from '@/config/environment'
+
 interface HealthCheck {
   service: string
   status: 'healthy' | 'degraded' | 'down'
@@ -280,7 +282,7 @@ export const productionMonitor = new ProductionMonitor()
  * Initialize production monitoring on app start
  */
 export async function initializeMonitoring(): Promise<void> {
-  if (process.env.NODE_ENV !== 'production') return
+  if (!isProduction) return
 
   console.log('🚀 Initializing production monitoring...')
 

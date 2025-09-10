@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import type { User, Session, AuthError } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
+import { appConfig, isDevelopment } from '@/config/environment'
 
 interface AuthContextType {
   user: User | null
@@ -37,8 +38,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // ⚠️  WARNING: This bypass should only be used for development testing
     // ⚠️  Set VITE_DEV_BYPASS_AUTH=false in .env.development to disable
     // ⚠️  This bypass is automatically disabled in production builds
-    const isDevelopment = import.meta.env.DEV
-    const bypassAuth = import.meta.env.VITE_DEV_BYPASS_AUTH === 'true'
+    const bypassAuth = appConfig.devBypassAuth
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     
     if (isDevelopment && bypassAuth && isLocalhost) {
@@ -144,7 +144,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // Use Supabase-configured Site URL for security (no client-side redirect URL construction)
     // This prevents open redirect vulnerabilities by relying on server-side configuration
     // Optional: Allow environment variable override for explicit control
-    const redirectUrl = import.meta.env.VITE_PASSWORD_RESET_URL
+    const redirectUrl = appConfig.passwordResetUrl
     const { error } =
       redirectUrl && redirectUrl !== 'undefined'
         ? await supabase.auth.resetPasswordForEmail(email, { redirectTo: redirectUrl })

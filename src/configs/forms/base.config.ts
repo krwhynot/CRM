@@ -6,6 +6,7 @@ import type {
   SelectOption,
 } from '@/types/forms'
 import { validationMessages } from '@/lib/validation-messages'
+import { placeholderUrls } from '@/config/urls'
 
 // ===== Validation Messages =====
 // Moved to @/lib/validation-messages.ts for better organization
@@ -68,7 +69,7 @@ export const commonFields: CommonFieldConfigs = {
     name: 'website',
     label: 'Website',
     type: 'url',
-    placeholder: 'https://example.com',
+    placeholder: placeholderUrls.website,
     description: 'Company or organization website',
   },
 

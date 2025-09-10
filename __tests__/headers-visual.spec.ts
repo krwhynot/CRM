@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { viewportSizes } from '../tests/config/test-constants'
 
 /**
  * Visual regression tests for PageHeader consistency
@@ -49,7 +50,7 @@ test.describe('PageHeader Visual Regression', () => {
 
     test(`${pageInfo.name} header - mobile layout`, async ({ page }) => {
       // Set mobile viewport
-      await page.setViewportSize({ width: 375, height: 667 })
+      await page.setViewportSize(viewportSizes.mobileMedium)
       await page.emulateMedia({ colorScheme: 'light' })
       
       await page.goto(pageInfo.url)
@@ -97,10 +98,10 @@ test.describe('PageHeader Visual Regression', () => {
     await page.goto('/opportunities')
     
     const viewports = [
-      { width: 320, height: 568, name: 'mobile-small' },
-      { width: 768, height: 1024, name: 'tablet' }, 
-      { width: 1024, height: 768, name: 'desktop-small' },
-      { width: 1440, height: 900, name: 'desktop-large' }
+      viewportSizes.mobileSmall,
+      viewportSizes.tablet,
+      viewportSizes.desktopSmall,
+      viewportSizes.desktopLarge
     ]
     
     for (const viewport of viewports) {

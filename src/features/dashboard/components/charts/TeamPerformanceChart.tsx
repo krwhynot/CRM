@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend } fro
 import { ChartContainer } from '@/components/ui/chart'
 import { Badge } from '@/components/ui/badge'
 import { Crown } from 'lucide-react'
+import { chartColors } from '@/components/dashboard/chart-colors'
 
 interface TeamData {
   name: string
@@ -88,7 +89,7 @@ export const TeamPerformanceChart = React.memo(({ data, loading }: TeamPerforman
             <p
               key={index}
               className="text-sm"
-              style={{ color: (entry as { color?: string }).color || '#666' }}
+              style={{ color: (entry as { color?: string }).color || chartColors.muted }}
             >
               {(entry as { dataKey?: string }).dataKey || 'Value'}: {entry.value}
             </p>

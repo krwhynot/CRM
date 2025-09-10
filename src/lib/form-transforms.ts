@@ -5,6 +5,8 @@
  * patterns and prevent TypeScript type mismatches between forms and validation.
  */
 
+import { isDevelopment } from '@/config/environment'
+
 /**
  * Transforms empty strings to null values
  * Essential for nullable fields where HTML inputs produce empty strings
@@ -193,7 +195,7 @@ export const isTransformFunction = (value: unknown): value is Function => {
  * Only active in development mode
  */
 export const debugTransform = () => {
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopment) {
     // Transform debugging is handled silently
     // Use browser dev tools for debugging if needed
   }

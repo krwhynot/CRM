@@ -1,12 +1,12 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/lib/database.types'
+import { supabaseConfig, validateEnvironment } from '@/config/environment'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+// Validate environment variables on initialization
+validateEnvironment()
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Supabase URL and Anon key must be provided in environment variables')
-}
+const supabaseUrl = supabaseConfig.url
+const supabaseAnonKey = supabaseConfig.anonKey
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {

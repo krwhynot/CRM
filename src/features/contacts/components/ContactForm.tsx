@@ -1,6 +1,7 @@
 import { SimpleForm, type SimpleFormField } from '@/components/forms'
 import { contactSchema, type ContactFormData, CONTACT_ROLES } from '@/types/contact.types'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
+import { placeholderUrls } from '@/config/urls'
 
 interface ContactFormProps {
   onSubmit: (data: ContactFormData) => Promise<void> | void
@@ -142,7 +143,7 @@ export function ContactForm({
       name: 'organization_website',
       label: 'Organization Website',
       type: 'url',
-      placeholder: 'https://www.organization.com',
+      placeholder: placeholderUrls.organization,
       condition: (values) => values.organization_mode === 'new',
     },
 
@@ -227,7 +228,7 @@ export function ContactForm({
       name: 'linkedin_url',
       label: 'LinkedIn Profile',
       type: 'url',
-      placeholder: 'https://linkedin.com/in/profile',
+      placeholder: placeholderUrls.linkedin,
     },
     {
       name: 'notes',

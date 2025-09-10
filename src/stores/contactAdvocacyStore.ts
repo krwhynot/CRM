@@ -17,6 +17,7 @@ import { create } from 'zustand'
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
 import type { BaseClientState, CreateClientFilters } from '@/lib/state-type-safety'
 import { validateClientState } from '@/lib/state-type-safety'
+import { isDevelopment } from '@/config/environment'
 
 // UI View modes for advocacy management
 export type AdvocacyViewMode = 'list' | 'cards' | 'table'
@@ -177,7 +178,7 @@ export const useContactAdvocacyStore = create<ContactAdvocacyUIState>()(
 
           // Preferences (with type safety validation)
           updatePreferences: (preferences: Partial<ContactAdvocacyUIState['preferences']>) => {
-            if (process.env.NODE_ENV === 'development') {
+            if (isDevelopment) {
               validateClientState(preferences)
             }
             set((state) => ({
@@ -188,7 +189,7 @@ export const useContactAdvocacyStore = create<ContactAdvocacyUIState>()(
           // Utility
           reset: () => {
             set(initialUIState)
-            if (process.env.NODE_ENV === 'development') {
+            if (isDevelopment) {
               validateClientState(initialUIState)
             }
           },

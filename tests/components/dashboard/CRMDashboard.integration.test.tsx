@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
 import { CRMDashboard } from '@/features/dashboard/components/CRMDashboard'
 import type { FilterState } from '@/types/dashboard'
+import { mockData } from '../../config/test-constants'
 
 // Mock all dashboard hooks
 const mockDashboardFilters = {
@@ -76,7 +77,7 @@ const mockDashboardData = {
   },
   pipelineValueFunnelData: {
     stages: [
-      { name: 'Lead', count: 10, value: 50000, conversionRate: 0.5, dropOffRate: 0.5, color: '#3b82f6' }
+      { name: 'Lead', count: 10, value: 50000, conversionRate: 0.5, dropOffRate: 0.5, color: mockData.sampleColorHex }
     ],
     totalValue: 50000,
     totalOpportunities: 10,

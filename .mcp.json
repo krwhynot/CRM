@@ -42,8 +42,8 @@
                 "@jpisnice/shadcn-ui-mcp-server",
                 "--github-api-key",
                 "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"
-            ],
-            "disabled": true,
+            ], 
+            "disabled": false,
             "startupDelay": 1100,
             "priority": "optional",
             "timeout": 30000

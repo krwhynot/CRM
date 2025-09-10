@@ -5,6 +5,7 @@
 
 import type { SupabaseClient, User } from '@supabase/supabase-js'
 import type { Database } from '@/lib/database.types'
+import { isDevelopment } from '@/config/environment'
 
 export interface DatabaseError extends Error {
   code?: string
@@ -21,7 +22,7 @@ export function surfaceError(err: unknown): string {
   const dbError = err as DatabaseError
 
   // Log the full error structure for debugging (development only)
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopment) {
     console.error('DB ERROR DETAILS', {
       code: dbError?.code,
       message: dbError?.message,

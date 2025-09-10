@@ -9,11 +9,12 @@ import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database.types'
 import { beforeAll, afterAll, beforeEach } from 'vitest'
 import '@testing-library/jest-dom'
+import { supabaseConfig, isTest } from '@/config/environment'
 
 // Test environment configuration
-const TEST_SUPABASE_URL = process.env.VITE_SUPABASE_URL
-const TEST_SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY
-const TEST_SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
+const TEST_SUPABASE_URL = supabaseConfig.url
+const TEST_SUPABASE_ANON_KEY = supabaseConfig.anonKey
+const TEST_SUPABASE_SERVICE_ROLE_KEY = supabaseConfig.serviceRoleKey
 
 if (!TEST_SUPABASE_URL || !TEST_SUPABASE_ANON_KEY) {
   throw new Error(
@@ -24,7 +25,7 @@ if (!TEST_SUPABASE_URL || !TEST_SUPABASE_ANON_KEY) {
 }
 
 // Create test Supabase clients - service role for backend tests, anon for frontend tests
-const useServiceRole = TEST_SUPABASE_SERVICE_ROLE_KEY && process.env.NODE_ENV === 'test'
+const useServiceRole = TEST_SUPABASE_SERVICE_ROLE_KEY && isTest
 const testKey = useServiceRole ? TEST_SUPABASE_SERVICE_ROLE_KEY : TEST_SUPABASE_ANON_KEY
 
 export const testSupabase = createClient<Database>(TEST_SUPABASE_URL, testKey, {

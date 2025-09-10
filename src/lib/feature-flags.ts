@@ -10,6 +10,8 @@
  * - Get user message: `FEATURE_FLAGS.xlsxExport.userMessage`
  */
 
+import { isDevelopment } from '@/config/environment'
+
 interface FeatureFlag {
   enabled: boolean
   userMessage?: string
@@ -96,7 +98,7 @@ export const FEATURE_FLAGS: FeatureFlagsConfig = {
   },
 
   debugMode: {
-    enabled: process.env.NODE_ENV === 'development',
+    enabled: isDevelopment,
     description: 'Development debugging features and logging',
     targetRelease: 'Development only',
   },
@@ -152,7 +154,7 @@ export function getFeaturesByRelease(release: string): Array<{
  * Allows temporary enabling of features for testing
  */
 export function overrideFeatureFlag(feature: keyof FeatureFlagsConfig, enabled: boolean): void {
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopment) {
     FEATURE_FLAGS[feature].enabled = enabled
     // Feature flag changes are handled silently
   }
