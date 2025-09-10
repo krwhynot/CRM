@@ -21,7 +21,7 @@ Generate a detailed, human-readable structure map for the KitchenPantry CRM whil
 ### Phase 2: Core Application Mapping (10 min)
 **Chunked Analysis - Primary Vite App**
 - [ ] `/src/components/` - Component architecture patterns
-  - Focus: UI organization (shadcn/ui, dashboard, entities)
+  - Focus: UI organization (shadcn/ui, forms, entities)
   - Skip: Individual component internals
 - [ ] `/src/hooks/` - Custom hooks inventory
 - [ ] `/src/lib/` - Utilities and configurations
@@ -72,7 +72,7 @@ Generate a detailed, human-readable structure map for the KitchenPantry CRM whil
 📁 **/src/**
 ├── 📁 **components/** - React components
 │   ├── 📁 ui/ - shadcn/ui primitives (buttons, forms, etc.)
-│   ├── 📁 dashboard/ - Dashboard-specific components
+│   ├── 📁 forms/ - Form components and patterns
 │   ├── 📁 organizations/ - Organization management
 │   ├── 📁 contacts/ - Contact management
 │   ├── 📁 products/ - Product catalog

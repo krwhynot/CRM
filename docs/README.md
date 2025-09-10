@@ -70,7 +70,7 @@ The system uses a modern, scalable architecture:
 
 ### Key Capabilities
 - Multi-principal opportunity management
-- Real-time activity feeds
+- Comprehensive interaction tracking
 - Advanced search and filtering
 - Excel data import/export
 - Mobile-first responsive design

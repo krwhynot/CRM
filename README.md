@@ -65,7 +65,7 @@ This codebase contains one main application:
 
 ```
 src/
-├── components/     # React components (dashboard, forms, UI components)
+├── components/     # React components (forms, UI components)
 ├── components/ui/  # shadcn/ui components  
 ├── hooks/         # Custom React hooks
 ├── lib/           # Utilities and shared functions
@@ -114,7 +114,7 @@ npx tsc --noEmit   # Type checking
 - **Mobile-Optimized**: iPad-focused responsive design for field sales
 - **Performance**: Sub-5ms database queries, <3s page loads
 - **Search**: Full-text search with trigram indexing
-- **Dashboard**: Real-time metrics and activity feeds
+- **Dashboard**: Clean minimal interface ready for customization
 - **Excel Import**: Complete Excel to PostgreSQL migration functionality
 
 ### 🎯 Production Status

@@ -33,8 +33,6 @@ style={{ height: `${Math.random() * 150 + 50}px` }}
 
 **Files:**
 - `src/components/ui/chart.tsx:343`
-- `src/features/dashboard/components/OpportunityKanban.tsx` (lines 129, 138, 160)
-- `src/features/dashboard/components/QuickActions.tsx:35`
 
 **Example:**
 ```tsx

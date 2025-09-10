@@ -63,14 +63,14 @@ Each SQL query should have one clear purpose. Use CTEs for complex logic.
 
 ```sql
 -- ✅ Good: Clear, single purpose
-WITH principal_activity AS (
-  SELECT principal_id, COUNT(*) as interaction_count
+WITH organization_activity AS (
+  SELECT organization_id, COUNT(*) as interaction_count
   FROM interactions 
   WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
     AND deleted_at IS NULL
-  GROUP BY principal_id
+  GROUP BY organization_id
 )
-SELECT * FROM principal_activity WHERE interaction_count > 5 LIMIT 100;
+SELECT * FROM organization_activity WHERE interaction_count > 5 LIMIT 100;
 ```
 
 ### 3. TypeScript-First Development
@@ -78,15 +78,15 @@ Never use `any` type. Always define explicit interfaces.
 
 ```typescript
 // ✅ Good: Explicit typing
-interface Principal {
+interface Organization {
   id: string;
   name: string;
-  engagement_level: 'High' | 'Medium' | 'Low' | 'Inactive';
-  last_interaction_date: Date;
+  priority: 'A+' | 'A' | 'B' | 'C' | 'D';
+  status: 'Active' | 'Inactive' | 'Prospect';
 }
 
 // ❌ Avoid
-const principal: any = { ... }
+const organization: any = { ... }
 ```
 
 ### 4. Component Composition Over Inheritance
@@ -94,15 +94,15 @@ Use shadcn/ui primitives wrapped in CRM-specific components.
 
 ```typescript
 // ✅ Good: Composition with shadcn/ui
-export function PrincipalCard({ principal }: { principal: Principal }) {
+export function OrganizationCard({ organization }: { organization: Organization }) {
   return (
     <Card className="p-4">
       <CardHeader>
-        <Badge variant={getBadgeVariant(principal.engagement_level)}>
-          {principal.engagement_level}
+        <Badge variant={getBadgeVariant(organization.priority)}>
+          {organization.priority}
         </Badge>
       </CardHeader>
-      <CardContent>{principal.name}</CardContent>
+      <CardContent>{organization.name}</CardContent>
     </Card>
   )
 }

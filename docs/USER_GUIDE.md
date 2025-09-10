@@ -10,12 +10,7 @@ Welcome to KitchenPantry CRM, designed specifically for Master Food Brokers fiel
 3. You'll be directed to the dashboard upon successful login
 
 ### Dashboard Overview
-The dashboard provides a quick view of:
-- Total Principals count
-- Active Opportunities
-- Total Organizations
-- Recent Interactions
-- Principal Overview cards showing priority and activity
+The dashboard provides a clean, minimal interface that serves as your starting point for CRM navigation. Use the sidebar menu to access different sections of the system.
 
 ## Core Workflows
 
