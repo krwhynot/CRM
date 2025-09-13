@@ -1,6 +1,6 @@
 import type { Database } from '../lib/database.types'
-import * as yup from 'yup'
-import { FormTransforms } from '../lib/form-transforms'
+import { z } from 'zod'
+import { ZodTransforms } from '../lib/form-transforms'
 import { DB_STAGES, DEFAULT_OPPORTUNITY_STAGE } from '../lib/opportunity-stage-mapping'
 import type { OpportunityWeeklyFilters } from './shared-filters.types'
 
@@ -39,75 +39,83 @@ export type OpportunityWithLastActivity = OpportunityWithRelations & {
 } & import('./shared-filters.types').WeeklyContextIndicators
 
 // Opportunity validation schema - updated for form compatibility
-export const opportunitySchema = yup.object({
+export const opportunitySchema = z.object({
   // REQUIRED FIELDS per specification
-  name: yup
+  name: z
     .string()
-    .required('Opportunity name is required')
+    .min(1, 'Opportunity name is required')
     .max(255, 'Name must be 255 characters or less'),
 
-  organization_id: yup
+  organization_id: z
     .string()
     .uuid('Invalid organization ID')
-    .required('Organization is required'),
+    .min(1, 'Organization is required'),
 
-  estimated_value: yup
+  estimated_value: z
     .number()
     .min(0, 'Estimated value must be positive')
-    .required('Estimated value is required')
-    .transform(FormTransforms.nullableNumber),
+    .transform(ZodTransforms.emptyStringToNullNumber),
 
-  stage: yup
-    .string()
-    .oneOf(DB_STAGES, 'Invalid opportunity stage')
-    .required('Stage is required')
+  stage: z
+    .enum([...DB_STAGES] as [string, ...string[]], {
+      required_error: 'Stage is required',
+      invalid_type_error: 'Invalid opportunity stage',
+    })
     .default(DEFAULT_OPPORTUNITY_STAGE),
 
-  status: yup
-    .string()
-    .oneOf(
+  status: z
+    .enum(
       ['Active', 'On Hold', 'Closed - Won', 'Closed - Lost', 'Nurturing', 'Qualified'],
-      'Invalid opportunity status'
+      {
+        required_error: 'Status is required',
+        invalid_type_error: 'Invalid opportunity status',
+      }
     )
     .default('Active'),
 
   // OPTIONAL FIELDS with transforms
-  contact_id: yup
+  contact_id: z
     .string()
     .uuid('Invalid contact ID')
-    .nullable()
-    .transform(FormTransforms.uuidField),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.normalizeUuid),
 
-  estimated_close_date: yup.string().nullable().transform(FormTransforms.nullableString),
+  estimated_close_date: z
+    .string()
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.emptyStringToNull),
 
-  description: yup
+  description: z
     .string()
     .max(1000, 'Description must be 1000 characters or less')
-    .nullable()
-    .transform(FormTransforms.nullableString),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.emptyStringToNull),
 
-  notes: yup
+  notes: z
     .string()
     .max(500, 'Notes must be 500 characters or less')
-    .nullable()
-    .transform(FormTransforms.nullableString),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.emptyStringToNull),
 
   // FIELDS for Principal CRM (optional for form compatibility)
-  principals: yup
-    .array()
-    .of(yup.string().uuid('Invalid principal organization ID'))
+  principals: z
+    .array(z.string().uuid('Invalid principal organization ID'))
     .default([])
-    .transform(FormTransforms.optionalArray),
+    .transform(ZodTransforms.ensureArray),
 
-  product_id: yup
+  product_id: z
     .string()
     .uuid('Invalid product ID')
-    .nullable()
-    .transform(FormTransforms.uuidField),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.normalizeUuid),
 
-  opportunity_context: yup
-    .string()
-    .oneOf(
+  opportunity_context: z
+    .enum(
       [
         'Site Visit',
         'Food Show',
@@ -117,143 +125,174 @@ export const opportunitySchema = yup.object({
         'Sampling',
         'Custom',
       ] as const,
-      'Invalid opportunity context'
+      {
+        invalid_type_error: 'Invalid opportunity context',
+      }
     )
-    .nullable()
-    .transform(FormTransforms.nullableString),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.emptyStringToNull),
 
-  auto_generated_name: yup.boolean().default(false),
+  auto_generated_name: z.boolean().default(false),
 
-  principal_id: yup
+  principal_id: z
     .string()
     .uuid('Invalid principal organization ID')
-    .nullable()
-    .transform(FormTransforms.uuidField),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.normalizeUuid),
 
-  probability: yup
+  probability: z
     .number()
     .min(0, 'Probability must be between 0-100')
     .max(100, 'Probability must be between 0-100')
-    .nullable()
-    .transform(FormTransforms.nullableNumber),
+    .optional()
+    .transform(ZodTransforms.emptyStringToNullNumber),
 
-  deal_owner: yup
+  deal_owner: z
     .string()
     .max(100, 'Deal owner must be 100 characters or less')
-    .nullable()
-    .transform(FormTransforms.nullableString),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.emptyStringToNull),
 })
 
 // Multiple Principal Opportunity Creation Schema
-export const multiPrincipalOpportunitySchema = yup.object({
-  // Organization and context info
-  organization_id: yup
-    .string()
-    .uuid('Invalid organization ID')
-    .required('Organization is required'),
+export const multiPrincipalOpportunitySchema = z
+  .object({
+    // Organization and context info
+    organization_id: z
+      .string()
+      .uuid('Invalid organization ID')
+      .min(1, 'Organization is required'),
 
-  contact_id: yup.string().uuid('Invalid contact ID').nullable(),
+    contact_id: z
+      .string()
+      .uuid('Invalid contact ID')
+      .optional()
+      .or(z.literal(''))
+      .transform(ZodTransforms.normalizeUuid),
 
-  // Multiple principals selection
-  principals: yup
-    .array()
-    .of(yup.string().uuid('Invalid principal organization ID'))
-    .min(1, 'At least one principal must be selected')
-    .required('Principals are required'),
+    // Multiple principals selection
+    principals: z
+      .array(z.string().uuid('Invalid principal organization ID'))
+      .min(1, 'At least one principal must be selected'),
 
-  // Auto-naming configuration
-  auto_generated_name: yup.boolean().default(true),
+    // Auto-naming configuration
+    auto_generated_name: z.boolean().default(true),
 
-  opportunity_context: yup
-    .string()
-    .oneOf(
-      [
-        'Site Visit',
-        'Food Show',
-        'New Product Interest',
-        'Follow-up',
-        'Demo Request',
-        'Sampling',
-        'Custom',
-      ] as const,
-      'Invalid opportunity context'
-    )
-    .required('Opportunity context is required for auto-naming'),
+    opportunity_context: z
+      .enum(
+        [
+          'Site Visit',
+          'Food Show',
+          'New Product Interest',
+          'Follow-up',
+          'Demo Request',
+          'Sampling',
+          'Custom',
+        ] as const,
+        {
+          required_error: 'Opportunity context is required for auto-naming',
+          invalid_type_error: 'Invalid opportunity context',
+        }
+      ),
 
-  custom_context: yup
-    .string()
-    .max(50, 'Custom context must be 50 characters or less')
-    .when('opportunity_context', {
-      is: 'Custom',
-      then: (schema) => schema.required('Custom context is required when selecting Custom'),
-      otherwise: (schema) => schema.nullable(),
-    }),
+    custom_context: z
+      .string()
+      .max(50, 'Custom context must be 50 characters or less')
+      .optional()
+      .or(z.literal(''))
+      .transform(ZodTransforms.emptyStringToNull),
 
-  // Opportunity details
-  stage: yup
-    .string()
-    .oneOf(
-      [
-        // New TypeScript-aligned values (preferred)
-        'lead',
-        'qualified',
-        'proposal',
-        'negotiation',
-        'closed_won',
-        'closed_lost',
-        // Legacy database values (backward compatibility)
-        'New Lead',
-        'Initial Outreach',
-        'Sample/Visit Offered',
-        'Awaiting Response',
-        'Feedback Logged',
-        'Demo Scheduled',
-        'Closed - Won',
-        'Closed - Lost',
-      ] as const,
-      'Invalid opportunity stage'
-    )
-    .default('lead'),
+    // Opportunity details
+    stage: z
+      .enum(
+        [
+          // New TypeScript-aligned values (preferred)
+          'lead',
+          'qualified',
+          'proposal',
+          'negotiation',
+          'closed_won',
+          'closed_lost',
+          // Legacy database values (backward compatibility)
+          'New Lead',
+          'Initial Outreach',
+          'Sample/Visit Offered',
+          'Awaiting Response',
+          'Feedback Logged',
+          'Demo Scheduled',
+          'Closed - Won',
+          'Closed - Lost',
+        ] as const,
+        {
+          invalid_type_error: 'Invalid opportunity stage',
+        }
+      )
+      .default('lead'),
 
-  status: yup
-    .string()
-    .oneOf(
-      [
-        // New TypeScript-aligned values (preferred)
-        'active',
-        'on_hold',
-        'closed_won',
-        'closed_lost',
-        'nurturing',
-        'qualified',
-        // Legacy database values (backward compatibility)
-        'Active',
-        'On Hold',
-        'Closed - Won',
-        'Closed - Lost',
-        'Nurturing',
-        'Qualified',
-      ] as const,
-      'Invalid opportunity status'
-    )
-    .default('active'),
+    status: z
+      .enum(
+        [
+          // New TypeScript-aligned values (preferred)
+          'active',
+          'on_hold',
+          'closed_won',
+          'closed_lost',
+          'nurturing',
+          'qualified',
+          // Legacy database values (backward compatibility)
+          'Active',
+          'On Hold',
+          'Closed - Won',
+          'Closed - Lost',
+          'Nurturing',
+          'Qualified',
+        ] as const,
+        {
+          invalid_type_error: 'Invalid opportunity status',
+        }
+      )
+      .default('active'),
 
-  probability: yup
-    .number()
-    .min(0, 'Probability must be between 0-100')
-    .max(100, 'Probability must be between 0-100')
-    .nullable(),
+    probability: z
+      .number()
+      .min(0, 'Probability must be between 0-100')
+      .max(100, 'Probability must be between 0-100')
+      .optional()
+      .transform(ZodTransforms.emptyStringToNullNumber),
 
-  estimated_close_date: yup.string().nullable(),
+    estimated_close_date: z
+      .string()
+      .optional()
+      .or(z.literal(''))
+      .transform(ZodTransforms.emptyStringToNull),
 
-  notes: yup.string().max(500, 'Notes must be 500 characters or less').nullable(),
-})
+    notes: z
+      .string()
+      .max(500, 'Notes must be 500 characters or less')
+      .optional()
+      .or(z.literal(''))
+      .transform(ZodTransforms.emptyStringToNull),
+  })
+  .refine(
+    (data) => {
+      // Custom context is required when opportunity_context is 'Custom'
+      if (data.opportunity_context === 'Custom') {
+        return data.custom_context && data.custom_context.trim().length > 0
+      }
+      return true
+    },
+    {
+      message: 'Custom context is required when selecting Custom',
+      path: ['custom_context'],
+    }
+  )
 
 // Type inference from validation schemas
-export type OpportunityFormData = yup.InferType<typeof opportunitySchema>
-export type MultiPrincipalOpportunityFormData = yup.InferType<
-  typeof multiPrincipalOpportunitySchema
->
+export type OpportunityFormData = z.infer<typeof opportunitySchema>
+export type MultiPrincipalOpportunityFormData = z.infer<typeof multiPrincipalOpportunitySchema>
 
 // Opportunity filters for queries - enhanced with weekly pattern
 export interface OpportunityFilters extends OpportunityWeeklyFilters {

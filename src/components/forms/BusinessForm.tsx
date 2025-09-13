@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { useForm, type FieldValues, type UseFormReturn, type Path } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { createTypedZodResolver } from '@/lib/form-resolver'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { Form } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { Progress } from '@/components/ui/progress'
 import { useDialogContext } from '@/contexts/DialogContext'
+import { semanticSpacing, semanticTypography, semanticRadius } from '@/styles/tokens'
 import {
   getFormGridClasses,
   getFormSpacingClasses,
@@ -14,7 +15,7 @@ import {
 } from '@/lib/utils/form-utils'
 import { FormFieldNew, type RegularFieldConfig } from './FormField'
 import { FormSubmitButton } from './FormSubmitButton'
-import type { AnyObjectSchema } from 'yup'
+import type { z } from 'zod'
 import { cn } from '@/lib/utils'
 
 /**
@@ -49,7 +50,7 @@ export interface BusinessFormField extends RegularFieldConfig {
 interface BusinessFormProps<T extends FieldValues = FieldValues> {
   sections: FormSection[]
   onSubmit: (data: T) => Promise<void> | void
-  validationSchema?: AnyObjectSchema
+  validationSchema?: z.ZodType<T>
   defaultValues?: Partial<T>
   loading?: boolean
   submitLabel?: string
@@ -83,7 +84,7 @@ export function BusinessForm<T extends FieldValues = FieldValues>({
   })
 
   const form = useForm<T>({
-    resolver: validationSchema ? yupResolver(validationSchema) : undefined,
+    resolver: validationSchema ? createTypedZodResolver(validationSchema) : undefined,
     defaultValues: defaultValues as never,
     mode: 'onBlur',
   })
@@ -150,8 +151,10 @@ export function BusinessForm<T extends FieldValues = FieldValues>({
       <form onSubmit={form.handleSubmit(handleSubmit)} className={cn(spacingClasses, className)}>
         {/* Progress Indicator */}
         {showProgress && (
-          <div className="mb-6 space-y-2">
-            <div className="flex justify-between text-sm text-muted-foreground">
+          <div className={cn(semanticSpacing.bottomGap.md, semanticSpacing.stack.xs)}>
+            <div
+              className={cn(semanticTypography.body, 'flex justify-between text-muted-foreground')}
+            >
               <span>Form Progress</span>
               <span>{calculateProgress()}%</span>
             </div>
@@ -201,7 +204,7 @@ export function BusinessForm<T extends FieldValues = FieldValues>({
   )
 }
 
-// Section renderer component  
+// Section renderer component
 interface FormSectionRendererProps<T extends FieldValues = FieldValues> {
   section: FormSection
   form: UseFormReturn<T>
@@ -251,10 +254,18 @@ function FormSectionRenderer<T extends FieldValues = FieldValues>({
             <Button
               type="button"
               variant="ghost"
-              className="h-auto w-full justify-between border border-dashed border-gray-300 p-3 hover:border-gray-400 hover:bg-gray-50/50"
+              className={cn(
+                semanticSpacing.compact,
+                'h-auto w-full justify-between border border-dashed border-gray-300 hover:border-gray-400 hover:bg-gray-50/50'
+              )}
             >
-              <div className="flex items-center gap-3">
-                <div className="flex size-6 items-center justify-center rounded border bg-gray-100">
+              <div className={cn(semanticSpacing.gap.sm, 'flex items-center')}>
+                <div
+                  className={cn(
+                    semanticRadius.small,
+                    'flex size-6 items-center justify-center border bg-gray-100'
+                  )}
+                >
                   {isExpanded ? (
                     <ChevronDown className="size-4" />
                   ) : (
@@ -262,9 +273,11 @@ function FormSectionRenderer<T extends FieldValues = FieldValues>({
                   )}
                 </div>
                 <div className="text-left">
-                  <div className="font-medium">{section.title}</div>
+                  <div className={`${semanticTypography.label}`}>{section.title}</div>
                   {section.description && (
-                    <div className="text-sm text-muted-foreground">{section.description}</div>
+                    <div className={cn(semanticTypography.body, 'text-muted-foreground')}>
+                      {section.description}
+                    </div>
                   )}
                 </div>
               </div>
@@ -281,13 +294,15 @@ function FormSectionRenderer<T extends FieldValues = FieldValues>({
   return (
     <div className={cn(spacingClasses, section.className)}>
       {section.title && (
-        <div className="mb-4 space-y-1">
-          <h3 className="text-lg font-medium text-gray-900">
+        <div className={cn(semanticSpacing.bottomGap.sm, semanticSpacing.stack.xs)}>
+          <h3 className={cn(semanticTypography.h4, semanticTypography.label)}>
             {section.title}
-            {section.required && <span className="ml-1 text-red-500">*</span>}
+            {section.required && <span className="ml-1 text-destructive">*</span>}
           </h3>
           {section.description && (
-            <p className="text-sm text-muted-foreground">{section.description}</p>
+            <p className={cn(semanticTypography.body, 'text-muted-foreground')}>
+              {section.description}
+            </p>
           )}
         </div>
       )}

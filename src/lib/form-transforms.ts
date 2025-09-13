@@ -1,11 +1,13 @@
 /**
  * Form Transform Utilities
  *
- * Reusable transform functions for Yup schemas to handle common type conversion
+ * Reusable transform functions for Zod schemas to handle common type conversion
  * patterns and prevent TypeScript type mismatches between forms and validation.
+ * All transform functions are compatible with Zod's .transform() methods.
  */
 
-import { isDevelopment } from '@/config/environment'
+import { z } from 'zod'
+import { isDevelopment } from '../config/environment'
 
 /**
  * Transforms empty strings to null values
@@ -199,6 +201,107 @@ export const debugTransform = () => {
     // Transform debugging is handled silently
     // Use browser dev tools for debugging if needed
   }
+}
+
+/**
+ * Zod-specific utility patterns for common validation scenarios
+ * These helpers create common Zod schema patterns used in the migration
+ */
+export const ZodFormPatterns = {
+  /**
+   * Creates a Zod schema for nullable string fields that accepts empty strings
+   * Equivalent to .optional().or(z.literal('')) pattern from CRMFormSchemas
+   */
+  nullableString: <T extends z.ZodString>(zodString: T) =>
+    zodString.optional().or(z.literal('')),
+
+  /**
+   * Creates a Zod schema for nullable number fields
+   * For optional numeric fields that can be undefined
+   */
+  nullableNumber: <T extends z.ZodNumber>(zodNumber: T) =>
+    zodNumber.optional(),
+
+  /**
+   * Creates a Zod schema for nullable UUID fields
+   * Accepts empty strings and converts them to undefined
+   */
+  nullableUuid: <T extends z.ZodString>(zodString: T) =>
+    zodString.uuid().optional().or(z.literal('')),
+
+  /**
+   * Creates a Zod schema for optional array fields with empty array default
+   * Ensures arrays are never null/undefined
+   */
+  optionalArray: <T extends z.ZodArray<z.ZodTypeAny>>(zodArray: T) =>
+    zodArray.default([]),
+
+  /**
+   * Creates a Zod schema for nullable URL fields
+   * Accepts empty strings for optional URL inputs
+   */
+  nullableUrl: <T extends z.ZodString>(zodString: T) =>
+    zodString.url().optional().or(z.literal('')),
+
+  /**
+   * Creates a Zod schema for optional boolean fields with default
+   */
+  optionalBoolean: <T extends z.ZodBoolean>(zodBoolean: T) =>
+    zodBoolean.default(false),
+}
+
+/**
+ * Zod transform wrappers that apply our transform functions
+ * These provide a bridge between existing transforms and Zod's API
+ */
+export const ZodTransforms = {
+  /**
+   * Wraps emptyStringToNull for use in Zod .transform() chains
+   */
+  emptyStringToNull: (value: string | undefined) => {
+    if (value === undefined) return null
+    return emptyStringToNull(value)
+  },
+
+  /**
+   * Wraps normalizeEmail for use in Zod .transform() chains
+   */
+  normalizeEmail: (value: string | undefined) => {
+    if (value === undefined) return null
+    return normalizeEmail(value)
+  },
+
+  /**
+   * Wraps normalizePhone for use in Zod .transform() chains
+   */
+  normalizePhone: (value: string | undefined) => {
+    if (value === undefined) return null
+    return normalizePhone(value)
+  },
+
+  /**
+   * Wraps normalizeUuid for use in Zod .transform() chains
+   */
+  normalizeUuid: (value: string | undefined) => {
+    if (value === undefined) return null
+    return normalizeUuid(value)
+  },
+
+  /**
+   * Wraps emptyStringToNullNumber for use in Zod .transform() chains
+   */
+  emptyStringToNullNumber: (value: number | string | undefined) => {
+    if (value === undefined) return null
+    return emptyStringToNullNumber(value)
+  },
+
+  /**
+   * Wraps ensureArray for use in Zod .transform() chains
+   */
+  ensureArray: <T>(value: T[] | T | undefined) => {
+    if (value === undefined) return []
+    return ensureArray(value)
+  },
 }
 
 export default FormTransforms

@@ -7,7 +7,8 @@ import { organizationSchema } from './organization.types'
 import { opportunitySchema, multiPrincipalOpportunitySchema } from './opportunity.types'
 import { interactionSchema, interactionWithOpportunitySchema } from './interaction.types'
 import { PRODUCT_CATEGORIES } from '@/constants/product.constants'
-import * as yup from 'yup'
+import { z } from 'zod'
+import { ZodTransforms } from '@/lib/form-transforms'
 
 // Re-export schemas for easy access
 export {
@@ -20,134 +21,232 @@ export {
 }
 
 // Product validation schema - enhanced with principal mode selection
-export const productSchema = yup.object({
-  name: yup
-    .string()
-    .required('Product name is required')
-    .max(255, 'Name must be 255 characters or less'),
-  principal_id: yup
-    .string()
-    .uuid('Invalid principal ID')
-    .when('principal_mode', {
-      is: 'existing',
-      then: (schema) => schema.required('Principal organization is required'),
-      otherwise: (schema) => schema.nullable(),
-    }),
-  category: yup.string().required('Category is required').oneOf(
-    PRODUCT_CATEGORIES,
-    'Invalid category'
-  ),
-  description: yup.string().max(1000, 'Description must be 1000 characters or less').nullable(),
-  sku: yup.string().max(100, 'SKU must be 100 characters or less').nullable(),
-  unit_of_measure: yup.string().max(50, 'Unit of measure must be 50 characters or less').nullable(),
-  unit_cost: yup.number().positive('Unit cost must be positive').nullable(),
-  list_price: yup.number().positive('List price must be positive').nullable(),
-  min_order_quantity: yup
-    .number()
-    .positive('Minimum order quantity must be positive')
-    .integer('Minimum order quantity must be a whole number')
-    .nullable(),
-  season_start: yup
-    .number()
-    .integer('Season start must be a month (1-12)')
-    .min(1, 'Season start must be between 1-12')
-    .max(12, 'Season start must be between 1-12')
-    .nullable(),
-  season_end: yup
-    .number()
-    .integer('Season end must be a month (1-12)')
-    .min(1, 'Season end must be between 1-12')
-    .max(12, 'Season end must be between 1-12')
-    .nullable(),
-  shelf_life_days: yup
-    .number()
-    .positive('Shelf life must be positive')
-    .integer('Shelf life must be a whole number')
-    .nullable(),
-  storage_requirements: yup
-    .string()
-    .max(500, 'Storage requirements must be 500 characters or less')
-    .nullable(),
-  specifications: yup
-    .string()
-    .max(1000, 'Specifications must be 1000 characters or less')
-    .nullable(),
+export const productSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, 'Product name is required')
+      .max(255, 'Name must be 255 characters or less'),
+    principal_id: z
+      .string()
+      .uuid('Invalid principal ID')
+      .optional()
+      .or(z.literal(''))
+      .transform(ZodTransforms.emptyStringToNull),
+    category: z
+      .string()
+      .min(1, 'Category is required')
+      .refine((val) => PRODUCT_CATEGORIES.includes(val as (typeof PRODUCT_CATEGORIES)[number]), 'Invalid category'),
+    description: z
+      .string()
+      .max(1000, 'Description must be 1000 characters or less')
+      .optional()
+      .or(z.literal(''))
+      .transform(ZodTransforms.emptyStringToNull),
+    sku: z
+      .string()
+      .max(100, 'SKU must be 100 characters or less')
+      .optional()
+      .or(z.literal(''))
+      .transform(ZodTransforms.emptyStringToNull),
+    unit_of_measure: z
+      .string()
+      .max(50, 'Unit of measure must be 50 characters or less')
+      .optional()
+      .or(z.literal(''))
+      .transform(ZodTransforms.emptyStringToNull),
+    unit_cost: z
+      .union([z.number().positive('Unit cost must be positive'), z.string()])
+      .optional()
+      .transform((val) => {
+        if (val === undefined || val === '') return null
+        const num = typeof val === 'string' ? Number(val) : val
+        return isNaN(num) ? null : num
+      }),
+    list_price: z
+      .union([z.number().positive('List price must be positive'), z.string()])
+      .optional()
+      .transform((val) => {
+        if (val === undefined || val === '') return null
+        const num = typeof val === 'string' ? Number(val) : val
+        return isNaN(num) ? null : num
+      }),
+    min_order_quantity: z
+      .union([z.number().positive('Minimum order quantity must be positive').int('Minimum order quantity must be a whole number'), z.string()])
+      .optional()
+      .transform((val) => {
+        if (val === undefined || val === '') return null
+        const num = typeof val === 'string' ? Number(val) : val
+        return isNaN(num) ? null : num
+      }),
+    season_start: z
+      .union([z.number().int('Season start must be a month (1-12)').min(1, 'Season start must be between 1-12').max(12, 'Season start must be between 1-12'), z.string()])
+      .optional()
+      .transform((val) => {
+        if (val === undefined || val === '') return null
+        const num = typeof val === 'string' ? Number(val) : val
+        return isNaN(num) ? null : num
+      }),
+    season_end: z
+      .union([z.number().int('Season end must be a month (1-12)').min(1, 'Season end must be between 1-12').max(12, 'Season end must be between 1-12'), z.string()])
+      .optional()
+      .transform((val) => {
+        if (val === undefined || val === '') return null
+        const num = typeof val === 'string' ? Number(val) : val
+        return isNaN(num) ? null : num
+      }),
+    shelf_life_days: z
+      .union([z.number().positive('Shelf life must be positive').int('Shelf life must be a whole number'), z.string()])
+      .optional()
+      .transform((val) => {
+        if (val === undefined || val === '') return null
+        const num = typeof val === 'string' ? Number(val) : val
+        return isNaN(num) ? null : num
+      }),
+    storage_requirements: z
+      .string()
+      .max(500, 'Storage requirements must be 500 characters or less')
+      .optional()
+      .or(z.literal(''))
+      .transform(ZodTransforms.emptyStringToNull),
+    specifications: z
+      .string()
+      .max(1000, 'Specifications must be 1000 characters or less')
+      .optional()
+      .or(z.literal(''))
+      .transform(ZodTransforms.emptyStringToNull),
 
-  // PRINCIPAL MODE FIELDS for new principal creation
-  principal_mode: yup
-    .string()
-    .oneOf(['existing', 'new'] as const, 'Invalid principal mode')
-    .default('existing'),
-  principal_name: yup
-    .string()
-    .max(255, 'Principal name must be 255 characters or less')
-    .when('principal_mode', {
-      is: 'new',
-      then: (schema) => schema.required('Principal name is required'),
-      otherwise: (schema) => schema.nullable(),
-    }),
-  principal_segment: yup
-    .string()
-    .max(100, 'Principal segment must be 100 characters or less')
-    .when('principal_mode', {
-      is: 'new',
-      then: (schema) => schema.nullable(),
-      otherwise: (schema) => schema.nullable(),
-    }),
-  principal_phone: yup
-    .string()
-    .max(50, 'Phone must be 50 characters or less')
-    .when('principal_mode', {
-      is: 'new',
-      then: (schema) => schema.nullable(),
-      otherwise: (schema) => schema.nullable(),
-    }),
-  principal_email: yup
-    .string()
-    .email('Invalid email address')
-    .max(255, 'Email must be 255 characters or less')
-    .when('principal_mode', {
-      is: 'new',
-      then: (schema) => schema.nullable(),
-      otherwise: (schema) => schema.nullable(),
-    }),
-  principal_website: yup
-    .string()
-    .url('Invalid website URL')
-    .max(255, 'Website must be 255 characters or less')
-    .when('principal_mode', {
-      is: 'new',
-      then: (schema) => schema.nullable(),
-      otherwise: (schema) => schema.nullable(),
-    }),
-})
+    // PRINCIPAL MODE FIELDS for new principal creation
+    principal_mode: z
+      .enum(['existing', 'new'] as const, {
+        errorMap: () => ({ message: 'Invalid principal mode' })
+      })
+      .default('existing'),
+    principal_name: z
+      .string()
+      .max(255, 'Principal name must be 255 characters or less')
+      .optional()
+      .or(z.literal(''))
+      .transform(ZodTransforms.emptyStringToNull),
+    principal_segment: z
+      .string()
+      .max(100, 'Principal segment must be 100 characters or less')
+      .optional()
+      .or(z.literal(''))
+      .transform(ZodTransforms.emptyStringToNull),
+    principal_phone: z
+      .string()
+      .max(50, 'Phone must be 50 characters or less')
+      .optional()
+      .or(z.literal(''))
+      .transform(ZodTransforms.emptyStringToNull),
+    principal_email: z
+      .string()
+      .email('Invalid email address')
+      .max(255, 'Email must be 255 characters or less')
+      .optional()
+      .or(z.literal(''))
+      .transform(ZodTransforms.normalizeEmail),
+    principal_website: z
+      .string()
+      .url('Invalid website URL')
+      .max(255, 'Website must be 255 characters or less')
+      .optional()
+      .or(z.literal(''))
+      .transform(ZodTransforms.emptyStringToNull),
+  })
+  .refine(
+    (data) => {
+      if (data.principal_mode === 'existing') {
+        return data.principal_id !== null && data.principal_id !== ''
+      }
+      return true
+    },
+    {
+      message: 'Principal organization is required',
+      path: ['principal_id'],
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.principal_mode === 'new') {
+        return data.principal_name !== null && data.principal_name !== ''
+      }
+      return true
+    },
+    {
+      message: 'Principal name is required',
+      path: ['principal_name'],
+    }
+  )
 
 // Supporting schemas for junction tables and relationships
-export const opportunityProductSchema = yup.object({
-  opportunity_id: yup.string().uuid('Invalid opportunity ID').required('Opportunity is required'),
-  product_id: yup.string().uuid('Invalid product ID').required('Product is required'),
-  quantity: yup.number().positive('Quantity must be positive').required('Quantity is required'),
-  unit_price: yup.number().positive('Unit price must be positive').nullable(),
-  extended_price: yup.number().positive('Extended price must be positive').nullable(),
-  notes: yup.string().max(500, 'Notes must be 500 characters or less'),
+export const opportunityProductSchema = z.object({
+  opportunity_id: z
+    .string()
+    .uuid('Invalid opportunity ID')
+    .min(1, 'Opportunity is required'),
+  product_id: z
+    .string()
+    .uuid('Invalid product ID')
+    .min(1, 'Product is required'),
+  quantity: z
+    .number()
+    .positive('Quantity must be positive')
+    .min(1, 'Quantity is required'),
+  unit_price: z
+    .union([z.number().positive('Unit price must be positive'), z.string()])
+    .optional()
+    .transform((val) => {
+      if (val === undefined || val === '') return null
+      const num = typeof val === 'string' ? Number(val) : val
+      return isNaN(num) ? null : num
+    }),
+  extended_price: z
+    .union([z.number().positive('Extended price must be positive'), z.string()])
+    .optional()
+    .transform((val) => {
+      if (val === undefined || val === '') return null
+      const num = typeof val === 'string' ? Number(val) : val
+      return isNaN(num) ? null : num
+    }),
+  notes: z
+    .string()
+    .max(500, 'Notes must be 500 characters or less')
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.emptyStringToNull),
 })
 
-export const contactPreferredPrincipalSchema = yup.object({
-  contact_id: yup.string().uuid('Invalid contact ID').required('Contact is required'),
-  principal_organization_id: yup
+export const contactPreferredPrincipalSchema = z.object({
+  contact_id: z
+    .string()
+    .uuid('Invalid contact ID')
+    .min(1, 'Contact is required'),
+  principal_organization_id: z
     .string()
     .uuid('Invalid principal organization ID')
-    .required('Principal organization is required'),
-  advocacy_strength: yup
-    .number()
-    .min(1, 'Advocacy strength must be between 1-10')
-    .max(10, 'Advocacy strength must be between 1-10')
-    .nullable(),
-  relationship_type: yup
+    .min(1, 'Principal organization is required'),
+  advocacy_strength: z
+    .union([z.number().min(1, 'Advocacy strength must be between 1-10').max(10, 'Advocacy strength must be between 1-10'), z.string()])
+    .optional()
+    .transform((val) => {
+      if (val === undefined || val === '') return null
+      const num = typeof val === 'string' ? Number(val) : val
+      return isNaN(num) ? null : num
+    }),
+  relationship_type: z
     .string()
     .max(100, 'Relationship type must be 100 characters or less')
-    .nullable(),
-  advocacy_notes: yup.string().max(500, 'Advocacy notes must be 500 characters or less').nullable(),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.emptyStringToNull),
+  advocacy_notes: z
+    .string()
+    .max(500, 'Advocacy notes must be 500 characters or less')
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.emptyStringToNull),
 })
 
 // Export all schemas for easy use - Principal CRM aligned
@@ -173,8 +272,6 @@ export type { OpportunityFormData, MultiPrincipalOpportunityFormData } from './o
 export type { InteractionFormData, InteractionWithOpportunityFormData } from './interaction.types'
 
 // Supporting form data types
-export type ProductFormData = yup.InferType<typeof productSchema>
-export type OpportunityProductFormData = yup.InferType<typeof opportunityProductSchema>
-export type ContactPreferredPrincipalFormData = yup.InferType<
-  typeof contactPreferredPrincipalSchema
->
+export type ProductFormData = z.infer<typeof productSchema>
+export type OpportunityProductFormData = z.infer<typeof opportunityProductSchema>
+export type ContactPreferredPrincipalFormData = z.infer<typeof contactPreferredPrincipalSchema>

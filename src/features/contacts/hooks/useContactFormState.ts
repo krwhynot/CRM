@@ -1,7 +1,7 @@
-import type React from 'react'
+import type { BaseSyntheticEvent } from 'react'
 import { useForm } from 'react-hook-form'
 import { contactSchema, type ContactFormData } from '@/types/contact.types'
-import { createTypedYupResolver } from '@/lib/form-resolver'
+import { createTypedZodResolver } from '@/lib/form-resolver'
 
 interface UseContactFormStateProps {
   initialData?: Partial<ContactFormData>
@@ -11,7 +11,7 @@ interface UseContactFormStateProps {
 
 interface UseContactFormStateReturn {
   form: ReturnType<typeof useForm<ContactFormData>>
-  handleSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>
+  handleSubmit: (e?: BaseSyntheticEvent) => Promise<void>
 }
 
 export const useContactFormState = ({
@@ -20,7 +20,7 @@ export const useContactFormState = ({
   onSubmit,
 }: UseContactFormStateProps): UseContactFormStateReturn => {
   const form = useForm<ContactFormData>({
-    resolver: createTypedYupResolver<ContactFormData>(contactSchema),
+    resolver: createTypedZodResolver<ContactFormData>(contactSchema),
     defaultValues: {
       first_name: initialData?.first_name || '',
       last_name: initialData?.last_name || '',

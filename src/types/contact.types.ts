@@ -1,5 +1,5 @@
 import type { Database } from '../lib/database.types'
-import * as yup from 'yup'
+import { z } from 'zod'
 import { FormTransforms } from '../lib/form-transforms'
 
 // Principal CRM Business Logic Types
@@ -46,162 +46,163 @@ export type ContactWithRelations = Contact & {
   preferred_principals?: Database['public']['Tables']['contact_preferred_principals']['Row'][]
 }
 
-// Contact validation schema - aligned with database schema
-export const contactSchema = yup.object({
+// Base contact schema for common fields
+const baseContactSchema = z.object({
   // REQUIRED FIELDS
-  first_name: yup
+  first_name: z
     .string()
-    .required('First name is required')
+    .min(1, 'First name is required')
     .max(100, 'First name must be 100 characters or less'),
 
-  last_name: yup
+  last_name: z
     .string()
-    .required('Last name is required')
+    .min(1, 'Last name is required')
     .max(100, 'Last name must be 100 characters or less'),
 
-  organization_id: yup
+  organization_id: z
     .string()
     .uuid('Invalid organization ID')
     .nullable()
     .transform(FormTransforms.nullableString),
 
-  purchase_influence: yup
-    .string()
-    .oneOf(['High', 'Medium', 'Low', 'Unknown'] as const, 'Invalid purchase influence level')
-    .required('Purchase influence is required')
+  purchase_influence: z
+    .enum(['High', 'Medium', 'Low', 'Unknown'], {
+      errorMap: () => ({ message: 'Invalid purchase influence level' })
+    })
     .default('Unknown'),
 
-  decision_authority: yup
-    .string()
-    .oneOf(
-      ['Decision Maker', 'Influencer', 'End User', 'Gatekeeper'] as const,
-      'Invalid decision authority role'
-    )
-    .required('Decision authority is required')
+  decision_authority: z
+    .enum(['Decision Maker', 'Influencer', 'End User', 'Gatekeeper'], {
+      errorMap: () => ({ message: 'Invalid decision authority role' })
+    })
     .default('Gatekeeper'),
 
   // Database field is 'role' with enum values
-  role: yup
-    .string()
-    .oneOf(
-      ['decision_maker', 'influencer', 'buyer', 'end_user', 'gatekeeper', 'champion'] as const,
-      'Invalid role'
-    )
+  role: z
+    .enum(['decision_maker', 'influencer', 'buyer', 'end_user', 'gatekeeper', 'champion'], {
+      errorMap: () => ({ message: 'Invalid role' })
+    })
     .nullable()
     .transform(FormTransforms.nullableString),
 
   // OPTIONAL FIELDS - Database schema aligned with transforms
-  email: yup
+  email: z
     .string()
     .email('Invalid email address')
     .max(255, 'Email must be 255 characters or less')
     .nullable()
     .transform(FormTransforms.nullableEmail),
 
-  title: yup
+  title: z
     .string()
     .max(100, 'Title must be 100 characters or less')
     .nullable()
     .transform(FormTransforms.nullableString),
 
-  department: yup
+  department: z
     .string()
     .max(100, 'Department must be 100 characters or less')
     .nullable()
     .transform(FormTransforms.nullableString),
 
-  phone: yup
+  phone: z
     .string()
     .max(50, 'Phone must be 50 characters or less')
     .nullable()
     .transform(FormTransforms.nullablePhone),
 
-  mobile_phone: yup
+  mobile_phone: z
     .string()
     .max(50, 'Mobile phone must be 50 characters or less')
     .nullable()
     .transform(FormTransforms.nullablePhone),
 
-  linkedin_url: yup
+  linkedin_url: z
     .string()
     .url('Invalid LinkedIn URL')
     .max(500, 'LinkedIn URL must be 500 characters or less')
     .nullable()
     .transform(FormTransforms.nullableUrl),
 
-  is_primary_contact: yup.boolean().nullable().default(false),
+  is_primary_contact: z.boolean().nullable().default(false),
 
-  notes: yup
+  notes: z
     .string()
     .max(500, 'Notes must be 500 characters or less')
     .nullable()
     .transform(FormTransforms.nullableString),
 
   // VIRTUAL FIELDS for form handling (not persisted to database)
-  preferred_principals: yup
-    .array()
-    .of(yup.string().uuid('Invalid principal organization ID'))
+  preferred_principals: z
+    .array(z.string().uuid('Invalid principal organization ID'))
     .default([])
     .transform(FormTransforms.optionalArray),
 
-  // ORGANIZATION MODE FIELDS for new organization creation
-  organization_mode: yup
-    .string()
-    .oneOf(['existing', 'new'] as const, 'Invalid organization mode')
-    .default('existing'),
-
-  organization_name: yup
-    .string()
-    .max(255, 'Organization name must be 255 characters or less')
-    .nullable()
-    .transform(FormTransforms.nullableString)
-    .when('organization_mode', {
-      is: 'new',
-      then: (schema) => schema.required('Organization name is required when creating a new organization'),
-    }),
-
-  organization_type: yup
-    .string()
-    .oneOf(
-      ['customer', 'principal', 'distributor', 'prospect', 'vendor'] as const,
-      'Invalid organization type'
-    )
-    .nullable()
-    .transform(FormTransforms.nullableString)
-    .when('organization_mode', {
-      is: 'new',
-      then: (schema) => schema.required('Organization type is required when creating a new organization'),
-    }),
-
-  organization_phone: yup
+  // Organization contact fields (always optional)
+  organization_phone: z
     .string()
     .max(50, 'Phone must be 50 characters or less')
     .nullable()
     .transform(FormTransforms.nullablePhone),
 
-  organization_email: yup
+  organization_email: z
     .string()
     .email('Invalid email address')
     .max(255, 'Email must be 255 characters or less')
     .nullable()
     .transform(FormTransforms.nullableEmail),
 
-  organization_website: yup
+  organization_website: z
     .string()
     .url('Invalid website URL')
     .max(500, 'Website must be 500 characters or less')
     .nullable()
     .transform(FormTransforms.nullableUrl),
 
-  organization_notes: yup
+  organization_notes: z
     .string()
     .max(500, 'Notes must be 500 characters or less')
     .nullable()
     .transform(FormTransforms.nullableString),
-})
+});
+
+// Contact validation schema with discriminated union for organization mode
+export const contactSchema = z.discriminatedUnion('organization_mode', [
+  // Existing organization mode
+  baseContactSchema.extend({
+    organization_mode: z.literal('existing'),
+    organization_name: z
+      .string()
+      .max(255, 'Organization name must be 255 characters or less')
+      .nullable()
+      .transform(FormTransforms.nullableString)
+      .optional(),
+    organization_type: z
+      .enum(['customer', 'principal', 'distributor', 'prospect', 'vendor'], {
+        errorMap: () => ({ message: 'Invalid organization type' })
+      })
+      .nullable()
+      .transform(FormTransforms.nullableString)
+      .optional(),
+  }),
+  // New organization mode
+  baseContactSchema.extend({
+    organization_mode: z.literal('new'),
+    organization_name: z
+      .string()
+      .min(1, 'Organization name is required when creating a new organization')
+      .max(255, 'Organization name must be 255 characters or less')
+      .transform(FormTransforms.nullableString),
+    organization_type: z
+      .enum(['customer', 'principal', 'distributor', 'prospect', 'vendor'], {
+        errorMap: () => ({ message: 'Invalid organization type' })
+      })
+      .transform(FormTransforms.nullableString),
+  }),
+]).default({ organization_mode: 'existing' })
 
 // Type inference from validation schema
-export type ContactFormData = yup.InferType<typeof contactSchema>
+export type ContactFormData = z.infer<typeof contactSchema>
 
 // Contact filters for queries
 export interface ContactFilters {

@@ -1,5 +1,5 @@
 import type { Database } from '../lib/database.types'
-import * as yup from 'yup'
+import { z } from 'zod'
 import type { InteractionWeeklyFilters } from './shared-filters.types'
 
 // Interaction type enum from database - enhanced to match user's spreadsheet data
@@ -35,7 +35,7 @@ export type InteractionWithRelations = Interaction & {
     formula?: string // Formula field like "Sysco Chicago"
   }
   opportunity: Database['public']['Tables']['opportunities']['Row'] // Required relationship
-  
+
   // New enhanced fields matching user's spreadsheet
   priority?: InteractionPriority
   account_manager?: AccountManager | string
@@ -43,132 +43,154 @@ export type InteractionWithRelations = Interaction & {
   import_notes?: string // For data migration notes
 }
 
-// Interaction validation schema - Enhanced with user's spreadsheet fields
-export const interactionSchema = yup.object({
+// Base interaction schema without refinements - for extending
+const baseInteractionSchema = z.object({
   // REQUIRED FIELDS per specification
-  type: yup
-    .string()
-    .oneOf(
-      [
-        'call',
-        'email',
-        'meeting',
-        'demo', 
-        'proposal',
-        'follow_up',
-        'trade_show',
-        'site_visit',
-        'contract_review',
-        // New types matching user's spreadsheet
-        'in_person',
-        'quoted',
-        'distribution',
-      ] as const,
-      'Invalid interaction type'
-    )
-    .required('Interaction type is required'),
+  type: z.enum(
+    [
+      'call',
+      'email',
+      'meeting',
+      'demo',
+      'proposal',
+      'follow_up',
+      'trade_show',
+      'site_visit',
+      'contract_review',
+      // New types matching user's spreadsheet
+      'in_person',
+      'quoted',
+      'distribution',
+    ],
+    {
+      required_error: 'Interaction type is required',
+      invalid_type_error: 'Invalid interaction type',
+    }
+  ),
 
-  interaction_date: yup.string().required('Interaction date is required'),
+  interaction_date: z.string().min(1, 'Interaction date is required'),
 
-  subject: yup
+  subject: z
     .string()
-    .required('Subject is required')
+    .min(1, 'Subject is required')
     .max(255, 'Subject must be 255 characters or less'),
 
-  opportunity_id: yup.string().uuid('Invalid opportunity ID').required('Opportunity is required'),
+  opportunity_id: z.string().uuid('Invalid opportunity ID'),
 
   // OPTIONAL FIELDS per specification
-  location: yup.string().max(255, 'Location must be 255 characters or less').nullable(),
+  location: z
+    .string()
+    .max(255, 'Location must be 255 characters or less')
+    .nullable()
+    .optional(),
 
-  notes: yup.string().max(500, 'Notes must be 500 characters or less').nullable(),
+  notes: z
+    .string()
+    .max(500, 'Notes must be 500 characters or less')
+    .nullable()
+    .optional(),
 
-  follow_up_required: yup.boolean().default(false),
+  follow_up_required: z.boolean().default(false),
 
-  follow_up_date: yup
+  follow_up_date: z
     .string()
     .nullable()
-    .when('follow_up_required', {
-      is: true,
-      then: (schema) => schema.required('Follow-up date is required when follow-up is needed'),
-      otherwise: (schema) => schema.nullable(),
-    }),
+    .optional(),
 
   // Additional database fields
-  duration_minutes: yup.number().min(1, 'Duration must be at least 1 minute').nullable(),
+  duration_minutes: z
+    .number()
+    .min(1, 'Duration must be at least 1 minute')
+    .nullable()
+    .optional(),
 
-  contact_id: yup.string().uuid('Invalid contact ID').nullable(),
+  contact_id: z.string().uuid('Invalid contact ID').nullable().optional(),
 
-  organization_id: yup.string().uuid('Invalid organization ID').nullable(),
+  organization_id: z.string().uuid('Invalid organization ID').nullable().optional(),
 
-  description: yup.string().max(1000, 'Description must be 1000 characters or less').nullable(),
-
-  outcome: yup
+  description: z
     .string()
-    .oneOf(['successful', 'follow_up_needed', 'not_interested', 'postponed', 'no_response'])
-    .nullable(),
+    .max(1000, 'Description must be 1000 characters or less')
+    .nullable()
+    .optional(),
 
-  follow_up_notes: yup
+  outcome: z
+    .enum(['successful', 'follow_up_needed', 'not_interested', 'postponed', 'no_response'])
+    .nullable()
+    .optional(),
+
+  follow_up_notes: z
     .string()
     .max(500, 'Follow-up notes must be 500 characters or less')
-    .nullable(),
+    .nullable()
+    .optional(),
 
   // Enhanced fields matching user's spreadsheet
-  priority: yup
-    .string()
-    .oneOf(['A+', 'A', 'B', 'C', 'D'], 'Invalid priority level')
-    .nullable(),
+  priority: z
+    .enum(['A+', 'A', 'B', 'C', 'D'], {
+      invalid_type_error: 'Invalid priority level',
+    })
+    .nullable()
+    .optional(),
 
-  account_manager: yup
+  account_manager: z
     .string()
     .max(100, 'Account manager name must be 100 characters or less')
-    .nullable(),
+    .nullable()
+    .optional(),
 
-  principals: yup
-    .array()
-    .of(yup.object({
-      id: yup.string().uuid('Invalid principal ID').required(),
-      name: yup.string().required('Principal name is required'),
-      principal2: yup.string().nullable(),
-      principal3: yup.string().nullable(),
-      principal4: yup.string().nullable(),
-    }))
-    .nullable(),
+  principals: z
+    .array(
+      z.object({
+        id: z.string().uuid('Invalid principal ID'),
+        name: z.string().min(1, 'Principal name is required'),
+        principal2: z.string().nullable().optional(),
+        principal3: z.string().nullable().optional(),
+        principal4: z.string().nullable().optional(),
+      })
+    )
+    .nullable()
+    .optional(),
 
-  import_notes: yup
+  import_notes: z
     .string()
     .max(1000, 'Import notes must be 1000 characters or less')
-    .nullable(),
+    .nullable()
+    .optional(),
+})
+
+// Interaction validation schema - Enhanced with user's spreadsheet fields
+export const interactionSchema = baseInteractionSchema.refine((data) => {
+  // Follow-up conditional validation: if follow_up_required is true, follow_up_date is required
+  if (data.follow_up_required && (!data.follow_up_date || data.follow_up_date === null)) {
+    return false
+  }
+  return true
+}, {
+  message: 'Follow-up date is required when follow-up is needed',
+  path: ['follow_up_date'],
 })
 
 // Interaction with opportunity creation schema
-export const interactionWithOpportunitySchema = yup.object({
-  ...interactionSchema.fields,
-
+export const interactionWithOpportunitySchema = baseInteractionSchema.extend({
   // Remove opportunity_id requirement since we're creating it
-  opportunity_id: yup.string().uuid('Invalid opportunity ID').nullable(),
+  opportunity_id: z.string().uuid('Invalid opportunity ID').nullable().optional(),
 
   // Opportunity creation fields
-  create_opportunity: yup.boolean().default(false),
+  create_opportunity: z.boolean().default(false),
 
-  organization_id: yup
-    .string()
-    .uuid('Invalid organization ID')
-    .required('Organization is required'),
+  organization_id: z.string().uuid('Invalid organization ID'),
 
-  contact_id: yup.string().uuid('Invalid contact ID').nullable(),
+  contact_id: z.string().uuid('Invalid contact ID').nullable().optional(),
 
-  opportunity_name: yup
+  opportunity_name: z
     .string()
     .max(255, 'Opportunity name must be 255 characters or less')
-    .when('create_opportunity', {
-      is: true,
-      then: (schema) => schema.required('Opportunity name is required when creating opportunity'),
-      otherwise: (schema) => schema.nullable(),
-    }),
+    .nullable()
+    .optional(),
 
-  opportunity_stage: yup
-    .string()
-    .oneOf(
+  opportunity_stage: z
+    .enum(
       [
         'New Lead',
         'Initial Outreach',
@@ -177,20 +199,18 @@ export const interactionWithOpportunitySchema = yup.object({
         'Feedback Logged',
         'Demo Scheduled',
         'Closed - Won',
-      ] as const,
-      'Invalid opportunity stage'
+      ],
+      {
+        invalid_type_error: 'Invalid opportunity stage',
+      }
     )
-    .when('create_opportunity', {
-      is: true,
-      then: (schema) => schema.required('Opportunity stage is required when creating opportunity'),
-      otherwise: (schema) => schema.nullable(),
-    }),
+    .nullable()
+    .optional(),
 
-  principal_organization_id: yup.string().uuid('Invalid principal organization ID').nullable(),
+  principal_organization_id: z.string().uuid('Invalid principal organization ID').nullable().optional(),
 
-  opportunity_context: yup
-    .string()
-    .oneOf(
+  opportunity_context: z
+    .enum(
       [
         'Site Visit',
         'Food Show',
@@ -199,17 +219,45 @@ export const interactionWithOpportunitySchema = yup.object({
         'Demo Request',
         'Sampling',
         'Custom',
-      ] as const,
-      'Invalid opportunity context'
+      ],
+      {
+        invalid_type_error: 'Invalid opportunity context',
+      }
     )
-    .nullable(),
+    .nullable()
+    .optional(),
+}).refine((data) => {
+  // Follow-up conditional validation: if follow_up_required is true, follow_up_date is required
+  if (data.follow_up_required && (!data.follow_up_date || data.follow_up_date === null)) {
+    return false
+  }
+  return true
+}, {
+  message: 'Follow-up date is required when follow-up is needed',
+  path: ['follow_up_date'],
+}).refine((data) => {
+  // Opportunity creation validation: if create_opportunity is true, opportunity_name is required
+  if (data.create_opportunity && (!data.opportunity_name || data.opportunity_name === null)) {
+    return false
+  }
+  return true
+}, {
+  message: 'Opportunity name is required when creating opportunity',
+  path: ['opportunity_name'],
+}).refine((data) => {
+  // Opportunity creation validation: if create_opportunity is true, opportunity_stage is required
+  if (data.create_opportunity && (!data.opportunity_stage || data.opportunity_stage === null)) {
+    return false
+  }
+  return true
+}, {
+  message: 'Opportunity stage is required when creating opportunity',
+  path: ['opportunity_stage'],
 })
 
 // Type inference from validation schemas
-export type InteractionFormData = yup.InferType<typeof interactionSchema>
-export type InteractionWithOpportunityFormData = yup.InferType<
-  typeof interactionWithOpportunitySchema
->
+export type InteractionFormData = z.infer<typeof interactionSchema>
+export type InteractionWithOpportunityFormData = z.infer<typeof interactionWithOpportunitySchema>
 
 // Interaction filters for queries - enhanced with weekly pattern
 export interface InteractionFilters extends InteractionWeeklyFilters {
@@ -278,25 +326,25 @@ export const PRIORITY_COLORS = {
     border: 'border-destructive/20',
     badge: 'bg-destructive text-destructive-foreground',
   },
-  'A': {
-    bg: 'bg-warning/10', 
+  A: {
+    bg: 'bg-warning/10',
     text: 'text-warning',
     border: 'border-warning/20',
     badge: 'bg-warning text-warning-foreground',
   },
-  'B': {
+  B: {
     bg: 'bg-warning/5',
-    text: 'text-warning/80', 
+    text: 'text-warning/80',
     border: 'border-warning/10',
     badge: 'bg-warning/80 text-warning-foreground',
   },
-  'C': {
+  C: {
     bg: 'bg-primary/10',
     text: 'text-primary',
-    border: 'border-primary/20', 
+    border: 'border-primary/20',
     badge: 'bg-primary text-primary-foreground',
   },
-  'D': {
+  D: {
     bg: 'bg-muted',
     text: 'text-muted-foreground',
     border: 'border-muted-foreground/20',
@@ -305,8 +353,4 @@ export const PRIORITY_COLORS = {
 } as const
 
 // Account manager list (can be expanded as needed)
-export const ACCOUNT_MANAGERS = [
-  'Sue',
-  'Gary', 
-  'Dale',
-] as const
+export const ACCOUNT_MANAGERS = ['Sue', 'Gary', 'Dale'] as const

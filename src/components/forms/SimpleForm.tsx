@@ -1,8 +1,9 @@
 import { useForm, type FieldValues } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { createTypedZodResolver } from '@/lib/form-resolver'
 import { Form } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { useDialogContext } from '@/contexts/DialogContext'
+import { semanticSpacing } from '@/styles/tokens'
 import {
   getFormGridClasses,
   getFormSpacingClasses,
@@ -12,7 +13,7 @@ import { FormFieldNew, type FieldConfig } from './FormField'
 import { FormSubmitButton } from './FormSubmitButton'
 import { FormProgressBar } from './FormProgressBar'
 import { useFormProgress } from './hooks/useFormProgress'
-import type { AnyObjectSchema } from 'yup'
+import type { z } from 'zod'
 import { cn } from '@/lib/utils'
 
 /**
@@ -29,7 +30,7 @@ export type SimpleFormField = FieldConfig & {
 interface SimpleFormProps<T extends FieldValues = FieldValues> {
   fields: SimpleFormField[]
   onSubmit: (data: T) => Promise<void> | void
-  validationSchema?: AnyObjectSchema
+  validationSchema?: z.ZodType<T>
   defaultValues?: Partial<T>
   loading?: boolean
   submitLabel?: string
@@ -57,7 +58,7 @@ export function SimpleForm<T extends FieldValues = FieldValues>({
   const buttonClasses = getFormButtonClasses(isInDialog)
 
   const form = useForm<T>({
-    resolver: validationSchema ? yupResolver(validationSchema) : undefined,
+    resolver: validationSchema ? createTypedZodResolver(validationSchema) : undefined,
     defaultValues: defaultValues as never,
     mode: 'onBlur', // Better UX - validate on blur, not every keystroke
   })
@@ -84,7 +85,7 @@ export function SimpleForm<T extends FieldValues = FieldValues>({
           <FormProgressBar
             completed={progress.completed}
             total={progress.total}
-            className="mb-6"
+            className={`${semanticSpacing.bottomGap.md}`}
           />
         )}
 
@@ -95,9 +96,9 @@ export function SimpleForm<T extends FieldValues = FieldValues>({
             if (field.condition && !field.condition(form.watch())) {
               return null
             }
-            
+
             // Handle heading fields
-            if (field.type === 'heading') {
+            if ('type' in field && field.type === 'heading') {
               return (
                 <FormFieldNew
                   key={`heading-${index}`}
@@ -107,13 +108,13 @@ export function SimpleForm<T extends FieldValues = FieldValues>({
                 />
               )
             }
-            
+
             // Handle regular fields
             if (!field.name) {
               // Skip fields without names (should not happen in normal usage)
               return null
             }
-            
+
             return (
               <FormFieldNew
                 key={field.name}
@@ -130,7 +131,7 @@ export function SimpleForm<T extends FieldValues = FieldValues>({
         {/* Form Actions */}
         <div
           className={cn(
-            'flex gap-3 pt-6 border-t',
+            `flex ${semanticSpacing.gap.lg} ${semanticSpacing.topPadding.xxl} border-t`,
             isInDialog ? 'flex-col-reverse sm:flex-row justify-end' : 'justify-end'
           )}
         >

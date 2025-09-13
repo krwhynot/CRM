@@ -120,14 +120,14 @@ export {
   isFormData,
   FormValidationPatterns,
   FormFieldRequirements,
-  createTypedYupResolver,
+  createTypedZodResolver,
 } from './forms/'
 
 // Form handler types with specific naming
 export type {
   FormSubmitHandler,
   FormValidationError,
-  TypedYupResolver,
+  TypedZodResolver,
   EnhancedFormProps,
   FormStateManager,
   FormValidationConfig,

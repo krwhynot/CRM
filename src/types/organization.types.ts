@@ -1,6 +1,6 @@
 import type { Database } from '../lib/database.types'
-import * as yup from 'yup'
-import { FormTransforms } from '../lib/form-transforms'
+import { z } from 'zod'
+import { ZodTransforms } from '../lib/form-transforms'
 
 // Principal CRM Business Logic Types
 export type OrganizationPriority = 'A' | 'B' | 'C' | 'D'
@@ -18,114 +18,128 @@ export type OrganizationWithContacts = Organization & {
 }
 
 // Organization validation schema - ONLY specification fields
-export const organizationSchema = yup.object({
+export const organizationSchema = z.object({
   // REQUIRED FIELDS per specification
-  name: yup
+  name: z
     .string()
-    .required('Organization name is required')
+    .min(1, 'Organization name is required')
     .max(255, 'Name must be 255 characters or less'),
 
-  type: yup
-    .string()
-    .oneOf(
-      ['customer', 'principal', 'distributor', 'prospect', 'vendor'] as const,
-      'Invalid organization type'
-    )
-    .required('Organization type is required'),
+  type: z
+    .enum(
+      ['customer', 'principal', 'distributor', 'prospect', 'vendor'],
+      {
+        required_error: 'Organization type is required',
+        invalid_type_error: 'Invalid organization type'
+      }
+    ),
 
-  priority: yup
-    .string()
-    .oneOf(['A', 'B', 'C', 'D'] as const, 'Invalid priority level')
-    .required('Priority is required'),
+  priority: z
+    .enum(['A', 'B', 'C', 'D'], {
+      required_error: 'Priority is required',
+      invalid_type_error: 'Invalid priority level'
+    }),
 
-  segment: yup
+  segment: z
     .string()
-    .required('Segment is required')
+    .min(1, 'Segment is required')
     .max(100, 'Segment must be 100 characters or less'),
 
   // IMPORTANT FIELDS per specification (auto-derived from type)
-  is_principal: yup.boolean().default(false),
+  is_principal: z.boolean().default(false),
 
-  is_distributor: yup.boolean().default(false),
+  is_distributor: z.boolean().default(false),
 
   // OPTIONAL FIELDS per specification with transforms
-  description: yup
+  description: z
     .string()
     .max(500, 'Description must be 500 characters or less')
-    .nullable()
-    .transform(FormTransforms.nullableString),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.emptyStringToNull),
 
-  email: yup
+  email: z
     .string()
     .email('Invalid email address')
     .max(255, 'Email must be 255 characters or less')
-    .nullable()
-    .transform(FormTransforms.nullableEmail),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.normalizeEmail),
 
-  phone: yup
+  phone: z
     .string()
     .max(50, 'Phone must be 50 characters or less')
-    .nullable()
-    .transform(FormTransforms.nullablePhone),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.normalizePhone),
 
-  website: yup
+  website: z
     .string()
     .url('Invalid website URL')
     .max(255, 'Website must be 255 characters or less')
-    .nullable()
-    .transform(FormTransforms.nullableUrl),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.emptyStringToNull),
 
-  address_line_1: yup
+  address_line_1: z
     .string()
     .max(255, 'Address line 1 must be 255 characters or less')
-    .nullable()
-    .transform(FormTransforms.nullableString),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.emptyStringToNull),
 
-  address_line_2: yup
+  address_line_2: z
     .string()
     .max(255, 'Address line 2 must be 255 characters or less')
-    .nullable()
-    .transform(FormTransforms.nullableString),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.emptyStringToNull),
 
-  city: yup
+  city: z
     .string()
     .max(100, 'City must be 100 characters or less')
-    .nullable()
-    .transform(FormTransforms.nullableString),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.emptyStringToNull),
 
-  state_province: yup
+  state_province: z
     .string()
     .max(100, 'State/Province must be 100 characters or less')
-    .nullable()
-    .transform(FormTransforms.nullableString),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.emptyStringToNull),
 
-  postal_code: yup
+  postal_code: z
     .string()
     .max(20, 'Postal code must be 20 characters or less')
-    .nullable()
-    .transform(FormTransforms.nullableString),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.emptyStringToNull),
 
-  country: yup
+  country: z
     .string()
     .max(100, 'Country must be 100 characters or less')
-    .nullable()
-    .transform(FormTransforms.nullableString),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.emptyStringToNull),
 
-  industry: yup
+  industry: z
     .string()
     .max(100, 'Industry must be 100 characters or less')
-    .nullable()
-    .transform(FormTransforms.nullableString),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.emptyStringToNull),
 
-  notes: yup
+  notes: z
     .string()
     .max(500, 'Notes must be 500 characters or less')
-    .nullable()
-    .transform(FormTransforms.nullableString),
+    .optional()
+    .or(z.literal(''))
+    .transform(ZodTransforms.emptyStringToNull),
 })
 
 // Type inference from validation schema
-export type OrganizationFormData = yup.InferType<typeof organizationSchema>
+export type OrganizationFormData = z.infer<typeof organizationSchema>
 
 // Organization filters for queries
 export interface OrganizationFilters {

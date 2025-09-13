@@ -49,7 +49,7 @@ export type {
 export type {
   FormSubmitHandler,
   FormValidationError,
-  TypedYupResolver,
+  TypedZodResolver,
   EnhancedFormProps,
   FormStateManager,
   FormValidationConfig,
@@ -66,7 +66,7 @@ export type {
   ProgressiveFormConfig,
 } from './form-handlers'
 
-export { createTypedYupResolver } from './form-handlers'
+export { createTypedZodResolver } from './form-handlers'
 
 // Re-export individual form data types for direct access
 import type { ContactFormData as ContactFormDataType } from './contact-form.types'
