@@ -20,36 +20,39 @@ function calculateWeeklyContext(
 ): WeeklyContextIndicators {
   const now = new Date()
   const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay())
-  
+
   // Check if stage was updated this week
-  const movedThisWeek = stageUpdatedAt ? 
-    new Date(stageUpdatedAt) >= weekStart : false
-  
+  const movedThisWeek = stageUpdatedAt ? new Date(stageUpdatedAt) >= weekStart : false
+
   // Calculate stage changes (simplified - could be enhanced with history tracking)
   const stageChanges = movedThisWeek ? 1 : 0
-  
+
   // Determine weekly activity level based on interaction count and recency
   let weeklyActivity: 'high' | 'medium' | 'low' = 'low'
   if (lastActivityDate) {
     const lastActivity = new Date(lastActivityDate)
-    const daysSinceActivity = Math.floor((now.getTime() - lastActivity.getTime()) / (1000 * 60 * 60 * 24))
-    
+    const daysSinceActivity = Math.floor(
+      (now.getTime() - lastActivity.getTime()) / (1000 * 60 * 60 * 24)
+    )
+
     if (daysSinceActivity <= 2 && interactionCount >= 3) {
       weeklyActivity = 'high'
     } else if (daysSinceActivity <= 7 && interactionCount >= 1) {
       weeklyActivity = 'medium'
     }
   }
-  
+
   // Get principal context
   const principalContext = opportunity.principal_organization?.name || undefined
-  
+
   // Calculate engagement score (0-100)
   let weeklyEngagementScore = 0
   if (interactionCount > 0) {
     weeklyEngagementScore += Math.min(interactionCount * 10, 40) // Up to 40 points for interactions
     if (lastActivityDate) {
-      const daysSinceActivity = Math.floor((now.getTime() - new Date(lastActivityDate).getTime()) / (1000 * 60 * 60 * 24))
+      const daysSinceActivity = Math.floor(
+        (now.getTime() - new Date(lastActivityDate).getTime()) / (1000 * 60 * 60 * 24)
+      )
       weeklyEngagementScore += Math.max(20 - daysSinceActivity * 2, 0) // Up to 20 points for recency
     }
     if (movedThisWeek) {
@@ -59,14 +62,14 @@ function calculateWeeklyContext(
       weeklyEngagementScore += 20 // 20 points for high value opportunities
     }
   }
-  
+
   return {
     movedThisWeek,
     stageChanges,
     weeklyActivity,
     lastActivity: lastActivityDate ? new Date(lastActivityDate) : undefined,
     principalContext,
-    weeklyEngagementScore: Math.min(weeklyEngagementScore, 100)
+    weeklyEngagementScore: Math.min(weeklyEngagementScore, 100),
   }
 }
 
@@ -162,7 +165,11 @@ export function useOpportunities(filters?: OpportunityFilters) {
             startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay())
             break
           case 'last_week':
-            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() - 7)
+            startDate = new Date(
+              now.getFullYear(),
+              now.getMonth(),
+              now.getDate() - now.getDay() - 7
+            )
             endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() - 1)
             break
           case 'last_2_weeks':
@@ -203,7 +210,9 @@ export function useOpportunities(filters?: OpportunityFilters) {
       // Search functionality
       if (filters?.search) {
         // Use text search across name, description, and notes
-        query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,notes.ilike.%${filters.search}%`)
+        query = query.or(
+          `name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,notes.ilike.%${filters.search}%`
+        )
       }
 
       query = query.order('created_at', { ascending: false })
@@ -765,7 +774,11 @@ export function useOpportunitiesWithLastActivity(filters?: OpportunityFilters) {
             startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay())
             break
           case 'last_week':
-            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() - 7)
+            startDate = new Date(
+              now.getFullYear(),
+              now.getMonth(),
+              now.getDate() - now.getDay() - 7
+            )
             endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() - 1)
             break
           case 'last_2_weeks':
@@ -806,7 +819,9 @@ export function useOpportunitiesWithLastActivity(filters?: OpportunityFilters) {
       // Search functionality
       if (filters?.search) {
         // Use text search across name, description, and notes
-        opportunityQuery = opportunityQuery.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,notes.ilike.%${filters.search}%`)
+        opportunityQuery = opportunityQuery.or(
+          `name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,notes.ilike.%${filters.search}%`
+        )
       }
 
       const { data: opportunities, error: oppError } = await opportunityQuery
@@ -885,7 +900,7 @@ export function useOpportunitiesWithLastActivity(filters?: OpportunityFilters) {
         const lastActivityType = activity?.type || null
         const interactionCount = activity?.count || 0
         const stageUpdatedAt = null // Future: Add stage tracking in future iteration
-        
+
         // Calculate weekly context indicators
         const weeklyContext = calculateWeeklyContext(
           opp,
@@ -894,7 +909,7 @@ export function useOpportunitiesWithLastActivity(filters?: OpportunityFilters) {
           interactionCount,
           stageUpdatedAt
         )
-        
+
         return {
           ...opp,
           organization: opp.organization || undefined,
@@ -905,7 +920,7 @@ export function useOpportunitiesWithLastActivity(filters?: OpportunityFilters) {
           interaction_count: interactionCount,
           stage_updated_at: stageUpdatedAt,
           // Add weekly context indicators
-          ...weeklyContext
+          ...weeklyContext,
         }
       })
 

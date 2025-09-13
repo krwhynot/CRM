@@ -1,8 +1,8 @@
 // Shared filter types for weekly dashboard pattern extension across all features
 
-export type WeeklyTimeRangeType = 
+export type WeeklyTimeRangeType =
   | 'this_week'
-  | 'last_week' 
+  | 'last_week'
   | 'last_2_weeks'
   | 'last_4_weeks'
   | 'this_month'
@@ -15,16 +15,16 @@ export type WeeklyTimeRangeType =
 export interface BaseWeeklyFilterState {
   // Weekly time filtering - core to dashboard pattern
   timeRange?: WeeklyTimeRangeType
-  
+
   // Principal filtering - consistent across all features
   principal?: string
-  
+
   // Quick view context - feature-specific but consistent pattern
   quickView?: string | 'none'
-  
+
   // Search functionality - present in all features
   search?: string
-  
+
   // Custom date range for 'custom' timeRange option
   dateFrom?: Date
   dateTo?: Date
@@ -34,7 +34,7 @@ export interface BaseWeeklyFilterState {
 export interface EnhancedWeeklyFilterState extends BaseWeeklyFilterState {
   // Loading state
   isLoading?: boolean
-  
+
   // Filter context
   hasActiveFilters?: boolean
   activeFilterCount?: number
@@ -65,17 +65,17 @@ export interface UseWeeklyFiltersReturn<T extends BaseWeeklyFilterState> {
   filters: T
   debouncedFilters: T
   isLoading: boolean
-  
+
   // Filter manipulation
   handleFiltersChange: (newFilters: T) => void
   resetFilters: () => void
-  
+
   // Specific filter updates
   updateTimeRange: (range: WeeklyTimeRangeType) => void
   updatePrincipal: (principalId: string) => void
   updateQuickView: (quickView: string | 'none') => void
   updateSearch: (search: string) => void
-  
+
   // Computed properties
   computed: {
     hasActiveFilters: boolean
@@ -101,7 +101,12 @@ export interface OpportunityWeeklyFilters extends BaseWeeklyFilterState {
   stage?: string | string[]
   organization_id?: string
   principal_organization_id?: string
-  quickView?: 'pipeline_movers' | 'stalled_opportunities' | 'closing_soon' | 'needs_follow_up' | 'none'
+  quickView?:
+    | 'pipeline_movers'
+    | 'stalled_opportunities'
+    | 'closing_soon'
+    | 'needs_follow_up'
+    | 'none'
 }
 
 export interface InteractionWeeklyFilters extends BaseWeeklyFilterState {
@@ -109,13 +114,23 @@ export interface InteractionWeeklyFilters extends BaseWeeklyFilterState {
   organization_id?: string
   contact_id?: string
   opportunity_id?: string
-  quickView?: 'follow_ups_due' | 'overdue_actions' | 'this_week_activity' | 'high_value_interactions' | 'none'
+  quickView?:
+    | 'follow_ups_due'
+    | 'overdue_actions'
+    | 'this_week_activity'
+    | 'high_value_interactions'
+    | 'none'
 }
 
 export interface ProductWeeklyFilters extends BaseWeeklyFilterState {
   category?: string | string[]
   principal_id?: string
-  quickView?: 'promoted_this_week' | 'products_with_opportunities' | 'high_margin_products' | 'needs_attention' | 'none'
+  quickView?:
+    | 'promoted_this_week'
+    | 'products_with_opportunities'
+    | 'high_margin_products'
+    | 'needs_attention'
+    | 'none'
 }
 
 export interface OrganizationWeeklyFilters extends BaseWeeklyFilterState {

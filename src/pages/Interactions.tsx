@@ -6,7 +6,8 @@ import {
 import { useInteractionsPageState } from '@/features/interactions/hooks/useInteractionsPageState'
 import { useInteractionsPageActions } from '@/features/interactions/hooks/useInteractionsPageActions'
 import { QueryErrorBoundary } from '@/components/error-boundaries/QueryErrorBoundary'
-import { EntityManagementTemplate } from '@/components/templates/EntityManagementTemplate'
+import { PageLayout } from '@/components/layout'
+import { usePageLayout } from '@/hooks'
 
 function InteractionsPage() {
   const { data: interactions = [], isLoading, error, isError, refetch } = useInteractions()
@@ -25,27 +26,23 @@ function InteractionsPage() {
     handleViewInteraction,
   } = useInteractionsPageState()
 
-  const { 
-    handleCreate, 
-    handleUpdate, 
-    handleDelete, 
-    isCreating, 
-    isUpdating, 
-    isDeleting 
-  } = useInteractionsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
-
+  const { handleCreate, handleUpdate, handleDelete, isCreating, isUpdating, isDeleting } =
+    useInteractionsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
 
   const refreshInteractions = () => {
     refetch()
   }
 
+  // Use the page layout hook for slot composition
+  const { pageLayoutProps } = usePageLayout({
+    entityType: 'INTERACTION',
+    entityCount: interactions.length,
+    onAddClick: openCreateDialog,
+  })
+
   return (
     <QueryErrorBoundary>
-      <EntityManagementTemplate
-        entityType="INTERACTION"
-        entityCount={interactions.length}
-        onAddClick={openCreateDialog}
-      >
+      <PageLayout {...pageLayoutProps}>
         <InteractionsDataDisplay
           isLoading={isLoading}
           isError={isError}
@@ -68,7 +65,7 @@ function InteractionsPage() {
           isCreating={isCreating}
           isUpdating={isUpdating}
         />
-      </EntityManagementTemplate>
+      </PageLayout>
     </QueryErrorBoundary>
   )
 }

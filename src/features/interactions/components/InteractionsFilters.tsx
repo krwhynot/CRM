@@ -8,6 +8,7 @@ import {
   GenericQuickViewFilter,
   createQuickViewOptions,
 } from '@/components/filters/shared'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 import type {
   WeeklyFilterComponentProps,
   InteractionWeeklyFilters,
@@ -76,9 +77,11 @@ export const InteractionsFilters: React.FC<InteractionsFiltersProps> = ({
   ].filter(Boolean).length
 
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className={`${semanticSpacing.layoutContainer} ${className}`}>
       {/* Primary Filters Row */}
-      <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+      <div
+        className={`flex flex-col items-start ${semanticSpacing.gap.lg} sm:flex-row sm:items-center`}
+      >
         {/* Weekly Time Range */}
         <GenericWeeksFilter
           value={filters.timeRange || 'this_month'}
@@ -118,7 +121,7 @@ export const InteractionsFilters: React.FC<InteractionsFiltersProps> = ({
         />
 
         {/* Search */}
-        <div className="flex min-w-0 flex-1 items-center gap-2">
+        <div className={`flex min-w-0 flex-1 items-center ${semanticSpacing.gap.xs}`}>
           <Search className="size-4 shrink-0 text-muted-foreground" />
           <Input
             placeholder="Search interactions, contacts, organizations..."
@@ -131,15 +134,17 @@ export const InteractionsFilters: React.FC<InteractionsFiltersProps> = ({
 
       {/* Filter Summary */}
       {(activeFilterCount > 0 || filters.search) && (
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
+        <div
+          className={`flex items-center justify-between ${semanticTypography.body} text-muted-foreground`}
+        >
+          <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
             {activeFilterCount > 0 && (
               <span>
                 {activeFilterCount} filter{activeFilterCount !== 1 ? 's' : ''} active
               </span>
             )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
             <Badge variant="secondary">{filteredCount} interactions</Badge>
             {filteredCount !== totalInteractions && (
               <Badge variant="outline">of {totalInteractions} total</Badge>

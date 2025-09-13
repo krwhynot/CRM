@@ -1,13 +1,17 @@
 import React from 'react'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
-import { 
+import {
   GenericWeeksFilter,
-  GenericPrincipalFilter, 
+  GenericPrincipalFilter,
   GenericQuickViewFilter,
-  createQuickViewOptions
+  createQuickViewOptions,
 } from '@/components/filters/shared'
-import type { WeeklyFilterComponentProps, OpportunityWeeklyFilters } from '@/types/shared-filters.types'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
+import type {
+  WeeklyFilterComponentProps,
+  OpportunityWeeklyFilters,
+} from '@/types/shared-filters.types'
 import type { OpportunityFilters } from '@/types/opportunity.types'
 
 interface OpportunitiesFiltersProps extends WeeklyFilterComponentProps<OpportunityFilters> {
@@ -31,24 +35,24 @@ export const OpportunitiesFilters: React.FC<OpportunitiesFiltersProps> = ({
   }
 
   const handleTimeRangeChange = (timeRange: string) => {
-    onFiltersChange({ 
-      ...filters, 
-      timeRange: timeRange as OpportunityWeeklyFilters['timeRange']
+    onFiltersChange({
+      ...filters,
+      timeRange: timeRange as OpportunityWeeklyFilters['timeRange'],
     })
   }
 
   const handlePrincipalChange = (principal: string) => {
-    onFiltersChange({ 
-      ...filters, 
+    onFiltersChange({
+      ...filters,
       principal_organization_id: principal === 'all' ? undefined : principal,
-      principal: principal
+      principal: principal,
     })
   }
 
   const handleQuickViewChange = (quickView: string | 'none') => {
-    onFiltersChange({ 
-      ...filters, 
-      quickView: quickView as OpportunityWeeklyFilters['quickView']
+    onFiltersChange({
+      ...filters,
+      quickView: quickView as OpportunityWeeklyFilters['quickView'],
     })
   }
 
@@ -62,13 +66,15 @@ export const OpportunitiesFilters: React.FC<OpportunitiesFiltersProps> = ({
     filters.search,
     filters.stage,
     filters.organization_id,
-    filters.contact_id
+    filters.contact_id,
   ].filter(Boolean).length
 
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className={`${semanticSpacing.layoutContainer} ${className}`}>
       {/* Primary Filters Row */}
-      <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+      <div
+        className={`flex flex-col items-start ${semanticSpacing.gap.lg} sm:flex-row sm:items-center`}
+      >
         {/* Weekly Time Range */}
         <GenericWeeksFilter
           value={filters.timeRange || 'this_month'}
@@ -108,7 +114,7 @@ export const OpportunitiesFilters: React.FC<OpportunitiesFiltersProps> = ({
         />
 
         {/* Search */}
-        <div className="flex min-w-0 flex-1 items-center gap-2">
+        <div className={`flex min-w-0 flex-1 items-center ${semanticSpacing.gap.xs}`}>
           <Search className="size-4 shrink-0 text-muted-foreground" />
           <Input
             placeholder="Search opportunities..."
@@ -121,8 +127,10 @@ export const OpportunitiesFilters: React.FC<OpportunitiesFiltersProps> = ({
 
       {/* Filter Summary */}
       {(activeFilterCount > 0 || filters.search) && (
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
+        <div
+          className={`flex items-center justify-between ${semanticTypography.body} text-muted-foreground`}
+        >
+          <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
             {activeFilterCount > 0 && (
               <span>
                 {activeFilterCount} filter{activeFilterCount !== 1 ? 's' : ''} active

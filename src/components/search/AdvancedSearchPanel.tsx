@@ -1,6 +1,12 @@
+import {
+  semanticShadows,
+  semanticSpacing,
+  semanticTypography,
+  semanticRadius,
+} from '@/styles/tokens'
 /**
  * Advanced Search Panel
- * 
+ *
  * Comprehensive search interface for CRM entities with filters, saved searches,
  * and real-time results. Supports global search across all entity types.
  */
@@ -9,9 +15,15 @@ import React, { useState, useCallback, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+// Removed unused: import { Separator } from '@/components/ui/separator'
+import { Card, CardContent } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
 import { Search, Filter, X, Save, Clock, Star } from 'lucide-react'
@@ -23,7 +35,14 @@ import { Search, Filter, X, Save, Clock, Star } from 'lucide-react'
 export interface SearchFilter {
   id: string
   field: string
-  operator: 'equals' | 'contains' | 'starts_with' | 'ends_with' | 'greater_than' | 'less_than' | 'between'
+  operator:
+    | 'equals'
+    | 'contains'
+    | 'starts_with'
+    | 'ends_with'
+    | 'greater_than'
+    | 'less_than'
+    | 'between'
   value: string | string[] | number | number[]
   label: string
 }
@@ -51,7 +70,11 @@ export interface SearchResult {
 interface AdvancedSearchPanelProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSearch: (query: string, filters: SearchFilter[], entityTypes: string[]) => Promise<SearchResult[]>
+  onSearch: (
+    query: string,
+    filters: SearchFilter[],
+    entityTypes: string[]
+  ) => Promise<SearchResult[]>
   onResultSelect: (result: SearchResult) => void
   savedSearches?: SavedSearch[]
   onSaveSearch?: (search: Omit<SavedSearch, 'id' | 'createdAt'>) => void
@@ -161,17 +184,17 @@ export function AdvancedSearchPanel({
       value: '',
       label: '',
     }
-    setFilters(prev => [...prev, newFilter])
+    setFilters((prev) => [...prev, newFilter])
   }, [])
 
   // Remove filter
   const removeFilter = useCallback((filterId: string) => {
-    setFilters(prev => prev.filter(f => f.id !== filterId))
+    setFilters((prev) => prev.filter((f) => f.id !== filterId))
   }, [])
 
   // Update filter
   const updateFilter = useCallback((filterId: string, updates: Partial<SearchFilter>) => {
-    setFilters(prev => prev.map(f => f.id === filterId ? { ...f, ...updates } : f))
+    setFilters((prev) => prev.map((f) => (f.id === filterId ? { ...f, ...updates } : f)))
   }, [])
 
   // Save current search
@@ -190,18 +213,21 @@ export function AdvancedSearchPanel({
   }, [onSaveSearch, query, filters, selectedEntityTypes])
 
   // Load saved search
-  const loadSavedSearch = useCallback((savedSearch: SavedSearch) => {
-    setQuery(savedSearch.query)
-    setFilters(savedSearch.filters)
-    setSelectedEntityTypes(savedSearch.entityTypes)
-    setActiveTab('search')
-    onLoadSearch?.(savedSearch)
-  }, [onLoadSearch])
+  const loadSavedSearch = useCallback(
+    (savedSearch: SavedSearch) => {
+      setQuery(savedSearch.query)
+      setFilters(savedSearch.filters)
+      setSelectedEntityTypes(savedSearch.entityTypes)
+      setActiveTab('search')
+      onLoadSearch?.(savedSearch)
+    },
+    [onLoadSearch]
+  )
 
   // Group results by type
   const groupedResults = useMemo(() => {
     const groups: Record<string, SearchResult[]> = {}
-    results.forEach(result => {
+    results.forEach((result) => {
       if (!groups[result.type]) {
         groups[result.type] = []
       }
@@ -214,12 +240,22 @@ export function AdvancedSearchPanel({
 
   return (
     <div className={cn('fixed inset-0 z-50 bg-background/80 backdrop-blur-sm', className)}>
-      <div className="fixed inset-y-0 right-0 w-full max-w-2xl bg-background border-l shadow-xl">
+      <div
+        className={cn(
+          semanticShadows.extra,
+          'fixed inset-y-0 right-0 w-full max-w-2xl bg-background border-l'
+        )}
+      >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b">
-          <div className="flex items-center gap-2">
+        <div
+          className={cn(
+            semanticSpacing.cardContainer,
+            'flex items-center justify-between border-b'
+          )}
+        >
+          <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
             <Search className="h-5 w-5" />
-            <h2 className="text-lg font-semibold">Advanced Search</h2>
+            <h2 className={cn(semanticTypography.h4, semanticTypography.h4)}>Advanced Search</h2>
           </div>
           <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
             <X className="h-4 w-4" />
@@ -232,7 +268,10 @@ export function AdvancedSearchPanel({
             variant={activeTab === 'search' ? 'default' : 'ghost'}
             size="sm"
             onClick={() => setActiveTab('search')}
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
+            className={cn(
+              semanticRadius.none,
+              'border-b-2 border-transparent data-[state=active]:border-primary'
+            )}
           >
             Search
           </Button>
@@ -240,7 +279,10 @@ export function AdvancedSearchPanel({
             variant={activeTab === 'saved' ? 'default' : 'ghost'}
             size="sm"
             onClick={() => setActiveTab('saved')}
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
+            className={cn(
+              semanticRadius.none,
+              'border-b-2 border-transparent data-[state=active]:border-primary'
+            )}
           >
             Saved Searches ({savedSearches.length})
           </Button>
@@ -250,7 +292,7 @@ export function AdvancedSearchPanel({
           {activeTab === 'search' ? (
             <div className="h-full flex flex-col">
               {/* Search Input */}
-              <div className="p-4 space-y-4">
+              <div className={cn(semanticSpacing.cardContainer, semanticSpacing.stack.md)}>
                 <div className="relative">
                   <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -262,14 +304,21 @@ export function AdvancedSearchPanel({
                   />
                   {loading && (
                     <div className="absolute right-3 top-3">
-                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                      <div
+                        className={cn(
+                          semanticRadius.full,
+                          'h-4 w-4 animate-spin border-2 border-primary border-t-transparent'
+                        )}
+                      />
                     </div>
                   )}
                 </div>
 
                 {/* Entity Type Filter */}
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">Search in:</span>
+                <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
+                  <span className={cn(semanticTypography.body, semanticTypography.label)}>
+                    Search in:
+                  </span>
                   <Select
                     value={selectedEntityTypes[0] || 'all'}
                     onValueChange={(value) => setSelectedEntityTypes([value])}
@@ -278,7 +327,7 @@ export function AdvancedSearchPanel({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {entityTypes.map(type => (
+                      {entityTypes.map((type) => (
                         <SelectItem key={type.value} value={type.value}>
                           {type.label}
                         </SelectItem>
@@ -289,18 +338,14 @@ export function AdvancedSearchPanel({
 
                 {/* Filter Toggle */}
                 <div className="flex items-center justify-between">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowFilters(!showFilters)}
-                  >
-                    <Filter className="h-4 w-4 mr-2" />
+                  <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)}>
+                    <Filter className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4')} />
                     Filters {filters.length > 0 && `(${filters.length})`}
                   </Button>
-                  
+
                   {onSaveSearch && query.trim() && (
                     <Button variant="outline" size="sm" onClick={saveCurrentSearch}>
-                      <Save className="h-4 w-4 mr-2" />
+                      <Save className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4')} />
                       Save Search
                     </Button>
                   )}
@@ -308,9 +353,13 @@ export function AdvancedSearchPanel({
 
                 {/* Active Filters */}
                 {filters.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {filters.map(filter => (
-                      <Badge key={filter.id} variant="secondary" className="gap-1">
+                  <div className={cn(semanticSpacing.gap.xs, 'flex flex-wrap')}>
+                    {filters.map((filter) => (
+                      <Badge
+                        key={filter.id}
+                        variant="secondary"
+                        className={`${semanticSpacing.gap.xs}`}
+                      >
                         {filter.label || filter.field}
                         <Button
                           variant="ghost"
@@ -328,18 +377,28 @@ export function AdvancedSearchPanel({
 
               {/* Advanced Filters */}
               {showFilters && (
-                <div className="border-t p-4 space-y-4">
+                <div
+                  className={cn(
+                    semanticSpacing.cardContainer,
+                    semanticSpacing.stack.md,
+                    'border-t'
+                  )}
+                >
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-medium">Advanced Filters</h3>
+                    <h3 className={cn(semanticTypography.body, semanticTypography.label)}>
+                      Advanced Filters
+                    </h3>
                     <Button variant="outline" size="sm" onClick={addFilter}>
                       Add Filter
                     </Button>
                   </div>
-                  
-                  {filters.map(filter => (
+
+                  {filters.map((filter) => (
                     <Card key={filter.id}>
-                      <CardContent className="p-3 space-y-2">
-                        <div className="grid grid-cols-3 gap-2">
+                      <CardContent
+                        className={cn(semanticSpacing.compact, semanticSpacing.stack.xs)}
+                      >
+                        <div className={cn(semanticSpacing.gap.xs, 'grid grid-cols-3')}>
                           <Select
                             value={filter.field}
                             onValueChange={(value) => updateFilter(filter.id, { field: value })}
@@ -351,10 +410,12 @@ export function AdvancedSearchPanel({
                               {/* Add fields based on selected entity types */}
                             </SelectContent>
                           </Select>
-                          
+
                           <Select
                             value={filter.operator}
-                            onValueChange={(value) => updateFilter(filter.id, { operator: value as any })}
+                            onValueChange={(value) =>
+                              updateFilter(filter.id, { operator: value as any })
+                            }
                           >
                             <SelectTrigger>
                               <SelectValue />
@@ -366,14 +427,14 @@ export function AdvancedSearchPanel({
                               <SelectItem value="ends_with">Ends with</SelectItem>
                             </SelectContent>
                           </Select>
-                          
+
                           <Input
                             value={filter.value as string}
                             onChange={(e) => updateFilter(filter.id, { value: e.target.value })}
                             placeholder="Value"
                           />
                         </div>
-                        
+
                         <Button
                           variant="ghost"
                           size="sm"
@@ -391,42 +452,65 @@ export function AdvancedSearchPanel({
               {/* Results */}
               <div className="flex-1 overflow-hidden">
                 <ScrollArea className="h-full">
-                  <div className="p-4">
+                  <div className={`${semanticSpacing.cardContainer}`}>
                     {query && !loading && results.length === 0 && (
-                      <div className="text-center py-8 text-muted-foreground">
+                      <div
+                        className={cn(semanticSpacing.pageY, 'text-center text-muted-foreground')}
+                      >
                         No results found for "{query}"
                       </div>
                     )}
 
                     {Object.entries(groupedResults).map(([type, typeResults]) => (
-                      <div key={type} className="mb-6">
-                        <h3 className="text-sm font-medium mb-3 capitalize">
+                      <div key={type} className={`${semanticSpacing.bottomGap.md}`}>
+                        <h3
+                          className={cn(
+                            semanticTypography.body,
+                            semanticTypography.label,
+                            'mb-3 capitalize'
+                          )}
+                        >
                           {type}s ({typeResults.length})
                         </h3>
-                        <div className="space-y-2">
-                          {typeResults.map(result => (
+                        <div className={`${semanticSpacing.stack.xs}`}>
+                          {typeResults.map((result) => (
                             <Card
                               key={result.id}
                               className="cursor-pointer hover:bg-accent transition-colors"
                               onClick={() => onResultSelect(result)}
                             >
-                              <CardContent className="p-3">
+                              <CardContent className={`${semanticSpacing.compact}`}>
                                 <div className="flex justify-between items-start">
                                   <div>
-                                    <h4 className="font-medium">{result.title}</h4>
+                                    <h4 className={`${semanticTypography.label}`}>
+                                      {result.title}
+                                    </h4>
                                     {result.subtitle && (
-                                      <p className="text-sm text-muted-foreground">
+                                      <p
+                                        className={cn(
+                                          semanticTypography.body,
+                                          'text-muted-foreground'
+                                        )}
+                                      >
                                         {result.subtitle}
                                       </p>
                                     )}
                                     {result.description && (
-                                      <p className="text-xs text-muted-foreground mt-1">
+                                      <p
+                                        className={cn(
+                                          semanticTypography.caption,
+                                          'text-muted-foreground mt-1'
+                                        )}
+                                      >
                                         {result.description}
                                       </p>
                                     )}
                                   </div>
                                   {result.score && (
-                                    <Badge variant="outline" className="text-xs">
+                                    <Badge
+                                      variant="outline"
+                                      className={`${semanticTypography.caption}`}
+                                    >
                                       {Math.round(result.score * 100)}%
                                     </Badge>
                                   )}
@@ -444,31 +528,45 @@ export function AdvancedSearchPanel({
           ) : (
             // Saved Searches Tab
             <ScrollArea className="h-full">
-              <div className="p-4 space-y-3">
+              <div className={cn(semanticSpacing.cardContainer, semanticSpacing.stack.sm)}>
                 {savedSearches.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
+                  <div className={cn(semanticSpacing.pageY, 'text-center text-muted-foreground')}>
                     No saved searches yet
                   </div>
                 ) : (
-                  savedSearches.map(savedSearch => (
+                  savedSearches.map((savedSearch) => (
                     <Card
                       key={savedSearch.id}
                       className="cursor-pointer hover:bg-accent transition-colors"
                       onClick={() => loadSavedSearch(savedSearch)}
                     >
-                      <CardContent className="p-3">
+                      <CardContent className={`${semanticSpacing.compact}`}>
                         <div className="flex items-start justify-between">
                           <div>
-                            <h4 className="font-medium flex items-center gap-2">
+                            <h4
+                              className={cn(
+                                semanticTypography.label,
+                                semanticSpacing.gap.xs,
+                                'flex items-center'
+                              )}
+                            >
                               {savedSearch.isStarred && <Star className="h-3 w-3 fill-current" />}
                               {savedSearch.name}
                             </h4>
-                            <p className="text-sm text-muted-foreground">
+                            <p className={cn(semanticTypography.body, 'text-muted-foreground')}>
                               {savedSearch.query}
                             </p>
-                            <div className="flex items-center gap-2 mt-2">
+                            <div
+                              className={cn(
+                                semanticSpacing.gap.xs,
+                                semanticSpacing.topGap.xs,
+                                'flex items-center'
+                              )}
+                            >
                               <Clock className="h-3 w-3 text-muted-foreground" />
-                              <span className="text-xs text-muted-foreground">
+                              <span
+                                className={cn(semanticTypography.caption, 'text-muted-foreground')}
+                              >
                                 {savedSearch.createdAt.toLocaleDateString()}
                               </span>
                             </div>

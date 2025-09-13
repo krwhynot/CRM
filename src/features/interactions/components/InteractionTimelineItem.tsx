@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils'
 import type { InteractionWithRelations } from '@/types/entities'
 import { useInteractionTimelineItemActions } from '../hooks/useInteractionTimelineItemActions'
 import { useInteractionTimelineItemFormatting } from '../hooks/useInteractionTimelineItemFormatting'
+import { semanticSpacing } from '@/styles/tokens'
 import { InteractionTimelineDot } from './timeline-item/InteractionTimelineDot'
 import { InteractionTimelineHeader } from './timeline-item/InteractionTimelineHeader'
 import { InteractionTimelineContent } from './timeline-item/InteractionTimelineContent'
@@ -53,8 +54,9 @@ const InteractionTimelineItemComponent = forwardRef<HTMLDivElement, InteractionT
       <div
         ref={ref}
         className={cn(
-          'relative flex gap-4 cursor-pointer group transition-colors duration-200',
-          'md:hover:bg-gray-50 rounded-lg p-3 -m-3',
+          'relative flex cursor-pointer group transition-colors duration-200',
+          'md:hover:bg-gray-50 rounded-lg',
+          `${semanticSpacing.gap.lg} ${semanticSpacing.cardContainer} ${semanticSpacing.negativeMargin.xs}`,
           'min-h-[44px] touch-manipulation',
           className
         )}
@@ -72,7 +74,7 @@ const InteractionTimelineItemComponent = forwardRef<HTMLDivElement, InteractionT
           getInteractionTypeColor={getInteractionTypeColor}
         />
 
-        <div className="min-w-0 flex-1 space-y-2">
+        <div className={`min-w-0 flex-1 ${semanticSpacing.stack.xs}`}>
           <InteractionTimelineHeader
             interaction={interaction}
             isExpanded={isExpanded}

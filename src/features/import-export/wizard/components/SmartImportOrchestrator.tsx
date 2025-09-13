@@ -12,6 +12,7 @@ import { useFileUpload } from '@/hooks/useFileUpload' // For template download
 import { Progress } from '@/components/ui/progress'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticTypography, semanticRadius, fontWeight } from '@/styles/tokens'
 
 // Import result type - matching the structure from useSmartImport
 interface ImportResult {
@@ -44,7 +45,10 @@ export function SmartImportOrchestrator({
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const { data: { user }, error } = await supabase.auth.getUser()
+        const {
+          data: { user },
+          error,
+        } = await supabase.auth.getUser()
         if (error) {
           console.error('Auth check error:', error)
           setAuthState({ isAuthenticated: false, loading: false, error: error.message })
@@ -53,14 +57,14 @@ export function SmartImportOrchestrator({
         }
       } catch (error) {
         console.error('Auth check failed:', error)
-        setAuthState({ 
-          isAuthenticated: false, 
-          loading: false, 
-          error: error instanceof Error ? error.message : 'Authentication check failed'
+        setAuthState({
+          isAuthenticated: false,
+          loading: false,
+          error: error instanceof Error ? error.message : 'Authentication check failed',
         })
       }
     }
-    
+
     checkAuth()
   }, [])
 
@@ -103,7 +107,7 @@ export function SmartImportOrchestrator({
     if (state.currentStep === 'review' && !authState.isAuthenticated) {
       return 'You must be signed in to import data'
     }
-    
+
     switch (state.currentStep) {
       case 'upload':
         if (!state.file) return 'Please upload a CSV file'
@@ -130,29 +134,32 @@ export function SmartImportOrchestrator({
       // Check auth before starting import
       if (nextStep === 'import') {
         if (!authState.isAuthenticated) {
-          setAuthState(prev => ({ 
-            ...prev, 
-            error: 'You must be signed in to import data. Please sign in and try again.'
+          setAuthState((prev) => ({
+            ...prev,
+            error: 'You must be signed in to import data. Please sign in and try again.',
           }))
           return
         }
-        
+
         // Double-check auth right before import
         try {
-          const { data: { user }, error } = await supabase.auth.getUser()
+          const {
+            data: { user },
+            error,
+          } = await supabase.auth.getUser()
           if (error || !user) {
-            setAuthState(prev => ({ 
-              ...prev, 
-              error: 'Authentication expired. Please sign in again.'
+            setAuthState((prev) => ({
+              ...prev,
+              error: 'Authentication expired. Please sign in again.',
             }))
             return
           }
-          
+
           actions.executeImport()
         } catch (error) {
-          setAuthState(prev => ({ 
-            ...prev, 
-            error: 'Authentication check failed. Please try again.'
+          setAuthState((prev) => ({
+            ...prev,
+            error: 'Authentication check failed. Please try again.',
           }))
           return
         }
@@ -160,7 +167,7 @@ export function SmartImportOrchestrator({
       actions.nextStep()
     }
   }
-  
+
   const handleSignIn = () => {
     // Redirect to sign-in page or open auth modal
     window.location.href = '/auth/login'
@@ -199,7 +206,7 @@ export function SmartImportOrchestrator({
             onSkipField={actions.skipField}
             onConfirmAll={() => {
               // Confirm all mappings that need review
-              state.fieldMappings.forEach(mapping => {
+              state.fieldMappings.forEach((mapping) => {
                 if (mapping.status === 'needs_review' && mapping.crmField) {
                   actions.confirmMapping(mapping.csvHeader)
                 }
@@ -240,27 +247,33 @@ export function SmartImportOrchestrator({
     }
 
     return (
-      <div className="flex items-center space-x-2">
+      <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
         {/* Previous Button */}
         {canGoPrevious() && (
           <Button
             variant="outline"
             onClick={handlePrevious}
-            className="h-10 px-4"
+            className={semanticSpacing.interactiveElement}
           >
-            <ArrowLeft className="mr-2 size-4" />
+            <ArrowLeft className={`${semanticSpacing.rightGap.xs} size-4`} />
             Previous
           </Button>
         )}
 
         {/* Next Button */}
-        <div className="flex flex-col items-end space-y-1">
-          <Button onClick={handleNext} disabled={!canGoNext()} className="h-10 px-4">
+        <div className={`flex flex-col items-end ${semanticSpacing.stack.xs}`}>
+          <Button
+            onClick={handleNext}
+            disabled={!canGoNext()}
+            className={semanticSpacing.interactiveElement}
+          >
             {state.currentStep === 'review' ? 'Start Import' : 'Next'}
-            {state.currentStep !== 'review' && <ArrowRight className="ml-2 size-4" />}
+            {state.currentStep !== 'review' && (
+              <ArrowRight className={`${semanticSpacing.leftGap.xs} size-4`} />
+            )}
           </Button>
           {!canGoNext() && getNextStepMessage() && (
-            <span className="max-w-40 text-right text-xs text-amber-600">
+            <span className={cn('max-w-40 text-right text-amber-600', semanticTypography.caption)}>
               {getNextStepMessage()}
             </span>
           )}
@@ -281,8 +294,14 @@ export function SmartImportOrchestrator({
 
         {/* Minimal Footer */}
         {onCancel && state.currentStep !== 'complete' && (
-          <div className="mt-6 flex justify-center border-t pt-4">
-            <Button variant="ghost" onClick={onCancel} className="h-10 px-4">
+          <div
+            className={`${semanticSpacing.topGap.xl} flex justify-center border-t ${semanticSpacing.topPadding.md}`}
+          >
+            <Button
+              variant="ghost"
+              onClick={onCancel}
+              className={semanticSpacing.interactiveElement}
+            >
               Cancel
             </Button>
           </div>
@@ -290,7 +309,7 @@ export function SmartImportOrchestrator({
 
         {/* Authentication Error */}
         {authState.error && (
-          <div className="mt-4">
+          <div className={semanticSpacing.topGap.md}>
             <Alert variant="destructive">
               <LogIn className="size-4" />
               <AlertDescription>
@@ -301,9 +320,9 @@ export function SmartImportOrchestrator({
                       variant="outline"
                       size="sm"
                       onClick={handleSignIn}
-                      className="ml-4 shrink-0"
+                      className={`${semanticSpacing.leftGap.md} shrink-0`}
                     >
-                      <LogIn className="mr-2 size-3" />
+                      <LogIn className={`${semanticSpacing.rightGap.xs} size-3`} />
                       Sign In
                     </Button>
                   )}
@@ -312,10 +331,10 @@ export function SmartImportOrchestrator({
             </Alert>
           </div>
         )}
-        
+
         {/* Errors/Warnings - Now separate section */}
         {(state.error || state.warnings.length > 0) && (
-          <div className="mt-4">
+          <div className={semanticSpacing.topGap.md}>
             {state.error && (
               <Alert variant="destructive">
                 <AlertCircle className="size-4" />
@@ -327,14 +346,14 @@ export function SmartImportOrchestrator({
               <Alert className="border-amber-200 bg-amber-50">
                 <AlertCircle className="size-4 text-amber-600" />
                 <AlertDescription>
-                  <div className="space-y-1">
+                  <div className={semanticSpacing.stack.xs}>
                     {state.warnings.slice(0, 2).map((warning, idx) => (
-                      <div key={idx} className="text-sm text-amber-800">
+                      <div key={idx} className={cn('text-amber-800', semanticTypography.body)}>
                         {warning}
                       </div>
                     ))}
                     {state.warnings.length > 2 && (
-                      <div className="text-xs text-amber-700">
+                      <div className={cn('text-amber-700', semanticTypography.caption)}>
                         +{state.warnings.length - 2} more warnings
                       </div>
                     )}
@@ -362,24 +381,46 @@ function ImportProgressStep({
   error: string | null
 }) {
   return (
-    <div className="space-y-6">
+    <div className={semanticSpacing.stack.xl}>
       {inProgress && (
         <Card>
-          <CardContent className="p-8">
-            <div className="space-y-4 text-center">
-              <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary/10">
-                <div className="size-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <CardContent className={semanticSpacing.cardContainer}>
+            <div className={`${semanticSpacing.stack.md} text-center`}>
+              <div
+                className={cn(
+                  'mx-auto flex size-16 items-center justify-center bg-primary/10',
+                  semanticRadius.full
+                )}
+              >
+                <div
+                  className={cn(
+                    'size-8 animate-spin border-2 border-primary border-t-transparent',
+                    semanticRadius.full
+                  )}
+                />
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-foreground">Adding your organizations...</h3>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <h3 className={cn('font-semibold text-foreground', semanticTypography.heading)}>
+                  Adding your organizations...
+                </h3>
+                <p
+                  className={cn(
+                    `${semanticSpacing.topGap.xs} text-muted-foreground`,
+                    semanticTypography.body
+                  )}
+                >
                   We're processing your data and adding it to the CRM
                 </p>
               </div>
 
-              <div className="mx-auto w-full max-w-sm space-y-2">
-                <div className="flex justify-between text-sm text-muted-foreground">
+              <div className={`mx-auto w-full max-w-sm ${semanticSpacing.stack.xs}`}>
+                <div
+                  className={cn(
+                    'flex justify-between text-muted-foreground',
+                    semanticTypography.body
+                  )}
+                >
                   <span>Progress</span>
                   <span>{progress}%</span>
                 </div>
@@ -389,14 +430,12 @@ function ImportProgressStep({
           </CardContent>
         </Card>
       )}
-
       {error && (
         <Alert variant="destructive">
           <AlertCircle className="size-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-
       {result && result !== null && (
         <Card
           className={
@@ -405,34 +444,42 @@ function ImportProgressStep({
               : 'border-destructive/20 bg-destructive/5'
           }
         >
-          <CardContent className="p-6">
+          <CardContent className="${semanticSpacing.layoutPadding.lg}">
             <div className="text-center">
               {result.success ? (
-                <CheckCircle2 className="mx-auto mb-3 size-12 text-success" />
+                <CheckCircle2 className="mx-auto ${semanticSpacing.bottomGap.sm} size-12 text-success" />
               ) : (
-                <AlertCircle className="mx-auto mb-3 size-12 text-destructive" />
+                <AlertCircle className="mx-auto ${semanticSpacing.bottomGap.sm} size-12 text-destructive" />
               )}
 
-              <h3 className="text-lg font-semibold text-foreground">
+              <h3 className="${semanticTypography.subtitle} ${fontWeight.semibold} text-foreground">
                 {result.success ? 'Successfully Added to CRM!' : 'Import Had Issues'}
               </h3>
 
-              <div className="mt-4 space-y-2">
-                <div className="text-sm text-muted-foreground">
+              <div className="${semanticSpacing.topGap.md} ${semanticSpacing.stack.xs}">
+                <div className="${semanticTypography.body} text-muted-foreground">
                   <strong>{result.imported}</strong> organizations added to your CRM
                   {result.failed > 0 && (
                     <span>
-                      , <strong className="text-destructive">{result.failed}</strong> could not be added
+                      , <strong className="text-destructive">{result.failed}</strong> could not be
+                      added
                     </span>
                   )}
                 </div>
 
                 {result.errors.length > 0 && (
-                  <details className="mt-4">
-                    <summary className="cursor-pointer text-sm text-muted-foreground hover:text-slate-800">
+                  <details className="${semanticSpacing.topGap.md}">
+                    <summary className="cursor-pointer ${semanticTypography.body} text-muted-foreground hover:text-slate-800">
                       View errors ({result.errors.length})
                     </summary>
-                    <div className="mt-2 space-y-1 text-left text-xs">
+                    <div
+                      className={cn(
+                        semanticSpacing.stack.xs,
+                        semanticSpacing.topGap.xs,
+                        'text-left',
+                        semanticTypography.caption
+                      )}
+                    >
                       {result.errors.slice(0, 5).map((error, idx: number) => (
                         <div key={idx} className="text-destructive">
                           Row {error.row}: {error.error}
@@ -466,41 +513,58 @@ function ImportCompleteStep({
   onClose?: () => void
 }) {
   return (
-    <div className="space-y-6 text-center">
-      <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-success/10">
+    <div className={`${semanticSpacing.stack.xl} text-center`}>
+      <div
+        className={cn(
+          'mx-auto flex size-16 items-center justify-center bg-success/10',
+          semanticRadius.full
+        )}
+      >
         <CheckCircle2 className="size-8 text-success" />
       </div>
-
       <div>
-        <h2 className="text-2xl font-bold text-foreground">Import Complete!</h2>
-        <p className="mt-2 text-muted-foreground">
+        <h2 className={cn('font-bold text-foreground', semanticTypography.title)}>
+          Import Complete!
+        </h2>
+        <p
+          className={cn(
+            `${semanticSpacing.topGap.xs} text-muted-foreground`,
+            semanticTypography.body
+          )}
+        >
           Your data has been successfully imported into the CRM system.
         </p>
       </div>
-
       {result && result !== null && (
         <Card>
-          <CardContent className="p-6">
-            <div className="grid grid-cols-2 gap-4 text-center">
+          <CardContent className={semanticSpacing.cardContainer}>
+            <div className={cn('grid grid-cols-2 text-center', semanticSpacing.gap.md)}>
               <div>
-                <div className="text-2xl font-bold text-success">{result.imported}</div>
-                <div className="text-sm text-muted-foreground">Records Imported</div>
+                <div className={cn('font-bold text-success', semanticTypography.title)}>
+                  {result.imported}
+                </div>
+                <div className={cn('text-muted-foreground', semanticTypography.body)}>
+                  Records Imported
+                </div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-destructive">{result.failed}</div>
-                <div className="text-sm text-muted-foreground">Failed Records</div>
+                <div className={cn('font-bold text-destructive', semanticTypography.title)}>
+                  {result.failed}
+                </div>
+                <div className={cn('text-muted-foreground', semanticTypography.body)}>
+                  Failed Records
+                </div>
               </div>
             </div>
           </CardContent>
         </Card>
       )}
-
-      <div className="flex flex-col justify-center gap-3 sm:flex-row">
-        <Button onClick={onStartNew} className="h-12 px-6">
+      <div className="flex flex-col justify-center ${semanticSpacing.gap.sm} sm:flex-row">
+        <Button onClick={onStartNew} className={cn(semanticSpacing.cardX, 'h-12')}>
           Import Another File
         </Button>
         {onClose && (
-          <Button variant="outline" onClick={onClose} className="h-12 px-6">
+          <Button variant="outline" onClick={onClose} className={cn(semanticSpacing.cardX, 'h-12')}>
             Close
           </Button>
         )}

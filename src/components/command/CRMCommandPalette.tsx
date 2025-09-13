@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
+import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticRadius, semanticTypography } from '@/styles/tokens'
 import {
   CommandDialog,
   CommandInput,
@@ -19,36 +21,20 @@ import {
   Target,
   MessageSquare,
   Plus,
-  Settings,
-  Calculator,
   Calendar,
   FileText,
   Clock,
-  Star,
-  Navigation,
   Home,
   Upload,
   Download,
   User,
-  Globe,
-  Phone,
-  Mail,
-  TrendingUp,
-  Filter,
-  SortAsc,
   Zap,
-  Command
+  Command,
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 // Types for different command categories
-export type CommandType = 
-  | 'navigation' 
-  | 'create' 
-  | 'search' 
-  | 'action' 
-  | 'recent'
-  | 'shortcut'
+export type CommandType = 'navigation' | 'create' | 'search' | 'action' | 'recent' | 'shortcut'
 
 export interface CRMCommand {
   id: string
@@ -91,7 +77,7 @@ export function CRMCommandPalette({
   onCreateRecord,
   onSearchResults,
   recentItems = [],
-  frequentActions = []
+  frequentActions = [],
 }: CRMCommandPaletteProps) {
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
@@ -107,7 +93,7 @@ export function CRMCommandPalette({
       icon: Home,
       action: () => navigateAndClose('/'),
       shortcut: '⌘H',
-      keywords: ['dashboard', 'home', 'overview', 'metrics']
+      keywords: ['dashboard', 'home', 'overview', 'metrics'],
     },
     {
       id: 'nav-organizations',
@@ -117,7 +103,7 @@ export function CRMCommandPalette({
       icon: Building2,
       action: () => navigateAndClose('/organizations'),
       shortcut: '⌘O',
-      keywords: ['organizations', 'customers', 'companies', 'accounts']
+      keywords: ['organizations', 'customers', 'companies', 'accounts'],
     },
     {
       id: 'nav-contacts',
@@ -127,7 +113,7 @@ export function CRMCommandPalette({
       icon: Users,
       action: () => navigateAndClose('/contacts'),
       shortcut: '⌘C',
-      keywords: ['contacts', 'people', 'relationships', 'individuals']
+      keywords: ['contacts', 'people', 'relationships', 'individuals'],
     },
     {
       id: 'nav-products',
@@ -137,7 +123,7 @@ export function CRMCommandPalette({
       icon: Package,
       action: () => navigateAndClose('/products'),
       shortcut: '⌘P',
-      keywords: ['products', 'catalog', 'inventory', 'items']
+      keywords: ['products', 'catalog', 'inventory', 'items'],
     },
     {
       id: 'nav-opportunities',
@@ -147,7 +133,7 @@ export function CRMCommandPalette({
       icon: Target,
       action: () => navigateAndClose('/opportunities'),
       shortcut: '⌘U',
-      keywords: ['opportunities', 'deals', 'pipeline', 'sales']
+      keywords: ['opportunities', 'deals', 'pipeline', 'sales'],
     },
     {
       id: 'nav-interactions',
@@ -157,8 +143,8 @@ export function CRMCommandPalette({
       icon: MessageSquare,
       action: () => navigateAndClose('/interactions'),
       shortcut: '⌘I',
-      keywords: ['interactions', 'activities', 'communications', 'history']
-    }
+      keywords: ['interactions', 'activities', 'communications', 'history'],
+    },
   ]
 
   // Create commands
@@ -170,7 +156,7 @@ export function CRMCommandPalette({
       type: 'create',
       icon: Building2,
       action: () => createAndClose('organization'),
-      keywords: ['create', 'new', 'organization', 'company', 'add']
+      keywords: ['create', 'new', 'organization', 'company', 'add'],
     },
     {
       id: 'create-contact',
@@ -179,7 +165,7 @@ export function CRMCommandPalette({
       type: 'create',
       icon: User,
       action: () => createAndClose('contact'),
-      keywords: ['create', 'new', 'contact', 'person', 'add']
+      keywords: ['create', 'new', 'contact', 'person', 'add'],
     },
     {
       id: 'create-product',
@@ -188,7 +174,7 @@ export function CRMCommandPalette({
       type: 'create',
       icon: Package,
       action: () => createAndClose('product'),
-      keywords: ['create', 'new', 'product', 'item', 'add']
+      keywords: ['create', 'new', 'product', 'item', 'add'],
     },
     {
       id: 'create-opportunity',
@@ -197,7 +183,7 @@ export function CRMCommandPalette({
       type: 'create',
       icon: Target,
       action: () => createAndClose('opportunity'),
-      keywords: ['create', 'new', 'opportunity', 'deal', 'add']
+      keywords: ['create', 'new', 'opportunity', 'deal', 'add'],
     },
     {
       id: 'create-interaction',
@@ -206,8 +192,8 @@ export function CRMCommandPalette({
       type: 'create',
       icon: MessageSquare,
       action: () => createAndClose('interaction'),
-      keywords: ['create', 'new', 'interaction', 'log', 'activity', 'add']
-    }
+      keywords: ['create', 'new', 'interaction', 'log', 'activity', 'add'],
+    },
   ]
 
   // Action commands
@@ -219,7 +205,7 @@ export function CRMCommandPalette({
       type: 'action',
       icon: Download,
       action: () => actionAndClose('export'),
-      keywords: ['export', 'download', 'spreadsheet', 'backup']
+      keywords: ['export', 'download', 'spreadsheet', 'backup'],
     },
     {
       id: 'import-data',
@@ -228,7 +214,7 @@ export function CRMCommandPalette({
       type: 'action',
       icon: Upload,
       action: () => actionAndClose('import'),
-      keywords: ['import', 'upload', 'spreadsheet', 'bulk']
+      keywords: ['import', 'upload', 'spreadsheet', 'bulk'],
     },
     {
       id: 'generate-report',
@@ -237,7 +223,7 @@ export function CRMCommandPalette({
       type: 'action',
       icon: FileText,
       action: () => actionAndClose('report'),
-      keywords: ['report', 'analytics', 'generate', 'summary']
+      keywords: ['report', 'analytics', 'generate', 'summary'],
     },
     {
       id: 'schedule-meeting',
@@ -246,28 +232,29 @@ export function CRMCommandPalette({
       type: 'action',
       icon: Calendar,
       action: () => actionAndClose('meeting'),
-      keywords: ['meeting', 'schedule', 'appointment', 'calendar']
-    }
+      keywords: ['meeting', 'schedule', 'appointment', 'calendar'],
+    },
   ]
 
   // Combine all commands
-  const allCommands = useMemo(() => [
-    ...navigationCommands,
-    ...createCommands,
-    ...actionCommands,
-    ...frequentActions
-  ], [frequentActions])
+  const allCommands = useMemo(
+    () => [...navigationCommands, ...createCommands, ...actionCommands, ...frequentActions],
+    [frequentActions]
+  )
 
   // Filter commands based on search query
   const filteredCommands = useMemo(() => {
     if (!query) return allCommands
 
     const lowerQuery = query.toLowerCase()
-    return allCommands.filter(command => 
-      command.title.toLowerCase().includes(lowerQuery) ||
-      command.description?.toLowerCase().includes(lowerQuery) ||
-      command.keywords?.some(keyword => keyword.includes(lowerQuery))
-    ).sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0))
+    return allCommands
+      .filter(
+        (command) =>
+          command.title.toLowerCase().includes(lowerQuery) ||
+          command.description?.toLowerCase().includes(lowerQuery) ||
+          command.keywords?.some((keyword) => keyword.includes(lowerQuery))
+      )
+      .sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0))
   }, [query, allCommands])
 
   // Handle search results
@@ -282,7 +269,7 @@ export function CRMCommandPalette({
 
   const navigateAndClose = (path: string) => {
     setOpen(false)
-    onNavigate?.(path) || navigate(path)
+    onNavigate ? onNavigate(path) : navigate(path)
   }
 
   const createAndClose = (type: string) => {
@@ -311,14 +298,21 @@ export function CRMCommandPalette({
         <Search className="h-4 w-4 xl:mr-2" />
         <span className="hidden xl:inline-flex">Search or run command...</span>
         <span className="sr-only">Search</span>
-        <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 xl:flex">
-          <span className="text-xs">⌘</span>K
+        <kbd
+          className={cn(
+            semanticSpacing.gap.xs,
+            semanticRadius.small,
+            semanticTypography.label,
+            'pointer-events-none absolute right-1.5 top-2 hidden h-6 select-none items-center border bg-muted px-1.5 font-mono text-[10px] opacity-100 xl:flex'
+          )}
+        >
+          <span className={`${semanticTypography.caption}`}>⌘</span>K
         </kbd>
       </Button>
 
       {/* Command Dialog */}
-      <CommandDialog 
-        open={open} 
+      <CommandDialog
+        open={open}
         onOpenChange={setOpen}
         title="Command Palette"
         description="Search for commands, navigate, or find records"
@@ -330,12 +324,18 @@ export function CRMCommandPalette({
         />
         <CommandList>
           <CommandEmpty>
-            <div className="flex flex-col items-center gap-2 py-6">
+            <div
+              className={cn(
+                semanticSpacing.gap.xs,
+                semanticSpacing.cardY,
+                'flex flex-col items-center'
+              )}
+            >
               <Search className="h-8 w-8 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">
+              <p className={cn(semanticTypography.body, 'text-muted-foreground')}>
                 No results found for "{query}"
               </p>
-              <p className="text-xs text-muted-foreground">
+              <p className={cn(semanticTypography.caption, 'text-muted-foreground')}>
                 Try searching for organizations, contacts, products, or opportunities
               </p>
             </div>
@@ -350,15 +350,20 @@ export function CRMCommandPalette({
                   value={`${result.title} ${result.subtitle}`}
                   onSelect={() => handleSelect(result)}
                 >
-                  <result.icon className="mr-2 h-4 w-4" />
+                  <result.icon className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4')} />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <span className="font-medium truncate">{result.title}</span>
-                      <Badge variant="outline" className="ml-2 text-xs">
+                      <span className={cn(semanticTypography.label, 'truncate')}>
+                        {result.title}
+                      </span>
+                      <Badge
+                        variant="outline"
+                        className={cn(semanticSpacing.leftGap.xs, semanticTypography.caption)}
+                      >
                         {result.type}
                       </Badge>
                     </div>
-                    <p className="text-xs text-muted-foreground truncate">
+                    <p className={cn(semanticTypography.caption, 'text-muted-foreground truncate')}>
                       {result.subtitle}
                     </p>
                   </div>
@@ -371,16 +376,14 @@ export function CRMCommandPalette({
           {recentItems.length > 0 && !query && (
             <CommandGroup heading="Recent">
               {recentItems.slice(0, 5).map((item) => (
-                <CommandItem
-                  key={item.id}
-                  value={item.title}
-                  onSelect={() => handleSelect(item)}
-                >
-                  <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
-                  <item.icon className="mr-2 h-4 w-4" />
+                <CommandItem key={item.id} value={item.title} onSelect={() => handleSelect(item)}>
+                  <Clock
+                    className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4 text-muted-foreground')}
+                  />
+                  <item.icon className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4')} />
                   <div className="flex-1 min-w-0">
                     <span className="truncate">{item.title}</span>
-                    <p className="text-xs text-muted-foreground truncate">
+                    <p className={cn(semanticTypography.caption, 'text-muted-foreground truncate')}>
                       {item.subtitle}
                     </p>
                   </div>
@@ -392,73 +395,77 @@ export function CRMCommandPalette({
           {/* Navigation */}
           {(query || !recentItems.length) && (
             <CommandGroup heading="Navigate">
-              {filteredCommands.filter(cmd => cmd.type === 'navigation').map((command) => (
-                <CommandItem
-                  key={command.id}
-                  value={`${command.title} ${command.description} ${command.keywords?.join(' ')}`}
-                  onSelect={() => handleSelect(command)}
-                >
-                  <command.icon className="mr-2 h-4 w-4" />
-                  <div className="flex-1">
-                    <span>{command.title}</span>
-                    {command.description && (
-                      <p className="text-xs text-muted-foreground">
-                        {command.description}
-                      </p>
-                    )}
-                  </div>
-                  {command.shortcut && (
-                    <CommandShortcut>{command.shortcut}</CommandShortcut>
-                  )}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          )}
-
-          {/* Create Actions */}
-          <CommandGroup heading="Create New">
-            {filteredCommands.filter(cmd => cmd.type === 'create').map((command) => (
-              <CommandItem
-                key={command.id}
-                value={`${command.title} ${command.description} ${command.keywords?.join(' ')}`}
-                onSelect={() => handleSelect(command)}
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                <command.icon className="mr-2 h-4 w-4" />
-                <div className="flex-1">
-                  <span>{command.title}</span>
-                  {command.description && (
-                    <p className="text-xs text-muted-foreground">
-                      {command.description}
-                    </p>
-                  )}
-                </div>
-              </CommandItem>
-            ))}
-          </CommandGroup>
-
-          {/* Actions */}
-          {filteredCommands.filter(cmd => cmd.type === 'action').length > 0 && (
-            <>
-              <CommandSeparator />
-              <CommandGroup heading="Actions">
-                {filteredCommands.filter(cmd => cmd.type === 'action').map((command) => (
+              {filteredCommands
+                .filter((cmd) => cmd.type === 'navigation')
+                .map((command) => (
                   <CommandItem
                     key={command.id}
                     value={`${command.title} ${command.description} ${command.keywords?.join(' ')}`}
                     onSelect={() => handleSelect(command)}
                   >
-                    <command.icon className="mr-2 h-4 w-4" />
+                    <command.icon className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4')} />
                     <div className="flex-1">
                       <span>{command.title}</span>
                       {command.description && (
-                        <p className="text-xs text-muted-foreground">
+                        <p className={cn(semanticTypography.caption, 'text-muted-foreground')}>
                           {command.description}
                         </p>
                       )}
                     </div>
+                    {command.shortcut && <CommandShortcut>{command.shortcut}</CommandShortcut>}
                   </CommandItem>
                 ))}
+            </CommandGroup>
+          )}
+
+          {/* Create Actions */}
+          <CommandGroup heading="Create New">
+            {filteredCommands
+              .filter((cmd) => cmd.type === 'create')
+              .map((command) => (
+                <CommandItem
+                  key={command.id}
+                  value={`${command.title} ${command.description} ${command.keywords?.join(' ')}`}
+                  onSelect={() => handleSelect(command)}
+                >
+                  <Plus className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4')} />
+                  <command.icon className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4')} />
+                  <div className="flex-1">
+                    <span>{command.title}</span>
+                    {command.description && (
+                      <p className={cn(semanticTypography.caption, 'text-muted-foreground')}>
+                        {command.description}
+                      </p>
+                    )}
+                  </div>
+                </CommandItem>
+              ))}
+          </CommandGroup>
+
+          {/* Actions */}
+          {filteredCommands.filter((cmd) => cmd.type === 'action').length > 0 && (
+            <>
+              <CommandSeparator />
+              <CommandGroup heading="Actions">
+                {filteredCommands
+                  .filter((cmd) => cmd.type === 'action')
+                  .map((command) => (
+                    <CommandItem
+                      key={command.id}
+                      value={`${command.title} ${command.description} ${command.keywords?.join(' ')}`}
+                      onSelect={() => handleSelect(command)}
+                    >
+                      <command.icon className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4')} />
+                      <div className="flex-1">
+                        <span>{command.title}</span>
+                        {command.description && (
+                          <p className={cn(semanticTypography.caption, 'text-muted-foreground')}>
+                            {command.description}
+                          </p>
+                        )}
+                      </div>
+                    </CommandItem>
+                  ))}
               </CommandGroup>
             </>
           )}
@@ -469,14 +476,14 @@ export function CRMCommandPalette({
               <CommandSeparator />
               <CommandGroup heading="Tips">
                 <CommandItem disabled>
-                  <Zap className="mr-2 h-4 w-4 text-yellow-500" />
-                  <span className="text-xs">
+                  <Zap className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4 text-yellow-500')} />
+                  <span className={`${semanticTypography.caption}`}>
                     Use keyboard shortcuts for faster navigation
                   </span>
                 </CommandItem>
                 <CommandItem disabled>
-                  <Command className="mr-2 h-4 w-4 text-blue-500" />
-                  <span className="text-xs">
+                  <Command className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4 text-blue-500')} />
+                  <span className={`${semanticTypography.caption}`}>
                     Press ⌘K or Ctrl+K to open this palette anytime
                   </span>
                 </CommandItem>
@@ -519,7 +526,7 @@ export function sampleSearchFunction(query: string): SearchResult[] {
       type: 'organization',
       icon: Building2,
       action: () => console.log('Navigate to Metro Restaurant Group'),
-      metadata: { type: 'customer', priority: 'a-plus' }
+      metadata: { type: 'customer', priority: 'a-plus' },
     },
     {
       id: '2',
@@ -528,7 +535,7 @@ export function sampleSearchFunction(query: string): SearchResult[] {
       type: 'contact',
       icon: User,
       action: () => console.log('Navigate to Sarah Johnson'),
-      metadata: { organization: 'Metro Restaurant Group' }
+      metadata: { organization: 'Metro Restaurant Group' },
     },
     {
       id: '3',
@@ -537,12 +544,13 @@ export function sampleSearchFunction(query: string): SearchResult[] {
       type: 'product',
       icon: Package,
       action: () => console.log('Navigate to Organic Chicken Breast'),
-      metadata: { category: 'Fresh Proteins' }
-    }
+      metadata: { category: 'Fresh Proteins' },
+    },
   ]
 
-  return sampleData.filter(item => 
-    item.title.toLowerCase().includes(query.toLowerCase()) ||
-    item.subtitle.toLowerCase().includes(query.toLowerCase())
+  return sampleData.filter(
+    (item) =>
+      item.title.toLowerCase().includes(query.toLowerCase()) ||
+      item.subtitle.toLowerCase().includes(query.toLowerCase())
   )
 }

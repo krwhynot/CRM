@@ -1,21 +1,39 @@
-import React from 'react'
-import { render, screen, act } from '@testing-library/react'
+// Removed unused: import React from 'react'
+import { render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
-import { 
+import {
   DEFAULT_WEEKLY_FILTERS,
   WEEKLY_TIME_RANGE_OPTIONS,
   type BaseWeeklyFilterState,
   type WeeklyTimeRangeType
 } from '@/types/shared-filters.types'
 
+// Type definitions for mock props
+interface GenericWeeksFilterProps {
+  value: WeeklyTimeRangeType;
+  onChange: (value: WeeklyTimeRangeType) => void;
+}
+
+interface GenericPrincipalFilterProps {
+  value: string;
+  onChange: (value: string) => void;
+  principals?: Array<{ id: string; name: string }>;
+}
+
+interface GenericQuickViewFilterProps {
+  value: string;
+  onChange: (value: string) => void;
+  options?: Array<{ value: string; label: string }>;
+}
+
 // Mock shared filter components
 vi.mock('@/components/filters/shared', () => ({
-  GenericWeeksFilter: ({ value, onChange }: any) => (
+  GenericWeeksFilter: ({ value, onChange }: GenericWeeksFilterProps) => (
     <div data-testid="weeks-filter">
       <select 
         value={value} 
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onChange(e.target.value as WeeklyTimeRangeType)}
         data-testid="weeks-select"
       >
         {WEEKLY_TIME_RANGE_OPTIONS.map(option => (
@@ -26,25 +44,25 @@ vi.mock('@/components/filters/shared', () => ({
       </select>
     </div>
   ),
-  GenericPrincipalFilter: ({ value, onChange, principals }: any) => (
+  GenericPrincipalFilter: ({ value, onChange, principals }: GenericPrincipalFilterProps) => (
     <div data-testid="principal-filter">
       <select 
         value={value} 
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onChange(e.target.value as WeeklyTimeRangeType)}
         data-testid="principal-select"
       >
         <option value="all">All Principals</option>
-        {principals?.map((p: any) => (
+        {principals?.map((p) => (
           <option key={p.id} value={p.id}>{p.name}</option>
         ))}
       </select>
     </div>
   ),
-  GenericQuickViewFilter: ({ value, onChange, options }: any) => (
+  GenericQuickViewFilter: ({ value, onChange, options }: GenericQuickViewFilterProps) => (
     <div data-testid="quickview-filter">
       <select 
         value={value} 
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onChange(e.target.value as WeeklyTimeRangeType)}
         data-testid="quickview-select"
       >
         <option value="none">No Quick View</option>
@@ -95,7 +113,7 @@ const createMockFilterComponent = (featureName: string, quickViewOptions: Array<
           data-testid="principal-select"
         >
           <option value="all">All Principals</option>
-          {principals?.map((p: any) => (
+          {principals?.map((p) => (
             <option key={p.id} value={p.id}>{p.name}</option>
           ))}
         </select>
@@ -603,7 +621,7 @@ describe('Phase 7: Cross-Page Filter Consistency Tests', () => {
       const searchInput = screen.getByTestId('search-input')
       
       // Rapidly type in search (simulating real user behavior)
-      await user.type(searchInput, 'rapid', { delay: 10 })
+      await user.type(searchInput, 'rapid')
       
       // Should have been called multiple times but each with correct structure
       const calls = mockOnFiltersChange.mock.calls

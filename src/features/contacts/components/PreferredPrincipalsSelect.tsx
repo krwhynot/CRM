@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 import type { Organization } from '@/types/entities'
 // Organization type imported directly where needed
 
@@ -65,18 +66,26 @@ export function PreferredPrincipalsSelect({
   }
 
   return (
-    <div className={cn('space-y-2', className)}>
+    <div className={cn(semanticSpacing.stack.xs, className)}>
       {/* Selected Principals Display */}
       {selectedPrincipals.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className={`flex flex-wrap ${semanticSpacing.gap.xs}`}>
           {selectedPrincipals.map((principal: Organization) => (
-            <Badge key={principal.id} variant="secondary" className="group pr-1.5">
-              <span className="text-xs">{principal.name}</span>
+            <Badge
+              key={principal.id}
+              variant="secondary"
+              className={`group ${semanticSpacing.rightPadding.xs}`}
+            >
+              <span className={semanticTypography.caption}>{principal.name}</span>
               <button
                 type="button"
                 onClick={() => handleRemove(principal.id)}
                 disabled={disabled}
-                className="ml-1.5 rounded-full hover:bg-secondary-foreground/20 disabled:cursor-not-allowed disabled:opacity-50"
+                className={cn(
+                  semanticRadius.full,
+                  semanticSpacing.leftGap.xs,
+                  'hover:bg-secondary-foreground/20 disabled:cursor-not-allowed disabled:opacity-50'
+                )}
                 aria-label={`Remove ${principal.name}`}
               >
                 <X className="size-3" />
@@ -90,7 +99,7 @@ export function PreferredPrincipalsSelect({
               size="sm"
               onClick={handleClearAll}
               disabled={disabled}
-              className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
+              className={`h-6 ${semanticSpacing.horizontalPadding.xs} ${semanticTypography.caption} text-muted-foreground hover:text-foreground`}
             >
               Clear all
             </Button>
@@ -113,10 +122,12 @@ export function PreferredPrincipalsSelect({
               : value.length === 1
                 ? '1 principal selected'
                 : `${value.length} principals selected`}
-            <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
+            <ChevronsUpDown
+              className={cn(semanticSpacing.leftGap.xs, 'size-4 shrink-0 opacity-50')}
+            />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-full p-0" align="start">
+        <PopoverContent className={`w-full ${semanticSpacing.zero}`} align="start">
           <Command>
             <CommandInput
               placeholder="Search principals..."
@@ -142,9 +153,11 @@ export function PreferredPrincipalsSelect({
                           className={cn('mr-2 h-4 w-4', isSelected ? 'opacity-100' : 'opacity-0')}
                         />
                         <div className="flex flex-col">
-                          <span className="font-medium">{principal.name}</span>
+                          <span className={`${semanticTypography.label}`}>{principal.name}</span>
                           {principal.city && principal.state_province && (
-                            <span className="text-xs text-muted-foreground">
+                            <span
+                              className={cn(semanticTypography.caption, 'text-muted-foreground')}
+                            >
                               {principal.city}, {principal.state_province}
                             </span>
                           )}

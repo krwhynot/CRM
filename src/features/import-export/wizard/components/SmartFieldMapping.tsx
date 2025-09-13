@@ -2,6 +2,7 @@ import { SmartPreviewComponent } from './SmartPreviewComponent'
 import { QuickFieldReview } from './QuickFieldReview'
 import type { SmartFieldMapping } from '../hooks/useSmartImport'
 import type { ParsedData } from '@/hooks/useFileUpload'
+import { semanticSpacing } from '@/styles/tokens'
 
 interface SmartFieldMappingProps {
   parsedData: ParsedData | null
@@ -30,12 +31,12 @@ export function SmartFieldMappingComponent({
   onProceedToImport,
   className,
 }: SmartFieldMappingProps) {
-  const needsReviewMappings = mappings.filter(m => m.status === 'needs_review')
+  const needsReviewMappings = mappings.filter((m) => m.status === 'needs_review')
   const hasReviewItems = needsReviewMappings.length > 0
-  
+
   // Handle confirm all mappings
   const handleConfirmAll = () => {
-    needsReviewMappings.forEach(mapping => {
+    needsReviewMappings.forEach((mapping) => {
       if (mapping.crmField) {
         onConfirmMapping(mapping.csvHeader)
       }
@@ -52,7 +53,7 @@ export function SmartFieldMappingComponent({
         aiInProgress={aiInProgress}
         onRegenerateMapping={onGenerateAIMappings}
         onProceedToImport={onProceedToImport}
-        className="mb-6"
+        className={semanticSpacing.bottomGap.xl}
       />
 
       {/* Quick Field Review - Always show for field management */}

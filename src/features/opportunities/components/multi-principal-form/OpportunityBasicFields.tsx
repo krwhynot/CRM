@@ -14,6 +14,7 @@ import { OPPORTUNITY_CONTEXTS, OPPORTUNITY_STAGES } from '@/constants/opportunit
 import type { UseFormReturn } from 'react-hook-form'
 import type { OpportunityFormData } from '@/types/opportunity.types'
 import type { Organization, Contact } from '@/types/entities'
+import { semanticSpacing } from '@/styles/tokens'
 
 interface OpportunityBasicFieldsProps {
   form: UseFormReturn<OpportunityFormData>
@@ -33,7 +34,7 @@ export const OpportunityBasicFields: React.FC<OpportunityBasicFieldsProps> = ({
         name="organization_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-2">
+            <FormLabel className={`flex items-center ${semanticSpacing.gap.xs}`}>
               <Building2 className="size-4" />
               Customer Organization *
             </FormLabel>

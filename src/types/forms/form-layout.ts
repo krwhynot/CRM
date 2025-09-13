@@ -5,7 +5,7 @@
  * Used by the form utilities and dialog system.
  */
 
-import React from 'react'
+import type { ReactNode, ComponentType } from 'react'
 import type { DialogSize } from '@/contexts/DialogContext'
 
 /**
@@ -45,8 +45,8 @@ export interface FormSizeConfig {
 export interface FormContainerProps {
   title?: string
   description?: string
-  icon?: React.ComponentType<{ className?: string }>
-  children: React.ReactNode
+  icon?: ComponentType<{ className?: string }>
+  children: ReactNode
   className?: string
 
   // Layout behavior

@@ -1,34 +1,16 @@
 import React, { useState } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
+import { semanticSpacing, semanticRadius, semanticTypography } from '@/styles/tokens'
 import {
   Users,
   Building,
   Package,
   TrendingUp,
   MessageSquare,
-  Calendar,
-  Phone,
-  Mail,
-  FileText,
-  Download,
-  Upload,
-  Trash2,
   Save,
-  X,
   ChevronLeft,
   ChevronRight,
   AlertTriangle,
-  CheckCircle,
-  Info,
-  Settings,
-  Filter,
-  Search,
-  Plus,
-  Edit,
-  Eye,
-  MoreHorizontal,
-  Clock,
-  Star
 } from 'lucide-react'
 import {
   Dialog,
@@ -37,56 +19,48 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-  DialogClose
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { Separator } from '@/components/ui/separator'
+// Removed unused: import { Separator } from '@/components/ui/separator'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Checkbox } from '@/components/ui/checkbox'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
 
 // Modal Variants
-const modalVariants = cva(
-  "sm:max-w-lg",
-  {
-    variants: {
-      size: {
-        sm: "sm:max-w-md",
-        md: "sm:max-w-lg",
-        lg: "sm:max-w-2xl",
-        xl: "sm:max-w-4xl",
-        full: "sm:max-w-[95vw]"
-      },
-      type: {
-        form: "sm:max-w-lg",
-        confirmation: "sm:max-w-md",
-        details: "sm:max-w-2xl",
-        wizard: "sm:max-w-3xl",
-        fullscreen: "sm:max-w-[95vw] sm:h-[95vh]"
-      }
+const modalVariants = cva('sm:max-w-lg', {
+  variants: {
+    size: {
+      sm: 'sm:max-w-md',
+      md: 'sm:max-w-lg',
+      lg: 'sm:max-w-2xl',
+      xl: 'sm:max-w-4xl',
+      full: 'sm:max-w-[95vw]',
     },
-    defaultVariants: {
-      size: "md",
-      type: "form"
-    }
-  }
-)
+    type: {
+      form: 'sm:max-w-lg',
+      confirmation: 'sm:max-w-md',
+      details: 'sm:max-w-2xl',
+      wizard: 'sm:max-w-3xl',
+      fullscreen: 'sm:max-w-[95vw] sm:h-[95vh]',
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+    type: 'form',
+  },
+})
 
 // Base CRM Modal Props
 export interface CRMModalProps extends VariantProps<typeof modalVariants> {
@@ -120,39 +94,44 @@ export function CRMModal({
 }: CRMModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent 
+      <DialogContent
         className={cn(modalVariants({ size, type }), className)}
         showCloseButton={showCloseButton}
         {...props}
       >
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
             {title}
             {loading && (
-              <div className="size-4 animate-spin rounded-full border-2 border-muted border-t-primary" />
+              <div
+                className={cn(
+                  semanticRadius.full,
+                  'size-4 animate-spin border-2 border-muted border-t-primary'
+                )}
+              />
             )}
           </DialogTitle>
-          {description && (
-            <DialogDescription>{description}</DialogDescription>
-          )}
+          {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
-        
+
         {error && (
-          <div className="flex items-center gap-2 p-3 text-sm text-destructive bg-destructive/10 rounded-md">
+          <div
+            className={cn(
+              semanticSpacing.gap.xs,
+              semanticSpacing.compact,
+              semanticTypography.body,
+              semanticRadius.default,
+              'flex items-center text-destructive bg-destructive/10'
+            )}
+          >
             <AlertTriangle className="size-4" />
             {error}
           </div>
         )}
-        
-        <div className="flex-1 overflow-hidden">
-          {children}
-        </div>
-        
-        {actions && (
-          <DialogFooter>
-            {actions}
-          </DialogFooter>
-        )}
+
+        <div className="flex-1 overflow-hidden">{children}</div>
+
+        {actions && <DialogFooter>{actions}</DialogFooter>}
       </DialogContent>
     </Dialog>
   )
@@ -184,7 +163,7 @@ export function ConfirmationModal({
   onConfirm,
   onCancel,
   loading = false,
-  icon: Icon
+  icon: Icon,
 }: ConfirmationModalProps) {
   const [isLoading, setIsLoading] = useState(false)
 
@@ -205,11 +184,12 @@ export function ConfirmationModal({
     onOpenChange(false)
   }
 
-  const iconColor = variant === 'destructive' 
-    ? 'text-destructive' 
-    : variant === 'warning' 
-    ? 'text-yellow-600' 
-    : 'text-primary'
+  const iconColor =
+    variant === 'destructive'
+      ? 'text-destructive'
+      : variant === 'warning'
+        ? 'text-yellow-600'
+        : 'text-primary'
 
   const confirmVariant = variant === 'destructive' ? 'destructive' : 'default'
 
@@ -225,28 +205,28 @@ export function ConfirmationModal({
           <Button variant="outline" onClick={handleCancel} disabled={isLoading || loading}>
             {cancelLabel}
           </Button>
-          <Button 
-            variant={confirmVariant} 
-            onClick={handleConfirm} 
-            disabled={isLoading || loading}
-          >
+          <Button variant={confirmVariant} onClick={handleConfirm} disabled={isLoading || loading}>
             {(isLoading || loading) && (
-              <div className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2" />
+              <div
+                className={cn(
+                  semanticRadius.full,
+                  semanticSpacing.rightGap.xs,
+                  'size-4 animate-spin border-2 border-current border-t-transparent'
+                )}
+              />
             )}
             {confirmLabel}
           </Button>
         </>
       }
     >
-      <div className="flex items-start gap-4 py-4">
+      <div className={cn(semanticSpacing.gap.md, semanticSpacing.cardY, 'flex items-start')}>
         {Icon && (
           <div className={cn('shrink-0', iconColor)}>
             <Icon className="size-6" />
           </div>
         )}
-        <div className="text-sm text-muted-foreground">
-          {description}
-        </div>
+        <div className={cn(semanticTypography.body, 'text-muted-foreground')}>{description}</div>
       </div>
     </CRMModal>
   )
@@ -283,7 +263,7 @@ export function WizardModal({
   onComplete,
   onStepChange,
   showProgress = true,
-  allowSkipOptional = true
+  allowSkipOptional = true,
 }: WizardModalProps) {
   const [currentStep, setCurrentStep] = useState(0)
   const [loading, setLoading] = useState(false)
@@ -350,33 +330,37 @@ export function WizardModal({
       loading={loading}
       actions={
         <>
-          <div className="flex items-center gap-2 mr-auto">
-            <span className="text-sm text-muted-foreground">
+          <div className={cn(semanticSpacing.gap.xs, 'flex items-center mr-auto')}>
+            <span className={cn(semanticTypography.body, 'text-muted-foreground')}>
               Step {currentStep + 1} of {steps.length}
             </span>
             {currentStepConfig.optional && (
-              <Badge variant="outline" className="text-xs">Optional</Badge>
+              <Badge variant="outline" className={`${semanticTypography.caption}`}>
+                Optional
+              </Badge>
             )}
           </div>
-          
-          <Button 
-            variant="outline" 
-            onClick={handlePrevious} 
-            disabled={isFirstStep || loading}
-          >
+
+          <Button variant="outline" onClick={handlePrevious} disabled={isFirstStep || loading}>
             <ChevronLeft className="size-4 mr-1" />
             Previous
           </Button>
-          
+
           {currentStepConfig.optional && allowSkipOptional && (
             <Button variant="ghost" onClick={handleSkip} disabled={loading}>
               Skip
             </Button>
           )}
-          
+
           <Button onClick={handleNext} disabled={loading}>
             {loading && (
-              <div className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2" />
+              <div
+                className={cn(
+                  semanticRadius.full,
+                  semanticSpacing.rightGap.xs,
+                  'size-4 animate-spin border-2 border-current border-t-transparent'
+                )}
+              />
             )}
             {isLastStep ? 'Complete' : 'Next'}
             {!isLastStep && <ChevronRight className="size-4 ml-1" />}
@@ -384,12 +368,17 @@ export function WizardModal({
         </>
       }
     >
-      <div className="space-y-4">
+      <div className={`${semanticSpacing.stack.md}`}>
         {/* Progress */}
         {showProgress && (
-          <div className="space-y-2">
+          <div className={`${semanticSpacing.stack.xs}`}>
             <Progress value={progress} className="w-full" />
-            <div className="flex justify-between text-xs text-muted-foreground">
+            <div
+              className={cn(
+                semanticTypography.caption,
+                'flex justify-between text-muted-foreground'
+              )}
+            >
               <span>{currentStepConfig.title}</span>
               <span>{Math.round(progress)}%</span>
             </div>
@@ -397,19 +386,17 @@ export function WizardModal({
         )}
 
         {/* Step Content */}
-        <div className="py-4">
-          <div className="mb-4">
-            <h3 className="font-medium">{currentStepConfig.title}</h3>
+        <div className={`${semanticSpacing.cardY}`}>
+          <div className={`${semanticSpacing.bottomGap.sm}`}>
+            <h3 className={`${semanticTypography.label}`}>{currentStepConfig.title}</h3>
             {currentStepConfig.description && (
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className={cn(semanticTypography.body, 'text-muted-foreground mt-1')}>
                 {currentStepConfig.description}
               </p>
             )}
           </div>
-          
-          <div className="space-y-4">
-            {currentStepConfig.content}
-          </div>
+
+          <div className={`${semanticSpacing.stack.md}`}>{currentStepConfig.content}</div>
         </div>
       </div>
     </CRMModal>
@@ -443,7 +430,7 @@ export function EntityFormModal({
   data,
   onSave,
   loading = false,
-  fields = []
+  fields = [],
 }: EntityFormModalProps) {
   const [formData, setFormData] = useState(data || {})
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -453,7 +440,7 @@ export function EntityFormModal({
     organization: { icon: Building, title: 'Organization', color: 'text-green-600' },
     product: { icon: Package, title: 'Product', color: 'text-purple-600' },
     opportunity: { icon: TrendingUp, title: 'Opportunity', color: 'text-orange-600' },
-    interaction: { icon: MessageSquare, title: 'Interaction', color: 'text-teal-600' }
+    interaction: { icon: MessageSquare, title: 'Interaction', color: 'text-teal-600' },
   }
 
   const config = entityConfig[entityType]
@@ -462,7 +449,7 @@ export function EntityFormModal({
   const handleSave = async () => {
     // Basic validation
     const newErrors: Record<string, string> = {}
-    fields.forEach(field => {
+    fields.forEach((field) => {
       if (field.required && !formData[field.id]) {
         newErrors[field.id] = `${field.label} is required`
       }
@@ -484,15 +471,15 @@ export function EntityFormModal({
   }
 
   const handleFieldChange = (fieldId: string, value: any) => {
-    setFormData(prev => ({ ...prev, [fieldId]: value }))
+    setFormData((prev: Record<string, any>) => ({ ...prev, [fieldId]: value }))
     if (errors[fieldId]) {
-      setErrors(prev => ({ ...prev, [fieldId]: '' }))
+      setErrors((prev: Record<string, string>) => ({ ...prev, [fieldId]: '' }))
     }
   }
 
   const renderField = (field: any) => {
     const hasError = !!errors[field.id]
-    
+
     switch (field.type) {
       case 'textarea':
         return (
@@ -504,11 +491,11 @@ export function EntityFormModal({
             rows={3}
           />
         )
-      
+
       case 'select':
         return (
-          <Select 
-            value={formData[field.id] || ''} 
+          <Select
+            value={formData[field.id] || ''}
             onValueChange={(value) => handleFieldChange(field.id, value)}
           >
             <SelectTrigger className={hasError ? 'border-destructive' : ''}>
@@ -523,7 +510,7 @@ export function EntityFormModal({
             </SelectContent>
           </Select>
         )
-      
+
       default:
         return (
           <Input
@@ -541,14 +528,9 @@ export function EntityFormModal({
     <CRMModal
       open={open}
       onOpenChange={onOpenChange}
-      title={
-        <div className="flex items-center gap-2">
-          <IconComponent className={cn('size-5', config.color)} />
-          {mode === 'create' ? 'Create' : 'Edit'} {config.title}
-        </div>
-      }
+      title={`${mode === 'create' ? 'Create' : 'Edit'} ${config.title}`}
       description={
-        mode === 'create' 
+        mode === 'create'
           ? `Add a new ${config.title.toLowerCase()} to your CRM`
           : `Update ${config.title.toLowerCase()} information`
       }
@@ -561,7 +543,13 @@ export function EntityFormModal({
           </Button>
           <Button onClick={handleSave} disabled={loading}>
             {loading && (
-              <div className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2" />
+              <div
+                className={cn(
+                  semanticRadius.full,
+                  semanticSpacing.rightGap.xs,
+                  'size-4 animate-spin border-2 border-current border-t-transparent'
+                )}
+              />
             )}
             <Save className="size-4 mr-1" />
             {mode === 'create' ? 'Create' : 'Save Changes'}
@@ -570,16 +558,18 @@ export function EntityFormModal({
       }
     >
       <ScrollArea className="max-h-[60vh]">
-        <div className="space-y-4 pr-2">
+        <div className={cn(semanticSpacing.stack.md, 'pr-2')}>
           {fields.map((field) => (
-            <div key={field.id} className="space-y-2">
-              <Label htmlFor={field.id} className="flex items-center gap-1">
+            <div key={field.id} className={`${semanticSpacing.stack.xs}`}>
+              <Label htmlFor={field.id} className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
                 {field.label}
                 {field.required && <span className="text-destructive">*</span>}
               </Label>
               {renderField(field)}
               {errors[field.id] && (
-                <p className="text-sm text-destructive">{errors[field.id]}</p>
+                <p className={cn(semanticTypography.body, 'text-destructive')}>
+                  {errors[field.id]}
+                </p>
               )}
             </div>
           ))}
@@ -613,13 +603,13 @@ export function BulkActionsModal({
   open,
   onOpenChange,
   selectedItems,
-  actions
+  actions,
 }: BulkActionsModalProps) {
   const [selectedAction, setSelectedAction] = useState<string>('')
   const [loading, setLoading] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
 
-  const currentAction = actions.find(action => action.id === selectedAction)
+  const currentAction = actions.find((action) => action.id === selectedAction)
 
   const handleExecute = async () => {
     if (!currentAction) return
@@ -655,44 +645,55 @@ export function BulkActionsModal({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button 
-            onClick={handleExecute} 
+          <Button
+            onClick={handleExecute}
             disabled={!selectedAction || loading}
             variant={currentAction?.variant === 'destructive' ? 'destructive' : 'default'}
           >
             {loading && (
-              <div className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2" />
+              <div
+                className={cn(
+                  semanticRadius.full,
+                  semanticSpacing.rightGap.xs,
+                  'size-4 animate-spin border-2 border-current border-t-transparent'
+                )}
+              />
             )}
             {showConfirmation ? 'Confirm Action' : 'Execute'}
           </Button>
         </>
       }
     >
-      <div className="space-y-4">
+      <div className={`${semanticSpacing.stack.md}`}>
         {/* Selected Items Summary */}
-        <div className="border rounded-lg p-3">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium">Selected Items</span>
+        <div className={cn(semanticRadius.large, semanticSpacing.compact, 'border')}>
+          <div className={cn(semanticSpacing.bottomGap.xs, 'flex items-center justify-between')}>
+            <span className={cn(semanticTypography.body, semanticTypography.label)}>
+              Selected Items
+            </span>
             <Badge variant="outline">{selectedItems.length}</Badge>
           </div>
-          <div className="text-xs text-muted-foreground max-h-20 overflow-y-auto">
-            {selectedItems.slice(0, 5).map((item, index) => (
+          <div
+            className={cn(
+              semanticTypography.caption,
+              'text-muted-foreground max-h-20 overflow-y-auto'
+            )}
+          >
+            {selectedItems.slice(0, 5).map((item) => (
               <div key={item.id}>
                 {item.name} {item.type && `(${item.type})`}
               </div>
             ))}
-            {selectedItems.length > 5 && (
-              <div>...and {selectedItems.length - 5} more</div>
-            )}
+            {selectedItems.length > 5 && <div>...and {selectedItems.length - 5} more</div>}
           </div>
         </div>
 
         {/* Action Selection */}
-        <div className="space-y-3">
+        <div className={`${semanticSpacing.stack.sm}`}>
           <Label>Choose Action</Label>
-          <div className="grid gap-2">
+          <div className={cn(semanticSpacing.gap.xs, 'grid')}>
             {actions.map((action) => (
-              <div key={action.id} className="flex items-center space-x-2">
+              <div key={action.id} className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
                 <Checkbox
                   id={action.id}
                   checked={selectedAction === action.id}
@@ -703,12 +704,18 @@ export function BulkActionsModal({
                 />
                 <label
                   htmlFor={action.id}
-                  className="flex items-center gap-2 cursor-pointer flex-1 text-sm"
+                  className={cn(
+                    semanticSpacing.gap.xs,
+                    semanticTypography.body,
+                    'flex items-center cursor-pointer flex-1'
+                  )}
                 >
                   {action.icon && <action.icon className="size-4" />}
                   <span>{action.label}</span>
                   {action.variant === 'destructive' && (
-                    <Badge variant="destructive" className="text-xs">Destructive</Badge>
+                    <Badge variant="destructive" className={`${semanticTypography.caption}`}>
+                      Destructive
+                    </Badge>
                   )}
                 </label>
               </div>
@@ -718,20 +725,35 @@ export function BulkActionsModal({
 
         {/* Action Description */}
         {currentAction?.description && (
-          <div className="text-sm text-muted-foreground p-3 bg-muted/50 rounded-md">
+          <div
+            className={cn(
+              semanticTypography.body,
+              semanticSpacing.compact,
+              semanticRadius.default,
+              'text-muted-foreground bg-muted/50'
+            )}
+          >
             {currentAction.description}
           </div>
         )}
 
         {/* Confirmation Warning */}
         {showConfirmation && currentAction && (
-          <div className="flex items-start gap-2 p-3 text-sm text-orange-800 bg-orange-50 rounded-md border border-orange-200 dark:bg-orange-950/20 dark:text-orange-200 dark:border-orange-900">
+          <div
+            className={cn(
+              semanticSpacing.gap.xs,
+              semanticSpacing.compact,
+              semanticTypography.body,
+              semanticRadius.default,
+              'flex items-start text-orange-800 bg-orange-50 border border-orange-200 dark:bg-orange-950/20 dark:text-orange-200 dark:border-orange-900'
+            )}
+          >
             <AlertTriangle className="size-4 mt-0.5 shrink-0" />
             <div>
-              <p className="font-medium">Confirm Action</p>
+              <p className={`${semanticTypography.label}`}>Confirm Action</p>
               <p>
-                Are you sure you want to execute "{currentAction.label}" on {selectedItems.length} items? 
-                This action cannot be undone.
+                Are you sure you want to execute "{currentAction.label}" on {selectedItems.length}{' '}
+                items? This action cannot be undone.
               </p>
             </div>
           </div>

@@ -1,4 +1,5 @@
-'use client'
+import { semanticTypography, semanticRadius, semanticSpacing } from '@/styles/tokens'
+;('use client')
 
 import * as React from 'react'
 import * as RechartsPrimitive from 'recharts'
@@ -203,12 +204,12 @@ function ChartTooltipContent({
   return (
     <div
       className={cn(
-        'border-border/50 bg-background grid min-w-[8rem] items-start gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs shadow-xl',
+        `border-border/50 bg-background grid min-w-[8rem] items-start ${semanticSpacing.gap.lg} ${semanticRadius.lg} border px-2.5 ${semanticSpacing.verticalPadding.lg} text-xs shadow-xl`,
         className
       )}
     >
       {!nestLabel ? tooltipLabel : null}
-      <div className="grid gap-1.5">
+      <div className={`grid ${semanticSpacing.gap.lg}`}>
         {payload.map((item, index) => {
           const key = `${nameKey || item.name || item.dataKey || 'value'}`
           const itemConfig = getPayloadConfigFromPayload(config, item, key)
@@ -218,7 +219,7 @@ function ChartTooltipContent({
             <div
               key={item.dataKey}
               className={cn(
-                '[&>svg]:text-muted-foreground flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5',
+                `[&>svg]:text-muted-foreground flex w-full flex-wrap items-stretch ${semanticSpacing.gap.xs} [&>svg]:h-2.5 [&>svg]:w-2.5`,
                 indicator === 'dot' && 'items-center'
               )}
             >
@@ -241,13 +242,14 @@ function ChartTooltipContent({
                     !hideIndicator && (
                       <div
                         className={cn(
-                          'shrink-0 rounded-sm border-(--color-border) bg-(--color-bg)',
+                          `shrink-0 ${semanticRadius.sm} border-(--color-border) bg-(--color-bg)`,
                           {
                             'h-2.5 w-2.5': indicator === 'dot',
                             'w-1': indicator === 'line',
                             'w-0 border-[1.5px] border-dashed bg-transparent':
                               indicator === 'dashed',
-                            'my-0.5': nestLabel && indicator === 'dashed',
+                            [`${semanticSpacing.verticalMargin.xs}`]:
+                              nestLabel && indicator === 'dashed',
                           }
                         )}
                         style={
@@ -265,14 +267,19 @@ function ChartTooltipContent({
                       nestLabel ? 'items-end' : 'items-center'
                     )}
                   >
-                    <div className="grid gap-1.5">
+                    <div className={`grid ${semanticSpacing.gap.lg}`}>
                       {nestLabel ? tooltipLabel : null}
                       <span className="text-muted-foreground">
                         {itemConfig?.label || item.name}
                       </span>
                     </div>
                     {item.value && (
-                      <span className="font-mono font-medium tabular-nums text-foreground">
+                      <span
+                        className={cn(
+                          semanticTypography.label,
+                          'font-mono tabular-nums text-foreground'
+                        )}
+                      >
                         {item.value.toLocaleString()}
                       </span>
                     )}
@@ -320,7 +327,7 @@ function ChartLegendContent({
   return (
     <div
       className={cn(
-        'flex items-center justify-center gap-4',
+        `flex items-center justify-center ${semanticSpacing.gap.xl}`,
         verticalAlign === 'top' ? 'pb-3' : 'pt-3',
         className
       )}
@@ -333,14 +340,14 @@ function ChartLegendContent({
           <div
             key={item.value}
             className={cn(
-              '[&>svg]:text-muted-foreground flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3'
+              `[&>svg]:text-muted-foreground flex items-center ${semanticSpacing.gap.lg} [&>svg]:h-3 [&>svg]:w-3`
             )}
           >
             {itemConfig?.icon && !hideIcon ? (
               <itemConfig.icon />
             ) : (
               <div
-                className="size-2 shrink-0 rounded-sm"
+                className={cn(semanticRadius.small, 'size-2 shrink-0')}
                 style={{
                   backgroundColor: item.color,
                 }}

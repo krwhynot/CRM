@@ -1,4 +1,4 @@
-import React from 'react'
+// Removed unused: import React from 'react'
 // Enhanced quick interaction bar with priority, account manager, and multiple principal support
 import { EnhancedQuickInteractionBar } from './EnhancedQuickInteractionBar'
 
@@ -22,12 +22,12 @@ interface QuickInteractionBarProps {
 
 /**
  * QuickInteractionBar Component
- * 
+ *
  * Enhanced form component for quickly adding interactions to opportunities.
  * Now includes priority selection, account manager selection, and improved UX.
  * Features mobile-optimized touch targets, auto-fill based on interaction type,
  * and validation with loading states.
- * 
+ *
  * @example
  * ```tsx
  * <QuickInteractionBar
@@ -41,17 +41,17 @@ interface QuickInteractionBarProps {
  *   onCancel={() => setShowForm(false)}
  * />
  * ```
- * 
+ *
  * @param props - The component props
  * @returns An enhanced form component for creating new interactions
  */
-export function QuickInteractionBar({ 
-  opportunityId, 
+export function QuickInteractionBar({
+  opportunityId,
   contactId,
   organizationId,
-  onSuccess, 
+  onSuccess,
   onCancel,
-  className
+  className,
 }: QuickInteractionBarProps) {
   // Forward all props to the enhanced quick interaction bar
   return (

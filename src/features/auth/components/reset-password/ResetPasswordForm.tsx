@@ -2,6 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { cn } from '@/lib/utils'
 import {
   Card,
   CardContent,
@@ -11,6 +12,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { AlertCircle, Eye, EyeOff } from 'lucide-react'
+import { semanticSpacing, semanticTypography, semanticRadius } from '@/styles/tokens'
 
 interface ResetPasswordFormProps {
   password: string
@@ -42,24 +44,41 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
   const navigate = useNavigate()
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+    <div
+      className={`flex min-h-screen items-center justify-center bg-gray-50 ${semanticSpacing.horizontalPadding.lg} ${semanticSpacing.verticalPadding.xxl} sm:${semanticSpacing.horizontalPadding.xl} lg:${semanticSpacing.horizontalPadding.xxl}`}
+    >
       <Card className="mx-auto w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Set New Password</CardTitle>
+          <CardTitle className={cn(semanticTypography.h2, semanticTypography.title)}>
+            Set New Password
+          </CardTitle>
           <CardDescription>Enter your new password below</CardDescription>
         </CardHeader>
 
         <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
+          <CardContent className={semanticSpacing.stack.lg}>
             {error && (
-              <div className="flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+              <div
+                className={cn(
+                  semanticRadius.default,
+                  'flex items-center',
+                  semanticSpacing.gap.xs,
+                  'border border-red-200 bg-red-50',
+                  semanticSpacing.layoutPadding.lg,
+                  semanticTypography.body,
+                  'text-red-600'
+                )}
+              >
                 <AlertCircle size={16} />
                 {error}
               </div>
             )}
 
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium">
+            <div className={semanticSpacing.stack.xs}>
+              <label
+                htmlFor="password"
+                className={cn(semanticTypography.label, semanticTypography.body)}
+              >
                 New Password
               </label>
               <div className="relative">
@@ -77,20 +96,23 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  className={`absolute right-0 top-0 h-full ${semanticSpacing.horizontalPadding.lg} ${semanticSpacing.verticalPadding.xs} hover:bg-transparent`}
                   onClick={() => setShowPassword(!showPassword)}
                   disabled={loading}
                 >
                   {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                 </Button>
               </div>
-              <p className="text-xs text-gray-500">
+              <p className={`${semanticTypography.caption} text-gray-500`}>
                 Must be at least 8 characters with uppercase, lowercase, and number
               </p>
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="confirmPassword" className="text-sm font-medium">
+            <div className={semanticSpacing.stack.xs}>
+              <label
+                htmlFor="confirmPassword"
+                className={cn(semanticTypography.label, semanticTypography.body)}
+              >
                 Confirm New Password
               </label>
               <div className="relative">
@@ -108,7 +130,7 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  className={`absolute right-0 top-0 h-full ${semanticSpacing.horizontalPadding.lg} ${semanticSpacing.verticalPadding.xs} hover:bg-transparent`}
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   disabled={loading}
                 >
@@ -118,7 +140,7 @@ export const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
             </div>
           </CardContent>
 
-          <CardFooter className="flex flex-col gap-4">
+          <CardFooter className={`flex flex-col ${semanticSpacing.gap.lg}`}>
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Updating password...' : 'Update Password'}
             </Button>

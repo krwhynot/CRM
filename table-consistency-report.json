@@ -1,0 +1,134 @@
+{
+  "timestamp": "2025-09-13T21:13:01.956Z",
+  "score": 34,
+  "summary": {
+    "totalFiles": 7,
+    "compliantFiles": 5,
+    "violations": [
+      {
+        "file": "src/features/opportunities/components/OpportunitiesTableActions.tsx",
+        "rule": "dataTable",
+        "message": "Must use DataTable component",
+        "line": null
+      },
+      {
+        "file": "src/features/opportunities/components/OpportunitiesTableActions.tsx",
+        "rule": "cardWrapper",
+        "message": "Must wrap table in Card/CardContent",
+        "line": null
+      },
+      {
+        "file": "src/features/opportunities/components/OpportunitiesTableActions.tsx",
+        "rule": "bulkActions",
+        "message": "Must use BulkActionsProvider for bulk operations",
+        "line": null
+      },
+      {
+        "file": "src/features/interactions/components/InteractionsTableActions.tsx",
+        "rule": "dataTable",
+        "message": "Must use DataTable component",
+        "line": null
+      },
+      {
+        "file": "src/features/interactions/components/InteractionsTableActions.tsx",
+        "rule": "cardWrapper",
+        "message": "Must wrap table in Card/CardContent",
+        "line": null
+      },
+      {
+        "file": "src/features/interactions/components/InteractionsTableActions.tsx",
+        "rule": "bulkActions",
+        "message": "Must use BulkActionsProvider for bulk operations",
+        "line": null
+      }
+    ],
+    "warnings": [
+      {
+        "file": "src/features/opportunities/components/OpportunitiesTableActions.tsx",
+        "rule": "tableDataHook",
+        "message": "Should use standardized table data hook"
+      },
+      {
+        "file": "src/features/interactions/components/InteractionsTableActions.tsx",
+        "rule": "tableDataHook",
+        "message": "Should use standardized table data hook"
+      }
+    ],
+    "info": [
+      {
+        "file": "src/features/opportunities/components/OpportunitiesTableActions.tsx",
+        "rule": "actionsHook",
+        "message": "Should use standardized actions hook"
+      },
+      {
+        "file": "src/features/interactions/components/InteractionsTableActions.tsx",
+        "rule": "actionsHook",
+        "message": "Should use standardized actions hook"
+      }
+    ]
+  },
+  "details": {
+    "violations": [
+      {
+        "file": "src/features/opportunities/components/OpportunitiesTableActions.tsx",
+        "rule": "dataTable",
+        "message": "Must use DataTable component",
+        "line": null
+      },
+      {
+        "file": "src/features/opportunities/components/OpportunitiesTableActions.tsx",
+        "rule": "cardWrapper",
+        "message": "Must wrap table in Card/CardContent",
+        "line": null
+      },
+      {
+        "file": "src/features/opportunities/components/OpportunitiesTableActions.tsx",
+        "rule": "bulkActions",
+        "message": "Must use BulkActionsProvider for bulk operations",
+        "line": null
+      },
+      {
+        "file": "src/features/interactions/components/InteractionsTableActions.tsx",
+        "rule": "dataTable",
+        "message": "Must use DataTable component",
+        "line": null
+      },
+      {
+        "file": "src/features/interactions/components/InteractionsTableActions.tsx",
+        "rule": "cardWrapper",
+        "message": "Must wrap table in Card/CardContent",
+        "line": null
+      },
+      {
+        "file": "src/features/interactions/components/InteractionsTableActions.tsx",
+        "rule": "bulkActions",
+        "message": "Must use BulkActionsProvider for bulk operations",
+        "line": null
+      }
+    ],
+    "warnings": [
+      {
+        "file": "src/features/opportunities/components/OpportunitiesTableActions.tsx",
+        "rule": "tableDataHook",
+        "message": "Should use standardized table data hook"
+      },
+      {
+        "file": "src/features/interactions/components/InteractionsTableActions.tsx",
+        "rule": "tableDataHook",
+        "message": "Should use standardized table data hook"
+      }
+    ],
+    "info": [
+      {
+        "file": "src/features/opportunities/components/OpportunitiesTableActions.tsx",
+        "rule": "actionsHook",
+        "message": "Should use standardized actions hook"
+      },
+      {
+        "file": "src/features/interactions/components/InteractionsTableActions.tsx",
+        "rule": "actionsHook",
+        "message": "Should use standardized actions hook"
+      }
+    ]
+  }
+}

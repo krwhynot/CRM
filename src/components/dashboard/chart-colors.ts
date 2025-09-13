@@ -1,6 +1,6 @@
 /**
  * Executive Chef Professional Chart Colors
- * 
+ *
  * Uses CSS custom properties from the design system for consistency
  * and theme compatibility. All colors reference the variables defined
  * in src/index.css to maintain design token integrity.
@@ -12,7 +12,7 @@ const getCSSVar = (variable: string): string => `hsl(var(${variable}))`
 export const chartColors = {
   // Primary colors using design system variables
   primary: getCSSVar('--chart-primary'),
-  success: getCSSVar('--chart-success'), 
+  success: getCSSVar('--chart-success'),
   warning: getCSSVar('--chart-warning'),
   info: getCSSVar('--chart-info'),
   accent: getCSSVar('--chart-accent'),
@@ -21,7 +21,7 @@ export const chartColors = {
   // Professional series colors using chart variables
   series: [
     getCSSVar('--chart-1'),
-    getCSSVar('--chart-2'), 
+    getCSSVar('--chart-2'),
     getCSSVar('--chart-3'),
     getCSSVar('--chart-4'),
     getCSSVar('--chart-5'),
@@ -39,17 +39,17 @@ export const chartColors = {
 
   // Pipeline funnel colors using semantic variables
   pipeline: {
-    qualified: getCSSVar('--chart-info'),     // Deep blue for new opportunities
-    proposal: getCSSVar('--chart-primary'),  // Primary green for proposals
+    qualified: getCSSVar('--chart-info'), // Deep blue for new opportunities
+    proposal: getCSSVar('--chart-primary'), // Primary green for proposals
     negotiation: getCSSVar('--chart-warning'), // Warning amber for negotiations
-    closed: getCSSVar('--chart-success'),    // Success green for closed won
+    closed: getCSSVar('--chart-success'), // Success green for closed won
   },
 
   // Activity type colors using semantic variables
   activity: {
-    opportunity: getCSSVar('--chart-info'),     // Info blue for opportunities
-    interaction: getCSSVar('--chart-warning'),  // Warning amber for interactions
-    task: getCSSVar('--chart-success'),         // Success green for tasks
+    opportunity: getCSSVar('--chart-info'), // Info blue for opportunities
+    interaction: getCSSVar('--chart-warning'), // Warning amber for interactions
+    task: getCSSVar('--chart-success'), // Success green for tasks
   },
 }
 

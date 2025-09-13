@@ -1,6 +1,6 @@
 /**
  * Bulk Actions System
- * 
+ *
  * Unified bulk selection and actions system for CRM entities.
  * Provides consistent selection UI and bulk operation capabilities.
  */
@@ -16,11 +16,7 @@ export {
 } from './BulkActionsProvider'
 
 // Toolbar component
-export {
-  BulkActionsToolbar,
-  useBulkActionsSetup,
-  createBulkActions,
-} from './BulkActionsToolbar'
+export { BulkActionsToolbar, useBulkActionsSetup, createBulkActions } from './BulkActionsToolbar'
 
 // Selection components
 export {

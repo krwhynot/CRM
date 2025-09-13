@@ -1,7 +1,15 @@
 import { StandardDialog } from '@/components/ui/StandardDialog'
+import {
+  semanticSpacing,
+  semanticTypography,
+  semanticRadius,
+  fontWeight,
+  semanticColors,
+} from '@/styles/tokens'
 import type { Organization } from '@/types/entities'
 
 // Generic entity type that has id and name
+import { cn } from '@/lib/utils'
 interface DeletableEntity {
   id: string
   name: string
@@ -53,27 +61,37 @@ export const BulkDeleteDialog = <T extends DeletableEntity = Organization>({
       isLoading={isDeleting}
       size="md"
     >
-      <div className="space-y-3">
+      <div className={semanticSpacing.stackContainer}>
         {organizations.length > 0 && (
-          <div className="space-y-2">
-            <p className="text-sm font-medium">{capitalizedEntityTypePlural} to be archived:</p>
-            <div className="max-h-32 overflow-y-auto rounded bg-gray-50 p-2">
-              <ul className="space-y-1 text-sm">
+          <div className={semanticSpacing.stack.xs}>
+            <p className={`${semanticTypography.body} ${fontWeight.medium}`}>
+              {capitalizedEntityTypePlural} to be archived:
+            </p>
+            <div
+              className={`max-h-32 overflow-y-auto ${semanticRadius.default} bg-muted ${semanticSpacing.cardContainer}`}
+            >
+              <ul className={`${semanticSpacing.stack.xs} ${semanticTypography.body}`}>
                 {organizations.slice(0, 5).map((entity) => (
-                  <li key={entity.id} className="flex items-center gap-2">
-                    <span className="size-1.5 shrink-0 rounded-full bg-gray-400" />
+                  <li key={entity.id} className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
+                    <span
+                      className={`size-1.5 shrink-0 ${semanticRadius.full} bg-muted-foreground/40`}
+                    />
                     {entity.name}
                   </li>
                 ))}
                 {organizations.length > 5 && (
-                  <li className="italic text-gray-600">...and {organizations.length - 5} more</li>
+                  <li className={`italic text-muted-foreground`}>
+                    ...and {organizations.length - 5} more
+                  </li>
                 )}
               </ul>
             </div>
           </div>
         )}
 
-        <p className="rounded bg-amber-50 p-2 text-sm font-medium text-amber-700">
+        <p
+          className={`${semanticRadius.default} ${semanticColors.warning.background} ${semanticSpacing.cardContainer} ${semanticTypography.body} ${fontWeight.medium} ${semanticColors.warning.foreground}`}
+        >
           ⚠️ This action will soft-delete these {entityTypePlural} (they can be restored)
         </p>
       </div>

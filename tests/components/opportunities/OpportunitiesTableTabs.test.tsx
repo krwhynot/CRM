@@ -13,13 +13,18 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { OpportunitiesTable } from '@/features/opportunities/components/OpportunitiesTable'
+import { OpportunitiesTableRefactored as OpportunitiesTable } from '@/features/opportunities/components/OpportunitiesTableRefactored'
 import { useOpportunitiesWithLastActivity } from '@/features/opportunities/hooks/useOpportunities'
 import { useOpportunitiesDisplay } from '@/features/opportunities/hooks/useOpportunitiesDisplay'
 import '../../backend/setup/test-setup'
 
 // Mock dependencies
 vi.mock('@/features/opportunities/hooks/useOpportunities', () => ({
+  useOpportunities: vi.fn(() => ({
+    data: [],
+    isLoading: false,
+    error: null,
+  })),
   useOpportunitiesWithLastActivity: vi.fn(),
   useDeleteOpportunity: vi.fn(() => ({ mutateAsync: vi.fn() }))
 }))

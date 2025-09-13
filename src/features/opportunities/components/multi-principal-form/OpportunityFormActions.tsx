@@ -2,6 +2,7 @@ import React from 'react'
 import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { semanticSpacing } from '@/styles/tokens'
 
 interface OpportunityFormActionsProps {
   canSubmit: boolean
@@ -13,7 +14,9 @@ export const OpportunityFormActions: React.FC<OpportunityFormActionsProps> = ({
   isLoading,
 }) => {
   return (
-    <div className="flex flex-col gap-4 border-t pt-4">
+    <div
+      className={`flex flex-col ${semanticSpacing.gap.lg} border-t ${semanticSpacing.topGap.lg}`}
+    >
       {!canSubmit && (
         <Alert>
           <AlertDescription>
@@ -30,7 +33,7 @@ export const OpportunityFormActions: React.FC<OpportunityFormActionsProps> = ({
       >
         {isLoading ? (
           <>
-            <Loader2 className="mr-2 size-4 animate-spin" />
+            <Loader2 className={`${semanticSpacing.rightGap.xs} size-4 animate-spin`} />
             Creating...
           </>
         ) : (

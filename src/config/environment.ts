@@ -1,6 +1,6 @@
 /**
  * Centralized Environment Configuration
- * 
+ *
  * This file provides a single source of truth for all environment variables
  * used throughout the application. All components should import from this
  * file rather than directly accessing import.meta.env.
@@ -56,12 +56,12 @@ export const validateEnvironment = () => {
   ]
 
   const missing = requiredVars.filter(({ value }) => !value)
-  
+
   if (missing.length > 0) {
     const missingKeys = missing.map(({ key }) => key).join(', ')
     throw new Error(
       `Missing required environment variables: ${missingKeys}. ` +
-      'Please check your .env file and ensure all required variables are set.'
+        'Please check your .env file and ensure all required variables are set.'
     )
   }
 }

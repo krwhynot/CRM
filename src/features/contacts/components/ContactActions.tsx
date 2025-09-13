@@ -2,6 +2,7 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Pencil, Phone, Eye } from 'lucide-react'
 import type { Contact } from '@/types/entities'
+import { semanticSpacing, semanticColors } from '@/styles/tokens'
 
 interface ContactActionsProps {
   contact: Contact
@@ -21,13 +22,13 @@ export const ContactActions: React.FC<ContactActionsProps> = ({
   variant = 'ghost',
 }) => {
   return (
-    <div className="flex items-center justify-center gap-1">
+    <div className={`flex items-center justify-center ${semanticSpacing.gap.xs}`}>
       {onEdit && (
         <Button
           variant={variant}
           size={size}
           onClick={() => onEdit(contact)}
-          className="size-8 p-0 hover:bg-blue-100 hover:text-blue-700"
+          className={`size-8 ${semanticSpacing.zero} ${semanticColors.hover.primarySubtle}`}
           title="Edit Contact"
         >
           <Pencil className="size-4" />
@@ -39,7 +40,7 @@ export const ContactActions: React.FC<ContactActionsProps> = ({
           variant={variant}
           size={size}
           onClick={() => onContact(contact)}
-          className="size-8 p-0 hover:bg-green-100 hover:text-green-700"
+          className={`size-8 ${semanticSpacing.zero} ${semanticColors.hover.successSubtle}`}
           title="Contact Person"
         >
           <Phone className="size-4" />
@@ -51,7 +52,7 @@ export const ContactActions: React.FC<ContactActionsProps> = ({
           variant={variant}
           size={size}
           onClick={() => onView(contact)}
-          className="size-8 p-0 hover:bg-gray-100 hover:text-gray-700"
+          className={`size-8 ${semanticSpacing.zero} ${semanticColors.hoverStates.subtle}`}
           title="View Details"
         >
           <Eye className="size-4" />

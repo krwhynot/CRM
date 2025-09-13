@@ -1,6 +1,7 @@
 import React from 'react'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { cn } from '@/lib/utils'
 import {
   Select,
   SelectContent,
@@ -8,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 import type { UseFormRegister, UseFormSetValue, FieldErrors } from 'react-hook-form'
 import type { OpportunityFormData } from '@/types/opportunity.types'
 
@@ -38,10 +40,10 @@ export const WizardStepDetails: React.FC<WizardStepDetailsProps> = ({
   loading = false,
 }) => {
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+    <div className={semanticSpacing.layoutContainer}>
+      <div className={`grid grid-cols-2 ${semanticSpacing.gap.lg}`}>
         <div>
-          <label htmlFor="stage" className="text-sm font-medium">
+          <label htmlFor="stage" className={cn(semanticTypography.label, semanticTypography.body)}>
             Stage *
           </label>
           <Select
@@ -62,11 +64,18 @@ export const WizardStepDetails: React.FC<WizardStepDetailsProps> = ({
               ))}
             </SelectContent>
           </Select>
-          {errors.stage && <p className="mt-1 text-sm text-red-600">{errors.stage.message}</p>}
+          {errors.stage && (
+            <p className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} text-red-600`}>
+              {errors.stage.message}
+            </p>
+          )}
         </div>
 
         <div>
-          <label htmlFor="probability" className="text-sm font-medium">
+          <label
+            htmlFor="probability"
+            className={cn(semanticTypography.label, semanticTypography.body)}
+          >
             Probability (%)
           </label>
           <Input
@@ -79,13 +88,18 @@ export const WizardStepDetails: React.FC<WizardStepDetailsProps> = ({
             disabled={loading}
           />
           {errors.probability && (
-            <p className="mt-1 text-sm text-red-600">{errors.probability.message}</p>
+            <p className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} text-red-600`}>
+              {errors.probability.message}
+            </p>
           )}
         </div>
       </div>
 
       <div>
-        <label htmlFor="description" className="text-sm font-medium">
+        <label
+          htmlFor="description"
+          className={cn(semanticTypography.label, semanticTypography.body)}
+        >
           Description
         </label>
         <Textarea
@@ -96,7 +110,9 @@ export const WizardStepDetails: React.FC<WizardStepDetailsProps> = ({
           rows={3}
         />
         {errors.description && (
-          <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+          <p className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} text-red-600`}>
+            {errors.description.message}
+          </p>
         )}
       </div>
     </div>

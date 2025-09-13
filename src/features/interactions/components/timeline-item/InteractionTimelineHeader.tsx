@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import type { InteractionWithRelations } from '@/types/entities'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 
 interface InteractionTimelineHeaderProps {
   interaction: InteractionWithRelations
@@ -45,29 +46,43 @@ export const InteractionTimelineHeader: React.FC<InteractionTimelineHeaderProps>
   handleMarkComplete,
 }) => {
   return (
-    <div className="flex items-start justify-between gap-2">
+    <div className={`flex items-start justify-between ${semanticSpacing.gap.xs}`}>
       <div className="min-w-0 flex-1">
-        <div className="mb-1 flex items-center gap-2">
-          <h3 className="truncate text-sm font-medium text-gray-900 md:text-base">
+        <div
+          className={`${semanticSpacing.bottomGap.xxs} flex items-center ${semanticSpacing.gap.xs}`}
+        >
+          <h3
+            className={cn(
+              semanticTypography.label,
+              'truncate',
+              semanticTypography.body,
+              'text-gray-900 md:text-base'
+            )}
+          >
             {interaction.subject}
           </h3>
           <Badge
             variant="outline"
-            className={cn('text-xs flex-shrink-0', getInteractionTypeColor(interaction.type))}
+            className={cn(
+              `${semanticTypography.caption} flex-shrink-0`,
+              getInteractionTypeColor(interaction.type)
+            )}
           >
             {formattedType}
           </Badge>
           {interaction.follow_up_required && (
             <Badge
               variant="outline"
-              className="border-yellow-200 bg-yellow-50 text-xs text-yellow-700"
+              className={`border-yellow-200 bg-yellow-50 ${semanticTypography.caption} text-yellow-700`}
             >
               Follow-up
             </Badge>
           )}
         </div>
 
-        <div className="flex items-center gap-2 text-xs text-gray-500">
+        <div
+          className={`flex items-center ${semanticSpacing.gap.xs} ${semanticTypography.caption} text-gray-500`}
+        >
           <span className="md:hidden">{relativeTime}</span>
           <span className="hidden md:inline">{formattedDate}</span>
           <span className="hidden md:inline">•</span>
@@ -83,12 +98,12 @@ export const InteractionTimelineHeader: React.FC<InteractionTimelineHeaderProps>
         </div>
       </div>
 
-      <div className="flex shrink-0 items-center gap-1">
+      <div className={`flex shrink-0 items-center ${semanticSpacing.gap.xxs}`}>
         <Button
           variant="ghost"
           size="sm"
           onClick={onToggleExpand}
-          className="size-6 p-0 text-gray-400 hover:text-gray-600"
+          className={`size-6 ${semanticSpacing.zero} text-gray-400 hover:text-gray-600`}
           aria-label={isExpanded ? 'Collapse details' : 'Expand details'}
         >
           {isExpanded ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
@@ -99,7 +114,7 @@ export const InteractionTimelineHeader: React.FC<InteractionTimelineHeaderProps>
             <Button
               variant="ghost"
               size="sm"
-              className="size-6 p-0 text-gray-400 hover:text-gray-600"
+              className={`size-6 ${semanticSpacing.zero} text-gray-400 hover:text-gray-600`}
               aria-label="More actions"
             >
               <MoreHorizontal className="size-4" />
@@ -107,18 +122,18 @@ export const InteractionTimelineHeader: React.FC<InteractionTimelineHeaderProps>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={handleEdit}>
-              <Pencil className="mr-2 size-4" />
+              <Pencil className={`${semanticSpacing.rightGap.xs} size-4`} />
               Edit
             </DropdownMenuItem>
             {interaction.follow_up_required && (
               <DropdownMenuItem onClick={handleMarkComplete}>
-                <CheckCircle className="mr-2 size-4" />
+                <CheckCircle className={`${semanticSpacing.rightGap.xs} size-4`} />
                 Mark Complete
               </DropdownMenuItem>
             )}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleDelete} className="text-red-600 focus:text-red-600">
-              <Trash2 className="mr-2 size-4" />
+              <Trash2 className={`${semanticSpacing.rightGap.xs} size-4`} />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -8,7 +8,8 @@
 
 import type { Database } from '@/types/database.types'
 import { isTest, testConfig as centralizedTestConfig } from '@/config/environment'
-import { testUrls, testConfig, testDataUrls, mockData } from '../config/test-constants'
+import { testUrls, testConfig } from '../config/test-constants'
+import { isValidEmail } from '@/lib/validation'
 
 // Type definitions for entity data
 type OrganizationTestData = Partial<Database['public']['Tables']['organizations']['Insert']>
@@ -282,10 +283,7 @@ export const DateUtils = {
  * Validation utilities
  */
 export const ValidationUtils = {
-  isValidEmail: (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  },
+  isValidEmail,
 
   isValidPhone: (phone: string): boolean => {
     const phoneRegex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;

@@ -1,9 +1,10 @@
 import React from 'react'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticTypography, semanticColors, fontWeight } from '@/styles/tokens'
 import {
   CheckCircle,
-  XCircle, 
+  XCircle,
   Clock,
   Archive,
   AlertTriangle,
@@ -25,13 +26,12 @@ import {
   Settings,
   Heart,
   ThumbsUp,
-  ThumbsDown,
   Battery,
   BatteryLow,
   Signal,
   SignalHigh,
   SignalLow,
-  Activity
+  Activity,
 } from 'lucide-react'
 
 // Base badge props
@@ -46,17 +46,33 @@ interface BaseBadgeProps {
 export type StatusType = 'active' | 'inactive' | 'pending' | 'archived' | 'draft' | 'expired'
 export type PriorityType = 'a-plus' | 'a' | 'b' | 'c' | 'd'
 export type OrganizationType = 'customer' | 'distributor' | 'principal' | 'supplier'
-export type OpportunityStageType = 'prospecting' | 'qualification' | 'needs-analysis' | 'proposal' | 'negotiation' | 'closed-won' | 'closed-lost'
-export type InteractionType = 'call' | 'email' | 'meeting' | 'demo' | 'proposal' | 'contract' | 'support' | 'follow-up' | 'other'
+export type OpportunityStageType =
+  | 'prospecting'
+  | 'qualification'
+  | 'needs-analysis'
+  | 'proposal'
+  | 'negotiation'
+  | 'closed-won'
+  | 'closed-lost'
+export type InteractionType =
+  | 'call'
+  | 'email'
+  | 'meeting'
+  | 'demo'
+  | 'proposal'
+  | 'contract'
+  | 'support'
+  | 'follow-up'
+  | 'other'
 export type HealthType = 'excellent' | 'good' | 'fair' | 'poor' | 'critical'
 export type EngagementType = 'high' | 'medium' | 'low' | 'none'
 export type TrendType = 'up' | 'down' | 'stable' | 'volatile'
 
-// Size variants
+// Size variants with semantic tokens
 const sizeVariants = {
-  sm: 'text-xs px-1.5 py-0.5 h-5',
-  md: 'text-xs px-2 py-0.5 h-6',
-  lg: 'text-sm px-2.5 py-1 h-7'
+  sm: cn(semanticTypography.caption, 'px-2 py-0.5 h-5'),
+  md: cn(semanticTypography.caption, 'px-2.5 py-0.5 h-6'),
+  lg: cn(semanticTypography.body, 'px-3 py-1 h-7'),
 }
 
 // Status Badge Component
@@ -65,51 +81,56 @@ export interface StatusBadgeProps extends BaseBadgeProps {
   label?: string
 }
 
-export function StatusBadge({ 
-  status, 
-  label, 
-  size = 'md', 
-  showIcon = true, 
-  className, 
-  children 
+export function StatusBadge({
+  status,
+  label,
+  size = 'md',
+  showIcon = true,
+  className,
+  children,
 }: StatusBadgeProps) {
   const statusConfig = {
     active: {
       variant: 'default' as const,
-      className: 'bg-green-100 text-green-800 border-green-300 hover:bg-green-200',
+      className: cn(semanticColors.badges.statusActive, 'hover:brightness-110'),
       icon: CheckCircle,
-      label: 'Active'
+      label: 'Active',
     },
     inactive: {
       variant: 'outline' as const,
-      className: 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200',
+      className: cn(semanticColors.badges.statusInactive, 'hover:brightness-110'),
       icon: XCircle,
-      label: 'Inactive'
+      label: 'Inactive',
     },
     pending: {
       variant: 'outline' as const,
-      className: 'bg-yellow-100 text-yellow-800 border-yellow-300 hover:bg-yellow-200',
+      className: cn(semanticColors.badges.statusPending, 'hover:brightness-110'),
       icon: Clock,
-      label: 'Pending'
+      label: 'Pending',
     },
     archived: {
       variant: 'outline' as const,
-      className: 'bg-red-100 text-red-700 border-red-300 hover:bg-red-200',
+      className: cn(semanticColors.badges.statusArchived, 'hover:brightness-110'),
       icon: Archive,
-      label: 'Archived'
+      label: 'Archived',
     },
     draft: {
       variant: 'outline' as const,
-      className: 'bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200',
+      className: cn(
+        semanticColors.info.background,
+        semanticColors.info.foreground,
+        semanticColors.info.border,
+        'hover:brightness-110'
+      ),
       icon: FileText,
-      label: 'Draft'
+      label: 'Draft',
     },
     expired: {
       variant: 'outline' as const,
-      className: 'bg-orange-100 text-orange-700 border-orange-300 hover:bg-orange-200',
+      className: cn(semanticColors.badges.statusPending, 'hover:brightness-110'),
       icon: AlertTriangle,
-      label: 'Expired'
-    }
+      label: 'Expired',
+    },
   }
 
   const config = statusConfig[status]
@@ -117,12 +138,12 @@ export function StatusBadge({
   const displayLabel = children || label || config.label
 
   return (
-    <Badge 
+    <Badge
       variant={config.variant}
       className={cn(
         sizeVariants[size],
         config.className,
-        'inline-flex items-center gap-1',
+        `inline-flex items-center ${semanticSpacing.gap.xs}`,
         className
       )}
     >
@@ -138,45 +159,45 @@ export interface PriorityBadgeProps extends BaseBadgeProps {
   label?: string
 }
 
-export function PriorityBadge({ 
-  priority, 
-  label, 
-  size = 'md', 
-  showIcon = true, 
-  className, 
-  children 
+export function PriorityBadge({
+  priority,
+  label,
+  size = 'md',
+  showIcon = true,
+  className,
+  children,
 }: PriorityBadgeProps) {
   const priorityConfig = {
     'a-plus': {
-      className: 'bg-red-500 text-white border-red-600 hover:bg-red-600',
+      className: cn(semanticColors.badges.priorityAPlus, 'hover:brightness-110'),
       icon: Zap,
       label: 'A+',
-      description: 'Highest Priority'
+      description: 'Highest Priority',
     },
-    'a': {
-      className: 'bg-red-100 text-red-800 border-red-300 hover:bg-red-200',
+    a: {
+      className: cn(semanticColors.badges.priorityA, 'hover:brightness-110'),
       icon: Star,
       label: 'A',
-      description: 'High Priority'
+      description: 'High Priority',
     },
-    'b': {
-      className: 'bg-orange-100 text-orange-800 border-orange-300 hover:bg-orange-200',
+    b: {
+      className: cn(semanticColors.badges.priorityB, 'hover:brightness-110'),
       icon: TrendingUp,
       label: 'B',
-      description: 'Medium Priority'
+      description: 'Medium Priority',
     },
-    'c': {
-      className: 'bg-yellow-100 text-yellow-800 border-yellow-300 hover:bg-yellow-200',
+    c: {
+      className: cn(semanticColors.badges.priorityC, 'hover:brightness-110'),
       icon: Minus,
       label: 'C',
-      description: 'Low Priority'
+      description: 'Low Priority',
     },
-    'd': {
-      className: 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200',
+    d: {
+      className: cn(semanticColors.badges.priorityD, 'hover:brightness-110'),
       icon: TrendingDown,
       label: 'D',
-      description: 'Lowest Priority'
-    }
+      description: 'Lowest Priority',
+    },
   }
 
   const config = priorityConfig[priority]
@@ -184,13 +205,13 @@ export function PriorityBadge({
   const displayLabel = children || label || config.label
 
   return (
-    <Badge 
+    <Badge
       variant="outline"
       title={config.description}
       className={cn(
         sizeVariants[size],
         config.className,
-        'inline-flex items-center gap-1 font-semibold',
+        `inline-flex items-center ${semanticSpacing.gap.xs} ${fontWeight.semibold}`,
         className
       )}
     >
@@ -206,35 +227,35 @@ export interface OrganizationTypeBadgeProps extends BaseBadgeProps {
   label?: string
 }
 
-export function OrganizationTypeBadge({ 
-  type, 
-  label, 
-  size = 'md', 
-  showIcon = true, 
-  className, 
-  children 
+export function OrganizationTypeBadge({
+  type,
+  label,
+  size = 'md',
+  showIcon = true,
+  className,
+  children,
 }: OrganizationTypeBadgeProps) {
   const typeConfig = {
     customer: {
-      className: 'bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200',
+      className: semanticColors.badges.orgCustomer,
       icon: Users,
-      label: 'Customer'
+      label: 'Customer',
     },
     distributor: {
-      className: 'bg-green-100 text-green-800 border-green-300 hover:bg-green-200',
+      className: semanticColors.badges.orgDistributor,
       icon: Building2,
-      label: 'Distributor'
+      label: 'Distributor',
     },
     principal: {
-      className: 'bg-purple-100 text-purple-800 border-purple-300 hover:bg-purple-200',
+      className: semanticColors.badges.orgPrincipal,
       icon: Shield,
-      label: 'Principal'
+      label: 'Principal',
     },
     supplier: {
-      className: 'bg-indigo-100 text-indigo-800 border-indigo-300 hover:bg-indigo-200',
+      className: semanticColors.badges.orgSupplier,
       icon: Package,
-      label: 'Supplier'
-    }
+      label: 'Supplier',
+    },
   }
 
   const config = typeConfig[type]
@@ -242,12 +263,12 @@ export function OrganizationTypeBadge({
   const displayLabel = children || label || config.label
 
   return (
-    <Badge 
+    <Badge
       variant="outline"
       className={cn(
         sizeVariants[size],
         config.className,
-        'inline-flex items-center gap-1',
+        cn('inline-flex items-center', semanticSpacing.gap.xs),
         className
       )}
     >
@@ -263,57 +284,87 @@ export interface OpportunityStageBadgeProps extends BaseBadgeProps {
   label?: string
 }
 
-export function OpportunityStageBadge({ 
-  stage, 
-  label, 
-  size = 'md', 
-  showIcon = true, 
-  className, 
-  children 
+export function OpportunityStageBadge({
+  stage,
+  label,
+  size = 'md',
+  showIcon = true,
+  className,
+  children,
 }: OpportunityStageBadgeProps) {
   const stageConfig = {
     prospecting: {
-      className: 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200',
+      className: cn(
+        semanticColors.neutral.background,
+        semanticColors.text.muted,
+        semanticColors.neutral.border,
+        'hover:opacity-80'
+      ),
       icon: Target,
       label: 'Prospecting',
-      progress: 10
+      progress: 10,
     },
     qualification: {
-      className: 'bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200',
+      className: cn(
+        semanticColors.info.background,
+        semanticColors.text.infoAccent,
+        semanticColors.info.border,
+        'hover:opacity-90'
+      ),
       icon: CheckCircle,
       label: 'Qualification',
-      progress: 25
+      progress: 25,
     },
     'needs-analysis': {
-      className: 'bg-cyan-100 text-cyan-700 border-cyan-300 hover:bg-cyan-200',
+      className: cn(
+        semanticColors.info.background,
+        semanticColors.text.infoAccent,
+        semanticColors.info.border,
+        'hover:opacity-90'
+      ),
       icon: Activity,
       label: 'Needs Analysis',
-      progress: 40
+      progress: 40,
     },
     proposal: {
-      className: 'bg-orange-100 text-orange-700 border-orange-300 hover:bg-orange-200',
+      className: cn(
+        semanticColors.warning.background,
+        semanticColors.text.warningAccent,
+        semanticColors.warning.border,
+        'hover:opacity-90'
+      ),
       icon: FileText,
       label: 'Proposal',
-      progress: 65
+      progress: 65,
     },
     negotiation: {
-      className: 'bg-yellow-100 text-yellow-700 border-yellow-300 hover:bg-yellow-200',
+      className: cn(
+        semanticColors.warning.background,
+        semanticColors.text.warningAccent,
+        semanticColors.warning.border,
+        'hover:opacity-90'
+      ),
       icon: Settings,
       label: 'Negotiation',
-      progress: 80
+      progress: 80,
     },
     'closed-won': {
-      className: 'bg-green-500 text-white border-green-600 hover:bg-green-600',
+      className: cn(semanticColors.success.primary, 'text-white border-green-500 hover:opacity-90'),
       icon: CheckCircle,
       label: 'Closed Won',
-      progress: 100
+      progress: 100,
     },
     'closed-lost': {
-      className: 'bg-red-100 text-red-700 border-red-300 hover:bg-red-200',
+      className: cn(
+        semanticColors.error.background,
+        semanticColors.text.danger,
+        semanticColors.error.border,
+        'hover:opacity-90'
+      ),
       icon: XCircle,
       label: 'Closed Lost',
-      progress: 0
-    }
+      progress: 0,
+    },
   }
 
   const config = stageConfig[stage]
@@ -321,12 +372,12 @@ export function OpportunityStageBadge({
   const displayLabel = children || label || config.label
 
   return (
-    <Badge 
+    <Badge
       variant="outline"
       className={cn(
         sizeVariants[size],
         config.className,
-        'inline-flex items-center gap-1',
+        cn('inline-flex items-center', semanticSpacing.gap.xs),
         className
       )}
     >
@@ -342,60 +393,95 @@ export interface InteractionTypeBadgeProps extends BaseBadgeProps {
   label?: string
 }
 
-export function InteractionTypeBadge({ 
-  type, 
-  label, 
-  size = 'md', 
-  showIcon = true, 
-  className, 
-  children 
+export function InteractionTypeBadge({
+  type,
+  label,
+  size = 'md',
+  showIcon = true,
+  className,
+  children,
 }: InteractionTypeBadgeProps) {
   const typeConfig = {
     call: {
-      className: 'bg-green-100 text-green-700 border-green-300 hover:bg-green-200',
+      className: cn(
+        semanticColors.success.background,
+        semanticColors.success.foreground,
+        semanticColors.success.border,
+        'hover:opacity-90'
+      ),
       icon: Phone,
-      label: 'Call'
+      label: 'Call',
     },
     email: {
-      className: 'bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200',
+      className: cn(
+        semanticColors.info.background,
+        semanticColors.text.infoAccent,
+        semanticColors.info.border,
+        'hover:opacity-90'
+      ),
       icon: Mail,
-      label: 'Email'
+      label: 'Email',
     },
     meeting: {
-      className: 'bg-purple-100 text-purple-700 border-purple-300 hover:bg-purple-200',
+      className: cn(semanticColors.badges.orgPrincipal, 'hover:opacity-90'),
       icon: Calendar,
-      label: 'Meeting'
+      label: 'Meeting',
     },
     demo: {
-      className: 'bg-orange-100 text-orange-700 border-orange-300 hover:bg-orange-200',
+      className: cn(semanticColors.badges.priorityB, 'hover:opacity-90'),
       icon: Activity,
-      label: 'Demo'
+      label: 'Demo',
     },
     proposal: {
-      className: 'bg-yellow-100 text-yellow-700 border-yellow-300 hover:bg-yellow-200',
+      className: cn(
+        semanticColors.warning.background,
+        semanticColors.text.warningAccent,
+        semanticColors.warning.border,
+        'hover:opacity-90'
+      ),
       icon: FileText,
-      label: 'Proposal'
+      label: 'Proposal',
     },
     contract: {
-      className: 'bg-green-100 text-green-700 border-green-300 hover:bg-green-200',
+      className: cn(
+        semanticColors.success.background,
+        semanticColors.success.foreground,
+        semanticColors.success.border,
+        'hover:opacity-90'
+      ),
       icon: Shield,
-      label: 'Contract'
+      label: 'Contract',
     },
     support: {
-      className: 'bg-red-100 text-red-700 border-red-300 hover:bg-red-200',
+      className: cn(
+        semanticColors.error.background,
+        semanticColors.text.danger,
+        semanticColors.error.border,
+        'hover:opacity-90'
+      ),
       icon: AlertTriangle,
-      label: 'Support'
+      label: 'Support',
     },
     'follow-up': {
-      className: 'bg-cyan-100 text-cyan-700 border-cyan-300 hover:bg-cyan-200',
+      className: cn(
+        semanticColors.info.background,
+        semanticColors.info.foreground,
+        semanticColors.info.border,
+        'hover:opacity-90'
+      ),
       icon: Clock,
-      label: 'Follow-up'
+      label: 'Follow-up',
     },
     other: {
-      className: 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200',
+      className: cn(
+        semanticColors.neutral.background,
+        semanticColors.text.subtle,
+        semanticColors.neutral.border,
+        'hover:opacity-90'
+      ),
       icon: MessageSquare,
-      label: 'Other'
-    }
+      label: 'Other',
+    },
   }
 
   const config = typeConfig[type]
@@ -403,12 +489,12 @@ export function InteractionTypeBadge({
   const displayLabel = children || label || config.label
 
   return (
-    <Badge 
+    <Badge
       variant="outline"
       className={cn(
         sizeVariants[size],
         config.className,
-        'inline-flex items-center gap-1',
+        cn('inline-flex items-center', semanticSpacing.gap.xs),
         className
       )}
     >
@@ -424,40 +510,50 @@ export interface HealthBadgeProps extends BaseBadgeProps {
   label?: string
 }
 
-export function HealthBadge({ 
-  health, 
-  label, 
-  size = 'md', 
-  showIcon = true, 
-  className, 
-  children 
+export function HealthBadge({
+  health,
+  label,
+  size = 'md',
+  showIcon = true,
+  className,
+  children,
 }: HealthBadgeProps) {
   const healthConfig = {
     excellent: {
-      className: 'bg-green-500 text-white border-green-600 hover:bg-green-600',
+      className: cn(semanticColors.success.primary, 'text-white border-green-500 hover:opacity-90'),
       icon: Heart,
-      label: 'Excellent'
+      label: 'Excellent',
     },
     good: {
-      className: 'bg-green-100 text-green-700 border-green-300 hover:bg-green-200',
+      className: cn(
+        semanticColors.success.background,
+        semanticColors.success.foreground,
+        semanticColors.success.border,
+        'hover:opacity-90'
+      ),
       icon: ThumbsUp,
-      label: 'Good'
+      label: 'Good',
     },
     fair: {
-      className: 'bg-yellow-100 text-yellow-700 border-yellow-300 hover:bg-yellow-200',
+      className: cn(
+        semanticColors.warning.background,
+        semanticColors.text.warningAccent,
+        semanticColors.warning.border,
+        'hover:opacity-90'
+      ),
       icon: Battery,
-      label: 'Fair'
+      label: 'Fair',
     },
     poor: {
-      className: 'bg-orange-100 text-orange-700 border-orange-300 hover:bg-orange-200',
+      className: cn(semanticColors.badges.priorityB, 'hover:opacity-90'),
       icon: BatteryLow,
-      label: 'Poor'
+      label: 'Poor',
     },
     critical: {
-      className: 'bg-red-500 text-white border-red-600 hover:bg-red-600',
+      className: cn(semanticColors.error.primary, 'text-white border-red-500 hover:opacity-90'),
       icon: AlertTriangle,
-      label: 'Critical'
-    }
+      label: 'Critical',
+    },
   }
 
   const config = healthConfig[health]
@@ -465,12 +561,12 @@ export function HealthBadge({
   const displayLabel = children || label || config.label
 
   return (
-    <Badge 
+    <Badge
       variant="outline"
       className={cn(
         sizeVariants[size],
         config.className,
-        'inline-flex items-center gap-1',
+        cn('inline-flex items-center', semanticSpacing.gap.xs),
         className
       )}
     >
@@ -486,35 +582,40 @@ export interface EngagementBadgeProps extends BaseBadgeProps {
   label?: string
 }
 
-export function EngagementBadge({ 
-  engagement, 
-  label, 
-  size = 'md', 
-  showIcon = true, 
-  className, 
-  children 
+export function EngagementBadge({
+  engagement,
+  label,
+  size = 'md',
+  showIcon = true,
+  className,
+  children,
 }: EngagementBadgeProps) {
   const engagementConfig = {
     high: {
-      className: 'bg-green-500 text-white border-green-600 hover:bg-green-600',
+      className: 'bg-green-500 text-white border-green-500 hover:bg-green-600',
       icon: SignalHigh,
-      label: 'High'
+      label: 'High',
     },
     medium: {
-      className: 'bg-yellow-100 text-yellow-700 border-yellow-300 hover:bg-yellow-200',
+      className: cn(
+        semanticColors.warning.background,
+        semanticColors.text.warningAccent,
+        semanticColors.warning.border,
+        'hover:opacity-90'
+      ),
       icon: Signal,
-      label: 'Medium'
+      label: 'Medium',
     },
     low: {
       className: 'bg-orange-100 text-orange-700 border-orange-300 hover:bg-orange-200',
       icon: SignalLow,
-      label: 'Low'
+      label: 'Low',
     },
     none: {
-      className: 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200',
+      className: `bg-gray-100 ${semanticColors.text.subtle} border-gray-300 hover:bg-gray-200`,
       icon: Minus,
-      label: 'None'
-    }
+      label: 'None',
+    },
   }
 
   const config = engagementConfig[engagement]
@@ -522,12 +623,12 @@ export function EngagementBadge({
   const displayLabel = children || label || config.label
 
   return (
-    <Badge 
+    <Badge
       variant="outline"
       className={cn(
         sizeVariants[size],
         config.className,
-        'inline-flex items-center gap-1',
+        cn('inline-flex items-center', semanticSpacing.gap.xs),
         className
       )}
     >
@@ -544,36 +645,46 @@ export interface TrendBadgeProps extends BaseBadgeProps {
   value?: string | number
 }
 
-export function TrendBadge({ 
-  trend, 
-  label, 
+export function TrendBadge({
+  trend,
+  label,
   value,
-  size = 'md', 
-  showIcon = true, 
-  className, 
-  children 
+  size = 'md',
+  showIcon = true,
+  className,
+  children,
 }: TrendBadgeProps) {
   const trendConfig = {
     up: {
       className: 'bg-green-100 text-green-700 border-green-300 hover:bg-green-200',
       icon: TrendingUp,
-      label: 'Up'
+      label: 'Up',
     },
     down: {
-      className: 'bg-red-100 text-red-700 border-red-300 hover:bg-red-200',
+      className: cn(
+        semanticColors.error.background,
+        semanticColors.text.danger,
+        semanticColors.error.border,
+        'hover:opacity-90'
+      ),
       icon: TrendingDown,
-      label: 'Down'
+      label: 'Down',
     },
     stable: {
-      className: 'bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200',
+      className: cn(
+        semanticColors.info.background,
+        semanticColors.text.infoAccent,
+        semanticColors.info.border,
+        'hover:opacity-90'
+      ),
       icon: Minus,
-      label: 'Stable'
+      label: 'Stable',
     },
     volatile: {
       className: 'bg-orange-100 text-orange-700 border-orange-300 hover:bg-orange-200',
       icon: Activity,
-      label: 'Volatile'
-    }
+      label: 'Volatile',
+    },
   }
 
   const config = trendConfig[trend]
@@ -581,18 +692,18 @@ export function TrendBadge({
   const displayLabel = children || label || config.label
 
   return (
-    <Badge 
+    <Badge
       variant="outline"
       className={cn(
         sizeVariants[size],
         config.className,
-        'inline-flex items-center gap-1',
+        cn('inline-flex items-center', semanticSpacing.gap.xs),
         className
       )}
     >
       {showIcon && <Icon className="h-3 w-3" />}
       <span>{displayLabel}</span>
-      {value && <span className="font-semibold">({value})</span>}
+      {value && <span className={cn(semanticTypography.caption, 'font-semibold')}>({value})</span>}
     </Badge>
   )
 }
@@ -605,14 +716,14 @@ export interface CustomBadgeProps extends BaseBadgeProps {
   label: string
 }
 
-export function CustomBadge({ 
+export function CustomBadge({
   variant = 'outline',
   color = 'gray',
   icon: Icon,
   label,
-  size = 'md', 
-  className, 
-  children 
+  size = 'md',
+  className,
+  children,
 }: CustomBadgeProps) {
   const colorClasses = {
     blue: 'bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200',
@@ -622,16 +733,16 @@ export function CustomBadge({
     purple: 'bg-purple-100 text-purple-700 border-purple-300 hover:bg-purple-200',
     indigo: 'bg-indigo-100 text-indigo-700 border-indigo-300 hover:bg-indigo-200',
     pink: 'bg-pink-100 text-pink-700 border-pink-300 hover:bg-pink-200',
-    gray: 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'
+    gray: 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200',
   }
 
   return (
-    <Badge 
+    <Badge
       variant={variant}
       className={cn(
         sizeVariants[size],
         variant === 'outline' && colorClasses[color],
-        'inline-flex items-center gap-1',
+        cn('inline-flex items-center', semanticSpacing.gap.xs),
         className
       )}
     >
@@ -652,7 +763,7 @@ export function BadgeGroup({ badges, className, spacing = 'md' }: BadgeGroupProp
   const spacingClasses = {
     sm: 'gap-1',
     md: 'gap-2',
-    lg: 'gap-3'
+    lg: 'gap-3',
   }
 
   return (

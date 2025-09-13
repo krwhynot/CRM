@@ -1,4 +1,4 @@
-import type React from 'react'
+import type { ReactNode, ComponentType } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import type {
   Organization,
@@ -20,14 +20,14 @@ import type { ProductDisplayData } from './product-extensions'
 // Base component props
 export interface BaseComponentProps {
   className?: string
-  children?: React.ReactNode
+  children?: ReactNode
 }
 
 // Data table column definition
 export interface DataTableColumn<T> {
   key: keyof T
   header: string
-  accessor?: (row: T) => React.ReactNode
+  accessor?: (row: T) => ReactNode
   sortable?: boolean
   filterable?: boolean
   width?: string | number
@@ -70,9 +70,9 @@ export interface FormModalProps {
   isOpen: boolean
   onClose: () => void
   title: string
-  children: React.ReactNode
+  children: ReactNode
   loading?: boolean
-  footer?: React.ReactNode
+  footer?: ReactNode
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
 }
 
@@ -97,7 +97,7 @@ export interface SearchFilterProps<T = Record<string, unknown>> {
   filters?: T
   onFilterChange?: (filters: T) => void
   onClearFilters?: () => void
-  filterComponents?: React.ReactNode[]
+  filterComponents?: ReactNode[]
 }
 
 // Filter option for select filters
@@ -197,7 +197,7 @@ export interface FormStep {
   id: string
   title: string
   description?: string
-  component: React.ComponentType<FormStepProps>
+  component: ComponentType<FormStepProps>
   validation?: (data: Record<string, unknown>) => boolean | Promise<boolean>
   optional?: boolean
 }
@@ -307,7 +307,7 @@ export interface SidebarProps {
 export interface HeaderProps {
   title?: string
   breadcrumbs?: BreadcrumbItem[]
-  actions?: React.ReactNode
+  actions?: ReactNode
   showSearch?: boolean
   onSearch?: (query: string) => void
 }
@@ -321,8 +321,8 @@ export interface BreadcrumbItem {
 // Dashboard component props
 export interface DashboardCardProps {
   title: string
-  children: React.ReactNode
-  headerActions?: React.ReactNode
+  children: ReactNode
+  headerActions?: ReactNode
   loading?: boolean
   error?: string | null
   className?: string
@@ -416,7 +416,7 @@ export interface EmptyStateProps {
 export interface BadgeProps {
   variant?: 'default' | 'secondary' | 'destructive' | 'outline' | 'success' | 'warning'
   size?: 'sm' | 'md' | 'lg'
-  children: React.ReactNode
+  children: ReactNode
   className?: string
 }
 
@@ -429,8 +429,8 @@ export interface AvatarProps {
 }
 
 export interface TooltipProps {
-  content: React.ReactNode
-  children: React.ReactNode
+  content: ReactNode
+  children: ReactNode
   side?: 'top' | 'right' | 'bottom' | 'left'
   className?: string
 }

@@ -7,7 +7,8 @@ import {
   ContactsDialogs,
 } from '@/features/contacts'
 import { ContactsErrorBoundary } from '@/components/error-boundaries/QueryErrorBoundary'
-import { ContactManagementTemplate } from '@/components/templates/EntityManagementTemplate'
+import { PageLayout } from '@/components/layout'
+import { usePageLayout } from '@/hooks'
 
 function ContactsPage() {
   const { data: contacts = [], isLoading, error, isError } = useContacts()
@@ -29,9 +30,16 @@ function ContactsPage() {
   const { handleCreate, handleUpdate, handleDelete, isCreating, isUpdating, isDeleting } =
     useContactsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
 
+  // Use the page layout hook for slot composition
+  const { pageLayoutProps } = usePageLayout({
+    entityType: 'CONTACT',
+    entityCount: contacts.length,
+    onAddClick: openCreateDialog,
+  })
+
   return (
     <ContactsErrorBoundary>
-      <ContactManagementTemplate entityCount={contacts.length} onAddClick={openCreateDialog}>
+      <PageLayout {...pageLayoutProps}>
         <ContactsDataDisplay
           isLoading={isLoading}
           isError={isError}
@@ -58,7 +66,7 @@ function ContactsPage() {
           isUpdating={isUpdating}
           isDeleting={isDeleting}
         />
-      </ContactManagementTemplate>
+      </PageLayout>
     </ContactsErrorBoundary>
   )
 }

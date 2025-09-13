@@ -1,11 +1,11 @@
 // Enhanced Universal Filters - Phase 3 Implementation
-export { 
+export {
   EnhancedUniversalFilters,
   UniversalFilters,
   CompactUniversalFilters,
   InlineUniversalFilters,
   MinimalUniversalFilters,
-  FullFeaturedUniversalFilters
+  FullFeaturedUniversalFilters,
 } from './UniversalFilters'
 
 // Individual Filter Components
@@ -18,6 +18,13 @@ export { ManagerSelector } from './ManagerSelector'
 // Enhanced Section Components
 export { QuickViewsSection } from './QuickViewsSection'
 export { ActiveFiltersDisplay } from './ActiveFiltersDisplay'
+
+// Filter Sidebar Components
+export { FilterSidebar } from './FilterSidebar'
+export type { FilterSidebarProps, FilterSection, FilterSidebarState } from './FilterSidebar.types'
+
+// Vertical Filter Components
+export { VerticalFilterSection, VerticalFiltersAdapter, createFilterSections } from './vertical'
 
 // Types and Hooks
 export type {
@@ -36,19 +43,19 @@ export type {
   ComputedFilterProperties,
   QuickViewPresetConfig,
   EnhancedUniversalFilterState,
-  FilterOrganizationData
+  FilterOrganizationData,
 } from '@/types/filters.types'
 
 export {
   useUniversalFilters,
   useFilterChangeHandler,
-  useActiveFilterCount
+  useActiveFilterCount,
 } from '@/hooks/useUniversalFilters'
 
 export {
   useUniversalFiltersWithOrganizations,
   usePrincipalFilterSuggestions,
-  useManagerFiltering
+  useManagerFiltering,
 } from '@/hooks/useUniversalFiltersWithOrganizations'
 
 // Utility Functions
@@ -61,7 +68,7 @@ export {
   isDateInRange,
   getRelativeDateRange,
   validateDateRange,
-  getQuarterInfo
+  getQuarterInfo,
 } from '@/lib/date-range-utils'
 
 export {
@@ -73,7 +80,7 @@ export {
   getPresetBadgeCount,
   clearBadgeCache,
   WORKFLOW_PRESETS,
-  getSuggestedPresets
+  getSuggestedPresets,
 } from '@/lib/quick-view-presets'
 
 export { DEFAULT_UNIVERSAL_FILTERS } from '@/types/filters.types'

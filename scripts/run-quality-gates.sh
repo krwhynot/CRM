@@ -195,9 +195,43 @@ else
     ((GATES_FAILED++))
 fi
 
-# Gate 7: Mobile Optimization Check
+# Gate 7: Design Token Coverage
 echo ""
-echo -e "${BLUE}📱 Gate 7: Mobile Optimization${NC}"
+echo -e "${BLUE}🎨 Gate 7: Design Token Coverage${NC}"
+if npm run tokens:coverage > /tmp/token-coverage.log 2>&1; then
+    TOKEN_COVERAGE=$(cat /tmp/token-coverage.log | grep "Overall Token Coverage" | grep -o '[0-9]\+' || echo "0")
+    if [ "$TOKEN_COVERAGE" -ge 75 ]; then
+        echo -e "${GREEN}✅ Token coverage: ${TOKEN_COVERAGE}%${NC}"
+        echo "## ✅ Design Token Coverage" >> "$REPORT_FILE"
+        echo "Coverage: ${TOKEN_COVERAGE}%" >> "$REPORT_FILE"
+        echo "Status: PASSED" >> "$REPORT_FILE"
+        echo "" >> "$REPORT_FILE"
+        ((GATES_PASSED++))
+    else
+        echo -e "${YELLOW}⚠️ Token coverage: ${TOKEN_COVERAGE}% (below 75% threshold)${NC}"
+        echo "## ⚠️ Design Token Coverage" >> "$REPORT_FILE"
+        echo "Coverage: ${TOKEN_COVERAGE}%" >> "$REPORT_FILE"
+        echo "Status: WARNING - Below 75% threshold" >> "$REPORT_FILE"
+        echo "\`\`\`" >> "$REPORT_FILE"
+        cat /tmp/token-coverage.log >> "$REPORT_FILE"
+        echo "\`\`\`" >> "$REPORT_FILE"
+        echo "" >> "$REPORT_FILE"
+        ((WARNINGS++))
+    fi
+else
+    echo -e "${RED}❌ Token coverage analysis failed${NC}"
+    echo "## ❌ Design Token Coverage" >> "$REPORT_FILE"
+    echo "Status: FAILED" >> "$REPORT_FILE"
+    echo "\`\`\`" >> "$REPORT_FILE"
+    cat /tmp/token-coverage.log >> "$REPORT_FILE"
+    echo "\`\`\`" >> "$REPORT_FILE"
+    echo "" >> "$REPORT_FILE"
+    ((GATES_FAILED++))
+fi
+
+# Gate 8: Mobile Optimization Check
+echo ""
+echo -e "${BLUE}📱 Gate 8: Mobile Optimization${NC}"
 MOBILE_CSS=$(find src/ -name "*.css" -exec grep -l "@media.*mobile\|@media.*max-width.*768" {} \; 2>/dev/null | wc -l)
 RESPONSIVE_COMPONENTS=$(find src/ -name "*.tsx" -exec grep -l "useIsMobile\|useMobile\|mobile" {} \; 2>/dev/null | wc -l)
 MOBILE_SCORE=$(( (MOBILE_CSS + RESPONSIVE_COMPONENTS) * 10 ))
@@ -220,6 +254,40 @@ else
     echo "Status: WARNING - Could be improved" >> "$REPORT_FILE"
     echo "" >> "$REPORT_FILE"
     ((WARNINGS++))
+fi
+
+# Gate 9: Table Component Consistency
+echo ""
+echo -e "${BLUE}🏗️ Gate 9: Table Component Consistency${NC}"
+if node scripts/validate-table-consistency.cjs > /tmp/table-consistency.log 2>&1; then
+    CONSISTENCY_SCORE=$(cat /tmp/table-consistency.log | grep "Consistency Score" | grep -o '[0-9]\+' || echo "0")
+    if [ "$CONSISTENCY_SCORE" -ge 80 ]; then
+        echo -e "${GREEN}✅ Table consistency: ${CONSISTENCY_SCORE}%${NC}"
+        echo "## ✅ Table Component Consistency" >> "$REPORT_FILE"
+        echo "Consistency Score: ${CONSISTENCY_SCORE}%" >> "$REPORT_FILE"
+        echo "Status: PASSED" >> "$REPORT_FILE"
+        echo "" >> "$REPORT_FILE"
+        ((GATES_PASSED++))
+    else
+        echo -e "${YELLOW}⚠️ Table consistency: ${CONSISTENCY_SCORE}% (below 80% threshold)${NC}"
+        echo "## ⚠️ Table Component Consistency" >> "$REPORT_FILE"
+        echo "Consistency Score: ${CONSISTENCY_SCORE}%" >> "$REPORT_FILE"
+        echo "Status: WARNING - Below 80% threshold" >> "$REPORT_FILE"
+        echo "\`\`\`" >> "$REPORT_FILE"
+        cat /tmp/table-consistency.log >> "$REPORT_FILE"
+        echo "\`\`\`" >> "$REPORT_FILE"
+        echo "" >> "$REPORT_FILE"
+        ((WARNINGS++))
+    fi
+else
+    echo -e "${RED}❌ Table consistency validation failed${NC}"
+    echo "## ❌ Table Component Consistency" >> "$REPORT_FILE"
+    echo "Status: FAILED" >> "$REPORT_FILE"
+    echo "\`\`\`" >> "$REPORT_FILE"
+    cat /tmp/table-consistency.log >> "$REPORT_FILE"
+    echo "\`\`\`" >> "$REPORT_FILE"
+    echo "" >> "$REPORT_FILE"
+    ((GATES_FAILED++))
 fi
 
 # Generate final summary
@@ -275,6 +343,6 @@ echo ""
 echo -e "${BOLD}📋 Full report: ${BLUE}$REPORT_FILE${NC}"
 
 # Cleanup temp files
-rm -f /tmp/ts-check.log /tmp/lint.log /tmp/arch-health.log /tmp/build.log /tmp/perf-monitor.log /tmp/ui-consistency.log
+rm -f /tmp/ts-check.log /tmp/lint.log /tmp/arch-health.log /tmp/build.log /tmp/perf-monitor.log /tmp/ui-consistency.log /tmp/token-coverage.log
 
 exit $EXIT_CODE

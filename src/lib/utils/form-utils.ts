@@ -1,4 +1,5 @@
 import type { DialogSize } from '@/contexts/DialogContext'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 
 /**
  * Form Utilities - Responsive width and spacing utilities for forms
@@ -31,7 +32,7 @@ export function getFormContainerClasses(isInDialog: boolean, dialogSize?: Dialog
 
 // Form grid classes for field layouts
 export function getFormGridClasses(isInDialog: boolean, fieldCount?: number): string {
-  const baseClasses = 'grid gap-4'
+  const baseClasses = `grid ${semanticSpacing.gap.md}`
 
   if (!isInDialog) {
     // Full page - responsive grid
@@ -48,7 +49,7 @@ export function getFormGridClasses(isInDialog: boolean, fieldCount?: number): st
 
 // Form section spacing classes
 export function getFormSpacingClasses(isInDialog: boolean): string {
-  return isInDialog ? 'space-y-4' : 'space-y-6'
+  return isInDialog ? semanticSpacing.stack.md : semanticSpacing.stack.lg
 }
 
 // Dialog height classes for scrollable content
@@ -69,17 +70,17 @@ export function getDialogHeightClasses(dialogSize: DialogSize): string {
 
 // Form padding classes based on context
 export function getFormPaddingClasses(isInDialog: boolean): string {
-  return isInDialog ? 'p-4' : 'p-6'
+  return isInDialog ? semanticSpacing.cardContainer : semanticSpacing.cardContainer
 }
 
 // Form header spacing
 export function getFormHeaderSpacing(isInDialog: boolean): string {
-  return isInDialog ? 'mb-4' : 'mb-6'
+  return isInDialog ? semanticSpacing.stack.md : semanticSpacing.stack.lg
 }
 
 // Form button classes
 export function getFormButtonClasses(isInDialog: boolean): string {
-  const baseClasses = 'h-11 font-medium'
+  const baseClasses = `h-11 ${semanticTypography.label}`
   return isInDialog ? `${baseClasses} w-full sm:w-auto` : `${baseClasses} min-w-[120px]`
 }
 
@@ -108,19 +109,19 @@ export const breakpoints = {
  */
 export const fieldSizes = {
   sm: {
-    input: 'h-9 px-3 text-sm',
-    label: 'text-sm',
-    button: 'h-9 px-3 text-sm',
+    input: `h-9 ${semanticSpacing.compactX} ${semanticTypography.caption}`,
+    label: semanticTypography.caption,
+    button: `h-9 ${semanticSpacing.compactX} ${semanticTypography.caption}`,
   },
   md: {
-    input: 'h-11 px-3 text-base',
-    label: 'text-sm',
-    button: 'h-11 px-4 text-base',
+    input: `h-11 ${semanticSpacing.compactX} ${semanticTypography.body}`,
+    label: semanticTypography.caption,
+    button: `h-11 ${semanticSpacing.cardX} ${semanticTypography.body}`,
   },
   lg: {
-    input: 'h-12 px-4 text-base',
-    label: 'text-base',
-    button: 'h-12 px-6 text-base',
+    input: `h-12 ${semanticSpacing.cardX} ${semanticTypography.body}`,
+    label: semanticTypography.body,
+    button: `h-12 ${semanticSpacing.cardX} ${semanticTypography.body}`,
   },
 } as const
 

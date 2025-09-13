@@ -3,6 +3,12 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { AlertCircle, RefreshCw, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+  semanticSpacing,
+  semanticTypography,
+  semanticRadius,
+  semanticShadows,
+} from '@/styles/tokens'
 
 interface LoadingStateProps {
   message?: string
@@ -22,13 +28,13 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
   if (variant === 'skeleton') {
     return (
       <div
-        className={cn('space-y-4', className)}
+        className={cn(semanticSpacing.stack.lg, className)}
         role="status"
         aria-live="polite"
         aria-label={message}
       >
         {Array.from({ length: rows }, (_, index) => (
-          <div key={index} className="space-y-2">
+          <div key={index} className={semanticSpacing.stack.sm}>
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-4/5" />
           </div>
@@ -41,17 +47,20 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
   if (variant === 'table') {
     return (
       <div
-        className={cn('text-center py-16 bg-card rounded-lg border shadow-sm', className)}
+        className={cn(
+          `text-center ${semanticSpacing.sectionContainer} bg-card ${semanticRadius.card} border ${semanticShadows.card}`,
+          className
+        )}
         role="status"
         aria-live="polite"
       >
-        <div className="space-y-4">
+        <div className={semanticSpacing.stack.lg}>
           <div className="flex justify-center">
             <Loader2 className="size-8 animate-spin text-primary" />
           </div>
-          <div className="space-y-2">
-            <div className="font-semibold text-card-foreground">{message}</div>
-            <div className="text-sm text-muted-foreground">{subtext}</div>
+          <div className={semanticSpacing.stack.sm}>
+            <div className={cn(semanticTypography.h4, 'text-card-foreground')}>{message}</div>
+            <div className={`${semanticTypography.body} text-muted-foreground`}>{subtext}</div>
           </div>
         </div>
         <span className="sr-only">{message}</span>
@@ -65,13 +74,13 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
       role="status"
       aria-live="polite"
     >
-      <div className="space-y-4">
+      <div className={`${semanticSpacing.stack.md}`}>
         <div className="flex justify-center">
           <Loader2 className="size-6 animate-spin text-primary" />
         </div>
-        <div className="space-y-2">
-          <div className="font-semibold text-card-foreground">{message}</div>
-          <div className="text-sm text-muted-foreground">{subtext}</div>
+        <div className={`${semanticSpacing.stack.xs}`}>
+          <div className={cn(semanticTypography.h4, 'text-card-foreground')}>{message}</div>
+          <div className={cn(semanticTypography.body, 'text-muted-foreground')}>{subtext}</div>
         </div>
       </div>
       <span className="sr-only">{message}</span>
@@ -115,13 +124,21 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
       className={cn('text-center py-12 bg-card rounded-lg border shadow-sm', className)}
       role="alert"
     >
-      <div className="mx-auto max-w-md space-y-6">
+      <div className={cn(semanticSpacing.stack.lg, 'mx-auto max-w-md')}>
         <div className="flex justify-center">
           <AlertCircle className={cn('h-12 w-12', iconColor)} />
         </div>
-        <div className="space-y-2">
+        <div className={`${semanticSpacing.stack.xs}`}>
           <div className={cn('text-lg font-semibold', titleColor)}>{title}</div>
-          <div className="text-sm leading-relaxed text-muted-foreground">{message}</div>
+          <div
+            className={cn(
+              semanticTypography.body,
+              semanticTypography.relaxedLine,
+              'text-muted-foreground'
+            )}
+          >
+            {message}
+          </div>
         </div>
         {onRetry && (
           <div className="pt-2">
@@ -130,7 +147,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
               variant={variant === 'destructive' ? 'destructive' : 'outline'}
               className="mobile-touch-target"
             >
-              <RefreshCw className="mr-2 size-4" />
+              <RefreshCw className={cn(semanticSpacing.rightGap.xs, 'size-4')} />
               {retryLabel}
             </Button>
           </div>
@@ -160,11 +177,21 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 }) => {
   return (
     <div className={cn('text-center py-16 bg-card rounded-lg border shadow-sm', className)}>
-      <div className="mx-auto max-w-md space-y-6">
+      <div className={cn(semanticSpacing.stack.lg, 'mx-auto max-w-md')}>
         {icon && <div className="flex justify-center text-muted">{icon}</div>}
-        <div className="space-y-2">
-          <div className="text-xl font-semibold text-card-foreground">{title}</div>
-          <div className="text-sm leading-relaxed text-muted-foreground">{message}</div>
+        <div className={`${semanticSpacing.stack.xs}`}>
+          <div className={cn(semanticTypography.h3, semanticTypography.h4, 'text-card-foreground')}>
+            {title}
+          </div>
+          <div
+            className={cn(
+              semanticTypography.body,
+              semanticTypography.relaxedLine,
+              'text-muted-foreground'
+            )}
+          >
+            {message}
+          </div>
         </div>
         {action && (
           <div className="pt-2">

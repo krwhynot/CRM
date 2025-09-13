@@ -5,8 +5,12 @@ export function useInteractionsPageState() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const [selectedInteraction, setSelectedInteraction] = useState<InteractionWithRelations | null>(null)
-  const [viewingInteraction, setViewingInteraction] = useState<InteractionWithRelations | null>(null)
+  const [selectedInteraction, setSelectedInteraction] = useState<InteractionWithRelations | null>(
+    null
+  )
+  const [viewingInteraction, setViewingInteraction] = useState<InteractionWithRelations | null>(
+    null
+  )
 
   const openCreateDialog = useCallback(() => {
     setIsCreateDialogOpen(true)
@@ -47,11 +51,11 @@ export function useInteractionsPageState() {
     isCreateDialogOpen,
     isEditDialogOpen,
     isDeleteDialogOpen,
-    
+
     // Selected interaction
     selectedInteraction,
     viewingInteraction,
-    
+
     // Dialog actions
     openCreateDialog,
     closeCreateDialog,
@@ -59,10 +63,10 @@ export function useInteractionsPageState() {
     closeEditDialog,
     openDeleteDialog,
     closeDeleteDialog,
-    
+
     // View handler
     handleViewInteraction,
-    
+
     // Setters for external use
     setIsCreateDialogOpen,
     setIsEditDialogOpen,

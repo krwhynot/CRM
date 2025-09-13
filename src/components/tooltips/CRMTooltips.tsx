@@ -1,12 +1,19 @@
 import React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import {
+  semanticSpacing,
+  semanticTypography,
+  semanticRadius,
+  semanticColors,
+  textColors,
+  borderColors,
+} from '@/styles/tokens'
+import {
   HelpCircle,
   Info,
   AlertTriangle,
   CheckCircle,
   XCircle,
-  Star,
   Lightbulb,
   Zap,
   Users,
@@ -14,35 +21,12 @@ import {
   Package,
   TrendingUp,
   MessageSquare,
-  Calendar,
-  Phone,
-  Mail,
-  FileText,
-  DollarSign,
-  Target,
   Clock,
-  Globe,
-  Shield,
-  Settings,
   ExternalLink,
-  Copy,
-  Download,
-  Upload,
-  Edit,
-  Trash2,
-  Eye,
   Lock,
-  Unlock,
-  ArrowRight,
-  ChevronRight
 } from 'lucide-react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+// Removed unused: import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -50,33 +34,30 @@ import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
 
 // Tooltip Variants
-const tooltipVariants = cva(
-  "z-50 rounded-md px-3 py-1.5 text-xs text-balance shadow-lg border",
-  {
-    variants: {
-      variant: {
-        default: "bg-primary text-primary-foreground border-primary",
-        secondary: "bg-secondary text-secondary-foreground border-secondary",
-        success: "bg-green-600 text-white border-green-600",
-        warning: "bg-yellow-600 text-white border-yellow-600", 
-        destructive: "bg-destructive text-destructive-foreground border-destructive",
-        info: "bg-blue-600 text-white border-blue-600",
-        dark: "bg-gray-900 text-white border-gray-800",
-        light: "bg-white text-gray-900 border-gray-200 shadow-md"
-      },
-      size: {
-        sm: "px-2 py-1 text-xs max-w-48",
-        md: "px-3 py-1.5 text-xs max-w-64",
-        lg: "px-4 py-2 text-sm max-w-80",
-        xl: "px-4 py-3 text-sm max-w-96"
-      }
+const tooltipVariants = cva('z-50 rounded-md px-3 py-1.5 text-xs text-balance shadow-lg border', {
+  variants: {
+    variant: {
+      default: 'bg-primary text-primary-foreground border-primary',
+      secondary: 'bg-secondary text-secondary-foreground border-secondary',
+      success: `${semanticColors.success.primary} ${textColors.inverse} ${borderColors.success}`,
+      warning: `${semanticColors.warning.primary} ${textColors.inverse} ${borderColors.warning}`,
+      destructive: `${semanticColors.destructive} ${borderColors.error}`,
+      info: `${semanticColors.info.primary} ${textColors.inverse} ${borderColors.info}`,
+      dark: 'bg-popover text-popover-foreground border-border',
+      light: 'bg-card text-card-foreground border-border shadow-md',
     },
-    defaultVariants: {
-      variant: "default",
-      size: "md"
-    }
-  }
-)
+    size: {
+      sm: 'px-2 py-1 text-xs max-w-48',
+      md: 'px-3 py-1.5 text-xs max-w-64',
+      lg: 'px-4 py-2 text-sm max-w-80',
+      xl: 'px-4 py-3 text-sm max-w-96',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+    size: 'md',
+  },
+})
 
 // Base CRM Tooltip Props
 export interface CRMTooltipProps extends VariantProps<typeof tooltipVariants> {
@@ -111,9 +92,7 @@ export function CRMTooltip({
   return (
     <TooltipProvider delayDuration={delayDuration}>
       <Tooltip>
-        <TooltipTrigger asChild>
-          {children}
-        </TooltipTrigger>
+        <TooltipTrigger asChild>{children}</TooltipTrigger>
         <TooltipContent
           side={side}
           align={align}
@@ -136,29 +115,21 @@ export interface HelpTooltipProps {
   className?: string
 }
 
-export function HelpTooltip({
-  content,
-  children,
-  size = 'md',
-  className
-}: HelpTooltipProps) {
+export function HelpTooltip({ content, children, size = 'md', className }: HelpTooltipProps) {
   const iconSizes = {
     sm: 'size-3',
     md: 'size-4',
-    lg: 'size-5'
+    lg: 'size-5',
   }
 
   const trigger = children || (
-    <HelpCircle className={cn(iconSizes[size], 'text-muted-foreground hover:text-foreground cursor-help')} />
+    <HelpCircle
+      className={cn(iconSizes[size], textColors.secondary, 'hover:text-foreground cursor-help')}
+    />
   )
 
   return (
-    <CRMTooltip
-      content={content}
-      variant="dark"
-      size="lg"
-      className={className}
-    >
+    <CRMTooltip content={content} variant="dark" size="lg" className={className}>
       {trigger}
     </CRMTooltip>
   )
@@ -180,49 +151,54 @@ export function StatusTooltip({
   description,
   timestamp,
   user,
-  children
+  children,
 }: StatusTooltipProps) {
   const statusConfig = {
-    success: { icon: CheckCircle, variant: 'success' as const, color: 'text-green-600' },
-    warning: { icon: AlertTriangle, variant: 'warning' as const, color: 'text-yellow-600' },
-    error: { icon: XCircle, variant: 'destructive' as const, color: 'text-red-600' },
-    info: { icon: Info, variant: 'info' as const, color: 'text-blue-600' },
-    pending: { icon: Clock, variant: 'secondary' as const, color: 'text-orange-600' }
+    success: { icon: CheckCircle, variant: 'success' as const, color: semanticColors.text.success },
+    warning: {
+      icon: AlertTriangle,
+      variant: 'warning' as const,
+      color: semanticColors.text.warning,
+    },
+    error: { icon: XCircle, variant: 'destructive' as const, color: semanticColors.text.error },
+    info: { icon: Info, variant: 'info' as const, color: semanticColors.text.info },
+    pending: {
+      icon: Clock,
+      variant: 'secondary' as const,
+      color: semanticColors.text.warningAccent,
+    },
   }
 
   const config = statusConfig[status]
   const IconComponent = config.icon
 
   const content = (
-    <div className="space-y-2 text-left">
-      <div className="flex items-center gap-2">
+    <div className={cn(semanticSpacing.stack.xs, 'text-left')}>
+      <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
         <IconComponent className={cn('size-4', config.color)} />
-        <span className="font-medium">{title}</span>
+        <span className={`${semanticTypography.label}`}>{title}</span>
       </div>
-      
-      {description && (
-        <p className="text-xs opacity-90">{description}</p>
-      )}
-      
+
+      {description && <p className={cn(semanticTypography.caption, 'opacity-90')}>{description}</p>}
+
       {(timestamp || user) && (
-        <div className="flex items-center gap-2 text-xs opacity-75 pt-1 border-t border-white/20">
-          {timestamp && (
-            <span>{timestamp.toLocaleString()}</span>
+        <div
+          className={cn(
+            semanticSpacing.gap.xs,
+            semanticTypography.caption,
+            'flex items-center opacity-75 pt-1 border-t',
+            borderColors.muted
           )}
-          {user && (
-            <span>by {user}</span>
-          )}
+        >
+          {timestamp && <span>{timestamp.toLocaleString()}</span>}
+          {user && <span>by {user}</span>}
         </div>
       )}
     </div>
   )
 
   return (
-    <CRMTooltip
-      content={content}
-      variant={config.variant}
-      size="lg"
-    >
+    <CRMTooltip content={content} variant={config.variant} size="lg">
       {children}
     </CRMTooltip>
   )
@@ -246,55 +222,57 @@ export interface EntityPreviewTooltipProps {
   children: React.ReactNode
 }
 
-export function EntityPreviewTooltip({
-  entityType,
-  data,
-  children
-}: EntityPreviewTooltipProps) {
+export function EntityPreviewTooltip({ entityType, data, children }: EntityPreviewTooltipProps) {
   const entityConfig = {
-    contact: { icon: Users, color: 'text-blue-600' },
-    organization: { icon: Building, color: 'text-green-600' },
-    product: { icon: Package, color: 'text-purple-600' },
-    opportunity: { icon: TrendingUp, color: 'text-orange-600' },
-    interaction: { icon: MessageSquare, color: 'text-teal-600' }
+    contact: { icon: Users, color: semanticColors.text.info },
+    organization: { icon: Building, color: semanticColors.text.success },
+    product: { icon: Package, color: textColors.info },
+    opportunity: { icon: TrendingUp, color: semanticColors.text.warningAccent },
+    interaction: { icon: MessageSquare, color: textColors.info },
   }
 
   const config = entityConfig[entityType]
   const IconComponent = config.icon
 
   const content = (
-    <div className="space-y-3 text-left min-w-64 max-w-80">
+    <div className={cn(semanticSpacing.stack.sm, 'text-left min-w-64 max-w-80')}>
       {/* Header */}
-      <div className="flex items-start gap-3">
+      <div className={cn(semanticSpacing.gap.sm, 'flex items-start')}>
         {data.avatar ? (
           <Avatar className="size-10">
             <AvatarImage src={data.avatar} />
-            <AvatarFallback>
-              {data.name.slice(0, 2).toUpperCase()}
-            </AvatarFallback>
+            <AvatarFallback>{data.name.slice(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
         ) : (
-          <div className="size-10 rounded-full bg-white/20 flex items-center justify-center">
+          <div
+            className={cn(
+              semanticRadius.full,
+              'size-10 flex items-center justify-center',
+              semanticColors.muted
+            )}
+          >
             <IconComponent className={cn('size-5', config.color)} />
           </div>
         )}
-        
+
         <div className="flex-1 min-w-0">
-          <h4 className="font-medium truncate">{data.name}</h4>
+          <h4 className={cn(semanticTypography.label, 'truncate')}>{data.name}</h4>
           {data.subtitle && (
-            <p className="text-xs opacity-75 truncate">{data.subtitle}</p>
+            <p className={cn(semanticTypography.caption, 'opacity-75 truncate')}>{data.subtitle}</p>
           )}
-          
-          <div className="flex items-center gap-1 mt-1">
+
+          <div className={cn(semanticSpacing.gap.xs, 'flex items-center mt-1')}>
             {data.status && (
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="secondary" className={`${semanticTypography.caption}`}>
                 {data.status}
               </Badge>
             )}
             {data.priority && data.priority !== 'medium' && (
-              <Badge 
-                variant={data.priority === 'high' || data.priority === 'urgent' ? 'destructive' : 'outline'}
-                className="text-xs"
+              <Badge
+                variant={
+                  data.priority === 'high' || data.priority === 'urgent' ? 'destructive' : 'outline'
+                }
+                className={`${semanticTypography.caption}`}
               >
                 {data.priority}
               </Badge>
@@ -306,20 +284,18 @@ export function EntityPreviewTooltip({
       {/* Value/Description */}
       {(data.value || data.description) && (
         <>
-          <Separator className="bg-white/20" />
-          <div className="space-y-1">
+          <Separator className={borderColors.muted} />
+          <div className={`${semanticSpacing.stack.xs}`}>
             {data.value && (
               <div className="flex items-center justify-between">
-                <span className="text-xs opacity-75">Value</span>
-                <span className="font-medium">
-                  {typeof data.value === 'number' 
-                    ? `$${data.value.toLocaleString()}` 
-                    : data.value}
+                <span className={cn(semanticTypography.caption, 'opacity-75')}>Value</span>
+                <span className={`${semanticTypography.label}`}>
+                  {typeof data.value === 'number' ? `$${data.value.toLocaleString()}` : data.value}
                 </span>
               </div>
             )}
             {data.description && (
-              <p className="text-xs opacity-90 line-clamp-2">
+              <p className={cn(semanticTypography.caption, 'opacity-90 line-clamp-2')}>
                 {data.description}
               </p>
             )}
@@ -330,17 +306,32 @@ export function EntityPreviewTooltip({
       {/* Tags */}
       {data.tags && data.tags.length > 0 && (
         <>
-          <Separator className="bg-white/20" />
+          <Separator className={borderColors.muted} />
           <div>
-            <p className="text-xs opacity-75 mb-1">Tags</p>
-            <div className="flex flex-wrap gap-1">
+            <p className={cn(semanticTypography.caption, 'opacity-75 mb-1')}>Tags</p>
+            <div className={cn(semanticSpacing.gap.xs, 'flex flex-wrap')}>
               {data.tags.slice(0, 3).map((tag, index) => (
-                <Badge key={index} variant="outline" className="text-xs bg-white/10 border-white/20">
+                <Badge
+                  key={index}
+                  variant="outline"
+                  className={cn(
+                    semanticTypography.caption,
+                    semanticColors.muted,
+                    borderColors.muted
+                  )}
+                >
                   {tag}
                 </Badge>
               ))}
               {data.tags.length > 3 && (
-                <Badge variant="outline" className="text-xs bg-white/10 border-white/20">
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    semanticTypography.caption,
+                    semanticColors.muted,
+                    borderColors.muted
+                  )}
+                >
                   +{data.tags.length - 3} more
                 </Badge>
               )}
@@ -352,8 +343,14 @@ export function EntityPreviewTooltip({
       {/* Last Activity */}
       {data.lastActivity && (
         <>
-          <Separator className="bg-white/20" />
-          <div className="flex items-center gap-2 text-xs opacity-75">
+          <Separator className={borderColors.muted} />
+          <div
+            className={cn(
+              semanticSpacing.gap.xs,
+              semanticTypography.caption,
+              'flex items-center opacity-75'
+            )}
+          >
             <Clock className="size-3" />
             <span>Last activity: {data.lastActivity.toLocaleDateString()}</span>
           </div>
@@ -395,29 +392,39 @@ export function FeatureGuideTooltip({
   steps,
   shortcut,
   learnMore,
-  children
+  children,
 }: FeatureGuideTooltipProps) {
   const content = (
-    <div className="space-y-3 text-left max-w-72">
+    <div className={cn(semanticSpacing.stack.sm, 'text-left max-w-72')}>
       {/* Header */}
-      <div className="flex items-start gap-2">
-        <Lightbulb className="size-4 text-yellow-400 mt-0.5 shrink-0" />
+      <div className={cn(semanticSpacing.gap.xs, 'flex items-start')}>
+        <Lightbulb className={cn('size-4 mt-0.5 shrink-0', semanticColors.text.warningAccent)} />
         <div>
-          <h4 className="font-medium">{title}</h4>
-          <p className="text-xs opacity-90 mt-1">{description}</p>
+          <h4 className={`${semanticTypography.label}`}>{title}</h4>
+          <p className={cn(semanticTypography.caption, 'opacity-90 mt-1')}>{description}</p>
         </div>
       </div>
 
       {/* Steps */}
       {steps && steps.length > 0 && (
         <>
-          <Separator className="bg-white/20" />
+          <Separator className={borderColors.muted} />
           <div>
-            <p className="text-xs font-medium mb-2">How to use:</p>
-            <ol className="text-xs space-y-1 opacity-90">
+            <p
+              className={cn(
+                semanticTypography.caption,
+                semanticTypography.label,
+                semanticSpacing.bottomGap.xs
+              )}
+            >
+              How to use:
+            </p>
+            <ol className={cn(semanticTypography.caption, semanticSpacing.stack.xs, 'opacity-90')}>
               {steps.map((step, index) => (
-                <li key={index} className="flex gap-2">
-                  <span className="text-yellow-400 shrink-0">{index + 1}.</span>
+                <li key={index} className={cn(semanticSpacing.gap.xs, 'flex')}>
+                  <span className={cn(semanticColors.text.warningAccent, 'shrink-0')}>
+                    {index + 1}.
+                  </span>
                   <span>{step}</span>
                 </li>
               ))}
@@ -429,11 +436,19 @@ export function FeatureGuideTooltip({
       {/* Shortcut */}
       {shortcut && (
         <>
-          <Separator className="bg-white/20" />
-          <div className="flex items-center gap-2">
-            <Zap className="size-3 text-yellow-400" />
-            <span className="text-xs opacity-75">Shortcut:</span>
-            <kbd className="px-1.5 py-0.5 text-xs bg-white/20 rounded border border-white/20">
+          <Separator className={borderColors.muted} />
+          <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
+            <Zap className={cn('size-3', semanticColors.text.warningAccent)} />
+            <span className={cn(semanticTypography.caption, 'opacity-75')}>Shortcut:</span>
+            <kbd
+              className={cn(
+                semanticTypography.caption,
+                semanticRadius.small,
+                'px-1.5 py-0.5 border',
+                semanticColors.muted,
+                borderColors.muted
+              )}
+            >
               {shortcut}
             </kbd>
           </div>
@@ -443,14 +458,16 @@ export function FeatureGuideTooltip({
       {/* Learn More */}
       {learnMore && (
         <>
-          <Separator className="bg-white/20" />
-          <div className="flex items-center gap-1 text-xs">
+          <Separator className={borderColors.muted} />
+          <div
+            className={cn(semanticSpacing.gap.xs, semanticTypography.caption, 'flex items-center')}
+          >
             <ExternalLink className="size-3" />
-            <a 
-              href={learnMore.url} 
-              target="_blank" 
+            <a
+              href={learnMore.url}
+              target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-300 hover:text-blue-200 underline"
+              className={cn(semanticColors.text.infoAccent, 'hover:opacity-80 underline')}
             >
               {learnMore.text}
             </a>
@@ -492,20 +509,20 @@ export function ProgressTooltip({
   current,
   total,
   segments,
-  children
+  children,
 }: ProgressTooltipProps) {
   const percentage = Math.round((current / total) * 100)
 
   const content = (
-    <div className="space-y-3 text-left min-w-48">
+    <div className={cn(semanticSpacing.stack.sm, 'text-left min-w-48')}>
       {/* Header */}
       <div>
-        <h4 className="font-medium">{title}</h4>
-        <div className="flex items-center justify-between text-xs mt-1">
+        <h4 className={`${semanticTypography.label}`}>{title}</h4>
+        <div className={cn(semanticTypography.caption, 'flex items-center justify-between mt-1')}>
           <span className="opacity-75">
             {current.toLocaleString()} / {total.toLocaleString()}
           </span>
-          <span className="font-medium">{percentage}%</span>
+          <span className={`${semanticTypography.label}`}>{percentage}%</span>
         </div>
       </div>
 
@@ -515,22 +532,25 @@ export function ProgressTooltip({
       {/* Segments */}
       {segments && segments.length > 0 && (
         <>
-          <Separator className="bg-white/20" />
-          <div className="space-y-2">
+          <Separator className={borderColors.muted} />
+          <div className={`${semanticSpacing.stack.xs}`}>
             {segments.map((segment, index) => {
               const segmentPercentage = Math.round((segment.value / total) * 100)
               return (
-                <div key={index} className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2">
-                    <div 
-                      className="size-2 rounded-full" 
+                <div
+                  key={index}
+                  className={cn(semanticTypography.caption, 'flex items-center justify-between')}
+                >
+                  <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
+                    <div
+                      className={cn(semanticRadius.full, 'size-2')}
                       style={{ backgroundColor: segment.color }}
                     />
                     <span className="opacity-90">{segment.label}</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
                     <span className="opacity-75">{segment.value.toLocaleString()}</span>
-                    <span className="font-medium">({segmentPercentage}%)</span>
+                    <span className={`${semanticTypography.label}`}>({segmentPercentage}%)</span>
                   </div>
                 </div>
               )
@@ -542,12 +562,7 @@ export function ProgressTooltip({
   )
 
   return (
-    <CRMTooltip
-      content={content}
-      variant="dark"
-      size="lg"
-      side="top"
-    >
+    <CRMTooltip content={content} variant="dark" size="lg" side="top">
       {children}
     </CRMTooltip>
   )
@@ -569,14 +584,14 @@ export function ActionTooltip({
   shortcut,
   disabled = false,
   disabledReason,
-  children
+  children,
 }: ActionTooltipProps) {
   if (disabled && disabledReason) {
     return (
       <CRMTooltip
         content={
-          <div className="flex items-center gap-2">
-            <Lock className="size-3 text-red-400" />
+          <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
+            <Lock className={cn('size-3', semanticColors.text.error)} />
             <span>{disabledReason}</span>
           </div>
         }
@@ -589,16 +604,26 @@ export function ActionTooltip({
   }
 
   const content = (
-    <div className="flex items-center gap-2">
+    <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
       <span>{action}</span>
       {description && (
         <>
-          <span className="text-white/60">•</span>
-          <span className="text-white/80">{description}</span>
+          <span className="opacity-60">•</span>
+          <span className="opacity-80">{description}</span>
         </>
       )}
       {shortcut && (
-        <kbd className="ml-2 px-1 py-0.5 text-xs bg-white/20 rounded border border-white/20">
+        <kbd
+          className={cn(
+            semanticSpacing.leftGap.xs,
+            semanticSpacing.minimalX,
+            semanticTypography.caption,
+            semanticRadius.small,
+            'py-0.5 border',
+            semanticColors.muted,
+            borderColors.muted
+          )}
+        >
           {shortcut}
         </kbd>
       )}
@@ -606,11 +631,7 @@ export function ActionTooltip({
   )
 
   return (
-    <CRMTooltip
-      content={content}
-      variant="dark"
-      size="md"
-    >
+    <CRMTooltip content={content} variant="dark" size="md">
       {children}
     </CRMTooltip>
   )
@@ -630,29 +651,30 @@ export interface QuickStatsTooltipProps {
   children: React.ReactNode
 }
 
-export function QuickStatsTooltip({
-  title,
-  stats,
-  children
-}: QuickStatsTooltipProps) {
+export function QuickStatsTooltip({ title, stats, children }: QuickStatsTooltipProps) {
   const content = (
-    <div className="space-y-3 text-left min-w-48">
-      <h4 className="font-medium">{title}</h4>
-      
-      <div className="space-y-2">
+    <div className={cn(semanticSpacing.stack.sm, 'text-left min-w-48')}>
+      <h4 className={`${semanticTypography.label}`}>{title}</h4>
+
+      <div className={`${semanticSpacing.stack.xs}`}>
         {stats.map((stat, index) => (
           <div key={index} className="flex items-center justify-between">
-            <span className="text-xs opacity-75">{stat.label}</span>
-            <div className="flex items-center gap-2">
-              <span className="font-medium">
+            <span className={cn(semanticTypography.caption, 'opacity-75')}>{stat.label}</span>
+            <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
+              <span className={`${semanticTypography.label}`}>
                 {typeof stat.value === 'number' ? stat.value.toLocaleString() : stat.value}
               </span>
               {stat.change && (
-                <span className={cn(
-                  'text-xs flex items-center gap-1',
-                  stat.change.trend === 'up' ? 'text-green-400' :
-                  stat.change.trend === 'down' ? 'text-red-400' : 'text-gray-400'
-                )}>
+                <span
+                  className={cn(
+                    'text-xs flex items-center gap-1',
+                    stat.change.trend === 'up'
+                      ? semanticColors.text.success
+                      : stat.change.trend === 'down'
+                        ? semanticColors.text.error
+                        : textColors.tertiary
+                  )}
+                >
                   {stat.change.trend === 'up' && <TrendingUp className="size-3" />}
                   {stat.change.trend === 'down' && <TrendingUp className="size-3 rotate-180" />}
                   {stat.change.value}
@@ -666,11 +688,7 @@ export function QuickStatsTooltip({
   )
 
   return (
-    <CRMTooltip
-      content={content}
-      variant="dark" 
-      size="lg"
-    >
+    <CRMTooltip content={content} variant="dark" size="lg">
       {children}
     </CRMTooltip>
   )
@@ -688,28 +706,29 @@ export function FieldValidationTooltip({
   rules,
   isValid = true,
   errors = [],
-  children
+  children,
 }: FieldValidationTooltipProps) {
   const content = (
-    <div className="space-y-2 text-left max-w-64">
-      <div className="flex items-center gap-2">
+    <div className={cn(semanticSpacing.stack.xs, 'text-left max-w-64')}>
+      <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
         {isValid ? (
-          <CheckCircle className="size-4 text-green-400" />
+          <CheckCircle className={cn('size-4', semanticColors.text.success)} />
         ) : (
-          <XCircle className="size-4 text-red-400" />
+          <XCircle className={cn('size-4', semanticColors.text.error)} />
         )}
-        <span className="font-medium">
-          {isValid ? 'Valid' : 'Invalid'} Field
-        </span>
+        <span className={`${semanticTypography.label}`}>{isValid ? 'Valid' : 'Invalid'} Field</span>
       </div>
 
       {/* Validation Rules */}
       <div>
-        <p className="text-xs opacity-75 mb-1">Requirements:</p>
-        <ul className="space-y-1">
+        <p className={cn(semanticTypography.caption, 'opacity-75 mb-1')}>Requirements:</p>
+        <ul className={`${semanticSpacing.stack.xs}`}>
           {rules.map((rule, index) => (
-            <li key={index} className="flex items-start gap-2 text-xs">
-              <CheckCircle className="size-3 text-green-400 mt-0.5 shrink-0" />
+            <li
+              key={index}
+              className={cn(semanticSpacing.gap.xs, semanticTypography.caption, 'flex items-start')}
+            >
+              <CheckCircle className={cn('size-3 mt-0.5 shrink-0', semanticColors.text.success)} />
               <span className="opacity-90">{rule}</span>
             </li>
           ))}
@@ -719,14 +738,30 @@ export function FieldValidationTooltip({
       {/* Errors */}
       {errors.length > 0 && (
         <>
-          <Separator className="bg-white/20" />
+          <Separator className={borderColors.muted} />
           <div>
-            <p className="text-xs text-red-400 font-medium mb-1">Errors:</p>
-            <ul className="space-y-1">
+            <p
+              className={cn(
+                semanticTypography.caption,
+                semanticTypography.label,
+                semanticColors.text.error,
+                'mb-1'
+              )}
+            >
+              Errors:
+            </p>
+            <ul className={`${semanticSpacing.stack.xs}`}>
               {errors.map((error, index) => (
-                <li key={index} className="flex items-start gap-2 text-xs">
-                  <XCircle className="size-3 text-red-400 mt-0.5 shrink-0" />
-                  <span className="text-red-200">{error}</span>
+                <li
+                  key={index}
+                  className={cn(
+                    semanticSpacing.gap.xs,
+                    semanticTypography.caption,
+                    'flex items-start'
+                  )}
+                >
+                  <XCircle className={cn('size-3 mt-0.5 shrink-0', semanticColors.text.error)} />
+                  <span className={cn(semanticColors.text.error, 'opacity-90')}>{error}</span>
                 </li>
               ))}
             </ul>

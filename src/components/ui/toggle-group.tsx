@@ -1,17 +1,16 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group"
-import { type VariantProps } from "class-variance-authority"
+import * as React from 'react'
+import * as ToggleGroupPrimitive from '@radix-ui/react-toggle-group'
+import { type VariantProps } from 'class-variance-authority'
 
-import { cn } from "@/lib/utils"
-import { toggleVariants } from "@/components/ui/toggle"
+import { cn } from '@/lib/utils'
+import { toggleVariants } from '@/components/ui/toggle'
+import { semanticRadius, semanticShadows } from '@/styles/tokens'
 
-const ToggleGroupContext = React.createContext<
-  VariantProps<typeof toggleVariants>
->({
-  size: "default",
-  variant: "default",
+const ToggleGroupContext = React.createContext<VariantProps<typeof toggleVariants>>({
+  size: 'default',
+  variant: 'default',
 })
 
 const ToggleGroup = React.forwardRef<
@@ -22,15 +21,13 @@ const ToggleGroup = React.forwardRef<
   <ToggleGroupPrimitive.Root
     ref={ref}
     className={cn(
-      "group/toggle-group flex w-fit items-center rounded-md",
-      variant === "outline" && "shadow-xs",
+      `group/toggle-group flex w-fit items-center ${semanticRadius.button}`,
+      variant === 'outline' && semanticShadows.button,
       className
     )}
     {...props}
   >
-    <ToggleGroupContext.Provider value={{ variant, size }}>
-      {children}
-    </ToggleGroupContext.Provider>
+    <ToggleGroupContext.Provider value={{ variant, size }}>{children}</ToggleGroupContext.Provider>
   </ToggleGroupPrimitive.Root>
 ))
 
@@ -51,8 +48,8 @@ const ToggleGroupItem = React.forwardRef<
           variant: context.variant || variant,
           size: context.size || size,
         }),
-        "min-w-0 flex-1 shrink-0 rounded-none shadow-none first:rounded-l-md last:rounded-r-md focus:z-10 focus-visible:z-10",
-        context.variant === "outline" && "border-l-0 first:border-l",
+        'min-w-0 flex-1 shrink-0 rounded-none shadow-none first:rounded-l-md last:rounded-r-md focus:z-10 focus-visible:z-10',
+        context.variant === 'outline' && 'border-l-0 first:border-l',
         className
       )}
       {...props}

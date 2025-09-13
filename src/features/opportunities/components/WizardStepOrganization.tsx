@@ -1,4 +1,5 @@
 import React from 'react'
+import { cn } from '@/lib/utils'
 import {
   Select,
   SelectContent,
@@ -6,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 import type { UseFormSetValue, FieldErrors } from 'react-hook-form'
 import type { OpportunityFormData } from '@/types/opportunity.types'
 import type { Organization, Contact } from '@/types/entities'
@@ -34,9 +36,12 @@ export const WizardStepOrganization: React.FC<WizardStepOrganizationProps> = ({
   preselectedContact,
 }) => {
   return (
-    <div className="space-y-4">
+    <div className={semanticSpacing.layoutContainer}>
       <div>
-        <label htmlFor="organization_id" className="text-sm font-medium">
+        <label
+          htmlFor="organization_id"
+          className={cn(semanticTypography.label, semanticTypography.body)}
+        >
           Organization *
         </label>
         <Select
@@ -61,12 +66,17 @@ export const WizardStepOrganization: React.FC<WizardStepOrganizationProps> = ({
           </SelectContent>
         </Select>
         {errors.organization_id && (
-          <p className="mt-1 text-sm text-red-600">{errors.organization_id.message}</p>
+          <p className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} text-red-600`}>
+            {errors.organization_id.message}
+          </p>
         )}
       </div>
 
       <div>
-        <label htmlFor="contact_id" className="text-sm font-medium">
+        <label
+          htmlFor="contact_id"
+          className={cn(semanticTypography.label, semanticTypography.body)}
+        >
           Primary Contact
         </label>
         <Select
@@ -87,7 +97,9 @@ export const WizardStepOrganization: React.FC<WizardStepOrganizationProps> = ({
           </SelectContent>
         </Select>
         {errors.contact_id && (
-          <p className="mt-1 text-sm text-red-600">{errors.contact_id.message}</p>
+          <p className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} text-red-600`}>
+            {errors.contact_id.message}
+          </p>
         )}
       </div>
     </div>

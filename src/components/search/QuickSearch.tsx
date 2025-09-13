@@ -1,15 +1,23 @@
+import { semanticSpacing, semanticRadius, semanticTypography } from '@/styles/tokens'
 /**
  * Quick Search Component
- * 
+ *
  * Lightweight search component for the header/navigation bar.
  * Provides instant search with command palette-style interface.
  */
 
 import React, { useState, useCallback, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+// Removed unused: import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { Search, ArrowRight, Clock } from 'lucide-react'
@@ -69,23 +77,26 @@ export function QuickSearch({
   }
 
   // Perform search with debouncing
-  const performSearch = useCallback(async (searchQuery: string) => {
-    if (!searchQuery.trim()) {
-      setResults([])
-      return
-    }
+  const performSearch = useCallback(
+    async (searchQuery: string) => {
+      if (!searchQuery.trim()) {
+        setResults([])
+        return
+      }
 
-    setLoading(true)
-    try {
-      const searchResults = await onSearch(searchQuery)
-      setResults(searchResults.slice(0, maxResults))
-    } catch (error) {
-      console.error('Quick search failed:', error)
-      setResults([])
-    } finally {
-      setLoading(false)
-    }
-  }, [onSearch, maxResults])
+      setLoading(true)
+      try {
+        const searchResults = await onSearch(searchQuery)
+        setResults(searchResults.slice(0, maxResults))
+      } catch (error) {
+        console.error('Quick search failed:', error)
+        setResults([])
+      } finally {
+        setLoading(false)
+      }
+    },
+    [onSearch, maxResults]
+  )
 
   // Debounced search effect
   React.useEffect(() => {
@@ -94,23 +105,29 @@ export function QuickSearch({
   }, [query, performSearch])
 
   // Handle result selection
-  const handleResultSelect = useCallback((result: QuickSearchResult) => {
-    onResultSelect(result)
-    setOpen(false)
-    setQuery('')
-    setResults([])
-  }, [onResultSelect])
+  const handleResultSelect = useCallback(
+    (result: QuickSearchResult) => {
+      onResultSelect(result)
+      setOpen(false)
+      setQuery('')
+      setResults([])
+    },
+    [onResultSelect]
+  )
 
   // Handle recent search selection
-  const handleRecentSearchSelect = useCallback((recentQuery: string) => {
-    setQuery(recentQuery)
-    performSearch(recentQuery)
-  }, [performSearch])
+  const handleRecentSearchSelect = useCallback(
+    (recentQuery: string) => {
+      setQuery(recentQuery)
+      performSearch(recentQuery)
+    },
+    [performSearch]
+  )
 
   // Group results by type
   const groupedResults = useMemo(() => {
     const groups: Record<string, QuickSearchResult[]> = {}
-    results.forEach(result => {
+    results.forEach((result) => {
       const type = result.type
       if (!groups[type]) {
         groups[type] = []
@@ -142,24 +159,34 @@ export function QuickSearch({
             className
           )}
         >
-          <Search className="h-4 w-4 mr-2" />
+          <Search className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4')} />
           {query || placeholder}
         </Button>
       </PopoverTrigger>
-      
+
       <PopoverContent className="w-[400px] p-0" align="start">
         <Command shouldFilter={false}>
-          <div className="flex items-center border-b px-3">
-            <Search className="h-4 w-4 mr-2 shrink-0 opacity-50" />
+          <div className={cn(semanticSpacing.compactX, 'flex items-center border-b')}>
+            <Search className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4 shrink-0 opacity-50')} />
             <CommandInput
               value={query}
               onValueChange={setQuery}
               placeholder={placeholder}
-              className="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+              className={cn(
+                semanticRadius.default,
+                semanticSpacing.compactY,
+                semanticTypography.body,
+                'flex h-10 w-full bg-transparent outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50'
+              )}
             />
             {loading && (
-              <div className="ml-2">
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              <div className={`${semanticSpacing.leftGap.xs}`}>
+                <div
+                  className={cn(
+                    semanticRadius.full,
+                    'h-4 w-4 animate-spin border-2 border-primary border-t-transparent'
+                  )}
+                />
               </div>
             )}
           </div>
@@ -171,7 +198,7 @@ export function QuickSearch({
                   <CommandItem
                     key={index}
                     onSelect={() => handleRecentSearchSelect(recentQuery)}
-                    className="flex items-center gap-2"
+                    className={cn(semanticSpacing.gap.xs, 'flex items-center')}
                   >
                     <Clock className="h-4 w-4 text-muted-foreground" />
                     <span>{recentQuery}</span>
@@ -182,8 +209,14 @@ export function QuickSearch({
 
             {query && results.length === 0 && !loading && (
               <CommandEmpty>
-                <div className="text-center py-6">
-                  <p className="text-sm text-muted-foreground mb-2">
+                <div className={cn(semanticSpacing.cardY, 'text-center')}>
+                  <p
+                    className={cn(
+                      semanticTypography.body,
+                      semanticSpacing.bottomGap.xs,
+                      'text-muted-foreground'
+                    )}
+                  >
                     No results found for "{query}"
                   </p>
                   {onOpenAdvancedSearch && (
@@ -209,23 +242,37 @@ export function QuickSearch({
                   <CommandItem
                     key={result.id}
                     onSelect={() => handleResultSelect(result)}
-                    className="flex items-center justify-between py-2"
+                    className={cn(semanticSpacing.compactY, 'flex items-center justify-between')}
                   >
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className={cn(semanticSpacing.gap.sm, 'flex items-center flex-1 min-w-0')}>
                       {result.icon && (
                         <result.icon className="h-4 w-4 text-muted-foreground shrink-0" />
                       )}
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium truncate">{result.title}</div>
+                        <div className={cn(semanticTypography.label, 'truncate')}>
+                          {result.title}
+                        </div>
                         {result.subtitle && (
-                          <div className="text-sm text-muted-foreground truncate">
+                          <div
+                            className={cn(
+                              semanticTypography.body,
+                              'text-muted-foreground truncate'
+                            )}
+                          >
                             {result.subtitle}
                           </div>
                         )}
                       </div>
                     </div>
-                    
-                    <Badge variant="outline" className="text-xs ml-2 shrink-0">
+
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        semanticTypography.caption,
+                        semanticSpacing.leftGap.xs,
+                        'shrink-0'
+                      )}
+                    >
                       {type}
                     </Badge>
                   </CommandItem>
@@ -240,9 +287,13 @@ export function QuickSearch({
                     onOpenAdvancedSearch()
                     setOpen(false)
                   }}
-                  className="flex items-center justify-center py-3 text-sm text-primary"
+                  className={cn(
+                    semanticSpacing.compactY,
+                    semanticTypography.body,
+                    'flex items-center justify-center text-primary'
+                  )}
                 >
-                  <Search className="h-4 w-4 mr-2" />
+                  <Search className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4')} />
                   View all results in Advanced Search
                   <ArrowRight className="h-3 w-3 ml-1" />
                 </CommandItem>
@@ -287,16 +338,20 @@ export function QuickSearchTrigger({
     <Button
       variant="outline"
       onClick={onTrigger}
-      className={cn(
-        'justify-between text-muted-foreground font-normal w-64',
-        className
-      )}
+      className={cn('justify-between text-muted-foreground font-normal w-64', className)}
     >
       <div className="flex items-center">
-        <Search className="h-4 w-4 mr-2" />
+        <Search className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4')} />
         Search...
       </div>
-      <kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 inline-flex">
+      <kbd
+        className={cn(
+          semanticSpacing.gap.xs,
+          semanticRadius.small,
+          semanticTypography.label,
+          'pointer-events-none h-5 select-none items-center border bg-muted px-1.5 font-mono text-[10px] text-muted-foreground opacity-100 inline-flex'
+        )}
+      >
         {shortcut}
       </kbd>
     </Button>

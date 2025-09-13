@@ -14,6 +14,8 @@ import { ActiveFiltersDisplay } from './ActiveFiltersDisplay'
 import { useFilterChangeHandler, useActiveFilterCount } from '@/hooks/useUniversalFilters'
 import type { EnhancedUniversalFiltersProps } from '@/types/filters.types'
 
+import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticShadows, semanticTypography } from '@/styles/tokens'
 export function EnhancedUniversalFilters({
   filters,
   onFiltersChange,
@@ -96,15 +98,15 @@ export function EnhancedUniversalFilters({
   const ContainerComponent = ({ children }: { children: React.ReactNode }) => {
     switch (variant) {
       case 'inline':
-        return <div className="space-y-4">{children}</div>
+        return <div className={`${semanticSpacing.stack.md}`}>{children}</div>
       case 'minimal':
-        return <div className="space-y-2">{children}</div>
+        return <div className={`${semanticSpacing.stack.xs}`}>{children}</div>
       case 'card':
       default:
         return (
-          <Card className="border-primary/10 shadow-sm">
+          <Card className={cn(semanticShadows.subtle, 'border-primary/10')}>
             <CardContent className={compact || compactMode === 'minimal' ? 'p-3' : 'p-4'}>
-              <div className="space-y-4">{children}</div>
+              <div className={`${semanticSpacing.stack.md}`}>{children}</div>
             </CardContent>
           </Card>
         )
@@ -116,17 +118,19 @@ export function EnhancedUniversalFilters({
       {/* Header */}
       {variant !== 'minimal' && (
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
+          <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
             <Filter className="size-4 text-muted-foreground" />
-            <span className="text-sm font-semibold">Universal Filters</span>
+            <span className={cn(semanticTypography.body, semanticTypography.h4)}>
+              Universal Filters
+            </span>
             {activeFilterCount > 0 && (
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="secondary" className={`${semanticTypography.caption}`}>
                 {activeFilterCount} active
               </Badge>
             )}
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
             {headerActions}
 
             {onClearAllFilters && (
@@ -166,7 +170,7 @@ export function EnhancedUniversalFilters({
       )}
 
       {/* Filter Controls Grid */}
-      <div className={`grid gap-4 ${getGridColumns()}`}>
+      <div className={cn(semanticSpacing.gap.md, `grid ${getGridColumns()}`)}>
         {/* Time Range Filter */}
         {showTimeRange && (
           <TimeRangeFilter
@@ -185,9 +189,17 @@ export function EnhancedUniversalFilters({
 
         {/* Focus Filter */}
         {showFocus && (
-          <div className="flex flex-col space-y-1">
+          <div className={cn(semanticSpacing.stack.xs, 'flex flex-col')}>
             {!compact && compactMode !== 'minimal' && (
-              <label className="text-xs font-medium text-muted-foreground">Focus</label>
+              <label
+                className={cn(
+                  semanticTypography.caption,
+                  semanticTypography.label,
+                  'text-muted-foreground'
+                )}
+              >
+                Focus
+              </label>
             )}
             <FocusFilter
               value={filters.focus}
@@ -201,9 +213,17 @@ export function EnhancedUniversalFilters({
 
         {/* Legacy Quick View Filter (fallback) */}
         {showQuickView && !showQuickViews && (
-          <div className="flex flex-col space-y-1">
+          <div className={cn(semanticSpacing.stack.xs, 'flex flex-col')}>
             {!compact && compactMode !== 'minimal' && (
-              <label className="text-xs font-medium text-muted-foreground">Quick View</label>
+              <label
+                className={cn(
+                  semanticTypography.caption,
+                  semanticTypography.label,
+                  'text-muted-foreground'
+                )}
+              >
+                Quick View
+              </label>
             )}
             <QuickViewFilter
               value={filters.quickView}

@@ -3,13 +3,14 @@ import { Zap, Target, Trophy, AlertCircle, Calendar, Plus, ArrowRight, X } from 
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticTypography, semanticRadius } from '@/styles/tokens'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger
-} from '@/components/ui/tooltip'
-import { getPresetBadgeCount, getSuggestedPresets, WORKFLOW_PRESETS } from '@/lib/quick-view-presets'
+  getPresetBadgeCount,
+  getSuggestedPresets,
+  WORKFLOW_PRESETS,
+} from '@/lib/quick-view-presets'
 import type { QuickViewType } from '@/types/filters.types'
 
 interface QuickViewsSectionProps {
@@ -51,15 +52,16 @@ export function QuickViewsSection({
   compact = false,
   showBadges = false,
   showSuggestions = true,
-  maxButtons = 6
+  maxButtons = 6,
 }: QuickViewsSectionProps) {
   const [badgeCounts, setBadgeCounts] = useState<Record<string, number>>({})
   const [loadingBadges, setLoadingBadges] = useState(false)
 
   // Determine which quick views to show
-  const quickViewsToShow = availableQuickViews || Object.keys(QUICK_VIEW_LABELS) as QuickViewType[]
+  const quickViewsToShow =
+    availableQuickViews || (Object.keys(QUICK_VIEW_LABELS) as QuickViewType[])
   const limitedQuickViews = quickViewsToShow.slice(0, maxButtons)
-  
+
   // Get suggested presets
   const suggestedPresets = showSuggestions ? getSuggestedPresets() : []
 
@@ -67,10 +69,10 @@ export function QuickViewsSection({
   useEffect(() => {
     if (showBadges) {
       setLoadingBadges(true)
-      
+
       const loadBadges = async () => {
         const counts: Record<string, number> = {}
-        
+
         for (const preset of limitedQuickViews) {
           try {
             counts[preset] = await getPresetBadgeCount(preset)
@@ -79,11 +81,11 @@ export function QuickViewsSection({
             counts[preset] = 0
           }
         }
-        
+
         setBadgeCounts(counts)
         setLoadingBadges(false)
       }
-      
+
       loadBadges()
     }
   }, [limitedQuickViews, showBadges])
@@ -104,10 +106,16 @@ export function QuickViewsSection({
   }
 
   return (
-    <div className="space-y-3">
+    <div className={`${semanticSpacing.stack.sm}`}>
       {!compact && (
         <div className="flex items-center justify-between">
-          <label className="text-xs font-medium text-muted-foreground">
+          <label
+            className={cn(
+              semanticTypography.caption,
+              semanticTypography.label,
+              'text-muted-foreground'
+            )}
+          >
             Quick Views
           </label>
           {selectedQuickView !== 'none' && (
@@ -115,7 +123,7 @@ export function QuickViewsSection({
               variant="ghost"
               size="sm"
               onClick={() => onQuickViewChange('none')}
-              className="h-6 px-2 text-xs"
+              className={cn(semanticSpacing.compactX, semanticTypography.caption, 'h-6')}
             >
               <X className="mr-1 size-3" />
               Clear
@@ -125,38 +133,39 @@ export function QuickViewsSection({
       )}
 
       {/* Main Quick View Buttons */}
-      <div className={`grid gap-2 ${
-        compact 
-          ? 'grid-cols-2 sm:grid-cols-3' 
-          : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'
-      }`}>
+      <div
+        className={cn(
+          semanticSpacing.gap.xs,
+          'grid',
+          compact ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'
+        )}
+      >
         {limitedQuickViews.map((preset) => {
           const isActive = selectedQuickView === preset
           const badgeCount = badgeCounts[preset]
-          
+
           return (
             <TooltipProvider key={preset}>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
                     variant={getVariant(preset)}
-                    size={compact ? "sm" : "default"}
+                    size={compact ? 'sm' : 'default'}
                     onClick={() => onQuickViewChange(preset)}
                     disabled={isLoading}
                     className={`justify-start ${isActive ? 'ring-2 ring-primary' : ''}`}
                   >
-                    <div className="flex items-center space-x-2 truncate">
+                    <div className={cn(semanticSpacing.inline.xs, 'flex items-center truncate')}>
                       {getIcon(preset)}
                       <span className="truncate text-left">
-                        {compact 
-                          ? QUICK_VIEW_LABELS[preset].split(' ')[0] 
-                          : QUICK_VIEW_LABELS[preset]
-                        }
+                        {compact
+                          ? QUICK_VIEW_LABELS[preset].split(' ')[0]
+                          : QUICK_VIEW_LABELS[preset]}
                       </span>
                       {showBadges && badgeCount > 0 && (
-                        <Badge 
-                          variant="secondary" 
-                          className="ml-auto h-5 shrink-0 px-1.5 text-xs"
+                        <Badge
+                          variant="secondary"
+                          className={cn(semanticTypography.caption, 'ml-auto h-5 shrink-0 px-1.5')}
                         >
                           {loadingBadges ? '...' : badgeCount}
                         </Badge>
@@ -167,7 +176,7 @@ export function QuickViewsSection({
                 <TooltipContent>
                   <p>{QUICK_VIEW_LABELS[preset]}</p>
                   {badgeCount > 0 && (
-                    <p className="text-xs text-muted-foreground">
+                    <p className={cn(semanticTypography.caption, 'text-muted-foreground')}>
                       {badgeCount} items
                     </p>
                   )}
@@ -182,14 +191,20 @@ export function QuickViewsSection({
       {showSuggestions && suggestedPresets.length > 0 && !compact && (
         <>
           <Separator />
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
+          <div className={`${semanticSpacing.stack.xs}`}>
+            <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
               <Zap className="size-3 text-muted-foreground" />
-              <span className="text-xs font-medium text-muted-foreground">
+              <span
+                className={cn(
+                  semanticTypography.caption,
+                  semanticTypography.label,
+                  'text-muted-foreground'
+                )}
+              >
                 Suggested for now
               </span>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className={cn(semanticSpacing.gap.xs, 'flex flex-wrap')}>
               {suggestedPresets.slice(0, 3).map((preset) => (
                 <Button
                   key={`suggested-${preset}`}
@@ -197,12 +212,10 @@ export function QuickViewsSection({
                   size="sm"
                   onClick={() => onQuickViewChange(preset)}
                   disabled={isLoading}
-                  className="h-7 px-2 text-xs"
+                  className={cn(semanticSpacing.compactX, semanticTypography.caption, 'h-7')}
                 >
                   {getIcon(preset)}
-                  <span className="ml-1">
-                    {QUICK_VIEW_LABELS[preset].split(' ')[0]}
-                  </span>
+                  <span className="ml-1">{QUICK_VIEW_LABELS[preset].split(' ')[0]}</span>
                 </Button>
               ))}
             </div>
@@ -214,38 +227,60 @@ export function QuickViewsSection({
       {!compact && Object.keys(WORKFLOW_PRESETS).length > 0 && (
         <>
           <Separator />
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
+          <div className={`${semanticSpacing.stack.xs}`}>
+            <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
               <Target className="size-3 text-muted-foreground" />
-              <span className="text-xs font-medium text-muted-foreground">
+              <span
+                className={cn(
+                  semanticTypography.caption,
+                  semanticTypography.label,
+                  'text-muted-foreground'
+                )}
+              >
                 Workflows
               </span>
             </div>
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              {Object.entries(WORKFLOW_PRESETS).slice(0, 2).map(([key, workflow]) => (
-                <div 
-                  key={key} 
-                  className="cursor-pointer rounded-md border bg-muted/30 p-2 transition-colors hover:bg-muted/50"
-                  onClick={() => {
-                    // Apply the first preset from the workflow
-                    if (workflow.presets.length > 0) {
-                      onQuickViewChange(workflow.presets[0])
-                    }
-                  }}
-                >
-                  <div className="text-xs font-medium">{workflow.name}</div>
-                  <div className="mb-1 text-xs text-muted-foreground">
-                    {workflow.description}
+            <div className={cn(semanticSpacing.gap.xs, 'grid grid-cols-1 sm:grid-cols-2')}>
+              {Object.entries(WORKFLOW_PRESETS)
+                .slice(0, 2)
+                .map(([key, workflow]) => (
+                  <div
+                    key={key}
+                    className={cn(
+                      semanticRadius.default,
+                      semanticSpacing.compact,
+                      'cursor-pointer border bg-muted/30 transition-colors hover:bg-muted/50'
+                    )}
+                    onClick={() => {
+                      // Apply the first preset from the workflow
+                      if (workflow.presets.length > 0) {
+                        onQuickViewChange(workflow.presets[0])
+                      }
+                    }}
+                  >
+                    <div className={cn(semanticTypography.caption, semanticTypography.label)}>
+                      {workflow.name}
+                    </div>
+                    <div className={cn(semanticTypography.caption, 'mb-1 text-muted-foreground')}>
+                      {workflow.description}
+                    </div>
+                    <div className={cn(semanticSpacing.gap.xs, 'flex flex-wrap')}>
+                      {workflow.presets.slice(0, 2).map((preset) => (
+                        <Badge
+                          key={preset}
+                          variant="outline"
+                          className={cn(
+                            semanticSpacing.minimalX,
+                            semanticTypography.caption,
+                            'h-4'
+                          )}
+                        >
+                          {QUICK_VIEW_LABELS[preset].split(' ')[0]}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-1">
-                    {workflow.presets.slice(0, 2).map((preset) => (
-                      <Badge key={preset} variant="outline" className="h-4 px-1 text-xs">
-                        {QUICK_VIEW_LABELS[preset].split(' ')[0]}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </>

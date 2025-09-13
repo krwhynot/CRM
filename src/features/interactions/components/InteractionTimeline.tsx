@@ -7,6 +7,7 @@ import { useInteractionTimelineState } from '../hooks/useInteractionTimelineStat
 import { useInteractionTimelineData } from '../hooks/useInteractionTimelineData'
 import { useInteractionTimelineActions } from '../hooks/useInteractionTimelineActions'
 import { useInteractionIconMapping } from '../hooks/useInteractionIconMapping'
+import { semanticSpacing } from '@/styles/tokens'
 import { TimelineHeader, TimelineEmptyState, TimelineItems } from './timeline'
 
 // Interface following error prevention rules
@@ -54,10 +55,12 @@ export const InteractionTimeline = forwardRef<HTMLDivElement, InteractionTimelin
     }
 
     return (
-      <Card ref={ref} className={cn('mt-4', className)} {...props}>
+      <Card ref={ref} className={cn(semanticSpacing.topGap.lg, className)} {...props}>
         <TimelineHeader interactionCount={interactions.length} onAddNew={onAddNew} />
 
-        <CardContent className="p-3 md:p-6">
+        <CardContent
+          className={`${semanticSpacing.cardContainer} md:${semanticSpacing.cardContainer}`}
+        >
           {interactions.length === 0 ? (
             <TimelineEmptyState onAddNew={onAddNew} />
           ) : (

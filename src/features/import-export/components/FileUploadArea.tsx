@@ -4,6 +4,7 @@ import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { FileSpreadsheet, AlertCircle, X, Download } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticTypography, semanticRadius, fontWeight } from '@/styles/tokens'
 
 interface FileUploadAreaProps {
   file: File | null
@@ -49,11 +50,11 @@ export function FileUploadArea({
   }, [])
 
   return (
-    <div className="space-y-4">
+    <div className={semanticSpacing.layoutContainer}>
       {/* Download Template Button */}
       <div className="flex justify-end">
         <Button variant="outline" size="sm" onClick={onDownloadTemplate}>
-          <Download className="mr-2 size-4" />
+          <Download className={`${semanticSpacing.rightGap.xs} size-4`} />
           Download Template
         </Button>
       </div>
@@ -61,43 +62,50 @@ export function FileUploadArea({
       {/* Drag and Drop Area */}
       <div
         className={cn(
-          'border-2 border-dashed rounded-lg p-8 text-center transition-colors',
-          isDragOver ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400',
-          file && 'border-green-500 bg-green-50'
+          `border-2 border-dashed ${semanticRadius.lg} text-center transition-colors`,
+          semanticSpacing.layoutPadding.xxl,
+          isDragOver ? 'border-primary bg-primary/5' : 'border-border hover:border-border/60',
+          file && 'border-success bg-success/5'
         )}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         onDrop={onDrop}
       >
-        <div className="space-y-4">
-          <div className="mx-auto flex size-12 items-center justify-center rounded-lg bg-gray-100">
-            <FileSpreadsheet className="size-6 text-gray-600" />
+        <div className={semanticSpacing.layoutContainer}>
+          <div
+            className={`mx-auto flex size-12 items-center justify-center ${semanticRadius.lg} bg-muted`}
+          >
+            <FileSpreadsheet className="size-6 text-muted-foreground" />
           </div>
 
           {file ? (
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-green-700">File selected: {file.name}</p>
-              <p className="text-xs text-muted-foreground">
+            <div className={semanticSpacing.stack.xs}>
+              <p className={`${semanticTypography.body} ${fontWeight.medium} text-success`}>
+                File selected: {file.name}
+              </p>
+              <p className={`${semanticTypography.caption} text-muted-foreground`}>
                 Size: {(file.size / 1024).toFixed(1)} KB
               </p>
               <Button variant="outline" size="sm" onClick={onReset}>
-                <X className="mr-2 size-4" />
+                <X className={`${semanticSpacing.rightGap.xs} size-4`} />
                 Remove File
               </Button>
             </div>
           ) : (
-            <div className="space-y-2">
-              <p className="text-sm text-gray-600">
+            <div className={semanticSpacing.stack.xs}>
+              <p className={`${semanticTypography.caption} text-muted-foreground`}>
                 Drag and drop your CSV file here, or{' '}
                 <button
                   type="button"
-                  className="font-medium text-blue-600 hover:text-blue-700"
+                  className={`${fontWeight.medium} text-primary hover:text-primary/80`}
                   onClick={handleBrowseClick}
                 >
                   browse to upload
                 </button>
               </p>
-              <p className="text-xs text-muted-foreground">Supports CSV files up to 5MB</p>
+              <p className={`${semanticTypography.detail} text-muted-foreground`}>
+                Supports CSV files up to 5MB
+              </p>
             </div>
           )}
         </div>
@@ -114,8 +122,8 @@ export function FileUploadArea({
 
       {/* Upload Progress */}
       {isUploading && (
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-sm">
+        <div className={`${semanticSpacing.stack.xs}`}>
+          <div className={`flex items-center justify-between ${semanticTypography.caption}`}>
             <span>Processing file...</span>
             <span>{uploadProgress}%</span>
           </div>

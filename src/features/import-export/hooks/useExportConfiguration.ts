@@ -1,5 +1,5 @@
-import type React from 'react'
 import { useState, useCallback } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
 import type { Database } from '@/lib/database.types'
 
 export interface ExportOptions {
@@ -37,7 +37,7 @@ export const PRIORITIES = ['A', 'B', 'C', 'D']
 
 interface UseExportConfigurationReturn {
   exportOptions: ExportOptions
-  setExportOptions: React.Dispatch<React.SetStateAction<ExportOptions>>
+  setExportOptions: Dispatch<SetStateAction<ExportOptions>>
   handleFieldToggle: (fieldId: string, checked: boolean) => void
   handleFormatChange: (format: 'csv' | 'xlsx') => void
   handleIncludeInactiveChange: (checked: boolean) => void

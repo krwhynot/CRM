@@ -6,9 +6,11 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Copy, Play, Square, Zap, Timer, MousePointer, Loader } from 'lucide-react'
+import { Copy, Play, Timer, MousePointer, Loader } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticTypography, semanticRadius } from '@/styles/tokens'
 export function MotionGallery() {
   const [isAnimating, setIsAnimating] = useState<{ [key: string]: boolean }>({})
   const [reducedMotion, setReducedMotion] = useState(false)
@@ -19,9 +21,9 @@ export function MotionGallery() {
   }
 
   const triggerAnimation = (key: string) => {
-    setIsAnimating(prev => ({ ...prev, [key]: true }))
+    setIsAnimating((prev) => ({ ...prev, [key]: true }))
     setTimeout(() => {
-      setIsAnimating(prev => ({ ...prev, [key]: false }))
+      setIsAnimating((prev) => ({ ...prev, [key]: false }))
     }, 1000)
   }
 
@@ -32,7 +34,7 @@ export function MotionGallery() {
       easing: 'ease-out',
       usage: 'Micro-interactions, hover states',
       className: 'transition-all duration-150 ease-out',
-      cssCode: 'transition: all 150ms ease-out;'
+      cssCode: 'transition: all 150ms ease-out;',
     },
     {
       name: 'Standard',
@@ -40,7 +42,7 @@ export function MotionGallery() {
       easing: 'ease-in-out',
       usage: 'Standard interactions, focus states',
       className: 'transition-all duration-200 ease-in-out',
-      cssCode: 'transition: all 250ms ease-in-out;'
+      cssCode: 'transition: all 250ms ease-in-out;',
     },
     {
       name: 'Slow',
@@ -48,8 +50,8 @@ export function MotionGallery() {
       easing: 'ease-in-out',
       usage: 'Page transitions, major state changes',
       className: 'transition-all duration-400 ease-in-out',
-      cssCode: 'transition: all 400ms ease-in-out;'
-    }
+      cssCode: 'transition: all 400ms ease-in-out;',
+    },
   ]
 
   const interactionAnimations = [
@@ -65,7 +67,7 @@ export function MotionGallery() {
   transform: translateY(-1px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }`,
-      element: 'card'
+      element: 'card',
     },
     {
       name: 'Button Press',
@@ -78,7 +80,7 @@ export function MotionGallery() {
 .button-press:active {
   transform: scale(0.95);
 }`,
-      element: 'button'
+      element: 'button',
     },
     {
       name: 'Interactive Scale',
@@ -96,8 +98,8 @@ export function MotionGallery() {
   transform: scale(0.95);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }`,
-      element: 'interactive'
-    }
+      element: 'interactive',
+    },
   ]
 
   const loadingAnimations = [
@@ -121,7 +123,7 @@ export function MotionGallery() {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }`,
-      element: 'shimmer'
+      element: 'shimmer',
     },
     {
       name: 'Pulse',
@@ -143,7 +145,7 @@ export function MotionGallery() {
     box-shadow: 0 0 0 0 rgba(141, 198, 63, 0);
   }
 }`,
-      element: 'pulse'
+      element: 'pulse',
     },
     {
       name: 'Spin',
@@ -158,16 +160,18 @@ export function MotionGallery() {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }`,
-      element: 'spinner'
-    }
+      element: 'spinner',
+    },
   ]
 
-  const TimingDemo = ({ timing }: { timing: typeof timingFunctions[0] }) => (
-    <div className="space-y-4">
+  const TimingDemo = ({ timing }: { timing: (typeof timingFunctions)[0] }) => (
+    <div className={`${semanticSpacing.stack.md}`}>
       <div className="flex items-center justify-between">
         <div>
-          <h4 className="font-semibold">{timing.name}</h4>
-          <p className="text-caption text-muted">{timing.duration} • {timing.easing}</p>
+          <h4 className={`${semanticTypography.h4}`}>{timing.name}</h4>
+          <p className="text-caption text-muted">
+            {timing.duration} • {timing.easing}
+          </p>
         </div>
         <Button
           variant="ghost"
@@ -178,11 +182,15 @@ export function MotionGallery() {
         </Button>
       </div>
 
-      <div className="border rounded-lg p-4 bg-background">
-        <div 
-          className={`w-16 h-16 bg-primary rounded-lg flex items-center justify-center cursor-pointer ${timing.className} ${
+      <div
+        className={cn(semanticRadius.large, semanticSpacing.cardContainer, 'border bg-background')}
+      >
+        <div
+          className={cn(
+            semanticRadius.large,
+            'w-16 h-16 bg-primary flex items-center justify-center cursor-pointer ${timing.className}',
             isAnimating[timing.name] ? 'transform translate-x-32' : ''
-          }`}
+          )}
           onClick={() => triggerAnimation(timing.name)}
         >
           <Play className="h-6 w-6 text-white" />
@@ -190,19 +198,28 @@ export function MotionGallery() {
       </div>
 
       <div>
-        <p className="text-caption text-muted mb-2">{timing.usage}</p>
-        <code className="block p-2 bg-muted rounded text-xs">
+        <p className={cn(semanticSpacing.bottomGap.xs, 'text-caption text-muted')}>
+          {timing.usage}
+        </p>
+        <code
+          className={cn(
+            semanticSpacing.compact,
+            semanticRadius.small,
+            semanticTypography.caption,
+            'block bg-muted'
+          )}
+        >
           {timing.cssCode}
         </code>
       </div>
     </div>
   )
 
-  const InteractionDemo = ({ animation }: { animation: typeof interactionAnimations[0] }) => (
-    <div className="space-y-4">
+  const InteractionDemo = ({ animation }: { animation: (typeof interactionAnimations)[0] }) => (
+    <div className={`${semanticSpacing.stack.md}`}>
       <div className="flex items-center justify-between">
         <div>
-          <h4 className="font-semibold">{animation.name}</h4>
+          <h4 className={`${semanticTypography.h4}`}>{animation.name}</h4>
           <p className="text-caption text-muted">{animation.description}</p>
         </div>
         <Button
@@ -214,13 +231,19 @@ export function MotionGallery() {
         </Button>
       </div>
 
-      <div className="border rounded-lg p-8 bg-background flex justify-center">
+      <div
+        className={cn(
+          semanticRadius.large,
+          semanticSpacing.pageContainer,
+          'border bg-background flex justify-center'
+        )}
+      >
         {animation.element === 'card' && (
           <div className="hover-lift">
             <Card className="w-48 cursor-pointer">
-              <CardContent className="p-6">
+              <CardContent className={`${semanticSpacing.cardContainer}`}>
                 <div className="text-center">
-                  <h5 className="font-semibold">Hover Me</h5>
+                  <h5 className={`${semanticTypography.h4}`}>Hover Me</h5>
                   <p className="text-caption text-muted">Card with lift effect</p>
                 </div>
               </CardContent>
@@ -228,36 +251,51 @@ export function MotionGallery() {
           </div>
         )}
 
-        {animation.element === 'button' && (
-          <Button className="button-press">
-            Click Me
-          </Button>
-        )}
+        {animation.element === 'button' && <Button className="button-press">Click Me</Button>}
 
         {animation.element === 'interactive' && (
-          <div className="interactive-element bg-primary/10 p-6 rounded-lg cursor-pointer">
+          <div
+            className={cn(
+              semanticSpacing.cardContainer,
+              semanticRadius.large,
+              'interactive-element bg-primary/10 cursor-pointer'
+            )}
+          >
             <div className="text-center">
-              <MousePointer className="h-8 w-8 mx-auto mb-2 text-primary" />
-              <p className="font-semibold">Interactive Element</p>
+              <MousePointer
+                className={cn(semanticSpacing.bottomGap.xs, 'h-8 w-8 mx-auto text-primary')}
+              />
+              <p className={`${semanticTypography.h4}`}>Interactive Element</p>
             </div>
           </div>
         )}
       </div>
 
-      <details className="space-y-2">
-        <summary className="cursor-pointer text-sm font-medium">View CSS Code</summary>
-        <pre className="p-3 bg-muted rounded text-xs overflow-x-auto">
+      <details className={`${semanticSpacing.stack.xs}`}>
+        <summary
+          className={cn(semanticTypography.body, semanticTypography.label, 'cursor-pointer')}
+        >
+          View CSS Code
+        </summary>
+        <pre
+          className={cn(
+            semanticSpacing.compact,
+            semanticRadius.small,
+            semanticTypography.caption,
+            'bg-muted overflow-x-auto'
+          )}
+        >
           <code>{animation.cssCode}</code>
         </pre>
       </details>
     </div>
   )
 
-  const LoadingDemo = ({ animation }: { animation: typeof loadingAnimations[0] }) => (
-    <div className="space-y-4">
+  const LoadingDemo = ({ animation }: { animation: (typeof loadingAnimations)[0] }) => (
+    <div className={`${semanticSpacing.stack.md}`}>
       <div className="flex items-center justify-between">
         <div>
-          <h4 className="font-semibold">{animation.name}</h4>
+          <h4 className={`${semanticTypography.h4}`}>{animation.name}</h4>
           <p className="text-caption text-muted">{animation.description}</p>
         </div>
         <Button
@@ -269,12 +307,24 @@ export function MotionGallery() {
         </Button>
       </div>
 
-      <div className="border rounded-lg p-8 bg-background flex justify-center">
+      <div
+        className={cn(
+          semanticRadius.large,
+          semanticSpacing.pageContainer,
+          'border bg-background flex justify-center'
+        )}
+      >
         {animation.element === 'shimmer' && (
-          <div className="w-48 space-y-3">
-            <div className="h-4 bg-gray-200 rounded loading-shimmer"></div>
-            <div className="h-4 bg-gray-200 rounded loading-shimmer" style={{ animationDelay: '0.1s' }}></div>
-            <div className="h-4 bg-gray-200 rounded loading-shimmer" style={{ animationDelay: '0.2s' }}></div>
+          <div className={cn(semanticSpacing.stack.sm, 'w-48')}>
+            <div className={cn(semanticRadius.small, 'h-4 bg-gray-200 loading-shimmer')}></div>
+            <div
+              className={cn(semanticRadius.small, 'h-4 bg-gray-200 loading-shimmer')}
+              style={{ animationDelay: '0.1s' }}
+            ></div>
+            <div
+              className={cn(semanticRadius.small, 'h-4 bg-gray-200 loading-shimmer')}
+              style={{ animationDelay: '0.2s' }}
+            ></div>
           </div>
         )}
 
@@ -288,16 +338,29 @@ export function MotionGallery() {
         )}
 
         {animation.element === 'spinner' && (
-          <div className="flex items-center space-x-3">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <div className={cn(semanticSpacing.inline.sm, 'flex items-center')}>
+            <div
+              className={cn(semanticRadius.full, 'animate-spin h-8 w-8 border-b-2 border-primary')}
+            ></div>
             <span>Loading...</span>
           </div>
         )}
       </div>
 
-      <details className="space-y-2">
-        <summary className="cursor-pointer text-sm font-medium">View CSS Code</summary>
-        <pre className="p-3 bg-muted rounded text-xs overflow-x-auto">
+      <details className={`${semanticSpacing.stack.xs}`}>
+        <summary
+          className={cn(semanticTypography.body, semanticTypography.label, 'cursor-pointer')}
+        >
+          View CSS Code
+        </summary>
+        <pre
+          className={cn(
+            semanticSpacing.compact,
+            semanticRadius.small,
+            semanticTypography.caption,
+            'bg-muted overflow-x-auto'
+          )}
+        >
           <code>{animation.cssCode}</code>
         </pre>
       </details>
@@ -307,17 +370,15 @@ export function MotionGallery() {
   const RealWorldExamples = () => (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Real-World CRM Examples</CardTitle>
+        <CardTitle className={`${semanticTypography.h4}`}>Real-World CRM Examples</CardTitle>
         <CardDescription>See motion design in actual application components</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-8">
+      <CardContent className={`${semanticSpacing.stack.xl}`}>
         {/* Button Group */}
-        <div className="space-y-4">
-          <h4 className="font-semibold">Interactive Buttons</h4>
-          <div className="flex flex-wrap gap-3">
-            <Button className="button-press">
-              Create Organization
-            </Button>
+        <div className={`${semanticSpacing.stack.md}`}>
+          <h4 className={`${semanticTypography.h4}`}>Interactive Buttons</h4>
+          <div className={cn(semanticSpacing.gap.sm, 'flex flex-wrap')}>
+            <Button className="button-press">Create Organization</Button>
             <Button variant="outline" className="hover-lift">
               Export Data
             </Button>
@@ -333,43 +394,51 @@ export function MotionGallery() {
         <Separator />
 
         {/* Card Examples */}
-        <div className="space-y-4">
-          <h4 className="font-semibold">Interactive Cards</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className={`${semanticSpacing.stack.md}`}>
+          <h4 className={`${semanticTypography.h4}`}>Interactive Cards</h4>
+          <div
+            className={cn(semanticSpacing.gap.md, 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3')}
+          >
             <Card className="hover-lift cursor-pointer">
-              <CardContent className="p-6">
-                <div className="space-y-2">
+              <CardContent className={`${semanticSpacing.cardContainer}`}>
+                <div className={`${semanticSpacing.stack.xs}`}>
                   <div className="flex items-center justify-between">
-                    <h5 className="font-semibold">Total Customers</h5>
+                    <h5 className={`${semanticTypography.h4}`}>Total Customers</h5>
                     <Badge priority="a">A</Badge>
                   </div>
-                  <div className="text-2xl font-bold text-primary">247</div>
+                  <div className={cn(semanticTypography.h2, semanticTypography.h2, 'text-primary')}>
+                    247
+                  </div>
                   <p className="text-caption text-muted">+12% vs last month</p>
                 </div>
               </CardContent>
             </Card>
 
             <Card className="hover-lift cursor-pointer">
-              <CardContent className="p-6">
-                <div className="space-y-2">
+              <CardContent className={`${semanticSpacing.cardContainer}`}>
+                <div className={`${semanticSpacing.stack.xs}`}>
                   <div className="flex items-center justify-between">
-                    <h5 className="font-semibold">Active Opportunities</h5>
+                    <h5 className={`${semanticTypography.h4}`}>Active Opportunities</h5>
                     <Badge status="active">Active</Badge>
                   </div>
-                  <div className="text-2xl font-bold text-primary">89</div>
+                  <div className={cn(semanticTypography.h2, semanticTypography.h2, 'text-primary')}>
+                    89
+                  </div>
                   <p className="text-caption text-muted">+5% vs last month</p>
                 </div>
               </CardContent>
             </Card>
 
             <Card className="hover-lift cursor-pointer">
-              <CardContent className="p-6">
-                <div className="space-y-2">
+              <CardContent className={`${semanticSpacing.cardContainer}`}>
+                <div className={`${semanticSpacing.stack.xs}`}>
                   <div className="flex items-center justify-between">
-                    <h5 className="font-semibold">Revenue Pipeline</h5>
+                    <h5 className={`${semanticTypography.h4}`}>Revenue Pipeline</h5>
                     <Badge orgType="customer">Customer</Badge>
                   </div>
-                  <div className="text-2xl font-bold text-primary">$2.4M</div>
+                  <div className={cn(semanticTypography.h2, semanticTypography.h2, 'text-primary')}>
+                    $2.4M
+                  </div>
                   <p className="text-caption text-muted">+18% vs last month</p>
                 </div>
               </CardContent>
@@ -380,21 +449,38 @@ export function MotionGallery() {
         <Separator />
 
         {/* Loading States */}
-        <div className="space-y-4">
-          <h4 className="font-semibold">Loading States</h4>
-          <div className="space-y-3">
-            <div className="flex items-center space-x-3">
+        <div className={`${semanticSpacing.stack.md}`}>
+          <h4 className={`${semanticTypography.h4}`}>Loading States</h4>
+          <div className={`${semanticSpacing.stack.sm}`}>
+            <div className={cn(semanticSpacing.inline.sm, 'flex items-center')}>
               <Button disabled>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                <div
+                  className={cn(
+                    semanticRadius.full,
+                    semanticSpacing.rightGap.xs,
+                    'animate-spin h-4 w-4 border-b-2 border-white'
+                  )}
+                ></div>
                 Saving...
               </Button>
               <span className="text-caption text-muted">Button with loading spinner</span>
             </div>
 
-            <div className="border rounded-lg p-4 space-y-2">
-              <div className="h-4 bg-gray-200 rounded loading-shimmer"></div>
-              <div className="h-4 bg-gray-200 rounded loading-shimmer w-3/4"></div>
-              <div className="h-4 bg-gray-200 rounded loading-shimmer w-1/2"></div>
+            <div
+              className={cn(
+                semanticRadius.large,
+                semanticSpacing.cardContainer,
+                semanticSpacing.stack.xs,
+                'border'
+              )}
+            >
+              <div className={cn(semanticRadius.small, 'h-4 bg-gray-200 loading-shimmer')}></div>
+              <div
+                className={cn(semanticRadius.small, 'h-4 bg-gray-200 loading-shimmer w-3/4')}
+              ></div>
+              <div
+                className={cn(semanticRadius.small, 'h-4 bg-gray-200 loading-shimmer w-1/2')}
+              ></div>
             </div>
             <span className="text-caption text-muted">Content loading shimmer</span>
           </div>
@@ -406,11 +492,11 @@ export function MotionGallery() {
   const ReducedMotionDemo = () => (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Accessibility Considerations</CardTitle>
+        <CardTitle className={`${semanticTypography.h4}`}>Accessibility Considerations</CardTitle>
         <CardDescription>Respecting user motion preferences</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="flex items-center space-x-3">
+      <CardContent className={`${semanticSpacing.stack.lg}`}>
+        <div className={cn(semanticSpacing.inline.sm, 'flex items-center')}>
           <Switch
             id="reduced-motion"
             checked={reducedMotion}
@@ -426,20 +512,35 @@ export function MotionGallery() {
         </div>
 
         {reducedMotion && (
-          <div className="bg-warning/10 border border-warning/20 rounded-lg p-4">
-            <div className="flex items-center space-x-2">
+          <div
+            className={cn(
+              semanticRadius.large,
+              semanticSpacing.cardContainer,
+              'bg-warning/10 border border-warning/20'
+            )}
+          >
+            <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
               <Timer className="h-5 w-5 text-warning" />
-              <span className="font-medium text-warning">Reduced Motion Active</span>
+              <span className={cn(semanticTypography.label, 'text-warning')}>
+                Reduced Motion Active
+              </span>
             </div>
-            <p className="text-caption text-muted mt-2">
+            <p className={cn(semanticSpacing.topGap.xs, 'text-caption text-muted')}>
               All animations are disabled or significantly reduced for accessibility.
             </p>
           </div>
         )}
 
-        <div className="space-y-4">
-          <h4 className="font-semibold">CSS Implementation</h4>
-          <pre className="p-4 bg-muted rounded text-xs overflow-x-auto">
+        <div className={`${semanticSpacing.stack.md}`}>
+          <h4 className={`${semanticTypography.h4}`}>CSS Implementation</h4>
+          <pre
+            className={cn(
+              semanticSpacing.cardContainer,
+              semanticRadius.small,
+              semanticTypography.caption,
+              'bg-muted overflow-x-auto'
+            )}
+          >
             <code>{`@media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -459,9 +560,11 @@ export function MotionGallery() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => copyCode('@media (prefers-reduced-motion: reduce) { ... }', 'Reduced Motion CSS')}
+            onClick={() =>
+              copyCode('@media (prefers-reduced-motion: reduce) { ... }', 'Reduced Motion CSS')
+            }
           >
-            <Copy className="h-3 w-3 mr-2" />
+            <Copy className={cn(semanticSpacing.rightGap.xs, 'h-3 w-3')} />
             Copy Reduced Motion CSS
           </Button>
         </div>
@@ -470,8 +573,8 @@ export function MotionGallery() {
   )
 
   return (
-    <div className="space-y-8">
-      <Tabs defaultValue="timing" className="space-y-6">
+    <div className={`${semanticSpacing.stack.xl}`}>
+      <Tabs defaultValue="timing" className={`${semanticSpacing.stack.lg}`}>
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="timing">Timing</TabsTrigger>
           <TabsTrigger value="interactions">Interactions</TabsTrigger>
@@ -479,10 +582,16 @@ export function MotionGallery() {
           <TabsTrigger value="examples">Examples</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="timing" className="space-y-6">
+        <TabsContent value="timing" className={`${semanticSpacing.stack.lg}`}>
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg flex items-center space-x-2">
+              <CardTitle
+                className={cn(
+                  semanticTypography.h4,
+                  semanticSpacing.inline.xs,
+                  'flex items-center'
+                )}
+              >
                 <Timer className="h-5 w-5" />
                 <span>Animation Timing</span>
               </CardTitle>
@@ -492,10 +601,10 @@ export function MotionGallery() {
             </CardHeader>
           </Card>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className={cn(semanticSpacing.gap.lg, 'grid grid-cols-1 md:grid-cols-3')}>
             {timingFunctions.map((timing) => (
               <Card key={timing.name}>
-                <CardContent className="p-6">
+                <CardContent className={`${semanticSpacing.cardContainer}`}>
                   <TimingDemo timing={timing} />
                 </CardContent>
               </Card>
@@ -503,23 +612,27 @@ export function MotionGallery() {
           </div>
         </TabsContent>
 
-        <TabsContent value="interactions" className="space-y-6">
+        <TabsContent value="interactions" className={`${semanticSpacing.stack.lg}`}>
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg flex items-center space-x-2">
+              <CardTitle
+                className={cn(
+                  semanticTypography.h4,
+                  semanticSpacing.inline.xs,
+                  'flex items-center'
+                )}
+              >
                 <MousePointer className="h-5 w-5" />
                 <span>Interaction Animations</span>
               </CardTitle>
-              <CardDescription>
-                Hover states, focus effects, and micro-interactions
-              </CardDescription>
+              <CardDescription>Hover states, focus effects, and micro-interactions</CardDescription>
             </CardHeader>
           </Card>
 
-          <div className="space-y-6">
+          <div className={`${semanticSpacing.stack.lg}`}>
             {interactionAnimations.map((animation) => (
               <Card key={animation.name}>
-                <CardContent className="p-6">
+                <CardContent className={`${semanticSpacing.cardContainer}`}>
                   <InteractionDemo animation={animation} />
                 </CardContent>
               </Card>
@@ -527,23 +640,27 @@ export function MotionGallery() {
           </div>
         </TabsContent>
 
-        <TabsContent value="loading" className="space-y-6">
+        <TabsContent value="loading" className={`${semanticSpacing.stack.lg}`}>
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg flex items-center space-x-2">
+              <CardTitle
+                className={cn(
+                  semanticTypography.h4,
+                  semanticSpacing.inline.xs,
+                  'flex items-center'
+                )}
+              >
                 <Loader className="h-5 w-5" />
                 <span>Loading Animations</span>
               </CardTitle>
-              <CardDescription>
-                Feedback animations and loading states
-              </CardDescription>
+              <CardDescription>Feedback animations and loading states</CardDescription>
             </CardHeader>
           </Card>
 
-          <div className="space-y-6">
+          <div className={`${semanticSpacing.stack.lg}`}>
             {loadingAnimations.map((animation) => (
               <Card key={animation.name}>
-                <CardContent className="p-6">
+                <CardContent className={`${semanticSpacing.cardContainer}`}>
                   <LoadingDemo animation={animation} />
                 </CardContent>
               </Card>
@@ -551,7 +668,7 @@ export function MotionGallery() {
           </div>
         </TabsContent>
 
-        <TabsContent value="examples" className="space-y-6">
+        <TabsContent value="examples" className={`${semanticSpacing.stack.lg}`}>
           <RealWorldExamples />
         </TabsContent>
       </Tabs>
@@ -562,14 +679,14 @@ export function MotionGallery() {
       {/* Motion Principles */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Motion Design Principles</CardTitle>
+          <CardTitle className={`${semanticTypography.h4}`}>Motion Design Principles</CardTitle>
           <CardDescription>Guidelines for implementing professional animations</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className={cn(semanticSpacing.gap.lg, 'grid grid-cols-1 md:grid-cols-2')}>
             <div>
-              <h4 className="font-semibold mb-3">Performance Guidelines</h4>
-              <ul className="space-y-2 text-sm">
+              <h4 className={cn(semanticTypography.h4, 'mb-3')}>Performance Guidelines</h4>
+              <ul className={cn(semanticSpacing.stack.xs, semanticTypography.body)}>
                 <li>• Use transform and opacity for hardware acceleration</li>
                 <li>• Avoid animating layout properties (width, height, padding)</li>
                 <li>• Implement will-change for complex animations</li>
@@ -577,8 +694,8 @@ export function MotionGallery() {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-3">User Experience</h4>
-              <ul className="space-y-2 text-sm">
+              <h4 className={cn(semanticTypography.h4, 'mb-3')}>User Experience</h4>
+              <ul className={cn(semanticSpacing.stack.xs, semanticTypography.body)}>
                 <li>• Always respect prefers-reduced-motion</li>
                 <li>• Use motion to guide attention, not distract</li>
                 <li>• Provide visual feedback for all interactions</li>

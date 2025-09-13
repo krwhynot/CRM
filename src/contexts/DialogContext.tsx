@@ -1,4 +1,5 @@
 import React, { createContext, useContext } from 'react'
+// Removed unused: import { semanticSpacing } from '@/styles/tokens'
 
 /**
  * DialogContext - Provides dialog state information to child components
@@ -68,7 +69,7 @@ export function DialogContextProvider({
  *   const { isInDialog, size } = useDialogContext()
  *
  *   return (
- *     <div className={isInDialog ? 'p-4' : 'p-8'}>
+ *     <div className={isInDialog ? semanticSpacing.cardContainer : semanticSpacing.sectionContainer}>
  *       Content adapts to dialog context
  *     </div>
  *   )

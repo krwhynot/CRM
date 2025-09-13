@@ -2,9 +2,11 @@ import React from 'react'
 import { Download } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 import type { ExportOptions } from '@/features/import-export/hooks/useExportConfiguration'
 import type { ExportProgress } from '@/features/import-export/hooks/useExportExecution'
 
+import { cn } from '@/lib/utils'
 interface ExportActionProps {
   exportOptions: ExportOptions
   exportProgress: ExportProgress
@@ -23,16 +25,21 @@ export const ExportAction: React.FC<ExportActionProps> = ({
 
   return (
     <Card>
-      <CardContent className="pt-6">
+      <CardContent className={`${semanticSpacing.topPadding.xxl}`}>
         <Button
           onClick={onExecute}
           className="w-full"
           disabled={exportOptions.selectedFields.length === 0}
         >
-          <Download className="mr-2 size-4" />
+          <Download className={`${semanticSpacing.rightGap.xs} size-4`} />
           Export Organizations ({exportOptions.format.toUpperCase()})
         </Button>
-        <p className="mt-2 text-center text-xs text-muted-foreground">
+        <p
+          className={cn(
+            semanticTypography.caption,
+            `${semanticSpacing.topGap.xs} text-center text-muted-foreground`
+          )}
+        >
           Export will include organizations with the selected fields and options
         </p>
       </CardContent>

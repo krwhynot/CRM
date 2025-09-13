@@ -1,5 +1,5 @@
-import type React from 'react'
 import { useState } from 'react'
+import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 
@@ -16,7 +16,7 @@ interface UseResetPasswordStateReturn {
   error: string | null
   success: boolean
   validatePassword: (password: string) => string | null
-  handleSubmit: (e: React.FormEvent) => Promise<void>
+  handleSubmit: (e: FormEvent) => Promise<void>
 }
 
 export const useResetPasswordState = (): UseResetPasswordStateReturn => {
@@ -40,7 +40,7 @@ export const useResetPasswordState = (): UseResetPasswordStateReturn => {
     return null
   }
 
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+  const handleSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault()
     setError(null)
 

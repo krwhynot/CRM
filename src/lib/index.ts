@@ -10,7 +10,6 @@ export * from './cache'
 // Form & Validation
 export * from './form-data-transformer'
 export * from './form-transforms'
-export * from './advocacyValidation'
 
 // Data Processing & Transformers
 export * from './entity-transformers'
@@ -23,6 +22,8 @@ export * from './product-formatters'
 export * from './activity-utils'
 export * from './organization-utils'
 export * from './metrics-utils'
+export * from './formatters'
+export * from './validation'
 
 // Error Handling & Monitoring
 export * from './error-utils'
@@ -34,4 +35,3 @@ export * from './query-debug'
 export * from './toast-styles'
 
 // Development & Quality
-// typescript-guardian removed - replaced with standard yupResolver

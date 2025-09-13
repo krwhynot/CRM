@@ -11,16 +11,13 @@ interface UseContactsSelectionReturn {
 export const useContactsSelection = (): UseContactsSelectionReturn => {
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set())
 
-  const handleSelectAll = useCallback(
-    (checked: boolean, contacts: ContactWithOrganization[]) => {
-      if (checked) {
-        setSelectedItems(new Set(contacts.map((contact) => contact.id)))
-      } else {
-        setSelectedItems(new Set())
-      }
-    },
-    []
-  )
+  const handleSelectAll = useCallback((checked: boolean, contacts: ContactWithOrganization[]) => {
+    if (checked) {
+      setSelectedItems(new Set(contacts.map((contact) => contact.id)))
+    } else {
+      setSelectedItems(new Set())
+    }
+  }, [])
 
   const handleSelectItem = useCallback((id: string, checked: boolean) => {
     setSelectedItems((prev) => {

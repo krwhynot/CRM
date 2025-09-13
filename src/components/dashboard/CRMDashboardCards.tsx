@@ -1,33 +1,19 @@
 import React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
+import { semanticSpacing, semanticTypography, semanticRadius } from '@/styles/tokens'
 import {
   TrendingUp,
   TrendingDown,
   Users,
-  Building,
-  Package,
-  DollarSign,
   Target,
   Calendar,
   Phone,
   Mail,
-  MessageSquare,
-  Clock,
-  Star,
-  AlertTriangle,
   CheckCircle,
-  BarChart3,
-  PieChart,
   Activity,
-  Zap,
-  ArrowUpRight,
-  ArrowDownRight,
   MoreHorizontal,
   ExternalLink,
-  Plus,
-  Filter,
-  Download,
-  RefreshCw
+  RefreshCw,
 } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -38,7 +24,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
@@ -46,41 +31,41 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils'
 
 // Dashboard Card Variants
-const dashboardCardVariants = cva(
-  "relative overflow-hidden transition-all duration-200",
-  {
-    variants: {
-      size: {
-        sm: "min-h-[120px]",
-        md: "min-h-[160px]", 
-        lg: "min-h-[200px]",
-        xl: "min-h-[240px]",
-        auto: "min-h-fit"
-      },
-      variant: {
-        default: "bg-card hover:bg-accent/5",
-        primary: "bg-primary/5 border-primary/20 hover:bg-primary/10",
-        success: "bg-green-50 border-green-200 hover:bg-green-100 dark:bg-green-950/20 dark:border-green-900/50 dark:hover:bg-green-950/30",
-        warning: "bg-yellow-50 border-yellow-200 hover:bg-yellow-100 dark:bg-yellow-950/20 dark:border-yellow-900/50 dark:hover:bg-yellow-950/30",
-        destructive: "bg-red-50 border-red-200 hover:bg-red-100 dark:bg-red-950/20 dark:border-red-900/50 dark:hover:bg-red-950/30"
-      },
-      interactive: {
-        true: "cursor-pointer hover:shadow-md hover:scale-[1.02]",
-        false: ""
-      }
+const dashboardCardVariants = cva('relative overflow-hidden transition-all duration-200', {
+  variants: {
+    size: {
+      sm: 'min-h-[120px]',
+      md: 'min-h-[160px]',
+      lg: 'min-h-[200px]',
+      xl: 'min-h-[240px]',
+      auto: 'min-h-fit',
     },
-    defaultVariants: {
-      size: "md",
-      variant: "default",
-      interactive: false
-    }
-  }
-)
+    variant: {
+      default: 'bg-card hover:bg-accent/5',
+      primary: 'bg-primary/5 border-primary/20 hover:bg-primary/10',
+      success:
+        'bg-green-50 border-green-200 hover:bg-green-100 dark:bg-green-950/20 dark:border-green-900/50 dark:hover:bg-green-950/30',
+      warning:
+        'bg-yellow-50 border-yellow-200 hover:bg-yellow-100 dark:bg-yellow-950/20 dark:border-yellow-900/50 dark:hover:bg-yellow-950/30',
+      destructive:
+        'bg-red-50 border-red-200 hover:bg-red-100 dark:bg-red-950/20 dark:border-red-900/50 dark:hover:bg-red-950/30',
+    },
+    interactive: {
+      true: 'cursor-pointer hover:shadow-md hover:scale-[1.02]',
+      false: '',
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+    variant: 'default',
+    interactive: false,
+  },
+})
 
 // Base Dashboard Card Props
-export interface DashboardCardProps extends 
-  React.ComponentProps<typeof Card>,
-  VariantProps<typeof dashboardCardVariants> {
+export interface DashboardCardProps
+  extends React.ComponentProps<typeof Card>,
+    VariantProps<typeof dashboardCardVariants> {
   title: string
   subtitle?: string
   description?: string
@@ -127,27 +112,33 @@ export function MetricCard({
   ...props
 }: DashboardCardProps) {
   const trendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : null
-  const trendColor = trend === 'up' ? 'text-green-600' : trend === 'down' ? 'text-red-600' : 'text-muted-foreground'
+  const trendColor =
+    trend === 'up' ? 'text-green-600' : trend === 'down' ? 'text-red-600' : 'text-muted-foreground'
 
   const cardContent = (
-    <Card 
+    <Card
       className={cn(dashboardCardVariants({ size, variant, interactive }), className)}
       onClick={onClick}
       {...props}
     >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <div className="flex items-center space-x-2">
-          <CardTitle className="text-sm font-medium truncate">{title}</CardTitle>
+        <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
+          <CardTitle className={cn(semanticTypography.body, semanticTypography.label, 'truncate')}>
+            {title}
+          </CardTitle>
           {badge && (
-            <Badge variant={badge.variant || 'secondary'} className="text-xs">
+            <Badge
+              variant={badge.variant || 'secondary'}
+              className={`${semanticTypography.caption}`}
+            >
               {badge.text}
             </Badge>
           )}
         </div>
-        
-        <div className="flex items-center space-x-1">
+
+        <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
           {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
-          
+
           {/* Actions Dropdown */}
           {(actions.length > 0 || onRefresh) && (
             <DropdownMenu>
@@ -160,7 +151,7 @@ export function MetricCard({
                 {onRefresh && (
                   <>
                     <DropdownMenuItem onClick={onRefresh}>
-                      <RefreshCw className="mr-2 h-4 w-4" />
+                      <RefreshCw className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4')} />
                       Refresh
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -168,14 +159,16 @@ export function MetricCard({
                 )}
                 {actions.map((action, index) => (
                   <DropdownMenuItem key={index} onClick={action.onClick}>
-                    {action.icon && <action.icon className="mr-2 h-4 w-4" />}
+                    {action.icon && (
+                      <action.icon className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4')} />
+                    )}
                     {action.label}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-          
+
           {href && (
             <Button variant="ghost" className="h-8 w-8 p-0" asChild>
               <a href={href} target="_blank" rel="noopener noreferrer">
@@ -185,37 +178,39 @@ export function MetricCard({
           )}
         </div>
       </CardHeader>
-      
+
       <CardContent>
         {loading ? (
-          <div className="space-y-2">
-            <div className="h-8 bg-muted animate-pulse rounded" />
-            <div className="h-4 bg-muted animate-pulse rounded w-1/2" />
+          <div className={`${semanticSpacing.stack.xs}`}>
+            <div className={cn(semanticRadius.small, 'h-8 bg-muted animate-pulse')} />
+            <div className={cn(semanticRadius.small, 'h-4 bg-muted animate-pulse w-1/2')} />
           </div>
         ) : error ? (
-          <div className="text-destructive text-sm">{error}</div>
+          <div className={cn(semanticTypography.body, 'text-destructive')}>{error}</div>
         ) : (
-          <div className="space-y-2">
-            <div className="text-2xl font-bold">
+          <div className={`${semanticSpacing.stack.xs}`}>
+            <div className={cn(semanticTypography.h2, semanticTypography.h2)}>
               {typeof value === 'number' ? value.toLocaleString() : value}
             </div>
-            
+
             {subtitle && (
-              <p className="text-xs text-muted-foreground">{subtitle}</p>
+              <p className={cn(semanticTypography.caption, 'text-muted-foreground')}>{subtitle}</p>
             )}
-            
+
             {/* Trend Information */}
             {(trend || trendValue) && (
-              <div className="flex items-center space-x-1">
-                {trendIcon && <trendIcon className={cn('h-4 w-4', trendColor)} />}
+              <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
+                {trendIcon &&
+                  React.createElement(trendIcon, { className: cn('h-4 w-4', trendColor) })}
                 {trendValue && (
-                  <span className={cn('text-xs font-medium', trendColor)}>
-                    {trendValue}
-                  </span>
+                  <span className={cn('text-xs font-medium', trendColor)}>{trendValue}</span>
                 )}
                 {previousValue && (
-                  <span className="text-xs text-muted-foreground">
-                    vs {typeof previousValue === 'number' ? previousValue.toLocaleString() : previousValue}
+                  <span className={cn(semanticTypography.caption, 'text-muted-foreground')}>
+                    vs{' '}
+                    {typeof previousValue === 'number'
+                      ? previousValue.toLocaleString()
+                      : previousValue}
                   </span>
                 )}
               </div>
@@ -262,45 +257,50 @@ export function ProgressCard({
   return (
     <Card className={cn(dashboardCardVariants({ size, variant }), className)} {...props}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+        <CardTitle className={cn(semanticTypography.body, semanticTypography.label)}>
+          {title}
+        </CardTitle>
         {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
       </CardHeader>
-      
-      <CardContent className="space-y-3">
+
+      <CardContent className={`${semanticSpacing.stack.sm}`}>
         {subtitle && (
-          <p className="text-xs text-muted-foreground">{subtitle}</p>
+          <p className={cn(semanticTypography.caption, 'text-muted-foreground')}>{subtitle}</p>
         )}
-        
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
+
+        <div className={`${semanticSpacing.stack.xs}`}>
+          <div className={cn(semanticTypography.body, 'flex justify-between')}>
             {showValue && (
-              <span className="font-medium">
+              <span className={`${semanticTypography.label}`}>
                 {value.toLocaleString()} / {max.toLocaleString()}
               </span>
             )}
-            {showPercentage && (
-              <span className="text-muted-foreground">{percentage}%</span>
-            )}
+            {showPercentage && <span className="text-muted-foreground">{percentage}%</span>}
           </div>
-          
+
           <Progress value={percentage} className="w-full" />
         </div>
-        
+
         {/* Segments */}
         {segments && segments.length > 0 && (
-          <div className="space-y-1">
+          <div className={`${semanticSpacing.stack.xs}`}>
             {segments.map((segment, index) => (
-              <div key={index} className="flex items-center justify-between text-xs">
-                <div className="flex items-center space-x-2">
+              <div
+                key={index}
+                className={cn(semanticTypography.caption, 'flex items-center justify-between')}
+              >
+                <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
                   {segment.color && (
-                    <div 
-                      className="w-2 h-2 rounded-full" 
+                    <div
+                      className={cn(semanticRadius.full, 'w-2 h-2')}
                       style={{ backgroundColor: segment.color }}
                     />
                   )}
                   <span>{segment.label}</span>
                 </div>
-                <span className="font-medium">{segment.value.toLocaleString()}</span>
+                <span className={`${semanticTypography.label}`}>
+                  {segment.value.toLocaleString()}
+                </span>
               </div>
             ))}
           </div>
@@ -344,7 +344,7 @@ export function ActivityCard({
   ...props
 }: ActivityCardProps) {
   const displayActivities = showAll ? activities : activities.slice(0, maxItems)
-  
+
   const getActivityIcon = (type: ActivityItem['type']) => {
     const icons = {
       contact: Users,
@@ -352,16 +352,19 @@ export function ActivityCard({
       task: CheckCircle,
       meeting: Calendar,
       call: Phone,
-      email: Mail
+      email: Mail,
     }
     return icons[type] || Activity
   }
 
   const getStatusColor = (status: ActivityItem['status']) => {
     switch (status) {
-      case 'completed': return 'text-green-600'
-      case 'overdue': return 'text-red-600'
-      default: return 'text-yellow-600'
+      case 'completed':
+        return 'text-green-600'
+      case 'overdue':
+        return 'text-red-600'
+      default:
+        return 'text-yellow-600'
     }
   }
 
@@ -369,77 +372,104 @@ export function ActivityCard({
     <Card className={cn(dashboardCardVariants({ size }), className)} {...props}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <div>
-          <CardTitle className="text-sm font-medium">{title}</CardTitle>
+          <CardTitle className={cn(semanticTypography.body, semanticTypography.label)}>
+            {title}
+          </CardTitle>
           {subtitle && (
-            <CardDescription className="text-xs mt-1">{subtitle}</CardDescription>
+            <CardDescription className={cn(semanticTypography.caption, 'mt-1')}>
+              {subtitle}
+            </CardDescription>
           )}
         </div>
-        
+
         {onViewAll && !showAll && activities.length > maxItems && (
           <Button variant="ghost" size="sm" onClick={onViewAll}>
             View All ({activities.length})
           </Button>
         )}
       </CardHeader>
-      
-      <CardContent className="space-y-3">
+
+      <CardContent className={`${semanticSpacing.stack.sm}`}>
         {displayActivities.length === 0 ? (
-          <div className="text-center py-6 text-muted-foreground">
-            <Activity className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            <p className="text-sm">No recent activity</p>
+          <div className={cn(semanticSpacing.cardY, 'text-center text-muted-foreground')}>
+            <Activity className={cn(semanticSpacing.bottomGap.xs, 'h-8 w-8 mx-auto opacity-50')} />
+            <p className={`${semanticTypography.body}`}>No recent activity</p>
           </div>
         ) : (
-          <div className="space-y-3">
-            {displayActivities.map((activity, index) => {
+          <div className={`${semanticSpacing.stack.sm}`}>
+            {displayActivities.map((activity) => {
               const IconComponent = getActivityIcon(activity.type)
-              
+
               return (
-                <div key={activity.id} className="flex items-start space-x-3">
+                <div
+                  key={activity.id}
+                  className={cn(semanticSpacing.inline.sm, 'flex items-start')}
+                >
                   <div className="relative">
                     {activity.user?.avatar ? (
                       <Avatar className="h-6 w-6">
                         <AvatarImage src={activity.user.avatar} />
-                        <AvatarFallback className="text-xs">
-                          {activity.user.name.split(' ').map(n => n[0]).join('')}
+                        <AvatarFallback className={`${semanticTypography.caption}`}>
+                          {activity.user.name
+                            .split(' ')
+                            .map((n) => n[0])
+                            .join('')}
                         </AvatarFallback>
                       </Avatar>
                     ) : (
-                      <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center">
+                      <div
+                        className={cn(
+                          semanticRadius.full,
+                          'h-6 w-6 bg-muted flex items-center justify-center'
+                        )}
+                      >
                         <IconComponent className="h-3 w-3" />
                       </div>
                     )}
-                    
+
                     {activity.status && (
-                      <div className={cn(
-                        'absolute -bottom-1 -right-1 h-2 w-2 rounded-full border border-background',
-                        getStatusColor(activity.status)
-                      )} />
+                      <div
+                        className={cn(
+                          'absolute -bottom-1 -right-1 h-2 w-2 rounded-full border border-background',
+                          getStatusColor(activity.status)
+                        )}
+                      />
                     )}
                   </div>
-                  
-                  <div className="flex-1 min-w-0 space-y-1">
+
+                  <div className={cn(semanticSpacing.stack.xs, 'flex-1 min-w-0')}>
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium truncate">{activity.title}</p>
-                      <div className="flex items-center space-x-1">
+                      <p
+                        className={cn(
+                          semanticTypography.body,
+                          semanticTypography.label,
+                          'truncate'
+                        )}
+                      >
+                        {activity.title}
+                      </p>
+                      <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
                         {activity.priority && activity.priority !== 'medium' && (
-                          <Badge 
+                          <Badge
                             variant={activity.priority === 'high' ? 'destructive' : 'secondary'}
-                            className="text-xs"
+                            className={`${semanticTypography.caption}`}
                           >
                             {activity.priority}
                           </Badge>
                         )}
-                        <span className="text-xs text-muted-foreground">
-                          {activity.timestamp.toLocaleTimeString([], { 
-                            hour: '2-digit', 
-                            minute: '2-digit' 
+                        <span className={cn(semanticTypography.caption, 'text-muted-foreground')}>
+                          {activity.timestamp.toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit',
                           })}
                         </span>
                       </div>
                     </div>
-                    
+
                     {activity.description && (
-                      <p className="text-xs text-muted-foreground truncate">
+                      <p
+                        className={cn(semanticTypography.caption, 'text-muted-foreground truncate')}
+                      >
                         {activity.description}
                       </p>
                     )}
@@ -480,39 +510,49 @@ export function QuickActionsCard({
   return (
     <Card className={cn(dashboardCardVariants({ size }), className)} {...props}>
       <CardHeader>
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        {subtitle && <CardDescription className="text-xs">{subtitle}</CardDescription>}
+        <CardTitle className={cn(semanticTypography.body, semanticTypography.label)}>
+          {title}
+        </CardTitle>
+        {subtitle && (
+          <CardDescription className={`${semanticTypography.caption}`}>{subtitle}</CardDescription>
+        )}
       </CardHeader>
-      
+
       <CardContent>
-        <div className={cn(
-          layout === 'grid' 
-            ? 'grid grid-cols-2 gap-2' 
-            : 'space-y-2'
-        )}>
+        <div className={cn(layout === 'grid' ? 'grid grid-cols-2 gap-2' : 'space-y-2')}>
           {actions.map((action) => (
             <Button
               key={action.id}
               variant="outline"
-              className={cn(
-                "justify-start h-auto p-3",
-                layout === 'list' && 'w-full'
-              )}
+              className={cn('justify-start h-auto p-3', layout === 'list' && 'w-full')}
               onClick={action.onClick}
               disabled={action.disabled}
             >
-              <div className="flex items-center space-x-2 w-full">
+              <div className={cn(semanticSpacing.inline.xs, 'flex items-center w-full')}>
                 <action.icon className="h-4 w-4 shrink-0" />
                 <div className="flex-1 text-left min-w-0">
-                  <div className="text-sm font-medium truncate">{action.label}</div>
+                  <div
+                    className={cn(semanticTypography.body, semanticTypography.label, 'truncate')}
+                  >
+                    {action.label}
+                  </div>
                   {action.description && (
-                    <div className="text-xs text-muted-foreground truncate">
+                    <div
+                      className={cn(semanticTypography.caption, 'text-muted-foreground truncate')}
+                    >
                       {action.description}
                     </div>
                   )}
                 </div>
                 {action.shortcut && (
-                  <kbd className="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+                  <kbd
+                    className={cn(
+                      semanticSpacing.gap.xs,
+                      semanticRadius.small,
+                      semanticTypography.label,
+                      'hidden sm:inline-flex h-5 select-none items-center border bg-muted px-1.5 font-mono text-[10px] text-muted-foreground'
+                    )}
+                  >
                     {action.shortcut}
                   </kbd>
                 )}
@@ -549,19 +589,25 @@ export function ChartCard({
     <Card className={cn(dashboardCardVariants({ size }), className)} {...props}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <div>
-          <CardTitle className="text-sm font-medium">{title}</CardTitle>
-          {subtitle && <CardDescription className="text-xs mt-1">{subtitle}</CardDescription>}
+          <CardTitle className={cn(semanticTypography.body, semanticTypography.label)}>
+            {title}
+          </CardTitle>
+          {subtitle && (
+            <CardDescription className={cn(semanticTypography.caption, 'mt-1')}>
+              {subtitle}
+            </CardDescription>
+          )}
         </div>
-        
-        <div className="flex items-center space-x-2">
+
+        <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
           {period && (
-            <Badge variant="outline" className="text-xs">
+            <Badge variant="outline" className={`${semanticTypography.caption}`}>
               {period}
             </Badge>
           )}
-          
+
           {filters}
-          
+
           {actions.length > 0 && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -572,7 +618,9 @@ export function ChartCard({
               <DropdownMenuContent align="end">
                 {actions.map((action, index) => (
                   <DropdownMenuItem key={index} onClick={action.onClick}>
-                    {action.icon && <action.icon className="mr-2 h-4 w-4" />}
+                    {action.icon && (
+                      <action.icon className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4')} />
+                    )}
                     {action.label}
                   </DropdownMenuItem>
                 ))}
@@ -581,7 +629,7 @@ export function ChartCard({
           )}
         </div>
       </CardHeader>
-      
+
       <CardContent>
         <div className="w-full h-full min-h-[200px] flex items-center justify-center">
           {children}
@@ -621,45 +669,55 @@ export function StatusOverviewCard({
   return (
     <Card className={cn(dashboardCardVariants({ size }), className)} {...props}>
       <CardHeader>
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        {subtitle && <CardDescription className="text-xs">{subtitle}</CardDescription>}
+        <CardTitle className={cn(semanticTypography.body, semanticTypography.label)}>
+          {title}
+        </CardTitle>
+        {subtitle && (
+          <CardDescription className={`${semanticTypography.caption}`}>{subtitle}</CardDescription>
+        )}
       </CardHeader>
-      
-      <CardContent className="space-y-3">
+      <CardContent className={`${semanticSpacing.stack.sm}`}>
         {showTotal && (
           <>
             <div className="text-center">
-              <div className="text-2xl font-bold">{calculatedTotal.toLocaleString()}</div>
-              <div className="text-xs text-muted-foreground">Total</div>
+              <div className={cn(semanticTypography.h2, semanticTypography.h2)}>
+                {calculatedTotal.toLocaleString()}
+              </div>
+              <div className={cn(semanticTypography.caption, 'text-muted-foreground')}>Total</div>
             </div>
             <Separator />
           </>
         )}
-        
-        <div className="space-y-2">
+
+        <div className={`${semanticSpacing.stack.xs}`}>
           {items.map((item, index) => {
-            const percentage = item.percentage || (calculatedTotal > 0 ? Math.round((item.count / calculatedTotal) * 100) : 0)
-            
+            const percentage =
+              item.percentage ||
+              (calculatedTotal > 0 ? Math.round((item.count / calculatedTotal) * 100) : 0)
+
             return (
               <div key={index} className="flex items-center justify-between">
-                <div className="flex items-center space-x-2 flex-1">
-                  <div 
-                    className="w-2 h-2 rounded-full shrink-0" 
+                <div className={cn(semanticSpacing.inline.xs, 'flex items-center flex-1')}>
+                  <div
+                    className={cn(semanticRadius.full, 'w-2 h-2 shrink-0')}
                     style={{ backgroundColor: item.color }}
                   />
-                  <span className="text-sm truncate">{item.label}</span>
+                  <span className={cn(semanticTypography.body, 'truncate')}>{item.label}</span>
                 </div>
-                
-                <div className="flex items-center space-x-2 text-right">
-                  <span className="text-sm font-medium">{item.count.toLocaleString()}</span>
-                  <span className="text-xs text-muted-foreground w-8">
+                <div className={cn(semanticSpacing.inline.xs, 'flex items-center text-right')}>
+                  <span className={cn(semanticTypography.body, semanticTypography.label)}>
+                    {item.count.toLocaleString()}
+                  </span>
+                  <span className={cn(semanticTypography.caption, 'text-muted-foreground w-8')}>
                     {percentage}%
                   </span>
-                  {item.trend && item.trend !== 'neutral' && (
-                    item.trend === 'up' ? 
-                      <TrendingUp className="h-3 w-3 text-green-600" /> : 
-                      <TrendingDown className="h-3 w-3 text-red-600" />
-                  )}
+                  {item.trend &&
+                    item.trend !== 'neutral' &&
+                    (item.trend === 'up' ? (
+                      <TrendingUp className="h-3 w-3 ${text-success}" />
+                    ) : (
+                      <TrendingDown className="h-3 w-3 ${text-destructive}" />
+                    ))}
                 </div>
               </div>
             )

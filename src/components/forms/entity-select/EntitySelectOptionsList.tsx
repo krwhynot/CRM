@@ -2,6 +2,8 @@ import React from 'react'
 import { SelectItem } from '@/components/ui/select'
 import type { EntityOption } from '../EntitySelect'
 
+import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticTypography, semanticColors } from '@/styles/tokens'
 interface EntitySelectOptionsListProps {
   options: EntityOption[]
   emptyMessage: string
@@ -12,7 +14,17 @@ export const EntitySelectOptionsList: React.FC<EntitySelectOptionsListProps> = (
   emptyMessage,
 }) => {
   if (options.length === 0) {
-    return <div className="p-4 text-center text-sm text-gray-500">{emptyMessage}</div>
+    return (
+      <div
+        className={cn(
+          semanticSpacing.cardContainer,
+          semanticTypography.body,
+          'text-center text-muted-foreground'
+        )}
+      >
+        {emptyMessage}
+      </div>
+    )
   }
 
   return (
@@ -21,12 +33,19 @@ export const EntitySelectOptionsList: React.FC<EntitySelectOptionsListProps> = (
         <SelectItem
           key={option.id}
           value={option.id}
-          className="h-12 cursor-pointer px-4 hover:bg-gray-50 focus:bg-blue-50"
+          className={cn(
+            semanticSpacing.cardX,
+            `h-12 cursor-pointer ${semanticColors.hoverStates.subtle} ${semanticColors.focusStates.info}`
+          )}
         >
           <div className="flex w-full flex-col items-start">
-            <span className="text-base font-medium">{option.name}</span>
+            <span className={cn(semanticTypography.body, semanticTypography.label)}>
+              {option.name}
+            </span>
             {option.description && (
-              <span className="mt-1 text-xs text-gray-500">{option.description}</span>
+              <span className={cn(semanticTypography.caption, 'mt-1 text-muted-foreground')}>
+                {option.description}
+              </span>
             )}
           </div>
         </SelectItem>

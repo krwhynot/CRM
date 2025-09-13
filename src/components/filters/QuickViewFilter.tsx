@@ -1,23 +1,21 @@
-import { 
-  Zap, 
-  Target, 
-  Trophy, 
-  AlertCircle, 
-  Calendar, 
-  Plus, 
-  ArrowRight,
-  X
-} from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
+import { Zap, Target, Trophy, AlertCircle, Calendar, Plus, ArrowRight, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
 import type { QuickViewType, QuickViewOption } from '@/types/filters.types'
+
+// Type guard function
+function isQuickViewType(value: QuickViewType | 'none'): value is QuickViewType {
+  return value !== 'none'
+}
 
 interface QuickViewFilterProps {
   value: QuickViewType | 'none'
@@ -29,58 +27,58 @@ interface QuickViewFilterProps {
 }
 
 const QUICK_VIEW_OPTIONS: QuickViewOption[] = [
-  { 
-    value: 'action_items_due', 
-    label: 'Action Items Due', 
+  {
+    value: 'action_items_due',
+    label: 'Action Items Due',
     shortLabel: 'Due Items',
     description: 'Tasks and actions due today or overdue',
-    icon: 'AlertCircle'
+    icon: 'AlertCircle',
   },
-  { 
-    value: 'pipeline_movers', 
-    label: 'Pipeline Movers', 
+  {
+    value: 'pipeline_movers',
+    label: 'Pipeline Movers',
     shortLabel: 'Pipeline',
     description: 'Opportunities progressing through pipeline',
-    icon: 'Target'
+    icon: 'Target',
   },
-  { 
-    value: 'recent_wins', 
-    label: 'Recent Wins', 
+  {
+    value: 'recent_wins',
+    label: 'Recent Wins',
     shortLabel: 'Wins',
     description: 'Recently closed successful opportunities',
-    icon: 'Trophy'
+    icon: 'Trophy',
   },
-  { 
-    value: 'needs_attention', 
-    label: 'Needs Attention', 
+  {
+    value: 'needs_attention',
+    label: 'Needs Attention',
     shortLabel: 'Attention',
     description: 'Items requiring immediate attention',
-    icon: 'AlertCircle'
+    icon: 'AlertCircle',
   },
-  { 
-    value: 'upcoming_meetings', 
-    label: 'Upcoming Meetings', 
+  {
+    value: 'upcoming_meetings',
+    label: 'Upcoming Meetings',
     shortLabel: 'Meetings',
     description: 'Scheduled meetings and calls',
-    icon: 'Calendar'
+    icon: 'Calendar',
   },
-  { 
-    value: 'new_opportunities', 
-    label: 'New Opportunities', 
+  {
+    value: 'new_opportunities',
+    label: 'New Opportunities',
     shortLabel: 'New Opps',
     description: 'Recently created opportunities',
-    icon: 'Plus'
+    icon: 'Plus',
   },
-  { 
-    value: 'follow_up_required', 
-    label: 'Follow-up Required', 
+  {
+    value: 'follow_up_required',
+    label: 'Follow-up Required',
     shortLabel: 'Follow-up',
     description: 'Contacts and opportunities needing follow-up',
-    icon: 'ArrowRight'
+    icon: 'ArrowRight',
   },
 ]
 
-const getIcon = (iconName: string, className: string = "size-4") => {
+const getIcon = (iconName: string, className: string = 'size-4') => {
   const icons = {
     Zap: <Zap className={className} />,
     Target: <Target className={className} />,
@@ -100,11 +98,11 @@ export function QuickViewFilter({
   isLoading = false,
   compact = false,
   showBadges = false,
-  quickViewCounts = {}
+  quickViewCounts = {},
 }: QuickViewFilterProps) {
-  const selectedOption = QUICK_VIEW_OPTIONS.find(option => option.value === value)
+  const selectedOption = QUICK_VIEW_OPTIONS.find((option) => option.value === value)
   const isActive = value !== 'none'
-  
+
   const getDisplayText = () => {
     if (value === 'none') return 'Quick View'
     return compact ? selectedOption?.shortLabel : selectedOption?.label
@@ -120,21 +118,26 @@ export function QuickViewFilter({
       <DropdownMenuTrigger asChild>
         <Button
           variant={getButtonVariant()}
-          size={compact ? "sm" : "default"}
+          size={compact ? 'sm' : 'default'}
           className="justify-between"
           disabled={isLoading}
         >
-          <div className="flex items-center space-x-2">
-            {isActive && selectedOption ? 
-              getIcon(selectedOption.icon || 'Zap') : 
+          <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
+            {isActive && selectedOption ? (
+              getIcon(selectedOption.icon || 'Zap')
+            ) : (
               <Zap className="size-4" />
-            }
-            <span>{getDisplayText()}</span>
-            {showBadges && isActive && quickViewCounts && value !== 'none' && quickViewCounts[value as QuickViewType] && (
-              <Badge variant="secondary" className="ml-1">
-                {quickViewCounts[value as QuickViewType]}
-              </Badge>
             )}
+            <span>{getDisplayText()}</span>
+            {showBadges &&
+              isActive &&
+              quickViewCounts &&
+              isQuickViewType(value) &&
+              quickViewCounts[value] && (
+                <Badge variant="secondary" className="ml-1">
+                  {quickViewCounts[value]}
+                </Badge>
+              )}
           </div>
         </Button>
       </DropdownMenuTrigger>
@@ -142,23 +145,21 @@ export function QuickViewFilter({
         {/* Clear/None Option */}
         <DropdownMenuItem
           onClick={() => onChange('none')}
-          className={`flex items-center justify-between ${
-            value === 'none' ? 'bg-accent' : ''
-          }`}
+          className={`flex items-center justify-between ${value === 'none' ? 'bg-accent' : ''}`}
         >
-          <div className="flex items-center space-x-2">
+          <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
             <X className="size-4" />
             <div className="flex flex-col">
-              <span className="font-medium">Clear Quick View</span>
-              <span className="text-xs text-muted-foreground">
+              <span className={`${semanticTypography.label}`}>Clear Quick View</span>
+              <span className={cn(semanticTypography.caption, 'text-muted-foreground')}>
                 Show all activities
               </span>
             </div>
           </div>
         </DropdownMenuItem>
-        
+
         <DropdownMenuSeparator />
-        
+
         {/* Quick View Options */}
         {QUICK_VIEW_OPTIONS.map((option) => (
           <DropdownMenuItem
@@ -168,19 +169,19 @@ export function QuickViewFilter({
               value === option.value ? 'bg-accent' : ''
             }`}
           >
-            <div className="flex items-center space-x-2">
+            <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
               {getIcon(option.icon || 'Zap')}
               <div className="flex flex-col">
-                <span className="font-medium">{option.label}</span>
+                <span className={`${semanticTypography.label}`}>{option.label}</span>
                 {option.description && (
-                  <span className="text-xs text-muted-foreground">
+                  <span className={cn(semanticTypography.caption, 'text-muted-foreground')}>
                     {option.description}
                   </span>
                 )}
               </div>
             </div>
             {showBadges && quickViewCounts[option.value] && (
-              <Badge variant="outline" className="ml-2">
+              <Badge variant="outline" className={`${semanticSpacing.leftGap.xs}`}>
                 {quickViewCounts[option.value]}
               </Badge>
             )}

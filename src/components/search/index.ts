@@ -1,6 +1,6 @@
 /**
  * Search Components
- * 
+ *
  * Comprehensive search system for CRM entities with quick search
  * and advanced search capabilities.
  */

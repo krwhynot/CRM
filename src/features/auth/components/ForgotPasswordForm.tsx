@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { cn } from '@/lib/utils'
 import {
   Card,
   CardContent,
@@ -10,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { semanticSpacing, semanticTypography, semanticRadius } from '@/styles/tokens'
 import { AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
 
 interface ForgotPasswordFormProps {
@@ -49,30 +51,55 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
   return (
     <Card className="mx-auto w-full max-w-md">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold">Reset Password</CardTitle>
+        <CardTitle className={cn(semanticTypography.h2, semanticTypography.h2)}>
+          Reset Password
+        </CardTitle>
         <CardDescription>
           Enter your email address and we&apos;ll send you a link to reset your password
         </CardDescription>
       </CardHeader>
 
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
+        <CardContent className={semanticSpacing.stackContainer}>
           {error && (
-            <div className="flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+            <div
+              className={cn(
+                semanticRadius.default,
+                'flex items-center',
+                semanticSpacing.gap.xs,
+                'border border-red-200 bg-red-50',
+                semanticSpacing.cardContainer,
+                semanticTypography.body,
+                'text-red-600'
+              )}
+            >
               <AlertCircle size={16} />
               {error}
             </div>
           )}
 
           {success && (
-            <div className="flex items-center gap-2 rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-600">
+            <div
+              className={cn(
+                semanticRadius.default,
+                'flex items-center',
+                semanticSpacing.gap.xs,
+                'border border-green-200 bg-green-50',
+                semanticSpacing.cardContainer,
+                semanticTypography.body,
+                'text-green-600'
+              )}
+            >
               <CheckCircle size={16} />
               {success}
             </div>
           )}
 
-          <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium">
+          <div className={semanticSpacing.stack.xs}>
+            <label
+              htmlFor="email"
+              className={cn(semanticTypography.label, semanticTypography.body)}
+            >
               Email
             </label>
             <Input
@@ -88,7 +115,7 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
           </div>
         </CardContent>
 
-        <CardFooter className="flex flex-col gap-4">
+        <CardFooter className={`flex flex-col ${semanticSpacing.gap.lg}`}>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? 'Sending...' : 'Send Reset Email'}
           </Button>
@@ -100,7 +127,7 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
               size="sm"
               onClick={onBackToLogin}
               disabled={loading}
-              className="flex items-center gap-2"
+              className={`flex items-center ${semanticSpacing.gap.xs}`}
             >
               <ArrowLeft size={16} />
               Back to Sign In

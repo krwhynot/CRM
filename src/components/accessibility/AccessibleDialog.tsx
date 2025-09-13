@@ -1,13 +1,18 @@
+import { semanticSpacing, semanticTypography, semanticRadius } from '@/styles/tokens'
 /**
  * Accessible Dialog Component
- * 
+ *
  * Enhanced dialog component with comprehensive accessibility features including
  * focus trapping, keyboard navigation, and screen reader support.
  */
 
 import React from 'react'
 import { StandardDialog } from '@/components/ui/StandardDialog'
-import { useFocusTrap, useFocusRestoration, useAnnouncer } from '@/lib/accessibility/focus-management'
+import {
+  useFocusTrap,
+  useFocusRestoration,
+  useAnnouncer,
+} from '@/lib/accessibility/focus-management'
 import { cn } from '@/lib/utils'
 
 // =============================================================================
@@ -20,28 +25,28 @@ interface AccessibleDialogProps {
   title: React.ReactNode
   description?: React.ReactNode
   children: React.ReactNode
-  
+
   // Accessibility props
   'aria-labelledby'?: string
   'aria-describedby'?: string
   role?: 'dialog' | 'alertdialog'
-  
+
   // Focus management
   initialFocus?: React.RefObject<HTMLElement>
   restoreFocus?: boolean
   trapFocus?: boolean
-  
+
   // Announcements
   announceOnOpen?: string
   announceOnClose?: string
-  
+
   // Standard dialog props
   size?: 'sm' | 'md' | 'lg' | 'xl'
   variant?: 'dialog' | 'alert'
   footer?: React.ReactNode
   headerActions?: React.ReactNode
   className?: string
-  
+
   // Alert dialog specific props (when variant="alert")
   onConfirm?: () => void
   onCancel?: () => void
@@ -61,28 +66,28 @@ export function AccessibleDialog({
   title,
   description,
   children,
-  
+
   // Accessibility
   'aria-labelledby': ariaLabelledBy,
   'aria-describedby': ariaDescribedBy,
   role = 'dialog',
-  
+
   // Focus management
   initialFocus,
   restoreFocus = true,
   trapFocus = true,
-  
+
   // Announcements
   announceOnOpen,
   announceOnClose,
-  
+
   // Standard props
   size = 'md',
   variant = 'dialog',
   footer,
   headerActions,
   className,
-  
+
   // Alert dialog props
   onConfirm,
   onCancel,
@@ -103,7 +108,7 @@ export function AccessibleDialog({
       if (announceOnOpen) {
         announce(announceOnOpen)
       }
-      
+
       // Focus initial element
       if (initialFocus?.current) {
         const timer = setTimeout(() => {
@@ -116,13 +121,21 @@ export function AccessibleDialog({
       if (announceOnClose) {
         announce(announceOnClose)
       }
-      
+
       // Restore focus if enabled
       if (restoreFocus) {
         focusRestoration.restore()
       }
     }
-  }, [open, initialFocus, announceOnOpen, announceOnClose, announce, restoreFocus, focusRestoration])
+  }, [
+    open,
+    initialFocus,
+    announceOnOpen,
+    announceOnClose,
+    announce,
+    restoreFocus,
+    focusRestoration,
+  ])
 
   // Keyboard event handling
   React.useEffect(() => {
@@ -144,44 +157,45 @@ export function AccessibleDialog({
   const titleId = React.useId()
   const descriptionId = React.useId()
 
-  const dialogProps = {
-    open,
-    onOpenChange,
-    title,
-    description,
-    size,
-    headerActions,
-    className: cn(className),
-    
-    // Pass through alert dialog props if variant is alert
-    ...(variant === 'alert' && {
-      variant: 'alert' as const,
-      onConfirm,
-      onCancel,
-      confirmText,
-      cancelText,
-      confirmVariant,
-      isLoading,
-    }),
-    
-    // Pass through regular dialog props if variant is dialog
-    ...(variant === 'dialog' && {
-      variant: undefined,
-      footer,
-    }),
-  }
+  // Create properly typed props based on variant
+  const dialogProps =
+    variant === 'alert' && onConfirm
+      ? {
+          open,
+          onOpenChange,
+          title,
+          description,
+          size,
+          headerActions,
+          className: cn(className),
+          variant: 'alert' as const,
+          onConfirm,
+          onCancel,
+          confirmText,
+          cancelText,
+          confirmVariant,
+          isLoading,
+        }
+      : {
+          open,
+          onOpenChange,
+          title,
+          description,
+          size,
+          headerActions,
+          className: cn(className),
+          footer,
+        }
 
   return (
     <div
-      ref={trapRef}
+      ref={trapRef as React.RefObject<HTMLDivElement>}
       role={role}
       aria-modal="true"
       aria-labelledby={ariaLabelledBy || titleId}
       aria-describedby={ariaDescribedBy || (description ? descriptionId : undefined)}
     >
-      <StandardDialog {...dialogProps}>
-        {children}
-      </StandardDialog>
+      <StandardDialog {...dialogProps}>{children}</StandardDialog>
     </div>
   )
 }
@@ -209,12 +223,19 @@ export function AccessibleFormDialog({
   const formRef = React.useRef<HTMLFormElement>(null)
 
   const footer = (
-    <div className="flex justify-end space-x-2">
+    <div className={cn(semanticSpacing.inline.xs, 'flex justify-end')}>
       <button
         type="button"
         onClick={() => dialogProps.onOpenChange(false)}
         disabled={isSubmitting}
-        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
+        className={cn(
+          semanticSpacing.cardX,
+          semanticSpacing.compactY,
+          semanticTypography.body,
+          semanticTypography.label,
+          semanticRadius.default,
+          'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50'
+        )}
       >
         {cancelLabel}
       </button>
@@ -222,7 +243,14 @@ export function AccessibleFormDialog({
         type="submit"
         form="dialog-form"
         disabled={isSubmitting}
-        className="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
+        className={cn(
+          semanticSpacing.cardX,
+          semanticSpacing.compactY,
+          semanticTypography.body,
+          semanticTypography.label,
+          semanticRadius.default,
+          'text-white bg-primary border border-transparent hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50'
+        )}
       >
         {isSubmitting ? 'Saving...' : submitLabel}
       </button>
@@ -230,18 +258,8 @@ export function AccessibleFormDialog({
   )
 
   return (
-    <AccessibleDialog
-      {...dialogProps}
-      variant="dialog"
-      footer={footer}
-      initialFocus={formRef}
-    >
-      <form
-        id="dialog-form"
-        ref={formRef}
-        onSubmit={onSubmit}
-        noValidate
-      >
+    <AccessibleDialog {...dialogProps} variant="dialog" footer={footer} initialFocus={formRef}>
+      <form id="dialog-form" ref={formRef} onSubmit={onSubmit} noValidate>
         {children}
       </form>
     </AccessibleDialog>
@@ -276,9 +294,7 @@ export function AccessibleConfirmDialog({
       confirmVariant={isDestructive ? 'destructive' : 'default'}
       announceOnOpen={`Confirmation required: ${typeof dialogProps.title === 'string' ? dialogProps.title : 'Please confirm your action'}`}
     >
-      <div className="text-sm text-muted-foreground">
-        {message}
-      </div>
+      <div className={cn(semanticTypography.body, 'text-muted-foreground')}>{message}</div>
     </AccessibleDialog>
   )
 }
@@ -294,22 +310,28 @@ export function useAccessibleDialog(initialOpen = false) {
   const [open, setOpen] = React.useState(initialOpen)
   const announce = useAnnouncer()
 
-  const openDialog = React.useCallback((announcement?: string) => {
-    setOpen(true)
-    if (announcement) {
-      announce(announcement)
-    }
-  }, [announce])
+  const openDialog = React.useCallback(
+    (announcement?: string) => {
+      setOpen(true)
+      if (announcement) {
+        announce(announcement)
+      }
+    },
+    [announce]
+  )
 
-  const closeDialog = React.useCallback((announcement?: string) => {
-    setOpen(false)
-    if (announcement) {
-      announce(announcement)
-    }
-  }, [announce])
+  const closeDialog = React.useCallback(
+    (announcement?: string) => {
+      setOpen(false)
+      if (announcement) {
+        announce(announcement)
+      }
+    },
+    [announce]
+  )
 
   const toggleDialog = React.useCallback(() => {
-    setOpen(prev => !prev)
+    setOpen((prev) => !prev)
   }, [])
 
   return {
@@ -337,31 +359,35 @@ export function useAccessibleFormDialog<T = Record<string, unknown>>(
   const [error, setError] = React.useState<string | null>(null)
   const announce = useAnnouncer()
 
-  const handleSubmit = React.useCallback(async (data: T) => {
-    try {
-      setIsSubmitting(true)
-      setError(null)
-      
-      await onSubmit(data)
-      
-      if (options.successMessage) {
-        announce(options.successMessage, 'polite')
+  const handleSubmit = React.useCallback(
+    async (data: T) => {
+      try {
+        setIsSubmitting(true)
+        setError(null)
+
+        await onSubmit(data)
+
+        if (options.successMessage) {
+          announce(options.successMessage, 'polite')
+        }
+
+        closeDialog()
+
+        if (options.resetOnSuccess) {
+          // Reset form if using react-hook-form or similar
+          // This would need to be implemented based on form library
+        }
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : options.errorMessage || 'An error occurred'
+        setError(errorMessage)
+        announce(`Error: ${errorMessage}`, 'assertive')
+      } finally {
+        setIsSubmitting(false)
       }
-      
-      closeDialog()
-      
-      if (options.resetOnSuccess) {
-        // Reset form if using react-hook-form or similar
-        // This would need to be implemented based on form library
-      }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : (options.errorMessage || 'An error occurred')
-      setError(errorMessage)
-      announce(`Error: ${errorMessage}`, 'assertive')
-    } finally {
-      setIsSubmitting(false)
-    }
-  }, [onSubmit, announce, closeDialog, options])
+    },
+    [onSubmit, announce, closeDialog, options]
+  )
 
   return {
     open,

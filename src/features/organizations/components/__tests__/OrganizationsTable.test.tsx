@@ -43,7 +43,6 @@ vi.mock('../OrganizationsFilters', () => ({
   ),
 }))
 
-
 const mockOrganizations: Organization[] = [
   createTestOrganization({
     id: '1',

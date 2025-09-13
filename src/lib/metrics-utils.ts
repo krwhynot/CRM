@@ -9,6 +9,7 @@ import type {
   PriorityLevel,
 } from '@/types/entities'
 import { mapStringSizeToPriority } from '@/lib/enum-guards'
+import { formatCurrency } from '@/lib/formatters'
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -495,18 +496,6 @@ export function calculateGrowthMetrics(
     principalsGrowth: calculateGrowth(currentPrincipals, previousPrincipals),
     distributorsGrowth: calculateGrowth(currentDistributors, previousDistributors),
   }
-}
-
-/**
- * Format currency values for display
- */
-export function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value)
 }
 
 /**

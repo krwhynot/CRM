@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/select'
 import { StatusIndicator } from '@/components/ui/status-indicator'
 import type { Organization } from '@/types/entities'
+import { semanticSpacing, semanticTypography, semanticRadius } from '@/styles/tokens'
 
 interface PrincipalSelectorProps {
   principalOrganizations: Organization[]
@@ -27,9 +28,8 @@ export const PrincipalSelector: React.FC<PrincipalSelectorProps> = ({
   onRemovePrincipal,
 }) => {
   return (
-    <div className="space-y-4">
+    <div className={semanticSpacing.stackContainer}>
       <FormLabel>Principals *</FormLabel>
-
       <Select onValueChange={onAddPrincipal}>
         <SelectTrigger data-testid="add-organization-select">
           <SelectValue placeholder="Add principal organization" />
@@ -44,11 +44,10 @@ export const PrincipalSelector: React.FC<PrincipalSelectorProps> = ({
             ))}
         </SelectContent>
       </Select>
-
       {selectedPrincipals.length > 0 && (
-        <div className="space-y-2">
-          <p className="text-sm text-muted-foreground">Selected Principals:</p>
-          <div className="flex flex-wrap gap-2">
+        <div className={semanticSpacing.stack.xs}>
+          <p className={`${semanticTypography.body} text-muted-foreground`}>Selected Principals:</p>
+          <div className={`flex flex-wrap ${semanticSpacing.gap.xs}`}>
             {selectedPrincipals.map((principalId) => {
               const principal = organizations.find((org) => org.id === principalId)
               return principal ? (
@@ -56,13 +55,13 @@ export const PrincipalSelector: React.FC<PrincipalSelectorProps> = ({
                   key={principalId}
                   variant="secondary"
                   size="sm"
-                  className="flex items-center gap-1"
+                  className={`flex items-center ${semanticSpacing.gap.xxs}`}
                 >
                   {principal.name}
                   <button
                     type="button"
                     onClick={() => onRemovePrincipal(principalId)}
-                    className="ml-1 rounded-full p-0.5 hover:bg-gray-200"
+                    className={`${semanticSpacing.leftGap.xxs} ${semanticRadius.default}-full ${semanticSpacing.cardContainer} hover:${bg - muted}`}
                   >
                     <X className="size-3" />
                   </button>

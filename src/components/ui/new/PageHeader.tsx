@@ -1,7 +1,9 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 
+import { cn } from '@/lib/utils'
 export interface PageHeaderAction {
   type: 'button' | 'link'
   label: string
@@ -47,7 +49,9 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   const displaySubtitle = subtitle || description
   const displayMeta =
     meta ||
-    (count !== undefined && <span className="text-sm text-muted-foreground">({count})</span>)
+    (count !== undefined && (
+      <span className={`${semanticTypography.body} text-muted-foreground`}>({count})</span>
+    ))
 
   const renderBackButton = () => {
     if (!backButton) return null
@@ -59,7 +63,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
     const buttonProps = {
       variant: 'ghost' as const,
       size: 'sm' as const,
-      className: 'mt-1',
+      className: semanticSpacing.topGap.xxs,
       'aria-label': ariaLabel,
     }
 
@@ -68,7 +72,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
         <Button asChild {...buttonProps}>
           <a href={backButton.to}>
             {buttonIcon}
-            <span className="ml-2">{buttonLabel}</span>
+            <span className={semanticSpacing.leftGap.xs}>{buttonLabel}</span>
           </a>
         </Button>
       )
@@ -77,7 +81,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
     return (
       <Button {...buttonProps} onClick={backButton.onClick}>
         {buttonIcon}
-        <span className="ml-2">{buttonLabel}</span>
+        <span className={`${semanticSpacing.leftGap.xs}`}>{buttonLabel}</span>
       </Button>
     )
   }
@@ -91,7 +95,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
 
     if (Array.isArray(actions)) {
       return (
-        <nav aria-label="Page actions" className="flex flex-wrap gap-2">
+        <nav aria-label="Page actions" className={`flex flex-wrap ${semanticSpacing.gap.xs}`}>
           {actions.map((action, index) => {
             const key = `action-${index}`
             const ariaLabel = action['aria-label'] || action.label
@@ -105,7 +109,9 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
                   aria-label={ariaLabel}
                 >
                   <a href={action.to}>
-                    {action.icon && <span className="mr-2">{action.icon}</span>}
+                    {action.icon && (
+                      <span className={semanticSpacing.rightGap.xs}>{action.icon}</span>
+                    )}
                     {action.label}
                   </a>
                 </Button>
@@ -119,7 +125,9 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
                 onClick={action.onClick}
                 aria-label={ariaLabel}
               >
-                {action.icon && <span className="mr-2">{action.icon}</span>}
+                {action.icon && (
+                  <span className={`${semanticSpacing.rightGap.xs}`}>{action.icon}</span>
+                )}
                 {action.label}
               </Button>
             )
@@ -134,23 +142,37 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   return (
     <header
       data-page-header
-      className={`flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between ${className}`}
+      className={`flex flex-col ${semanticSpacing.gap.lg} sm:flex-row sm:items-start sm:justify-between ${className}`}
     >
-      <div className="flex min-w-0 flex-1 items-start gap-3">
+      <div className={`flex min-w-0 flex-1 items-start ${semanticSpacing.gap.lg}`}>
         {renderBackButton()}
-        {icon && <div className="mt-1 shrink-0">{icon}</div>}
+        {icon && <div className={`${semanticSpacing.topGap.xxs} shrink-0`}>{icon}</div>}
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+          <div className={`flex flex-wrap items-center ${semanticSpacing.gap.xs}`}>
+            <h1
+              className={cn(
+                semanticTypography.h2,
+                semanticTypography.h4,
+                semanticTypography.tightSpacing
+              )}
+            >
+              {title}
+            </h1>
             {displayMeta}
           </div>
           {displaySubtitle && (
-            <p className="mt-1 text-sm text-muted-foreground">{displaySubtitle}</p>
+            <p
+              className={`${semanticSpacing.topGap.xxs} ${semanticTypography.body} text-muted-foreground`}
+            >
+              {displaySubtitle}
+            </p>
           )}
         </div>
       </div>
 
-      <div className="mt-2 shrink-0 sm:mt-0">{renderActions()}</div>
+      <div className={`${semanticSpacing.topGap.xs} shrink-0 sm:${semanticSpacing.topGap.zero}`}>
+        {renderActions()}
+      </div>
     </header>
   )
 }

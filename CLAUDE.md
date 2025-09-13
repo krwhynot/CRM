@@ -2,524 +2,275 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Overview
+## Quick Start Summary
 
-This is a KitchenPantry CRM system built for the food service industry, specifically designed for Master Food Brokers. The project uses a modern React + TypeScript stack with shadcn/ui components and follows a specialized agent-based architecture for CRM development.
+**Project**: Production CRM system for Master Food Brokers in the food service industry
+**Stack**: React 18 + TypeScript + Vite + Supabase + shadcn/ui + Tailwind CSS
+**Architecture**: Feature-based modules with unified component system
+**Live Production**: https://crm.kjrcloud.com
 
-## Project Structure
+📋 **Critical**: Always run `npm run quality-gates` before commits - comprehensive quality validation
+🗂️ **Important**: Use unified `DataTable` component for all tables - auto-virtualizes at 500+ rows
+🎨 **Note**: Design token coverage is 88% - prefer semantic tokens over hardcoded Tailwind classes
 
-The codebase contains one main application:
-- **Root Vite App** (`/src/`): Primary React + TypeScript + Vite application with shadcn/ui components
+## Essential Commands
 
-## Development Commands
-
-### Essential Commands
 ```bash
-# Development & Building
-npm run dev                    # Start development server (Vite)
-npm run build                  # Production build with optimizations
-npm run preview                # Preview production build locally
-npm run type-check             # TypeScript compilation check
-npm run lint                   # ESLint with architectural rules (max 20 warnings)
-npm run format                 # Prettier code formatting
-npm run validate               # Complete pipeline: type-check + lint + build
+# Development
+npm run dev              # Start development server
+npm run type-check       # TypeScript compilation check
+npm run lint             # ESLint with max 20 warnings
+npm run build            # Production build
+npm run quality-gates    # Run comprehensive quality validation
 
-# Quality & Architecture
-npm run quality-gates          # 6-stage comprehensive validation pipeline
-npm run validate:architecture  # Architecture pattern validation
-npm run validate:performance   # Performance baseline validation
-npm run lint:architecture      # Custom architectural lint rules
-npm run dev:health            # Development health check
-npm run dev:fix               # Auto-fix common development issues
+# Testing & Validation
+npm run test             # Run MCP integration tests
+npm run test:backend     # Database and backend tests
+npm run test:ui-consistency  # Component consistency tests
+npm run test:architecture    # Architecture compliance tests
+npm run tokens:coverage      # Design token coverage report
 
-# Testing
-npm test                      # Run all MCP tests
-npm run test:backend          # Vitest unit/integration tests
-npm run test:backend:coverage # Backend tests with coverage
-npm run test:architecture     # Architecture boundary validation
-npm run test:db              # Database-specific tests
-npm run test:security        # Security validation tests
-
-# Bundle Analysis & Performance  
-npm run analyze              # Bundle visualizer with gzip analysis
-npm run optimize:performance # Performance optimization analysis
-npm run clean                # Clean build artifacts
-npm run fresh                # Clean install (removes node_modules)
-
-# Documentation
-npm run docs:lint           # Markdown linting
-npm run docs:validate       # Full documentation validation
+# Quality & Performance
+npm run analyze          # Bundle size analysis
+npm run validate:table-consistency  # Table component validation
+npm run debt:audit       # Technical debt analysis
 ```
 
-### Single Test Execution
-```bash
-# Run specific test suites
-npm run test:auth           # Authentication flow tests
-npm run test:crud           # CRUD operation tests  
-npm run test:dashboard      # Dashboard functionality tests
-npm run test:mobile         # Mobile/responsive tests
-npm run test:performance    # Performance benchmark tests
-npm run test:integrity      # Data integrity validation
+## Architecture Overview
 
-# Architecture-specific tests
-npm run test:architecture:state      # State boundary validation
-npm run test:architecture:components # Component placement rules
-npm run test:architecture:performance # Performance patterns
-npm run test:architecture:eslint     # Custom ESLint rule validation
-```
-
-### Development Workflow Commands
-```bash
-# Pre-commit validation
-npm run hooks:install       # Install git hooks for validation
-npm run validate           # Run before committing (required)
-
-# Technical debt management  
-npm run debt:audit         # Technical debt analysis
-npm run debt:scan          # Scan for debt patterns
-npm run debt:report        # Generate debt report
-
-# UI compliance validation
-npm run test:ui-compliance    # UI design token compliance
-npm run validate:design-tokens # Design system validation
-```
-
-## Architecture Guidelines
-
-### Core Technologies
-- **React 18** with TypeScript in strict mode
-- **Vite** as build tool with `@vitejs/plugin-react` and bundle optimization
-- **Supabase** for database, authentication, and real-time features
-- **shadcn/ui** component library with "new-york" style
-- **Tailwind CSS** with CSS variables and "slate" base color
-- **Radix UI** primitives for accessibility
-- **TanStack Query** for server state management
-- **Zustand** for client UI state management
-
-### File Structure & Feature Organization
-The codebase follows a **feature-based architecture** with clear separation of concerns:
-
+### Directory Structure (Feature-Based)
 ```
 src/
-├── features/              # Feature modules (core business logic)
-│   ├── auth/             # Authentication (login, signup, session management)
-│   ├── contacts/         # Contact management (CRUD, filtering, forms)
-│   ├── dashboard/        # Minimal dashboard (clean welcome screen)
-│   ├── import-export/    # CSV/Excel data import/export functionality
-│   ├── interactions/     # Customer interaction tracking and timeline
-│   ├── monitoring/       # System health monitoring and performance
-│   ├── opportunities/    # Sales opportunity management and pipeline
-│   ├── organizations/    # Company/business entity management
-│   └── products/         # Product catalog and inventory
-├── components/           # Shared UI components
-│   ├── ui/              # shadcn/ui primitives (atoms & molecules)
-│   ├── forms/           # Reusable form components and patterns
-│   ├── templates/       # Page templates following atomic design
-│   ├── layout/          # Layout containers and wrappers
-│   └── [other shared]/  # Global components (Command Palette, etc.)
-├── lib/                 # Utilities and shared functions
-│   ├── supabase.ts      # Database client configuration
-│   ├── query-optimizations.ts # TanStack Query patterns
-│   └── [other utils]/   # Performance, validation, formatting
-├── stores/              # Zustand stores for client UI state
-├── types/               # TypeScript type definitions
-└── hooks/               # Shared custom React hooks
+  components/          # Reusable UI components
+    ui/               # shadcn/ui primitives + unified DataTable
+    forms/            # Form components with validation
+    filters/          # Universal filtering system
+    shared/           # Cross-feature components
+  features/           # Business entity modules (self-contained)
+    auth/             # Authentication & authorization
+    organizations/    # Organization management
+    contacts/         # Contact management
+    products/         # Product catalog
+    opportunities/    # Sales pipeline
+    interactions/     # Communication history
+    dashboard/        # Analytics & KPIs
+    import-export/    # Excel import/export
+  hooks/              # Custom React hooks
+  lib/                # Utilities & business logic
+  stores/             # Zustand client state
+  styles/             # Design tokens (88% coverage)
+  types/              # TypeScript definitions
 ```
 
-**Each feature module** (`src/features/*`) contains:
-- `components/` - Feature-specific React components
-- `hooks/` - Feature-specific custom hooks (TanStack Query integration)
-- `types/` - Feature-specific TypeScript types
-- `index.ts` - Public API exports
+### Key Architectural Decisions
+- **Unified DataTable**: Single table component (`src/components/ui/DataTable.tsx`) handles all use cases with auto-virtualization at 500+ rows
+- **Design Token System**: 88% coverage via `src/styles/tokens/` - prefer semantic tokens over hardcoded Tailwind
+- **Feature Isolation**: Each entity module is self-contained with own components/hooks/types
+- **Strict TypeScript**: Full type safety with path aliases (`@/`, `@/features/*`, etc.)
 
-**Component Organization**: Follow feature-based architecture with clear separation between shared and feature-specific components. See [`/docs/COMPONENT_ORGANIZATION_GUIDELINES.md`](/docs/COMPONENT_ORGANIZATION_GUIDELINES.md) for detailed guidelines.
+## Core Tech Stack Details
 
-### Atomic Design Architecture
+### Data Layer
+- **Database**: Supabase PostgreSQL with Row Level Security
+- **Server State**: TanStack Query v5 for caching/mutations
+- **Client State**: Zustand for UI state management
+- **Forms**: React Hook Form + Zod validation
 
-**✅ IMPLEMENTED (January 2025)**: Complete atomic design system following design hierarchy:
+### UI Framework
+- **Components**: shadcn/ui "new-york" style with Radix primitives
+- **Styling**: Tailwind CSS + CVA (Class Variance Authority) pattern
+- **Performance**: React Window for virtualization
+- **Brand Color**: MFB Green `#8DC63F` (HSL: 95 71% 56%)
 
-- **Atoms**: Base UI primitives (Button, Input, Badge from shadcn/ui)
-- **Molecules**: Composed components (FormField, DataTable, StatusIndicator)  
-- **Organisms**: Complex sections (PageHeader, EntityTable, BulkActionsToolbar)
-- **Templates**: Page layouts (EntityManagementTemplate with variants)
-- **Pages**: Concrete implementations using templates
+### Build & Performance
+- **Bundler**: Vite with manual chunks for vendor/ui/supabase/query
+- **TypeScript**: Strict mode with comprehensive path aliases
+- **Quality Gates**: 9-gate validation including bundle size, performance, token coverage
 
-#### EntityManagementTemplate System
+## Core Business Entities
 
-**Location**: `/src/components/templates/EntityManagementTemplate.tsx`
+The CRM manages 5 main entities with complex B2B relationships:
 
-Provides consistent CRUD page structure across all entity types:
+1. **Organizations** - Companies (customer/distributor/principal/supplier types)
+2. **Contacts** - Individuals with decision authority levels
+3. **Products** - Food items with pricing/categories
+4. **Opportunities** - Sales pipeline with stages/values
+5. **Interactions** - Communication history and touchpoints
 
-```typescript
-// Base template for all entity management pages
-<EntityManagementTemplate 
-  entityType="ORGANIZATION"
-  entityCount={organizations.length}
-  onAddClick={handleAdd}
->
-  {/* Entity-specific content goes here */}
-</EntityManagementTemplate>
+### Business Domain Terms
+- **Principal**: Manufacturer/brand owner (e.g., Coca-Cola, Nestlé)
+- **Distributor**: Wholesale distribution company
+- **Segment**: Market vertical (Restaurant, Healthcare, Education)
+- **Priority Rating**: A+ (highest) through D (lowest) business importance
+- **Decision Authority**: Primary (decision maker), Secondary (input), Influencer (recommends)
 
-// Specialized variants available
-<OrganizationManagementTemplate entityCount={count} onAddClick={handler}>
-<ContactManagementTemplate entityCount={count} onAddClick={handler}>
-<ProductManagementTemplate entityCount={count} onAddClick={handler}>
-<OpportunityManagementTemplate entityCount={count} onAddClick={handler}>
-```
+## Component Development Patterns
 
-**Benefits**:
-- Consistent page layouts and header structure
-- Centralized copy management via `/src/lib/copy.ts`
-- 40% reduction in duplicate page-level code
-- Unified responsive design patterns
-
-#### DataTable Component Architecture
-
-**Location**: `/src/components/ui/DataTable.tsx`
-
-The unified DataTable component consolidates all table functionality with TypeScript generics and expandable row support:
+### Adding New Tables
+Use the unified DataTable component for consistency and performance:
 
 ```typescript
-// ✅ Standard table usage
-<DataTable<Organization>
-  data={organizations}
-  columns={columns}
-  rowKey={(row) => row.id}
-  loading={isLoading}
-/>
+// 1. Define columns with TypeScript generics
+const supplierColumns: Column<Supplier>[] = [
+  {
+    key: 'name',
+    header: 'Supplier Name',
+    cell: (supplier) => <span className="font-medium">{supplier.name}</span>
+  }
+]
 
-// ✅ With expandable rows (integrated inline)
-<DataTable<Organization>
-  data={organizations}
-  columns={columns}
+// 2. Use DataTable with auto-virtualization
+<DataTable
+  data={suppliers}
+  columns={supplierColumns}
   rowKey={(row) => row.id}
-  expandableContent={(row) => <DetailComponent {...row} />}
-  expandedRows={expandedRowIds}
-  onToggleRow={toggleRow}
+  features={{ virtualization: 'auto' }} // Threshold: 500 rows
+  expandableContent={(row) => <SupplierDetails supplier={row} />}
 />
 ```
 
-**Key Features**:
-- **TypeScript Generics**: Full type safety for any entity type
-- **Expandable Rows**: Inline expansion within table structure (not separate DOM elements)
-- **Responsive Design**: Hide/show columns based on screen size via `hidden` prop
-- **Accessibility**: Full ARIA support, keyboard navigation, screen reader compatible
-- **Loading States**: Built-in skeleton loading with proper animations
-
-**Migration Pattern**: All table components (Organizations, Contacts, Products, Opportunities) use this unified pattern with expandable content rendered as additional `<tr>` elements using `flatMap()` for seamless DOM integration.
-
-### Key Design Patterns
-
-1. **Component Composition**: Use shadcn/ui primitives wrapped in CRM-specific components
-2. **TypeScript-First**: Never use `any` type, always define explicit interfaces for CRM entities
-3. **Mobile-First**: Start with mobile-first responsive design using Tailwind utilities
-4. **Single Responsibility**: Keep components and SQL queries focused on one clear purpose
-5. **Atomic Design**: Follow strict component hierarchy from atoms to templates
-
-### CRM Entity Structure
-The system is built around 5 core entities:
-- **Organizations** - Companies/businesses
-- **Contacts** - Individual people within organizations  
-- **Products** - Items being sold/distributed
-- **Opportunities** - Sales opportunities and deals
-- **Interactions** - Communication history and touchpoints
-
-### Database Conventions
-- Use UUIDs for primary keys
-- Implement soft deletes with `deleted_at` timestamps
-- Include `created_at`/`updated_at` on every table
-- Never cascade deletes on relationship data
-- Always include `WHERE deleted_at IS NULL` for soft-deleted records
-
-## Essential Coding Rules
-
-1. **KISS Principle**: Favor shadcn/ui components over custom implementations
-2. **Defensive Design**: Use UUIDs, soft deletes, and preserve data integrity
-3. **Performance-First**: Index foreign keys, use LIMIT on queries, implement pagination
-4. **Error Handling**: Use shadcn/ui Toast for transient messages, StandardDialog for confirmations and forms
-5. **Relationship-Centric**: Model data around relationships, track engagement quality over quantity
-6. **State Separation**: Use TanStack Query for server data, Zustand for client UI state only
-
-**Critical Development Practices:**
-- **Use Sub-Agents**: Leverage specialized MCP agents whenever possible for focused tasks
-- **Import Alias**: Use `@/*` path alias for all imports (`@/components`, `@/lib`, `@/features`)
-- **Supabase Client**: Import from `@/lib/supabase` - pre-configured with proper auth settings
-- **Bundle Optimization**: Vite config includes code splitting and tree-shaking optimizations
-
-### Build Configuration & Performance
-
-**Vite Configuration** (`vite.config.ts`):
-- **Manual Chunks**: Optimized bundle splitting (vendor, ui, router, supabase, query)
-- **Tree Shaking**: Dead code elimination enabled
-- **Console Removal**: All console statements dropped in production
-- **Bundle Visualizer**: Integrated analysis with gzip size reporting
-- **Chunk Size Limit**: 1000KB warning threshold
-- **Path Aliases**: `@/` resolves to `./src/`
-
-**Production Optimizations**:
-- Bundle size kept under 3MB total
-- Manual chunk splitting for optimal caching
-- No source maps in production builds
-- SPA routing configured for proper fallback
-- Performance monitoring via Web Vitals integration
-
-**Environment Variables**:
-```env
-VITE_SUPABASE_URL=your_supabase_project_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key  
-NODE_ENV=development  # Only development supported in .env
-```
-
-## State Management Architecture
-
-**✅ REFACTORED (January 2025)**: Clear separation of client-side and server-side state following React best practices.
-
-### Server State (TanStack Query)
-- **Location**: `/src/features/*/hooks/`
-- **Purpose**: All data from APIs/database
-- **Examples**: Organizations, contacts, opportunities, authentication status
+### Design Token Usage
+Prefer semantic tokens over hardcoded Tailwind classes:
 
 ```typescript
-// ✅ Server data via TanStack Query
-const { data: organizations } = useOrganizations(filters)
-const createMutation = useCreateOrganization()
+import { semanticSpacing, semanticColors } from '@/styles/tokens'
+
+// Good: Semantic tokens
+<div className={semanticSpacing.card}>        // Instead of "p-4 lg:p-6"
+<Badge className={semanticColors.priority.a}> // Instead of "bg-red-500"
+
+// CVA Pattern for component variants
+const cardVariants = cva(
+  "rounded-xl border transition-all", // base styles
+  {
+    variants: {
+      variant: {
+        default: "bg-card shadow-sm hover:shadow-md",
+        elevated: "bg-card shadow-lg hover:shadow-xl"
+      }
+    }
+  }
+)
 ```
 
-### Client State (Zustand)
-- **Location**: `/src/stores/`  
-- **Purpose**: UI state, preferences, temporary data
-- **Examples**: View modes, filters, form state, selected items
+### Feature Module Pattern
+Each business entity follows this self-contained structure:
 
+```
+src/features/entity-name/
+  components/          # Entity-specific components
+    EntityTable.tsx
+    EntityForm.tsx
+    EntityActions.tsx
+  hooks/              # Data fetching and UI state
+    useEntity.ts
+    useEntityActions.ts
+  types/              # TypeScript interfaces
+    entity.types.ts
+  index.ts            # Public exports
+```
+
+## Data Fetching Patterns
+
+### TanStack Query + Supabase
 ```typescript
-// ✅ Client UI state via Zustand  
-const { viewMode, setViewMode } = useAdvocacyView()
-const { isFormOpen, openCreateForm } = useAdvocacyForm()
+// Basic query hook with caching
+export function useOrganizations() {
+  return useQuery({
+    queryKey: ['organizations'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('organizations')
+        .select('*')
+        .order('name')
+
+      if (error) throw error
+      return data
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
+}
+
+// Mutation with optimistic updates
+export function useCreateOrganization() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (org: CreateOrganization) => {
+      const { data, error } = await supabase
+        .from('organizations')
+        .insert(org)
+        .select()
+        .single()
+
+      if (error) throw error
+      return data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['organizations'] })
+    }
+  })
+}
 ```
 
-**📚 Full Guide**: `/docs/STATE_MANAGEMENT_GUIDE.md`  
-**🛠️ Development Workflow**: `/docs/DEVELOPMENT_WORKFLOW.md`
+## Quality Standards & Validation
 
-## Architectural Safeguards
+### Pre-Commit Requirements
+The `npm run quality-gates` script runs 9 validation gates:
+1. TypeScript compilation
+2. ESLint (max 20 warnings)
+3. Component architecture health (≥80%)
+4. Build success & bundle analysis (≤3MB)
+5. Performance baseline
+6. UI consistency checks
+7. Design token coverage (≥75%)
+8. Mobile optimization
+9. Table component consistency (≥80%)
 
-**✅ IMPLEMENTED (January 2025)**: Comprehensive architectural enforcement and performance optimizations.
+### Performance Thresholds
+- **Bundle Size**: ≤3MB total
+- **DataTable Virtualization**: Auto-enabled at 500+ rows
+- **Token Coverage**: Target 88%+ (currently achieved)
+- **Architecture Health**: ≥80% component consistency
 
-### ESLint Enforcement
-- Custom architectural rules prevent state boundary violations
-- Feature boundary enforcement prevents improper imports
-- Automated validation during development and CI/CD
+## Mobile-First Design
 
-### Performance Optimizations
-- TanStack Query optimizations with intelligent caching patterns
-- Component-level optimizations (virtualization, debouncing, memoization)
-- Performance monitoring and analysis tools
-- Bundle optimization and analysis
+iPad-optimized responsive design for field sales teams:
+- **Responsive Breakpoints**: mobile (<768px), tablet (768px+), laptop (1024px+), desktop (1280px+)
+- **Touch-Friendly**: Larger touch targets, optimized gestures
+- **Performance**: Virtual scrolling for large datasets on mobile
 
-### Development Tools
-- Automated component generation with architectural patterns
-- Development assistant for code analysis and fixes
-- Comprehensive validation pipeline
+## Troubleshooting Common Issues
 
+### TypeScript Errors
 ```bash
-# Generate components with proper patterns
-npm run dev:assist create component ContactForm contacts
-
-# Validate architecture
-npm run lint:architecture
-
-# Performance analysis
-npm run optimize:performance
-
-# Complete validation pipeline
-npm run validate
-npm run quality-gates        # Run comprehensive 6-stage quality gates
-npm run validate:architecture # Validate architectural patterns
-npm run validate:performance  # Validate performance benchmarks
+npm run type-check  # Check compilation
+# Regenerate Supabase types if needed:
+# supabase gen types typescript --project-id [ID] > src/lib/database.types.ts
 ```
 
-**📚 Complete Documentation**:
-- `/docs/ARCHITECTURAL_SAFEGUARDS.md` - Enforcement details
-- `/docs/DEVELOPMENT_WORKFLOW.md` - Development process
-- `/src/lib/performance-optimizations.ts` - Performance utilities
-- `/src/lib/query-optimizations.ts` - TanStack Query patterns
+### Performance Issues
+```bash
+npm run analyze           # Bundle size analysis
+npm run test:performance  # Performance benchmarks
+# Check DataTable virtualization for large datasets
+```
 
-## Specialized Agent Architecture
+### Design Token Issues
+```bash
+npm run tokens:coverage  # Check token usage
+npm run tokens:validate  # Validate token consistency
+# Replace hardcoded Tailwind with semantic tokens from @/styles/tokens
+```
 
-This project follows a specialized agent architecture with MCP tools:
+### Build Failures
+```bash
+npm run quality-gates  # Full validation suite
+npm run validate      # TypeScript + lint + build
+# Check .env file against .env.example for missing variables
+```
 
-### Primary Development Agents
-- **Database & Schema Architect**: Schema design using Supabase + PostgreSQL
-- **CRM Authentication Manager**: Auth implementation and security
-- **Analytics & Reporting Engine**: Business intelligence and metrics
-- **Coordinated UI Component Builder**: Design system and component development
-- **Performance & Search Optimization**: Database and search performance
+---
 
-### Development Phases
-1. **Weeks 1-4**: Infrastructure setup (database, auth, basic CRUD)
-2. **Weeks 5-8**: Advanced features (search, validation, core functionality)
-3. **Weeks 9-12**: Interface optimization and user experience
-4. **Weeks 13-16**: Production readiness and deployment
-
-## Available MCP Tools
-**Database & Infrastructure:**
-- `supabase`: Database operations, migrations, auth, logs, advisors
-- `postgres`: Database analysis and optimization, health checks, query performance
-
-**Frontend Development:**
-- `shadcn-ui`: UI component library access and demos
-- `magicuidesign`: Special effects, text animations, buttons, backgrounds
-- `playwright`: Browser automation, testing, screenshots, UI interaction (MCP tool only - no full installation)
-
-**Development & Deployment:**
-- `vercel`: Deployment and hosting
-- `github`: Repository management, issues, pull requests
-- `filesystem`: File operations, directory management
-
-**Documentation & Research:**
-- `Context7`: Up-to-date library documentation
-- `exa`: Web search and content extraction
-- `knowledge-graph`: Memory and relationship mapping
-
-### MCP Tool Response Size Limits
-⚠️ **Important**: All MCP tools have a **25,000 token response limit**. Always use pagination, filtering, and limit parameters to prevent errors.
-
-**Key Guidelines:**
-- Use `limit` parameters (recommended: 5-25 for docs, 100 for DB queries)
-- Apply specific filters before querying large datasets
-- Break large queries into smaller, focused requests
-- Always include `LIMIT` clauses in SQL queries
-- Use pagination for list operations (`page`, `per_page` parameters)
-
-See `/docs/MCP_TOOL_REFERENCE_GUIDE.md` for comprehensive usage guidelines.
-
-## Important Files
-- `components.json`: shadcn/ui configuration (new-york style, slate theme)
-- `vite.config.ts`: Vite configuration with path aliases
-- `tsconfig.json`: TypeScript strict mode configuration
-- `docs/CRM_AGENT_ARCHITECTURE.md`: Detailed agent architecture
-- `docs/Coding_Rules.md`: 10 essential coding rules for the project
-
-## Current Implementation Status (MVP COMPLETE + EXCEL IMPORT)
-
-### ✅ Phase 1: Foundation (COMPLETED)
-- **Stage 1**: Database Implementation - Full schema, indexes, RLS policies
-- **Stage 2**: Type Definitions & Interfaces - Validation schemas, hooks
-- **Stage 3**: Authentication Implementation - Supabase auth, context, routes
-
-### ✅ Phase 2: Core Features (COMPLETED) 
-- **Stage 4**: Component Implementation - CRUD forms, data tables, wizard
-- **Stage 5**: Route Integration & Navigation - React Router, layout, pages
-- **Stage 6**: Dashboard Implementation - Principal cards, activity feed, metrics
-
-### ✅ Phase 3: Testing & Validation (COMPLETED)
-- **Stage 7**: Comprehensive Testing - Database (95%), UI/UX (88%), Auth (94%), Performance (100%), UAT (95%)
-- **Stage 8**: Production Deployment - Vercel deployment, documentation (100%)
-
-### ✅ Phase 4: Excel Import Integration (COMPLETED)
-- **Stage 9**: Excel to PostgreSQL Migration MVP - Complete import functionality (100%)
-- **Stage 10**: Production Deployment with Import - Live at https://crm.kjrcloud.com (100%)
-
-### 🎯 Production-Ready Features
-- **5 Core Entities**: Organizations, Contacts, Products, Opportunities, Interactions
-- **Authentication**: Supabase Auth with RLS security
-- **Business Logic**: Database constraints, validation triggers
-- **Mobile-Optimized**: iPad-focused responsive design
-- **Performance**: Sub-5ms database queries, <3s page loads
-- **Search**: Full-text search with trigram indexing
-- **Dashboard**: Clean minimal interface ready for customization
-- **Excel Import**: Complete Excel to PostgreSQL migration with MVP approach
-  - CSV file upload with drag-and-drop interface
-  - Hard-coded field mappings for organization data
-  - Real-time progress tracking and error reporting
-  - Batch processing with comprehensive validation
-  - Manager names stored as text (Phase 2: UUID mapping)
-  - Unmapped data preservation in import_notes field
-
-### 📚 Documentation
-- **User Guide**: `/docs/USER_GUIDE.md` - Complete Sales Manager guide
-- **Technical Guide**: `/docs/TECHNICAL_GUIDE.md` - Developer documentation
-- **Test Reports**: `/docs/testing/` - Comprehensive test documentation
-- **Deployment Guide**: `/docs/PRODUCTION_DEPLOYMENT_GUIDE.md`
-
-## Development Notes
-- Always check `docs/` folder for architecture decisions and development guidelines
-- Use the path alias `@/*` for imports (`@/components`, `@/lib`)
-- Follow the mobile-first responsive design approach
-- Prioritize shadcn/ui components for UI consistency
-- Implement optimistic UI updates with proper error handling
-- **MVP is production-ready** - All testing phases completed with >90% confidence
-- **Excel Import MVP**: Follow checklist at `/docs/checklists/excel-to-postgresql-migration.md`
-- **Production URL**: https://crm.kjrcloud.com - Live with Excel import functionality
-
-### Quality Gates & Testing
-**Before Committing:**
-- `npm run validate` - Complete validation pipeline (type-check + lint + build)
-- `npm run quality-gates` or `./scripts/run-quality-gates.sh` - 6-stage comprehensive validation
-
-**Test Categories:**
-- `npm run test:mcp` - MCP tests (auth, CRUD, dashboard, mobile)
-- `npm run test:backend` - Vitest backend tests (database, performance, security)
-- `npm run test:architecture` - Architecture validation (state boundaries, component placement)
-
-**Testing Infrastructure:**
-- **Backend Testing**: Vitest for unit/integration tests (`tests/backend/`)
-- **Architecture Testing**: Custom validation rules (`tests/architecture/`)
-- **MCP Testing**: Node.js-based integration tests (`tests/mcp/`)
-- **E2E Testing**: Playwright MCP tool only (no full Playwright installation)
-- **Production Monitoring**: `/scripts/production-monitor.sh`
-
-**Testing Architecture Patterns**:
-- **State Boundary Validation**: Ensures TanStack Query (server) vs Zustand (client) separation
-- **Component Placement Rules**: Validates feature vs shared component organization
-- **Performance Benchmarks**: Database query performance (<5ms), bundle size (<3MB)  
-- **ESLint Rule Testing**: Custom architectural rules validation with 80%+ health score requirement
-- **Security Testing**: RLS policy validation, auth flow testing
-- **Data Integrity Testing**: Soft delete preservation, UUID consistency, referential integrity
-
-#### Quality Gates (run-quality-gates.sh)
-1. **TypeScript Compilation** - Strict type checking
-2. **Code Linting** - ESLint validation with custom architectural rules
-3. **Component Architecture** - Health score validation (80%+ required)
-4. **Build & Bundle Analysis** - Build success + bundle size (<3MB)
-5. **Performance Baseline** - Performance monitoring completion
-6. **Mobile Optimization** - Mobile-first responsive design validation
-
-### MCP Tool Development Guidelines
-When working with MCP tools in this project:
-
-1. **Always Use Limits**: Never execute unlimited queries or searches
-   - Documentation searches: `limit: 5-10`
-   - Database queries: Include `LIMIT 100` or less
-   - API calls: Use `per_page: 25-50`
-
-2. **Query Strategy**: Break large requests into focused, sequential queries
-   - Start with overview/summary queries
-   - Follow up with specific detail queries
-   - Use filters and search terms to narrow scope
-
-3. **Error Handling**: If you encounter response size errors:
-   - Reduce the `limit` parameter immediately
-   - Make search terms more specific
-   - Consider alternative query approaches
-   - Use templates from `/docs/templates/mcp-query-templates.md`
-
-4. **Performance**: Always include appropriate WHERE clauses and indexes
-   - Use `WHERE deleted_at IS NULL` for soft-deleted records
-   - Filter by date ranges when appropriate
-   - Index foreign keys and commonly queried columns
-
-See `/docs/MCP_TOOL_REFERENCE_GUIDE.md` for complete guidelines and `/docs/templates/mcp-query-templates.md` for ready-to-use query patterns.
-
-### UI Component Documentation
-- **Dialog Patterns**: `/docs/ui/dialog.md` - StandardDialog API, migration guide, and best practices
-- Coding Rules:
-1. Write Code Like It’s Going to be Reviewed by Your Future Self
-2. DRY (Don’t Repeat Yourself), but Avoid “Magic”
-3. Comment for the “Why,” Not the “What”
-4. Single Responsibility Principle: Keep Functions Focused
-5. Version Control is Not Optional (and Commit with Care)
-6. Be Mindful of Dependencies
-7. Refactor Regularly and Ruthlessly
-8. Think in Systems, Not Just Code
-9. Think Before You Code
-10. Prioritize Small, Releasable Units
-
+**Production Ready**: Live system serving Master Food Brokers at https://crm.kjrcloud.com
+**Version**: 1.0 (September 2025)

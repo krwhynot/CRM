@@ -6,7 +6,27 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { Monitor, Tablet, Smartphone, Moon, Sun, Palette, Type, Layout, Layers, Accessibility, Zap } from 'lucide-react'
+import {
+  Monitor,
+  Tablet,
+  Smartphone,
+  Moon,
+  Sun,
+  Palette,
+  Type,
+  Layout,
+  Layers,
+  Accessibility,
+  Zap,
+} from 'lucide-react'
+import {
+  spacing,
+  semanticSpacing,
+  semanticTypography,
+  semanticColors,
+  fontWeight,
+  semanticRadius,
+} from '@/styles/tokens'
 
 import { ColorPalette } from '@/components/style-guide/ColorPalette'
 import { TypographyShowcase } from '@/components/style-guide/TypographyShowcase'
@@ -30,16 +50,19 @@ function StyleGuide() {
   const toggleReducedMotion = () => {
     setReducedMotion(!reducedMotion)
     document.documentElement.style.setProperty(
-      '--motion-reduce', 
+      '--motion-reduce',
       reducedMotion ? 'no-preference' : 'reduce'
     )
   }
 
   const getViewportClass = () => {
     switch (viewport) {
-      case 'mobile': return 'max-w-sm mx-auto'
-      case 'tablet': return 'max-w-2xl mx-auto'
-      default: return 'max-w-full'
+      case 'mobile':
+        return 'max-w-sm mx-auto'
+      case 'tablet':
+        return 'max-w-2xl mx-auto'
+      default:
+        return 'max-w-full'
     }
   }
 
@@ -49,79 +72,81 @@ function StyleGuide() {
       label: 'Colors',
       icon: Palette,
       component: ColorPalette,
-      description: 'Brand colors, semantic colors, and CRM-specific palettes'
+      description: 'Brand colors, semantic colors, and CRM-specific palettes',
     },
     {
       id: 'typography',
       label: 'Typography',
       icon: Type,
       component: TypographyShowcase,
-      description: 'Font hierarchy, weights, and text styling'
+      description: 'Font hierarchy, weights, and text styling',
     },
     {
       id: 'components',
       label: 'Components',
       icon: Layers,
       component: ComponentShowcase,
-      description: 'Interactive UI components and variants'
+      description: 'Interactive UI components and variants',
     },
     {
       id: 'layout',
       label: 'Layout',
       icon: Layout,
       component: SpacingDemo,
-      description: 'Spacing, grids, and layout patterns'
+      description: 'Spacing, grids, and layout patterns',
     },
     {
       id: 'motion',
       label: 'Motion',
       icon: Zap,
       component: MotionGallery,
-      description: 'Animation timing and interactive effects'
+      description: 'Animation timing and interactive effects',
     },
     {
       id: 'accessibility',
       label: 'Accessibility',
       icon: Accessibility,
       component: AccessibilityDemo,
-      description: 'Focus states, contrast, and inclusive design'
-    }
+      description: 'Focus states, contrast, and inclusive design',
+    },
   ]
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b bg-card">
-        <div className="container mx-auto px-6 py-6">
+        <div className={`container mx-auto ${semanticSpacing.cardContainer}`}>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-display text-primary font-bold">
+              <h1 className={`text-display text-primary ${fontWeight.bold}`}>
                 Master Food Brokers Design System
               </h1>
-              <p className="text-subtitle text-muted mt-2">
+              <p className={`${semanticTypography.body} text-muted ${semanticSpacing.topGap.xs}`}>
                 Interactive style guide and component library
               </p>
             </div>
-            
+
             {/* Controls */}
-            <div className="flex items-center space-x-6">
+            <div className={`flex items-center ${semanticSpacing.inline.lg}`}>
               {/* Viewport Toggle */}
-              <div className="flex items-center space-x-2">
-                <Label className="text-small">Viewport:</Label>
-                <div className="flex border rounded-lg p-1">
+              <div className={`flex items-center ${semanticSpacing.inline.sm}`}>
+                <Label className={semanticTypography.label}>Viewport:</Label>
+                <div
+                  className={`flex border ${semanticRadius.lg} ${semanticSpacing.layoutPadding.xs}`}
+                >
                   {[
                     { size: 'desktop', icon: Monitor },
                     { size: 'tablet', icon: Tablet },
-                    { size: 'mobile', icon: Smartphone }
+                    { size: 'mobile', icon: Smartphone },
                   ].map(({ size, icon: Icon }) => (
                     <Button
                       key={size}
                       variant={viewport === size ? 'default' : 'ghost'}
                       size="sm"
                       onClick={() => setViewport(size as ViewportSize)}
-                      className="px-3"
+                      className={semanticSpacing.compactX}
                     >
-                      <Icon className="h-4 w-4" />
+                      <Icon className="size-4" />
                     </Button>
                   ))}
                 </div>
@@ -130,19 +155,19 @@ function StyleGuide() {
               <Separator orientation="vertical" className="h-6" />
 
               {/* Theme Toggle */}
-              <div className="flex items-center space-x-2">
-                <Label htmlFor="dark-mode" className="text-small">Dark Mode</Label>
-                <Switch
-                  id="dark-mode"
-                  checked={darkMode}
-                  onCheckedChange={toggleDarkMode}
-                />
-                {darkMode ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              <div className={`flex items-center ${semanticSpacing.inline.sm}`}>
+                <Label htmlFor="dark-mode" className={semanticTypography.label}>
+                  Dark Mode
+                </Label>
+                <Switch id="dark-mode" checked={darkMode} onCheckedChange={toggleDarkMode} />
+                {darkMode ? <Moon className="size-4" /> : <Sun className="size-4" />}
               </div>
 
               {/* Motion Toggle */}
-              <div className="flex items-center space-x-2">
-                <Label htmlFor="reduced-motion" className="text-small">Reduce Motion</Label>
+              <div className={`flex items-center ${semanticSpacing.inline.sm}`}>
+                <Label htmlFor="reduced-motion" className={semanticTypography.label}>
+                  Reduce Motion
+                </Label>
                 <Switch
                   id="reduced-motion"
                   checked={reducedMotion}
@@ -153,37 +178,40 @@ function StyleGuide() {
           </div>
         </div>
       </div>
-
       {/* Content */}
-      <div className={`container mx-auto px-6 py-8 ${getViewportClass()}`}>
-        <Tabs defaultValue="colors" className="space-y-8">
+      <div className={`container mx-auto ${semanticSpacing.pageContainer} ${getViewportClass()}`}>
+        <Tabs defaultValue="colors" className={semanticSpacing.stack.xl}>
           {/* Tab Navigation */}
-          <TabsList className="grid w-full grid-cols-6 h-auto p-1">
+          <TabsList className="grid w-full grid-cols-6 h-auto ${semanticSpacing.layoutPadding.xs}">
             {tabs.map(({ id, label, icon: Icon }) => (
               <TabsTrigger
                 key={id}
                 value={id}
-                className="flex flex-col items-center space-y-2 py-4 px-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                className={`flex flex-col items-center ${semanticSpacing.stack.xs} ${semanticSpacing.cardY} ${semanticSpacing.compactX} data-[state=active]:bg-primary data-[state=active]:text-primary-foreground`}
               >
-                <Icon className="h-5 w-5" />
-                <span className="text-xs font-medium">{label}</span>
+                <Icon className="size-5" />
+                <span className={`${semanticTypography.caption} ${fontWeight.medium}`}>
+                  {label}
+                </span>
               </TabsTrigger>
             ))}
           </TabsList>
 
           {/* Tab Content */}
           {tabs.map(({ id, component: Component, description }) => (
-            <TabsContent key={id} value={id} className="space-y-6">
+            <TabsContent key={id} value={id} className={semanticSpacing.stack.lg}>
               <Card>
                 <CardHeader>
-                  <div className="flex items-center space-x-3">
+                  <div className={`flex items-center ${semanticSpacing.inline.sm}`}>
                     {(() => {
-                      const IconComponent = tabs.find(tab => tab.id === id)?.icon
-                      return IconComponent ? <IconComponent className="h-6 w-6 text-primary" /> : null
+                      const IconComponent = tabs.find((tab) => tab.id === id)?.icon
+                      return IconComponent ? (
+                        <IconComponent className="size-6 text-primary" />
+                      ) : null
                     })()}
                     <div>
-                      <CardTitle className="text-title capitalize">{id}</CardTitle>
-                      <CardDescription className="text-caption">
+                      <CardTitle className={`${semanticTypography.h3} capitalize`}>{id}</CardTitle>
+                      <CardDescription className={semanticTypography.caption}>
                         {description}
                       </CardDescription>
                     </div>
@@ -197,18 +225,19 @@ function StyleGuide() {
           ))}
         </Tabs>
       </div>
-
       {/* Footer */}
       <footer className="border-t bg-card mt-16">
-        <div className="container mx-auto px-6 py-8">
+        <div className={`container mx-auto ${semanticSpacing.pageContainer}`}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-body font-medium">Master Food Brokers CRM Design System</p>
-              <p className="text-caption text-muted">
+              <p className={`${semanticTypography.body} ${fontWeight.medium}`}>
+                Master Food Brokers CRM Design System
+              </p>
+              <p className={`${semanticTypography.caption} text-muted`}>
                 Version 1.0 • Built with React, TypeScript, and Tailwind CSS
               </p>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className={`flex items-center ${semanticSpacing.inline.sm}`}>
               <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
                 Production Ready
               </Badge>

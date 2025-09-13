@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Trash2, X, CheckSquare, Square } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+import { semanticTypography, semanticSpacing } from '@/styles/tokens'
 export interface BulkAction {
   /** Unique identifier for the action */
   id: string
@@ -70,17 +71,12 @@ export function BulkActionsToolbar({
   // Show minimal toolbar when nothing is selected
   if (selectedCount === 0) {
     return (
-      <div className={cn("flex items-center justify-between py-2", className)}>
-        <div className="text-sm text-gray-500">
+      <div className={cn('flex items-center justify-between py-2', className)}>
+        <div className={cn(semanticTypography.body, 'text-muted-foreground')}>
           {totalCount} {entityType}
         </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onSelectAll}
-            className="h-8"
-          >
+        <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
+          <Button variant="outline" size="sm" onClick={onSelectAll} className="h-8">
             <CheckSquare className="h-3 w-3 mr-1" />
             Select All
           </Button>
@@ -91,19 +87,19 @@ export function BulkActionsToolbar({
 
   // Show full toolbar when items are selected
   return (
-    <Card className={cn("border-primary/20 bg-primary/5", className)}>
-      <div className="flex items-center justify-between p-3">
-        <div className="flex items-center gap-3">
+    <Card className={cn('border-primary/20 bg-primary/5', className)}>
+      <div className={cn(semanticSpacing.compact, 'flex items-center justify-between')}>
+        <div className={cn(semanticSpacing.gap.sm, 'flex items-center')}>
           <Badge variant="secondary" className="bg-primary/10 text-primary">
             {selectedCount} selected
           </Badge>
-          
-          <div className="text-sm text-gray-600">
+
+          <div className={cn(semanticTypography.body, 'text-gray-600')}>
             {selectedCount} of {totalCount} {entityType} selected
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
           {/* Selection Controls */}
           <Button
             variant="ghost"
@@ -129,7 +125,7 @@ export function BulkActionsToolbar({
           {actions.map((action) => (
             <Button
               key={action.id}
-              variant={action.destructive ? "destructive" : "outline"}
+              variant={action.destructive ? 'destructive' : 'outline'}
               size="sm"
               onClick={action.onClick}
               disabled={action.disabled || isLoading}

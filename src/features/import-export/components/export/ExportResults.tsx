@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import type { ExportProgress } from '@/features/import-export/hooks/useExportExecution'
+import { semanticSpacing } from '@/styles/tokens'
 
 interface ExportResultsProps {
   exportProgress: ExportProgress
@@ -16,13 +17,13 @@ export const ExportResults: React.FC<ExportResultsProps> = ({ exportProgress, on
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <CheckCircle className="size-5 text-green-600" />
+        <CardTitle className={`flex items-center ${semanticSpacing.gap.xs}`}>
+          <CheckCircle className="size-5 text-success" />
           Export Completed
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className={semanticSpacing.stack.lg}>
           <Alert>
             <CheckCircle className="size-4" />
             <AlertDescription>

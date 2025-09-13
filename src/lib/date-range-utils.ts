@@ -3,7 +3,23 @@
  * Provides optimized date calculations for universal filters
  */
 
-import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, startOfYear, endOfYear, subWeeks, subMonths, subQuarters, subYears, addDays, isWeekend, format } from 'date-fns'
+import {
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+  startOfQuarter,
+  endOfQuarter,
+  startOfYear,
+  endOfYear,
+  subWeeks,
+  subMonths,
+  subQuarters,
+  subYears,
+  addDays,
+  isWeekend,
+  format,
+} from 'date-fns'
 import type { TimeRangeType } from '@/types/filters.types'
 
 export interface DateRange {
@@ -166,7 +182,7 @@ export function getBusinessDaysInRange(start: Date, end: Date): number {
  */
 export function getNextBusinessDay(date: Date): Date {
   let nextDay = addDays(date, 1)
-  
+
   while (isWeekend(nextDay)) {
     nextDay = addDays(nextDay, 1)
   }
@@ -244,7 +260,10 @@ export function getMemoizedDateRange(
 /**
  * Validate that a date range is logical
  */
-export function validateDateRange(start: Date, end: Date): {
+export function validateDateRange(
+  start: Date,
+  end: Date
+): {
   isValid: boolean
   errors: string[]
 } {

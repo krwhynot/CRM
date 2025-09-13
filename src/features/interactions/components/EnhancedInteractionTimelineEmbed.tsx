@@ -4,19 +4,29 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
-import { 
-  Phone, Mail, Calendar, Users, Package, 
-  FileText, AlertCircle, Building,
-  User, ChevronRight, Clock, ChevronDown, 
-  ChevronUp, MapPin, FileCheck, MessageSquare
+import {
+  Phone,
+  Mail,
+  Calendar,
+  Users,
+  Package,
+  FileText,
+  AlertCircle,
+  Building,
+  User,
+  ChevronRight,
+  Clock,
+  ChevronDown,
+  ChevronUp,
+  MapPin,
+  FileCheck,
+  MessageSquare,
 } from 'lucide-react'
 import { format, parseISO, isThisWeek, isToday, isYesterday } from 'date-fns'
 import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticTypography, semanticRadius, fontWeight } from '@/styles/tokens'
 import { useIsMobile, useIsIPad } from '@/hooks/useMediaQuery'
-import type { 
-  InteractionWithRelations, 
-  InteractionPriority
-} from '@/types/entities'
+import type { InteractionWithRelations, InteractionPriority } from '@/types/entities'
 import { PRIORITY_COLORS } from '@/types/interaction.types'
 
 interface EnhancedInteractionTimelineEmbedProps {
@@ -30,59 +40,63 @@ interface EnhancedInteractionTimelineEmbedProps {
 
 // Icon mapping for interaction types including new ones
 const INTERACTION_ICONS = {
-  'in_person': Users,
-  'call': Phone, 
-  'email': Mail,
-  'meeting': Calendar,
-  'quoted': FileText,
-  'distribution': Package,
-  'demo': Users,
-  'proposal': FileText,
-  'follow_up': Phone,
-  'trade_show': Users,
-  'site_visit': MapPin,
-  'contract_review': FileCheck,
+  in_person: Users,
+  call: Phone,
+  email: Mail,
+  meeting: Calendar,
+  quoted: FileText,
+  distribution: Package,
+  demo: Users,
+  proposal: FileText,
+  follow_up: Phone,
+  trade_show: Users,
+  site_visit: MapPin,
+  contract_review: FileCheck,
 } as const
 
-export function EnhancedInteractionTimelineEmbed({ 
-  opportunityId, 
+export function EnhancedInteractionTimelineEmbed({
+  opportunityId,
   maxHeight = '500px',
   showGrouping = true,
   onAddNew,
   className,
-  enabled = true
+  enabled = true,
 }: EnhancedInteractionTimelineEmbedProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
   const [showAll, setShowAll] = useState(false)
-  
+
   const isMobile = useIsMobile()
   const isIPad = useIsIPad()
-  
-  const { data: interactions, isLoading, error } = useInteractionsByOpportunity(opportunityId, { enabled })
+
+  const {
+    data: interactions,
+    isLoading,
+    error,
+  } = useInteractionsByOpportunity(opportunityId, { enabled })
 
   // Group interactions by date
   const groupedInteractions = useMemo(() => {
     if (!interactions) return {}
-    
+
     const groups: Record<string, InteractionWithRelations[]> = {}
-    
+
     interactions.forEach((interaction) => {
       const date = parseISO(interaction.interaction_date)
       let groupKey = format(date, 'MMMM d, yyyy')
-      
+
       if (isToday(date)) groupKey = 'Today'
       else if (isYesterday(date)) groupKey = 'Yesterday'
       else if (isThisWeek(date)) groupKey = 'This Week'
-      
+
       if (!groups[groupKey]) groups[groupKey] = []
       groups[groupKey].push(interaction)
     })
-    
+
     return groups
   }, [interactions])
 
   const handleToggleExpand = useCallback((interactionId: string) => {
-    setExpandedItems(prev => {
+    setExpandedItems((prev) => {
       const newSet = new Set(prev)
       if (newSet.has(interactionId)) {
         newSet.delete(interactionId)
@@ -95,11 +109,11 @@ export function EnhancedInteractionTimelineEmbed({
 
   if (isLoading) {
     return (
-      <div className={cn("space-y-4", className)}>
+      <div className={cn(semanticSpacing.stackContainer, className)}>
         {[1, 2, 3].map((i) => (
-          <div key={i} className="flex gap-3">
-            <Skeleton className="size-10 rounded-full" />
-            <div className="flex-1 space-y-2">
+          <div key={i} className={`flex ${semanticSpacing.gap.md}`}>
+            <Skeleton className={`size-10 ${semanticRadius.default}-full`} />
+            <div className={`flex-1 ${semanticSpacing.stack.xs}`}>
               <Skeleton className="h-4 w-1/3" />
               <Skeleton className="h-3 w-full" />
               <Skeleton className="h-3 w-2/3" />
@@ -112,26 +126,36 @@ export function EnhancedInteractionTimelineEmbed({
 
   if (error) {
     return (
-      <div className={cn("text-center py-6 text-red-600", className)}>
-        <AlertCircle className="mx-auto mb-2 size-8" />
-        <p className="text-sm font-medium">Failed to load interactions</p>
-        <p className="mt-1 text-xs">Please try refreshing the page</p>
+      <div
+        className={cn(`text-center ${semanticSpacing.verticalPadding.xl} text-red-600`, className)}
+      >
+        <AlertCircle className={`mx-auto ${semanticSpacing.bottomGap.xs} size-8`} />
+        <p className={`${semanticTypography.body} ${fontWeight.medium}`}>
+          Failed to load interactions
+        </p>
+        <p className={`mt-1 ${semanticTypography.caption}`}>Please try refreshing the page</p>
       </div>
     )
   }
 
   if (!interactions?.length) {
     return (
-      <div className={cn("text-center py-12", className)}>
-        <div className="mb-4 inline-flex size-16 items-center justify-center rounded-full bg-gray-100">
-          <FileText className="size-8 text-gray-400" />
+      <div className={cn(`text-center ${semanticSpacing.verticalPadding.xxl}`, className)}>
+        <div
+          className={`${semanticSpacing.bottomGap.md} inline-flex size-16 items-center justify-center ${semanticRadius.default}-full bg-muted`}
+        >
+          <FileText className={`size-8 text-muted-foreground`} />
         </div>
-        <p className="mb-1 font-medium text-gray-600">No interactions yet</p>
-        <p className="text-sm text-gray-500">
+        <p
+          className={`${semanticSpacing.bottomGap.xxs} ${fontWeight.medium} text-muted-foreground`}
+        >
+          No interactions yet
+        </p>
+        <p className={`${semanticTypography.body} text-muted-foreground`}>
           Start tracking customer touchpoints to see them here
         </p>
         {onAddNew && (
-          <Button onClick={onAddNew} className="mt-4" size="sm">
+          <Button onClick={onAddNew} className={`${semanticSpacing.topGap.lg}`} size="sm">
             Add First Interaction
           </Button>
         )}
@@ -148,33 +172,37 @@ export function EnhancedInteractionTimelineEmbed({
   } else {
     maxDisplayed = showAll ? interactions.length : 4
   }
-  
+
   const hasMore = interactions.length > maxDisplayed
   const remaining = interactions.length - maxDisplayed
 
   return (
     <ScrollArea className="w-full" style={{ height: maxHeight }}>
-      <div className={cn("space-y-6 pr-4", className)}>
+      <div className={cn(`${semanticSpacing.stack.lg} pr-4`, className)}>
         {Object.entries(groupedInteractions).map(([groupName, groupInteractions]) => (
           <div key={groupName}>
             {showGrouping && (
-              <div className="sticky top-0 z-10 mb-3 bg-white pb-2">
-                <h4 className="flex items-center gap-2 text-sm font-semibold text-gray-600">
+              <div
+                className={`sticky top-0 z-10 ${semanticSpacing.bottomGap.md} bg-white ${semanticSpacing.bottomPadding.xs}`}
+              >
+                <h4
+                  className={`flex items-center ${semanticSpacing.gap.xs} ${semanticTypography.body} ${fontWeight.semibold} text-muted-foreground`}
+                >
                   <Clock className="size-3" />
                   {groupName}
                   <Badge variant="secondary" className="ml-auto">
                     {groupInteractions.length}
                   </Badge>
                 </h4>
-                <div className="mt-2 h-px bg-gray-200" />
+                <div className={`${semanticSpacing.topGap.xs} h-px bg-muted`} />
               </div>
             )}
-            
-            <div className="space-y-3">
+
+            <div className={semanticSpacing.stack.md}>
               {groupInteractions.slice(0, maxDisplayed).map((interaction) => (
-                <InteractionCard 
-                  key={interaction.id} 
-                  interaction={interaction} 
+                <InteractionCard
+                  key={interaction.id}
+                  interaction={interaction}
                   isExpanded={expandedItems.has(interaction.id)}
                   onToggleExpand={() => handleToggleExpand(interaction.id)}
                 />
@@ -182,13 +210,13 @@ export function EnhancedInteractionTimelineEmbed({
             </div>
           </div>
         ))}
-        
+
         {hasMore && (
-          <div className="border-t pt-4 text-center">
+          <div className={`border-t ${semanticSpacing.topPadding.lg} text-center`}>
             <Button
               variant="outline"
               onClick={() => setShowAll(!showAll)}
-              className="flex w-full items-center gap-2 md:w-auto"
+              className={`flex w-full items-center ${semanticSpacing.gap.xs} md:w-auto`}
             >
               {showAll ? (
                 <>
@@ -210,132 +238,157 @@ export function EnhancedInteractionTimelineEmbed({
 }
 
 // Individual Enhanced Interaction Card Component
-function InteractionCard({ 
-  interaction, 
-  isExpanded, 
-  onToggleExpand 
-}: { 
+function InteractionCard({
+  interaction,
+  isExpanded,
+  onToggleExpand,
+}: {
   interaction: InteractionWithRelations
   isExpanded: boolean
   onToggleExpand: () => void
 }) {
   const Icon = INTERACTION_ICONS[interaction.type] || MessageSquare
-  const priorityColors = interaction.priority ? PRIORITY_COLORS[interaction.priority as InteractionPriority] : null
-  
+  const priorityColors = interaction.priority
+    ? PRIORITY_COLORS[interaction.priority as InteractionPriority]
+    : null
+
   return (
-    <div className="group relative flex gap-3 rounded-lg border border-gray-100 p-3 transition-colors hover:bg-gray-50">
+    <div
+      className={`group relative flex ${semanticSpacing.gap.md} ${semanticRadius.default}-lg border border-gray-100 ${semanticSpacing.cardContainer} transition-colors hover:bg-muted`}
+    >
       {/* Priority Badge */}
       {interaction.priority && (
         <div className="absolute -left-2 top-3">
-          <Badge className={cn("h-5 w-8 text-xs font-bold", priorityColors?.badge)}>
+          <Badge className={cn('h-5 w-8 text-xs font-bold', priorityColors?.badge)}>
             {interaction.priority}
           </Badge>
         </div>
       )}
-      
       {/* Icon */}
-      <div className={cn(
-        "flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center",
-        "bg-blue-100 text-blue-600",
-        interaction.priority && "ml-4" // Offset for priority badge
-      )}>
+      <div
+        className={cn(
+          'flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center',
+          'bg-blue-100 text-blue-600',
+          interaction.priority && 'ml-4' // Offset for priority badge
+        )}
+      >
         <Icon className="size-5" />
       </div>
-      
       {/* Content */}
       <div className="min-w-0 flex-1">
         {/* Header Row */}
-        <div className="flex items-start justify-between gap-2">
+        <div className={`flex items-start justify-between ${semanticSpacing.gap.xs}`}>
           <div className="flex-1">
-            <div className="mb-1 flex items-center gap-2">
-              <p className="text-sm font-medium capitalize text-gray-900">
+            <div
+              className={`${semanticSpacing.bottomGap.xxs} flex items-center ${semanticSpacing.gap.xs}`}
+            >
+              <p
+                className={`${semanticTypography.body} ${fontWeight.medium} capitalize text-foreground`}
+              >
                 {interaction.type.replace('_', ' ')}
               </p>
               {interaction.subject && (
-                <span className="text-sm text-gray-600">• {interaction.subject}</span>
+                <span className={`${semanticTypography.body} text-muted-foreground`}>
+                  • {interaction.subject}
+                </span>
               )}
             </div>
-            
+
             {/* Metadata Row */}
-            <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500">
+            <div
+              className={`flex flex-wrap items-center ${semanticSpacing.gap.md} ${semanticTypography.caption} text-muted-foreground`}
+            >
               {/* Organization */}
               {interaction.organization && (
-                <span className="flex items-center gap-1">
+                <span className={`flex items-center ${semanticSpacing.gap.xxs}`}>
                   <Building className="size-3" />
                   {interaction.organization.name}
                   {interaction.organization.formula && (
-                    <span className="text-gray-400">({interaction.organization.formula})</span>
+                    <span className="text-muted-foreground">
+                      ({interaction.organization.formula})
+                    </span>
                   )}
                 </span>
               )}
-              
+
               {/* Contact */}
               {interaction.contact && (
-                <span className="flex items-center gap-1">
+                <span className={`flex items-center ${semanticSpacing.gap.xxs}`}>
                   <User className="size-3" />
                   {interaction.contact.first_name} {interaction.contact.last_name}
                   {interaction.contact.dropdown && (
-                    <span className="text-gray-400">- {interaction.contact.dropdown}</span>
+                    <span className="text-muted-foreground">- {interaction.contact.dropdown}</span>
                   )}
                 </span>
               )}
             </div>
           </div>
-          
+
           {/* Time & Toggle */}
-          <div className="flex items-center gap-2">
-            <span className="whitespace-nowrap text-xs text-gray-400">
+          <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
+            <span
+              className={`whitespace-nowrap ${semanticTypography.caption} text-muted-foreground`}
+            >
               {format(parseISO(interaction.interaction_date), 'h:mm a')}
             </span>
             <Button
               variant="ghost"
               size="sm"
               onClick={onToggleExpand}
-              className="size-6 p-0"
+              className={`size-6 ${semanticSpacing.zero}`}
             >
-              <ChevronRight className={cn(
-                "h-3 w-3 transition-transform",
-                isExpanded && "rotate-90"
-              )} />
+              <ChevronRight
+                className={cn('h-3 w-3 transition-transform', isExpanded && 'rotate-90')}
+              />
             </Button>
           </div>
         </div>
-        
+
         {/* Expanded Content */}
         {isExpanded && (
-          <div className="mt-3 space-y-3 border-l-2 border-gray-100 pl-2">
+          <div
+            className={`${semanticSpacing.topGap.md} ${semanticSpacing.stack.md} border-l-2 border-gray-100 ${semanticSpacing.leftPadding.xs}`}
+          >
             {/* Account Manager */}
             {interaction.account_manager && (
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-gray-600">Account Manager:</span>
-                <Badge variant="outline" className="text-xs">
+              <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
+                <span
+                  className={`${semanticTypography.caption} ${fontWeight.medium} text-muted-foreground`}
+                >
+                  Account Manager:
+                </span>
+                <Badge variant="outline" className={`${semanticTypography.caption}`}>
                   {interaction.account_manager}
                 </Badge>
               </div>
             )}
-            
+
             {/* Principals */}
             {interaction.principals && interaction.principals.length > 0 && (
-              <div className="space-y-1">
-                <span className="text-xs font-medium text-gray-600">Principals:</span>
-                <div className="flex flex-wrap gap-1">
+              <div className={semanticSpacing.stack.xxs}>
+                <span
+                  className={`${semanticTypography.caption} ${fontWeight.medium} text-muted-foreground`}
+                >
+                  Principals:
+                </span>
+                <div className={`flex flex-wrap ${semanticSpacing.gap.xxs}`}>
                   {interaction.principals.map((principal, idx) => (
-                    <div key={idx} className="flex flex-wrap gap-1">
-                      <Badge variant="secondary" className="text-xs">
+                    <div key={idx} className={`flex flex-wrap ${semanticSpacing.gap.xxs}`}>
+                      <Badge variant="secondary" className={`${semanticTypography.caption}`}>
                         {principal.name}
                       </Badge>
                       {principal.principal2 && (
-                        <Badge variant="secondary" className="text-xs">
+                        <Badge variant="secondary" className={`${semanticTypography.caption}`}>
                           {principal.principal2}
                         </Badge>
                       )}
                       {principal.principal3 && (
-                        <Badge variant="secondary" className="text-xs">
+                        <Badge variant="secondary" className={`${semanticTypography.caption}`}>
                           {principal.principal3}
                         </Badge>
                       )}
                       {principal.principal4 && (
-                        <Badge variant="secondary" className="text-xs">
+                        <Badge variant="secondary" className={`${semanticTypography.caption}`}>
                           {principal.principal4}
                         </Badge>
                       )}
@@ -344,30 +397,34 @@ function InteractionCard({
                 </div>
               </div>
             )}
-            
+
             {/* Description/Notes */}
             {(interaction.description || interaction.notes) && (
-              <div className="rounded bg-gray-50 p-2 text-sm text-gray-700">
+              <div
+                className={`${semanticRadius.default} bg-muted ${semanticSpacing.cardContainer} ${semanticTypography.body} text-foreground`}
+              >
                 {interaction.description || interaction.notes}
               </div>
             )}
-            
+
             {/* Follow-up indicator */}
             {interaction.follow_up_required && (
-              <div className="flex items-center gap-1 text-xs text-orange-600">
+              <div
+                className={`flex items-center ${semanticSpacing.gap.xxs} ${semanticTypography.caption} text-orange-600`}
+              >
                 <AlertCircle className="size-3" />
                 Follow-up required
                 {interaction.follow_up_date && (
-                  <span className="text-gray-500">
+                  <span className="text-muted-foreground">
                     by {format(parseISO(interaction.follow_up_date), 'MMM d')}
                   </span>
                 )}
               </div>
             )}
-            
+
             {/* Import Notes */}
             {interaction.import_notes && (
-              <div className="text-xs italic text-gray-400">
+              <div className={`${semanticTypography.caption} italic text-muted-foreground`}>
                 Import notes: {interaction.import_notes}
               </div>
             )}

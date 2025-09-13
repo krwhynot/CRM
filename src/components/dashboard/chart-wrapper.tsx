@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 
+import { semanticSpacing, semanticTypography, semanticRadius } from '@/styles/tokens'
 interface ChartWrapperProps {
   title: string
   subtitle?: string
@@ -26,17 +27,23 @@ export function ChartWrapper({
     <Card className={cn('dashboard-card', className)}>
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <CardTitle className="text-lg font-semibold text-foreground">{title}</CardTitle>
-            {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
+          <div className={`${semanticSpacing.stack.xs}`}>
+            <CardTitle
+              className={cn(semanticTypography.h4, semanticTypography.h4, 'text-foreground')}
+            >
+              {title}
+            </CardTitle>
+            {subtitle && (
+              <p className={cn(semanticTypography.body, 'text-muted-foreground')}>{subtitle}</p>
+            )}
           </div>
           {headerAction && <div className="shrink-0">{headerAction}</div>}
         </div>
       </CardHeader>
       <CardContent className={cn('pt-0', height)}>
         {isLoading ? (
-          <div className="h-full space-y-4">
-            <Skeleton className="size-full rounded-lg" />
+          <div className={cn(semanticSpacing.stack.md, 'h-full')}>
+            <Skeleton className={cn(semanticRadius.large, 'size-full')} />
           </div>
         ) : (
           children
@@ -89,10 +96,14 @@ export function CompactChartWrapper({
   return (
     <Card className={cn('dashboard-card', className)}>
       <CardHeader className="pb-3">
-        <CardTitle className="text-base font-medium text-foreground">{title}</CardTitle>
+        <CardTitle
+          className={cn(semanticTypography.body, semanticTypography.label, 'text-foreground')}
+        >
+          {title}
+        </CardTitle>
       </CardHeader>
       <CardContent className="h-72 pt-0">
-        {isLoading ? <Skeleton className="size-full rounded-lg" /> : children}
+        {isLoading ? <Skeleton className={cn(semanticRadius.large, 'size-full')} /> : children}
       </CardContent>
     </Card>
   )

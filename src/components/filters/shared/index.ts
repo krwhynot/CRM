@@ -1,20 +1,20 @@
 // Shared filter components that can be used across all features
-export { 
-  GenericWeeksFilter, 
+export {
+  GenericWeeksFilter,
   DEFAULT_WEEK_OPTIONS,
   type WeekOption,
-  type GenericWeeksFilterProps 
+  type GenericWeeksFilterProps,
 } from './GenericWeeksFilter'
 
-export { 
+export {
   GenericPrincipalFilter,
   type PrincipalOption,
-  type GenericPrincipalFilterProps 
+  type GenericPrincipalFilterProps,
 } from './GenericPrincipalFilter'
 
-export { 
+export {
   GenericQuickViewFilter,
   createQuickViewOptions,
   type QuickViewOption,
-  type GenericQuickViewFilterProps 
+  type GenericQuickViewFilterProps,
 } from './GenericQuickViewFilter'

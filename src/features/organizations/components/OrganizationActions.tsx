@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Pencil, Phone, Eye } from 'lucide-react'
+import { semanticSpacing, semanticColors } from '@/styles/tokens'
 import type { Organization } from '@/types/entities'
 
 interface OrganizationActionsProps {
@@ -9,6 +10,8 @@ interface OrganizationActionsProps {
   onDelete?: (organization: Organization) => void
   onView?: (organization: Organization) => void
   onContact?: (organization: Organization) => void
+  size?: 'sm' | 'default' | 'lg'
+  variant?: 'default' | 'ghost' | 'outline'
 }
 
 export const OrganizationActions: React.FC<OrganizationActionsProps> = ({
@@ -16,40 +19,44 @@ export const OrganizationActions: React.FC<OrganizationActionsProps> = ({
   onEdit,
   onView,
   onContact,
+  size = 'sm',
+  variant = 'ghost',
 }) => {
   return (
-    <div className="flex gap-2">
-      {onView && (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onView(organization)}
-          className="h-8 px-3 transition-colors duration-200"
-          title="View organization details"
-        >
-          <Eye className="size-3" />
-        </Button>
-      )}
-      {onContact && organization.phone && (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onContact(organization)}
-          className="h-8 px-3 transition-colors duration-200"
-          title="Contact organization"
-        >
-          <Phone className="size-3" />
-        </Button>
-      )}
+    <div className={`flex items-center justify-center ${semanticSpacing.gap.xs}`}>
       {onEdit && (
         <Button
-          variant="outline"
-          size="sm"
+          variant={variant}
+          size={size}
           onClick={() => onEdit(organization)}
-          className="h-8 px-3 transition-colors duration-200"
-          title="Edit organization"
+          className={`size-8 ${semanticSpacing.zero} ${semanticColors.hover.primarySubtle}`}
+          title="Edit Organization"
         >
-          <Pencil className="size-3" />
+          <Pencil className="size-4" />
+        </Button>
+      )}
+
+      {onContact && organization.phone && (
+        <Button
+          variant={variant}
+          size={size}
+          onClick={() => onContact(organization)}
+          className={`size-8 ${semanticSpacing.zero} ${semanticColors.hover.successSubtle}`}
+          title="Contact Organization"
+        >
+          <Phone className="size-4" />
+        </Button>
+      )}
+
+      {onView && (
+        <Button
+          variant={variant}
+          size={size}
+          onClick={() => onView(organization)}
+          className={`size-8 ${semanticSpacing.zero} ${semanticColors.hoverStates.subtle}`}
+          title="View Details"
+        >
+          <Eye className="size-4" />
         </Button>
       )}
     </div>

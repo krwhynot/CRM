@@ -1,5 +1,6 @@
 import { useExportConfiguration } from '../hooks/useExportConfiguration'
 import { useExportExecution } from '../hooks/useExportExecution'
+import { semanticSpacing } from '@/styles/tokens'
 import { ExportConfiguration } from '@/features/import-export/components/export/ExportConfiguration'
 import { ExportProgressComponent } from '@/features/import-export/components/export/ExportProgress'
 import { ExportResults } from '@/features/import-export/components/export/ExportResults'
@@ -13,7 +14,7 @@ export function OrganizationExporter() {
   const { exportProgress, executeExport, resetExport } = useExportExecution(exportOptions)
 
   return (
-    <div className="space-y-6">
+    <div className={semanticSpacing.stackContainer}>
       <ExportConfiguration
         exportOptions={exportOptions}
         handleFieldToggle={handleFieldToggle}

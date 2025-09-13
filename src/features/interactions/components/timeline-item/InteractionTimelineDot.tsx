@@ -1,5 +1,6 @@
 import React from 'react'
 import { cn } from '@/lib/utils'
+import { semanticRadius, semanticShadows } from '@/styles/tokens'
 
 interface InteractionTimelineDotProps {
   type: string
@@ -18,8 +19,8 @@ export const InteractionTimelineDot: React.FC<InteractionTimelineDotProps> = ({
     <div className="relative z-10 shrink-0">
       <div
         className={cn(
-          'w-8 h-8 rounded-full border-2 bg-background flex items-center justify-center',
-          'shadow-sm group-hover:shadow-md transition-shadow',
+          `w-8 h-8 ${semanticRadius.full} border-2 bg-background flex items-center justify-center`,
+          `${semanticShadows.sm} group-hover:${semanticShadows.md} transition-shadow`,
           colorClass.includes('blue') && 'border-primary/20',
           colorClass.includes('green') && 'border-success/20',
           colorClass.includes('purple') && 'border-accent/20',

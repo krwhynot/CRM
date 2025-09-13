@@ -44,51 +44,58 @@ export function useTableSort<T>({
   allowMultiSort = false,
   customSortFns = {},
 }: UseTableSortOptions<T> = {}): UseTableSortReturn<T> {
-  const [sortConfig, setSortConfig] = useState<SortConfig<T>[]>(
-    initialSort ? [initialSort] : []
-  )
+  const [sortConfig, setSortConfig] = useState<SortConfig<T>[]>(initialSort ? [initialSort] : [])
 
-  const handleSort = useCallback((field: keyof T | string, customSortFn?: (a: T, b: T) => number) => {
-    setSortConfig(prev => {
-      const existingIndex = prev.findIndex(config => config.field === field)
-      
-      if (existingIndex >= 0) {
-        // Field is already sorted, toggle direction or remove
-        const existing = prev[existingIndex]
-        if (existing.direction === 'asc') {
-          // Change to desc
-          const newConfig = [...prev]
-          newConfig[existingIndex] = { ...existing, direction: 'desc' }
-          return newConfig
+  const handleSort = useCallback(
+    (field: keyof T | string, customSortFn?: (a: T, b: T) => number) => {
+      setSortConfig((prev) => {
+        const existingIndex = prev.findIndex((config) => config.field === field)
+
+        if (existingIndex >= 0) {
+          // Field is already sorted, toggle direction or remove
+          const existing = prev[existingIndex]
+          if (existing.direction === 'asc') {
+            // Change to desc
+            const newConfig = [...prev]
+            newConfig[existingIndex] = { ...existing, direction: 'desc' }
+            return newConfig
+          } else {
+            // Remove sort for this field
+            return allowMultiSort ? prev.filter((_, i) => i !== existingIndex) : []
+          }
         } else {
-          // Remove sort for this field
-          return allowMultiSort ? prev.filter((_, i) => i !== existingIndex) : []
+          // New field to sort
+          const newSort: SortConfig<T> = {
+            field,
+            direction: 'asc',
+            sortFn: customSortFn || customSortFns[String(field)],
+          }
+
+          return allowMultiSort ? [...prev, newSort] : [newSort]
         }
-      } else {
-        // New field to sort
-        const newSort: SortConfig<T> = {
-          field,
-          direction: 'asc',
-          sortFn: customSortFn || customSortFns[String(field)]
-        }
-        
-        return allowMultiSort ? [...prev, newSort] : [newSort]
-      }
-    })
-  }, [allowMultiSort, customSortFns])
+      })
+    },
+    [allowMultiSort, customSortFns]
+  )
 
   const clearSort = useCallback(() => {
     setSortConfig([])
   }, [])
 
-  const getSortDirection = useCallback((field: keyof T | string): SortDirection | undefined => {
-    const config = sortConfig.find(config => config.field === field)
-    return config?.direction
-  }, [sortConfig])
+  const getSortDirection = useCallback(
+    (field: keyof T | string): SortDirection | undefined => {
+      const config = sortConfig.find((config) => config.field === field)
+      return config?.direction
+    },
+    [sortConfig]
+  )
 
-  const isSorted = useCallback((field: keyof T | string): boolean => {
-    return sortConfig.some(config => config.field === field)
-  }, [sortConfig])
+  const isSorted = useCallback(
+    (field: keyof T | string): boolean => {
+      return sortConfig.some((config) => config.field === field)
+    },
+    [sortConfig]
+  )
 
   return {
     sortConfig,
@@ -108,7 +115,7 @@ export function useTableSortWithData<T>(
   options: UseTableSortOptions<T> = {}
 ): UseTableSortReturn<T> {
   const sortState = useTableSort(options)
-  
+
   const sortedData = useMemo(() => {
     if (sortState.sortConfig.length === 0) {
       return data
@@ -117,7 +124,7 @@ export function useTableSortWithData<T>(
     return [...data].sort((a, b) => {
       for (const config of sortState.sortConfig) {
         let result = 0
-        
+
         if (config.sortFn) {
           // Use custom sort function
           result = config.sortFn(a, b)
@@ -125,10 +132,10 @@ export function useTableSortWithData<T>(
           // Default string/number sorting
           const aValue = getNestedValue(a, config.field)
           const bValue = getNestedValue(b, config.field)
-          
+
           if (aValue === null || aValue === undefined) return 1
           if (bValue === null || bValue === undefined) return -1
-          
+
           if (typeof aValue === 'string' && typeof bValue === 'string') {
             result = aValue.localeCompare(bValue)
           } else if (typeof aValue === 'number' && typeof bValue === 'number') {
@@ -137,12 +144,12 @@ export function useTableSortWithData<T>(
             result = String(aValue).localeCompare(String(bValue))
           }
         }
-        
+
         if (result !== 0) {
           return config.direction === 'desc' ? -result : result
         }
       }
-      
+
       return 0
     })
   }, [data, sortState.sortConfig])

@@ -1,10 +1,12 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 import { useSignUpForm } from '@/features/auth/hooks/useSignUpForm'
 import { PasswordInput } from './form-components/PasswordInput'
 import { FormAlert } from './form-components/FormAlert'
 import { SignUpFormLayout } from './form-components/SignUpFormLayout'
 
+import { cn } from '@/lib/utils'
 interface SignUpFormProps {
   onToggleMode?: () => void
 }
@@ -22,13 +24,13 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
             </Button>
 
             {onToggleMode && (
-              <div className="text-center text-sm text-gray-600">
+              <div className={`text-center ${semanticTypography.body} text-gray-600`}>
                 Already have an account?{' '}
                 <Button
                   type="button"
                   variant="link"
                   size="sm"
-                  className="h-auto p-0"
+                  className={`h-auto ${semanticSpacing.zero}`}
                   onClick={onToggleMode}
                   disabled={loading}
                 >
@@ -42,8 +44,8 @@ export function SignUpForm({ onToggleMode }: SignUpFormProps) {
         {formState.error && <FormAlert type="error" message={formState.error} />}
         {formState.success && <FormAlert type="success" message={formState.success} />}
 
-        <div className="space-y-2">
-          <label htmlFor="email" className="text-sm font-medium">
+        <div className={semanticSpacing.stack.xs}>
+          <label htmlFor="email" className={cn(semanticTypography.label, semanticTypography.body)}>
             Email
           </label>
           <Input

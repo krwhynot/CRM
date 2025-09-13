@@ -8,6 +8,10 @@ export { useEntitySelectState } from './useEntitySelectState'
 export { useFormLayout } from './useFormLayout'
 export { useProgressiveDetails } from './useProgressiveDetails'
 
+// Layout Hooks
+export { usePageLayout } from './usePageLayout'
+export type { UsePageLayoutConfig, UsePageLayoutReturn, EntityType } from './usePageLayout'
+
 // File & Upload Hooks
 export { useFileUpload } from './useFileUpload'
 

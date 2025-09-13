@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+import { semanticSpacing } from '@/styles/tokens'
 interface FormSubmitButtonProps {
   children: React.ReactNode
   loading?: boolean
@@ -30,7 +31,7 @@ export function FormSubmitButton({
       disabled={loading || disabled}
       className={cn('h-11', className)}
     >
-      {loading && <Loader2 className="mr-2 size-4 animate-spin" />}
+      {loading && <Loader2 className={cn(semanticSpacing.rightGap.xs, 'size-4 animate-spin')} />}
       {children}
     </Button>
   )

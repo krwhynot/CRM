@@ -1,6 +1,7 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Database, Shield, Zap } from 'lucide-react'
+import { semanticSpacing, semanticTypography, fontWeight } from '@/styles/tokens'
 
 interface ServiceDetail {
   status: string
@@ -24,12 +25,14 @@ const ServiceDetailSection: React.FC<{
   borderColor: string
 }> = ({ icon, title, service, borderColor }) => {
   return (
-    <div className={`border-l-4 ${borderColor} pl-4`}>
-      <h4 className="flex items-center space-x-2 font-medium">
+    <div className={`border-l-4 ${borderColor} ${semanticSpacing.leftGap.lg}`}>
+      <h4 className={`flex items-center ${semanticSpacing.gap.xs} ${fontWeight.medium}`}>
         {icon}
         <span>{title}</span>
       </h4>
-      <div className="mt-1 text-sm text-muted-foreground">
+      <div
+        className={`${semanticSpacing.topGap.xxs} ${semanticTypography.body} text-muted-foreground`}
+      >
         <div>Status: {service.status}</div>
         <div>Response Time: {service.responseTime}ms</div>
         <div>Last Check: {new Date(service.timestamp).toLocaleTimeString()}</div>
@@ -48,7 +51,7 @@ export const DetailedSystemInfo: React.FC<DetailedSystemInfoProps> = ({ status }
         <CardTitle>Detailed System Information</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className={semanticSpacing.stackContainer}>
           <ServiceDetailSection
             icon={<Database className="size-4" />}
             title="Database Service"

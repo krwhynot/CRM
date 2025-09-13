@@ -6,6 +6,7 @@
  */
 
 import type { Product } from './entities'
+import { formatCurrency } from '@/lib/formatters'
 
 /**
  * Product with computed inventory status
@@ -26,13 +27,13 @@ export interface ProductWithPrincipal extends Product {
   principal_contact?: string
   principal_phone?: string
   principal_email?: string
-  
+
   // Inventory status fields
   in_stock?: boolean
   low_stock?: boolean
   stock_quantity?: number
   reorder_level?: number
-  
+
   // Product specifications
   brand?: string
   package_size?: string
@@ -165,10 +166,7 @@ function determineAvailabilityStatus(product: Product): ProductAvailabilityStatu
  */
 function formatPrice(price?: number | null): string {
   if (price == null) return 'Price not set'
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(price)
+  return formatCurrency(price)
 }
 
 /**

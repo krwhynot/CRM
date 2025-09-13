@@ -4,6 +4,7 @@ import type { Contact, ContactUpdate } from '@/types/entities'
 import type { ContactWithOrganizationData } from '../hooks/useContacts'
 import type { ContactFormData } from '@/types/contact.types'
 import { FormDataTransformer } from '@/lib/form-data-transformer'
+import { semanticTypography } from '@/styles/tokens'
 
 interface ContactsDialogsProps {
   isCreateDialogOpen: boolean
@@ -39,7 +40,9 @@ const transformFormData = (data: ContactFormData): ContactWithOrganizationData =
 
   let result: ContactWithOrganizationData = {
     ...contactData,
-    preferred_principals: preferred_principals?.filter((id): id is string => typeof id === 'string' && id.length > 0) || []
+    preferred_principals:
+      preferred_principals?.filter((id): id is string => typeof id === 'string' && id.length > 0) ||
+      [],
   }
 
   // Handle organization data based on mode
@@ -49,7 +52,13 @@ const transformFormData = (data: ContactFormData): ContactWithOrganizationData =
   } else if (organization_mode === 'new') {
     // New organization - use organization details
     result.organization_name = organization_name || undefined
-    result.organization_type = organization_type as 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor' | undefined
+    result.organization_type = organization_type as
+      | 'customer'
+      | 'principal'
+      | 'distributor'
+      | 'prospect'
+      | 'vendor'
+      | undefined
     result.organization_data = {
       phone: organization_phone || null,
       email: organization_email || null,
@@ -88,7 +97,10 @@ export const ContactsDialogs = ({
         size="lg"
         scroll="content"
       >
-        <ContactForm onSubmit={(data) => onCreateSubmit(transformFormData(data))} loading={isCreating} />
+        <ContactForm
+          onSubmit={(data) => onCreateSubmit(transformFormData(data))}
+          loading={isCreating}
+        />
       </StandardDialog>
 
       {/* Edit Dialog */}
@@ -103,7 +115,9 @@ export const ContactsDialogs = ({
         {selectedContact && (
           <ContactForm
             initialData={FormDataTransformer.toFormData(selectedContact)}
-            onSubmit={(data) => onEditSubmit(selectedContact, transformFormData(data) as ContactUpdate)}
+            onSubmit={(data) =>
+              onEditSubmit(selectedContact, transformFormData(data) as ContactUpdate)
+            }
             loading={isUpdating}
           />
         )}
@@ -123,7 +137,7 @@ export const ContactsDialogs = ({
         confirmVariant="destructive"
         isLoading={isDeleting}
       >
-        <div className="text-center text-sm text-muted-foreground">
+        <div className={`text-center ${semanticTypography.body} text-muted-foreground`}>
           All interactions and history associated with this contact will also be removed.
         </div>
       </StandardDialog>

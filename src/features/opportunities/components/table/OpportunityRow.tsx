@@ -1,26 +1,27 @@
+import { useMemo } from 'react'
+import type { DataTableColumn } from '@/components/ui/DataTable'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Zap, Target, TrendingUp } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { OpportunitiesTableActions } from '../OpportunitiesTableActions'
-import { 
-  ChevronDown, 
-  ChevronRight, 
-  Zap, 
-  Target, 
-  TrendingUp 
-} from 'lucide-react'
 import { cn, formatTimeAgo, isOpportunityStalled, getStalledDays } from '@/lib/utils'
 import { useOpportunitiesFormatting } from '../../hooks/useOpportunitiesFormatting'
+import { OpportunityActions } from '../OpportunityActions'
+import {
+  semanticSpacing,
+  semanticTypography,
+  semanticRadius,
+  semanticColors,
+} from '@/styles/tokens'
 import type { OpportunityWithLastActivity } from '@/types/opportunity.types'
-import type { DataTableColumn } from '@/components/ui/DataTable'
 
-interface OpportunityRowProps {
-  opportunity: OpportunityWithLastActivity
-  isSelected: boolean
-  isExpanded: boolean
+interface UseOpportunityColumnsProps {
+  selectedItems: Set<string>
+  onSelectAll: (checked: boolean, opportunities: OpportunityWithLastActivity[]) => void
   onSelectItem: (id: string, checked: boolean) => void
   onToggleExpansion: (id: string) => void
+  isRowExpanded: (id: string) => boolean
   onEdit?: (opportunity: OpportunityWithLastActivity) => void
   onDelete?: (opportunity: OpportunityWithLastActivity) => void
 }
@@ -33,216 +34,261 @@ export function useOpportunityColumns({
   isRowExpanded,
   onEdit,
   onDelete,
-}: {
-  selectedItems: Set<string>
-  onSelectAll: (checked: boolean, items: OpportunityWithLastActivity[]) => void
-  onSelectItem: (id: string, checked: boolean) => void
-  onToggleExpansion: (id: string) => void
-  isRowExpanded: (id: string) => boolean
-  onEdit?: (opportunity: OpportunityWithLastActivity) => void
-  onDelete?: (opportunity: OpportunityWithLastActivity) => void
-}) {
+}: UseOpportunityColumnsProps) {
   const { getStageConfig, formatCurrency, formatActivityType } = useOpportunitiesFormatting()
 
-  const columns: DataTableColumn<OpportunityWithLastActivity>[] = [
-    {
-      key: 'selection',
-      header: (sortedOpportunities: OpportunityWithLastActivity[]) => (
-        <div className="flex items-center gap-2">
+  const columns: DataTableColumn<OpportunityWithLastActivity>[] = useMemo(
+    () => [
+      {
+        key: 'selection',
+        header: (opportunities: OpportunityWithLastActivity[]) => (
           <Checkbox
-            checked={selectedItems.size > 0 && selectedItems.size === sortedOpportunities.length}
-            onCheckedChange={(checked) => onSelectAll(!!checked, sortedOpportunities)}
+            checked={selectedItems.size > 0 && selectedItems.size === opportunities.length}
+            onCheckedChange={(checked) => onSelectAll(!!checked, opportunities)}
             aria-label="Select all opportunities"
+            className={semanticSpacing.interactiveElement}
           />
-        </div>
-      ),
-      cell: (opportunity) => (
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onToggleExpansion(opportunity.id)}
-            className="h-auto p-0 text-gray-400 hover:bg-transparent hover:text-gray-600"
-            aria-label={isRowExpanded(opportunity.id) ? 'Collapse details' : 'Expand details'}
-          >
-            {isRowExpanded(opportunity.id) ? (
-              <ChevronDown className="size-4" />
-            ) : (
-              <ChevronRight className="size-4" />
-            )}
-          </Button>
+        ),
+        cell: (opportunity) => (
           <Checkbox
             checked={selectedItems.has(opportunity.id)}
             onCheckedChange={(checked) => onSelectItem(opportunity.id, !!checked)}
             aria-label={`Select ${opportunity.name}`}
+            className={semanticSpacing.interactiveElement}
           />
-        </div>
-      ),
-      className: 'w-[60px] px-6 py-3',
-    },
-    {
-      key: 'company',
-      header: 'Company / Opportunity',
-      cell: (opportunity) => <OpportunityCompanyCell opportunity={opportunity} />,
-      className: 'w-[35%] px-6 py-3',
-    },
-    {
-      key: 'stage',
-      header: 'Stage',
-      cell: (opportunity) => <OpportunityStageCell opportunity={opportunity} getStageConfig={getStageConfig} />,
-      className: 'w-[20%] px-6 py-3',
-      hidden: { sm: true },
-    },
-    {
-      key: 'value',
-      header: 'Value / Probability',
-      cell: (opportunity) => (
-        <div>
-          <div className="text-sm font-medium">{formatCurrency(opportunity.estimated_value)}</div>
-          <div className="text-xs text-gray-500">
-            {opportunity.probability ? `${opportunity.probability}% likely` : 'No probability'}
+        ),
+      },
+      {
+        key: 'expand',
+        header: '',
+        cell: (opportunity) => (
+          <Button
+            variant="ghost"
+            onClick={() => onToggleExpansion(opportunity.id)}
+            className={cn(
+              semanticSpacing.interactiveElement,
+              `transition-transform duration-200`,
+              isRowExpanded(opportunity.id) && 'rotate-90'
+            )}
+            aria-label={`${isRowExpanded(opportunity.id) ? 'Collapse' : 'Expand'} opportunity details`}
+          >
+            <span className="sr-only">Toggle row expansion</span>▶
+          </Button>
+        ),
+      },
+      {
+        key: 'company',
+        header: 'Company / Opportunity',
+        cell: (opportunity) => {
+          const getActivityIcon = () => {
+            switch (opportunity.weeklyActivity) {
+              case 'high':
+                return <Zap className={`size-3 ${semanticColors.success.primary}`} />
+              case 'medium':
+                return <Target className={`size-3 ${semanticColors.warning.primary}`} />
+              default:
+                return null
+            }
+          }
+
+          const getActivityBadge = () => {
+            if (opportunity.weeklyActivity === 'high') {
+              return (
+                <Badge
+                  variant="secondary"
+                  className={`${semanticColors.success.background} ${semanticColors.success.border} ${semanticTypography.caption} ${semanticColors.success.foreground}`}
+                >
+                  High Activity
+                </Badge>
+              )
+            }
+            if (opportunity.weeklyActivity === 'medium') {
+              return (
+                <Badge
+                  variant="secondary"
+                  className={`${semanticColors.warning.background} ${semanticColors.warning.border} ${semanticTypography.caption} ${semanticColors.warning.foreground}`}
+                >
+                  Active
+                </Badge>
+              )
+            }
+            return null
+          }
+
+          return (
+            <div>
+              <div className={`flex items-center ${semanticSpacing.gap.sm}`}>
+                <div
+                  className={cn(
+                    semanticTypography.label,
+                    semanticTypography.body,
+                    semanticColors.text.primary
+                  )}
+                >
+                  {opportunity.organization?.name || 'No Organization'}
+                </div>
+                {opportunity.movedThisWeek && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex items-center">
+                          <TrendingUp className={`size-3 ${semanticColors.info.primary}`} />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Stage moved this week</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+                {getActivityIcon()}
+              </div>
+              <div
+                className={`${semanticSpacing.topGap.xs} flex items-center ${semanticSpacing.gap.sm}`}
+              >
+                <span className={`${semanticTypography.caption} ${semanticColors.text.secondary}`}>
+                  {opportunity.name} • {opportunity.interaction_count || 0} activities
+                </span>
+                {getActivityBadge()}
+              </div>
+              {opportunity.weeklyEngagementScore && opportunity.weeklyEngagementScore > 50 && (
+                <div
+                  className={`${semanticSpacing.topGap.xs} flex items-center ${semanticSpacing.gap.xs}`}
+                >
+                  <span className={`${semanticTypography.caption} ${semanticColors.text.tertiary}`}>
+                    Engagement:
+                  </span>
+                  <div className="flex items-center">
+                    <div
+                      className={cn(semanticRadius.full, 'h-1.5 w-12 overflow-hidden bg-gray-200')}
+                    >
+                      <div
+                        className={cn(
+                          'h-full rounded-full',
+                          opportunity.weeklyEngagementScore >= 80
+                            ? semanticColors.success.primary
+                            : opportunity.weeklyEngagementScore >= 60
+                              ? semanticColors.warning.primary
+                              : semanticColors.info.primary
+                        )}
+                        style={{ width: `${opportunity.weeklyEngagementScore}%` }}
+                      />
+                    </div>
+                    <span
+                      className={`${semanticSpacing.leftGap.xs} ${semanticTypography.caption} ${semanticColors.text.tertiary}`}
+                    >
+                      {opportunity.weeklyEngagementScore}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          )
+        },
+        className: `w-[35%] ${semanticSpacing.layoutContainer} ${semanticSpacing.verticalContainer}`,
+      },
+      {
+        key: 'stage',
+        header: 'Stage',
+        cell: (opportunity) => {
+          const stalled = isOpportunityStalled(
+            opportunity.stage_updated_at || null,
+            opportunity.created_at || ''
+          )
+          const stalledDays = stalled
+            ? getStalledDays(opportunity.stage_updated_at || null, opportunity.created_at || '')
+            : 0
+          const stageConfig = getStageConfig(opportunity.stage)
+
+          return (
+            <div className={`flex items-center ${semanticSpacing.gap.sm}`}>
+              <span className={cn('w-2 h-2 rounded-full', stageConfig.dot)}></span>
+              {stalled && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span
+                        className={cn(semanticRadius.full, 'size-2 animate-pulse bg-red-500')}
+                      ></span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Stalled for {stalledDays} days</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+              <span className={cn(semanticTypography.label, semanticTypography.body)}>
+                {opportunity.stage}
+              </span>
+              <span className={`${semanticTypography.caption} text-gray-400`}>
+                {stageConfig.position}/7
+              </span>
+            </div>
+          )
+        },
+        className: `w-[20%] ${semanticSpacing.layoutContainer} ${semanticSpacing.verticalContainer}`,
+        hidden: { sm: true },
+      },
+      {
+        key: 'value',
+        header: 'Value / Probability',
+        cell: (opportunity) => (
+          <div>
+            <div className={cn(semanticTypography.label, semanticTypography.body)}>
+              {formatCurrency(opportunity.estimated_value)}
+            </div>
+            <div className={`${semanticTypography.caption} text-gray-500`}>
+              {opportunity.probability ? `${opportunity.probability}% likely` : 'No probability'}
+            </div>
           </div>
-        </div>
-      ),
-      className: 'w-[15%] px-6 py-3 text-right',
-      hidden: { sm: true, md: true },
-    },
-    {
-      key: 'last_activity',
-      header: 'Last Activity',
-      cell: (opportunity) => (
-        <div>
-          <div className="text-sm text-gray-900">
-            {formatTimeAgo(opportunity.last_activity_date || null)}
+        ),
+        className: `w-[15%] ${semanticSpacing.layoutContainer} ${semanticSpacing.verticalContainer} text-right`,
+        hidden: { sm: true, md: true },
+      },
+      {
+        key: 'last_activity',
+        header: 'Last Activity',
+        cell: (opportunity) => (
+          <div>
+            <div className={`${semanticTypography.body} text-gray-900`}>
+              {formatTimeAgo(opportunity.last_activity_date || null)}
+            </div>
+            <div className={`${semanticTypography.caption} text-gray-500`}>
+              {formatActivityType(opportunity.last_activity_type || null)}
+            </div>
           </div>
-          <div className="text-xs text-gray-500">
-            {formatActivityType(opportunity.last_activity_type || null)}
-          </div>
-        </div>
-      ),
-      className: 'w-[20%] px-6 py-3 text-right',
-      hidden: { sm: true },
-    },
-    {
-      key: 'actions',
-      header: 'Actions',
-      cell: (opportunity) => (
-        <OpportunitiesTableActions
-          opportunity={opportunity}
-          onEdit={onEdit}
-          onDelete={onDelete}
-          onView={() => onToggleExpansion(opportunity.id)}
-        />
-      ),
-      className: 'w-[10%] px-6 py-3 text-right',
-    },
-  ]
+        ),
+        className: `w-[20%] ${semanticSpacing.layoutContainer} ${semanticSpacing.verticalContainer} text-right`,
+        hidden: { sm: true },
+      },
+      {
+        key: 'actions',
+        header: '',
+        cell: (opportunity) => (
+          <OpportunityActions
+            opportunity={opportunity}
+            onEdit={onEdit}
+            onView={() => onToggleExpansion(opportunity.id)}
+            variant="ghost"
+            size="sm"
+          />
+        ),
+        className: `w-[10%] ${semanticSpacing.layoutContainer} ${semanticSpacing.verticalContainer} text-right`,
+      },
+    ],
+    [
+      selectedItems,
+      onSelectAll,
+      onSelectItem,
+      onToggleExpansion,
+      isRowExpanded,
+      onEdit,
+      onDelete,
+      getStageConfig,
+      formatCurrency,
+      formatActivityType,
+    ]
+  )
 
   return columns
-}
-
-function OpportunityCompanyCell({ opportunity }: { opportunity: OpportunityWithLastActivity }) {
-  const getActivityIcon = () => {
-    switch (opportunity.weeklyActivity) {
-      case 'high': return <Zap className="size-3 text-green-500" />
-      case 'medium': return <Target className="size-3 text-yellow-500" />
-      default: return null
-    }
-  }
-  
-  const getActivityBadge = () => {
-    if (opportunity.weeklyActivity === 'high') {
-      return <Badge variant="secondary" className="border-green-200 bg-green-50 text-xs text-green-700">High Activity</Badge>
-    }
-    if (opportunity.weeklyActivity === 'medium') {
-      return <Badge variant="secondary" className="border-yellow-200 bg-yellow-50 text-xs text-yellow-700">Active</Badge>
-    }
-    return null
-  }
-  
-  return (
-    <div>
-      <div className="flex items-center gap-2">
-        <div className="text-sm font-medium text-gray-900">
-          {opportunity.organization?.name || 'No Organization'}
-        </div>
-        {opportunity.movedThisWeek && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex items-center">
-                  <TrendingUp className="size-3 text-blue-500" />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Stage moved this week</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
-        {getActivityIcon()}
-      </div>
-      <div className="mt-0.5 flex items-center gap-2">
-        <span className="text-xs text-gray-500">
-          {opportunity.name} • {opportunity.interaction_count || 0} activities
-        </span>
-        {getActivityBadge()}
-      </div>
-      {opportunity.weeklyEngagementScore && opportunity.weeklyEngagementScore > 50 && (
-        <div className="mt-1 flex items-center gap-1">
-          <span className="text-xs text-gray-400">Engagement:</span>
-          <div className="flex items-center">
-            <div className="h-1.5 w-12 overflow-hidden rounded-full bg-gray-200">
-              <div 
-                className={cn(
-                  "h-full rounded-full",
-                  opportunity.weeklyEngagementScore >= 80 ? "bg-green-500" :
-                  opportunity.weeklyEngagementScore >= 60 ? "bg-yellow-500" : "bg-blue-500"
-                )}
-                style={{ width: `${opportunity.weeklyEngagementScore}%` }}
-              />
-            </div>
-            <span className="ml-1 text-xs text-gray-400">{opportunity.weeklyEngagementScore}</span>
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
-
-function OpportunityStageCell({ 
-  opportunity, 
-  getStageConfig 
-}: { 
-  opportunity: OpportunityWithLastActivity
-  getStageConfig: (stage: string | null | undefined) => any
-}) {
-  const stalled = isOpportunityStalled(
-    opportunity.stage_updated_at || null,
-    opportunity.created_at || ''
-  )
-  const stalledDays = stalled
-    ? getStalledDays(opportunity.stage_updated_at || null, opportunity.created_at || '')
-    : 0
-  const stageConfig = getStageConfig(opportunity.stage)
-
-  return (
-    <div className="flex items-center gap-1.5">
-      <span className={cn('w-2 h-2 rounded-full', stageConfig.dot)}></span>
-      {stalled && (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="size-2 animate-pulse rounded-full bg-red-500"></span>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Stalled for {stalledDays} days</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )}
-      <span className="text-sm font-medium">{opportunity.stage}</span>
-      <span className="text-xs text-gray-400">{stageConfig.position}/7</span>
-    </div>
-  )
 }

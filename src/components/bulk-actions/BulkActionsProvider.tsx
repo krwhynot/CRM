@@ -1,6 +1,6 @@
 /**
  * Bulk Actions Provider
- * 
+ *
  * Context provider for managing bulk selection and actions across CRM entities.
  * Provides a unified interface for selecting multiple items and performing bulk operations.
  */
@@ -34,7 +34,7 @@ export interface BulkActionsState {
   selectedItems: Map<string, BulkActionItem>
   isAllSelected: boolean
   isPartiallySelected: boolean
-  
+
   // Actions
   selectItem: (item: BulkActionItem) => void
   deselectItem: (id: string) => void
@@ -42,12 +42,12 @@ export interface BulkActionsState {
   deselectAll: () => void
   toggleItem: (item: BulkActionItem) => void
   toggleSelectAll: (items: BulkActionItem[]) => void
-  
+
   // Bulk operations
   availableActions: BulkAction[]
   setAvailableActions: (actions: BulkAction[]) => void
   executeBulkAction: (actionId: string) => Promise<void>
-  
+
   // State helpers
   getSelectedItems: () => BulkActionItem[]
   getSelectedIds: () => string[]
@@ -94,80 +94,98 @@ export function BulkActionsProvider({
   const isPartiallySelected = useMemo(() => selectedItems.size > 0, [selectedItems.size])
 
   // Selection actions
-  const selectItem = useCallback((item: BulkActionItem) => {
-    setSelectedItems(prev => {
-      const newSelection = new Map(prev)
-      newSelection.set(item.id, item)
-      
-      const selectedArray = Array.from(newSelection.values())
-      onSelectionChanged?.(selectedArray)
-      
-      return newSelection
-    })
-  }, [onSelectionChanged])
+  const selectItem = useCallback(
+    (item: BulkActionItem) => {
+      setSelectedItems((prev) => {
+        const newSelection = new Map(prev)
+        newSelection.set(item.id, item)
 
-  const deselectItem = useCallback((id: string) => {
-    setSelectedItems(prev => {
-      const newSelection = new Map(prev)
-      newSelection.delete(id)
-      
-      const selectedArray = Array.from(newSelection.values())
-      onSelectionChanged?.(selectedArray)
-      
-      return newSelection
-    })
-  }, [onSelectionChanged])
+        const selectedArray = Array.from(newSelection.values())
+        onSelectionChanged?.(selectedArray)
 
-  const selectAll = useCallback((items: BulkActionItem[]) => {
-    const newSelection = new Map(items.map(item => [item.id, item]))
-    setSelectedItems(newSelection)
-    onSelectionChanged?.(items)
-  }, [onSelectionChanged])
+        return newSelection
+      })
+    },
+    [onSelectionChanged]
+  )
+
+  const deselectItem = useCallback(
+    (id: string) => {
+      setSelectedItems((prev) => {
+        const newSelection = new Map(prev)
+        newSelection.delete(id)
+
+        const selectedArray = Array.from(newSelection.values())
+        onSelectionChanged?.(selectedArray)
+
+        return newSelection
+      })
+    },
+    [onSelectionChanged]
+  )
+
+  const selectAll = useCallback(
+    (items: BulkActionItem[]) => {
+      const newSelection = new Map(items.map((item) => [item.id, item]))
+      setSelectedItems(newSelection)
+      onSelectionChanged?.(items)
+    },
+    [onSelectionChanged]
+  )
 
   const deselectAll = useCallback(() => {
     setSelectedItems(new Map())
     onSelectionChanged?.([])
   }, [onSelectionChanged])
 
-  const toggleItem = useCallback((item: BulkActionItem) => {
-    if (selectedItems.has(item.id)) {
-      deselectItem(item.id)
-    } else {
-      selectItem(item)
-    }
-  }, [selectedItems, selectItem, deselectItem])
+  const toggleItem = useCallback(
+    (item: BulkActionItem) => {
+      if (selectedItems.has(item.id)) {
+        deselectItem(item.id)
+      } else {
+        selectItem(item)
+      }
+    },
+    [selectedItems, selectItem, deselectItem]
+  )
 
-  const toggleSelectAll = useCallback((items: BulkActionItem[]) => {
-    if (selectedItems.size === items.length) {
-      deselectAll()
-    } else {
-      selectAll(items)
-    }
-  }, [selectedItems.size, selectAll, deselectAll])
+  const toggleSelectAll = useCallback(
+    (items: BulkActionItem[]) => {
+      if (selectedItems.size === items.length) {
+        deselectAll()
+      } else {
+        selectAll(items)
+      }
+    },
+    [selectedItems.size, selectAll, deselectAll]
+  )
 
   // Bulk action execution
-  const executeBulkAction = useCallback(async (actionId: string) => {
-    const action = availableActions.find(a => a.id === actionId)
-    if (!action) {
-      throw new Error(`Bulk action '${actionId}' not found`)
-    }
+  const executeBulkAction = useCallback(
+    async (actionId: string) => {
+      const action = availableActions.find((a) => a.id === actionId)
+      if (!action) {
+        throw new Error(`Bulk action '${actionId}' not found`)
+      }
 
-    const items = Array.from(selectedItems.values())
-    if (items.length === 0) {
-      throw new Error('No items selected for bulk action')
-    }
+      const items = Array.from(selectedItems.values())
+      if (items.length === 0) {
+        throw new Error('No items selected for bulk action')
+      }
 
-    try {
-      await action.handler(items)
-      onActionExecuted?.(actionId, items)
-      
-      // Clear selection after successful action
-      deselectAll()
-    } catch (error) {
-      // Re-throw to let calling component handle error display
-      throw error
-    }
-  }, [availableActions, selectedItems, onActionExecuted, deselectAll])
+      try {
+        await action.handler(items)
+        onActionExecuted?.(actionId, items)
+
+        // Clear selection after successful action
+        deselectAll()
+      } catch (error) {
+        // Re-throw to let calling component handle error display
+        throw error
+      }
+    },
+    [availableActions, selectedItems, onActionExecuted, deselectAll]
+  )
 
   // Helper functions
   const getSelectedItems = useCallback(() => {
@@ -178,70 +196,75 @@ export function BulkActionsProvider({
     return Array.from(selectedItems.keys())
   }, [selectedItems])
 
-  const isItemSelected = useCallback((id: string) => {
-    return selectedItems.has(id)
-  }, [selectedItems])
+  const isItemSelected = useCallback(
+    (id: string) => {
+      return selectedItems.has(id)
+    },
+    [selectedItems]
+  )
 
   const getSelectionCount = useCallback(() => {
     return selectedItems.size
   }, [selectedItems.size])
 
-  const canExecuteAction = useCallback((actionId: string) => {
-    const action = availableActions.find(a => a.id === actionId)
-    if (!action || action.disabled) return false
-    return selectedItems.size > 0
-  }, [availableActions, selectedItems.size])
+  const canExecuteAction = useCallback(
+    (actionId: string) => {
+      const action = availableActions.find((a) => a.id === actionId)
+      if (!action || action.disabled) return false
+      return selectedItems.size > 0
+    },
+    [availableActions, selectedItems.size]
+  )
 
   // Context value
-  const contextValue: BulkActionsState = useMemo(() => ({
-    // Selection state
-    selectedItems,
-    isAllSelected,
-    isPartiallySelected,
-    
-    // Actions
-    selectItem,
-    deselectItem,
-    selectAll,
-    deselectAll,
-    toggleItem,
-    toggleSelectAll,
-    
-    // Bulk operations
-    availableActions,
-    setAvailableActions,
-    executeBulkAction,
-    
-    // State helpers
-    getSelectedItems,
-    getSelectedIds,
-    isItemSelected,
-    getSelectionCount,
-    canExecuteAction,
-  }), [
-    selectedItems,
-    isAllSelected,
-    isPartiallySelected,
-    selectItem,
-    deselectItem,
-    selectAll,
-    deselectAll,
-    toggleItem,
-    toggleSelectAll,
-    availableActions,
-    executeBulkAction,
-    getSelectedItems,
-    getSelectedIds,
-    isItemSelected,
-    getSelectionCount,
-    canExecuteAction,
-  ])
+  const contextValue: BulkActionsState = useMemo(
+    () => ({
+      // Selection state
+      selectedItems,
+      isAllSelected,
+      isPartiallySelected,
 
-  return (
-    <BulkActionsContext.Provider value={contextValue}>
-      {children}
-    </BulkActionsContext.Provider>
+      // Actions
+      selectItem,
+      deselectItem,
+      selectAll,
+      deselectAll,
+      toggleItem,
+      toggleSelectAll,
+
+      // Bulk operations
+      availableActions,
+      setAvailableActions,
+      executeBulkAction,
+
+      // State helpers
+      getSelectedItems,
+      getSelectedIds,
+      isItemSelected,
+      getSelectionCount,
+      canExecuteAction,
+    }),
+    [
+      selectedItems,
+      isAllSelected,
+      isPartiallySelected,
+      selectItem,
+      deselectItem,
+      selectAll,
+      deselectAll,
+      toggleItem,
+      toggleSelectAll,
+      availableActions,
+      executeBulkAction,
+      getSelectedItems,
+      getSelectedIds,
+      isItemSelected,
+      getSelectionCount,
+      canExecuteAction,
+    ]
   )
+
+  return <BulkActionsContext.Provider value={contextValue}>{children}</BulkActionsContext.Provider>
 }
 
 // =============================================================================
@@ -256,34 +279,26 @@ export function useBulkSelection<T extends { id: string }>(
   entityType: BulkActionItem['type'],
   transform?: (item: T) => Record<string, unknown>
 ) {
-  const { 
-    selectItem, 
-    deselectItem, 
-    selectAll, 
-    deselectAll, 
-    toggleItem, 
-    toggleSelectAll,
-    isItemSelected, 
-    getSelectionCount,
-    selectedItems,
-  } = useBulkActions()
+  const { toggleItem, toggleSelectAll, isItemSelected, getSelectionCount, selectedItems } =
+    useBulkActions()
 
-  const bulkActionItems = useMemo(() => 
-    items.map(item => ({
-      id: item.id,
-      type: entityType,
-      data: transform ? transform(item) : item as Record<string, unknown>,
-    })), 
+  const bulkActionItems = useMemo(
+    () =>
+      items.map((item) => ({
+        id: item.id,
+        type: entityType,
+        data: transform ? transform(item) : (item as Record<string, unknown>),
+      })),
     [items, entityType, transform]
   )
 
-  const isAllSelected = useMemo(() => 
-    items.length > 0 && items.every(item => isItemSelected(item.id)),
+  const isAllSelected = useMemo(
+    () => items.length > 0 && items.every((item) => isItemSelected(item.id)),
     [items, isItemSelected]
   )
 
-  const isPartiallySelected = useMemo(() => 
-    items.some(item => isItemSelected(item.id)) && !isAllSelected,
+  const isPartiallySelected = useMemo(
+    () => items.some((item) => isItemSelected(item.id)) && !isAllSelected,
     [items, isItemSelected, isAllSelected]
   )
 
@@ -291,14 +306,17 @@ export function useBulkSelection<T extends { id: string }>(
     toggleSelectAll(bulkActionItems)
   }, [toggleSelectAll, bulkActionItems])
 
-  const handleToggleItem = useCallback((item: T) => {
-    const bulkItem = {
-      id: item.id,
-      type: entityType,
-      data: transform ? transform(item) : item as Record<string, unknown>,
-    }
-    toggleItem(bulkItem)
-  }, [toggleItem, entityType, transform])
+  const handleToggleItem = useCallback(
+    (item: T) => {
+      const bulkItem = {
+        id: item.id,
+        type: entityType,
+        data: transform ? transform(item) : (item as Record<string, unknown>),
+      }
+      toggleItem(bulkItem)
+    },
+    [toggleItem, entityType, transform]
+  )
 
   return {
     isAllSelected,

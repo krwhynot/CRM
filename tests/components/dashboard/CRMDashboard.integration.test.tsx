@@ -1,10 +1,40 @@
-import React from 'react'
-import { render, screen, waitFor, act } from '@testing-library/react'
+// Removed unused: import React from 'react'
+import { render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
 import { CRMDashboard } from '@/features/dashboard/components/CRMDashboard'
 import type { FilterState } from '@/types/dashboard'
 import { mockData } from '../../config/test-constants'
+
+// Type definitions for mock props
+interface DashboardFiltersProps {
+  filters: FilterState;
+  onFiltersChange: (filters: FilterState) => void;
+}
+
+interface ChartsGridProps {
+  visibleChartIds: string[];
+  isLoading: boolean;
+}
+
+interface WeeklyKPIHeaderProps {
+  filters: FilterState;
+}
+
+interface SimpleActivityFeedProps {
+  activities: any[];
+  loading: boolean;
+}
+
+interface OpportunityKanbanProps {
+  opportunities: any[];
+  loading: boolean;
+}
+
+interface EmptyStateProps {
+  type: string;
+  title: string;
+}
 
 // Mock all dashboard hooks
 const mockDashboardFilters = {
@@ -133,7 +163,7 @@ vi.mock('@/stores', () => ({
 
 // Mock child components to focus on orchestration testing
 vi.mock('@/features/dashboard/components/DashboardFilters', () => ({
-  DashboardFilters: ({ filters, onFiltersChange }: any) => (
+  DashboardFilters: ({ filters, onFiltersChange }: DashboardFiltersProps) => (
     <div data-testid="dashboard-filters">
       <button onClick={() => onFiltersChange({ ...filters, principal: 'p1' })}>
         Change Principal
@@ -144,7 +174,7 @@ vi.mock('@/features/dashboard/components/DashboardFilters', () => ({
 }))
 
 vi.mock('@/features/dashboard/components/ChartsGrid', () => ({
-  ChartsGrid: ({ visibleChartIds, isLoading }: any) => (
+  ChartsGrid: ({ visibleChartIds, isLoading }: ChartsGridProps) => (
     <div data-testid="charts-grid">
       <span data-testid="visible-charts">{visibleChartIds.join(',')}</span>
       <span data-testid="charts-loading">{isLoading ? 'loading' : 'loaded'}</span>
@@ -153,7 +183,7 @@ vi.mock('@/features/dashboard/components/ChartsGrid', () => ({
 }))
 
 vi.mock('@/features/dashboard/components/WeeklyKPIHeader', () => ({
-  WeeklyKPIHeader: ({ filters }: any) => (
+  WeeklyKPIHeader: ({ filters }: WeeklyKPIHeaderProps) => (
     <div data-testid="weekly-kpi-header">
       <span data-testid="kpi-filters">{JSON.stringify(filters)}</span>
     </div>
@@ -161,7 +191,7 @@ vi.mock('@/features/dashboard/components/WeeklyKPIHeader', () => ({
 }))
 
 vi.mock('@/features/dashboard/components/SimpleActivityFeed', () => ({
-  SimpleActivityFeed: ({ activities, loading }: any) => (
+  SimpleActivityFeed: ({ activities, loading }: SimpleActivityFeedProps) => (
     <div data-testid="activity-feed">
       <span data-testid="activity-count">{activities.length}</span>
       <span data-testid="activity-loading">{loading ? 'loading' : 'loaded'}</span>
@@ -170,7 +200,7 @@ vi.mock('@/features/dashboard/components/SimpleActivityFeed', () => ({
 }))
 
 vi.mock('@/features/dashboard/components/OpportunityKanban', () => ({
-  OpportunityKanban: ({ opportunities, loading }: any) => (
+  OpportunityKanban: ({ opportunities, loading }: OpportunityKanbanProps) => (
     <div data-testid="opportunity-kanban">
       <span data-testid="opp-count">{opportunities.length}</span>
       <span data-testid="opp-loading">{loading ? 'loading' : 'loaded'}</span>
@@ -183,7 +213,7 @@ vi.mock('@/features/dashboard/components/DashboardSkeleton', () => ({
 }))
 
 vi.mock('@/features/dashboard/components/EmptyState', () => ({
-  EmptyState: ({ type, title }: any) => (
+  EmptyState: ({ type, title }: EmptyStateProps) => (
     <div data-testid="empty-state">
       <span data-testid="empty-type">{type}</span>
       <span data-testid="empty-title">{title}</span>

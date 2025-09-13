@@ -4,6 +4,7 @@ import { InteractionTimelineEmbed } from '@/features/interactions/components/Int
 import { QuickInteractionBar } from '@/features/interactions/components/QuickInteractionBar'
 import { MessageSquare, FileText, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 import { useIsMobile, useIsIPad } from '@/hooks/useMediaQuery'
 import { useQueryClient } from '@tanstack/react-query'
 import { interactionKeys } from '@/features/interactions/hooks/useInteractions'
@@ -14,13 +15,13 @@ interface OpportunityExpandedContentProps {
   isExpanded: boolean
 }
 
-export function OpportunityExpandedContent({ 
-  opportunity, 
-  isExpanded 
+export function OpportunityExpandedContent({
+  opportunity,
+  isExpanded,
 }: OpportunityExpandedContentProps) {
   const [activeTab, setActiveTab] = useState<'interactions' | 'details'>('interactions')
   const [showQuickAdd, setShowQuickAdd] = useState(false)
-  
+
   const isMobile = useIsMobile()
   const isIPad = useIsIPad()
   const queryClient = useQueryClient()
@@ -28,7 +29,7 @@ export function OpportunityExpandedContent({
   const handleQuickAddSuccess = () => {
     setShowQuickAdd(false)
     queryClient.invalidateQueries({
-      queryKey: interactionKeys.byOpportunity(opportunity.id)
+      queryKey: interactionKeys.byOpportunity(opportunity.id),
     })
   }
 
@@ -41,62 +42,72 @@ export function OpportunityExpandedContent({
   }
 
   return (
-    <div className={cn(
-      "bg-gray-50/50 border-l-4 border-primary/20",
-      isMobile ? "ml-4" : "ml-10"
-    )}>
+    <div
+      className={cn(
+        'bg-gray-50/50 border-l-4 border-primary/20',
+        isMobile ? semanticSpacing.leftGap.lg : semanticSpacing.leftGap.xl
+      )}
+    >
       {/* Tab Header */}
-      <div className={cn(
-        "flex items-center justify-between border-b bg-white",
-        isMobile ? "px-4 py-3 flex-col gap-3" : "px-6 py-2 flex-row"
-      )}>
-        <div className={cn(
-          "flex gap-1",
-          isMobile ? "w-full justify-center" : ""
-        )}>
+      <div
+        className={cn(
+          'flex items-center justify-between border-b bg-white',
+          isMobile
+            ? `${semanticSpacing.cardContainer} ${semanticSpacing.verticalContainer} flex-col ${semanticSpacing.gap.md}`
+            : `${semanticSpacing.layoutContainer} ${semanticSpacing.compactY} flex-row`
+        )}
+      >
+        <div
+          className={cn(`flex ${semanticSpacing.gap.xs}`, isMobile ? 'w-full justify-center' : '')}
+        >
           <Button
             variant={activeTab === 'interactions' ? 'default' : 'ghost'}
-            size={isMobile ? "default" : "sm"}
+            size={isMobile ? 'default' : 'sm'}
             onClick={() => setActiveTab('interactions')}
-            className={cn(
-              isMobile ? "flex-1 h-12 touch-manipulation" : ""
-            )}
+            className={cn(isMobile ? 'flex-1 h-12 touch-manipulation' : '')}
           >
-            <MessageSquare className={cn(
-              isMobile ? "h-4 w-4 mr-2" : "h-3 w-3 mr-1"
-            )} />
-            {isMobile ? 
-              `Activity (${opportunity.interaction_count || 0})` : 
-              `Activity (${opportunity.interaction_count || 0})`
-            }
+            <MessageSquare
+              className={cn(
+                isMobile
+                  ? `h-4 w-4 ${semanticSpacing.rightGap.sm}`
+                  : `h-3 w-3 ${semanticSpacing.rightGap.xs}`
+              )}
+            />
+            {isMobile
+              ? `Activity (${opportunity.interaction_count || 0})`
+              : `Activity (${opportunity.interaction_count || 0})`}
           </Button>
           <Button
             variant={activeTab === 'details' ? 'default' : 'ghost'}
-            size={isMobile ? "default" : "sm"}
+            size={isMobile ? 'default' : 'sm'}
             onClick={() => setActiveTab('details')}
-            className={cn(
-              isMobile ? "flex-1 h-12 touch-manipulation" : ""
-            )}
+            className={cn(isMobile ? 'flex-1 h-12 touch-manipulation' : '')}
           >
-            <FileText className={cn(
-              isMobile ? "h-4 w-4 mr-2" : "h-3 w-3 mr-1"
-            )} />
+            <FileText
+              className={cn(
+                isMobile
+                  ? `h-4 w-4 ${semanticSpacing.rightGap.sm}`
+                  : `h-3 w-3 ${semanticSpacing.rightGap.xs}`
+              )}
+            />
             Details
           </Button>
         </div>
-        
+
         {activeTab === 'interactions' && (
           <Button
-            size={isMobile ? "default" : "sm"}
+            size={isMobile ? 'default' : 'sm'}
             variant={showQuickAdd ? 'default' : 'outline'}
             onClick={toggleQuickAdd}
-            className={cn(
-              isMobile ? "w-full h-12 touch-manipulation" : ""
-            )}
+            className={cn(isMobile ? 'w-full h-12 touch-manipulation' : '')}
           >
-            <Plus className={cn(
-              isMobile ? "h-4 w-4 mr-2" : "h-3 w-3 mr-1"
-            )} />
+            <Plus
+              className={cn(
+                isMobile
+                  ? `h-4 w-4 ${semanticSpacing.rightGap.sm}`
+                  : `h-3 w-3 ${semanticSpacing.rightGap.xs}`
+              )}
+            />
             Quick Add
           </Button>
         )}
@@ -114,13 +125,13 @@ export function OpportunityExpandedContent({
       )}
 
       {/* Tab Content */}
-      <div className={cn(
-        isMobile ? "p-4" : "p-6"
-      )}>
+      <div
+        className={cn(isMobile ? semanticSpacing.cardContainer : semanticSpacing.layoutContainer)}
+      >
         {activeTab === 'interactions' ? (
           <InteractionTimelineEmbed
             opportunityId={opportunity.id}
-            maxHeight={isMobile ? "300px" : isIPad ? "450px" : "400px"}
+            maxHeight={isMobile ? '300px' : isIPad ? '450px' : '400px'}
             showEmptyState={true}
             variant="compact"
             onAddNew={toggleQuickAdd}
@@ -136,21 +147,31 @@ export function OpportunityExpandedContent({
 
 function OpportunityDetails({ opportunity }: { opportunity: OpportunityWithLastActivity }) {
   const isMobile = useIsMobile()
-  
+
   return (
-    <div className={cn(
-      "gap-6",
-      isMobile ? "grid grid-cols-1 space-y-4" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-    )}>
+    <div
+      className={cn(
+        semanticSpacing.gap.xl,
+        isMobile
+          ? `grid grid-cols-1 ${semanticSpacing.stack.lg}`
+          : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+      )}
+    >
       <div>
-        <h4 className={cn(
-          "mb-2 font-medium text-gray-900",
-          isMobile ? "text-base" : ""
-        )}>Opportunity Details</h4>
-        <div className={cn(
-          "space-y-1 text-gray-600",
-          isMobile ? "text-base" : "text-sm"
-        )}>
+        <h4
+          className={cn(
+            `${semanticSpacing.bottomGap.sm} font-medium text-gray-900`,
+            isMobile ? semanticTypography.h4 : semanticTypography.label
+          )}
+        >
+          Opportunity Details
+        </h4>
+        <div
+          className={cn(
+            `${semanticSpacing.stack.xs} text-gray-600`,
+            isMobile ? semanticTypography.cardTitle : semanticTypography.body
+          )}
+        >
           {opportunity.stage && <div>Stage: {opportunity.stage}</div>}
           {opportunity.name && <div>Name: {opportunity.name}</div>}
           {opportunity.created_at && (
@@ -160,32 +181,42 @@ function OpportunityDetails({ opportunity }: { opportunity: OpportunityWithLastA
       </div>
 
       <div>
-        <h4 className={cn(
-          "mb-2 font-medium text-gray-900",
-          isMobile ? "text-base" : ""
-        )}>Financial</h4>
-        <div className={cn(
-          "space-y-1 text-gray-600",
-          isMobile ? "text-base" : "text-sm"
-        )}>
+        <h4
+          className={cn(
+            `${semanticSpacing.bottomGap.sm} font-medium text-gray-900`,
+            isMobile ? semanticTypography.h4 : semanticTypography.label
+          )}
+        >
+          Financial
+        </h4>
+        <div
+          className={cn(
+            `${semanticSpacing.stack.xs} text-gray-600`,
+            isMobile ? semanticTypography.cardTitle : semanticTypography.body
+          )}
+        >
           {opportunity.estimated_value && (
             <div>Estimated Value: ${opportunity.estimated_value}</div>
           )}
-          {opportunity.probability && (
-            <div>Probability: {opportunity.probability}%</div>
-          )}
+          {opportunity.probability && <div>Probability: {opportunity.probability}%</div>}
         </div>
       </div>
 
       <div>
-        <h4 className={cn(
-          "mb-2 font-medium text-gray-900",
-          isMobile ? "text-base" : ""
-        )}>Notes</h4>
-        <div className={cn(
-          "space-y-1 text-gray-600",
-          isMobile ? "text-base" : "text-sm"
-        )}>
+        <h4
+          className={cn(
+            `${semanticSpacing.bottomGap.sm} font-medium text-gray-900`,
+            isMobile ? semanticTypography.h4 : semanticTypography.label
+          )}
+        >
+          Notes
+        </h4>
+        <div
+          className={cn(
+            `${semanticSpacing.stack.xs} text-gray-600`,
+            isMobile ? semanticTypography.cardTitle : semanticTypography.body
+          )}
+        >
           {opportunity.notes ? (
             <p>{opportunity.notes}</p>
           ) : (

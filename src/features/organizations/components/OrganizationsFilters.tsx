@@ -3,13 +3,18 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search, Plus } from 'lucide-react'
 import { COPY } from '@/lib/copy'
-import { 
+import { cn } from '@/lib/utils'
+import {
   GenericWeeksFilter,
-  GenericPrincipalFilter, 
+  GenericPrincipalFilter,
   GenericQuickViewFilter,
-  createQuickViewOptions
+  createQuickViewOptions,
 } from '@/components/filters/shared'
-import type { WeeklyFilterComponentProps, OrganizationWeeklyFilters } from '@/types/shared-filters.types'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
+import type {
+  WeeklyFilterComponentProps,
+  OrganizationWeeklyFilters,
+} from '@/types/shared-filters.types'
 
 interface OrganizationsFiltersProps extends WeeklyFilterComponentProps<OrganizationWeeklyFilters> {
   totalOrganizations: number
@@ -34,23 +39,23 @@ export const OrganizationsFilters: React.FC<OrganizationsFiltersProps> = ({
   }
 
   const handleTimeRangeChange = (timeRange: string) => {
-    onFiltersChange({ 
-      ...filters, 
-      timeRange: timeRange as OrganizationWeeklyFilters['timeRange']
+    onFiltersChange({
+      ...filters,
+      timeRange: timeRange as OrganizationWeeklyFilters['timeRange'],
     })
   }
 
   const handlePrincipalChange = (principal: string) => {
-    onFiltersChange({ 
-      ...filters, 
-      principal: principal
+    onFiltersChange({
+      ...filters,
+      principal: principal,
     })
   }
 
   const handleQuickViewChange = (quickView: string | 'none') => {
-    onFiltersChange({ 
-      ...filters, 
-      quickView: quickView as OrganizationWeeklyFilters['quickView']
+    onFiltersChange({
+      ...filters,
+      quickView: quickView as OrganizationWeeklyFilters['quickView'],
     })
   }
 
@@ -64,16 +69,18 @@ export const OrganizationsFilters: React.FC<OrganizationsFiltersProps> = ({
     filters.search,
     filters.type,
     filters.priority,
-    filters.segment
+    filters.segment,
   ].filter(Boolean).length
 
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className={`${semanticSpacing.layoutContainer} ${className}`}>
       {/* Header with Add New button */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-semibold text-card-foreground">Organizations</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <h2 className={cn(semanticTypography.h2, semanticTypography.h4, 'text-card-foreground')}>
+            Organizations
+          </h2>
+          <p className="${semanticSpacing.topGap.xs} ${semanticTypography.body} text-muted-foreground">
             {filteredCount === totalOrganizations
               ? `${totalOrganizations} organizations`
               : `${filteredCount} of ${totalOrganizations} organizations`}
@@ -82,7 +89,7 @@ export const OrganizationsFilters: React.FC<OrganizationsFiltersProps> = ({
         {onAddNew && (
           <Button
             onClick={onAddNew}
-            className="focus-ring mobile-touch-target flex items-center gap-2"
+            className="focus-ring mobile-touch-target flex items-center ${semanticSpacing.gap.xs}"
           >
             <Plus className="size-4" />
             {COPY.BUTTONS.ADD_ORGANIZATION}
@@ -91,7 +98,7 @@ export const OrganizationsFilters: React.FC<OrganizationsFiltersProps> = ({
       </div>
 
       {/* Primary Filters Row */}
-      <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+      <div className="flex flex-col items-start ${semanticSpacing.gap.lg} sm:flex-row sm:items-center">
         {/* Weekly Time Range */}
         <GenericWeeksFilter
           value={filters.timeRange || 'this_month'}
@@ -131,7 +138,7 @@ export const OrganizationsFilters: React.FC<OrganizationsFiltersProps> = ({
         />
 
         {/* Search */}
-        <div className="flex min-w-0 flex-1 items-center gap-2">
+        <div className="flex min-w-0 flex-1 items-center ${semanticSpacing.gap.xs}">
           <Search className="size-4 shrink-0 text-muted-foreground" />
           <Input
             placeholder="Search organizations by name, location, manager, phone, or segment..."
@@ -144,8 +151,8 @@ export const OrganizationsFilters: React.FC<OrganizationsFiltersProps> = ({
 
       {/* Filter Summary */}
       {(activeFilterCount > 0 || filters.search) && (
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between ${semanticTypography.body} text-muted-foreground">
+          <div className="flex items-center ${semanticSpacing.gap.xs}">
             {activeFilterCount > 0 && (
               <span>
                 {activeFilterCount} filter{activeFilterCount !== 1 ? 's' : ''} active

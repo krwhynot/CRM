@@ -1,24 +1,25 @@
+import type { DataTableColumn } from '@/components/ui/DataTable'
+import { Crown, Shield, Users, Star, Phone, Mail, Building2 } from 'lucide-react'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { ContactBadges } from '../ContactBadges'
-import { 
-  ChevronDown, 
-  ChevronRight, 
-  Shield, 
-  Crown, 
-  Users, 
-  Star,
-  MoreHorizontal
-} from 'lucide-react'
+import { ContactActions } from '../ContactActions'
 import { cn } from '@/lib/utils'
-import type { Contact, ContactWithOrganization } from '@/types/entities'
-import type { DataTableColumn } from '@/components/ui/DataTable'
+import {
+  semanticSpacing,
+  semanticTypography,
+  semanticColors,
+  semanticRadius,
+  fontWeight,
+  colors,
+} from '@/styles/tokens'
+import type { Contact } from '@/types/entities'
 
 // Extended contact interface with weekly context and decision authority tracking
-interface ContactWithWeeklyContext extends ContactWithOrganization {
+interface ContactWithWeeklyContext extends Contact {
+  decision_authority?: string
   decision_authority_level?: 'high' | 'medium' | 'low'
+  purchase_influence?: string
   purchase_influence_score?: number
   recent_interactions_count?: number
   last_interaction_date?: string | Date
@@ -27,306 +28,366 @@ interface ContactWithWeeklyContext extends ContactWithOrganization {
   budget_authority?: boolean
   technical_authority?: boolean
   user_authority?: boolean
+  is_primary_contact?: boolean
+  organization?: {
+    name: string
+    type: string
+    segment?: string
+  }
+}
+
+interface ContactRowProps {
+  selectedItems: Set<string>
+  handleSelectItem: (id: string, checked: boolean) => void
+  toggleRowExpansion: (contactId: string) => void
+  isRowExpanded: (contactId: string) => boolean
+  onEditContact: (contact: ContactWithWeeklyContext) => void
+  onDeleteContact: (contact: ContactWithWeeklyContext) => void
 }
 
 export function useContactColumns({
   selectedItems,
-  onSelectAll,
-  onSelectItem,
-  onToggleExpansion,
+  handleSelectItem,
+  toggleRowExpansion,
   isRowExpanded,
-  onEdit,
-  onDelete,
-  onView,
-  onContact,
-  showOrganization = true,
-}: {
-  selectedItems: Set<string>
-  onSelectAll: (checked: boolean, items: ContactWithWeeklyContext[]) => void
-  onSelectItem: (id: string, checked: boolean) => void
-  onToggleExpansion: (id: string) => void
-  isRowExpanded: (id: string) => boolean
-  onEdit?: (contact: Contact) => void
-  onDelete?: (contact: Contact) => void
-  onView?: (contact: Contact) => void
-  onContact?: (contact: Contact) => void
-  showOrganization?: boolean
-}) {
-  const columns: DataTableColumn<ContactWithWeeklyContext>[] = [
+  onEditContact,
+  onDeleteContact,
+}: ContactRowProps): DataTableColumn<ContactWithWeeklyContext>[] {
+  return [
     {
-      key: 'selection',
-      header: (sortedContacts: ContactWithWeeklyContext[]) => (
-        <div className="flex items-center gap-2">
-          <Checkbox
-            checked={selectedItems.size > 0 && selectedItems.size === sortedContacts.length}
-            onCheckedChange={(checked) => onSelectAll(!!checked, sortedContacts)}
-            aria-label="Select all contacts"
-          />
-        </div>
-      ),
-      cell: (contact) => (
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onToggleExpansion(contact.id)}
-            className="h-auto p-0 text-gray-400 hover:bg-transparent hover:text-gray-600"
-            aria-label={isRowExpanded(contact.id) ? 'Collapse details' : 'Expand details'}
-          >
-            {isRowExpanded(contact.id) ? (
-              <ChevronDown className="size-4" />
-            ) : (
-              <ChevronRight className="size-4" />
-            )}
-          </Button>
-          <Checkbox
-            checked={selectedItems.has(contact.id)}
-            onCheckedChange={(checked) => onSelectItem(contact.id, !!checked)}
-            aria-label={`Select ${contact.first_name} ${contact.last_name}`}
-          />
-        </div>
-      ),
-      className: 'w-[60px] px-6 py-3',
-    },
-    {
-      key: 'contact',
-      header: 'Contact',
-      cell: (contact) => <ContactNameCell contact={contact} />,
-      className: 'w-[30%] px-6 py-3',
-    },
-    ...(showOrganization ? [{
-      key: 'organization' as const,
-      header: 'Organization',
-      cell: (contact: ContactWithWeeklyContext) => (
-        <div>
-          <div className="text-sm font-medium text-gray-900">
-            {contact.organization?.name || 'No Organization'}
-          </div>
-          {contact.organization?.type && (
-            <div className="text-xs text-gray-500">{contact.organization.type}</div>
-          )}
-        </div>
-      ),
-      className: 'w-[25%] px-6 py-3',
-      hidden: { sm: true },
-    }] : []),
-    {
-      key: 'contact_info',
-      header: 'Contact Info',
-      cell: (contact) => (
-        <div className="space-y-1">
-          {contact.email && (
-            <div className="text-sm text-gray-900">{contact.email}</div>
-          )}
-          {contact.phone && (
-            <div className="text-xs text-gray-500">{contact.phone}</div>
-          )}
-        </div>
-      ),
-      className: 'w-[20%] px-6 py-3',
-      hidden: { sm: true, md: true },
-    },
-    {
-      key: 'authority',
-      header: 'Authority',
-      cell: (contact) => <ContactAuthorityCell contact={contact} />,
-      className: 'w-[15%] px-6 py-3',
-      hidden: { sm: true },
-    },
-    {
-      key: 'actions',
-      header: 'Actions',
-      cell: (contact) => (
-        <ContactActionsCell
-          contact={contact}
-          onEdit={onEdit}
-          onDelete={onDelete}
-          onView={onView}
-          onContact={onContact}
+      id: 'select',
+      header: (contacts: ContactWithWeeklyContext[]) => (
+        <Checkbox
+          checked={selectedItems.size > 0 && selectedItems.size === contacts.length}
+          onCheckedChange={(checked) => {
+            if (checked) {
+              contacts.forEach((contact) => handleSelectItem(contact.id, true))
+            } else {
+              contacts.forEach((contact) => handleSelectItem(contact.id, false))
+            }
+          }}
+          aria-label="Select all contacts"
+          className={semanticSpacing.interactiveElement}
         />
       ),
-      className: 'w-[10%] px-6 py-3 text-right',
+      cell: (contact) => (
+        <Checkbox
+          checked={selectedItems.has(contact.id)}
+          onCheckedChange={(checked) => handleSelectItem(contact.id, !!checked)}
+          aria-label={`Select contact ${contact.first_name || ''} ${contact.last_name || ''}`}
+          className={semanticSpacing.interactiveElement}
+        />
+      ),
+    },
+    {
+      id: 'expand',
+      header: '',
+      cell: (contact) => (
+        <Button
+          variant="ghost"
+          onClick={() => toggleRowExpansion(contact.id)}
+          className={cn(
+            semanticSpacing.interactiveElement,
+            `transition-transform duration-200`,
+            isRowExpanded(contact.id) && 'rotate-90'
+          )}
+          aria-label={`${isRowExpanded(contact.id) ? 'Collapse' : 'Expand'} contact details`}
+        >
+          <span className="sr-only">Toggle row expansion</span>▶
+        </Button>
+      ),
+    },
+    {
+      key: 'name',
+      header: 'Contact',
+      cell: (contact) => {
+        const fullName =
+          `${contact.first_name || ''} ${contact.last_name || ''}`.trim() || 'Unknown Contact'
+
+        return (
+          <div
+            className={`w-full ${semanticSpacing.layoutContainer} ${semanticSpacing.verticalContainer}`}
+          >
+            <div className={`flex items-center ${semanticSpacing.gap.sm}`}>
+              <div
+                className={cn(
+                  `size-8 ${semanticRadius.full} flex items-center justify-center text-white ${fontWeight.medium}`,
+                  colors.primary[500],
+                  semanticRadius.full,
+                  semanticTypography.caption
+                )}
+              >
+                {(contact.first_name?.[0] || contact.last_name?.[0] || 'U').toUpperCase()}
+              </div>
+              <div className={semanticSpacing.verticalContainer}>
+                <div className={cn(`${fontWeight.medium} truncate`, semanticTypography.body)}>
+                  {fullName}
+                </div>
+                {contact.title && (
+                  <div className={cn('truncate text-muted-foreground', semanticTypography.caption)}>
+                    {contact.title}
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* Authority indicators - Mobile visible */}
+            <div
+              className={`flex items-center ${semanticSpacing.gap.xs} ${semanticSpacing.topGap.xs}`}
+            >
+              {(contact.decision_authority_level === 'high' || contact.budget_authority) && (
+                <Crown className="size-3 ${text-warning}" />
+              )}
+              {(contact.decision_authority_level === 'medium' || contact.technical_authority) && (
+                <Shield className="size-3 ${text-primary}" />
+              )}
+              {contact.high_value_contact && <Star className="size-3 ${text-success}" />}
+              {contact.is_primary_contact && (
+                <Badge
+                  variant="secondary"
+                  className={cn(semanticTypography.caption, semanticSpacing.compact)}
+                >
+                  Primary
+                </Badge>
+              )}
+            </div>
+          </div>
+        )
+      },
+      // size: 280,
+    },
+    {
+      key: 'email',
+      header: 'Contact Info',
+      cell: (contact) => (
+        <div
+          className={cn(
+            `w-full ${semanticSpacing.layoutContainer} ${semanticSpacing.verticalContainer}`,
+            semanticTypography.body
+          )}
+        >
+          {contact.email && (
+            <div className={`flex items-center ${semanticSpacing.gap.xs} text-muted-foreground`}>
+              <Mail className="size-3" />
+              <span className="truncate">{contact.email}</span>
+            </div>
+          )}
+          {contact.phone && (
+            <div
+              className={`flex items-center ${semanticSpacing.gap.xs} text-muted-foreground ${semanticSpacing.topGap.xs}`}
+            >
+              <Phone className="size-3" />
+              <span className="truncate">{contact.phone}</span>
+            </div>
+          )}
+          {!contact.email && !contact.phone && (
+            <span className={cn('italic text-muted-foreground', semanticTypography.caption)}>
+              No contact info
+            </span>
+          )}
+        </div>
+      ),
+      // size: 200,
+    },
+    {
+      id: 'organization',
+      header: 'Organization',
+      cell: (contact) => (
+        <div
+          className={cn(
+            `w-full ${semanticSpacing.layoutContainer} ${semanticSpacing.verticalContainer}`,
+            semanticTypography.body
+          )}
+        >
+          {contact.organization ? (
+            <>
+              <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
+                <Building2 className="size-3 text-muted-foreground" />
+                <span className={`${fontWeight.medium} truncate`}>{contact.organization.name}</span>
+              </div>
+              {contact.organization.type && (
+                <div
+                  className={cn(
+                    `truncate text-muted-foreground ${semanticSpacing.topGap.xs}`,
+                    semanticTypography.caption
+                  )}
+                >
+                  {contact.organization.type}
+                </div>
+              )}
+            </>
+          ) : (
+            <span className={cn('italic text-muted-foreground', semanticTypography.caption)}>
+              No organization
+            </span>
+          )}
+        </div>
+      ),
+      // size: 180,
+    },
+    {
+      id: 'authority',
+      header: 'Authority',
+      cell: (contact) => {
+        return (
+          <div
+            className={cn(
+              `w-full ${semanticSpacing.layoutContainer} ${semanticSpacing.verticalContainer}`,
+              semanticTypography.body
+            )}
+          >
+            <div className={`flex items-center ${semanticSpacing.gap.sm}`}>
+              {contact.decision_authority_level === 'high' || contact.budget_authority ? (
+                <>
+                  <Crown className="size-4 ${text-warning}" />
+                  <span className={fontWeight.medium}>High</span>
+                </>
+              ) : contact.decision_authority_level === 'medium' || contact.technical_authority ? (
+                <>
+                  <Shield className="size-4 ${text-primary}" />
+                  <span className={fontWeight.medium}>Medium</span>
+                </>
+              ) : (
+                <>
+                  <Users className={`size-4 ${semanticColors.text.muted}`} />
+                  <span className="text-muted-foreground">Limited</span>
+                </>
+              )}
+            </div>
+            {/* Authority types - compact indicators */}
+            <div className={`flex ${semanticSpacing.gap.xs} ${semanticSpacing.topGap.xs}`}>
+              {contact.budget_authority && (
+                <div
+                  className={cn('size-2 rounded-full bg-green-500', semanticRadius.full)}
+                  title="Budget Authority"
+                />
+              )}
+              {contact.technical_authority && (
+                <div
+                  className={cn('size-2 rounded-full bg-blue-500', semanticRadius.full)}
+                  title="Technical Authority"
+                />
+              )}
+              {contact.user_authority && (
+                <div
+                  className={cn('size-2 rounded-full bg-purple-500', semanticRadius.full)}
+                  title="User Authority"
+                />
+              )}
+            </div>
+          </div>
+        )
+      },
+      // size: 120,
+    },
+    {
+      id: 'influence',
+      header: 'Influence',
+      cell: (contact) => {
+        return (
+          <div
+            className={cn(
+              `w-full ${semanticSpacing.layoutContainer} ${semanticSpacing.verticalContainer}`,
+              semanticTypography.body
+            )}
+          >
+            {contact.purchase_influence_score ? (
+              <div className={`flex items-center ${semanticSpacing.gap.sm}`}>
+                <div
+                  className={cn(
+                    `h-2 w-12 overflow-hidden ${semanticColors.background.muted}`,
+                    semanticRadius.sm
+                  )}
+                >
+                  <div
+                    className={cn(
+                      'h-full',
+                      semanticRadius.sm,
+                      contact.purchase_influence_score >= 80
+                        ? 'bg-success'
+                        : contact.purchase_influence_score >= 60
+                          ? 'bg-warning'
+                          : 'bg-destructive'
+                    )}
+                    style={{ width: `${contact.purchase_influence_score}%` }}
+                  />
+                </div>
+                <span className={cn(fontWeight.medium, semanticTypography.caption)}>
+                  {contact.purchase_influence_score}
+                </span>
+              </div>
+            ) : contact.purchase_influence ? (
+              <div className={cn('text-muted-foreground', semanticTypography.caption)}>
+                {contact.purchase_influence}
+              </div>
+            ) : (
+              <span className={cn('italic text-muted-foreground', semanticTypography.caption)}>
+                Not assessed
+              </span>
+            )}
+            {contact.high_value_contact && (
+              <div
+                className={`flex items-center ${semanticSpacing.gap.xs} ${text - success} ${semanticSpacing.topGap.xs}`}
+              >
+                <Star className="size-3" />
+                <span className={semanticTypography.caption}>High Value</span>
+              </div>
+            )}
+          </div>
+        )
+      },
+      // size: 100,
+    },
+    {
+      id: 'activity',
+      header: 'Activity',
+      cell: (contact) => {
+        return (
+          <div
+            className={cn(
+              `w-full ${semanticSpacing.layoutContainer} ${semanticSpacing.verticalContainer}`,
+              semanticTypography.caption
+            )}
+          >
+            <div className={`flex justify-between ${semanticSpacing.gap.sm}`}>
+              <span className="text-muted-foreground">Interactions:</span>
+              <span className={fontWeight.medium}>{contact.recent_interactions_count || 0}</span>
+            </div>
+            {contact.last_interaction_date && (
+              <div
+                className={`flex justify-between ${semanticSpacing.gap.sm} ${semanticSpacing.topGap.xs}`}
+              >
+                <span className="text-muted-foreground">Last:</span>
+                <span className={fontWeight.medium}>
+                  {new Date(contact.last_interaction_date).toLocaleDateString()}
+                </span>
+              </div>
+            )}
+            {contact.needs_follow_up && (
+              <div
+                className={`flex items-center ${semanticSpacing.gap.xs} ${text - destructive} ${semanticSpacing.topGap.xs}`}
+              >
+                <span>⚠️ Follow-up needed</span>
+              </div>
+            )}
+          </div>
+        )
+      },
+      // size: 120,
+    },
+    {
+      id: 'actions',
+      header: '',
+      cell: (contact) => (
+        <ContactActions
+          contact={contact}
+          onEdit={onEditContact}
+          onView={undefined}
+          onContact={undefined}
+          variant="ghost"
+          size="sm"
+        />
+      ),
+      // size: 80,
     },
   ]
-
-  return columns
-}
-
-function ContactNameCell({ contact }: { contact: ContactWithWeeklyContext }) {
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-2">
-        <div className="text-sm font-medium text-gray-900">
-          {contact.first_name} {contact.last_name}
-        </div>
-        
-        {/* Authority Icons */}
-        <div className="flex items-center gap-1">
-          {contact.decision_authority_level === 'high' || contact.budget_authority ? (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex items-center">
-                    <Crown className="size-3 text-yellow-500" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>High Decision Authority</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          ) : contact.decision_authority_level === 'medium' || contact.technical_authority ? (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex items-center">
-                    <Shield className="size-3 text-blue-500" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Medium Decision Authority</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          ) : null}
-          
-          {contact.high_value_contact && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex items-center">
-                    <Star className="size-3 text-green-500" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>High Value Contact</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
-          
-          {contact.is_primary_contact && <span className="fill-current text-yellow-500">⭐</span>}
-          
-          {contact.needs_follow_up && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex items-center">
-                    <span className="size-2 animate-pulse rounded-full bg-red-500" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Needs follow-up</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
-        </div>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-1">
-        {/* Authority Type Badges */}
-        {contact.budget_authority && (
-          <Badge variant="secondary" className="border-green-200 bg-green-50 text-xs text-green-700">
-            Budget
-          </Badge>
-        )}
-        {contact.technical_authority && (
-          <Badge variant="secondary" className="border-blue-200 bg-blue-50 text-xs text-blue-700">
-            Technical
-          </Badge>
-        )}
-        {contact.user_authority && (
-          <Badge variant="secondary" className="border-purple-200 bg-purple-50 text-xs text-purple-700">
-            User
-          </Badge>
-        )}
-        
-        {/* Purchase Influence Badge */}
-        {contact.purchase_influence_score && contact.purchase_influence_score > 60 && (
-          <Badge variant="secondary" className="border-orange-200 bg-orange-50 text-xs text-orange-700">
-            {contact.purchase_influence_score}% influence
-          </Badge>
-        )}
-        
-        {/* Recent Activity Badge */}
-        {(contact.recent_interactions_count || 0) > 0 && (
-          <Badge variant="secondary" className="border-gray-200 bg-gray-50 text-xs text-gray-700">
-            {contact.recent_interactions_count} recent
-          </Badge>
-        )}
-      </div>
-
-      {/* Title */}
-      {contact.title && (
-        <div className="text-xs text-muted-foreground">
-          {contact.title}
-        </div>
-      )}
-    </div>
-  )
-}
-
-function ContactAuthorityCell({ contact }: { contact: ContactWithWeeklyContext }) {
-  return (
-    <div className="space-y-1">
-      {contact.decision_authority_level && (
-        <Badge 
-          variant="secondary" 
-          className={cn(
-            "text-xs",
-            contact.decision_authority_level === 'high' ? "border-green-200 bg-green-50 text-green-700" :
-            contact.decision_authority_level === 'medium' ? "border-yellow-200 bg-yellow-50 text-yellow-700" :
-            "border-gray-200 bg-gray-50 text-gray-700"
-          )}
-        >
-          {contact.decision_authority_level}
-        </Badge>
-      )}
-      {contact.purchase_influence_score && (
-        <div className="text-xs text-gray-500">
-          {contact.purchase_influence_score}% influence
-        </div>
-      )}
-    </div>
-  )
-}
-
-function ContactActionsCell({ 
-  contact, 
-  onEdit, 
-  onDelete, 
-  onView, 
-  onContact 
-}: { 
-  contact: ContactWithWeeklyContext
-  onEdit?: (contact: Contact) => void
-  onDelete?: (contact: Contact) => void
-  onView?: (contact: Contact) => void
-  onContact?: (contact: Contact) => void
-}) {
-  return (
-    <div className="flex items-center justify-end gap-1">
-      {onContact && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onContact(contact)}
-          className="h-8 w-8 p-0"
-        >
-          <Users className="h-3 w-3" />
-        </Button>
-      )}
-      {onView && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onView(contact)}
-          className="h-8 w-8 p-0"
-        >
-          <MoreHorizontal className="h-3 w-3" />
-        </Button>
-      )}
-    </div>
-  )
 }

@@ -1,6 +1,7 @@
 import { StandardDialog } from '@/components/ui/StandardDialog'
 import { OrganizationForm } from './OrganizationForm'
 import { COPY } from '@/lib/copy'
+import { semanticTypography } from '@/styles/tokens'
 import type { Organization } from '@/types/entities'
 import type { OrganizationFormInterface } from '@/types/forms/form-interfaces'
 
@@ -88,7 +89,7 @@ export const OrganizationDialogs = ({
         confirmVariant="destructive"
         isLoading={isDeleting}
       >
-        <div className="text-center text-sm text-muted-foreground">
+        <div className={`text-center ${semanticTypography.body} text-muted-foreground`}>
           This will soft-delete the organization. It can be restored later if needed.
         </div>
       </StandardDialog>

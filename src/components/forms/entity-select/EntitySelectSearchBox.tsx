@@ -3,6 +3,8 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Search, X } from 'lucide-react'
 
+import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticTypography, semanticColors } from '@/styles/tokens'
 interface EntitySelectSearchBoxProps {
   searchTerm: string
   onSearchChange: (term: string) => void
@@ -15,14 +17,19 @@ export const EntitySelectSearchBox: React.FC<EntitySelectSearchBoxProps> = ({
   onClearSearch,
 }) => {
   return (
-    <div className="sticky top-0 z-10 border-b border-gray-100 bg-white p-2">
+    <div
+      className={cn(
+        semanticSpacing.compact,
+        `sticky top-0 z-10 border-b ${semanticColors.borderStyles.subtle} bg-background`
+      )}
+    >
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           placeholder="Search options..."
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="h-10 px-10 text-sm"
+          className={cn(semanticTypography.body, 'h-10 px-10')}
           autoFocus={false}
         />
         {searchTerm && (

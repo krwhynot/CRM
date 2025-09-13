@@ -1,9 +1,11 @@
 /**
  * URL Constants Configuration
- * 
+ *
  * Centralized configuration for all URLs used throughout the application,
  * including form placeholders, external service URLs, and default values.
  */
+
+import { isValidEmail as validateEmailAddress } from '@/lib/validation'
 
 // Form Placeholder URLs
 export const placeholderUrls = {
@@ -52,7 +54,8 @@ export const defaultUrls = {
 
 // URL Validation Patterns
 export const urlPatterns = {
-  website: /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/,
+  website:
+    /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/,
   linkedin: /^https:\/\/(www\.)?linkedin\.com\/(in|company)\/[a-zA-Z0-9-_]+\/?$/,
   email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
 } as const
@@ -60,12 +63,12 @@ export const urlPatterns = {
 // Helper functions for URL formatting
 export const formatUrl = (url: string): string => {
   if (!url) return ''
-  
+
   // Add https:// if no protocol is specified
   if (!url.match(/^https?:\/\//)) {
     return `https://${url}`
   }
-  
+
   return url
 }
 
@@ -79,5 +82,5 @@ export const isLinkedInUrl = (url: string): boolean => {
 }
 
 export const isValidEmail = (email: string): boolean => {
-  return validateUrl(email, 'email')
+  return validateEmailAddress(email)
 }

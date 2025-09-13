@@ -1,5 +1,5 @@
-import type React from 'react'
 import { useState } from 'react'
+import type { FormEvent } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 
 interface SignUpFormData {
@@ -53,7 +53,7 @@ export function useSignUpForm() {
     setFormState((prev) => ({ ...prev, success, error: null }))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     clearMessages()
 

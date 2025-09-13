@@ -1,5 +1,5 @@
 import React from 'react'
-import { ContactsTable } from './ContactsTable'
+import { ContactsTable } from './ContactsTableRefactored'
 import { LoadingState, ErrorState } from '@/components/ui/data-state'
 import type { Contact, ContactWithOrganization } from '@/types/entities'
 

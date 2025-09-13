@@ -5,6 +5,8 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { SimpleMultiPrincipalForm } from '@/features/opportunities/components/SimpleMultiPrincipalForm'
 import { PageContainer } from '@/components/layout'
 import { PageHeader } from '@/components/ui/new/PageHeader'
+import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 
 function MultiPrincipalOpportunityPage() {
   const navigate = useNavigate()
@@ -40,13 +42,17 @@ function MultiPrincipalOpportunityPage() {
       {/* Help Text */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Multi-Principal Opportunities</CardTitle>
+          <CardTitle className={semanticTypography.h4}>Multi-Principal Opportunities</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
+        <CardContent className={semanticSpacing.stack.lg}>
+          <div className={`grid ${semanticSpacing.gap.lg} md:grid-cols-2`}>
             <div>
-              <h4 className="mb-2 font-medium">When to Use</h4>
-              <ul className="space-y-1 text-sm text-muted-foreground">
+              <h4 className={cn(semanticTypography.label, semanticSpacing.stack.sm)}>
+                When to Use
+              </h4>
+              <ul
+                className={`${semanticSpacing.stack.xs} ${semanticTypography.body} text-muted-foreground`}
+              >
                 <li>• Multiple food brokers involved</li>
                 <li>• Complex distributor relationships</li>
                 <li>• Joint territory coverage</li>
@@ -54,8 +60,12 @@ function MultiPrincipalOpportunityPage() {
               </ul>
             </div>
             <div>
-              <h4 className="mb-2 font-medium">Key Features</h4>
-              <ul className="space-y-1 text-sm text-muted-foreground">
+              <h4 className={cn(semanticTypography.label, semanticSpacing.stack.sm)}>
+                Key Features
+              </h4>
+              <ul
+                className={`${semanticSpacing.stack.xs} ${semanticTypography.body} text-muted-foreground`}
+              >
                 <li>• Assign multiple principals per opportunity</li>
                 <li>• Set primary principal per role</li>
                 <li>• Configure commission rates</li>

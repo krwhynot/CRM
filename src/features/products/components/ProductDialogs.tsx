@@ -1,6 +1,7 @@
 import React from 'react'
 import { StandardDialog } from '@/components/ui/StandardDialog'
 import { ProductForm } from './ProductForm'
+import { semanticTypography } from '@/styles/tokens'
 import type { Product, ProductInsert, ProductUpdate, OrganizationInsert } from '@/types/entities'
 import type { ProductFormData } from '@/types/validation'
 import type { Database } from '@/lib/database.types'
@@ -20,14 +21,14 @@ export interface ProductWithPrincipalData
 
 // Helper function to transform ProductFormData to ProductWithPrincipalData
 function transformProductFormData(formData: ProductFormData): ProductWithPrincipalData {
-  const { 
-    principal_mode, 
-    principal_name, 
-    principal_segment, 
-    principal_phone, 
-    principal_email, 
-    principal_website, 
-    ...productData 
+  const {
+    principal_mode,
+    principal_name,
+    principal_segment,
+    principal_phone,
+    principal_email,
+    principal_website,
+    ...productData
   } = formData
 
   let result: ProductWithPrincipalData = {
@@ -116,7 +117,9 @@ export const ProductDialogs: React.FC<ProductDialogsProps> = ({
         {selectedProduct && (
           <ProductForm
             initialData={selectedProduct}
-            onSubmit={(data: ProductFormData) => onEditSubmit(transformProductFormData(data) as ProductUpdate)}
+            onSubmit={(data: ProductFormData) =>
+              onEditSubmit(transformProductFormData(data) as ProductUpdate)
+            }
             loading={isUpdating}
           />
         )}
@@ -136,7 +139,7 @@ export const ProductDialogs: React.FC<ProductDialogsProps> = ({
         confirmVariant="destructive"
         isLoading={isDeleting}
       >
-        <div className="text-center text-sm text-muted-foreground">
+        <div className={`text-center ${semanticTypography.body} text-muted-foreground`}>
           This will permanently remove the product from your catalog and all associated data.
         </div>
       </StandardDialog>

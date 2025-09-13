@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { semanticSpacing, semanticTypography, fontWeight } from '@/styles/tokens'
 import type { UseFormRegister, UseFormSetValue, FieldErrors } from 'react-hook-form'
 import type { OpportunityFormData, OpportunityContext } from '@/types/opportunity.types'
 
@@ -37,9 +38,12 @@ export const WizardStepTimeline: React.FC<WizardStepTimelineProps> = ({
   loading = false,
 }) => {
   return (
-    <div className="space-y-4">
+    <div className={semanticSpacing.layoutContainer}>
       <div>
-        <label htmlFor="estimated_close_date" className="text-sm font-medium">
+        <label
+          htmlFor="estimated_close_date"
+          className={`${semanticTypography.body} ${fontWeight.medium}`}
+        >
           Estimated Close Date
         </label>
         <Input
@@ -49,12 +53,17 @@ export const WizardStepTimeline: React.FC<WizardStepTimelineProps> = ({
           disabled={loading}
         />
         {errors.estimated_close_date && (
-          <p className="mt-1 text-sm text-red-600">{errors.estimated_close_date.message}</p>
+          <p className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} text-destructive`}>
+            {errors.estimated_close_date.message}
+          </p>
         )}
       </div>
 
       <div>
-        <label htmlFor="opportunity_context" className="text-sm font-medium">
+        <label
+          htmlFor="opportunity_context"
+          className={`${semanticTypography.body} ${fontWeight.medium}`}
+        >
           Opportunity Context
         </label>
         <Select
@@ -74,12 +83,14 @@ export const WizardStepTimeline: React.FC<WizardStepTimelineProps> = ({
           </SelectContent>
         </Select>
         {errors.opportunity_context && (
-          <p className="mt-1 text-sm text-red-600">{errors.opportunity_context.message}</p>
+          <p className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} text-destructive`}>
+            {errors.opportunity_context.message}
+          </p>
         )}
       </div>
 
       <div>
-        <label htmlFor="notes" className="text-sm font-medium">
+        <label htmlFor="notes" className={`${semanticTypography.body} ${fontWeight.medium}`}>
           Notes
         </label>
         <Textarea
@@ -89,7 +100,11 @@ export const WizardStepTimeline: React.FC<WizardStepTimelineProps> = ({
           disabled={loading}
           rows={4}
         />
-        {errors.notes && <p className="mt-1 text-sm text-red-600">{errors.notes.message}</p>}
+        {errors.notes && (
+          <p className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} text-destructive`}>
+            {errors.notes.message}
+          </p>
+        )}
       </div>
     </div>
   )

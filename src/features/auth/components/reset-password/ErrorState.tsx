@@ -2,6 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { semanticSpacing, semanticTypography, fontWeight } from '@/styles/tokens'
 
 interface AuthData {
   errorCode?: string
@@ -39,13 +40,17 @@ export const ErrorState: React.FC<ErrorStateProps> = ({ authData }) => {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+    <div
+      className={`flex min-h-screen items-center justify-center bg-muted/30 ${semanticSpacing.horizontalPadding.lg} ${semanticSpacing.verticalPadding.xxl} sm:${semanticSpacing.horizontalPadding.xl} lg:${semanticSpacing.horizontalPadding.xxl}`}
+    >
       <Card className="mx-auto w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-red-600">{errorTitle}</CardTitle>
+          <CardTitle className={`${semanticTypography.title} ${fontWeight.bold} text-destructive`}>
+            {errorTitle}
+          </CardTitle>
           <CardDescription>{errorMessage}</CardDescription>
         </CardHeader>
-        <CardFooter className="flex flex-col gap-3">
+        <CardFooter className={`flex flex-col ${semanticSpacing.gap.lg}`}>
           <Button onClick={() => navigate('/forgot-password')} className="w-full">
             Request New Reset Link
           </Button>

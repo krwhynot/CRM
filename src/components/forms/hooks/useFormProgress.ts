@@ -39,17 +39,17 @@ export function useFormProgress<T extends FieldValues = FieldValues>({
 
     // Get only required fields that are visible
     const requiredFields = visibleFields.filter((field) => 'required' in field && field.required)
-    
+
     // Calculate which required fields are completed
     const completedFields: string[] = []
     const remainingFields: string[] = []
 
     requiredFields.forEach((field) => {
       if (!field.name) return // Skip fields without names
-      
+
       const value = formValues[field.name]
       const isCompleted = isFieldCompleted(value)
-      
+
       if (isCompleted) {
         completedFields.push(field.name)
       } else {

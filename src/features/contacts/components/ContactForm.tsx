@@ -116,7 +116,11 @@ export function ContactForm({
       type: 'select',
       required: true,
       options: [
-        { value: 'customer', label: 'Customer', description: 'Restaurant or food service establishment' },
+        {
+          value: 'customer',
+          label: 'Customer',
+          description: 'Restaurant or food service establishment',
+        },
         { value: 'principal', label: 'Principal', description: 'Manufacturer or brand' },
         { value: 'distributor', label: 'Distributor', description: 'Distribution company' },
         { value: 'prospect', label: 'Prospect', description: 'Potential customer' },
@@ -243,9 +247,9 @@ export function ContactForm({
   const enhancedInitialData = {
     organization_mode: 'existing' as 'existing' | 'new', // Default to existing organization mode
     ...initialData,
-    ...(preselectedOrganization && { 
+    ...(preselectedOrganization && {
       organization_id: preselectedOrganization,
-      organization_mode: 'existing' as 'existing' | 'new'
+      organization_mode: 'existing' as 'existing' | 'new',
     }),
   }
 

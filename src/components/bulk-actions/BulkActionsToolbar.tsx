@@ -1,6 +1,7 @@
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 /**
  * Bulk Actions Toolbar
- * 
+ *
  * A toolbar component that displays when items are selected and provides
  * quick access to bulk actions with visual feedback and confirmation dialogs.
  */
@@ -37,13 +38,8 @@ export function BulkActionsToolbar({
   showClearAll = true,
   animate = true,
 }: BulkActionsToolbarProps) {
-  const {
-    getSelectionCount,
-    availableActions,
-    executeBulkAction,
-    canExecuteAction,
-    deselectAll,
-  } = useBulkActions()
+  const { getSelectionCount, availableActions, executeBulkAction, canExecuteAction, deselectAll } =
+    useBulkActions()
 
   // Local state
   const [executingAction, setExecutingAction] = useState<string | null>(null)
@@ -112,7 +108,7 @@ export function BulkActionsToolbar({
     <>
       <div
         className={cn(
-          'flex items-center justify-between gap-4 bg-background px-4 py-3',
+          `flex items-center justify-between ${semanticSpacing.gap.xl} bg-background ${semanticSpacing.horizontalPadding.xl} ${semanticSpacing.verticalPadding.lg}`,
           positionClasses[position],
           animationClasses,
           className
@@ -121,11 +117,11 @@ export function BulkActionsToolbar({
         aria-label="Bulk actions"
       >
         {/* Selection Info */}
-        <div className="flex items-center gap-3">
-          <Badge variant="secondary" className="font-medium">
+        <div className={cn(semanticSpacing.gap.sm, 'flex items-center')}>
+          <Badge variant="secondary" className={`${semanticTypography.label}`}>
             {selectionCount} selected
           </Badge>
-          
+
           {showClearAll && (
             <>
               <Separator orientation="vertical" className="h-4" />
@@ -133,9 +129,12 @@ export function BulkActionsToolbar({
                 variant="ghost"
                 size="sm"
                 onClick={deselectAll}
-                className="h-8 px-2 text-muted-foreground hover:text-foreground"
+                className={cn(
+                  semanticSpacing.compactX,
+                  'h-8 text-muted-foreground hover:text-foreground'
+                )}
               >
-                <X className="h-3 w-3 mr-1" />
+                <X className={`h-3 w-3 ${semanticSpacing.rightGap.xs}`} />
                 Clear
               </Button>
             </>
@@ -143,7 +142,7 @@ export function BulkActionsToolbar({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2">
+        <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
           {visibleActions.map((action) => {
             const isExecuting = executingAction === action.id
             const canExecute = canExecuteAction(action.id)
@@ -159,9 +158,9 @@ export function BulkActionsToolbar({
                 title={action.disabled ? action.disabledReason : undefined}
               >
                 {isExecuting ? (
-                  <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                  <Loader2 className={`h-3 w-3 ${semanticSpacing.rightGap.xs} animate-spin`} />
                 ) : action.icon ? (
-                  <action.icon className="h-3 w-3 mr-1" />
+                  <action.icon className={`h-3 w-3 ${semanticSpacing.rightGap.xs}`} />
                 ) : null}
                 {action.label}
               </Button>
@@ -191,12 +190,20 @@ export function BulkActionsToolbar({
             `Are you sure you want to ${confirmationDialog.action.label.toLowerCase()} ${selectionCount} item${selectionCount !== 1 ? 's' : ''}?`
           }
           confirmText={confirmationDialog.action.label}
-          confirmVariant={confirmationDialog.action.variant === 'destructive' ? 'destructive' : 'default'}
+          confirmVariant={
+            confirmationDialog.action.variant === 'destructive' ? 'destructive' : 'default'
+          }
           onConfirm={handleConfirmAction}
           onCancel={() => setConfirmationDialog(null)}
           isLoading={executingAction === confirmationDialog.action.id}
         >
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div
+            className={cn(
+              semanticSpacing.gap.xs,
+              semanticTypography.body,
+              'flex items-center text-muted-foreground'
+            )}
+          >
             <AlertTriangle className="h-4 w-4" />
             This action cannot be undone.
           </div>
@@ -218,7 +225,7 @@ export function useBulkActionsSetup(actions: BulkAction[]) {
 
   React.useEffect(() => {
     setAvailableActions(actions)
-    
+
     // Cleanup when component unmounts
     return () => setAvailableActions([])
   }, [actions, setAvailableActions])

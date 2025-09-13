@@ -10,15 +10,15 @@ export function useMediaQuery(query: string): boolean {
 
   useEffect(() => {
     const media = window.matchMedia(query)
-    
+
     // Set initial value
     setMatches(media.matches)
-    
+
     // Create listener function
     const listener = (event: MediaQueryListEvent) => {
       setMatches(event.matches)
     }
-    
+
     // Add listener with fallback for older browsers
     if (media.addEventListener) {
       media.addEventListener('change', listener)
@@ -26,7 +26,7 @@ export function useMediaQuery(query: string): boolean {
       // Fallback for older browsers
       media.addListener(listener)
     }
-    
+
     // Cleanup
     return () => {
       if (media.removeEventListener) {
@@ -57,17 +57,17 @@ export const useIsMobileOrTablet = () => useMediaQuery('(max-width: 1023px)')
 export const useIsIPad = () => {
   const isTabletSize = useMediaQuery('(min-width: 768px) and (max-width: 1366px)')
   const [isIPad, setIsIPad] = useState(false)
-  
+
   useEffect(() => {
     // Check for touch capability and tablet size
     const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
     const userAgent = navigator.userAgent.toLowerCase()
-    const isIPadUserAgent = userAgent.includes('ipad') || 
-      (userAgent.includes('macintosh') && hasTouch) // iPadOS 13+ reports as Mac
-    
+    const isIPadUserAgent =
+      userAgent.includes('ipad') || (userAgent.includes('macintosh') && hasTouch) // iPadOS 13+ reports as Mac
+
     setIsIPad(isTabletSize && (hasTouch || isIPadUserAgent))
   }, [isTabletSize])
-  
+
   return isIPad
 }
 
@@ -88,7 +88,7 @@ export const useDeviceType = () => {
   const isTablet = useIsTablet()
   const isDesktop = useIsDesktop()
   const isLargeDesktop = useLargeDesktop()
-  
+
   if (isMobile) return 'mobile'
   if (isTablet) return 'tablet'
   if (isLargeDesktop) return 'large-desktop'

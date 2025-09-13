@@ -1,12 +1,13 @@
+import { semanticTypography, semanticSpacing, semanticRadius } from '@/styles/tokens'
 /**
  * Bulk Selection Checkbox
- * 
+ *
  * Enhanced checkbox component for bulk selection with indeterminate state support,
  * accessibility features, and consistent styling.
  */
 
 import React from 'react'
-import { Checkbox } from '@/components/ui/checkbox'
+// Removed unused: import { Checkbox } from '@/components/ui/checkbox'
 import { cn } from '@/lib/utils'
 import { Check, Minus } from 'lucide-react'
 
@@ -47,7 +48,7 @@ export function BulkSelectionCheckbox({
   // Handle click with proper indeterminate handling
   const handleClick = () => {
     if (disabled) return
-    
+
     // If indeterminate, clicking should select all
     // If checked, clicking should deselect all
     // If unchecked, clicking should select all
@@ -106,7 +107,8 @@ export function TableHeaderCheckbox({
 
   const getAriaLabel = () => {
     if (isAllSelected) return `Deselect all ${totalCount} items`
-    if (isPartiallySelected) return `Select all ${totalCount} items (${selectedCount} currently selected)`
+    if (isPartiallySelected)
+      return `Select all ${totalCount} items (${selectedCount} currently selected)`
     return `Select all ${totalCount} items`
   }
 
@@ -143,7 +145,7 @@ export function TableRowCheckbox({
   disabled = false,
   className,
 }: TableRowCheckboxProps) {
-  const ariaLabel = itemLabel 
+  const ariaLabel = itemLabel
     ? `${checked ? 'Deselect' : 'Select'} ${itemLabel}`
     : `${checked ? 'Deselect' : 'Select'} row ${itemId}`
 
@@ -179,18 +181,15 @@ export function SelectionCounter({
 
   return (
     <div
-      className={cn(
-        'inline-flex items-center gap-1 text-sm text-muted-foreground',
-        className
-      )}
+      className={cn('inline-flex items-center gap-1 text-sm text-muted-foreground', className)}
       role="status"
       aria-live="polite"
     >
-      <span className="font-medium text-foreground">{selectedCount}</span>
+      <span className={cn(semanticTypography.label, 'text-foreground')}>{selectedCount}</span>
       {showTotal && (
         <>
           <span>of</span>
-          <span className="font-medium">{totalCount}</span>
+          <span className={`${semanticTypography.label}`}>{totalCount}</span>
         </>
       )}
       <span>selected</span>
@@ -210,12 +209,30 @@ export function BulkSelectionKeyboardShortcuts({ className }: KeyboardShortcutsP
   return (
     <div className={cn('text-xs text-muted-foreground space-y-1', className)}>
       <div>
-        <kbd className="px-1 py-0.5 text-xs font-mono bg-muted rounded">Ctrl+A</kbd>
-        <span className="ml-2">Select all</span>
+        <kbd
+          className={cn(
+            semanticSpacing.minimalX,
+            semanticTypography.caption,
+            semanticRadius.small,
+            'py-0.5 font-mono bg-muted'
+          )}
+        >
+          Ctrl+A
+        </kbd>
+        <span className={`${semanticSpacing.leftGap.xs}`}>Select all</span>
       </div>
       <div>
-        <kbd className="px-1 py-0.5 text-xs font-mono bg-muted rounded">Escape</kbd>
-        <span className="ml-2">Clear selection</span>
+        <kbd
+          className={cn(
+            semanticSpacing.minimalX,
+            semanticTypography.caption,
+            semanticRadius.small,
+            'py-0.5 font-mono bg-muted'
+          )}
+        >
+          Escape
+        </kbd>
+        <span className={`${semanticSpacing.leftGap.xs}`}>Clear selection</span>
       </div>
     </div>
   )
@@ -242,7 +259,7 @@ export function useBulkSelectionKeyboard(
         event.preventDefault()
         onSelectAll()
       }
-      
+
       // Escape to clear selection
       if (event.key === 'Escape') {
         onClearSelection()

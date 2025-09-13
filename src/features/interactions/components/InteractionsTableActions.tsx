@@ -6,10 +6,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { 
-  MoreHorizontal, Edit, Trash, Eye, Copy, 
-  CheckCircle, Clock, AlertCircle 
+import {
+  MoreHorizontal,
+  Edit,
+  Trash,
+  Eye,
+  Copy,
+  CheckCircle,
+  Clock,
+  AlertCircle,
 } from 'lucide-react'
+import { semanticSpacing } from '@/styles/tokens'
 import type { InteractionWithRelations } from '@/types/interaction.types'
 
 interface InteractionsTableActionsProps {
@@ -31,10 +38,13 @@ export function InteractionsTableActions({
       `Date: ${interaction.interaction_date}`,
       interaction.subject && `Subject: ${interaction.subject}`,
       interaction.description && `Description: ${interaction.description}`,
-      interaction.contact && `Contact: ${interaction.contact.first_name} ${interaction.contact.last_name}`,
+      interaction.contact &&
+        `Contact: ${interaction.contact.first_name} ${interaction.contact.last_name}`,
       interaction.organization && `Organization: ${interaction.organization.name}`,
       interaction.opportunity && `Opportunity: ${interaction.opportunity.name}`,
-    ].filter(Boolean).join('\n')
+    ]
+      .filter(Boolean)
+      .join('\n')
 
     navigator.clipboard.writeText(details)
   }
@@ -42,7 +52,7 @@ export function InteractionsTableActions({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="size-8 p-0">
+        <Button variant="ghost" size="sm" className={`size-8 ${semanticSpacing.zero}`}>
           <MoreHorizontal className="size-4" />
           <span className="sr-only">Open actions menu</span>
         </Button>
@@ -50,48 +60,48 @@ export function InteractionsTableActions({
       <DropdownMenuContent align="end" className="w-[160px]">
         {onView && (
           <DropdownMenuItem onClick={() => onView(interaction)}>
-            <Eye className="mr-2 size-4" />
+            <Eye className={`${semanticSpacing.rightGap.xs} size-4`} />
             View Details
           </DropdownMenuItem>
         )}
         {onEdit && (
           <DropdownMenuItem onClick={() => onEdit(interaction)}>
-            <Edit className="mr-2 size-4" />
+            <Edit className={`${semanticSpacing.rightGap.xs} size-4`} />
             Edit
           </DropdownMenuItem>
         )}
         <DropdownMenuItem onClick={handleCopyDetails}>
-          <Copy className="mr-2 size-4" />
+          <Copy className={`${semanticSpacing.rightGap.xs} size-4`} />
           Copy Details
         </DropdownMenuItem>
-        
+
         <DropdownMenuSeparator />
-        
+
         {!interaction.follow_up_required && (
           <DropdownMenuItem>
-            <AlertCircle className="mr-2 size-4" />
+            <AlertCircle className={`${semanticSpacing.rightGap.xs} size-4`} />
             Add Follow-up
           </DropdownMenuItem>
         )}
-        
+
         <DropdownMenuItem>
-          <CheckCircle className="mr-2 size-4" />
+          <CheckCircle className={`${semanticSpacing.rightGap.xs} size-4`} />
           Mark Complete
         </DropdownMenuItem>
-        
+
         <DropdownMenuItem>
-          <Clock className="mr-2 size-4" />
+          <Clock className={`${semanticSpacing.rightGap.xs} size-4`} />
           Snooze
         </DropdownMenuItem>
-        
+
         <DropdownMenuSeparator />
-        
+
         {onDelete && (
-          <DropdownMenuItem 
+          <DropdownMenuItem
             onClick={() => onDelete(interaction)}
             className="text-destructive focus:text-destructive"
           >
-            <Trash className="mr-2 size-4" />
+            <Trash className={`${semanticSpacing.rightGap.xs} size-4`} />
             Delete
           </DropdownMenuItem>
         )}

@@ -1,7 +1,7 @@
 // Form Architecture: Modern Dialog + Form System
 // Use StandardDialog -> SimpleForm pattern
 
-// Core Form Components  
+// Core Form Components
 export { FormFieldNew } from './FormField'
 export { FormInput } from './FormInput'
 export { FormSubmitButton } from './FormSubmitButton'

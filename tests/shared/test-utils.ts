@@ -184,7 +184,7 @@ export class DatabaseTestHelper<T extends EntityType> {
         throw new Error(`Failed to create ${this.entityType}: ${error?.message || 'No data returned'}`)
       }
 
-      if (trackForCleanup && result && typeof result === 'object' && 'id' in result) {
+      if (trackForCleanup && typeof result === 'object' && 'id' in result) {
         TestCleanup.trackCreatedRecord(this.tableName, (result as any).id)
       }
 

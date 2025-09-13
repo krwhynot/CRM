@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 import type { WizardStep, StepStatus } from '../hooks/useOpportunityWizard'
 
 interface WizardNavigationProps {
@@ -35,10 +36,10 @@ export const WizardNavigation: React.FC<WizardNavigationProps> = ({
   loading = false,
 }) => {
   return (
-    <div className="space-y-6">
+    <div className={semanticSpacing.stackContainer}>
       {/* Progress Bar */}
-      <div className="space-y-2">
-        <div className="flex justify-between text-sm text-gray-500">
+      <div className={semanticSpacing.stack.xs}>
+        <div className={`flex justify-between ${semanticTypography.body} text-muted-foreground`}>
           <span>
             Step {currentStep} of {steps.length}
           </span>
@@ -49,7 +50,7 @@ export const WizardNavigation: React.FC<WizardNavigationProps> = ({
 
       {/* Step Navigation */}
       <div className="flex items-center justify-between">
-        <div className="flex space-x-4">
+        <div className={`flex ${semanticSpacing.gap.lg}`}>
           {steps.map((step) => {
             const status = getStepStatus(step.id)
             const StepIcon = step.icon
@@ -59,11 +60,12 @@ export const WizardNavigation: React.FC<WizardNavigationProps> = ({
                 key={step.id}
                 onClick={() => onStepClick(step.id)}
                 className={cn(
-                  'flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                  status === 'completed' && 'bg-green-100 text-green-800 hover:bg-green-200',
-                  status === 'current' && 'bg-blue-100 text-blue-800 hover:bg-blue-200',
+                  'flex items-center rounded-lg font-medium transition-colors',
+                  `${semanticSpacing.gap.xs} ${semanticSpacing.horizontalPadding.xs} ${semanticSpacing.verticalPadding.xs} ${semanticTypography.body}`,
+                  status === 'completed' && 'bg-green-50 text-green-700 hover:bg-green-100',
+                  status === 'current' && 'bg-primary/10 text-primary hover:bg-primary/20',
                   status === 'upcoming' &&
-                    'bg-gray-100 text-gray-500 hover:bg-gray-200 cursor-not-allowed'
+                    'bg-muted text-muted-foreground hover:bg-muted/80 cursor-not-allowed'
                 )}
                 disabled={status === 'upcoming'}
               >
@@ -71,8 +73,8 @@ export const WizardNavigation: React.FC<WizardNavigationProps> = ({
                   className={cn(
                     'flex items-center justify-center w-6 h-6 rounded-full',
                     status === 'completed' && 'bg-green-600 text-white',
-                    status === 'current' && 'bg-blue-600 text-white',
-                    status === 'upcoming' && 'bg-gray-300 text-gray-500'
+                    status === 'current' && 'bg-primary text-primary-foreground',
+                    status === 'upcoming' && 'bg-muted-foreground/30 text-muted-foreground'
                   )}
                 >
                   {status === 'completed' ? (
@@ -89,33 +91,35 @@ export const WizardNavigation: React.FC<WizardNavigationProps> = ({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-center justify-between border-t pt-4">
-        <div className="flex space-x-2">
+      <div
+        className={`flex items-center justify-between border-t border-border ${semanticSpacing.topPadding.lg}`}
+      >
+        <div className={`flex ${semanticSpacing.gap.xs}`}>
           <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
             Cancel
           </Button>
           {!isFirstStep && (
             <Button type="button" variant="outline" onClick={onPrevious} disabled={loading}>
-              <ChevronLeft className="mr-2 size-4" />
+              <ChevronLeft className={`${semanticSpacing.rightGap.xs} size-4`} />
               Previous
             </Button>
           )}
         </div>
 
-        <div className="flex space-x-2">
+        <div className={cn(semanticSpacing.inline.xs, 'flex')}>
           {isLastStep ? (
             <Button
               type="submit"
               onClick={onSubmit}
               disabled={loading}
-              className="bg-green-600 text-white hover:bg-green-700"
+              className="bg-green-600 text-white hover:bg-green-700 focus:ring-green-500"
             >
               {loading ? 'Creating...' : 'Create Opportunity'}
             </Button>
           ) : (
             <Button type="button" onClick={onNext} disabled={loading}>
               Next
-              <ChevronRight className="ml-2 size-4" />
+              <ChevronRight className={cn(semanticSpacing.leftGap.xs, 'size-4')} />
             </Button>
           )}
         </div>

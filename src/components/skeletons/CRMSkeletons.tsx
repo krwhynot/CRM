@@ -3,41 +3,39 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 // Base Skeleton Variants
-const skeletonVariants = cva(
-  "animate-pulse bg-muted rounded",
-  {
-    variants: {
-      variant: {
-        default: "bg-muted",
-        shimmer: "bg-gradient-to-r from-muted via-muted/50 to-muted animate-shimmer",
-        pulse: "bg-muted animate-pulse-slow"
-      },
-      size: {
-        xs: "h-3",
-        sm: "h-4",
-        md: "h-5",
-        lg: "h-6",
-        xl: "h-8"
-      }
+import { semanticSpacing, semanticRadius, semanticTypography } from '@/styles/tokens'
+const skeletonVariants = cva('animate-pulse bg-muted rounded', {
+  variants: {
+    variant: {
+      default: 'bg-muted',
+      shimmer: 'bg-gradient-to-r from-muted via-muted/50 to-muted animate-shimmer',
+      pulse: 'bg-muted animate-pulse-slow',
     },
-    defaultVariants: {
-      variant: "default",
-      size: "md"
-    }
-  }
-)
+    size: {
+      xs: 'h-3',
+      sm: 'h-4',
+      md: 'h-5',
+      lg: 'h-6',
+      xl: 'h-8',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+    size: 'md',
+  },
+})
 
 // Base Skeleton Component
-export interface SkeletonProps extends 
-  React.ComponentProps<"div">,
-  VariantProps<typeof skeletonVariants> {
+export interface SkeletonProps
+  extends React.ComponentProps<'div'>,
+    VariantProps<typeof skeletonVariants> {
   width?: string | number
   height?: string | number
 }
 
 export function Skeleton({
   className,
-  variant = "default",
+  variant = 'default',
   size,
   width,
   height,
@@ -50,7 +48,7 @@ export function Skeleton({
       style={{
         width,
         height,
-        ...style
+        ...style,
       }}
       {...props}
     />
@@ -65,28 +63,25 @@ export interface TextSkeletonProps {
   lineHeight?: 'xs' | 'sm' | 'md' | 'lg'
 }
 
-export function TextSkeleton({ 
-  lines = 3, 
+export function TextSkeleton({
+  lines = 3,
   className,
   lastLineWidth = '75%',
-  lineHeight = 'md'
+  lineHeight = 'md',
 }: TextSkeletonProps) {
   const heights = {
     xs: 'h-3',
-    sm: 'h-4', 
+    sm: 'h-4',
     md: 'h-5',
-    lg: 'h-6'
+    lg: 'h-6',
   }
 
   return (
-    <div className={cn("space-y-2", className)}>
+    <div className={cn('space-y-2', className)}>
       {Array.from({ length: lines }).map((_, i) => (
         <Skeleton
           key={i}
-          className={cn(
-            heights[lineHeight],
-            i === lines - 1 ? '' : 'w-full'
-          )}
+          className={cn(heights[lineHeight], i === lines - 1 ? '' : 'w-full')}
           style={i === lines - 1 ? { width: lastLineWidth } : undefined}
         />
       ))}
@@ -100,27 +95,16 @@ export interface AvatarSkeletonProps {
   className?: string
 }
 
-export function AvatarSkeleton({ 
-  size = 'md',
-  className 
-}: AvatarSkeletonProps) {
+export function AvatarSkeleton({ size = 'md', className }: AvatarSkeletonProps) {
   const sizeClasses = {
     xs: 'size-6',
     sm: 'size-8',
     md: 'size-10',
     lg: 'size-12',
-    xl: 'size-16'
+    xl: 'size-16',
   }
 
-  return (
-    <Skeleton 
-      className={cn(
-        sizeClasses[size], 
-        "rounded-full shrink-0",
-        className
-      )} 
-    />
-  )
+  return <Skeleton className={cn(sizeClasses[size], 'rounded-full shrink-0', className)} />
 }
 
 // Table Skeleton Component
@@ -137,56 +121,54 @@ export function TableSkeleton({
   columns = 4,
   showHeader = true,
   showActions = true,
-  className
+  className,
 }: TableSkeletonProps) {
   const actualColumns = showActions ? columns + 1 : columns
 
   return (
-    <div className={cn("space-y-3", className)}>
+    <div className={cn('space-y-3', className)}>
       {/* Table Header */}
       {showHeader && (
-        <div className="flex items-center space-x-4 pb-2 border-b">
+        <div className={cn(semanticSpacing.inline.md, 'flex items-center pb-2 border-b')}>
           {Array.from({ length: actualColumns }).map((_, i) => (
-            <Skeleton 
+            <Skeleton
               key={`header-${i}`}
               className={cn(
-                "h-4",
-                i === actualColumns - 1 && showActions 
-                  ? "w-16" // Actions column
-                  : "flex-1"
+                'h-4',
+                i === actualColumns - 1 && showActions
+                  ? 'w-16' // Actions column
+                  : 'flex-1'
               )}
             />
           ))}
         </div>
       )}
-
       {/* Table Rows */}
-      <div className="space-y-3">
+      <div className={`${semanticSpacing.stack.sm}`}>
         {Array.from({ length: rows }).map((_, rowIndex) => (
-          <div key={`row-${rowIndex}`} className="flex items-center space-x-4 py-2">
+          <div
+            key={`row-${rowIndex}`}
+            className={cn(semanticSpacing.inline.md, semanticSpacing.compactY, 'flex items-center')}
+          >
             {Array.from({ length: actualColumns }).map((_, colIndex) => (
-              <div 
+              <div
                 key={`cell-${rowIndex}-${colIndex}`}
-                className={cn(
-                  colIndex === actualColumns - 1 && showActions 
-                    ? "w-16" 
-                    : "flex-1"
-                )}
+                className={cn(colIndex === actualColumns - 1 && showActions ? 'w-16' : 'flex-1')}
               >
                 {colIndex === 0 ? (
                   // First column often has more complex content
-                  <div className="flex items-center space-x-2">
+                  <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
                     <AvatarSkeleton size="sm" />
-                    <div className="flex-1 space-y-1">
+                    <div className={cn(semanticSpacing.stack.xs, 'flex-1')}>
                       <Skeleton className="h-4 w-24" />
                       <Skeleton className="h-3 w-16" />
                     </div>
                   </div>
                 ) : colIndex === actualColumns - 1 && showActions ? (
                   // Actions column
-                  <div className="flex space-x-1">
-                    <Skeleton className="h-6 w-6 rounded" />
-                    <Skeleton className="h-6 w-6 rounded" />
+                  <div className={cn(semanticSpacing.inline.xs, 'flex')}>
+                    <Skeleton className={cn(semanticRadius.small, 'h-6 w-6')} />
+                    <Skeleton className={cn(semanticRadius.small, 'h-6 w-6')} />
                   </div>
                 ) : (
                   // Regular content columns
@@ -213,23 +195,23 @@ export function CardSkeleton({
   showHeader = true,
   showFooter = false,
   contentLines = 3,
-  className
+  className,
 }: CardSkeletonProps) {
   return (
-    <div className={cn("border rounded-lg p-4 space-y-4", className)}>
+    <div className={cn('border rounded-lg p-4 space-y-4', className)}>
       {/* Header */}
       {showHeader && (
         <div className="flex items-center justify-between">
-          <div className="space-y-2">
+          <div className={`${semanticSpacing.stack.xs}`}>
             <Skeleton className="h-5 w-32" />
             <Skeleton className="h-3 w-48" />
           </div>
-          <Skeleton className="h-6 w-6 rounded" />
+          <Skeleton className={cn(semanticRadius.small, 'h-6 w-6')} />
         </div>
       )}
 
       {/* Content */}
-      <div className="space-y-3">
+      <div className={`${semanticSpacing.stack.sm}`}>
         <TextSkeleton lines={contentLines} />
       </div>
 
@@ -237,9 +219,9 @@ export function CardSkeleton({
       {showFooter && (
         <div className="flex items-center justify-between pt-2 border-t">
           <Skeleton className="h-4 w-20" />
-          <div className="flex space-x-2">
-            <Skeleton className="h-8 w-16 rounded" />
-            <Skeleton className="h-8 w-16 rounded" />
+          <div className={cn(semanticSpacing.inline.xs, 'flex')}>
+            <Skeleton className={cn(semanticRadius.small, 'h-8 w-16')} />
+            <Skeleton className={cn(semanticRadius.small, 'h-8 w-16')} />
           </div>
         </div>
       )}
@@ -259,22 +241,30 @@ export function ListSkeleton({
   items = 5,
   showAvatar = true,
   showMetadata = true,
-  className
+  className,
 }: ListSkeletonProps) {
   return (
-    <div className={cn("space-y-3", className)}>
+    <div className={cn('space-y-3', className)}>
       {Array.from({ length: items }).map((_, i) => (
-        <div key={i} className="flex items-center space-x-3 p-3 rounded-lg border">
+        <div
+          key={i}
+          className={cn(
+            semanticSpacing.inline.sm,
+            semanticSpacing.compact,
+            semanticRadius.large,
+            'flex items-center border'
+          )}
+        >
           {showAvatar && <AvatarSkeleton size="md" />}
-          <div className="flex-1 space-y-2">
+          <div className={cn(semanticSpacing.stack.xs, 'flex-1')}>
             <div className="flex items-center justify-between">
               <Skeleton className="h-4 w-32" />
               {showMetadata && <Skeleton className="h-3 w-16" />}
             </div>
             <Skeleton className="h-3 w-48" />
             {showMetadata && (
-              <div className="flex items-center space-x-2">
-                <Skeleton className="h-2 w-2 rounded-full" />
+              <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
+                <Skeleton className={cn(semanticRadius.full, 'h-2 w-2')} />
                 <Skeleton className="h-3 w-20" />
               </div>
             )}
@@ -288,15 +278,15 @@ export function ListSkeleton({
 // Dashboard Metric Skeleton
 export function MetricCardSkeleton({ className }: { className?: string }) {
   return (
-    <div className={cn("border rounded-lg p-4 space-y-3", className)}>
+    <div className={cn('border rounded-lg p-4 space-y-3', className)}>
       <div className="flex items-center justify-between">
         <Skeleton className="h-4 w-24" />
-        <Skeleton className="h-4 w-4 rounded" />
+        <Skeleton className={cn(semanticRadius.small, 'h-4 w-4')} />
       </div>
-      <div className="space-y-2">
+      <div className={`${semanticSpacing.stack.xs}`}>
         <Skeleton className="h-8 w-20" />
-        <div className="flex items-center space-x-2">
-          <Skeleton className="h-3 w-3 rounded" />
+        <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
+          <Skeleton className={cn(semanticRadius.small, 'h-3 w-3')} />
           <Skeleton className="h-3 w-16" />
         </div>
       </div>
@@ -307,24 +297,24 @@ export function MetricCardSkeleton({ className }: { className?: string }) {
 // Contact Card Skeleton
 export function ContactCardSkeleton({ className }: { className?: string }) {
   return (
-    <div className={cn("border rounded-lg p-4 space-y-4", className)}>
-      <div className="flex items-start space-x-3">
+    <div className={cn('border rounded-lg p-4 space-y-4', className)}>
+      <div className={cn(semanticSpacing.inline.sm, 'flex items-start')}>
         <AvatarSkeleton size="lg" />
-        <div className="flex-1 space-y-2">
+        <div className={cn(semanticSpacing.stack.xs, 'flex-1')}>
           <Skeleton className="h-5 w-32" />
           <Skeleton className="h-4 w-24" />
-          <div className="flex space-x-2">
-            <Skeleton className="h-5 w-12 rounded-full" />
-            <Skeleton className="h-5 w-16 rounded-full" />
+          <div className={cn(semanticSpacing.inline.xs, 'flex')}>
+            <Skeleton className={cn(semanticRadius.full, 'h-5 w-12')} />
+            <Skeleton className={cn(semanticRadius.full, 'h-5 w-16')} />
           </div>
         </div>
       </div>
-      <div className="space-y-2">
-        <div className="flex items-center space-x-2">
+      <div className={`${semanticSpacing.stack.xs}`}>
+        <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
           <Skeleton className="h-4 w-4" />
           <Skeleton className="h-4 w-36" />
         </div>
-        <div className="flex items-center space-x-2">
+        <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
           <Skeleton className="h-4 w-4" />
           <Skeleton className="h-4 w-28" />
         </div>
@@ -336,25 +326,30 @@ export function ContactCardSkeleton({ className }: { className?: string }) {
 // Organization Card Skeleton
 export function OrganizationCardSkeleton({ className }: { className?: string }) {
   return (
-    <div className={cn("border rounded-lg p-4 space-y-4", className)}>
+    <div className={cn('border rounded-lg p-4 space-y-4', className)}>
       <div className="flex items-start justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="size-12 bg-muted rounded-lg animate-pulse flex items-center justify-center">
+        <div className={cn(semanticSpacing.inline.sm, 'flex items-center')}>
+          <div
+            className={cn(
+              semanticRadius.large,
+              'size-12 bg-muted animate-pulse flex items-center justify-center'
+            )}
+          >
             <Skeleton className="h-6 w-6" />
           </div>
-          <div className="space-y-1">
+          <div className={`${semanticSpacing.stack.xs}`}>
             <Skeleton className="h-5 w-40" />
             <Skeleton className="h-3 w-24" />
           </div>
         </div>
-        <Skeleton className="h-6 w-6 rounded" />
+        <Skeleton className={cn(semanticRadius.small, 'h-6 w-6')} />
       </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-1">
+      <div className={cn(semanticSpacing.gap.md, 'grid grid-cols-2')}>
+        <div className={`${semanticSpacing.stack.xs}`}>
           <Skeleton className="h-3 w-16" />
           <Skeleton className="h-4 w-12" />
         </div>
-        <div className="space-y-1">
+        <div className={`${semanticSpacing.stack.xs}`}>
           <Skeleton className="h-3 w-20" />
           <Skeleton className="h-4 w-24" />
         </div>
@@ -366,28 +361,28 @@ export function OrganizationCardSkeleton({ className }: { className?: string }) 
 // Opportunity Card Skeleton
 export function OpportunityCardSkeleton({ className }: { className?: string }) {
   return (
-    <div className={cn("border rounded-lg p-4 space-y-4", className)}>
+    <div className={cn('border rounded-lg p-4 space-y-4', className)}>
       <div className="flex items-start justify-between">
-        <div className="space-y-2 flex-1">
+        <div className={cn(semanticSpacing.stack.xs, 'flex-1')}>
           <Skeleton className="h-5 w-48" />
           <Skeleton className="h-4 w-32" />
         </div>
-        <div className="text-right space-y-1">
+        <div className={cn(semanticSpacing.stack.xs, 'text-right')}>
           <Skeleton className="h-6 w-20" />
           <Skeleton className="h-4 w-16" />
         </div>
       </div>
-      <div className="space-y-3">
+      <div className={`${semanticSpacing.stack.sm}`}>
         <div className="flex items-center justify-between">
           <Skeleton className="h-4 w-24" />
           <Skeleton className="h-4 w-12" />
         </div>
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
+        <div className={`${semanticSpacing.stack.xs}`}>
+          <div className={cn(semanticTypography.body, 'flex justify-between')}>
             <Skeleton className="h-3 w-16" />
             <Skeleton className="h-3 w-8" />
           </div>
-          <Skeleton className="h-2 w-full rounded-full" />
+          <Skeleton className={cn(semanticRadius.full, 'h-2 w-full')} />
         </div>
       </div>
     </div>
@@ -395,26 +390,26 @@ export function OpportunityCardSkeleton({ className }: { className?: string }) {
 }
 
 // Activity Feed Skeleton
-export function ActivityFeedSkeleton({ 
+export function ActivityFeedSkeleton({
   items = 5,
-  className 
-}: { 
+  className,
+}: {
   items?: number
-  className?: string 
+  className?: string
 }) {
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={cn('space-y-4', className)}>
       {Array.from({ length: items }).map((_, i) => (
-        <div key={i} className="flex items-start space-x-3">
+        <div key={i} className={cn(semanticSpacing.inline.sm, 'flex items-start')}>
           <AvatarSkeleton size="sm" />
-          <div className="flex-1 space-y-2">
+          <div className={cn(semanticSpacing.stack.xs, 'flex-1')}>
             <div className="flex items-center justify-between">
               <Skeleton className="h-4 w-40" />
               <Skeleton className="h-3 w-16" />
             </div>
             <Skeleton className="h-3 w-64" />
-            <div className="flex items-center space-x-2">
-              <Skeleton className="h-4 w-4 rounded" />
+            <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
+              <Skeleton className={cn(semanticRadius.small, 'h-4 w-4')} />
               <Skeleton className="h-3 w-12" />
             </div>
           </div>
@@ -431,24 +426,20 @@ export interface FormSkeletonProps {
   className?: string
 }
 
-export function FormSkeleton({
-  fields = 4,
-  showActions = true,
-  className
-}: FormSkeletonProps) {
+export function FormSkeleton({ fields = 4, showActions = true, className }: FormSkeletonProps) {
   return (
-    <div className={cn("space-y-6", className)}>
+    <div className={cn('space-y-6', className)}>
       {Array.from({ length: fields }).map((_, i) => (
-        <div key={i} className="space-y-2">
+        <div key={i} className={`${semanticSpacing.stack.xs}`}>
           <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-10 w-full rounded-md" />
+          <Skeleton className={cn(semanticRadius.default, 'h-10 w-full')} />
         </div>
       ))}
-      
+
       {showActions && (
-        <div className="flex items-center justify-end space-x-2 pt-4">
-          <Skeleton className="h-9 w-20 rounded-md" />
-          <Skeleton className="h-9 w-16 rounded-md" />
+        <div className={cn(semanticSpacing.inline.xs, 'flex items-center justify-end pt-4')}>
+          <Skeleton className={cn(semanticRadius.default, 'h-9 w-20')} />
+          <Skeleton className={cn(semanticRadius.default, 'h-9 w-16')} />
         </div>
       )}
     </div>
@@ -456,20 +447,23 @@ export function FormSkeleton({
 }
 
 // Navigation Skeleton
-export function NavigationSkeleton({ 
+export function NavigationSkeleton({
   items = 6,
-  className 
-}: { 
+  className,
+}: {
   items?: number
-  className?: string 
+  className?: string
 }) {
   return (
-    <div className={cn("space-y-2", className)}>
+    <div className={cn('space-y-2', className)}>
       {Array.from({ length: items }).map((_, i) => (
-        <div key={i} className="flex items-center space-x-3 p-2">
-          <Skeleton className="h-4 w-4 rounded" />
+        <div
+          key={i}
+          className={cn(semanticSpacing.inline.sm, semanticSpacing.compact, 'flex items-center')}
+        >
+          <Skeleton className={cn(semanticRadius.small, 'h-4 w-4')} />
           <Skeleton className="h-4 flex-1" />
-          {Math.random() > 0.5 && <Skeleton className="h-4 w-8 rounded-full" />}
+          {Math.random() > 0.5 && <Skeleton className={cn(semanticRadius.full, 'h-4 w-8')} />}
         </div>
       ))}
     </div>
@@ -477,55 +471,59 @@ export function NavigationSkeleton({
 }
 
 // Chart Skeleton
-export function ChartSkeleton({ 
+export function ChartSkeleton({
   type = 'bar',
-  className 
-}: { 
+  className,
+}: {
   type?: 'bar' | 'line' | 'pie' | 'area'
-  className?: string 
+  className?: string
 }) {
   return (
-    <div className={cn("border rounded-lg p-4", className)}>
-      <div className="flex items-center justify-between mb-4">
-        <div className="space-y-1">
+    <div className={cn('border rounded-lg p-4', className)}>
+      <div className={cn(semanticSpacing.bottomGap.sm, 'flex items-center justify-between')}>
+        <div className={`${semanticSpacing.stack.xs}`}>
           <Skeleton className="h-5 w-32" />
           <Skeleton className="h-3 w-48" />
         </div>
-        <Skeleton className="h-6 w-6 rounded" />
+        <Skeleton className={cn(semanticRadius.small, 'h-6 w-6')} />
       </div>
-      
-      <div className="h-64 flex items-end justify-between space-x-2">
+      <div className={cn(semanticSpacing.inline.xs, 'h-64 flex items-end justify-between')}>
         {type === 'bar' && (
           <>
             {Array.from({ length: 7 }).map((_, i) => (
               <Skeleton
                 key={i}
                 className="flex-1"
-                style={{ 
+                style={{
                   height: `${Math.random() * 80 + 20}%`,
-                  minHeight: '20%'
+                  minHeight: '20%',
                 }}
               />
             ))}
           </>
         )}
-        
+
         {type === 'pie' && (
           <div className="w-full flex items-center justify-center">
             <div className="relative">
-              <Skeleton className="h-40 w-40 rounded-full" />
-              <Skeleton className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-20 w-20 rounded-full bg-background" />
+              <Skeleton className={cn(semanticRadius.full, 'h-40 w-40')} />
+              <Skeleton
+                className={cn(
+                  semanticRadius.full,
+                  'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-20 w-20 bg-background'
+                )}
+              />
             </div>
           </div>
         )}
-        
+
         {(type === 'line' || type === 'area') && (
           <div className="w-full h-full relative">
-            <Skeleton className="absolute bottom-0 left-0 w-full h-1/2 rounded-t-lg" />
+            <Skeleton className="absolute bottom-0 left-0 w-full h-1/2 ${semanticRadius.default}-t-lg" />
             <div className="absolute bottom-0 left-0 w-full h-full flex items-end">
               {Array.from({ length: 12 }).map((_, i) => (
                 <div key={i} className="flex-1">
-                  <Skeleton 
+                  <Skeleton
                     className="w-1 bg-primary/20"
                     style={{ height: `${Math.random() * 60 + 20}%` }}
                   />
@@ -540,101 +538,103 @@ export function ChartSkeleton({
 }
 
 // Page Skeleton (combines multiple skeletons)
-export function PageSkeleton({ 
+export function PageSkeleton({
   layout = 'dashboard',
-  className 
-}: { 
+  className,
+}: {
   layout?: 'dashboard' | 'list' | 'detail'
-  className?: string 
+  className?: string
 }) {
   if (layout === 'dashboard') {
     return (
-      <div className={cn("space-y-6", className)}>
+      <div className={cn('space-y-6', className)}>
         {/* Header */}
-        <div className="space-y-2">
+        <div className={`${semanticSpacing.stack.xs}`}>
           <Skeleton className="h-8 w-64" />
           <Skeleton className="h-4 w-96" />
         </div>
-        
+
         {/* Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div
+          className={cn(semanticSpacing.gap.md, 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4')}
+        >
           {Array.from({ length: 4 }).map((_, i) => (
             <MetricCardSkeleton key={i} />
           ))}
         </div>
-        
+
         {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className={cn(semanticSpacing.gap.lg, 'grid grid-cols-1 lg:grid-cols-2')}>
           <ChartSkeleton type="bar" />
           <ChartSkeleton type="line" />
         </div>
       </div>
     )
   }
-  
+
   if (layout === 'list') {
     return (
-      <div className={cn("space-y-6", className)}>
+      <div className={cn('space-y-6', className)}>
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div className="space-y-2">
+          <div className={`${semanticSpacing.stack.xs}`}>
             <Skeleton className="h-8 w-48" />
             <Skeleton className="h-4 w-64" />
           </div>
-          <div className="flex space-x-2">
-            <Skeleton className="h-9 w-20 rounded-md" />
-            <Skeleton className="h-9 w-24 rounded-md" />
+          <div className={cn(semanticSpacing.inline.xs, 'flex')}>
+            <Skeleton className={cn(semanticRadius.default, 'h-9 w-20')} />
+            <Skeleton className={cn(semanticRadius.default, 'h-9 w-24')} />
           </div>
         </div>
-        
+
         {/* Filters */}
-        <div className="flex space-x-2">
-          <Skeleton className="h-9 w-32 rounded-md" />
-          <Skeleton className="h-9 w-28 rounded-md" />
-          <Skeleton className="h-9 w-24 rounded-md" />
+        <div className={cn(semanticSpacing.inline.xs, 'flex')}>
+          <Skeleton className={cn(semanticRadius.default, 'h-9 w-32')} />
+          <Skeleton className={cn(semanticRadius.default, 'h-9 w-28')} />
+          <Skeleton className={cn(semanticRadius.default, 'h-9 w-24')} />
         </div>
-        
+
         {/* Table */}
         <TableSkeleton rows={8} columns={5} />
       </div>
     )
   }
-  
+
   if (layout === 'detail') {
     return (
-      <div className={cn("space-y-6", className)}>
+      <div className={cn('space-y-6', className)}>
         {/* Header */}
         <div className="flex items-start justify-between">
-          <div className="flex items-center space-x-4">
+          <div className={cn(semanticSpacing.inline.md, 'flex items-center')}>
             <AvatarSkeleton size="xl" />
-            <div className="space-y-2">
+            <div className={`${semanticSpacing.stack.xs}`}>
               <Skeleton className="h-8 w-48" />
               <Skeleton className="h-4 w-32" />
-              <div className="flex space-x-2">
-                <Skeleton className="h-6 w-16 rounded-full" />
-                <Skeleton className="h-6 w-20 rounded-full" />
+              <div className={cn(semanticSpacing.inline.xs, 'flex')}>
+                <Skeleton className={cn(semanticRadius.full, 'h-6 w-16')} />
+                <Skeleton className={cn(semanticRadius.full, 'h-6 w-20')} />
               </div>
             </div>
           </div>
-          <div className="flex space-x-2">
-            <Skeleton className="h-9 w-16 rounded-md" />
-            <Skeleton className="h-9 w-20 rounded-md" />
+          <div className={cn(semanticSpacing.inline.xs, 'flex')}>
+            <Skeleton className={cn(semanticRadius.default, 'h-9 w-16')} />
+            <Skeleton className={cn(semanticRadius.default, 'h-9 w-20')} />
           </div>
         </div>
-        
+
         {/* Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
+        <div className={cn(semanticSpacing.gap.lg, 'grid grid-cols-1 lg:grid-cols-3')}>
+          <div className={cn(semanticSpacing.stack.lg, 'lg:col-span-2')}>
             <CardSkeleton showHeader contentLines={4} />
             <CardSkeleton showHeader contentLines={3} />
           </div>
-          <div className="space-y-4">
+          <div className={`${semanticSpacing.stack.md}`}>
             <ListSkeleton items={3} />
           </div>
         </div>
       </div>
     )
   }
-  
+
   return null
 }

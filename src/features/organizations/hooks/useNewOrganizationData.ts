@@ -1,5 +1,5 @@
-import type React from 'react'
 import { useState } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
 
 interface NewOrganizationData {
   name: string
@@ -12,7 +12,7 @@ interface NewOrganizationData {
 
 interface UseNewOrganizationDataReturn {
   newOrgData: NewOrganizationData
-  setNewOrgData: React.Dispatch<React.SetStateAction<NewOrganizationData>>
+  setNewOrgData: Dispatch<SetStateAction<NewOrganizationData>>
   updateNewOrgField: (field: keyof NewOrganizationData, value: string) => void
 }
 

@@ -106,21 +106,24 @@ export function useTablePagination<T>({
     }
   }, [currentPage, pageSize, totalItems, maxVisiblePages])
 
-  const goToPage = useCallback((page: number) => {
-    const totalPages = Math.ceil(totalItems / pageSize)
-    const validPage = Math.max(0, Math.min(page, totalPages - 1))
-    setCurrentPage(validPage)
-  }, [totalItems, pageSize])
+  const goToPage = useCallback(
+    (page: number) => {
+      const totalPages = Math.ceil(totalItems / pageSize)
+      const validPage = Math.max(0, Math.min(page, totalPages - 1))
+      setCurrentPage(validPage)
+    },
+    [totalItems, pageSize]
+  )
 
   const nextPage = useCallback(() => {
     if (paginationInfo.hasNext) {
-      setCurrentPage(prev => prev + 1)
+      setCurrentPage((prev) => prev + 1)
     }
   }, [paginationInfo.hasNext])
 
   const previousPage = useCallback(() => {
     if (paginationInfo.hasPrevious) {
-      setCurrentPage(prev => prev - 1)
+      setCurrentPage((prev) => prev - 1)
     }
   }, [paginationInfo.hasPrevious])
 
@@ -133,12 +136,15 @@ export function useTablePagination<T>({
     setCurrentPage(Math.max(0, totalPages - 1))
   }, [totalItems, pageSize])
 
-  const setPageSize = useCallback((size: number) => {
-    const validSize = pageSizeOptions.includes(size) ? size : initialPageSize
-    setPageSizeState(validSize)
-    // Reset to first page when page size changes
-    setCurrentPage(0)
-  }, [pageSizeOptions, initialPageSize])
+  const setPageSize = useCallback(
+    (size: number) => {
+      const validSize = pageSizeOptions.includes(size) ? size : initialPageSize
+      setPageSizeState(validSize)
+      // Reset to first page when page size changes
+      setCurrentPage(0)
+    },
+    [pageSizeOptions, initialPageSize]
+  )
 
   const resetToFirstPage = useCallback(() => {
     setCurrentPage(0)
@@ -166,7 +172,7 @@ export function useTablePaginationWithData<T>(
   options: UseTablePaginationOptions = {}
 ): UseTablePaginationReturn<T> {
   const paginationState = useTablePagination<T>(options)
-  
+
   // Update total items when data changes
   const totalItems = data.length
   useMemo(() => {

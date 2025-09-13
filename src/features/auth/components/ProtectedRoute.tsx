@@ -1,6 +1,7 @@
 import React from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { AuthPage } from './AuthPage'
+import { semanticSpacing, semanticRadius } from '@/styles/tokens'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -14,8 +15,12 @@ export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-mfb-cream">
         <div className="text-center">
-          <div className="mx-auto size-12 animate-spin rounded-full border-b-2 border-mfb-green"></div>
-          <p className="text-mfb-olive/60 mt-4 font-nunito">Loading Master Food Brokers CRM...</p>
+          <div
+            className={`mx-auto size-12 animate-spin ${semanticRadius.full} border-b-2 border-mfb-green`}
+          ></div>
+          <p className={`text-mfb-olive/60 ${semanticSpacing.topGap.lg} font-nunito`}>
+            Loading Master Food Brokers CRM...
+          </p>
         </div>
       </div>
     )

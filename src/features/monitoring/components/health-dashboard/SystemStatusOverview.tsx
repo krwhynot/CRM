@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Database, Shield, Zap } from 'lucide-react'
 import { ServiceStatusCard } from './ServiceStatusCard'
 import type { SystemStatusOverviewProps } from '@/types/monitoring'
+import { semanticSpacing } from '@/styles/tokens'
 
 export const SystemStatusOverview: React.FC<SystemStatusOverviewProps> = ({
   status,
@@ -15,15 +16,11 @@ export const SystemStatusOverview: React.FC<SystemStatusOverviewProps> = ({
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>System Health Status</span>
-          <Badge
-            status={isHealthy ? 'active' : 'inactive'}
-          >
-            {summary.overallHealth}
-          </Badge>
+          <Badge status={isHealthy ? 'active' : 'inactive'}>{summary.overallHealth}</Badge>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className={`grid grid-cols-1 ${semanticSpacing.gap.lg} md:grid-cols-3`}>
           <ServiceStatusCard
             icon={<Database className="size-6 text-primary" />}
             name="Database"

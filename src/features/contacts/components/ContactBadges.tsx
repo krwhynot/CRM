@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/badge'
 import { useContactsBadges } from '@/features/contacts/hooks/useContactsBadges'
+import { semanticSpacing } from '@/styles/tokens'
 import type { ContactWithOrganization } from '@/types/entities'
 
 interface ContactBadgesProps {
@@ -27,34 +28,24 @@ export const ContactBadges = ({
   const authorityBadge = getAuthorityBadge(contact.decision_authority)
 
   return (
-    <div className={`flex flex-wrap gap-1 ${className}`}>
+    <div className={`flex flex-wrap ${semanticSpacing.gap.xs} ${className}`}>
       {/* Priority Badge (highest priority) */}
       {showPriority && priorityBadge && (
-        <Badge {...priorityBadge.props}>
-          {priorityBadge.label}
-        </Badge>
+        <Badge {...priorityBadge.props}>{priorityBadge.label}</Badge>
       )}
 
       {/* Influence Badge */}
       {showInfluence && contact.purchase_influence && (
-        <Badge {...influenceBadge.props}>
-          {influenceBadge.label}
-        </Badge>
+        <Badge {...influenceBadge.props}>{influenceBadge.label}</Badge>
       )}
 
       {/* Authority Badge */}
       {showAuthority && contact.decision_authority && (
-        <Badge {...authorityBadge.props}>
-          {authorityBadge.label}
-        </Badge>
+        <Badge {...authorityBadge.props}>{authorityBadge.label}</Badge>
       )}
 
       {/* Primary Contact Badge (if not already shown as priority) */}
-      {contact.is_primary_contact && !priorityBadge && (
-        <Badge priority="a">
-          Primary
-        </Badge>
-      )}
+      {contact.is_primary_contact && !priorityBadge && <Badge priority="a">Primary</Badge>}
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { semanticSpacing, semanticTypography, fontWeight } from '@/styles/tokens'
 import type { UseFormRegister, FieldErrors } from 'react-hook-form'
 import type { OpportunityFormData } from '@/types/opportunity.types'
 
@@ -16,9 +17,9 @@ export const WizardStepBasicInfo: React.FC<WizardStepBasicInfoProps> = ({
   loading = false,
 }) => {
   return (
-    <div className="space-y-4">
+    <div className={semanticSpacing.layoutContainer}>
       <div>
-        <label htmlFor="name" className="text-sm font-medium">
+        <label htmlFor="name" className={`${semanticTypography.body} ${fontWeight.medium}`}>
           Opportunity Name *
         </label>
         <Input
@@ -27,11 +28,16 @@ export const WizardStepBasicInfo: React.FC<WizardStepBasicInfoProps> = ({
           placeholder="Enter opportunity name"
           disabled={loading}
         />
-        {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
+        {errors.name && (
+          <p
+            className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} ${text - destructive}`}
+          >
+            {errors.name.message}
+          </p>
+        )}
       </div>
-
       <div>
-        <label htmlFor="description" className="text-sm font-medium">
+        <label htmlFor="description" className={`${semanticTypography.body} ${fontWeight.medium}`}>
           Description
         </label>
         <Textarea
@@ -42,7 +48,11 @@ export const WizardStepBasicInfo: React.FC<WizardStepBasicInfoProps> = ({
           rows={3}
         />
         {errors.description && (
-          <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+          <p
+            className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} ${text - destructive}`}
+          >
+            {errors.description.message}
+          </p>
         )}
       </div>
     </div>

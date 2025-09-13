@@ -1,4 +1,5 @@
-'use client'
+import { semanticSpacing, semanticTypography, semanticRadius } from '@/styles/tokens'
+;('use client')
 
 import * as React from 'react'
 import { Command as CommandPrimitive } from 'cmdk'
@@ -12,7 +13,7 @@ function Command({ className, ...props }: React.ComponentProps<typeof CommandPri
     <CommandPrimitive
       data-slot="command"
       className={cn(
-        'bg-popover text-popover-foreground flex h-full w-full flex-col overflow-hidden rounded-md',
+        `bg-popover text-popover-foreground flex h-full w-full flex-col overflow-hidden ${semanticRadius.default}`,
         className
       )}
       {...props}
@@ -41,7 +42,9 @@ function CommandDialog({
       description={description}
       size="lg"
     >
-      <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:size-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:size-5">
+      <Command
+        className={`[&_[cmdk-group-heading]]:${semanticSpacing.horizontalPadding.xs} [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:${semanticSpacing.zero} [&_[cmdk-group]]:${semanticSpacing.horizontalPadding.xs} [&_[cmdk-input-wrapper]_svg]:size-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:${semanticSpacing.horizontalPadding.xs} [&_[cmdk-item]]:${semanticSpacing.verticalPadding.lg} [&_[cmdk-item]_svg]:size-5`}
+      >
         {children}
       </Command>
     </StandardDialog>
@@ -53,12 +56,19 @@ function CommandInput({
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.Input>) {
   return (
-    <div data-slot="command-input-wrapper" className="flex h-11 items-center gap-2 border-b px-3">
+    <div
+      data-slot="command-input-wrapper"
+      className={cn(
+        semanticSpacing.gap.xs,
+        semanticSpacing.compactX,
+        'flex h-11 items-center border-b'
+      )}
+    >
       <SearchIcon className="size-4 shrink-0 opacity-50" />
       <CommandPrimitive.Input
         data-slot="command-input"
         className={cn(
-          'placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50',
+          `placeholder:text-muted-foreground flex h-10 w-full ${semanticRadius.default} bg-transparent ${semanticSpacing.verticalPadding.lg} text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50`,
           className
         )}
         {...props}
@@ -71,7 +81,10 @@ function CommandList({ className, ...props }: React.ComponentProps<typeof Comman
   return (
     <CommandPrimitive.List
       data-slot="command-list"
-      className={cn('max-h-[300px] scroll-py-1 overflow-x-hidden overflow-y-auto', className)}
+      className={cn(
+        `max-h-[300px] scroll-${semanticSpacing.verticalPadding.xs} overflow-x-hidden overflow-y-auto`,
+        className
+      )}
       {...props}
     />
   )
@@ -81,7 +94,7 @@ function CommandEmpty({ ...props }: React.ComponentProps<typeof CommandPrimitive
   return (
     <CommandPrimitive.Empty
       data-slot="command-empty"
-      className="py-6 text-center text-sm"
+      className={cn(semanticSpacing.cardY, semanticTypography.body, 'text-center')}
       {...props}
     />
   )
@@ -95,7 +108,7 @@ function CommandGroup({
     <CommandPrimitive.Group
       data-slot="command-group"
       className={cn(
-        'text-foreground [&_[cmdk-group-heading]]:text-muted-foreground overflow-hidden p-1 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium',
+        `text-foreground [&_[cmdk-group-heading]]:text-muted-foreground overflow-hidden ${semanticSpacing.layoutPadding.xs} [&_[cmdk-group-heading]]:${semanticSpacing.horizontalPadding.xs} [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium`,
         className
       )}
       {...props}
@@ -110,7 +123,7 @@ function CommandSeparator({
   return (
     <CommandPrimitive.Separator
       data-slot="command-separator"
-      className={cn('bg-border -mx-1 h-px', className)}
+      className={cn(`bg-border -${semanticSpacing.leftGap.xs} h-px`, className)}
       {...props}
     />
   )
@@ -121,7 +134,7 @@ function CommandItem({ className, ...props }: React.ComponentProps<typeof Comman
     <CommandPrimitive.Item
       data-slot="command-item"
       className={cn(
-        "data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        `data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center ${semanticSpacing.gap.xs} ${semanticRadius.sm} ${semanticSpacing.horizontalPadding.xs} py-1.5 text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4`,
         className
       )}
       {...props}
@@ -133,7 +146,10 @@ function CommandShortcut({ className, ...props }: React.ComponentProps<'span'>) 
   return (
     <span
       data-slot="command-shortcut"
-      className={cn('text-muted-foreground ml-auto text-xs tracking-widest', className)}
+      className={cn(
+        `text-muted-foreground ${semanticSpacing.leftGap.auto} text-xs tracking-widest`,
+        className
+      )}
       {...props}
     />
   )

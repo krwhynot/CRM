@@ -1,9 +1,8 @@
+import { formatCurrency } from '@/lib/formatters'
+
 export const formatPrice = (price: number | null): string => {
   if (!price || price <= 0) return 'N/A'
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(price)
+  return formatCurrency(price)
 }
 
 export const formatShelfLife = (days: number | null): string => {

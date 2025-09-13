@@ -1,7 +1,15 @@
 import { cva } from 'class-variance-authority'
+import {
+  semanticSpacing,
+  semanticTypography,
+  semanticColors,
+  semanticShadows,
+  semanticRadius,
+  fontWeight,
+} from '@/styles/tokens'
 
 export const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-lg font-nunito font-medium transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
+  `inline-flex items-center justify-center whitespace-nowrap font-nunito transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 ${semanticTypography.navItem} ${semanticRadius.button} ${semanticColors.focusRing}`,
   {
     variants: {
       variant: {
@@ -13,16 +21,17 @@ export const buttonVariants = cva(
           'bg-success text-success-foreground shadow-sm hover:-translate-y-0.5 hover:bg-success/90 hover:shadow-md focus-visible:ring-success active:translate-y-0',
         warning:
           'bg-warning text-warning-foreground shadow-sm hover:-translate-y-0.5 hover:bg-warning/90 hover:shadow-md focus-visible:ring-warning active:translate-y-0',
-        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground focus-visible:ring-primary',
+        outline:
+          'border border-input bg-background hover:bg-accent hover:text-accent-foreground focus-visible:ring-primary',
         secondary:
           'bg-secondary text-secondary-foreground shadow-sm hover:-translate-y-0.5 hover:bg-secondary/80 hover:shadow-md active:translate-y-0',
         ghost: 'hover:bg-accent hover:text-accent-foreground focus-visible:ring-primary/50',
         link: 'text-primary underline-offset-4 hover:underline focus-visible:ring-primary/50',
       },
       size: {
-        sm: 'h-11 px-3 py-1.5 text-sm',
-        default: 'h-12 px-6 py-3 text-base',
-        lg: 'h-14 px-8 py-4 text-lg',
+        sm: `h-11 ${semanticSpacing.compactX} ${semanticSpacing.verticalPadding.lg} ${semanticTypography.caption} ${fontWeight.medium}`,
+        default: `h-12 ${semanticSpacing.cardX} ${semanticSpacing.verticalPadding.lg} ${semanticTypography.body} ${fontWeight.medium}`,
+        lg: `h-14 ${semanticSpacing.cardX} ${semanticSpacing.verticalPadding.xl} ${semanticTypography.heading} ${fontWeight.medium}`,
         icon: 'size-12',
       },
     },

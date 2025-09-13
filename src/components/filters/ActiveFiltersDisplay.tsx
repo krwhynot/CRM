@@ -6,6 +6,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { StandardDialog } from '@/components/ui/StandardDialog'
 import { getQuickViewPreset } from '@/lib/quick-view-presets'
 import { getDateRangeDescription } from '@/lib/date-range-utils'
+import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticTypography, semanticRadius } from '@/styles/tokens'
 import type {
   UniversalFilterState,
   QuickViewType,
@@ -148,19 +150,27 @@ export function ActiveFiltersDisplay({
   }
 
   return (
-    <div className="space-y-3">
+    <div className={`${semanticSpacing.stack.sm}`}>
       {/* Header */}
       {!compact && (
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <span className="text-xs font-medium text-muted-foreground">Active Filters</span>
-            <Badge variant="outline" className="text-xs">
+          <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
+            <span
+              className={cn(
+                semanticTypography.caption,
+                semanticTypography.label,
+                'text-muted-foreground'
+              )}
+            >
+              Active Filters
+            </span>
+            <Badge variant="outline" className={`${semanticTypography.caption}`}>
               {computed.activeFilterCount}
             </Badge>
           </div>
 
           {showActions && (
-            <div className="flex items-center space-x-1">
+            <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
               {onSavePreset && (
                 <TooltipProvider>
                   <Tooltip>
@@ -169,7 +179,7 @@ export function ActiveFiltersDisplay({
                         variant="ghost"
                         size="sm"
                         onClick={handleSavePreset}
-                        className="h-6 px-2"
+                        className={cn(semanticSpacing.compactX, 'h-6')}
                       >
                         <Save className="size-3" />
                       </Button>
@@ -187,7 +197,7 @@ export function ActiveFiltersDisplay({
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-6 px-2"
+                      className={cn(semanticSpacing.compactX, 'h-6')}
                       onClick={() => setShowClearConfirm(true)}
                     >
                       <RotateCcw className="size-3" />
@@ -221,25 +231,42 @@ export function ActiveFiltersDisplay({
 
       {/* Filter Summary */}
       {!compact && (
-        <div className="rounded-md bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
+        <div
+          className={cn(
+            semanticRadius.default,
+            semanticSpacing.compactX,
+            semanticSpacing.compactY,
+            semanticTypography.caption,
+            'bg-muted/30 text-muted-foreground'
+          )}
+        >
           Showing: {computed.filterSummary}
         </div>
       )}
 
       {/* Active Filter Badges */}
-      <div className="flex flex-wrap gap-2">
+      <div className={cn(semanticSpacing.gap.xs, 'flex flex-wrap')}>
         {displayedBadges.map((badge, index) => (
           <div key={`${badge.key}-${index}`} className="flex items-center">
             <Badge
               variant={badge.variant}
-              className="flex items-center space-x-1 px-2 py-1 text-xs"
+              className={cn(
+                semanticSpacing.inline.xs,
+                semanticSpacing.compactX,
+                semanticSpacing.minimalY,
+                semanticTypography.caption,
+                'flex items-center'
+              )}
             >
-              <span className="font-medium">{badge.label}:</span>
+              <span className={`${semanticTypography.label}`}>{badge.label}:</span>
               <span>{badge.value}</span>
               {badge.removable && (
                 <button
                   onClick={() => handleClearFilter(badge.key)}
-                  className="ml-1 rounded p-0.5 transition-colors hover:bg-background/20"
+                  className={cn(
+                    semanticRadius.small,
+                    'ml-1 p-0.5 transition-colors hover:bg-background/20'
+                  )}
                 >
                   <X className="size-2.5" />
                 </button>
@@ -252,14 +279,21 @@ export function ActiveFiltersDisplay({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Badge variant="outline" className="px-2 py-1 text-xs">
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    semanticSpacing.compactX,
+                    semanticSpacing.minimalY,
+                    semanticTypography.caption
+                  )}
+                >
                   +{hiddenCount} more
                 </Badge>
               </TooltipTrigger>
               <TooltipContent>
-                <div className="space-y-1">
+                <div className={`${semanticSpacing.stack.xs}`}>
                   {activeFilterBadges.slice(maxDisplayedFilters).map((badge, index) => (
-                    <div key={index} className="text-xs">
+                    <div key={index} className={`${semanticTypography.caption}`}>
                       {badge.label}: {badge.value}
                     </div>
                   ))}
@@ -277,7 +311,7 @@ export function ActiveFiltersDisplay({
             variant="ghost"
             size="sm"
             onClick={onClearAllFilters}
-            className="h-6 px-2 text-xs"
+            className={cn(semanticSpacing.compactX, semanticTypography.caption, 'h-6')}
           >
             <RotateCcw className="mr-1 size-3" />
             Clear All

@@ -1,4 +1,5 @@
 import React from 'react'
+import { cn } from '@/lib/utils'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,6 +8,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { MoreHorizontal, Pencil, Trash2, ExternalLink } from 'lucide-react'
+import { semanticSpacing, semanticRadius } from '@/styles/tokens'
 import type { OpportunityWithLastActivity } from '@/types/opportunity.types'
 
 interface OpportunitiesTableActionsProps {
@@ -25,7 +27,10 @@ export const OpportunitiesTableActions: React.FC<OpportunitiesTableActionsProps>
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="size-6 rounded p-0 hover:bg-gray-100">
+        <Button
+          variant="ghost"
+          className={cn(semanticRadius.small, 'size-6', semanticSpacing.zero, 'hover:bg-gray-100')}
+        >
           <span className="sr-only">Open menu</span>
           <MoreHorizontal className="size-3" />
         </Button>
@@ -33,19 +38,19 @@ export const OpportunitiesTableActions: React.FC<OpportunitiesTableActionsProps>
       <DropdownMenuContent align="end">
         {onView && (
           <DropdownMenuItem onClick={() => onView(opportunity)}>
-            <ExternalLink className="mr-2 size-4" />
+            <ExternalLink className={`${semanticSpacing.rightGap.xs} size-4`} />
             View Details
           </DropdownMenuItem>
         )}
         {onEdit && (
           <DropdownMenuItem onClick={() => onEdit(opportunity)}>
-            <Pencil className="mr-2 size-4" />
+            <Pencil className={`${semanticSpacing.rightGap.xs} size-4`} />
             Edit
           </DropdownMenuItem>
         )}
         {onDelete && (
           <DropdownMenuItem onClick={() => onDelete(opportunity)} className="text-destructive">
-            <Trash2 className="mr-2 size-4" />
+            <Trash2 className={`${semanticSpacing.rightGap.xs} size-4`} />
             Delete
           </DropdownMenuItem>
         )}

@@ -1,9 +1,9 @@
 /**
  * Static Data Cache System
- * 
+ *
  * Implements in-memory caching for lookup tables and static data that rarely change.
  * Provides sub-5ms access times and reduces database load.
- * 
+ *
  * Features:
  * - Automatic cache warming on application start
  * - TTL-based expiration (configurable)
@@ -18,7 +18,7 @@ import type { Database } from './database.types'
 // Cache configuration
 const CACHE_CONFIG = {
   DEFAULT_TTL: 30 * 60 * 1000, // 30 minutes default
-  LOOKUP_TTL: 60 * 60 * 1000,  // 1 hour for lookup tables (rarely change)
+  LOOKUP_TTL: 60 * 60 * 1000, // 1 hour for lookup tables (rarely change)
   ENUM_TTL: 2 * 60 * 60 * 1000, // 2 hours for enums (very stable)
   REFRESH_BUFFER: 5 * 60 * 1000, // Start refresh 5 minutes before expiry
 } as const
@@ -52,7 +52,7 @@ class MemoryCache {
 
     const now = Date.now()
     const age = now - entry.timestamp
-    
+
     // Check if expired
     if (age > entry.ttl) {
       this.cache.delete(key)
@@ -61,7 +61,7 @@ class MemoryCache {
     }
 
     // Check if needs refresh (background refresh)
-    if (age > (entry.ttl - CACHE_CONFIG.REFRESH_BUFFER) && !entry.isRefreshing) {
+    if (age > entry.ttl - CACHE_CONFIG.REFRESH_BUFFER && !entry.isRefreshing) {
       this.backgroundRefresh(key, entry)
     }
 
@@ -343,7 +343,9 @@ export const staticDataCache = {
   },
 
   getFoodServiceSegments(): Array<{ value: string; label: string }> {
-    const cached = cache.get<Array<{ value: string; label: string }>>('static:food_service_segments')
+    const cached = cache.get<Array<{ value: string; label: string }>>(
+      'static:food_service_segments'
+    )
     if (cached) return cached
 
     const data = getFoodServiceSegments()

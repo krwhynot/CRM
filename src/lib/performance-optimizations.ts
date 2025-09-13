@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
+import type { UIEvent, ComponentType } from 'react'
 import { isDevelopment } from '@/config/environment'
 
 // Debounce utility for search inputs and API calls
@@ -55,7 +56,7 @@ export function useVirtualScrolling<T>(
     }
   }, [items, itemHeight, containerHeight, scrollTop, buffer])
 
-  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+  const handleScroll = useCallback((e: UIEvent<HTMLDivElement>) => {
     setScrollTop(e.currentTarget.scrollTop)
   }, [])
 
@@ -99,7 +100,7 @@ export function useIntersectionObserver(
 
 // Optimized table row memoization
 export function createOptimizedTableRow<T extends { id: string }>(
-  RowComponent: React.ComponentType<{ item: T; onAction?: (id: string, action: string) => void }>
+  RowComponent: ComponentType<{ item: T; onAction?: (id: string, action: string) => void }>
 ) {
   return React.memo(RowComponent, (prevProps, nextProps) => {
     // Only re-render if the item data or actions have changed
@@ -170,7 +171,7 @@ export function useOptimizedFormSubmit<T>(
 }
 
 // Bundle splitting utilities for feature modules
-export const createFeatureLoader = <T extends React.ComponentType<Record<string, unknown>>>(
+export const createFeatureLoader = <T extends ComponentType<Record<string, unknown>>>(
   loader: () => Promise<{ default: T }>
 ) => {
   return React.lazy(() =>

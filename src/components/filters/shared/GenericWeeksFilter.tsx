@@ -7,6 +7,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Calendar } from 'lucide-react'
+import { semanticSpacing } from '@/styles/tokens'
 
 export interface WeekOption {
   value: string
@@ -26,18 +27,14 @@ export const GenericWeeksFilter: React.FC<GenericWeeksFilterProps> = ({
   value,
   options,
   isLoading = false,
-  placeholder = "Select Time Range",
-  className = "",
+  placeholder = 'Select Time Range',
+  className = '',
   onChange,
 }) => {
   return (
-    <div className={`flex min-w-0 items-center gap-2 ${className}`}>
+    <div className={`flex min-w-0 items-center ${semanticSpacing.gap.xs} ${className}`}>
       <Calendar className="size-4 shrink-0 text-muted-foreground" />
-      <Select
-        value={value}
-        onValueChange={onChange}
-        disabled={isLoading}
-      >
+      <Select value={value} onValueChange={onChange} disabled={isLoading}>
         <SelectTrigger className="w-full sm:w-filter-sm">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>

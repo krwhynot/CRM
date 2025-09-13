@@ -1,6 +1,6 @@
 /**
  * UI Styles Configuration
- * 
+ *
  * Centralized configuration for UI styles, colors, and visual elements
  * used in development tools, error pages, and utility components.
  */
@@ -12,13 +12,13 @@ export const devToolColors = {
     secondary: '#ffffff',
     accent: '#f8f9fa',
   },
-  
+
   text: {
     primary: '#2563eb',
     secondary: '#374151',
     muted: '#6b7280',
   },
-  
+
   status: {
     error: '#dc2626',
     errorBackground: '#fee2e2',
@@ -27,12 +27,12 @@ export const devToolColors = {
     success: '#059669',
     successBackground: '#d1fae5',
   },
-  
+
   border: {
     default: '#e5e7eb',
     accent: '#d1d5db',
   },
-  
+
   code: {
     background: '#f3f4f6',
     text: '#1f2937',
@@ -47,7 +47,7 @@ export const devToolTypography = {
     large: '2em',
     small: '12px',
   },
-  
+
   fontWeight: {
     normal: '400',
     semibold: '600',
@@ -63,17 +63,17 @@ export const devToolLayout = {
     md: '20px',
     lg: '30px',
   },
-  
+
   borderRadius: {
     default: '6px',
     small: '4px',
     large: '8px',
   },
-  
+
   shadow: {
     card: '0 2px 10px rgba(0,0,0,0.1)',
   },
-  
+
   maxWidth: '1200px',
 } as const
 
@@ -84,7 +84,7 @@ export const generateDevToolCSS = () => {
     typography: devToolTypography,
     layout: devToolLayout,
   }
-  
+
   return `
     body { 
       font-family: ${typography.fontFamily}; 

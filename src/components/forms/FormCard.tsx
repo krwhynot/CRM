@@ -2,6 +2,7 @@ import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { useDialogContext } from '@/contexts/DialogContext'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 import {
   getFormCardClasses,
   getFormContainerClasses,
@@ -51,12 +52,16 @@ export function FormCard({ title, description, icon: Icon, children, className }
         {(title || description) && (
           <div className={cn('space-y-2', headerSpacing)}>
             {title && (
-              <div className="flex items-center gap-3">
+              <div className={cn(semanticSpacing.gap.sm, 'flex items-center')}>
                 {Icon && <Icon className="size-6 text-primary" />}
-                <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+                <h3 className={cn(semanticTypography.h4, semanticTypography.h4, 'text-gray-900')}>
+                  {title}
+                </h3>
               </div>
             )}
-            {description && <p className="text-sm text-muted-foreground">{description}</p>}
+            {description && (
+              <p className={cn(semanticTypography.body, 'text-muted-foreground')}>{description}</p>
+            )}
           </div>
         )}
         <div className={paddingClasses}>{children}</div>
@@ -70,11 +75,19 @@ export function FormCard({ title, description, icon: Icon, children, className }
       <Card className={cn(cardClasses, className)}>
         {(title || description) && (
           <CardHeader className="border-b bg-gray-50/50">
-            <div className="flex items-center gap-3">
+            <div className={cn(semanticSpacing.gap.sm, 'flex items-center')}>
               {Icon && <Icon className="size-6 text-primary" />}
               <div>
-                {title && <CardTitle className="text-xl font-semibold">{title}</CardTitle>}
-                {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
+                {title && (
+                  <CardTitle className={cn(semanticTypography.h3, semanticTypography.h4)}>
+                    {title}
+                  </CardTitle>
+                )}
+                {description && (
+                  <p className={cn(semanticTypography.body, 'mt-1 text-muted-foreground')}>
+                    {description}
+                  </p>
+                )}
               </div>
             </div>
           </CardHeader>

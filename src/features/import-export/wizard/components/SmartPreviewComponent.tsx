@@ -1,14 +1,23 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+// Removed unused: import { Badge } from '@/components/ui/badge'
 import { DataTable } from '@/components/ui/DataTable'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { CheckCircle2, AlertTriangle, Users, Sparkles, RefreshCw, ToggleLeft, ToggleRight } from 'lucide-react'
+import {
+  CheckCircle2,
+  AlertTriangle,
+  Users,
+  Sparkles,
+  RefreshCw,
+  ToggleLeft,
+  ToggleRight,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 import { ImportResultsSimplified } from './ImportResultsSimplified'
 import type { SmartFieldMapping } from '../hooks/useSmartImport'
 import type { ParsedData } from '@/hooks/useFileUpload'
+import { semanticSpacing, semanticTypography, semanticColors } from '@/styles/tokens'
 
 interface SmartPreviewComponentProps {
   parsedData: ParsedData | null
@@ -61,13 +70,29 @@ export function SmartPreviewComponent({
 
   if (!parsedData || !mappings.length) {
     return (
-      <div className={cn('flex items-center justify-center p-8', className)}>
+      <div
+        className={cn(
+          `flex items-center justify-center ${semanticSpacing.layoutPadding.xl}`,
+          className
+        )}
+      >
         <div className="text-center">
-          <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-muted">
+          <div
+            className={cn(
+              semanticRadius.full,
+              'mx-auto',
+              semanticSpacing.bottomGap.lg,
+              'flex size-12 items-center justify-center bg-muted'
+            )}
+          >
             <Users className="size-6 text-muted-foreground" />
           </div>
-          <h3 className="text-lg font-medium">No Data to Preview</h3>
-          <p className="text-sm text-muted-foreground">Upload a file to see the preview.</p>
+          <h3 className={cn(semanticTypography.h4, semanticTypography.label)}>
+            No Data to Preview
+          </h3>
+          <p className={cn(semanticTypography.body, 'text-muted-foreground')}>
+            Upload a file to see the preview.
+          </p>
         </div>
       </div>
     )
@@ -76,16 +101,25 @@ export function SmartPreviewComponent({
   // Show simplified view by default
   if (isSimplifiedView) {
     return (
-      <div className={cn('space-y-4', className)}>
+      <div className={cn(semanticSpacing.stack.lg, className)}>
         {/* View Toggle */}
         <div className="flex justify-end">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setIsSimplifiedView(false)}
-            className="text-sm text-slate-600 hover:text-slate-900"
+            className={cn(
+              semanticTypography.body,
+              semanticColors.text.secondary,
+              'hover:',
+              semanticColors.text.primary
+            )}
           >
-            {isSimplifiedView ? <ToggleLeft className="mr-2 size-4" /> : <ToggleRight className="mr-2 size-4" />}
+            {isSimplifiedView ? (
+              <ToggleLeft className={`${semanticSpacing.rightGap.xs} size-4`} />
+            ) : (
+              <ToggleRight className={`${semanticSpacing.rightGap.xs} size-4`} />
+            )}
             {isSimplifiedView ? 'Switch to Advanced View' : 'Switch to Simple View'}
           </Button>
         </div>
@@ -103,16 +137,16 @@ export function SmartPreviewComponent({
 
   // Calculate statistics
   const totalRecords = parsedData.rows.length
-  const mappedFields = mappings.filter(m => m.crmField && m.status !== 'skipped').length
-  const autoMappedFields = mappings.filter(m => m.status === 'auto').length
-  const needsReview = mappings.filter(m => m.status === 'needs_review').length
+  const mappedFields = mappings.filter((m) => m.crmField && m.status !== 'skipped').length
+  const autoMappedFields = mappings.filter((m) => m.status === 'auto').length
+  const needsReview = mappings.filter((m) => m.status === 'needs_review').length
   const isReadyToImport = needsReview === 0 && mappedFields > 0
 
   // Transform data for preview table
   const mappingDict = Object.fromEntries(
     mappings
-      .filter(m => m.crmField && m.status !== 'skipped')
-      .map(m => [m.csvHeader, m.crmField!])
+      .filter((m) => m.crmField && m.status !== 'skipped')
+      .map((m) => [m.csvHeader, m.crmField!])
   )
 
   // Create preview data with business-friendly column headers
@@ -120,25 +154,25 @@ export function SmartPreviewComponent({
     const previewRow: PreviewRow = {
       _originalRowIndex: index,
     }
-    
+
     Object.entries(mappingDict).forEach(([csvHeader, crmField]) => {
       const friendlyLabel = FIELD_LABELS[crmField] || crmField
       previewRow[friendlyLabel] = row[csvHeader]?.trim() || null
     })
-    
+
     return previewRow
   })
 
   // Create columns for DataTable
   const columns = Object.keys(previewData[0] || {})
-    .filter(key => key !== '_originalRowIndex')
-    .map(key => ({
+    .filter((key) => key !== '_originalRowIndex')
+    .map((key) => ({
       key: key,
       header: key,
       cell: (row: PreviewRow) => {
         const value = row[key]
         return value ? (
-          <span className="font-medium text-slate-900">{value}</span>
+          <span className={cn(semanticTypography.label, semanticColors.text.primary)}>{value}</span>
         ) : (
           <span className="italic text-muted-foreground">—</span>
         )
@@ -146,39 +180,54 @@ export function SmartPreviewComponent({
     }))
 
   return (
-    <div className={cn('space-y-6', className)}>
+    <div className={cn(semanticSpacing.stack.xl, className)}>
       {/* View Toggle */}
       <div className="flex justify-end">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => setIsSimplifiedView(true)}
-          className="text-sm text-slate-600 hover:text-slate-900"
+          className={cn(
+            semanticTypography.body,
+            semanticColors.text.secondary,
+            'hover:',
+            semanticColors.text.primary
+          )}
         >
-          <ToggleRight className="mr-2 size-4" />
+          <ToggleRight className={`${semanticSpacing.rightGap.xs} size-4`} />
           Switch to Simple View
         </Button>
       </div>
 
       {/* Header with Stats */}
-      <Card className="border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
-        <CardContent className="p-6">
+      <Card
+        className={`${semanticColors.info.border} bg-gradient-to-r ${semanticColors.info.background} to-indigo-50`}
+      >
+        <CardContent className={semanticSpacing.layoutPadding.xl}>
           <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <Users className="size-5 text-blue-600" />
-                <h3 className="text-lg font-semibold text-slate-900">
+            <div className={semanticSpacing.stack.xs}>
+              <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
+                <Users className={`size-5 ${semanticColors.info.foreground}`} />
+                <h3
+                  className={cn(
+                    semanticTypography.h4,
+                    semanticTypography.h4,
+                    semanticColors.text.primary
+                  )}
+                >
                   {totalRecords.toLocaleString()} Organizations Ready to Import
                 </h3>
               </div>
-              <div className="flex items-center space-x-4 text-sm">
-                <div className="flex items-center space-x-1">
-                  <CheckCircle2 className="size-4 text-green-600" />
+              <div
+                className={`flex items-center ${semanticSpacing.gap.lg} ${semanticTypography.caption}`}
+              >
+                <div className={`flex items-center ${semanticSpacing.gap.xxs}`}>
+                  <CheckCircle2 className={`size-4 ${semanticColors.success.foreground}`} />
                   <span>{autoMappedFields} fields auto-mapped</span>
                 </div>
                 {needsReview > 0 && (
-                  <div className="flex items-center space-x-1">
-                    <AlertTriangle className="size-4 text-amber-600" />
+                  <div className={`flex items-center ${semanticSpacing.gap.xxs}`}>
+                    <AlertTriangle className={`size-4 ${semanticColors.warning.foreground}`} />
                     <span>{needsReview} fields need attention</span>
                   </div>
                 )}
@@ -191,16 +240,16 @@ export function SmartPreviewComponent({
                 variant="outline"
                 onClick={onRegenerateMapping}
                 disabled={aiInProgress}
-                className="h-12 px-6"
+                className={cn(semanticSpacing.cardX, 'h-12')}
               >
                 {aiInProgress ? (
                   <>
-                    <RefreshCw className="mr-2 size-4 animate-spin" />
+                    <RefreshCw className={`${semanticSpacing.rightGap.xs} size-4 animate-spin`} />
                     Improving...
                   </>
                 ) : (
                   <>
-                    <Sparkles className="mr-2 size-4" />
+                    <Sparkles className={`${semanticSpacing.rightGap.xs} size-4`} />
                     Improve Mapping
                   </>
                 )}
@@ -224,16 +273,25 @@ export function SmartPreviewComponent({
               data={previewData}
               columns={columns}
               rowKey={(row) => `preview-${row._originalRowIndex}`}
-              className="rounded-lg border"
+              className={cn(semanticRadius.large, 'border')}
             />
           ) : (
-            <div className="flex items-center justify-center p-8">
+            <div className={`flex items-center justify-center ${semanticSpacing.layoutPadding.xl}`}>
               <div className="text-center">
-                <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-muted">
+                <div
+                  className={cn(
+                    semanticRadius.full,
+                    'mx-auto',
+                    semanticSpacing.bottomGap.lg,
+                    'flex size-12 items-center justify-center bg-muted'
+                  )}
+                >
                   <AlertTriangle className="size-6 text-muted-foreground" />
                 </div>
-                <h3 className="text-lg font-medium">No Preview Available</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className={cn(semanticTypography.h4, semanticTypography.label)}>
+                  No Preview Available
+                </h3>
+                <p className={cn(semanticTypography.body, 'text-muted-foreground')}>
                   Unable to create a preview with the current field mappings.
                 </p>
               </div>
@@ -249,12 +307,13 @@ export function SmartPreviewComponent({
           <AlertDescription className="text-green-800">
             <div className="flex items-center justify-between">
               <span>
-                Perfect! Your data is ready to import. We'll add {totalRecords.toLocaleString()} organizations to your CRM.
+                Perfect! Your data is ready to import. We'll add {totalRecords.toLocaleString()}{' '}
+                organizations to your CRM.
               </span>
               {onProceedToImport && (
-                <Button 
+                <Button
                   onClick={onProceedToImport}
-                  className="ml-4 bg-green-600 hover:bg-green-700"
+                  className={`${semanticSpacing.leftGap.lg} bg-green-600 hover:bg-green-700`}
                 >
                   Import Now
                 </Button>
@@ -268,8 +327,8 @@ export function SmartPreviewComponent({
           <AlertDescription className="text-amber-800">
             {needsReview > 0 ? (
               <>
-                We need to review {needsReview} field{needsReview !== 1 ? 's' : ''} before importing. 
-                Click "Improve Mapping" above or check the field mapping section.
+                We need to review {needsReview} field{needsReview !== 1 ? 's' : ''} before
+                importing. Click "Improve Mapping" above or check the field mapping section.
               </>
             ) : (
               'No fields are mapped yet. Use the AI mapping feature to get started.'
@@ -279,42 +338,52 @@ export function SmartPreviewComponent({
       )}
 
       {/* Quick Stats Cards */}
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div className={`grid grid-cols-2 ${semanticSpacing.gap.lg} md:grid-cols-4`}>
         <Card className="bg-slate-50">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-slate-900">{totalRecords.toLocaleString()}</div>
-            <div className="text-xs text-slate-600">Total Records</div>
+          <CardContent className={`${semanticSpacing.layoutPadding.lg} text-center`}>
+            <div className={cn(semanticTypography.h2, semanticTypography.h2, 'text-slate-900')}>
+              {totalRecords.toLocaleString()}
+            </div>
+            <div className={cn(semanticTypography.caption, 'text-slate-600')}>Total Records</div>
           </CardContent>
         </Card>
-        
+
         <Card className="bg-green-50">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">{autoMappedFields}</div>
-            <div className="text-xs text-slate-600">Auto-Mapped</div>
+          <CardContent className={`${semanticSpacing.layoutPadding.lg} text-center`}>
+            <div className={cn(semanticTypography.h2, semanticTypography.h2, 'text-green-600')}>
+              {autoMappedFields}
+            </div>
+            <div className={cn(semanticTypography.caption, 'text-slate-600')}>Auto-Mapped</div>
           </CardContent>
         </Card>
-        
+
         <Card className="bg-amber-50">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-amber-600">{needsReview}</div>
-            <div className="text-xs text-slate-600">Need Review</div>
+          <CardContent className={`${semanticSpacing.layoutPadding.lg} text-center`}>
+            <div className={cn(semanticTypography.h2, semanticTypography.h2, 'text-amber-600')}>
+              {needsReview}
+            </div>
+            <div className={cn(semanticTypography.caption, 'text-slate-600')}>Need Review</div>
           </CardContent>
         </Card>
-        
+
         <Card className="bg-blue-50">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600">{mappedFields}</div>
-            <div className="text-xs text-slate-600">Fields Mapped</div>
+          <CardContent className={`${semanticSpacing.layoutPadding.lg} text-center`}>
+            <div className={cn(semanticTypography.h2, semanticTypography.h2, 'text-blue-600')}>
+              {mappedFields}
+            </div>
+            <div className={cn(semanticTypography.caption, 'text-slate-600')}>Fields Mapped</div>
           </CardContent>
         </Card>
       </div>
 
       {/* Help Section */}
       <Card className="bg-muted/30">
-        <CardContent className="p-4">
-          <div className="text-sm text-slate-600">
-            <p className="mb-2 font-medium">What happens next?</p>
-            <ul className="space-y-1 text-xs">
+        <CardContent className={semanticSpacing.layoutPadding.lg}>
+          <div className={`${semanticTypography.body} text-slate-600`}>
+            <p className={cn(semanticTypography.label, semanticSpacing.bottomGap.xs)}>
+              What happens next?
+            </p>
+            <ul className={`${semanticSpacing.stack.xxs} ${semanticTypography.caption}`}>
               <li>• Your data will be validated and imported into the CRM</li>
               <li>• Duplicate organizations will be automatically detected</li>
               <li>• You'll receive a detailed import report when complete</li>

@@ -1,6 +1,7 @@
 import { Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 interface LoadingSpinnerProps {
   className?: string
   size?: 'sm' | 'md' | 'lg'
@@ -16,7 +17,11 @@ export function LoadingSpinner({ className, size = 'md', text }: LoadingSpinnerP
 
   return (
     <div
-      className="flex flex-col items-center justify-center space-y-2 p-8"
+      className={cn(
+        semanticSpacing.stack.xs,
+        semanticSpacing.pageContainer,
+        'flex flex-col items-center justify-center'
+      )}
       role="status"
       aria-live="polite"
       aria-label={text || 'Loading content'}
@@ -26,7 +31,10 @@ export function LoadingSpinner({ className, size = 'md', text }: LoadingSpinnerP
         aria-hidden="true"
       />
       {text && (
-        <p className="text-mfb-olive/60 font-nunito text-sm" aria-live="polite">
+        <p
+          className={cn(semanticTypography.body, 'text-mfb-olive/60 font-nunito')}
+          aria-live="polite"
+        >
           {text}
         </p>
       )}

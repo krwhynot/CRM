@@ -4,6 +4,7 @@ import { Progress } from '@/components/ui/progress'
 import { Building, Users, DollarSign, Calendar, FileText } from 'lucide-react'
 import { useOpportunityWizard } from '../hooks/useOpportunityWizard'
 import { useOpportunityForm } from '../hooks/useOpportunityForm'
+import { semanticSpacing, semanticTypography, semanticRadius, fontWeight } from '@/styles/tokens'
 import { WizardNavigation } from './WizardNavigation'
 import { WizardStepBasicInfo } from './WizardStepBasicInfo'
 import { WizardStepOrganization } from './WizardStepOrganization'
@@ -11,6 +12,7 @@ import { WizardStepDetails } from './WizardStepDetails'
 import { WizardStepFinancial } from './WizardStepFinancial'
 import { WizardStepTimeline } from './WizardStepTimeline'
 
+import { cn } from '@/lib/utils'
 interface OpportunityWizardProps {
   onSubmit: (data: OpportunityFormData) => void | Promise<void>
   onCancel: () => void
@@ -98,9 +100,11 @@ export function OpportunityWizard({
     <Card className="mx-auto w-full max-w-4xl">
       <CardHeader>
         <CardTitle>Add Opportunity</CardTitle>
-        <div className="mt-4">
+        <div className={semanticSpacing.topGap.lg}>
           <Progress value={progress} className="h-2" />
-          <div className="mt-2 flex justify-between text-sm text-gray-500">
+          <div
+            className={`${semanticSpacing.topGap.xs} flex justify-between ${semanticTypography.body} ${text - muted - foreground}`}
+          >
             <span>
               Step {wizard.currentStep} of {STEPS.length}
             </span>
@@ -136,7 +140,7 @@ export function OpportunityWizard({
             onSubmit(cleanedData)
           })}
         >
-          <div className="mb-6 min-h-72">{renderStepContent()}</div>
+          <div className={`${semanticSpacing.bottomGap.xl} min-h-72`}>{renderStepContent()}</div>
 
           {/* Navigation Buttons */}
           <div className="flex justify-between">
@@ -144,7 +148,7 @@ export function OpportunityWizard({
               {wizard.currentStep > 1 && (
                 <button
                   type="button"
-                  className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                  className={`inline-flex items-center ${semanticRadius.default} border ${border - border} bg-white ${semanticSpacing.horizontalPadding.xl} ${semanticSpacing.verticalPadding.xs} ${semanticTypography.body} ${fontWeight.medium} ${text - foreground} hover:${bg - muted} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50`}
                   onClick={wizard.handlePrevious}
                   disabled={loading}
                 >
@@ -153,10 +157,24 @@ export function OpportunityWizard({
               )}
             </div>
 
-            <div className="space-x-2">
+            <div className={`${semanticSpacing.gap.xs}`} style={{ display: 'flex' }}>
               <button
                 type="button"
-                className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                className={cn(
+                  semanticSpacing.cardX,
+                  semanticSpacing.compactY,
+                  'inline-flex items-center',
+                  semanticRadius.default,
+                  '-md border',
+                  border - border,
+                  'bg-white',
+                  semanticTypography.body,
+                  fontWeight.medium,
+                  text - foreground,
+                  'hover:',
+                  bg - muted,
+                  'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50'
+                )}
                 onClick={onCancel}
                 disabled={loading}
               >
@@ -166,7 +184,7 @@ export function OpportunityWizard({
               {wizard.currentStep < STEPS.length ? (
                 <button
                   type="button"
-                  className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                  className={`inline-flex items-center ${semanticRadius.default} border border-transparent bg-blue-600 ${semanticSpacing.horizontalPadding.xl} ${semanticSpacing.verticalPadding.xs} ${semanticTypography.body} ${fontWeight.medium} text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50`}
                   onClick={() =>
                     wizard.handleNext(() => form.getStepValidation(wizard.currentStep))
                   }
@@ -177,7 +195,7 @@ export function OpportunityWizard({
               ) : (
                 <button
                   type="submit"
-                  className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                  className={`inline-flex items-center ${semanticRadius.default} border border-transparent bg-blue-600 ${semanticSpacing.horizontalPadding.xl} ${semanticSpacing.verticalPadding.xs} ${semanticTypography.body} ${fontWeight.medium} text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50`}
                   disabled={loading}
                 >
                   {loading ? 'Creating...' : 'Create Opportunity'}

@@ -1,57 +1,57 @@
 /**
  * Interaction Data Migration Utility
- * 
+ *
  * Helps import and transform interaction data from spreadsheets
  * to match the enhanced interaction tracking system.
  */
 
-import type { 
-  InteractionType, 
-  InteractionPriority, 
+import type {
+  InteractionType,
+  InteractionPriority,
   AccountManager,
   PrincipalInfo,
-  InteractionInsert 
+  InteractionInsert,
 } from '@/types/entities'
 
 // Map spreadsheet interaction types to our system types
 const INTERACTION_TYPE_MAPPING: Record<string, InteractionType> = {
   'In Person': 'in_person',
-  'Email': 'email',
-  'Call': 'call',
-  'Quoted': 'quoted',
-  'Distribution': 'distribution',
-  'Demo': 'demo',
-  'Meeting': 'meeting',
+  Email: 'email',
+  Call: 'call',
+  Quoted: 'quoted',
+  Distribution: 'distribution',
+  Demo: 'demo',
+  Meeting: 'meeting',
   // Legacy mappings
-  'Phone': 'call',
-  'Visit': 'in_person',
-  'Quote': 'quoted',
+  Phone: 'call',
+  Visit: 'in_person',
+  Quote: 'quoted',
 } as const
 
 // Map priority values
 const PRIORITY_MAPPING: Record<string, InteractionPriority> = {
   'A+': 'A+',
-  'A': 'A', 
-  'B': 'B',
-  'C': 'C',
-  'D': 'D',
+  A: 'A',
+  B: 'B',
+  C: 'C',
+  D: 'D',
   // Handle variations
   'A Plus': 'A+',
-  'High': 'A',
-  'Medium': 'B',
-  'Low': 'C',
+  High: 'A',
+  Medium: 'B',
+  Low: 'C',
   'Very Low': 'D',
 } as const
 
 // Account manager normalization
 const ACCOUNT_MANAGER_MAPPING: Record<string, AccountManager> = {
-  'Sue': 'Sue',
-  'Gary': 'Gary',
-  'Dale': 'Dale',
+  Sue: 'Sue',
+  Gary: 'Gary',
+  Dale: 'Dale',
   // Handle variations
-  'susan': 'Sue',
-  'gary': 'Gary',
-  'dale': 'Dale',
+  susan: 'Sue',
+  gary: 'Gary',
+  dale: 'Dale',
 } as const
 
 /**
@@ -63,33 +63,33 @@ export interface SpreadsheetInteractionRow {
   Type?: string
   Priority?: string
   Subject?: string
-  
-  // Organization info  
+
+  // Organization info
   Organization?: string
   Formula?: string // Like "Sysco Chicago"
-  
+
   // Contact info
   Contact?: string
   Dropdown?: string // Additional contact field
-  
+
   // Account manager
   AccountManager?: string | 'Sue' | 'Gary' | 'Dale'
-  
+
   // Principals (multiple columns)
   Principal?: string
   Principal2?: string
-  Principal3?: string 
+  Principal3?: string
   Principal4?: string
-  
+
   // Notes and details
   Notes?: string
   Details?: string
   Summary?: string
-  
+
   // Follow-up
   FollowUp?: string | boolean
   FollowUpDate?: string
-  
+
   // Any other fields
   [key: string]: any
 }
@@ -99,22 +99,22 @@ export interface SpreadsheetInteractionRow {
  */
 export function parseInteractionType(rawType?: string): InteractionType {
   if (!rawType) return 'follow_up' // Default
-  
+
   // Try exact match first
   if (rawType in INTERACTION_TYPE_MAPPING) {
     return INTERACTION_TYPE_MAPPING[rawType]
   }
-  
+
   // Try case-insensitive match
   const normalizedType = rawType.trim()
   const matchingKey = Object.keys(INTERACTION_TYPE_MAPPING).find(
-    key => key.toLowerCase() === normalizedType.toLowerCase()
+    (key) => key.toLowerCase() === normalizedType.toLowerCase()
   )
-  
+
   if (matchingKey) {
     return INTERACTION_TYPE_MAPPING[matchingKey]
   }
-  
+
   // Default fallback
   console.warn(`Unknown interaction type: ${rawType}, defaulting to 'follow_up'`)
   return 'follow_up'
@@ -125,23 +125,23 @@ export function parseInteractionType(rawType?: string): InteractionType {
  */
 export function parsePriority(rawPriority?: string): InteractionPriority | null {
   if (!rawPriority) return null
-  
+
   const normalizedPriority = rawPriority.trim()
-  
+
   // Try exact match
   if (normalizedPriority in PRIORITY_MAPPING) {
     return PRIORITY_MAPPING[normalizedPriority]
   }
-  
+
   // Try case-insensitive match
   const matchingKey = Object.keys(PRIORITY_MAPPING).find(
-    key => key.toLowerCase() === normalizedPriority.toLowerCase()
+    (key) => key.toLowerCase() === normalizedPriority.toLowerCase()
   )
-  
+
   if (matchingKey) {
     return PRIORITY_MAPPING[matchingKey]
   }
-  
+
   console.warn(`Unknown priority: ${rawPriority}, skipping`)
   return null
 }
@@ -151,23 +151,23 @@ export function parsePriority(rawPriority?: string): InteractionPriority | null 
  */
 export function parseAccountManager(rawManager?: string): AccountManager | null {
   if (!rawManager) return null
-  
+
   const normalizedManager = rawManager.trim()
-  
+
   // Try exact match
   if (normalizedManager in ACCOUNT_MANAGER_MAPPING) {
     return ACCOUNT_MANAGER_MAPPING[normalizedManager]
   }
-  
+
   // Try case-insensitive match
   const matchingKey = Object.keys(ACCOUNT_MANAGER_MAPPING).find(
-    key => key.toLowerCase() === normalizedManager.toLowerCase()
+    (key) => key.toLowerCase() === normalizedManager.toLowerCase()
   )
-  
+
   if (matchingKey) {
     return ACCOUNT_MANAGER_MAPPING[matchingKey]
   }
-  
+
   // Return as-is if not in our mapping (allows for new managers)
   return normalizedManager as AccountManager
 }
@@ -177,7 +177,7 @@ export function parseAccountManager(rawManager?: string): AccountManager | null 
  */
 export function parsePrincipals(row: SpreadsheetInteractionRow): PrincipalInfo[] {
   const principals: PrincipalInfo[] = []
-  
+
   if (row.Principal) {
     principals.push({
       id: generatePrincipalId(row.Principal),
@@ -187,7 +187,7 @@ export function parsePrincipals(row: SpreadsheetInteractionRow): PrincipalInfo[]
       principal4: row.Principal4,
     })
   }
-  
+
   return principals
 }
 
@@ -208,14 +208,14 @@ export function parseInteractionDate(rawDate?: string): string {
   if (!rawDate) {
     return new Date().toISOString()
   }
-  
+
   try {
     // Try parsing as-is first
     const date = new Date(rawDate)
     if (!isNaN(date.getTime())) {
       return date.toISOString()
     }
-    
+
     // Try common Excel date formats
     const excelDate = parseFloat(rawDate)
     if (!isNaN(excelDate)) {
@@ -224,7 +224,7 @@ export function parseInteractionDate(rawDate?: string): string {
       const jsDate = new Date(excelEpoch.getTime() + (excelDate - 1) * 24 * 60 * 60 * 1000)
       return jsDate.toISOString()
     }
-    
+
     console.warn(`Could not parse date: ${rawDate}, using current date`)
     return new Date().toISOString()
   } catch (error) {
@@ -247,7 +247,7 @@ export function transformSpreadsheetRow(
   const accountManager = parseAccountManager(row.AccountManager)
   const principals = parsePrincipals(row)
   const interactionDate = parseInteractionDate(row.Date)
-  
+
   // Compile notes from multiple possible fields
   const notesParts = [
     row.Notes,
@@ -256,21 +256,20 @@ export function transformSpreadsheetRow(
     row.Formula && `Organization: ${row.Formula}`,
     row.Dropdown && `Contact Details: ${row.Dropdown}`,
   ].filter(Boolean)
-  
+
   const notes = notesParts.length > 0 ? notesParts.join('\n\n') : null
-  
+
   // Parse follow-up
   const followUpRequired = Boolean(
-    row.FollowUp === true || 
-    row.FollowUp === 'true' || 
-    row.FollowUp === 'Yes' ||
-    row.FollowUpDate
+    row.FollowUp === true || row.FollowUp === 'true' || row.FollowUp === 'Yes' || row.FollowUpDate
   )
-  
-  const followUpDate = row.FollowUpDate ? 
-    parseInteractionDate(row.FollowUpDate) : 
-    (followUpRequired ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() : null)
-  
+
+  const followUpDate = row.FollowUpDate
+    ? parseInteractionDate(row.FollowUpDate)
+    : followUpRequired
+      ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+      : null
+
   return {
     type,
     subject: row.Subject || `${type.replace('_', ' ')} interaction`,
@@ -305,22 +304,22 @@ export function validateSpreadsheetRow(row: SpreadsheetInteractionRow): {
   errors: string[]
 } {
   const errors: string[] = []
-  
+
   if (!row.Type) {
     errors.push('Interaction type is required')
   }
-  
+
   if (!row.Subject && !row.Notes && !row.Details) {
     errors.push('At least one of Subject, Notes, or Details is required')
   }
-  
+
   if (!row.Date) {
     errors.push('Date is required')
   }
-  
+
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   }
 }
 
@@ -332,29 +331,31 @@ export function transformSpreadsheetData(
   opportunityId: string
 ): {
   successful: InteractionInsert[]
-  failed: { row: SpreadsheetInteractionRow, errors: string[] }[]
+  failed: { row: SpreadsheetInteractionRow; errors: string[] }[]
 } {
   const successful: InteractionInsert[] = []
-  const failed: { row: SpreadsheetInteractionRow, errors: string[] }[] = []
-  
-  rows.forEach(row => {
+  const failed: { row: SpreadsheetInteractionRow; errors: string[] }[] = []
+
+  rows.forEach((row) => {
     const validation = validateSpreadsheetRow(row)
-    
+
     if (!validation.isValid) {
       failed.push({ row, errors: validation.errors })
       return
     }
-    
+
     try {
       const transformed = transformSpreadsheetRow(row, opportunityId)
       successful.push(transformed)
     } catch (error) {
-      failed.push({ 
-        row, 
-        errors: [`Transformation error: ${error instanceof Error ? error.message : 'Unknown error'}`] 
+      failed.push({
+        row,
+        errors: [
+          `Transformation error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        ],
       })
     }
   })
-  
+
   return { successful, failed }
 }

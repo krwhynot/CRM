@@ -1,6 +1,7 @@
 import React from 'react'
 import { Badge } from '@/components/ui/badge'
 import { useProductsBadges } from '@/features/products/hooks/useProductsBadges'
+import { semanticSpacing } from '@/styles/tokens'
 
 interface ProductBadgesProps {
   category: string | null
@@ -28,7 +29,7 @@ export const ProductBadges: React.FC<ProductBadgesProps> = ({
   const availabilityBadge = getAvailabilityBadge(inStock || null, lowStock || null)
 
   return (
-    <div className={`flex flex-wrap gap-1 ${className}`}>
+    <div className={`flex flex-wrap ${semanticSpacing.gap.xs} ${className}`}>
       <Badge {...categoryBadge}>{categoryBadge.label}</Badge>
       {valueBadge && <Badge {...valueBadge}>{valueBadge.label}</Badge>}
       {freshnessBadge && <Badge {...freshnessBadge}>{freshnessBadge.label}</Badge>}

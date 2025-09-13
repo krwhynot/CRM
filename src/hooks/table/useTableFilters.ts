@@ -35,27 +35,31 @@ export function useTableFilters<T, F extends Record<string, unknown>>({
 }: UseTableFiltersOptions<T, F>) {
   const [filters, setFilters] = useState<F>(initialFilters)
 
-  const updateFilters = useCallback((newFilters: Partial<F>) => {
-    setFilters(prev => {
-      const updated = { ...prev, ...newFilters }
-      onFiltersChange?.(updated)
-      return updated
-    })
-  }, [onFiltersChange])
+  const updateFilters = useCallback(
+    (newFilters: Partial<F>) => {
+      setFilters((prev) => {
+        const updated = { ...prev, ...newFilters }
+        onFiltersChange?.(updated)
+        return updated
+      })
+    },
+    [onFiltersChange]
+  )
 
   const resetFilters = useCallback(() => {
     setFilters(initialFilters)
     onFiltersChange?.(initialFilters)
   }, [initialFilters, onFiltersChange])
 
-  const setFilter = useCallback(<K extends keyof F>(key: K, value: F[K]) => {
-    updateFilters({ [key]: value } as Partial<F>)
-  }, [updateFilters])
+  const setFilter = useCallback(
+    <K extends keyof F>(key: K, value: F[K]) => {
+      updateFilters({ [key]: value } as Partial<F>)
+    },
+    [updateFilters]
+  )
 
   const hasActiveFilters = useCallback(() => {
-    return Object.keys(filters).some(key => 
-      filters[key] !== initialFilters[key]
-    )
+    return Object.keys(filters).some((key) => filters[key] !== initialFilters[key])
   }, [filters, initialFilters])
 
   return {
@@ -75,7 +79,7 @@ export function useTableFiltersWithData<T, F extends Record<string, unknown>>(
   options: UseTableFiltersOptions<T, F>
 ): UseTableFiltersReturn<T, F> {
   const filterState = useTableFilters(options)
-  
+
   const filteredData = useMemo(() => {
     return options.filterFunction(data, filterState.filters)
   }, [data, filterState.filters, options.filterFunction])

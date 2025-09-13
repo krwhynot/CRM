@@ -1,6 +1,6 @@
 /**
  * Accessibility Components
- * 
+ *
  * Comprehensive accessibility system for WCAG 2.1 AA compliance.
  * Includes focus management, keyboard navigation, and screen reader support.
  */

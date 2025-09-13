@@ -1,6 +1,7 @@
 import React from 'react'
 import { Badge } from '@/components/ui/badge'
 import { useOrganizationsBadges } from '@/features/organizations/hooks/useOrganizationsBadges'
+import { semanticSpacing } from '@/styles/tokens'
 
 interface OrganizationBadgesProps {
   priority: string | null
@@ -24,7 +25,7 @@ export const OrganizationBadges: React.FC<OrganizationBadgesProps> = ({
   const statusBadge = getStatusBadge(priority, type)
 
   return (
-    <div className={`flex flex-wrap gap-1 ${className}`}>
+    <div className={`flex flex-wrap ${semanticSpacing.gap.xs} ${className}`}>
       {statusBadge && <Badge {...statusBadge.props}>{statusBadge.label}</Badge>}
       <Badge {...priorityBadge.props}>{priorityBadge.label}</Badge>
       <Badge {...typeBadge.props}>{typeBadge.label}</Badge>

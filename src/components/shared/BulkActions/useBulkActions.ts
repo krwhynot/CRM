@@ -72,131 +72,137 @@ export function useBulkActions<T>({
     })
   }, [])
 
-  const executeBulkDelete = useCallback(async (
-    items: T[],
-    deleteFunction: (id: string) => Promise<void>
-  ): Promise<BulkActionResult<T>[]> => {
-    if (items.length === 0) return []
+  const executeBulkDelete = useCallback(
+    async (
+      items: T[],
+      deleteFunction: (id: string) => Promise<void>
+    ): Promise<BulkActionResult<T>[]> => {
+      if (items.length === 0) return []
 
-    setProgress({
-      total: items.length,
-      completed: 0,
-      successful: 0,
-      failed: 0,
-      isRunning: true,
-    })
+      setProgress({
+        total: items.length,
+        completed: 0,
+        successful: 0,
+        failed: 0,
+        isRunning: true,
+      })
 
-    const results: BulkActionResult<T>[] = []
-    let successful = 0
-    let failed = 0
+      const results: BulkActionResult<T>[] = []
+      let successful = 0
+      let failed = 0
 
-    try {
-      // Process deletions sequentially for maximum safety
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i]
-        const itemId = getItemId(item)
-        
-        try {
-          await deleteFunction(itemId)
-          results.push({ item, success: true })
-          successful++
-        } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-          results.push({ item, success: false, error: errorMessage })
-          failed++
+      try {
+        // Process deletions sequentially for maximum safety
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i]
+          const itemId = getItemId(item)
+
+          try {
+            await deleteFunction(itemId)
+            results.push({ item, success: true })
+            successful++
+          } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+            results.push({ item, success: false, error: errorMessage })
+            failed++
+          }
+
+          // Update progress
+          setProgress((prev) => ({
+            ...prev,
+            completed: i + 1,
+            successful,
+            failed,
+          }))
         }
 
-        // Update progress
-        setProgress(prev => ({
-          ...prev,
-          completed: i + 1,
-          successful,
-          failed,
-        }))
+        // Show results to user
+        if (successful > 0 && failed === 0) {
+          toast.success(
+            `Successfully archived ${successful} ${successful === 1 ? entityType : entityTypePlural}`
+          )
+        } else if (successful > 0 && failed > 0) {
+          toast.warning(`Archived ${successful} ${entityTypePlural}, but ${failed} failed`)
+        } else if (failed > 0) {
+          toast.error(`Failed to archive ${failed} ${failed === 1 ? entityType : entityTypePlural}`)
+        }
+      } catch (error) {
+        toast.error(`An unexpected error occurred during bulk deletion`)
+      } finally {
+        setProgress((prev) => ({ ...prev, isRunning: false }))
       }
 
-      // Show results to user
-      if (successful > 0 && failed === 0) {
-        toast.success(
-          `Successfully archived ${successful} ${successful === 1 ? entityType : entityTypePlural}`
-        )
-      } else if (successful > 0 && failed > 0) {
-        toast.warning(`Archived ${successful} ${entityTypePlural}, but ${failed} failed`)
-      } else if (failed > 0) {
-        toast.error(`Failed to archive ${failed} ${failed === 1 ? entityType : entityTypePlural}`)
-      }
+      return results
+    },
+    [getItemId, entityType, entityTypePlural]
+  )
 
-    } catch (error) {
-      toast.error(`An unexpected error occurred during bulk deletion`)
-    } finally {
-      setProgress(prev => ({ ...prev, isRunning: false }))
-    }
+  const executeBulkOperation = useCallback(
+    async (
+      items: T[],
+      operation: (item: T) => Promise<void>,
+      operationName: string
+    ): Promise<BulkActionResult<T>[]> => {
+      if (items.length === 0) return []
 
-    return results
-  }, [getItemId, entityType, entityTypePlural])
+      setProgress({
+        total: items.length,
+        completed: 0,
+        successful: 0,
+        failed: 0,
+        isRunning: true,
+      })
 
-  const executeBulkOperation = useCallback(async (
-    items: T[],
-    operation: (item: T) => Promise<void>,
-    operationName: string
-  ): Promise<BulkActionResult<T>[]> => {
-    if (items.length === 0) return []
+      const results: BulkActionResult<T>[] = []
+      let successful = 0
+      let failed = 0
 
-    setProgress({
-      total: items.length,
-      completed: 0,
-      successful: 0,
-      failed: 0,
-      isRunning: true,
-    })
+      try {
+        // Process operations sequentially for safety
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i]
 
-    const results: BulkActionResult<T>[] = []
-    let successful = 0
-    let failed = 0
+          try {
+            await operation(item)
+            results.push({ item, success: true })
+            successful++
+          } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+            results.push({ item, success: false, error: errorMessage })
+            failed++
+          }
 
-    try {
-      // Process operations sequentially for safety
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i]
-        
-        try {
-          await operation(item)
-          results.push({ item, success: true })
-          successful++
-        } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-          results.push({ item, success: false, error: errorMessage })
-          failed++
+          // Update progress
+          setProgress((prev) => ({
+            ...prev,
+            completed: i + 1,
+            successful,
+            failed,
+          }))
         }
 
-        // Update progress
-        setProgress(prev => ({
-          ...prev,
-          completed: i + 1,
-          successful,
-          failed,
-        }))
+        // Show results to user
+        if (successful > 0 && failed === 0) {
+          toast.success(
+            `Successfully ${operationName} ${successful} ${successful === 1 ? entityType : entityTypePlural}`
+          )
+        } else if (successful > 0 && failed > 0) {
+          toast.warning(`${operationName} ${successful} ${entityTypePlural}, but ${failed} failed`)
+        } else if (failed > 0) {
+          toast.error(
+            `Failed to ${operationName} ${failed} ${failed === 1 ? entityType : entityTypePlural}`
+          )
+        }
+      } catch (error) {
+        toast.error(`An unexpected error occurred during bulk ${operationName}`)
+      } finally {
+        setProgress((prev) => ({ ...prev, isRunning: false }))
       }
 
-      // Show results to user
-      if (successful > 0 && failed === 0) {
-        toast.success(
-          `Successfully ${operationName} ${successful} ${successful === 1 ? entityType : entityTypePlural}`
-        )
-      } else if (successful > 0 && failed > 0) {
-        toast.warning(`${operationName} ${successful} ${entityTypePlural}, but ${failed} failed`)
-      } else if (failed > 0) {
-        toast.error(`Failed to ${operationName} ${failed} ${failed === 1 ? entityType : entityTypePlural}`)
-      }
-
-    } catch (error) {
-      toast.error(`An unexpected error occurred during bulk ${operationName}`)
-    } finally {
-      setProgress(prev => ({ ...prev, isRunning: false }))
-    }
-
-    return results
-  }, [entityType, entityTypePlural])
+      return results
+    },
+    [entityType, entityTypePlural]
+  )
 
   return {
     progress,

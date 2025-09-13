@@ -1,5 +1,6 @@
 import React from 'react'
 import { Input } from '@/components/ui/input'
+import { semanticSpacing, semanticTypography, fontWeight } from '@/styles/tokens'
 import type { UseFormRegister, FieldErrors } from 'react-hook-form'
 import type { OpportunityFormData } from '@/types/opportunity.types'
 
@@ -15,10 +16,13 @@ export const WizardStepFinancial: React.FC<WizardStepFinancialProps> = ({
   loading = false,
 }) => {
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+    <div className={semanticSpacing.layoutContainer}>
+      <div className={`grid grid-cols-2 ${semanticSpacing.gap.lg}`}>
         <div>
-          <label htmlFor="estimated_value" className="text-sm font-medium">
+          <label
+            htmlFor="estimated_value"
+            className={`${semanticTypography.body} ${fontWeight.medium}`}
+          >
             Opportunity Value ($)
           </label>
           <Input
@@ -30,12 +34,19 @@ export const WizardStepFinancial: React.FC<WizardStepFinancialProps> = ({
             disabled={loading}
           />
           {errors.estimated_value && (
-            <p className="mt-1 text-sm text-red-600">{errors.estimated_value.message}</p>
+            <p
+              className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} text-destructive`}
+            >
+              {errors.estimated_value.message}
+            </p>
           )}
         </div>
 
         <div>
-          <label htmlFor="probability" className="text-sm font-medium">
+          <label
+            htmlFor="probability"
+            className={`${semanticTypography.body} ${fontWeight.medium}`}
+          >
             Probability (%)
           </label>
           <Input
@@ -48,13 +59,17 @@ export const WizardStepFinancial: React.FC<WizardStepFinancialProps> = ({
             disabled={loading}
           />
           {errors.probability && (
-            <p className="mt-1 text-sm text-red-600">{errors.probability.message}</p>
+            <p
+              className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} text-destructive`}
+            >
+              {errors.probability.message}
+            </p>
           )}
         </div>
       </div>
 
       <div>
-        <label htmlFor="deal_owner" className="text-sm font-medium">
+        <label htmlFor="deal_owner" className={`${semanticTypography.body} ${fontWeight.medium}`}>
           Deal Owner
         </label>
         <Input
@@ -64,7 +79,9 @@ export const WizardStepFinancial: React.FC<WizardStepFinancialProps> = ({
           disabled={loading}
         />
         {errors.deal_owner && (
-          <p className="mt-1 text-sm text-red-600">{errors.deal_owner.message}</p>
+          <p className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} text-destructive`}>
+            {errors.deal_owner.message}
+          </p>
         )}
       </div>
     </div>

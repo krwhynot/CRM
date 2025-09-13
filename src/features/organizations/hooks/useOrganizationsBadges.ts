@@ -18,16 +18,18 @@ export const useOrganizationsBadges = (): UseOrganizationsBadgesReturn => {
     return (priority: string | null): BadgeConfig => {
       const priorityMap: Record<string, { props: BadgeConfig['props']; label: string }> = {
         'A+': { props: { priority: 'a-plus' }, label: 'A+ Priority' },
-        'A': { props: { priority: 'a' }, label: 'A Priority' },
-        'B': { props: { priority: 'b' }, label: 'B Priority' },
-        'C': { props: { priority: 'c' }, label: 'C Priority' },
-        'D': { props: { priority: 'd' }, label: 'D Priority' },
+        A: { props: { priority: 'a' }, label: 'A Priority' },
+        B: { props: { priority: 'b' }, label: 'B Priority' },
+        C: { props: { priority: 'c' }, label: 'C Priority' },
+        D: { props: { priority: 'd' }, label: 'D Priority' },
       }
 
-      return priorityMap[priority || ''] || { 
-        props: { priority: 'unassigned' }, 
-        label: 'Unassigned' 
-      }
+      return (
+        priorityMap[priority || ''] || {
+          props: { priority: 'unassigned' },
+          label: 'Unassigned',
+        }
+      )
     }
   }, [])
 
@@ -43,10 +45,12 @@ export const useOrganizationsBadges = (): UseOrganizationsBadgesReturn => {
         unknown: { props: { orgType: 'unknown' }, label: 'Unknown Type' },
       }
 
-      return typeMap[type || ''] || { 
-        props: { orgType: 'unknown' }, 
-        label: 'Unknown Type' 
-      }
+      return (
+        typeMap[type || ''] || {
+          props: { orgType: 'unknown' },
+          label: 'Unknown Type',
+        }
+      )
     }
   }, [])
 
@@ -55,9 +59,9 @@ export const useOrganizationsBadges = (): UseOrganizationsBadgesReturn => {
       if (!segment) return null
 
       const segmentMap: Record<string, { props: BadgeConfig['props']; label: string }> = {
-        'Restaurant': { props: { segment: 'restaurant' }, label: 'Restaurant' },
-        'Healthcare': { props: { segment: 'healthcare' }, label: 'Healthcare' },
-        'Education': { props: { segment: 'education' }, label: 'Education' },
+        Restaurant: { props: { segment: 'restaurant' }, label: 'Restaurant' },
+        Healthcare: { props: { segment: 'healthcare' }, label: 'Healthcare' },
+        Education: { props: { segment: 'education' }, label: 'Education' },
       }
 
       return segmentMap[segment] || null
@@ -70,14 +74,14 @@ export const useOrganizationsBadges = (): UseOrganizationsBadgesReturn => {
       if (priority === 'A+' && type === 'customer') {
         return {
           props: { priority: 'a-plus', orgType: 'customer' },
-          label: 'VIP Customer'
+          label: 'VIP Customer',
         }
       }
 
       if ((priority === 'A+' || priority === 'A') && type === 'distributor') {
         return {
           props: { priority: priority === 'A+' ? 'a-plus' : 'a', orgType: 'distributor' },
-          label: 'Key Partner'
+          label: 'Key Partner',
         }
       }
 

@@ -4,10 +4,11 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { OrganizationBadges } from '../OrganizationBadges'
 import { OrganizationActions } from '../OrganizationActions'
-import { ChevronDown, ChevronRight, TrendingUp, Users } from 'lucide-react'
+import { TrendingUp, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Organization } from '@/types/entities'
 import type { DataTableColumn } from '@/components/ui/DataTable'
+import { semanticSpacing, semanticTypography, semanticColors } from '@/styles/tokens'
 
 // Extended organization interface with weekly context
 interface OrganizationWithWeeklyContext extends Organization {
@@ -42,15 +43,17 @@ export function useOrganizationColumns({
   selectedItems: Set<string>
   onSelectAll: (checked: boolean, items: OrganizationWithWeeklyContext[]) => void
   onSelectItem: (id: string, checked: boolean) => void
-  onToggleExpansion: (id: string) => void
-  isRowExpanded: (id: string) => boolean
+  onToggleExpansion?: (id: string) => void
+  isRowExpanded?: (id: string) => boolean
   onEdit?: (organization: Organization) => void
   onDelete?: (organization: Organization) => void
   onView?: (organization: Organization) => void
   onContact?: (organization: Organization) => void
 }) {
   // Helper component for empty cell display
-  const EmptyCell = () => <span className="italic text-gray-400">Not provided</span>
+  const EmptyCell = () => (
+    <span className={`italic ${semanticTypography.dataMeta}`}>Not provided</span>
+  )
 
   const columns: DataTableColumn<OrganizationWithWeeklyContext>[] = [
     {
@@ -67,33 +70,41 @@ export function useOrganizationColumns({
           checked={selectedItems.has(organization.id)}
           onCheckedChange={(checked) => onSelectItem(organization.id, !!checked)}
           aria-label={`Select ${organization.name}`}
+          className={semanticSpacing.interactiveElement}
         />
       ),
-      className: 'w-12',
     },
-    {
-      key: 'expansion',
-      header: '',
-      cell: (organization) => (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onToggleExpansion(organization.id)}
-          className="h-auto p-0 hover:bg-transparent"
-        >
-          {isRowExpanded(organization.id) ? (
-            <ChevronDown className="size-4 text-gray-500" />
-          ) : (
-            <ChevronRight className="size-4 text-gray-500" />
-          )}
-        </Button>
-      ),
-      className: 'w-8',
-    },
+    ...(onToggleExpansion && isRowExpanded
+      ? [
+          {
+            key: 'expansion',
+            header: '',
+            cell: (organization: OrganizationWithWeeklyContext) => (
+              <Button
+                variant="ghost"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onToggleExpansion(organization.id)
+                }}
+                className={cn(
+                  semanticSpacing.interactiveElement,
+                  'transition-transform duration-200',
+                  isRowExpanded(organization.id) && 'rotate-90'
+                )}
+                aria-label={`${isRowExpanded(organization.id) ? 'Collapse' : 'Expand'} organization details`}
+              >
+                <span className="sr-only">Toggle row expansion</span>▶
+              </Button>
+            ),
+          } as DataTableColumn<OrganizationWithWeeklyContext>,
+        ]
+      : []),
     {
       key: 'organization',
       header: 'Organization',
-      cell: (organization) => <OrganizationNameCell organization={organization} EmptyCell={EmptyCell} />,
+      cell: (organization) => (
+        <OrganizationNameCell organization={organization} EmptyCell={EmptyCell} />
+      ),
       className: 'font-medium',
     },
     {
@@ -108,12 +119,14 @@ export function useOrganizationColumns({
       key: 'managers',
       header: 'Managers',
       cell: (organization) => (
-        <div className="space-y-1">
-          <div className="text-sm font-medium text-gray-900">
+        <div className={semanticSpacing.stack.xxs}>
+          <div className={cn(semanticTypography.label, semanticTypography.body, 'text-gray-900')}>
             {organization.primary_manager_name || <EmptyCell />}
           </div>
           {organization.secondary_manager_name && (
-            <div className="text-xs text-gray-600">+ {organization.secondary_manager_name}</div>
+            <div className={`${semanticTypography.caption} text-gray-600`}>
+              + {organization.secondary_manager_name}
+            </div>
           )}
         </div>
       ),
@@ -155,17 +168,23 @@ export function useOrganizationColumns({
   return columns
 }
 
-function OrganizationNameCell({ 
-  organization, 
-  EmptyCell 
-}: { 
+function OrganizationNameCell({
+  organization,
+  EmptyCell,
+}: {
   organization: OrganizationWithWeeklyContext
   EmptyCell: () => JSX.Element
 }) {
   return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-2">
-        <div className="text-base font-semibold text-gray-900">
+    <div className={semanticSpacing.stack.xs}>
+      <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
+        <div
+          className={cn(
+            semanticTypography.h4,
+            semanticTypography.entityTitle,
+            semanticColors.text.primary
+          )}
+        >
           {organization.name || <EmptyCell />}
         </div>
         {organization.high_engagement_this_week && (
@@ -173,7 +192,7 @@ function OrganizationNameCell({
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="flex items-center">
-                  <TrendingUp className="size-3 text-green-500" />
+                  <TrendingUp className={`size-3 ${semanticColors.success.primary}`} />
                 </div>
               </TooltipTrigger>
               <TooltipContent>
@@ -187,7 +206,7 @@ function OrganizationNameCell({
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="flex items-center">
-                  <Users className="size-3 text-blue-500" />
+                  <Users className={`size-3 ${semanticColors.info.primary}`} />
                 </div>
               </TooltipTrigger>
               <TooltipContent>
@@ -201,7 +220,13 @@ function OrganizationNameCell({
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="flex items-center">
-                  <span className="size-2 animate-pulse rounded-full bg-red-500" />
+                  <span
+                    className={cn(
+                      semanticRadius.full,
+                      'size-2 animate-pulse',
+                      semanticColors.error.primary
+                    )}
+                  />
                 </div>
               </TooltipTrigger>
               <TooltipContent>
@@ -211,41 +236,58 @@ function OrganizationNameCell({
           </TooltipProvider>
         )}
       </div>
-      
-      <div className="flex items-center gap-2">
+
+      <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
         <OrganizationBadges
           priority={organization.priority}
           type={organization.type}
           segment={organization.segment}
         />
         {(organization.active_opportunities || 0) > 0 && (
-          <Badge variant="secondary" className="border-blue-200 bg-blue-50 text-xs text-blue-700">
-            {organization.active_opportunities} active opp{(organization.active_opportunities || 0) !== 1 ? 's' : ''}
+          <Badge
+            variant="secondary"
+            className={`${semanticColors.info.background} ${semanticColors.info.border} ${semanticTypography.caption} ${semanticColors.info.foreground}`}
+          >
+            {organization.active_opportunities} active opp
+            {(organization.active_opportunities || 0) !== 1 ? 's' : ''}
           </Badge>
         )}
         {(organization.total_products || 0) > 0 && (
-          <Badge variant="secondary" className="border-gray-200 bg-gray-50 text-xs text-gray-700">
-            {organization.total_products} product{(organization.total_products || 0) !== 1 ? 's' : ''}
+          <Badge
+            variant="secondary"
+            className={`${semanticColors.neutral.background} ${semanticColors.neutral.border} ${semanticTypography.caption} ${semanticColors.neutral.foreground}`}
+          >
+            {organization.total_products} product
+            {(organization.total_products || 0) !== 1 ? 's' : ''}
           </Badge>
         )}
       </div>
 
       {/* Weekly engagement score */}
       {organization.weekly_engagement_score && organization.weekly_engagement_score > 0 && (
-        <div className="flex items-center gap-1">
-          <span className="text-xs text-gray-400">Engagement:</span>
+        <div className={`flex items-center ${semanticSpacing.gap.xxs}`}>
+          <span className={`${semanticTypography.caption} ${semanticColors.text.tertiary}`}>
+            Engagement:
+          </span>
           <div className="flex items-center">
-            <div className="h-1.5 w-12 overflow-hidden rounded-full bg-gray-200">
-              <div 
+            <div className={cn(semanticRadius.full, 'h-1.5 w-12 overflow-hidden bg-gray-200')}>
+              <div
                 className={cn(
-                  "h-full rounded-full",
-                  organization.weekly_engagement_score >= 70 ? "bg-green-500" :
-                  organization.weekly_engagement_score >= 40 ? "bg-yellow-500" : "bg-red-500"
+                  'h-full rounded-full',
+                  organization.weekly_engagement_score >= 70
+                    ? semanticColors.success.primary
+                    : organization.weekly_engagement_score >= 40
+                      ? semanticColors.warning.primary
+                      : semanticColors.error.primary
                 )}
                 style={{ width: `${organization.weekly_engagement_score}%` }}
               />
             </div>
-            <span className="ml-1 text-xs text-gray-400">{organization.weekly_engagement_score}</span>
+            <span
+              className={`${semanticSpacing.leftGap.xxs} ${semanticTypography.caption} ${semanticColors.text.tertiary}`}
+            >
+              {organization.weekly_engagement_score}
+            </span>
           </div>
         </div>
       )}

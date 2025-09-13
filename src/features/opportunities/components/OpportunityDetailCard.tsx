@@ -2,6 +2,8 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { X } from 'lucide-react'
 import { InteractionTimeline } from '@/features/interactions/components/InteractionTimeline' /* ui-audit: allow */
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
+import { cn } from '@/lib/utils'
 import type {
   OpportunityWithRelations,
   InteractionWithRelations,
@@ -30,40 +32,71 @@ export const OpportunityDetailCard = ({
 }: OpportunityDetailCardProps) => {
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+      <CardHeader
+        className={`flex flex-row items-center justify-between space-y-0 ${semanticSpacing.bottomPadding.lg}`}
+      >
         <div>
-          <CardTitle className="font-nunito text-lg">{opportunity.name}</CardTitle>
-          <p className="mt-1 text-sm text-muted-foreground">{opportunity.organization?.name}</p>
+          <CardTitle className={cn(semanticTypography.h4, 'font-nunito')}>
+            {opportunity.name}
+          </CardTitle>
+          <p
+            className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} text-muted-foreground`}
+          >
+            {opportunity.organization?.name}
+          </p>
         </div>
-        <Button variant="ghost" size="sm" onClick={onClose} className="size-8 p-0">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onClose}
+          className={`size-8 ${semanticSpacing.zero}`}
+        >
           <X className="size-4" />
         </Button>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className={semanticSpacing.layoutContainer}>
         {/* Opportunity Info Grid */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className={`grid ${semanticSpacing.gap.lg} md:grid-cols-2 lg:grid-cols-4`}>
           <div>
-            <label className="text-sm font-medium text-gray-700">Stage</label>
-            <p className="mt-1 text-sm text-gray-900">{opportunity.stage}</p>
+            <label
+              className={cn(semanticTypography.label, semanticTypography.body, 'text-gray-700')}
+            >
+              Stage
+            </label>
+            <p className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} text-gray-900`}>
+              {opportunity.stage}
+            </p>
           </div>
           <div>
-            <label className="text-sm font-medium text-gray-700">Value</label>
-            <p className="mt-1 text-sm text-gray-900">
+            <label
+              className={cn(semanticTypography.label, semanticTypography.body, 'text-gray-700')}
+            >
+              Value
+            </label>
+            <p className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} text-gray-900`}>
               {opportunity.estimated_value
                 ? `$${opportunity.estimated_value.toLocaleString()}`
                 : 'N/A'}
             </p>
           </div>
           <div>
-            <label className="text-sm font-medium text-gray-700">Probability</label>
-            <p className="mt-1 text-sm text-gray-900">
+            <label
+              className={cn(semanticTypography.body, semanticTypography.label, 'text-gray-700')}
+            >
+              Probability
+            </label>
+            <p className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} text-gray-900`}>
               {opportunity.probability ? `${opportunity.probability}%` : 'N/A'}
             </p>
           </div>
           <div>
-            <label className="text-sm font-medium text-gray-700">Close Date</label>
-            <p className="mt-1 text-sm text-gray-900">
+            <label
+              className={cn(semanticTypography.body, semanticTypography.label, 'text-gray-700')}
+            >
+              Close Date
+            </label>
+            <p className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} text-gray-900`}>
               {opportunity.estimated_close_date
                 ? new Date(opportunity.estimated_close_date).toLocaleDateString()
                 : 'N/A'}
@@ -73,9 +106,13 @@ export const OpportunityDetailCard = ({
 
         {/* Contact Information */}
         {opportunity.contact && (
-          <div className="border-t pt-2">
-            <label className="text-sm font-medium text-gray-700">Primary Contact</label>
-            <p className="mt-1 text-sm text-gray-900">
+          <div className={`border-t ${semanticSpacing.topPadding.xs}`}>
+            <label
+              className={cn(semanticTypography.label, semanticTypography.body, 'text-gray-700')}
+            >
+              Primary Contact
+            </label>
+            <p className={`${semanticSpacing.topGap.xs} ${semanticTypography.body} text-gray-900`}>
               {opportunity.contact.first_name} {opportunity.contact.last_name}
               {opportunity.contact.title && (
                 <span className="text-muted-foreground"> • {opportunity.contact.title}</span>

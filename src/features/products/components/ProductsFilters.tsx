@@ -2,12 +2,14 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search, Plus } from 'lucide-react'
-import { 
+import { cn } from '@/lib/utils'
+import {
   GenericWeeksFilter,
-  GenericPrincipalFilter, 
+  GenericPrincipalFilter,
   GenericQuickViewFilter,
-  createQuickViewOptions
+  createQuickViewOptions,
 } from '@/components/filters/shared'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 import type { WeeklyFilterComponentProps, ProductWeeklyFilters } from '@/types/shared-filters.types'
 
 interface ProductsFiltersProps extends WeeklyFilterComponentProps<ProductWeeklyFilters> {
@@ -33,24 +35,24 @@ export const ProductsFilters: React.FC<ProductsFiltersProps> = ({
   }
 
   const handleTimeRangeChange = (timeRange: string) => {
-    onFiltersChange({ 
-      ...filters, 
-      timeRange: timeRange as ProductWeeklyFilters['timeRange']
+    onFiltersChange({
+      ...filters,
+      timeRange: timeRange as ProductWeeklyFilters['timeRange'],
     })
   }
 
   const handlePrincipalChange = (principal: string) => {
-    onFiltersChange({ 
-      ...filters, 
+    onFiltersChange({
+      ...filters,
       principal_id: principal === 'all' ? undefined : principal,
-      principal: principal
+      principal: principal,
     })
   }
 
   const handleQuickViewChange = (quickView: string | 'none') => {
-    onFiltersChange({ 
-      ...filters, 
-      quickView: quickView as ProductWeeklyFilters['quickView']
+    onFiltersChange({
+      ...filters,
+      quickView: quickView as ProductWeeklyFilters['quickView'],
     })
   }
 
@@ -63,23 +65,25 @@ export const ProductsFilters: React.FC<ProductsFiltersProps> = ({
     filters.quickView && filters.quickView !== 'none',
     filters.search,
     filters.category,
-    filters.principal_id
+    filters.principal_id,
   ].filter(Boolean).length
 
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className={`${semanticSpacing.layoutContainer} ${className}`}>
       {/* Header with Add New button */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-semibold text-card-foreground">Products</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <h2 className={cn(semanticTypography.h2, semanticTypography.h4, 'text-card-foreground')}>
+            Products
+          </h2>
+          <p className="${semanticSpacing.topGap.xs} ${semanticTypography.body} text-muted-foreground">
             {filteredCount === totalProducts
               ? `${totalProducts} products`
               : `${filteredCount} of ${totalProducts} products`}
           </p>
         </div>
         {onAddNew && (
-          <Button onClick={onAddNew} className="flex items-center gap-2">
+          <Button onClick={onAddNew} className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
             <Plus className="size-4" />
             Add Product
           </Button>
@@ -87,7 +91,7 @@ export const ProductsFilters: React.FC<ProductsFiltersProps> = ({
       </div>
 
       {/* Primary Filters Row */}
-      <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+      <div className="flex flex-col items-start ${semanticSpacing.gap.lg} sm:flex-row sm:items-center">
         {/* Weekly Time Range */}
         <GenericWeeksFilter
           value={filters.timeRange || 'this_month'}
@@ -127,7 +131,7 @@ export const ProductsFilters: React.FC<ProductsFiltersProps> = ({
         />
 
         {/* Search */}
-        <div className="flex min-w-0 flex-1 items-center gap-2">
+        <div className="flex min-w-0 flex-1 items-center ${semanticSpacing.gap.xs}">
           <Search className="size-4 shrink-0 text-muted-foreground" />
           <Input
             placeholder="Search products..."
@@ -140,8 +144,8 @@ export const ProductsFilters: React.FC<ProductsFiltersProps> = ({
 
       {/* Filter Summary */}
       {(activeFilterCount > 0 || filters.search) && (
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between ${semanticTypography.body} text-muted-foreground">
+          <div className="flex items-center ${semanticSpacing.gap.xs}">
             {activeFilterCount > 0 && (
               <span>
                 {activeFilterCount} filter{activeFilterCount !== 1 ? 's' : ''} active

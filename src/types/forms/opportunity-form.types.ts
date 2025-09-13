@@ -2,7 +2,7 @@
  * Opportunity Form Types and Default Values
  *
  * Provides type-safe default values that align with the opportunity schema expectations.
- * This ensures React Hook Form defaults match Yup schema validation rules.
+ * This ensures React Hook Form defaults match Zod schema validation rules.
  */
 
 import { DEFAULT_OPPORTUNITY_STAGE } from '@/lib/opportunity-stage-mapping'

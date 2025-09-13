@@ -1,9 +1,11 @@
 // Opportunities Feature - Main Exports
 export { OpportunityForm } from './components/OpportunityForm'
 export { OpportunityWizard } from './components/OpportunityWizard'
-export { OpportunitiesTable } from './components/OpportunitiesTable'
+export {
+  OpportunitiesTable,
+  OpportunitiesTable as OpportunitiesTableRefactored,
+} from './components/OpportunitiesTableRefactored'
 export { OpportunitiesTableActions } from './components/OpportunitiesTableActions'
-// export { OpportunitiesTableHeader } from './components/OpportunitiesTableHeader'
 export { OpportunityDetailCard } from './components/OpportunityDetailCard'
 export { OpportunityDialogs } from './components/OpportunityDialogs'
 export { SimpleMultiPrincipalForm } from './components/SimpleMultiPrincipalForm'

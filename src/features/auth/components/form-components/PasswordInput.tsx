@@ -1,7 +1,9 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Eye, EyeOff } from 'lucide-react'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 
+import { cn } from '@/lib/utils'
 interface PasswordInputProps {
   id: string
   label: string
@@ -30,8 +32,8 @@ export function PasswordInput({
   onToggleVisibility,
 }: PasswordInputProps) {
   return (
-    <div className="space-y-2">
-      <label htmlFor={id} className="text-sm font-medium">
+    <div className={`${semanticSpacing.stack.xs}`}>
+      <label htmlFor={id} className={cn(semanticTypography.body, semanticTypography.label)}>
         {label}
       </label>
       <div className="relative">
@@ -49,7 +51,7 @@ export function PasswordInput({
           type="button"
           variant="ghost"
           size="sm"
-          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+          className={`absolute right-0 top-0 h-full ${semanticSpacing.horizontalPadding.lg} ${semanticSpacing.verticalPadding.xs} hover:bg-transparent`}
           onClick={onToggleVisibility}
           disabled={disabled}
         >
@@ -57,7 +59,7 @@ export function PasswordInput({
         </Button>
       </div>
       {showHint && (
-        <p className="text-xs text-gray-500">
+        <p className={cn(semanticTypography.caption, 'text-gray-500')}>
           Must be at least 8 characters with uppercase, lowercase, and number
         </p>
       )}

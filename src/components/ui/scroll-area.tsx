@@ -4,6 +4,7 @@ import * as React from 'react'
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area'
 
 import { cn } from '@/lib/utils'
+import { semanticRadius } from '@/styles/tokens'
 
 function ScrollArea({
   className,
@@ -47,7 +48,7 @@ function ScrollBar({
     >
       <ScrollAreaPrimitive.ScrollAreaThumb
         data-slot="scroll-area-thumb"
-        className="relative flex-1 rounded-full bg-border"
+        className={`relative flex-1 ${semanticRadius.full} bg-border`}
       />
     </ScrollAreaPrimitive.ScrollAreaScrollbar>
   )

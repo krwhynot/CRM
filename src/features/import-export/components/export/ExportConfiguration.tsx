@@ -14,6 +14,7 @@ import {
   AVAILABLE_FIELDS,
   type ExportOptions,
 } from '@/features/import-export/hooks/useExportConfiguration'
+import { semanticSpacing, semanticTypography, semanticRadius, fontWeight } from '@/styles/tokens'
 
 interface ExportConfigurationProps {
   exportOptions: ExportOptions
@@ -31,18 +32,18 @@ export const ExportConfiguration: React.FC<ExportConfigurationProps> = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Download className="size-5 text-green-600" />
+        <CardTitle className={`flex items-center ${semanticSpacing.gap.xs}`}>
+          <Download className="size-5 text-success" />
           Export Configuration
         </CardTitle>
         <CardDescription>
           Configure your export settings and select the fields to include
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className={semanticSpacing.stack.xl}>
         {/* Format Selection */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Export Format</label>
+        <div className={semanticSpacing.stack.xs}>
+          <label className={`${semanticTypography.body} ${fontWeight.medium}`}>Export Format</label>
           <Select value={exportOptions.format} onValueChange={handleFormatChange}>
             <SelectTrigger className="w-48">
               <SelectValue />
@@ -57,26 +58,33 @@ export const ExportConfiguration: React.FC<ExportConfigurationProps> = ({
         </div>
 
         {/* Options */}
-        <div className="space-y-3">
-          <label className="text-sm font-medium">Export Options</label>
-          <div className="flex items-center space-x-2">
+        <div className={semanticSpacing.stack.lg}>
+          <label className={`${semanticTypography.body} ${fontWeight.medium}`}>
+            Export Options
+          </label>
+          <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
             <Checkbox
               id="include-inactive"
               checked={exportOptions.includeInactive}
               onCheckedChange={handleIncludeInactiveChange}
             />
-            <label htmlFor="include-inactive" className="cursor-pointer text-sm font-normal">
+            <label
+              htmlFor="include-inactive"
+              className={`cursor-pointer ${semanticTypography.body} ${fontWeight.normal}`}
+            >
               Include inactive organizations
             </label>
           </div>
         </div>
 
         {/* Field Selection */}
-        <div className="space-y-3">
-          <label className="text-sm font-medium">Fields to Export</label>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+        <div className={semanticSpacing.stack.lg}>
+          <label className={`${semanticTypography.body} ${fontWeight.medium}`}>
+            Fields to Export
+          </label>
+          <div className={`grid grid-cols-2 ${semanticSpacing.gap.lg} md:grid-cols-3`}>
             {AVAILABLE_FIELDS.map((field) => (
-              <div key={field.id} className="flex items-center space-x-2">
+              <div key={field.id} className={`flex items-center ${semanticSpacing.gap.xs}`}>
                 <Checkbox
                   id={field.id}
                   checked={exportOptions.selectedFields.includes(field.id)}
@@ -85,11 +93,14 @@ export const ExportConfiguration: React.FC<ExportConfigurationProps> = ({
                 />
                 <label
                   htmlFor={field.id}
-                  className={`cursor-pointer text-sm ${field.required ? 'font-medium text-gray-900' : 'font-normal'}`}
+                  className={`cursor-pointer ${semanticTypography.body} ${field.required ? `${fontWeight.medium} text-foreground` : fontWeight.normal}`}
                 >
                   {field.label}
                   {field.required && (
-                    <Badge variant="secondary" className="ml-2 text-xs">
+                    <Badge
+                      variant="secondary"
+                      className={`${semanticSpacing.leftGap.xs} ${semanticTypography.caption}`}
+                    >
                       Required
                     </Badge>
                   )}
@@ -97,21 +108,25 @@ export const ExportConfiguration: React.FC<ExportConfigurationProps> = ({
               </div>
             ))}
           </div>
-          <p className="text-xs text-muted-foreground">
+          <p className={`${semanticTypography.caption} text-muted-foreground`}>
             Selected {exportOptions.selectedFields.length} of {AVAILABLE_FIELDS.length} fields
           </p>
         </div>
 
         {/* Filters - Coming Soon */}
-        <div className="space-y-3">
-          <label className="flex items-center gap-2 text-sm font-medium">
+        <div className={semanticSpacing.stack.lg}>
+          <label
+            className={`flex items-center ${semanticSpacing.gap.xs} ${semanticTypography.body} ${fontWeight.medium}`}
+          >
             <Filter className="size-4" />
             Filters
-            <Badge variant="outline" className="text-xs">
+            <Badge variant="outline" className={semanticTypography.caption}>
               Coming Soon
             </Badge>
           </label>
-          <div className="rounded-lg border border-dashed p-4 text-center text-sm text-muted-foreground">
+          <div
+            className={`${semanticRadius.lg} border border-dashed ${semanticSpacing.layoutPadding.lg} text-center ${semanticTypography.body} text-muted-foreground`}
+          >
             Advanced filtering options will be available in a future update
           </div>
         </div>

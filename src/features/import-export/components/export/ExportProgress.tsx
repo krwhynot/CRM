@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import type { ExportProgress as ExportProgressType } from '@/features/import-export/hooks/useExportExecution'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 
 interface ExportProgressProps {
   exportProgress: ExportProgressType
@@ -15,15 +16,15 @@ export const ExportProgressComponent: React.FC<ExportProgressProps> = ({ exportP
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <FileSpreadsheet className="size-5 text-blue-600" />
+        <CardTitle className={`flex items-center ${semanticSpacing.gap.xs}`}>
+          <FileSpreadsheet className="size-5 text-primary" />
           Exporting Data
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
+        <div className={semanticSpacing.stack.lg}>
+          <div className={semanticSpacing.stack.xs}>
+            <div className={`flex items-center justify-between ${semanticTypography.body}`}>
               <span>Processing records...</span>
               <span>
                 {exportProgress.recordsProcessed} / {exportProgress.totalRecords}

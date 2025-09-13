@@ -1,5 +1,6 @@
 import React from 'react'
 import { cn } from '@/lib/utils'
+import { semanticSpacing } from '@/styles/tokens'
 import {
   Dialog,
   DialogContent as BaseDialogContent,
@@ -111,7 +112,7 @@ export function StandardDialog(props: StandardDialogProps) {
 
     return (
       <AlertDialog open={open} onOpenChange={onOpenChange}>
-        <AlertDialogContent className={cn(sizeClasses[size], "flex flex-col")}>
+        <AlertDialogContent className={cn(sizeClasses[size], 'flex flex-col')}>
           <DialogContextProvider isInDialog={true} size={size} onClose={() => onOpenChange(false)}>
             <AlertDialogHeader className="flex items-start justify-between">
               <div>
@@ -121,7 +122,7 @@ export function StandardDialog(props: StandardDialogProps) {
               {headerActions}
             </AlertDialogHeader>
 
-            <div className="py-4">{children}</div>
+            <div className={`${semanticSpacing.cardY}`}>{children}</div>
 
             <AlertDialogFooter>
               <AlertDialogCancel onClick={onCancel} disabled={isLoading}>
@@ -150,7 +151,7 @@ export function StandardDialog(props: StandardDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <BaseDialogContent className={cn(sizeClasses[size], "flex flex-col")}>
+      <BaseDialogContent className={cn(sizeClasses[size], 'flex flex-col')}>
         <DialogContextProvider isInDialog={true} size={size} onClose={() => onOpenChange(false)}>
           <DialogHeader className="flex items-start justify-between">
             <div>
@@ -172,4 +173,3 @@ export function StandardDialog(props: StandardDialogProps) {
 // Export legacy components for backward compatibility during migration
 export { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter }
 export { BaseDialogContent as DialogContent }
-

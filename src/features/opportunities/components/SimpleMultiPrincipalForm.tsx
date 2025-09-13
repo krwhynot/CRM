@@ -6,6 +6,7 @@ import { useContacts } from '@/features/contacts/hooks/useContacts'
 import { useMultiPrincipalFormState } from '@/features/dashboard/hooks/useMultiPrincipalFormState'
 import { usePrincipalSelection } from '@/features/dashboard/hooks/usePrincipalSelection'
 import { useOpportunityFormSubmission } from '../hooks/useOpportunityFormSubmission'
+import { semanticSpacing } from '@/styles/tokens'
 import {
   OpportunityBasicFields,
   PrincipalSelector,
@@ -45,7 +46,7 @@ export function SimpleMultiPrincipalForm({
   return (
     <Card className={className}>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className={`flex items-center ${semanticSpacing.gap.xs}`}>
           <Users className="size-5" />
           New Multi-Principal Opportunity
         </CardTitle>
@@ -53,7 +54,10 @@ export function SimpleMultiPrincipalForm({
 
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className={semanticSpacing.stackContainer}
+          >
             <OpportunityBasicFields
               form={form}
               organizations={organizations}

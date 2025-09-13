@@ -1,6 +1,10 @@
 import React, { createContext, useContext, useEffect } from 'react'
 import { useTableSelection, type UseTableSelectionReturn } from '@/hooks/table/useTableSelection'
-import { useBulkActions, type UseBulkActionsReturn, type UseBulkActionsOptions } from './useBulkActions'
+import {
+  useBulkActions,
+  type UseBulkActionsReturn,
+  type UseBulkActionsOptions,
+} from './useBulkActions'
 
 /**
  * Context for bulk actions state management
@@ -49,9 +53,7 @@ export function BulkActionsProvider<T>({
   })
 
   // Calculate selected items array
-  const selectedItems = items.filter(item => 
-    selection.selectedItems.has(getItemId(item))
-  )
+  const selectedItems = items.filter((item) => selection.selectedItems.has(getItemId(item)))
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -78,11 +80,7 @@ export function BulkActionsProvider<T>({
     selectedItems,
   }
 
-  return (
-    <BulkActionsContext.Provider value={contextValue}>
-      {children}
-    </BulkActionsContext.Provider>
-  )
+  return <BulkActionsContext.Provider value={contextValue}>{children}</BulkActionsContext.Provider>
 }
 
 /**

@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { AlertTriangle, RefreshCw } from 'lucide-react'
 
+import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticRadius, semanticTypography } from '@/styles/tokens'
 interface Props {
   children: React.ReactNode
   fallback?: React.ComponentType<ErrorFallbackProps>
@@ -19,27 +21,41 @@ interface State {
 }
 
 const DefaultErrorFallback: React.FC<ErrorFallbackProps> = ({ error, resetErrorBoundary }) => (
-  <Card className="mx-auto mt-8 w-full max-w-lg">
+  <Card className={cn(semanticSpacing.topGap.lg, 'mx-auto w-full max-w-lg')}>
     <CardHeader className="text-center">
-      <div className="mb-4 flex justify-center">
+      <div className={cn(semanticSpacing.bottomGap.sm, 'flex justify-center')}>
         <AlertTriangle className="size-12 text-destructive" />
       </div>
       <CardTitle className="text-destructive">Something went wrong</CardTitle>
     </CardHeader>
-    <CardContent className="space-y-4 text-center">
+    <CardContent className={cn(semanticSpacing.stack.md, 'text-center')}>
       <p className="text-muted-foreground">
         We encountered an error while loading this page. This might be due to a network issue or
         server problem.
       </p>
-      <details className="rounded border bg-muted p-3 text-left text-sm text-muted-foreground">
-        <summary className="mb-2 cursor-pointer font-medium">Error Details</summary>
-        <pre className="whitespace-pre-wrap text-xs">
+      <details
+        className={cn(
+          semanticRadius.small,
+          semanticSpacing.compact,
+          semanticTypography.body,
+          'border bg-muted text-left text-muted-foreground'
+        )}
+      >
+        <summary
+          className={cn(semanticSpacing.bottomGap.xs, semanticTypography.label, 'cursor-pointer')}
+        >
+          Error Details
+        </summary>
+        <pre className={cn(semanticTypography.caption, 'whitespace-pre-wrap')}>
           {error.message}
           {error.stack && `\n\nStack trace:\n${error.stack}`}
         </pre>
       </details>
-      <div className="flex justify-center gap-2">
-        <Button onClick={resetErrorBoundary} className="flex items-center gap-2">
+      <div className={cn(semanticSpacing.gap.xs, 'flex justify-center')}>
+        <Button
+          onClick={resetErrorBoundary}
+          className={cn(semanticSpacing.gap.xs, 'flex items-center')}
+        >
           <RefreshCw className="size-4" />
           Try Again
         </Button>
@@ -119,28 +135,45 @@ export const OrganizationsErrorBoundary: React.FC<{ children: React.ReactNode }>
     error,
     resetErrorBoundary,
   }) => (
-    <Card className="mt-6 w-full">
+    <Card className={cn(semanticSpacing.topGap.md, 'w-full')}>
       <CardHeader>
-        <div className="flex items-center gap-2 text-destructive">
+        <div className={cn(semanticSpacing.gap.xs, 'flex items-center text-destructive')}>
           <AlertTriangle className="size-5" />
           <CardTitle>Organizations Loading Error</CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className={`${semanticSpacing.stack.md}`}>
         <p className="text-muted-foreground">
           Failed to load organizations data. This could be due to:
         </p>
-        <ul className="list-inside list-disc space-y-1 text-sm text-muted-foreground">
+        <ul
+          className={cn(
+            semanticSpacing.stack.xs,
+            semanticTypography.body,
+            'list-inside list-disc text-muted-foreground'
+          )}
+        >
           <li>Network connectivity issues</li>
           <li>Database connection problems</li>
           <li>Authentication token expiry</li>
           <li>Server maintenance</li>
         </ul>
-        <div className="rounded border border-destructive/20 bg-destructive/10 p-3">
-          <p className="text-sm font-medium text-destructive">Error: {error.message}</p>
+        <div
+          className={cn(
+            semanticRadius.small,
+            semanticSpacing.compact,
+            'border border-destructive/20 bg-destructive/10'
+          )}
+        >
+          <p className={cn(semanticTypography.body, semanticTypography.label, 'text-destructive')}>
+            Error: {error.message}
+          </p>
         </div>
-        <div className="flex gap-2">
-          <Button onClick={resetErrorBoundary} className="flex items-center gap-2">
+        <div className={cn(semanticSpacing.gap.xs, 'flex')}>
+          <Button
+            onClick={resetErrorBoundary}
+            className={cn(semanticSpacing.gap.xs, 'flex items-center')}
+          >
             <RefreshCw className="size-4" />
             Retry Loading
           </Button>
@@ -164,26 +197,43 @@ export const OrganizationsErrorBoundary: React.FC<{ children: React.ReactNode }>
 // Wrapper component for Contacts error handling
 export const ContactsErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const ContactsErrorFallback: React.FC<ErrorFallbackProps> = ({ error, resetErrorBoundary }) => (
-    <Card className="mt-6 w-full">
+    <Card className={cn(semanticSpacing.topGap.md, 'w-full')}>
       <CardHeader>
-        <div className="flex items-center gap-2 text-destructive">
+        <div className={cn(semanticSpacing.gap.xs, 'flex items-center text-destructive')}>
           <AlertTriangle className="size-5" />
           <CardTitle>Contacts Loading Error</CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className={`${semanticSpacing.stack.md}`}>
         <p className="text-muted-foreground">Failed to load contacts data. This could be due to:</p>
-        <ul className="list-inside list-disc space-y-1 text-sm text-muted-foreground">
+        <ul
+          className={cn(
+            semanticSpacing.stack.xs,
+            semanticTypography.body,
+            'list-inside list-disc text-muted-foreground'
+          )}
+        >
           <li>Network connectivity issues</li>
           <li>Database connection problems</li>
           <li>Authentication token expiry</li>
           <li>Server maintenance</li>
         </ul>
-        <div className="rounded border border-destructive/20 bg-destructive/10 p-3">
-          <p className="text-sm font-medium text-destructive">Error: {error.message}</p>
+        <div
+          className={cn(
+            semanticRadius.small,
+            semanticSpacing.compact,
+            'border border-destructive/20 bg-destructive/10'
+          )}
+        >
+          <p className={cn(semanticTypography.body, semanticTypography.label, 'text-destructive')}>
+            Error: {error.message}
+          </p>
         </div>
-        <div className="flex gap-2">
-          <Button onClick={resetErrorBoundary} className="flex items-center gap-2">
+        <div className={cn(semanticSpacing.gap.xs, 'flex')}>
+          <Button
+            onClick={resetErrorBoundary}
+            className={cn(semanticSpacing.gap.xs, 'flex items-center')}
+          >
             <RefreshCw className="size-4" />
             Retry Loading
           </Button>
@@ -212,28 +262,45 @@ export const OpportunitiesErrorBoundary: React.FC<{ children: React.ReactNode }>
     error,
     resetErrorBoundary,
   }) => (
-    <Card className="mt-6 w-full">
+    <Card className={cn(semanticSpacing.topGap.md, 'w-full')}>
       <CardHeader>
-        <div className="flex items-center gap-2 text-destructive">
+        <div className={cn(semanticSpacing.gap.xs, 'flex items-center text-destructive')}>
           <AlertTriangle className="size-5" />
           <CardTitle>Opportunities Loading Error</CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className={`${semanticSpacing.stack.md}`}>
         <p className="text-muted-foreground">
           Failed to load opportunities data. This could be due to:
         </p>
-        <ul className="list-inside list-disc space-y-1 text-sm text-muted-foreground">
+        <ul
+          className={cn(
+            semanticSpacing.stack.xs,
+            semanticTypography.body,
+            'list-inside list-disc text-muted-foreground'
+          )}
+        >
           <li>Network connectivity issues</li>
           <li>Database connection problems</li>
           <li>Authentication token expiry</li>
           <li>Server maintenance</li>
         </ul>
-        <div className="rounded border border-destructive/20 bg-destructive/10 p-3">
-          <p className="text-sm font-medium text-destructive">Error: {error.message}</p>
+        <div
+          className={cn(
+            semanticRadius.small,
+            semanticSpacing.compact,
+            'border border-destructive/20 bg-destructive/10'
+          )}
+        >
+          <p className={cn(semanticTypography.body, semanticTypography.label, 'text-destructive')}>
+            Error: {error.message}
+          </p>
         </div>
-        <div className="flex gap-2">
-          <Button onClick={resetErrorBoundary} className="flex items-center gap-2">
+        <div className={cn(semanticSpacing.gap.xs, 'flex')}>
+          <Button
+            onClick={resetErrorBoundary}
+            className={cn(semanticSpacing.gap.xs, 'flex items-center')}
+          >
             <RefreshCw className="size-4" />
             Retry Loading
           </Button>
@@ -257,26 +324,43 @@ export const OpportunitiesErrorBoundary: React.FC<{ children: React.ReactNode }>
 // Wrapper component for Products error handling
 export const ProductsErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const ProductsErrorFallback: React.FC<ErrorFallbackProps> = ({ error, resetErrorBoundary }) => (
-    <Card className="mt-6 w-full">
+    <Card className={cn(semanticSpacing.topGap.md, 'w-full')}>
       <CardHeader>
-        <div className="flex items-center gap-2 text-destructive">
+        <div className={cn(semanticSpacing.gap.xs, 'flex items-center text-destructive')}>
           <AlertTriangle className="size-5" />
           <CardTitle>Products Loading Error</CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className={`${semanticSpacing.stack.md}`}>
         <p className="text-muted-foreground">Failed to load products data. This could be due to:</p>
-        <ul className="list-inside list-disc space-y-1 text-sm text-muted-foreground">
+        <ul
+          className={cn(
+            semanticSpacing.stack.xs,
+            semanticTypography.body,
+            'list-inside list-disc text-muted-foreground'
+          )}
+        >
           <li>Network connectivity issues</li>
           <li>Database connection problems</li>
           <li>Authentication token expiry</li>
           <li>Server maintenance</li>
         </ul>
-        <div className="rounded border border-destructive/20 bg-destructive/10 p-3">
-          <p className="text-sm font-medium text-destructive">Error: {error.message}</p>
+        <div
+          className={cn(
+            semanticRadius.small,
+            semanticSpacing.compact,
+            'border border-destructive/20 bg-destructive/10'
+          )}
+        >
+          <p className={cn(semanticTypography.body, semanticTypography.label, 'text-destructive')}>
+            Error: {error.message}
+          </p>
         </div>
-        <div className="flex gap-2">
-          <Button onClick={resetErrorBoundary} className="flex items-center gap-2">
+        <div className={cn(semanticSpacing.gap.xs, 'flex')}>
+          <Button
+            onClick={resetErrorBoundary}
+            className={cn(semanticSpacing.gap.xs, 'flex items-center')}
+          >
             <RefreshCw className="size-4" />
             Retry Loading
           </Button>

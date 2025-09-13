@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
+import { semanticSpacing, semanticRadius } from '@/styles/tokens'
 export interface ProgressiveDetailsProps {
   isOpen?: boolean
   onToggle?: (open: boolean) => void
@@ -47,18 +48,29 @@ export function ProgressiveDetails({
     switch (variant) {
       case 'card':
         return (
-          <Card className="mt-4">
-            <CardContent className="p-4">{children}</CardContent>
+          <Card className={`${semanticSpacing.topGap.sm}`}>
+            <CardContent className={`${semanticSpacing.cardContainer}`}>{children}</CardContent>
           </Card>
         )
 
       case 'subtle':
         return (
-          <div className="mt-4 rounded-lg border border-gray-100 bg-gray-50 p-4">{children}</div>
+          <div
+            className={cn(
+              semanticSpacing.topGap.sm,
+              semanticRadius.large,
+              semanticSpacing.cardContainer,
+              'border border-gray-100 bg-gray-50'
+            )}
+          >
+            {children}
+          </div>
         )
 
       default:
-        return <div className="mt-4 space-y-4">{children}</div>
+        return (
+          <div className={cn(semanticSpacing.topGap.sm, semanticSpacing.stack.md)}>{children}</div>
+        )
     }
   }
 

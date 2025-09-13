@@ -7,6 +7,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Building2 } from 'lucide-react'
+import { semanticSpacing } from '@/styles/tokens'
 
 export interface PrincipalOption {
   id: string
@@ -27,18 +28,14 @@ export const GenericPrincipalFilter: React.FC<GenericPrincipalFilterProps> = ({
   value,
   principals,
   isLoading = false,
-  placeholder = "Select Principal",
-  className = "",
+  placeholder = 'Select Principal',
+  className = '',
   onChange,
 }) => {
   return (
-    <div className={`flex min-w-0 items-center gap-2 ${className}`}>
+    <div className={`flex min-w-0 items-center ${semanticSpacing.gap.xs} ${className}`}>
       <Building2 className="size-4 shrink-0 text-muted-foreground" />
-      <Select
-        value={value}
-        onValueChange={onChange}
-        disabled={isLoading}
-      >
+      <Select value={value} onValueChange={onChange} disabled={isLoading}>
         <SelectTrigger className="w-full sm:w-filter-md">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
@@ -48,7 +45,9 @@ export const GenericPrincipalFilter: React.FC<GenericPrincipalFilterProps> = ({
             <SelectItem key={principal.id} value={principal.id}>
               {principal.name}
               {principal.company && principal.company !== principal.name && (
-                <span className="ml-1 text-muted-foreground">({principal.company})</span>
+                <span className={`${semanticSpacing.leftGap.xxs} text-muted-foreground`}>
+                  ({principal.company})
+                </span>
               )}
             </SelectItem>
           ))}

@@ -1,9 +1,5 @@
 # Master Food Brokers CRM Visual Style Guide
 
-**Professional B2B CRM Design System for the Food Service Industry**
-
-*Version 1.0 | Generated: January 2025*
-
 ---
 
 ## Table of Contents

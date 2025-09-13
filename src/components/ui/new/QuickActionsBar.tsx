@@ -2,7 +2,9 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Plus, Trash2, MoreVertical } from 'lucide-react'
+import { semanticSpacing, semanticRadius } from '@/styles/tokens'
 
+import { cn } from '@/lib/utils'
 interface QuickActionsBarProps {
   onQuickAdd?: () => void
   selectedCount?: number
@@ -15,19 +17,25 @@ export const QuickActionsBar: React.FC<QuickActionsBarProps> = ({
   onBulkAction,
 }) => {
   return (
-    <div className="flex items-center justify-between rounded-md border bg-muted/50 p-3">
-      <div className="flex items-center space-x-2">
+    <div
+      className={cn(
+        semanticRadius.default,
+        'flex items-center justify-between border bg-muted/50',
+        semanticSpacing.cardContainer
+      )}
+    >
+      <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
         {selectedCount > 0 && (
           <>
             <Badge variant="secondary">{selectedCount} selected</Badge>
             {onBulkAction && (
               <>
                 <Button variant="outline" size="sm" onClick={() => onBulkAction('delete')}>
-                  <Trash2 className="mr-2 size-4" />
+                  <Trash2 className={`${semanticSpacing.rightGap.xs} size-4`} />
                   Delete Selected
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => onBulkAction('more')}>
-                  <MoreVertical className="mr-2 size-4" />
+                  <MoreVertical className={`${semanticSpacing.rightGap.xs} size-4`} />
                   More Actions
                 </Button>
               </>
@@ -38,7 +46,7 @@ export const QuickActionsBar: React.FC<QuickActionsBarProps> = ({
 
       {onQuickAdd && (
         <Button size="sm" onClick={onQuickAdd}>
-          <Plus className="mr-2 size-4" />
+          <Plus className={`${semanticSpacing.rightGap.xs} size-4`} />
           Quick Add
         </Button>
       )}

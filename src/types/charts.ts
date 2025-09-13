@@ -5,7 +5,7 @@
  * Provides type-safe interfaces for Recharts components, data transformations, and configurations.
  */
 
-import React from 'react'
+import type { ReactNode } from 'react'
 
 /**
  * Base chart data interface
@@ -93,8 +93,8 @@ export interface CustomTooltipProps<TData = ChartDataPoint> {
     stroke?: string
   }>
   label?: string
-  labelFormatter?: (value: string | number, payload?: TData[]) => React.ReactNode
-  formatter?: (value: number, name?: string, entry?: TData, index?: number) => React.ReactNode
+  labelFormatter?: (value: string | number, payload?: TData[]) => ReactNode
+  formatter?: (value: number, name?: string, entry?: TData, index?: number) => ReactNode
   coordinate?: { x: number; y: number }
 }
 

@@ -3,6 +3,7 @@ import { type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 import { priorityIndicatorVariants } from './priority-indicator.variants'
 
+import { semanticTypography } from '@/styles/tokens'
 export interface PriorityIndicatorProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof priorityIndicatorVariants> {
@@ -37,7 +38,11 @@ const PriorityIndicator = React.forwardRef<HTMLDivElement, PriorityIndicatorProp
           role="img"
           aria-hidden={showLabel ? 'true' : 'false'}
         />
-        {showLabel && <span className="text-sm font-medium capitalize">{priority}</span>}
+        {showLabel && (
+          <span className={cn(semanticTypography.body, semanticTypography.label, 'capitalize')}>
+            {priority}
+          </span>
+        )}
       </div>
     )
   }

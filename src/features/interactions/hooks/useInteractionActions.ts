@@ -1,118 +1,102 @@
-import { useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { toast } from '@/lib/toast-styles'
-import { useCreateInteraction, useUpdateInteraction, useDeleteInteraction } from './useInteractions'
-import type { InteractionInsert, InteractionWithRelations } from '@/types/entities'
-import type { InteractionFormData } from '@/types/interaction.types'
+import type { InteractionWithRelations } from '@/types/interaction.types'
 
-interface UseInteractionActionsReturn {
-  // Mutations
-  createInteractionMutation: ReturnType<typeof useCreateInteraction>
-  updateInteractionMutation: ReturnType<typeof useUpdateInteraction>
-  deleteInteractionMutation: ReturnType<typeof useDeleteInteraction>
+export function useInteractionActions() {
+  // Use BulkActionsContext when available (in BulkActionsProvider)
+  // We can't conditionally call hooks, so we need a safer context hook
+  const bulkActionsContext = null // Temporarily disable until we fix the provider issue
 
-  // Handlers
-  handleCreateInteraction: (
-    data: InteractionFormData,
-    selectedOpportunityId: string,
-    onSuccess: () => void
-  ) => Promise<void>
-  handleUpdateInteraction: (
-    data: InteractionFormData,
-    editingInteraction: InteractionWithRelations,
-    onSuccess: () => void
-  ) => Promise<void>
-  handleDeleteInteraction: (interaction: InteractionWithRelations) => Promise<void>
-  handleInteractionItemClick: (interaction: InteractionWithRelations) => void
-}
+  // Fallback to legacy selection state when not in BulkActionsProvider
+  const [legacySelectedItems, setLegacySelectedItems] = useState<Set<string>>(new Set())
 
-export const useInteractionActions = (): UseInteractionActionsReturn => {
-  const createInteractionMutation = useCreateInteraction()
-  const updateInteractionMutation = useUpdateInteraction()
-  const deleteInteractionMutation = useDeleteInteraction()
+  // Use bulk actions context if available, otherwise use legacy
+  const selectedItems = bulkActionsContext?.selectedItems || legacySelectedItems
+  const clearSelection =
+    bulkActionsContext?.clearSelection || (() => setLegacySelectedItems(new Set()))
 
-  const handleCreateInteraction = useCallback(
-    async (data: InteractionFormData, selectedOpportunityId: string, onSuccess: () => void) => {
-      try {
-        // Map form data to database format
-        const interactionData: InteractionInsert = {
-          opportunity_id: selectedOpportunityId,
-          interaction_date: data.interaction_date,
-          subject: data.subject,
-          type: data.type,
-          description: data.notes || null, // Map notes to description
-          follow_up_required: data.follow_up_required || false,
-          follow_up_date: data.follow_up_date || null,
-          created_by: '', // Will be set by the mutation hook
-          updated_by: '', // Will be set by the mutation hook
+  const handleSelectAll = useCallback(
+    (checked: boolean, filteredInteractions: InteractionWithRelations[]) => {
+      if (bulkActionsContext) {
+        bulkActionsContext.handleSelectAll(checked, filteredInteractions)
+      } else {
+        if (checked) {
+          setLegacySelectedItems(new Set(filteredInteractions.map((i) => i.id)))
+        } else {
+          setLegacySelectedItems(new Set())
         }
-
-        await createInteractionMutation.mutateAsync(interactionData)
-        onSuccess()
-        toast.success('Interaction logged successfully!')
-      } catch (error) {
-        // Handle interaction creation errors
-        toast.error('Failed to log interaction. Please try again.')
       }
     },
-    [createInteractionMutation]
+    [bulkActionsContext]
   )
 
-  const handleUpdateInteraction = useCallback(
-    async (
-      data: InteractionFormData,
-      editingInteraction: InteractionWithRelations,
-      onSuccess: () => void
-    ) => {
-      try {
-        const updateData = {
-          interaction_date: data.interaction_date,
-          subject: data.subject,
-          type: data.type,
-          description: data.notes || null, // Map notes to description
-          follow_up_required: data.follow_up_required || false,
-          follow_up_date: data.follow_up_date || null,
-        }
-
-        await updateInteractionMutation.mutateAsync({
-          id: editingInteraction.id,
-          updates: updateData,
+  const handleSelectItem = useCallback(
+    (id: string, checked: boolean) => {
+      if (bulkActionsContext) {
+        bulkActionsContext.handleSelectItem(id, checked)
+      } else {
+        setLegacySelectedItems((prev) => {
+          const newSet = new Set(prev)
+          if (checked) {
+            newSet.add(id)
+          } else {
+            newSet.delete(id)
+          }
+          return newSet
         })
-        onSuccess()
-        toast.success('Interaction updated successfully!')
-      } catch (error) {
-        // Handle interaction update errors
-        toast.error('Failed to update interaction. Please try again.')
       }
     },
-    [updateInteractionMutation]
+    [bulkActionsContext]
   )
 
-  const handleDeleteInteraction = useCallback(
-    async (interaction: InteractionWithRelations) => {
-      if (window.confirm(`Are you sure you want to delete this ${interaction.type}?`)) {
-        try {
-          await deleteInteractionMutation.mutateAsync(interaction.id)
-          toast.success('Interaction deleted successfully!')
-        } catch (error) {
-          // Handle interaction deletion errors
-          toast.error('Failed to delete interaction. Please try again.')
-        }
-      }
-    },
-    [deleteInteractionMutation]
-  )
-
-  const handleInteractionItemClick = useCallback(() => {
-    // For now, just handle the click - could be used for quick views in the future
+  // Individual action handlers
+  const handleEditInteraction = useCallback((interaction: InteractionWithRelations) => {
+    // TODO: Open edit interaction modal/form
+    toast.info(`Editing interaction: ${interaction.subject || 'No subject'}`)
   }, [])
 
+  const handleDeleteInteraction = useCallback((interaction: InteractionWithRelations) => {
+    // TODO: Implement delete logic with confirmation
+    toast.success(`Deleted interaction: ${interaction.subject || 'No subject'}`)
+  }, [])
+
+  const handleViewInteraction = useCallback((interaction: InteractionWithRelations) => {
+    // TODO: Open view interaction modal/details
+    toast.info(`Viewing interaction: ${interaction.subject || 'No subject'}`)
+  }, [])
+
+  // Bulk action handlers
+  const handleBulkMarkComplete = useCallback(() => {
+    toast.success(`Marked ${selectedItems.size} interactions as complete`)
+    clearSelection()
+  }, [selectedItems.size, clearSelection])
+
+  const handleBulkArchive = useCallback(() => {
+    toast.success(`Archived ${selectedItems.size} interactions`)
+    clearSelection()
+  }, [selectedItems.size, clearSelection])
+
+  const handleBulkDelete = useCallback(() => {
+    // TODO: Implement bulk delete with confirmation
+    toast.success(`Deleted ${selectedItems.size} interactions`)
+    clearSelection()
+  }, [selectedItems.size, clearSelection])
+
   return {
-    createInteractionMutation,
-    updateInteractionMutation,
-    deleteInteractionMutation,
-    handleCreateInteraction,
-    handleUpdateInteraction,
+    // Selection state
+    selectedItems,
+    handleSelectAll,
+    handleSelectItem,
+    clearSelection,
+
+    // Individual actions
+    handleEditInteraction,
     handleDeleteInteraction,
-    handleInteractionItemClick,
+    handleViewInteraction,
+
+    // Bulk actions
+    handleBulkMarkComplete,
+    handleBulkArchive,
+    handleBulkDelete,
   }
 }

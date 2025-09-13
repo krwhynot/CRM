@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
+import { semanticSpacing, semanticRadius, semanticTypography } from '@/styles/tokens'
 import {
   Users,
   Building,
@@ -33,7 +34,7 @@ import {
   Target,
   AlertTriangle,
   CheckCircle,
-  Info
+  Info,
 } from 'lucide-react'
 import {
   Sheet,
@@ -43,7 +44,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  SheetClose
+  SheetClose,
 } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -53,7 +54,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Progress } from '@/components/ui/progress'
+// Removed unused: import { Progress } from '@/components/ui/progress'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -65,30 +66,27 @@ import {
 import { cn } from '@/lib/utils'
 
 // Sheet Variants
-const sheetVariants = cva(
-  "w-full sm:max-w-sm",
-  {
-    variants: {
-      size: {
-        sm: "sm:max-w-sm",
-        md: "sm:max-w-md", 
-        lg: "sm:max-w-lg",
-        xl: "sm:max-w-xl",
-        wide: "sm:max-w-2xl"
-      },
-      type: {
-        details: "sm:max-w-lg",
-        form: "sm:max-w-md",
-        filters: "sm:max-w-sm",
-        activity: "sm:max-w-md"
-      }
+const sheetVariants = cva('w-full sm:max-w-sm', {
+  variants: {
+    size: {
+      sm: 'sm:max-w-sm',
+      md: 'sm:max-w-md',
+      lg: 'sm:max-w-lg',
+      xl: 'sm:max-w-xl',
+      wide: 'sm:max-w-2xl',
     },
-    defaultVariants: {
-      size: "md",
-      type: "details"
-    }
-  }
-)
+    type: {
+      details: 'sm:max-w-lg',
+      form: 'sm:max-w-md',
+      filters: 'sm:max-w-sm',
+      activity: 'sm:max-w-md',
+    },
+  },
+  defaultVariants: {
+    size: 'md',
+    type: 'details',
+  },
+})
 
 // Base CRM Sheet Props
 export interface CRMSheetProps extends VariantProps<typeof sheetVariants> {
@@ -120,32 +118,25 @@ export function CRMSheet({
 }: CRMSheetProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent 
-        side={side} 
-        className={cn(sheetVariants({ size, type }), className)}
-        {...props}
-      >
+      <SheetContent side={side} className={cn(sheetVariants({ size, type }), className)} {...props}>
         <SheetHeader>
-          <SheetTitle className="flex items-center gap-2">
+          <SheetTitle className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
             {title}
             {loading && (
-              <div className="size-4 animate-spin rounded-full border-2 border-muted border-t-primary" />
+              <div
+                className={cn(
+                  semanticRadius.full,
+                  'size-4 animate-spin border-2 border-muted border-t-primary'
+                )}
+              />
             )}
           </SheetTitle>
-          {subtitle && (
-            <SheetDescription>{subtitle}</SheetDescription>
-          )}
+          {subtitle && <SheetDescription>{subtitle}</SheetDescription>}
         </SheetHeader>
-        
-        <div className="flex-1 overflow-hidden py-4">
-          {children}
-        </div>
-        
-        {actions && (
-          <SheetFooter>
-            {actions}
-          </SheetFooter>
-        )}
+
+        <div className={cn(semanticSpacing.cardY, 'flex-1 overflow-hidden')}>{children}</div>
+
+        {actions && <SheetFooter>{actions}</SheetFooter>}
       </SheetContent>
     </Sheet>
   )
@@ -180,64 +171,64 @@ export function EntityDetailSheet({
   onEdit,
   onDelete,
   loading = false,
-  activities = []
+  activities = [],
 }: EntityDetailSheetProps) {
   const entityConfig = {
-    contact: { 
-      icon: Users, 
-      title: 'Contact', 
+    contact: {
+      icon: Users,
+      title: 'Contact',
       color: 'text-blue-600',
       fields: [
         { key: 'email', label: 'Email', icon: Mail },
         { key: 'phone', label: 'Phone', icon: Phone },
         { key: 'company', label: 'Company', icon: Building },
-        { key: 'position', label: 'Position', icon: FileText }
-      ]
+        { key: 'position', label: 'Position', icon: FileText },
+      ],
     },
-    organization: { 
-      icon: Building, 
-      title: 'Organization', 
+    organization: {
+      icon: Building,
+      title: 'Organization',
       color: 'text-green-600',
       fields: [
         { key: 'website', label: 'Website', icon: Globe },
         { key: 'phone', label: 'Phone', icon: Phone },
         { key: 'address', label: 'Address', icon: MapPin },
-        { key: 'employees', label: 'Employees', icon: Users }
-      ]
+        { key: 'employees', label: 'Employees', icon: Users },
+      ],
     },
-    product: { 
-      icon: Package, 
-      title: 'Product', 
+    product: {
+      icon: Package,
+      title: 'Product',
       color: 'text-purple-600',
       fields: [
         { key: 'price', label: 'Price', icon: DollarSign },
         { key: 'category', label: 'Category', icon: Tag },
         { key: 'status', label: 'Status', icon: CheckCircle },
-        { key: 'sku', label: 'SKU', icon: FileText }
-      ]
+        { key: 'sku', label: 'SKU', icon: FileText },
+      ],
     },
-    opportunity: { 
-      icon: TrendingUp, 
-      title: 'Opportunity', 
+    opportunity: {
+      icon: TrendingUp,
+      title: 'Opportunity',
       color: 'text-orange-600',
       fields: [
         { key: 'value', label: 'Value', icon: DollarSign },
         { key: 'stage', label: 'Stage', icon: Target },
         { key: 'probability', label: 'Probability', icon: TrendingUp },
-        { key: 'closeDate', label: 'Close Date', icon: Calendar }
-      ]
+        { key: 'closeDate', label: 'Close Date', icon: Calendar },
+      ],
     },
-    interaction: { 
-      icon: MessageSquare, 
-      title: 'Interaction', 
+    interaction: {
+      icon: MessageSquare,
+      title: 'Interaction',
       color: 'text-teal-600',
       fields: [
         { key: 'type', label: 'Type', icon: MessageSquare },
         { key: 'duration', label: 'Duration', icon: Clock },
         { key: 'outcome', label: 'Outcome', icon: CheckCircle },
-        { key: 'followUp', label: 'Follow Up', icon: Calendar }
-      ]
-    }
+        { key: 'followUp', label: 'Follow Up', icon: Calendar },
+      ],
+    },
   }
 
   const config = entityConfig[entityType]
@@ -247,18 +238,13 @@ export function EntityDetailSheet({
     <CRMSheet
       open={open}
       onOpenChange={onOpenChange}
-      title={
-        <div className="flex items-center gap-2">
-          <IconComponent className={cn('size-5', config.color)} />
-          {data.name || data.title || 'Details'}
-        </div>
-      }
+      title={data.name || data.title || 'Details'}
       subtitle={config.title}
       type="details"
       size="lg"
       loading={loading}
       actions={
-        <div className="flex items-center gap-2 w-full">
+        <div className={cn(semanticSpacing.gap.xs, 'flex items-center w-full')}>
           <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
             Close
           </Button>
@@ -283,12 +269,15 @@ export function EntityDetailSheet({
           <TabsTrigger value="activity">Activity</TabsTrigger>
           <TabsTrigger value="related">Related</TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="details" className="space-y-4 mt-4">
+
+        <TabsContent
+          value="details"
+          className={cn(semanticSpacing.stack.md, semanticSpacing.topGap.sm)}
+        >
           <ScrollArea className="h-full">
-            <div className="space-y-4 pr-2">
+            <div className={cn(semanticSpacing.stack.md, 'pr-2')}>
               {/* Header Info */}
-              <div className="flex items-start gap-3">
+              <div className={cn(semanticSpacing.gap.sm, 'flex items-start')}>
                 {data.avatar && (
                   <Avatar className="size-12">
                     <AvatarImage src={data.avatar} />
@@ -298,21 +287,32 @@ export function EntityDetailSheet({
                   </Avatar>
                 )}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-lg truncate">
+                  <h3 className={cn(semanticTypography.h4, semanticTypography.h4, 'truncate')}>
                     {data.name || data.title}
                   </h3>
                   {data.subtitle && (
-                    <p className="text-muted-foreground text-sm">{data.subtitle}</p>
+                    <p className={cn(semanticTypography.body, 'text-muted-foreground')}>
+                      {data.subtitle}
+                    </p>
                   )}
-                  <div className="flex items-center gap-2 mt-2">
-                    {data.status && (
-                      <Badge variant="outline">{data.status}</Badge>
+                  <div
+                    className={cn(
+                      semanticSpacing.gap.xs,
+                      semanticSpacing.topGap.xs,
+                      'flex items-center'
                     )}
+                  >
+                    {data.status && <Badge variant="outline">{data.status}</Badge>}
                     {data.priority && (
-                      <Badge variant={
-                        data.priority === 'high' ? 'destructive' :
-                        data.priority === 'medium' ? 'default' : 'secondary'
-                      }>
+                      <Badge
+                        variant={
+                          data.priority === 'high'
+                            ? 'destructive'
+                            : data.priority === 'medium'
+                              ? 'default'
+                              : 'secondary'
+                        }
+                      >
                         {data.priority}
                       </Badge>
                     )}
@@ -323,20 +323,25 @@ export function EntityDetailSheet({
               <Separator />
 
               {/* Fields */}
-              <div className="grid gap-4">
+              <div className={cn(semanticSpacing.gap.md, 'grid')}>
                 {config.fields.map((field) => {
                   const value = data[field.key]
                   if (!value) return null
 
                   return (
-                    <div key={field.key} className="flex items-center gap-3">
+                    <div
+                      key={field.key}
+                      className={cn(semanticSpacing.gap.sm, 'flex items-center')}
+                    >
                       <field.icon className="size-4 text-muted-foreground shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm text-muted-foreground">{field.label}</div>
-                        <div className="font-medium truncate">
-                          {field.key === 'price' || field.key === 'value' 
-                            ? typeof value === 'number' 
-                              ? `$${value.toLocaleString()}` 
+                        <div className={cn(semanticTypography.body, 'text-muted-foreground')}>
+                          {field.label}
+                        </div>
+                        <div className={cn(semanticTypography.label, 'truncate')}>
+                          {field.key === 'price' || field.key === 'value'
+                            ? typeof value === 'number'
+                              ? `$${value.toLocaleString()}`
                               : value
                             : value}
                         </div>
@@ -351,8 +356,15 @@ export function EntityDetailSheet({
                 <>
                   <Separator />
                   <div>
-                    <h4 className="font-medium mb-2">Description</h4>
-                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                    <h4 className={cn(semanticTypography.label, semanticSpacing.bottomGap.xs)}>
+                      Description
+                    </h4>
+                    <p
+                      className={cn(
+                        semanticTypography.body,
+                        'text-muted-foreground whitespace-pre-wrap'
+                      )}
+                    >
                       {data.description}
                     </p>
                   </div>
@@ -364,10 +376,16 @@ export function EntityDetailSheet({
                 <>
                   <Separator />
                   <div>
-                    <h4 className="font-medium mb-2">Tags</h4>
-                    <div className="flex flex-wrap gap-1">
+                    <h4 className={cn(semanticTypography.label, semanticSpacing.bottomGap.xs)}>
+                      Tags
+                    </h4>
+                    <div className={cn(semanticSpacing.gap.xs, 'flex flex-wrap')}>
                       {data.tags.map((tag: string, index: number) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
+                        <Badge
+                          key={index}
+                          variant="secondary"
+                          className={`${semanticTypography.caption}`}
+                        >
                           {tag}
                         </Badge>
                       ))}
@@ -378,54 +396,81 @@ export function EntityDetailSheet({
 
               {/* Metadata */}
               <Separator />
-              <div className="text-xs text-muted-foreground space-y-1">
+              <div
+                className={cn(
+                  semanticTypography.caption,
+                  semanticSpacing.stack.xs,
+                  'text-muted-foreground'
+                )}
+              >
                 {data.createdAt && (
                   <div>Created: {new Date(data.createdAt).toLocaleDateString()}</div>
                 )}
                 {data.updatedAt && (
                   <div>Updated: {new Date(data.updatedAt).toLocaleDateString()}</div>
                 )}
-                {data.createdBy && (
-                  <div>Created by: {data.createdBy}</div>
-                )}
+                {data.createdBy && <div>Created by: {data.createdBy}</div>}
               </div>
             </div>
           </ScrollArea>
         </TabsContent>
 
-        <TabsContent value="activity" className="space-y-4 mt-4">
+        <TabsContent
+          value="activity"
+          className={cn(semanticSpacing.stack.md, semanticSpacing.topGap.sm)}
+        >
           <ScrollArea className="h-full">
-            <div className="space-y-3 pr-2">
+            <div className={cn(semanticSpacing.stack.sm, 'pr-2')}>
               {activities.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <History className="size-8 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">No activity yet</p>
+                <div className={cn(semanticSpacing.pageY, 'text-center text-muted-foreground')}>
+                  <History
+                    className={cn(semanticSpacing.bottomGap.xs, 'size-8 mx-auto opacity-50')}
+                  />
+                  <p className={`${semanticTypography.body}`}>No activity yet</p>
                 </div>
               ) : (
                 activities.map((activity) => (
-                  <div key={activity.id} className="flex items-start gap-3 p-3 rounded-lg border">
+                  <div
+                    key={activity.id}
+                    className={cn(
+                      semanticSpacing.gap.sm,
+                      semanticSpacing.compact,
+                      semanticRadius.large,
+                      'flex items-start border'
+                    )}
+                  >
                     {activity.user?.avatar ? (
                       <Avatar className="size-6">
                         <AvatarImage src={activity.user.avatar} />
-                        <AvatarFallback className="text-xs">
-                          {activity.user.name.split(' ').map(n => n[0]).join('')}
+                        <AvatarFallback className={`${semanticTypography.caption}`}>
+                          {activity.user.name
+                            .split(' ')
+                            .map((n) => n[0])
+                            .join('')}
                         </AvatarFallback>
                       </Avatar>
                     ) : (
-                      <div className="size-6 rounded-full bg-muted flex items-center justify-center">
+                      <div
+                        className={cn(
+                          semanticRadius.full,
+                          'size-6 bg-muted flex items-center justify-center'
+                        )}
+                      >
                         <MessageSquare className="size-3" />
                       </div>
                     )}
-                    
+
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <h5 className="text-sm font-medium">{activity.title}</h5>
-                        <span className="text-xs text-muted-foreground">
+                        <h5 className={cn(semanticTypography.body, semanticTypography.label)}>
+                          {activity.title}
+                        </h5>
+                        <span className={cn(semanticTypography.caption, 'text-muted-foreground')}>
                           {activity.timestamp.toLocaleDateString()}
                         </span>
                       </div>
                       {activity.description && (
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className={cn(semanticTypography.caption, 'text-muted-foreground mt-1')}>
                           {activity.description}
                         </p>
                       )}
@@ -437,12 +482,17 @@ export function EntityDetailSheet({
           </ScrollArea>
         </TabsContent>
 
-        <TabsContent value="related" className="space-y-4 mt-4">
+        <TabsContent
+          value="related"
+          className={cn(semanticSpacing.stack.md, semanticSpacing.topGap.sm)}
+        >
           <ScrollArea className="h-full">
-            <div className="space-y-4 pr-2">
-              <div className="text-center py-8 text-muted-foreground">
-                <ExternalLink className="size-8 mx-auto mb-2 opacity-50" />
-                <p className="text-sm">Related items will appear here</p>
+            <div className={cn(semanticSpacing.stack.md, 'pr-2')}>
+              <div className={cn(semanticSpacing.pageY, 'text-center text-muted-foreground')}>
+                <ExternalLink
+                  className={cn(semanticSpacing.bottomGap.xs, 'size-8 mx-auto opacity-50')}
+                />
+                <p className={`${semanticTypography.body}`}>Related items will appear here</p>
               </div>
             </div>
           </ScrollArea>
@@ -478,13 +528,13 @@ export function FilterSheet({
   filters,
   onApply,
   onReset,
-  activeFilters = {}
+  activeFilters = {},
 }: FilterSheetProps) {
   const [localFilters, setLocalFilters] = useState(activeFilters)
   const [hasChanges, setHasChanges] = useState(false)
 
   const handleFilterChange = (filterId: string, value: any) => {
-    setLocalFilters(prev => ({ ...prev, [filterId]: value }))
+    setLocalFilters((prev) => ({ ...prev, [filterId]: value }))
     setHasChanges(true)
   }
 
@@ -500,9 +550,8 @@ export function FilterSheet({
     setHasChanges(true)
   }
 
-  const activeCount = Object.values(localFilters).filter(v => 
-    v !== undefined && v !== null && v !== '' && 
-    (Array.isArray(v) ? v.length > 0 : true)
+  const activeCount = Object.values(localFilters).filter(
+    (v) => v !== undefined && v !== null && v !== '' && (Array.isArray(v) ? v.length > 0 : true)
   ).length
 
   return (
@@ -510,40 +559,26 @@ export function FilterSheet({
       open={open}
       onOpenChange={onOpenChange}
       side="right"
-      title={
-        <div className="flex items-center gap-2">
-          <Filter className="size-5" />
-          {title}
-          {activeCount > 0 && (
-            <Badge variant="default" className="text-xs">
-              {activeCount}
-            </Badge>
-          )}
-        </div>
-      }
+      title={`${title}${activeCount > 0 ? ` (${activeCount})` : ''}`}
       subtitle="Filter and refine your data"
       type="filters"
       actions={
-        <div className="flex items-center gap-2 w-full">
+        <div className={cn(semanticSpacing.gap.xs, 'flex items-center w-full')}>
           <Button variant="outline" size="sm" onClick={handleReset}>
             Clear All
           </Button>
-          <Button 
-            size="sm" 
-            onClick={handleApply}
-            disabled={!hasChanges}
-          >
+          <Button size="sm" onClick={handleApply} disabled={!hasChanges}>
             Apply Filters
           </Button>
         </div>
       }
     >
       <ScrollArea className="h-full">
-        <div className="space-y-4 pr-2">
+        <div className={cn(semanticSpacing.stack.md, 'pr-2')}>
           {filters.map((filter) => (
-            <div key={filter.id} className="space-y-2">
+            <div key={filter.id} className={`${semanticSpacing.stack.xs}`}>
               <Label htmlFor={filter.id}>{filter.label}</Label>
-              
+
               {filter.type === 'text' && (
                 <Input
                   id={filter.id}
@@ -552,11 +587,17 @@ export function FilterSheet({
                   placeholder={`Filter by ${filter.label.toLowerCase()}`}
                 />
               )}
-              
+
               {filter.type === 'select' && (
                 <select
                   id={filter.id}
-                  className="w-full px-3 py-2 text-sm border border-input bg-background rounded-md"
+                  className={cn(
+                    semanticSpacing.compactX,
+                    semanticSpacing.compactY,
+                    semanticTypography.body,
+                    semanticRadius.default,
+                    'w-full border border-input bg-background'
+                  )}
                   value={localFilters[filter.id] || ''}
                   onChange={(e) => handleFilterChange(filter.id, e.target.value)}
                 >
@@ -568,7 +609,7 @@ export function FilterSheet({
                   ))}
                 </select>
               )}
-              
+
               {/* Add other filter types as needed */}
             </div>
           ))}
@@ -600,14 +641,15 @@ export function QuickActionsSheet({
   onOpenChange,
   title = 'Quick Actions',
   actions,
-  searchable = true
+  searchable = true,
 }: QuickActionsSheetProps) {
   const [searchQuery, setSearchQuery] = useState('')
 
   const filteredActions = searchQuery
-    ? actions.filter(action =>
-        action.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        action.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    ? actions.filter(
+        (action) =>
+          action.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          action.description?.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : actions
 
@@ -625,7 +667,7 @@ export function QuickActionsSheet({
       subtitle={`${actions.length} actions available`}
       className="sm:max-w-full"
     >
-      <div className="space-y-4">
+      <div className={`${semanticSpacing.stack.md}`}>
         {/* Search */}
         {searchable && (
           <div className="relative">
@@ -641,26 +683,42 @@ export function QuickActionsSheet({
 
         {/* Actions Grid */}
         <ScrollArea className="h-full max-h-96">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 pr-2">
+          <div
+            className={cn(
+              semanticSpacing.gap.xs,
+              'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pr-2'
+            )}
+          >
             {filteredActions.map((action) => (
               <Button
                 key={action.id}
                 variant={action.variant || 'outline'}
-                className="h-auto p-3 justify-start"
+                className={cn(semanticSpacing.compact, 'h-auto justify-start')}
                 onClick={() => handleActionClick(action)}
               >
-                <div className="flex items-center gap-3 w-full">
+                <div className={cn(semanticSpacing.gap.sm, 'flex items-center w-full')}>
                   {action.icon && <action.icon className="size-4 shrink-0" />}
                   <div className="flex-1 text-left min-w-0">
-                    <div className="font-medium text-sm">{action.label}</div>
+                    <div className={cn(semanticTypography.label, semanticTypography.body)}>
+                      {action.label}
+                    </div>
                     {action.description && (
-                      <div className="text-xs text-muted-foreground truncate">
+                      <div
+                        className={cn(semanticTypography.caption, 'text-muted-foreground truncate')}
+                      >
                         {action.description}
                       </div>
                     )}
                   </div>
                   {action.shortcut && (
-                    <kbd className="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+                    <kbd
+                      className={cn(
+                        semanticSpacing.gap.xs,
+                        semanticRadius.small,
+                        semanticTypography.label,
+                        'hidden sm:inline-flex h-5 select-none items-center border bg-muted px-1.5 font-mono text-[10px] text-muted-foreground'
+                      )}
+                    >
                       {action.shortcut}
                     </kbd>
                   )}
@@ -671,9 +729,9 @@ export function QuickActionsSheet({
         </ScrollArea>
 
         {filteredActions.length === 0 && (
-          <div className="text-center py-8 text-muted-foreground">
-            <Search className="size-8 mx-auto mb-2 opacity-50" />
-            <p className="text-sm">No actions found</p>
+          <div className={cn(semanticSpacing.pageY, 'text-center text-muted-foreground')}>
+            <Search className={cn(semanticSpacing.bottomGap.xs, 'size-8 mx-auto opacity-50')} />
+            <p className={`${semanticTypography.body}`}>No actions found</p>
           </div>
         )}
       </div>

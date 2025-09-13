@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/command'
 import { Building2, Users, Target, MessageSquare, Package, Search } from 'lucide-react'
 import { COPY } from '@/lib/copy'
+import { semanticSpacing } from '@/styles/tokens'
 
 interface CommandPaletteProps {
   open: boolean
@@ -51,50 +52,52 @@ export function CommandPalette({ open, setOpen }: CommandPaletteProps) {
 
         <CommandGroup heading="Navigation">
           <CommandItem onSelect={() => runCommand(() => navigate('/'))}>
-            <Search className="mr-2 size-4" />
-            <span>Dashboard</span>
+            <div className={`flex items-center ${semanticSpacing.buttonGap}`}>
+              <Search className="size-4" />
+              <span>Dashboard</span>
+            </div>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/organizations'))}>
-            <Building2 className="mr-2 size-4" />
+            <Building2 className={`size-4 ${semanticSpacing.rightGap.lg}`} />
             <span>Organizations</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/contacts'))}>
-            <Users className="mr-2 size-4" />
+            <Users className={`size-4 ${semanticSpacing.rightGap.lg}`} />
             <span>Contacts</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/opportunities'))}>
-            <Target className="mr-2 size-4" />
+            <Target className={`size-4 ${semanticSpacing.rightGap.lg}`} />
             <span>Opportunities</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/interactions'))}>
             {' '}
             {/* ui-audit: allow */}
-            <MessageSquare className="mr-2 size-4" />
+            <MessageSquare className={`size-4 ${semanticSpacing.rightGap.lg}`} />
             <span>Activities</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/products'))}>
-            <Package className="mr-2 size-4" />
+            <Package className={`size-4 ${semanticSpacing.rightGap.lg}`} />
             <span>Products</span>
           </CommandItem>
         </CommandGroup>
 
         <CommandGroup heading="Quick Actions">
           <CommandItem onSelect={() => runCommand(() => navigate('/organizations?action=create'))}>
-            <Building2 className="mr-2 size-4" />
+            <Building2 className={`size-4 ${semanticSpacing.rightGap.lg}`} />
             <span>{COPY.BUTTONS.ADD_ORGANIZATION}</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/contacts?action=create'))}>
-            <Users className="mr-2 size-4" />
+            <Users className={`size-4 ${semanticSpacing.rightGap.lg}`} />
             <span>{COPY.BUTTONS.ADD_CONTACT}</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/opportunities?action=create'))}>
-            <Target className="mr-2 size-4" />
+            <Target className={`size-4 ${semanticSpacing.rightGap.lg}`} />
             <span>{COPY.BUTTONS.ADD_OPPORTUNITY}</span>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => navigate('/interactions?action=create'))}>
             {' '}
             {/* ui-audit: allow */}
-            <MessageSquare className="mr-2 size-4" />
+            <MessageSquare className={`size-4 ${semanticSpacing.rightGap.lg}`} />
             <span>{COPY.BUTTONS.LOG_INTERACTION}</span>
           </CommandItem>
         </CommandGroup>

@@ -7,7 +7,10 @@ const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
     return (
       <div
         ref={ref}
-        className={cn(badgeVariants({ variant, priority, orgType, segment, status, influence }), className)}
+        className={cn(
+          badgeVariants({ variant, priority, orgType, segment, status, influence }),
+          className
+        )}
         {...props}
       />
     )

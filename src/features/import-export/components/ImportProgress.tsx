@@ -2,8 +2,10 @@ import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { CheckCircle, AlertCircle, Upload, X } from 'lucide-react'
+import { semanticSpacing, semanticTypography, semanticRadius, fontWeight } from '@/styles/tokens'
 import type { ImportResult } from '@/types/import-export'
 
+import { cn } from '@/lib/utils'
 interface ImportProgressProps {
   isImporting: boolean
   importProgress: number
@@ -23,9 +25,9 @@ export function ImportProgress({
 }: ImportProgressProps) {
   if (isImporting) {
     return (
-      <div className="space-y-4 pt-4">
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-sm">
+      <div className={`${semanticSpacing.layoutContainer} ${semanticSpacing.topPadding.lg}`}>
+        <div className={semanticSpacing.stack.xs}>
+          <div className={`flex items-center justify-between ${semanticTypography.body}`}>
             <span>Importing organizations...</span>
             <span>{importProgress}%</span>
           </div>
@@ -41,7 +43,7 @@ export function ImportProgress({
 
   if (importResult) {
     return (
-      <div className="space-y-4 pt-4">
+      <div className={`${semanticSpacing.layoutContainer} ${semanticSpacing.topPadding.lg}`}>
         <Alert variant={importResult.success ? 'default' : 'destructive'}>
           {importResult.success ? (
             <CheckCircle className="size-4" />
@@ -52,28 +54,40 @@ export function ImportProgress({
         </Alert>
 
         {/* Import Summary */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="rounded-lg bg-green-50 p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">{importResult.imported}</div>
-            <div className="text-sm text-gray-600">Imported</div>
+        <div className={`grid grid-cols-2 ${semanticSpacing.gap.lg}`}>
+          <div
+            className={`${semanticRadius.lg} bg-success/5 ${semanticSpacing.cardContainer} text-center`}
+          >
+            <div className={cn(semanticTypography.h2, semanticTypography.title, 'text-success')}>
+              {importResult.imported}
+            </div>
+            <div className={`${semanticTypography.body} text-gray-600`}>Imported</div>
           </div>
-          <div className="rounded-lg bg-red-50 p-4 text-center">
-            <div className="text-2xl font-bold text-red-600">{importResult.failed}</div>
-            <div className="text-sm text-gray-600">Failed</div>
+          <div
+            className={`${semanticRadius.lg} bg-destructive/5 ${semanticSpacing.cardContainer} text-center`}
+          >
+            <div
+              className={cn(semanticTypography.h2, semanticTypography.title, 'text-destructive')}
+            >
+              {importResult.failed}
+            </div>
+            <div className={`${semanticTypography.body} text-gray-600`}>Failed</div>
           </div>
         </div>
 
         {/* Error Details */}
         {importResult.errors && importResult.errors.length > 0 && (
-          <div className="space-y-2">
-            <h3 className="flex items-center gap-2 font-medium text-red-600">
+          <div className={semanticSpacing.stack.xs}>
+            <h3
+              className={`flex items-center ${semanticSpacing.gap.xs} ${fontWeight.medium} text-destructive`}
+            >
               <AlertCircle className="size-4" />
               Import Errors
             </h3>
-            <div className="max-h-40 overflow-hidden overflow-y-auto rounded-lg border">
-              <div className="space-y-1 p-3">
+            <div className={`max-h-40 overflow-hidden overflow-y-auto ${semanticRadius.lg} border`}>
+              <div className={`${semanticSpacing.stack.xxs} ${semanticSpacing.cardContainer}`}>
                 {importResult.errors.map((error, index) => (
-                  <div key={index} className="text-sm text-red-600">
+                  <div key={index} className={`${semanticTypography.body} text-red-600`}>
                     Row {error.row}: {'error' in error ? error.error : error.message}
                   </div>
                 ))}
@@ -83,7 +97,7 @@ export function ImportProgress({
         )}
 
         {/* Actions */}
-        <div className="flex gap-3">
+        <div className={`flex ${semanticSpacing.gap.lg}`}>
           <Button onClick={onReset} className="flex-1">
             Import Another File
           </Button>
@@ -98,13 +112,13 @@ export function ImportProgress({
   // Import actions (when data is ready but not importing)
   if (validRowsCount > 0) {
     return (
-      <div className="flex gap-3 pt-4">
+      <div className={`flex ${semanticSpacing.gap.lg} ${semanticSpacing.topPadding.xl}`}>
         <Button className="flex-1" onClick={onImport} disabled={isImporting}>
-          <Upload className="mr-2 size-4" />
+          <Upload className={cn(semanticSpacing.rightGap.xs, 'size-4')} />
           Import {validRowsCount} Organizations
         </Button>
         <Button variant="outline" onClick={onReset}>
-          <X className="mr-2 size-4" />
+          <X className={cn(semanticSpacing.rightGap.xs, 'size-4')} />
           Cancel
         </Button>
       </div>

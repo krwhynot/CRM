@@ -1,5 +1,5 @@
 import React from 'react'
-import { ProductsTable } from './ProductsTable'
+import { ProductsTable } from './ProductsTableRefactored'
 import { LoadingState, ErrorState } from '@/components/ui/data-state'
 import type { Product } from '@/types/entities'
 import type { ProductWithPrincipal } from '@/types/product-extensions'

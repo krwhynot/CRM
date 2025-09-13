@@ -1,11 +1,13 @@
 import React from 'react'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
-import { 
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
+import { cn } from '@/lib/utils'
+import {
   GenericWeeksFilter,
-  GenericPrincipalFilter, 
+  GenericPrincipalFilter,
   GenericQuickViewFilter,
-  createQuickViewOptions
+  createQuickViewOptions,
 } from '@/components/filters/shared'
 import type { WeeklyFilterComponentProps, ContactWeeklyFilters } from '@/types/shared-filters.types'
 
@@ -30,23 +32,23 @@ export const ContactsFilters: React.FC<ContactsFiltersProps> = ({
   }
 
   const handleTimeRangeChange = (timeRange: string) => {
-    onFiltersChange({ 
-      ...filters, 
-      timeRange: timeRange as ContactWeeklyFilters['timeRange']
+    onFiltersChange({
+      ...filters,
+      timeRange: timeRange as ContactWeeklyFilters['timeRange'],
     })
   }
 
   const handlePrincipalChange = (principal: string) => {
-    onFiltersChange({ 
-      ...filters, 
-      principal: principal
+    onFiltersChange({
+      ...filters,
+      principal: principal,
     })
   }
 
   const handleQuickViewChange = (quickView: string | 'none') => {
-    onFiltersChange({ 
-      ...filters, 
-      quickView: quickView as ContactWeeklyFilters['quickView']
+    onFiltersChange({
+      ...filters,
+      quickView: quickView as ContactWeeklyFilters['quickView'],
     })
   }
 
@@ -60,23 +62,35 @@ export const ContactsFilters: React.FC<ContactsFiltersProps> = ({
     filters.search,
     filters.organization_id,
     filters.purchase_influence,
-    filters.decision_authority
+    filters.decision_authority,
   ].filter(Boolean).length
 
   return (
-    <div className={`space-y-4 rounded-lg border border-border bg-card p-6 shadow-sm ${className}`}>
+    <div
+      className={cn(
+        semanticShadows.subtle,
+        semanticSpacing.stackContainer,
+        '${semanticRadius.default}-lg border border-border bg-card ${semanticSpacing.layoutPadding.xl}',
+        className
+      )}
+    >
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-semibold text-card-foreground">Contacts</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <h2 className="${semanticTypography.h3} ${fontWeight.semibold} text-card-foreground">
+          Contacts
+        </h2>
+        <p
+          className={`${semanticSpacing.topGap.xxs} ${semanticTypography.body} text-muted-foreground`}
+        >
           {filteredCount === totalContacts
             ? `${totalContacts} contacts`
             : `${filteredCount} of ${totalContacts} contacts`}
         </p>
       </div>
-
       {/* Primary Filters Row */}
-      <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+      <div
+        className={`flex flex-col items-start ${semanticSpacing.gap.xl} sm:flex-row sm:items-center`}
+      >
         {/* Weekly Time Range */}
         <GenericWeeksFilter
           value={filters.timeRange || 'this_month'}
@@ -116,7 +130,7 @@ export const ContactsFilters: React.FC<ContactsFiltersProps> = ({
         />
 
         {/* Search */}
-        <div className="flex min-w-0 flex-1 items-center gap-2">
+        <div className={`flex min-w-0 flex-1 items-center ${semanticSpacing.gap.xs}`}>
           <Search className="size-4 shrink-0 text-muted-foreground" />
           <Input
             placeholder="Search contacts..."
@@ -126,11 +140,10 @@ export const ContactsFilters: React.FC<ContactsFiltersProps> = ({
           />
         </div>
       </div>
-
       {/* Filter Summary */}
       {(activeFilterCount > 0 || filters.search) && (
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between ${semanticTypography.body} text-muted-foreground">
+          <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
             {activeFilterCount > 0 && (
               <span>
                 {activeFilterCount} filter{activeFilterCount !== 1 ? 's' : ''} active

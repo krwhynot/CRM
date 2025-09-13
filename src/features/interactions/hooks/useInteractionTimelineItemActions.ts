@@ -1,5 +1,5 @@
-import type React from 'react'
 import { useCallback } from 'react'
+import type { MouseEvent, KeyboardEvent } from 'react'
 
 interface UseInteractionTimelineItemActionsProps {
   interactionType: string
@@ -9,11 +9,11 @@ interface UseInteractionTimelineItemActionsProps {
 }
 
 interface UseInteractionTimelineItemActionsReturn {
-  handleDelete: (e: React.MouseEvent) => void
-  handleEdit: (e: React.MouseEvent) => void
-  handleMarkComplete: (e: React.MouseEvent) => void
-  handleKeyDown: (e: React.KeyboardEvent) => void
-  handleItemClick: (e: React.MouseEvent) => void
+  handleDelete: (e: MouseEvent) => void
+  handleEdit: (e: MouseEvent) => void
+  handleMarkComplete: (e: MouseEvent) => void
+  handleKeyDown: (e: KeyboardEvent) => void
+  handleItemClick: (e: MouseEvent) => void
 }
 
 export const useInteractionTimelineItemActions = ({
@@ -23,7 +23,7 @@ export const useInteractionTimelineItemActions = ({
   onDelete,
 }: UseInteractionTimelineItemActionsProps): UseInteractionTimelineItemActionsReturn => {
   const handleDelete = useCallback(
-    (e: React.MouseEvent) => {
+    (e: MouseEvent) => {
       e.stopPropagation()
       if (window.confirm(`Are you sure you want to delete this ${interactionType}?`)) {
         onDelete()
@@ -33,7 +33,7 @@ export const useInteractionTimelineItemActions = ({
   )
 
   const handleEdit = useCallback(
-    (e: React.MouseEvent) => {
+    (e: MouseEvent) => {
       e.stopPropagation()
       onEdit()
     },
@@ -47,7 +47,7 @@ export const useInteractionTimelineItemActions = ({
   }, [])
 
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
+    (e: KeyboardEvent) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault()
         onToggleExpand()
@@ -57,7 +57,7 @@ export const useInteractionTimelineItemActions = ({
   )
 
   const handleItemClick = useCallback(
-    (e: React.MouseEvent) => {
+    (e: MouseEvent) => {
       // Don't toggle if clicking on buttons or dropdown
       const target = e.target as HTMLElement
       if (target.closest('button') || target.closest('[role="menuitem"]')) {

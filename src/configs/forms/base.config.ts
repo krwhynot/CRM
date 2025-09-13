@@ -7,6 +7,7 @@ import type {
 } from '@/types/forms'
 import { validationMessages } from '@/lib/validation-messages'
 import { placeholderUrls } from '@/config/urls'
+import { semanticSpacing } from '@/styles/tokens'
 
 // ===== Validation Messages =====
 // Moved to @/lib/validation-messages.ts for better organization
@@ -15,9 +16,9 @@ export { validationMessages }
 // ===== Layout Classes =====
 
 export const sectionLayouts: LayoutClasses = {
-  single: 'grid grid-cols-1 gap-4',
-  double: 'grid grid-cols-1 md:grid-cols-2 gap-4',
-  triple: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4',
+  single: `grid grid-cols-1 ${semanticSpacing.gap.md}`,
+  double: `grid grid-cols-1 md:grid-cols-2 ${semanticSpacing.gap.md}`,
+  triple: `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ${semanticSpacing.gap.md}`,
   full: 'w-full',
 }
 
@@ -25,9 +26,9 @@ export const sectionLayouts: LayoutClasses = {
 
 export const formTheme: FormTheme = {
   spacing: {
-    section: 'space-y-8',
-    field: 'space-y-6',
-    inner: 'gap-2',
+    section: semanticSpacing.stack.xl,
+    field: semanticSpacing.stack.lg,
+    inner: semanticSpacing.gap.xs,
   },
   sizing: {
     input: 'h-12', // 48px touch target
@@ -263,7 +264,7 @@ export const dataTransformers = {
     const result = { ...data }
     for (const [key, value] of Object.entries(result)) {
       if (value === '') {
-        (result as T)[key as keyof T] = null as T[keyof T]
+        ;(result as T)[key as keyof T] = null as T[keyof T]
       }
     }
     return result
@@ -276,7 +277,7 @@ export const dataTransformers = {
     const result = { ...data }
     for (const [key, value] of Object.entries(result)) {
       if (typeof value === 'string') {
-        (result as T)[key as keyof T] = value.trim() as T[keyof T]
+        ;(result as T)[key as keyof T] = value.trim() as T[keyof T]
       }
     }
     return result

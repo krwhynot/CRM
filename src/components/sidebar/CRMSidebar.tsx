@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
+import { semanticTypography, semanticSpacing, semanticRadius } from '@/styles/tokens'
 import {
   Building,
   Users,
@@ -26,7 +27,7 @@ import {
   Download,
   Upload,
   Zap,
-  HelpCircle
+  HelpCircle,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -47,24 +48,24 @@ import { cn } from '@/lib/utils'
 
 // Sidebar Variants
 const sidebarVariants = cva(
-  "flex flex-col bg-background border-r border-border transition-all duration-300",
+  'flex flex-col bg-background border-r border-border transition-all duration-300',
   {
     variants: {
       size: {
-        sm: "w-16",
-        md: "w-64", 
-        lg: "w-80",
-        full: "w-full"
+        sm: 'w-16',
+        md: 'w-64',
+        lg: 'w-80',
+        full: 'w-full',
       },
       collapsed: {
-        true: "w-16",
-        false: ""
-      }
+        true: 'w-16',
+        false: '',
+      },
     },
     defaultVariants: {
-      size: "md",
-      collapsed: false
-    }
+      size: 'md',
+      collapsed: false,
+    },
   }
 )
 
@@ -155,23 +156,26 @@ const NavigationItemComponent: React.FC<{
       onClick={handleClick}
     >
       <item.icon className={cn('size-4 shrink-0', collapsed && 'size-5')} />
-      
+
       {!collapsed && (
         <>
           <span className="flex-1 text-left truncate">{item.label}</span>
-          
+
           {item.badge && (
-            <Badge 
-              variant={item.badge.variant || 'default'} 
-              className="ml-auto shrink-0 text-xs"
+            <Badge
+              variant={item.badge.variant || 'default'}
+              className={cn(semanticTypography.caption, 'ml-auto shrink-0')}
             >
               {item.badge.count !== undefined ? item.badge.count : item.badge.text}
             </Badge>
           )}
-          
-          {hasChildren && (
-            expanded ? <ChevronDown className="size-4 shrink-0" /> : <ChevronRight className="size-4 shrink-0" />
-          )}
+
+          {hasChildren &&
+            (expanded ? (
+              <ChevronDown className="size-4 shrink-0" />
+            ) : (
+              <ChevronRight className="size-4 shrink-0" />
+            ))}
         </>
       )}
     </Button>
@@ -182,13 +186,14 @@ const NavigationItemComponent: React.FC<{
       {collapsed ? (
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger asChild>
-              {itemContent}
-            </TooltipTrigger>
-            <TooltipContent side="right" className="font-medium">
+            <TooltipTrigger asChild>{itemContent}</TooltipTrigger>
+            <TooltipContent side="right" className={`${semanticTypography.label}`}>
               {item.label}
               {item.badge && (
-                <Badge variant={item.badge.variant} className="ml-2 text-xs">
+                <Badge
+                  variant={item.badge.variant}
+                  className={cn(semanticSpacing.leftGap.xs, semanticTypography.caption)}
+                >
                   {item.badge.count !== undefined ? item.badge.count : item.badge.text}
                 </Badge>
               )}
@@ -201,7 +206,7 @@ const NavigationItemComponent: React.FC<{
 
       {/* Child Items */}
       {hasChildren && expanded && !collapsed && (
-        <div className="space-y-1 ml-4">
+        <div className={cn(semanticSpacing.stack.xs, semanticSpacing.leftGap.sm)}>
           {item.children!.map((child) => (
             <NavigationItemComponent
               key={child.id}
@@ -225,15 +230,22 @@ const QuickActionsSection: React.FC<{
   if (actions.length === 0) return null
 
   return (
-    <div className="space-y-2">
+    <div className={`${semanticSpacing.stack.xs}`}>
       {!collapsed && (
-        <div className="px-3">
-          <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+        <div className={`${semanticSpacing.compactX}`}>
+          <h3
+            className={cn(
+              semanticTypography.caption,
+              semanticTypography.label,
+              semanticTypography.wideSpacing,
+              'text-muted-foreground uppercase'
+            )}
+          >
             Quick Actions
           </h3>
         </div>
       )}
-      
+
       <div className={cn('px-2', collapsed && 'space-y-1')}>
         {actions.map((action) => {
           const buttonContent = (
@@ -241,18 +253,24 @@ const QuickActionsSection: React.FC<{
               key={action.id}
               variant="outline"
               size="sm"
-              className={cn(
-                'w-full justify-start gap-2 h-8',
-                collapsed && 'justify-center p-2'
-              )}
+              className={cn('w-full justify-start gap-2 h-8', collapsed && 'justify-center p-2')}
               onClick={action.onClick}
             >
               <action.icon className="size-4 shrink-0" />
               {!collapsed && (
                 <>
-                  <span className="flex-1 text-left truncate text-xs">{action.label}</span>
+                  <span className={cn(semanticTypography.caption, 'flex-1 text-left truncate')}>
+                    {action.label}
+                  </span>
                   {action.shortcut && (
-                    <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 sm:flex">
+                    <kbd
+                      className={cn(
+                        semanticSpacing.gap.xs,
+                        semanticRadius.small,
+                        semanticTypography.label,
+                        'pointer-events-none hidden h-5 select-none items-center border bg-muted px-1.5 font-mono text-[10px] text-muted-foreground opacity-100 sm:flex'
+                      )}
+                    >
                       {action.shortcut}
                     </kbd>
                   )}
@@ -264,18 +282,20 @@ const QuickActionsSection: React.FC<{
           return collapsed ? (
             <TooltipProvider key={action.id}>
               <Tooltip>
-                <TooltipTrigger asChild>
-                  {buttonContent}
-                </TooltipTrigger>
+                <TooltipTrigger asChild>{buttonContent}</TooltipTrigger>
                 <TooltipContent side="right">
-                  <div className="font-medium">{action.label}</div>
+                  <div className={`${semanticTypography.label}`}>{action.label}</div>
                   {action.shortcut && (
-                    <div className="text-xs text-muted-foreground">{action.shortcut}</div>
+                    <div className={cn(semanticTypography.caption, 'text-muted-foreground')}>
+                      {action.shortcut}
+                    </div>
                   )}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-          ) : buttonContent
+          ) : (
+            buttonContent
+          )
         })}
       </div>
     </div>
@@ -295,50 +315,70 @@ const RecentItemsSection: React.FC<{
     organization: Building,
     product: Package,
     opportunity: TrendingUp,
-    interaction: MessageSquare
+    interaction: MessageSquare,
   }
 
   return (
-    <div className="space-y-2">
-      <div className="px-3">
-        <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+    <div className={`${semanticSpacing.stack.xs}`}>
+      <div className={`${semanticSpacing.compactX}`}>
+        <h3
+          className={cn(
+            semanticTypography.caption,
+            semanticTypography.label,
+            semanticTypography.wideSpacing,
+            'text-muted-foreground uppercase'
+          )}
+        >
           Recent
         </h3>
       </div>
-      
-      <div className="px-2 space-y-1">
+
+      <div className={cn(semanticSpacing.compactX, semanticSpacing.stack.xs)}>
         {items.slice(0, 5).map((item) => {
           const IconComponent = typeIcons[item.type]
           return (
             <Button
               key={item.id}
               variant="ghost"
-              className="w-full justify-start gap-3 h-auto p-2"
+              className={cn(
+                semanticSpacing.gap.sm,
+                semanticSpacing.compact,
+                'w-full justify-start h-auto'
+              )}
               onClick={() => onNavigate?.(item.href)}
             >
               <div className="relative">
                 {item.avatar ? (
                   <Avatar className="size-6">
                     <AvatarImage src={item.avatar} />
-                    <AvatarFallback className="text-xs">
+                    <AvatarFallback className={`${semanticTypography.caption}`}>
                       {item.name.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 ) : (
-                  <div className="size-6 rounded-full bg-muted flex items-center justify-center">
+                  <div
+                    className={cn(
+                      semanticRadius.full,
+                      'size-6 bg-muted flex items-center justify-center'
+                    )}
+                  >
                     <IconComponent className="size-3" />
                   </div>
                 )}
               </div>
-              
+
               <div className="flex-1 min-w-0 text-left">
-                <div className="text-sm font-medium truncate">{item.name}</div>
+                <div className={cn(semanticTypography.body, semanticTypography.label, 'truncate')}>
+                  {item.name}
+                </div>
                 {item.subtitle && (
-                  <div className="text-xs text-muted-foreground truncate">{item.subtitle}</div>
+                  <div className={cn(semanticTypography.caption, 'text-muted-foreground truncate')}>
+                    {item.subtitle}
+                  </div>
                 )}
               </div>
-              
-              <div className="text-xs text-muted-foreground shrink-0">
+
+              <div className={cn(semanticTypography.caption, 'text-muted-foreground shrink-0')}>
                 {item.timestamp.toLocaleDateString([], { month: 'short', day: 'numeric' })}
               </div>
             </Button>
@@ -370,33 +410,46 @@ export function CRMSidebar({
 }: CRMSidebarProps) {
   const [internalCollapsed, setInternalCollapsed] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  
+
   const collapsed = controlledCollapsed ?? internalCollapsed
-  
+
   const handleToggleCollapse = useCallback(() => {
     const newCollapsed = !collapsed
     setInternalCollapsed(newCollapsed)
     onToggleCollapse?.(newCollapsed)
   }, [collapsed, onToggleCollapse])
 
-  const handleSearch = useCallback((query: string) => {
-    setSearchQuery(query)
-    onSearch?.(query)
-  }, [onSearch])
+  const handleSearch = useCallback(
+    (query: string) => {
+      setSearchQuery(query)
+      onSearch?.(query)
+    },
+    [onSearch]
+  )
 
   return (
     <div className={cn(sidebarVariants({ size: collapsed ? 'sm' : size }), className)} {...props}>
       {/* Header */}
-      <div className="flex items-center justify-between p-3 border-b border-border">
+      <div
+        className={cn(
+          semanticSpacing.compact,
+          'flex items-center justify-between border-b border-border'
+        )}
+      >
         {!collapsed && (
-          <div className="flex items-center gap-2">
-            <div className="size-8 rounded-lg bg-primary flex items-center justify-center">
+          <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
+            <div
+              className={cn(
+                semanticRadius.large,
+                'size-8 bg-primary flex items-center justify-center'
+              )}
+            >
               <Target className="size-4 text-primary-foreground" />
             </div>
-            <span className="font-semibold text-lg">CRM</span>
+            <span className={cn(semanticTypography.h4, semanticTypography.h4)}>CRM</span>
           </div>
         )}
-        
+
         <Button
           variant="ghost"
           size="sm"
@@ -409,7 +462,7 @@ export function CRMSidebar({
 
       {/* Search */}
       {!collapsed && (
-        <div className="p-3 border-b border-border">
+        <div className={cn(semanticSpacing.compact, 'border-b border-border')}>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-muted-foreground" />
             <Input
@@ -424,9 +477,9 @@ export function CRMSidebar({
 
       {/* Navigation Content */}
       <ScrollArea className="flex-1">
-        <div className="p-2 space-y-4">
+        <div className={cn(semanticSpacing.compact, semanticSpacing.stack.md)}>
           {/* Main Navigation */}
-          <div className="space-y-1">
+          <div className={`${semanticSpacing.stack.xs}`}>
             {navigation.map((item) => (
               <NavigationItemComponent
                 key={item.id}
@@ -450,9 +503,9 @@ export function CRMSidebar({
           {showRecentItems && recentItems.length > 0 && (
             <>
               <Separator />
-              <RecentItemsSection 
-                items={recentItems} 
-                collapsed={collapsed} 
+              <RecentItemsSection
+                items={recentItems}
+                collapsed={collapsed}
                 onNavigate={onNavigate as any}
               />
             </>
@@ -462,7 +515,7 @@ export function CRMSidebar({
 
       {/* User Profile */}
       {showUserProfile && user && (
-        <div className="p-3 border-t border-border">
+        <div className={cn(semanticSpacing.compact, 'border-t border-border')}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -476,14 +529,21 @@ export function CRMSidebar({
                   <Avatar className="size-8">
                     <AvatarImage src={user.avatar} />
                     <AvatarFallback>
-                      {user.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                      {user.name
+                        .split(' ')
+                        .map((n) => n[0])
+                        .join('')
+                        .toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  
+
                   {notifications > 0 && (
-                    <Badge 
-                      variant="destructive" 
-                      className="absolute -top-1 -right-1 size-5 text-xs p-0 flex items-center justify-center"
+                    <Badge
+                      variant="destructive"
+                      className={cn(
+                        semanticTypography.caption,
+                        'absolute -top-1 -right-1 size-5 p-0 flex items-center justify-center'
+                      )}
                     >
                       {notifications > 9 ? '9+' : notifications}
                     </Badge>
@@ -492,28 +552,34 @@ export function CRMSidebar({
 
                 {!collapsed && (
                   <div className="flex-1 min-w-0 text-left">
-                    <div className="text-sm font-medium truncate">{user.name}</div>
-                    <div className="text-xs text-muted-foreground truncate">
+                    <div
+                      className={cn(semanticTypography.body, semanticTypography.label, 'truncate')}
+                    >
+                      {user.name}
+                    </div>
+                    <div
+                      className={cn(semanticTypography.caption, 'text-muted-foreground truncate')}
+                    >
                       {user.role || user.email}
                     </div>
                   </div>
                 )}
               </Button>
             </DropdownMenuTrigger>
-            
+
             <DropdownMenuContent align="start" className="w-56">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <User className="mr-2 size-4" />
+                <User className={cn(semanticSpacing.rightGap.xs, 'size-4')} />
                 Profile
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Settings className="mr-2 size-4" />
+                <Settings className={cn(semanticSpacing.rightGap.xs, 'size-4')} />
                 Settings
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Bell className="mr-2 size-4" />
+                <Bell className={cn(semanticSpacing.rightGap.xs, 'size-4')} />
                 Notifications
                 {notifications > 0 && (
                   <Badge variant="secondary" className="ml-auto">
@@ -522,13 +588,11 @@ export function CRMSidebar({
                 )}
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <HelpCircle className="mr-2 size-4" />
+                <HelpCircle className={cn(semanticSpacing.rightGap.xs, 'size-4')} />
                 Help & Support
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-600">
-                Log out
-              </DropdownMenuItem>
+              <DropdownMenuItem className="text-red-600">Log out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -544,69 +608,69 @@ export const defaultCRMNavigation: NavigationItem[] = [
     label: 'Dashboard',
     icon: Home,
     href: '/dashboard',
-    isActive: true
+    isActive: true,
   },
   {
     id: 'contacts',
     label: 'Contacts',
     icon: Users,
     href: '/contacts',
-    badge: { count: 1250, variant: 'secondary' }
+    badge: { text: '1250', count: 1250, variant: 'secondary' },
   },
   {
     id: 'organizations',
     label: 'Organizations',
     icon: Building,
     href: '/organizations',
-    badge: { count: 345, variant: 'secondary' }
+    badge: { text: '345', count: 345, variant: 'secondary' },
   },
   {
     id: 'opportunities',
     label: 'Opportunities',
     icon: TrendingUp,
     href: '/opportunities',
-    badge: { count: 89, variant: 'default' },
+    badge: { text: '89', count: 89, variant: 'default' },
     children: [
       {
         id: 'opportunities-active',
         label: 'Active',
         icon: Target,
         href: '/opportunities/active',
-        badge: { count: 67, variant: 'default' }
+        badge: { text: '67', count: 67, variant: 'default' },
       },
       {
         id: 'opportunities-won',
         label: 'Won',
         icon: Star,
-        href: '/opportunities/won'
+        href: '/opportunities/won',
       },
       {
         id: 'opportunities-lost',
         label: 'Lost',
         icon: Clock,
-        href: '/opportunities/lost'
-      }
-    ]
+        href: '/opportunities/lost',
+      },
+    ],
   },
   {
     id: 'products',
     label: 'Products',
     icon: Package,
     href: '/products',
-    badge: { count: 156, variant: 'outline' }
+    badge: { text: '156', count: 156, variant: 'outline' },
   },
   {
     id: 'interactions',
     label: 'Interactions',
     icon: MessageSquare,
     href: '/interactions',
-    badge: { count: 24, variant: 'destructive' }
+    badge: { text: '24', count: 24, variant: 'destructive' },
   },
   {
     id: 'calendar',
     label: 'Calendar',
     icon: Calendar,
-    href: '/calendar'
+    href: '/calendar',
   },
   {
     id: 'reports',
@@ -618,22 +682,22 @@ export const defaultCRMNavigation: NavigationItem[] = [
         id: 'reports-sales',
         label: 'Sales Reports',
         icon: TrendingUp,
-        href: '/reports/sales'
+        href: '/reports/sales',
       },
       {
         id: 'reports-activity',
         label: 'Activity Reports',
         icon: MessageSquare,
-        href: '/reports/activity'
+        href: '/reports/activity',
       },
       {
         id: 'reports-performance',
         label: 'Performance',
         icon: Target,
-        href: '/reports/performance'
-      }
-    ]
-  }
+        href: '/reports/performance',
+      },
+    ],
+  },
 ]
 
 // Default Quick Actions
@@ -643,26 +707,26 @@ export const defaultQuickActions: QuickAction[] = [
     label: 'New Contact',
     icon: Users,
     shortcut: 'Ctrl+N',
-    onClick: () => console.log('Create new contact')
+    onClick: () => console.log('Create new contact'),
   },
   {
     id: 'new-organization',
     label: 'New Organization',
     icon: Building,
     shortcut: 'Ctrl+O',
-    onClick: () => console.log('Create new organization')
+    onClick: () => console.log('Create new organization'),
   },
   {
     id: 'new-opportunity',
     label: 'New Opportunity',
     icon: TrendingUp,
     shortcut: 'Ctrl+P',
-    onClick: () => console.log('Create new opportunity')
+    onClick: () => console.log('Create new opportunity'),
   },
   {
     id: 'import-data',
     label: 'Import Data',
     icon: Upload,
-    onClick: () => console.log('Import data')
-  }
+    onClick: () => console.log('Import data'),
+  },
 ]

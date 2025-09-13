@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { AlertTriangle, Minus, ArrowDown } from 'lucide-react'
+import { semanticSpacing } from '@/styles/tokens'
 
 type PriorityLevel = 'high' | 'medium' | 'low'
 type GradeLevel = 'A+' | 'A' | 'B' | 'C' | 'D'
@@ -62,7 +63,7 @@ export const PriorityBadge = ({ priority, className, showIcon = true }: Priority
     if (!showIcon) return null
 
     const effectivePriority = getEffectivePriority()
-    const iconClass = 'w-3 h-3 mr-1'
+    const iconClass = `w-3 h-3 ${semanticSpacing.rightGap.xxs}`
 
     switch (effectivePriority) {
       case 'high':

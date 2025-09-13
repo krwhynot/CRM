@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { AlertCircle, CheckCircle2, AlertTriangle, Info } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+import { semanticSpacing, semanticTypography, semanticRadius } from '@/styles/tokens'
 interface FieldError {
   field: string
   message: string
@@ -55,23 +56,23 @@ export const FormValidationFeedback: React.FC<FormValidationFeedbackProps> = ({
       <Alert className={cn('border-destructive/20 bg-destructive/10', className)}>
         <AlertCircle className="size-4 text-destructive" />
         <AlertDescription className="text-destructive">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="font-medium">
+          <div className={`${semanticSpacing.stack.xs}`}>
+            <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
+              <span className={`${semanticTypography.label}`}>
                 {errorCount === 1 ? '1 error found:' : `${errorCount} errors found:`}
               </span>
-              <Badge variant="destructive" className="text-xs">
+              <Badge variant="destructive" className={`${semanticTypography.caption}`}>
                 Fix required
               </Badge>
             </div>
-            <ul className="space-y-1 text-sm">
+            <ul className={cn(semanticSpacing.stack.xs, semanticTypography.body)}>
               {errors
                 .filter((e) => e.type !== 'warning' && e.type !== 'info')
                 .map((error, index) => (
-                  <li key={index} className="flex items-start gap-1">
+                  <li key={index} className={cn(semanticSpacing.gap.xs, 'flex items-start')}>
                     <span className="mt-0.5 text-destructive">•</span>
                     <span>
-                      <span className="font-medium capitalize">
+                      <span className={cn(semanticTypography.label, 'capitalize')}>
                         {error.field.replace('_', ' ')}:
                       </span>{' '}
                       {error.message}
@@ -90,26 +91,29 @@ export const FormValidationFeedback: React.FC<FormValidationFeedbackProps> = ({
       <Alert className={cn('border-warning/20 bg-warning/10', className)}>
         <AlertTriangle className="size-4 text-warning-foreground" />
         <AlertDescription className="text-warning-foreground">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="font-medium">
+          <div className={`${semanticSpacing.stack.xs}`}>
+            <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
+              <span className={`${semanticTypography.label}`}>
                 {warningCount === 1 ? '1 recommendation:' : `${warningCount} recommendations:`}
               </span>
               <Badge
                 variant="outline"
-                className="border-warning/30 text-xs text-warning-foreground"
+                className={cn(
+                  semanticTypography.caption,
+                  'border-warning/30 text-warning-foreground'
+                )}
               >
                 Optional
               </Badge>
             </div>
-            <ul className="space-y-1 text-sm">
+            <ul className={cn(semanticSpacing.stack.xs, semanticTypography.body)}>
               {errors
                 .filter((e) => e.type === 'warning')
                 .map((warning, index) => (
-                  <li key={index} className="flex items-start gap-1">
+                  <li key={index} className={cn(semanticSpacing.gap.xs, 'flex items-start')}>
                     <span className="mt-0.5 text-warning-foreground">•</span>
                     <span>
-                      <span className="font-medium capitalize">
+                      <span className={cn(semanticTypography.label, 'capitalize')}>
                         {warning.field.replace('_', ' ')}:
                       </span>{' '}
                       {warning.message}
@@ -128,9 +132,12 @@ export const FormValidationFeedback: React.FC<FormValidationFeedbackProps> = ({
       <Alert className={cn('border-success/20 bg-success/10', className)}>
         <CheckCircle2 className="size-4 text-success" />
         <AlertDescription className="text-success">
-          <div className="flex items-center gap-2">
+          <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
             <span>Form looks good! Ready to submit.</span>
-            <Badge variant="outline" className="border-success/30 text-xs text-success">
+            <Badge
+              variant="outline"
+              className={cn(semanticTypography.caption, 'border-success/30 text-success')}
+            >
               Valid
             </Badge>
           </div>
@@ -158,7 +165,12 @@ export const FieldValidationIndicator: React.FC<FieldValidationIndicatorProps> =
   if (isValidating) {
     return (
       <div className={cn('flex items-center text-info', className)}>
-        <div className="size-4 animate-spin rounded-full border-2 border-info border-t-transparent" />
+        <div
+          className={cn(
+            semanticRadius.full,
+            'size-4 animate-spin border-2 border-info border-t-transparent'
+          )}
+        />
       </div>
     )
   }
@@ -193,11 +205,11 @@ export const FormProgressIndicator: React.FC<FormProgressIndicatorProps> = ({
 
   return (
     <div className={cn('space-y-2', className)}>
-      <div className="flex justify-between text-sm text-muted-foreground">
+      <div className={cn(semanticTypography.body, 'flex justify-between text-muted-foreground')}>
         <span>Form completion</span>
         <span>{Math.round(progress)}% complete</span>
       </div>
-      <div className="h-2 w-full rounded-full bg-muted">
+      <div className={cn(semanticRadius.full, 'h-2 w-full bg-muted')}>
         <div
           className={cn(
             'h-2 rounded-full transition-all duration-300',
@@ -206,7 +218,7 @@ export const FormProgressIndicator: React.FC<FormProgressIndicatorProps> = ({
           style={{ width: `${progress}%` }}
         />
       </div>
-      <div className="flex justify-between text-xs text-muted-foreground">
+      <div className={cn(semanticTypography.caption, 'flex justify-between text-muted-foreground')}>
         <span>
           {validFields} of {totalFields} fields completed
         </span>

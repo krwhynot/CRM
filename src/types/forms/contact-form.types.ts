@@ -2,7 +2,7 @@
  * Contact Form Types and Default Values
  *
  * Provides type-safe default values that align with the contact schema expectations.
- * This ensures React Hook Form defaults match Yup schema validation rules.
+ * This ensures React Hook Form defaults match Zod schema validation rules.
  */
 
 import type { ContactFormData } from '../contact.types'
@@ -19,7 +19,7 @@ export const defaultContactFormValues: ContactFormData = {
   organization_id: '',
   purchase_influence: 'Unknown',
   decision_authority: 'Gatekeeper',
-  
+
   // Organization mode - defaults to existing
   organization_mode: 'existing',
 
@@ -38,7 +38,7 @@ export const defaultContactFormValues: ContactFormData = {
 
   // Virtual fields
   preferred_principals: [],
-  
+
   // Organization creation fields (for new organization mode)
   organization_name: null,
   organization_type: null,

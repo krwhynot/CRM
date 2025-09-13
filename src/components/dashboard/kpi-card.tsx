@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 import type { LucideIcon } from 'lucide-react'
 import { useDashboardDensity } from '@/features/dashboard/hooks/useDashboardDensity'
 
+import { semanticSpacing, semanticRadius, semanticTypography } from '@/styles/tokens'
 interface KpiCardProps {
   title: string
   value: string | number
@@ -70,42 +71,64 @@ export function KpiCard({
   }
 
   // Use density to override size if not explicitly set
-  const effectiveSize = size !== 'default' ? size : 
-    density === 'compact' ? 'compact' : 'default'
+  const effectiveSize = size !== 'default' ? size : density === 'compact' ? 'compact' : 'default'
 
   if (isLoading) {
     if (effectiveSize === 'compact') {
       return (
-        <Card className={cn('kpi-card density-transition justify-between', 
-          density === 'compact' ? 'h-16' : 'h-20', className)}>
-          <CardContent className={cn('flex items-center justify-between', 
-            density === 'compact' ? 'p-2' : 'p-3')}>
-            <div className="animate-pulse space-y-1">
-              <div className={cn('rounded bg-muted-foreground/20', 
-                density === 'compact' ? 'h-2.5 w-12' : 'h-3 w-16')}></div>
-              <div className={cn('rounded bg-muted-foreground/20', 
-                density === 'compact' ? 'h-5 w-10' : 'h-6 w-12')}></div>
+        <Card
+          className={cn(
+            'kpi-card density-transition justify-between',
+            density === 'compact' ? 'h-16' : 'h-20',
+            className
+          )}
+        >
+          <CardContent
+            className={cn(
+              'flex items-center justify-between',
+              density === 'compact'
+                ? `${semanticSpacing.layoutPadding.xs}`
+                : `${semanticSpacing.layoutPadding.lg}`
+            )}
+          >
+            <div className={cn(semanticSpacing.stack.xs, 'animate-pulse')}>
+              <div
+                className={cn(
+                  'rounded bg-muted-foreground/20',
+                  density === 'compact' ? 'h-2.5 w-12' : 'h-3 w-16'
+                )}
+              ></div>
+              <div
+                className={cn(
+                  'rounded bg-muted-foreground/20',
+                  density === 'compact' ? 'h-5 w-10' : 'h-6 w-12'
+                )}
+              ></div>
             </div>
-            <div className={cn('animate-pulse rounded bg-muted-foreground/20', 
-              density === 'compact' ? 'size-4' : 'size-5')}></div>
+            <div
+              className={cn(
+                'animate-pulse rounded bg-muted-foreground/20',
+                density === 'compact' ? 'size-4' : 'size-5'
+              )}
+            ></div>
           </CardContent>
         </Card>
       )
     }
     return (
       <Card className={cn('kpi-card justify-between', className)}>
-        <CardHeader className="pb-2">
+        <CardHeader className={`${semanticSpacing.bottomPadding.xs}`}>
           <div className="animate-pulse">
-            <div className="mb-2 flex items-center justify-between">
-              <div className="h-4 w-20 rounded bg-muted-foreground/20"></div>
-              <div className="size-4 rounded bg-muted-foreground/20"></div>
+            <div className={cn(semanticSpacing.bottomGap.xs, 'flex items-center justify-between')}>
+              <div className={cn(semanticRadius.small, 'h-4 w-20 bg-muted-foreground/20')}></div>
+              <div className={cn(semanticRadius.small, 'size-4 bg-muted-foreground/20')}></div>
             </div>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="animate-pulse space-y-2">
-            <div className="h-8 w-24 rounded bg-muted-foreground/20"></div>
-            <div className="h-3 w-32 rounded bg-muted-foreground/20"></div>
+          <div className={cn(semanticSpacing.stack.xs, 'animate-pulse')}>
+            <div className={cn(semanticRadius.small, 'h-8 w-24 bg-muted-foreground/20')}></div>
+            <div className={cn(semanticRadius.small, 'h-3 w-32 bg-muted-foreground/20')}></div>
           </div>
         </CardContent>
       </Card>
@@ -126,9 +149,10 @@ export function KpiCard({
   }
 
   if (effectiveSize === 'compact') {
-    const trendTooltip = change !== undefined ? 
-      `${change > 0 ? '+' : ''}${change}% ${changeLabel || 'change'}` : 
-      undefined
+    const trendTooltip =
+      change !== undefined
+        ? `${change > 0 ? '+' : ''}${change}% ${changeLabel || 'change'}`
+        : undefined
 
     return (
       <Card
@@ -142,34 +166,69 @@ export function KpiCard({
         onClick={onClick}
         title={trendTooltip}
       >
-        <CardContent className={cn('flex items-center justify-between', 
-          density === 'compact' ? 'p-2' : density === 'spacious' ? 'p-4' : 'p-3')}>
-          <div className="space-y-0.5">
-            <p className={cn('truncate font-medium', styles.title,
-              density === 'compact' ? 'text-[10px]' : 
-              density === 'spacious' ? 'text-sm' : 'text-xs'
-            )}>{title}</p>
-            <p className={cn('font-bold', styles.value,
-              density === 'compact' ? 'text-lg' : 
-              density === 'spacious' ? 'text-2xl' : 'text-xl'
-            )}>{formatValue(value)}</p>
+        <CardContent
+          className={cn(
+            'flex items-center justify-between',
+            density === 'compact'
+              ? `${semanticSpacing.layoutPadding.xs}`
+              : density === 'spacious'
+                ? `${semanticSpacing.layoutPadding.xl}`
+                : `${semanticSpacing.layoutPadding.lg}`
+          )}
+        >
+          <div className={`${semanticSpacing.stack.xs}`}>
+            <p
+              className={cn(
+                'truncate font-medium',
+                styles.title,
+                density === 'compact'
+                  ? 'text-[10px]'
+                  : density === 'spacious'
+                    ? 'text-sm'
+                    : 'text-xs'
+              )}
+            >
+              {title}
+            </p>
+            <p
+              className={cn(
+                'font-bold',
+                styles.value,
+                density === 'compact' ? 'text-lg' : density === 'spacious' ? 'text-2xl' : 'text-xl'
+              )}
+            >
+              {formatValue(value)}
+            </p>
             {density !== 'compact' && subtitle && (
-              <p className={cn('text-muted-foreground truncate',
-                density === 'spacious' ? 'text-sm' : 'text-xs'
-              )}>{subtitle}</p>
+              <p
+                className={cn(
+                  'text-muted-foreground truncate',
+                  density === 'spacious' ? 'text-sm' : 'text-xs'
+                )}
+              >
+                {subtitle}
+              </p>
             )}
           </div>
-          <div className="flex flex-col items-center space-y-1">
+          <div className={cn(semanticSpacing.stack.xs, 'flex flex-col items-center')}>
             {Icon && (
               <div className={cn('shrink-0', styles.icon)}>
                 <Icon className="size-5" />
               </div>
             )}
             {change !== undefined && (
-              <div className={cn('flex items-center gap-0.5 text-xs opacity-0 group-hover:opacity-100 transition-opacity', trendColors[trend])}>
+              <div
+                className={cn(
+                  `flex items-center ${semanticSpacing.gap.xs} text-xs opacity-0 group-hover:opacity-100 transition-opacity`,
+                  trendColors[trend]
+                )}
+              >
                 {trend === 'up' && <ArrowUpIcon className="size-3" />}
                 {trend === 'down' && <ArrowDownIcon className="size-3" />}
-                <span className="font-medium">{change > 0 ? '+' : ''}{change}%</span>
+                <span className={`${semanticTypography.label}`}>
+                  {change > 0 ? '+' : ''}
+                  {change}%
+                </span>
               </div>
             )}
           </div>
@@ -199,14 +258,19 @@ export function KpiCard({
         </div>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col justify-center">
-        <div className="space-y-2">
-          <div className="flex items-baseline space-x-2">
+        <div className={`${semanticSpacing.stack.xs}`}>
+          <div className={cn(semanticSpacing.inline.xs, 'flex items-baseline')}>
             <p className={cn('kpi-value', styles.value)}>{formatValue(value)}</p>
             {change !== undefined && (
-              <div className={cn('kpi-change flex items-center gap-1', trendColors[trend])}>
+              <div
+                className={cn(
+                  `kpi-change flex items-center ${semanticSpacing.gap.xs}`,
+                  trendColors[trend]
+                )}
+              >
                 {trend === 'up' && <ArrowUpIcon className="size-3" />}
                 {trend === 'down' && <ArrowDownIcon className="size-3" />}
-                <span className="font-medium">
+                <span className={`${semanticTypography.label}`}>
                   {change > 0 ? '+' : ''}
                   {change}%
                 </span>
@@ -214,7 +278,9 @@ export function KpiCard({
             )}
           </div>
           {(subtitle || changeLabel) && (
-            <p className="truncate text-sm text-muted-foreground">{subtitle || changeLabel}</p>
+            <p className={cn(semanticTypography.body, 'truncate text-muted-foreground')}>
+              {subtitle || changeLabel}
+            </p>
           )}
         </div>
       </CardContent>

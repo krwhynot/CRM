@@ -1,4 +1,10 @@
 import { AlertCircle, CheckCircle } from 'lucide-react'
+import {
+  semanticSpacing,
+  semanticTypography,
+  semanticRadius,
+  semanticColors,
+} from '@/styles/tokens'
 
 interface FormAlertProps {
   type: 'error' | 'success'
@@ -10,10 +16,10 @@ export function FormAlert({ type, message }: FormAlertProps) {
 
   return (
     <div
-      className={`flex items-center gap-2 rounded-md p-3 text-sm ${
+      className={`flex items-center ${semanticSpacing.gap.xs} ${semanticRadius.md} ${semanticSpacing.layoutPadding.lg} ${semanticTypography.body} ${
         isError
-          ? 'border border-red-200 bg-red-50 text-red-600'
-          : 'border border-green-200 bg-green-50 text-green-600'
+          ? `border ${semanticColors.border.danger} ${semanticColors.background.danger} ${semanticColors.text.danger}`
+          : `border ${semanticColors.border.success} ${semanticColors.background.success} ${semanticColors.text.success}`
       }`}
     >
       {isError ? <AlertCircle size={16} /> : <CheckCircle size={16} />}

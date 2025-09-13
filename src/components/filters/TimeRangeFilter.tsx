@@ -2,21 +2,18 @@ import { Calendar, ChevronDown, Clock, Zap, RotateCcw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Calendar as CalendarComponent } from '@/components/ui/calendar'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { format } from 'date-fns'
 import type { TimeRangeType, TimeRangeOption } from '@/types/filters.types'
 
@@ -55,7 +52,7 @@ const QUICK_PRESET_GROUPS = {
   recent: [
     { value: 'last_week' as TimeRangeType, label: 'Last Week', icon: RotateCcw },
     { value: 'last_month' as TimeRangeType, label: 'Last Month', icon: RotateCcw },
-  ]
+  ],
 }
 
 export function TimeRangeFilter({
@@ -68,9 +65,9 @@ export function TimeRangeFilter({
   isLoading = false,
   compact = false,
   showQuickPresets = false,
-  showLabel = true
+  showLabel = true,
 }: TimeRangeFilterProps) {
-  const selectedOption = TIME_RANGE_OPTIONS.find(option => option.value === value)
+  const selectedOption = TIME_RANGE_OPTIONS.find((option) => option.value === value)
   const displayLabel = compact ? selectedOption?.shortLabel : selectedOption?.label
 
   const getDisplayText = () => {
@@ -81,44 +78,63 @@ export function TimeRangeFilter({
   }
 
   return (
-    <div className="flex flex-col space-y-2">
+    <div className={cn(semanticSpacing.stack.xs, 'flex flex-col')}>
       {showLabel && !compact && (
-        <label className="text-xs font-medium text-muted-foreground">
+        <label
+          className={cn(
+            semanticTypography.caption,
+            semanticTypography.label,
+            'text-muted-foreground'
+          )}
+        >
           Time Range
         </label>
       )}
-      
+
       {/* Quick Preset Buttons */}
       {showQuickPresets && !compact && (
-        <div className="space-y-3">
-          <div className="flex items-center space-x-2">
+        <div className={`${semanticSpacing.stack.sm}`}>
+          <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
             <Zap className="size-3 text-muted-foreground" />
-            <span className="text-xs font-medium text-muted-foreground">
+            <span
+              className={cn(
+                semanticTypography.caption,
+                semanticTypography.label,
+                'text-muted-foreground'
+              )}
+            >
               Quick Presets
             </span>
           </div>
-          
+
           {/* Popular Presets */}
-          <div className="flex flex-wrap gap-2">
+          <div className={cn(semanticSpacing.gap.xs, 'flex flex-wrap')}>
             {QUICK_PRESET_GROUPS.popular.map((preset) => {
               const IconComponent = preset.icon
               const isActive = value === preset.value
-              
+
               return (
                 <TooltipProvider key={preset.value}>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
-                        variant={isActive ? "default" : "outline"}
+                        variant={isActive ? 'default' : 'outline'}
                         size="sm"
                         onClick={() => onChange(preset.value)}
-                        className={`h-8 px-3 ${isActive ? 'ring-2 ring-primary' : ''}`}
+                        className={cn(
+                          semanticSpacing.compactX,
+                          'h-8',
+                          isActive ? 'ring-2 ring-primary' : ''
+                        )}
                         disabled={isLoading}
                       >
                         <IconComponent className="mr-1 size-3" />
-                        <span className="text-xs">{preset.label}</span>
+                        <span className={`${semanticTypography.caption}`}>{preset.label}</span>
                         {isActive && (
-                          <Badge variant="secondary" className="ml-1 h-4 px-1">
+                          <Badge
+                            variant="secondary"
+                            className={cn(semanticSpacing.minimalX, 'ml-1 h-4')}
+                          >
                             Active
                           </Badge>
                         )}
@@ -132,22 +148,27 @@ export function TimeRangeFilter({
               )
             })}
           </div>
-          
+
           {/* Recent Presets */}
-          <div className="flex flex-wrap gap-2">
+          <div className={cn(semanticSpacing.gap.xs, 'flex flex-wrap')}>
             {QUICK_PRESET_GROUPS.recent.map((preset) => {
               const IconComponent = preset.icon
               const isActive = value === preset.value
-              
+
               return (
                 <TooltipProvider key={preset.value}>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
-                        variant={isActive ? "default" : "secondary"}
+                        variant={isActive ? 'default' : 'secondary'}
                         size="sm"
                         onClick={() => onChange(preset.value)}
-                        className={`h-7 px-2 text-xs ${isActive ? 'ring-2 ring-primary' : ''}`}
+                        className={cn(
+                          semanticSpacing.compactX,
+                          semanticTypography.caption,
+                          'h-7',
+                          isActive ? 'ring-2 ring-primary' : ''
+                        )}
                         disabled={isLoading}
                       >
                         <IconComponent className="mr-1 size-3" />
@@ -162,7 +183,7 @@ export function TimeRangeFilter({
               )
             })}
           </div>
-          
+
           <Separator />
         </div>
       )}
@@ -171,11 +192,11 @@ export function TimeRangeFilter({
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
-            size={compact ? "sm" : "default"}
+            size={compact ? 'sm' : 'default'}
             className="justify-between"
             disabled={isLoading}
           >
-            <div className="flex items-center space-x-2">
+            <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
               <Calendar className="size-4" />
               <span>{getDisplayText()}</span>
             </div>
@@ -199,15 +220,24 @@ export function TimeRangeFilter({
 
       {/* Custom Date Range Picker */}
       {value === 'custom' && (
-        <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
+        <div
+          className={cn(
+            semanticSpacing.stack.xs,
+            'flex flex-col sm:flex-row sm:space-x-2 sm:space-y-0'
+          )}
+        >
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                size={compact ? "sm" : "default"}
-                className={`justify-start text-left font-normal ${!dateFrom ? 'text-muted-foreground' : ''}`}
+                size={compact ? 'sm' : 'default'}
+                className={cn(
+                  semanticTypography.body,
+                  'justify-start text-left',
+                  !dateFrom ? 'text-muted-foreground' : ''
+                )}
               >
-                <Calendar className="mr-2 size-4" />
+                <Calendar className={cn(semanticSpacing.rightGap.xs, 'size-4')} />
                 {dateFrom ? format(dateFrom, 'MMM d, yyyy') : 'Start date'}
               </Button>
             </PopoverTrigger>
@@ -225,10 +255,14 @@ export function TimeRangeFilter({
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                size={compact ? "sm" : "default"}
-                className={`justify-start text-left font-normal ${!dateTo ? 'text-muted-foreground' : ''}`}
+                size={compact ? 'sm' : 'default'}
+                className={cn(
+                  semanticTypography.body,
+                  'justify-start text-left',
+                  !dateTo ? 'text-muted-foreground' : ''
+                )}
               >
-                <Calendar className="mr-2 size-4" />
+                <Calendar className={cn(semanticSpacing.rightGap.xs, 'size-4')} />
                 {dateTo ? format(dateTo, 'MMM d, yyyy') : 'End date'}
               </Button>
             </PopoverTrigger>

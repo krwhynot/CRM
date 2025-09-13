@@ -86,3 +86,6 @@ accessibility-*.html
 README-*.md
 POST_MIGRATION_*.md
 *-template.md
+
+*storybook.log
+storybook-static

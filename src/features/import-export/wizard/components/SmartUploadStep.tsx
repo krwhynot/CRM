@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+// Removed unused: import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ImportConfig } from '../hooks/useSmartImport'
+import { semanticSpacing, semanticTypography, fontWeight, semanticRadius } from '@/styles/tokens'
 
 interface SmartUploadStepProps {
   file: File | null
@@ -35,7 +36,7 @@ const FILE_REQUIREMENTS = {
   encoding: 'UTF-8',
   requirements: [
     'Spreadsheet saved as CSV format',
-    'First row should contain column headers', 
+    'First row should contain column headers',
     'Must include company/organization names',
     'Files up to 5MB accepted',
     'Large files may take a few minutes to process',
@@ -126,12 +127,11 @@ export function SmartUploadStep({
   }, [config.entityType, onConfigUpdate])
 
   return (
-    <div className={cn('space-y-3', className)}>
-
+    <div className={cn(semanticSpacing.stack.lg, className)}>
       {/* File Upload Area */}
       <Card>
-        <CardContent className="p-3">
-          <div className="space-y-2">
+        <CardContent className={semanticSpacing.cardContainer}>
+          <div className={semanticSpacing.stack.xs}>
             {!file ? (
               // Upload Interface
               <div
@@ -139,14 +139,14 @@ export function SmartUploadStep({
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 className={cn(
-                  'border-2 border-dashed rounded-lg p-4 text-center transition-colors',
+                  `border-2 border-dashed ${semanticRadius.lg} ${semanticSpacing.layoutPadding.lg} text-center transition-colors`,
                   'min-h-[100px] flex flex-col justify-center',
                   isDragOver
                     ? 'border-primary bg-primary/5'
                     : 'border-slate-300 hover:border-slate-400'
                 )}
               >
-                <div className="space-y-2">
+                <div className={semanticSpacing.stack.xs}>
                   <div className="flex justify-center">
                     <div
                       className={cn(
@@ -159,32 +159,42 @@ export function SmartUploadStep({
                   </div>
 
                   <div>
-                    <h3 className="text-sm font-semibold text-foreground">
+                    <h3
+                      className={`${semanticTypography.body} ${fontWeight.semibold} text-foreground`}
+                    >
                       {isDragOver ? 'Drop your file here' : 'Choose your organization data'}
                     </h3>
-                    <p className="text-xs text-muted-foreground">
+                    <p className={`${semanticTypography.caption} text-muted-foreground`}>
                       Drag & drop your spreadsheet or browse to select
                     </p>
                   </div>
 
-                  <div className="flex flex-col justify-center gap-2 sm:flex-row">
+                  <div
+                    className={`flex flex-col justify-center ${semanticSpacing.gap.xs} sm:flex-row`}
+                  >
                     <Button
                       onClick={handleBrowseClick}
-                      className="h-8 px-3 text-sm"
+                      className={`h-8 ${semanticSpacing.horizontalPadding.lg} ${semanticTypography.caption}`}
                     >
-                      <FileSpreadsheet className="mr-2 size-4" />
+                      <FileSpreadsheet className={`${semanticSpacing.rightGap.xs} size-4`} />
                       Browse Files
                     </Button>
 
-                    <Button variant="outline" onClick={onDownloadTemplate} className="h-8 px-3 text-sm">
-                      <Download className="mr-2 size-4" />
+                    <Button
+                      variant="outline"
+                      onClick={onDownloadTemplate}
+                      className={`h-8 ${semanticSpacing.horizontalPadding.lg} ${semanticTypography.caption}`}
+                    >
+                      <Download className={`${semanticSpacing.rightGap.xs} size-4`} />
                       Download Template
                     </Button>
                   </div>
 
                   {/* File Requirements */}
-                  <div className="text-xs text-muted-foreground">
-                    <div className="flex items-center justify-center space-x-3 text-xs">
+                  <div className={`${semanticTypography.caption} text-muted-foreground`}>
+                    <div
+                      className={`flex items-center justify-center ${semanticSpacing.gap.lg} ${semanticTypography.caption}`}
+                    >
                       <span>Excel or CSV files</span>
                       <span>•</span>
                       <span>Up to {FILE_REQUIREMENTS.maxSize}</span>
@@ -197,33 +207,43 @@ export function SmartUploadStep({
             ) : (
               // File Preview
               <Card className="bg-success/5/50 border-success/20">
-                <CardContent className="p-4">
+                <CardContent className={semanticSpacing.layoutPadding.lg}>
                   <div className="flex items-start justify-between">
-                    <div className="flex items-start space-x-3">
-                      <div className="flex size-10 items-center justify-center rounded-lg bg-success/10">
+                    <div className={`flex items-start ${semanticSpacing.gap.lg}`}>
+                      <div className="flex size-10 items-center justify-center ${semanticRadius.default}-lg bg-success/10">
                         <FileText className="size-5 text-success" />
                       </div>
-                      <div className="space-y-1">
-                        <h4 className="font-medium text-foreground">{file.name}</h4>
-                        <p className="text-sm text-muted-foreground">
+                      <div className={semanticSpacing.stack.xxs}>
+                        <h4 className="${fontWeight.medium} text-foreground">{file.name}</h4>
+                        <p className={`${semanticTypography.body} text-muted-foreground`}>
                           {formatFileSize(file.size)} • {file.type || 'CSV file'}
                         </p>
-                        <div className="flex items-center space-x-2">
+                        <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
                           <CheckCircle2 className="size-4 text-success" />
-                          <span className="text-sm text-success">File uploaded successfully</span>
+                          <span className={`${semanticTypography.body} text-success`}>
+                            File uploaded successfully
+                          </span>
                         </div>
                         {isLargeFile && (
-                          <div className="mt-2 flex items-center space-x-2">
+                          <div
+                            className={`${semanticSpacing.topGap.xs} flex items-center ${semanticSpacing.gap.xs}`}
+                          >
                             <AlertCircle className="size-4 text-amber-500" />
-                            <span className="text-sm text-amber-600">
-                              Large file detected - estimated processing time: {getProcessingEstimate(file.size)}
+                            <span className={`${semanticTypography.body} text-amber-600`}>
+                              Large file detected - estimated processing time:{' '}
+                              {getProcessingEstimate(file.size)}
                             </span>
                           </div>
                         )}
                       </div>
                     </div>
 
-                    <Button variant="ghost" size="sm" onClick={onClearFile} className="size-8 p-0">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={onClearFile}
+                      className={`size-8 ${semanticSpacing.zero}`}
+                    >
                       <X className="size-4" />
                     </Button>
                   </div>
@@ -233,8 +253,8 @@ export function SmartUploadStep({
 
             {/* Upload Progress */}
             {uploadProgress > 0 && uploadProgress < 100 && (
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
+              <div className={semanticSpacing.stack.xs}>
+                <div className={`flex justify-between ${semanticTypography.body}`}>
                   <span className="text-muted-foreground">Uploading...</span>
                   <span className="text-muted-foreground">{uploadProgress}%</span>
                 </div>
@@ -244,17 +264,20 @@ export function SmartUploadStep({
           </div>
         </CardContent>
       </Card>
-
       {/* Compact AI Enhancement & Requirements */}
-      <div className="grid gap-2 md:grid-cols-2">
+      <div className={`grid ${semanticSpacing.gap.xs} md:grid-cols-2`}>
         {/* AI Enhancement Notice */}
         <Card className="border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50">
-          <CardContent className="p-3">
-            <div className="flex items-center space-x-2">
+          <CardContent className={semanticSpacing.compactContainer}>
+            <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
               <Sparkles className="size-4 text-amber-500" />
-              <h4 className="text-sm font-medium text-foreground">AI-Enhanced</h4>
+              <h4 className="${semanticTypography.body} ${fontWeight.medium} text-foreground">
+                AI-Enhanced
+              </h4>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p
+              className={`${semanticSpacing.topGap.xxs} ${semanticTypography.caption} text-muted-foreground`}
+            >
               Smart mapping & validation
             </p>
           </CardContent>
@@ -262,18 +285,21 @@ export function SmartUploadStep({
 
         {/* File Requirements Card */}
         <Card className="bg-muted/50">
-          <CardContent className="p-3">
-            <div className="flex items-center space-x-2">
+          <CardContent className={semanticSpacing.compactContainer}>
+            <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
               <FileSpreadsheet className="size-4 text-muted-foreground" />
-              <h4 className="text-sm font-medium text-foreground">Requirements</h4>
+              <h4 className="${semanticTypography.body} ${fontWeight.medium} text-foreground">
+                Requirements
+              </h4>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p
+              className={`${semanticSpacing.topGap.xxs} ${semanticTypography.caption} text-muted-foreground`}
+            >
               CSV • Max 5MB • UTF-8
             </p>
           </CardContent>
         </Card>
       </div>
-
       {/* Error Display */}
       {error && (
         <Alert variant="destructive">
@@ -281,13 +307,12 @@ export function SmartUploadStep({
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-
       {/* Warnings Display */}
       {warnings.length > 0 && (
         <Alert className="border-amber-200 bg-amber-50">
           <AlertCircle className="size-4 text-amber-600" />
           <AlertDescription>
-            <div className="space-y-1">
+            <div className={`${semanticSpacing.stack.xs}`}>
               {warnings.map((warning, idx) => (
                 <div key={idx} className="text-warning">
                   {warning}
@@ -297,7 +322,6 @@ export function SmartUploadStep({
           </AlertDescription>
         </Alert>
       )}
-
       {/* Hidden file input */}
       <input
         ref={fileInputRef}

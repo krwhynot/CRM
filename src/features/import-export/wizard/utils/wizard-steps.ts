@@ -1,5 +1,5 @@
-import type React from 'react'
-import { Upload, Map, Eye, Download, CheckCircle } from 'lucide-react'
+import type { ComponentType } from 'react'
+import { Upload, Eye, Download, CheckCircle } from 'lucide-react'
 
 // Simplified 3-step wizard
 export type WizardStep = 'upload' | 'review' | 'import' | 'complete'
@@ -8,7 +8,7 @@ interface WizardStepConfig {
   id: WizardStep
   title: string
   description: string
-  icon: React.ComponentType<{ className?: string }>
+  icon: ComponentType<{ className?: string }>
   completed: boolean
   current: boolean
 }

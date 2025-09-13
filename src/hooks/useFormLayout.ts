@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import type { FieldValues, UseFormReturn, RegisterOptions } from 'react-hook-form'
+import { semanticSpacing, semanticRadius } from '@/styles/tokens'
 
 export interface FormSection<T extends FieldValues> {
   id: string
@@ -73,23 +74,25 @@ export const useFormLayout = <T extends FieldValues>({
   const getLayoutClass = useCallback((layout?: FormSection<T>['layout']): string => {
     switch (layout) {
       case 'single':
-        return 'space-y-4'
+        return semanticSpacing.stack.lg
       case 'double':
-        return 'grid grid-cols-1 md:grid-cols-2 gap-4'
+        return `grid grid-cols-1 md:grid-cols-2 ${semanticSpacing.gap.lg}`
       case 'triple':
-        return 'grid grid-cols-1 md:grid-cols-3 gap-4'
+        return `grid grid-cols-1 md:grid-cols-3 ${semanticSpacing.gap.lg}`
       case 'auto':
-        return 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'
+        return `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ${semanticSpacing.gap.lg}`
       default:
-        return 'space-y-4'
+        return semanticSpacing.stack.lg
     }
   }, [])
 
   // Get entity-specific section styling
   const getSectionClassName = useCallback(
     (section: FormSection<T>): string => {
-      const baseClass = `space-y-6 ${section.className || ''}`
-      return entityType === 'activity' ? `${baseClass} bg-blue-50/50 p-4 rounded-lg` : baseClass
+      const baseClass = `${semanticSpacing.stack.xl} ${section.className || ''}`
+      return entityType === 'activity'
+        ? `${baseClass} bg-blue-50/50 ${semanticSpacing.cardContainer} ${semanticRadius.card}`
+        : baseClass
     },
     [entityType]
   )

@@ -1,11 +1,7 @@
 module.exports = {
   root: true,
   env: { browser: true, es2020: true, node: true },
-  extends: [
-    'eslint:recommended',
-    'plugin:react/recommended',
-    'plugin:tailwindcss/recommended',
-  ],
+  extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:tailwindcss/recommended', 'plugin:storybook/recommended'],
   ignorePatterns: ['dist', '.eslintrc.cjs', 'node_modules', 'docs', 'tests', 'tests.backup.*', '*.backup.*', 'backups', 'src/utils/password-reset-test.ts', 'src/lib/supabase.ts'],
   overrides: [
     {
@@ -147,6 +143,9 @@ module.exports = {
     // 'crm-architecture/enforce-feature-imports': 'warn',
     // 'crm-architecture/validate-client-state': 'error',
     
+    // Design Token Enforcement Rules - Added to existing no-restricted-syntax patterns
+    // Will integrate these into custom plugin in future phase
+    
     // UI/UX Compliance Rules - Prevent arbitrary CSS values
     'no-restricted-syntax': [
       'error',
@@ -198,6 +197,40 @@ module.exports = {
       {
         selector: "JSXOpeningElement[name.name='DataTable']:not([typeParameters])",
         message: 'DataTable components should use TypeScript generics for type safety. Use DataTable<EntityType> instead of DataTable.'
+      },
+      // Design Token Enforcement - Spacing Rules
+      {
+        selector: "Literal[value=/^p-\\d+$/]",
+        message: 'Use semantic spacing tokens instead of hardcoded padding. Example: use "semanticSpacing.card" instead of "p-4"'
+      },
+      {
+        selector: "Literal[value=/^m-\\d+$/]",
+        message: 'Use semantic spacing tokens instead of hardcoded margin. Example: use "semanticSpacing.gap.md" instead of "m-4"'
+      },
+      {
+        selector: "Literal[value=/^gap-\\d+$/]",
+        message: 'Use semantic spacing tokens instead of hardcoded gap. Example: use "semanticSpacing.gap.xs" instead of "gap-2"'
+      },
+      {
+        selector: "Literal[value=/^space-y-\\d+$/]",
+        message: 'Use semantic spacing tokens instead of hardcoded space-y. Example: use "semanticSpacing.stack.md" instead of "space-y-4"'
+      },
+      {
+        selector: "Literal[value=/^space-x-\\d+$/]",
+        message: 'Use semantic spacing tokens instead of hardcoded space-x. Example: use "semanticSpacing.gap.lg" instead of "space-x-6"'
+      },
+      // Design Token Enforcement - Typography Rules
+      {
+        selector: "Literal[value=/^text-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl)$/]",
+        message: 'Use semantic typography tokens instead of hardcoded text sizes. Example: use "semanticTypography.body" instead of "text-base"'
+      },
+      {
+        selector: "Literal[value=/^font-(light|normal|medium|semibold|bold|extrabold)$/]",
+        message: 'Use semantic typography tokens instead of hardcoded font weights. Example: use "semanticTypography.h2" instead of "font-semibold"'
+      },
+      {
+        selector: "Literal[value=/^leading-(none|tight|normal|relaxed|loose)$/]",
+        message: 'Use semantic typography tokens instead of hardcoded line heights. Example: use "semanticTypography.body" instead of "leading-normal"'
       }
     ]
   },

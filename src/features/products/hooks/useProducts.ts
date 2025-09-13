@@ -2,11 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { resolveOrganization } from '@/lib/organization-resolution'
 import { validateAuthentication } from '@/lib/error-utils'
-import type {
-  ProductInsert,
-  ProductUpdate,
-  ProductFilters,
-} from '@/types/entities'
+import type { ProductInsert, ProductUpdate, ProductFilters } from '@/types/entities'
 import type { ProductWithPrincipal } from '@/types/product-extensions'
 import type { Database } from '@/lib/database.types'
 import type { ProductWithPrincipalData } from '../components/ProductDialogs'
@@ -23,16 +19,20 @@ export const productKeys = {
 }
 
 // Helper function to transform database results to ProductWithPrincipal
-function transformProductData<T extends { principal?: { name?: string } }>(data: T): T & ProductWithPrincipal {
+function transformProductData<T extends { principal?: { name?: string } }>(
+  data: T
+): T & ProductWithPrincipal {
   return {
     ...data,
     principal_name: data.principal?.name,
     // Remove nested principal object since we're flattening it
-    principal: undefined
+    principal: undefined,
   } as T & ProductWithPrincipal
 }
 
-function transformProductArray<T extends { principal?: { name?: string } }>(data: T[]): (T & ProductWithPrincipal)[] {
+function transformProductArray<T extends { principal?: { name?: string } }>(
+  data: T[]
+): (T & ProductWithPrincipal)[] {
   return data.map(transformProductData)
 }
 
@@ -85,7 +85,7 @@ export function useProducts(filters?: ProductFilters) {
       const { data, error } = await query
 
       if (error) throw error
-      
+
       return transformProductArray(data)
     },
     staleTime: 5 * 60 * 1000, // 5 minutes

@@ -1,14 +1,20 @@
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { MessageSquare, FileText, Phone, Mail, MapPin, Briefcase } from 'lucide-react'
+import { Crown, Shield, Users, Star } from 'lucide-react'
+// Removed unused: import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import { useIsMobile } from '@/hooks/useMediaQuery'
-import type { ContactWithOrganization } from '@/types/entities'
+import { semanticSpacing, semanticTypography, semanticRadius, fontWeight } from '@/styles/tokens'
 
 // Extended contact interface with weekly context and decision authority tracking
-interface ContactWithWeeklyContext extends ContactWithOrganization {
+interface ContactWithWeeklyContext {
+  id: string
+  first_name?: string
+  last_name?: string
+  email?: string
+  phone?: string
+  title?: string
+  department?: string
+  decision_authority?: string
   decision_authority_level?: 'high' | 'medium' | 'low'
+  purchase_influence?: string
   purchase_influence_score?: number
   recent_interactions_count?: number
   last_interaction_date?: string | Date
@@ -17,281 +23,223 @@ interface ContactWithWeeklyContext extends ContactWithOrganization {
   budget_authority?: boolean
   technical_authority?: boolean
   user_authority?: boolean
+  is_primary_contact?: boolean
+  organization?: {
+    name: string
+    type: string
+    segment?: string
+  }
 }
 
 interface ContactExpandedContentProps {
   contact: ContactWithWeeklyContext
-  isExpanded: boolean
-  showOrganization?: boolean
 }
 
-export function ContactExpandedContent({ 
-  contact, 
-  isExpanded,
-  showOrganization = true 
-}: ContactExpandedContentProps) {
-  const [activeTab, setActiveTab] = useState<'interactions' | 'details'>('details')
-  const isMobile = useIsMobile()
-
+export function ContactExpandedContent({ contact }: ContactExpandedContentProps) {
   return (
-    <div className={cn(
-      "bg-gray-50/50 border-l-4 border-primary/20",
-      isMobile ? "ml-4" : "ml-10"
-    )}>
-      {/* Tab Header */}
-      <div className={cn(
-        "flex items-center justify-between border-b bg-white",
-        isMobile ? "px-4 py-3 flex-col gap-3" : "px-6 py-2 flex-row"
-      )}>
-        <div className={cn(
-          "flex gap-1",
-          isMobile ? "w-full justify-center" : ""
-        )}>
-          <Button
-            variant={activeTab === 'details' ? 'default' : 'ghost'}
-            size={isMobile ? "default" : "sm"}
-            onClick={() => setActiveTab('details')}
-            className={cn(
-              isMobile ? "flex-1 h-12 touch-manipulation" : ""
-            )}
-          >
-            <FileText className={cn(
-              isMobile ? "h-4 w-4 mr-2" : "h-3 w-3 mr-1"
-            )} />
-            Details
-          </Button>
-          <Button
-            variant={activeTab === 'interactions' ? 'default' : 'ghost'}
-            size={isMobile ? "default" : "sm"}
-            onClick={() => setActiveTab('interactions')}
-            className={cn(
-              isMobile ? "flex-1 h-12 touch-manipulation" : ""
-            )}
-          >
-            <MessageSquare className={cn(
-              isMobile ? "h-4 w-4 mr-2" : "h-3 w-3 mr-1"
-            )} />
-            Activity
-          </Button>
-        </div>
-      </div>
-
-      {/* Tab Content */}
-      <div className={cn(
-        isMobile ? "p-4" : "p-6"
-      )}>
-        {activeTab === 'details' ? (
-          <ContactDetails contact={contact} showOrganization={showOrganization} />
-        ) : (
-          <ContactInteractions contact={contact} />
-        )}
-      </div>
-    </div>
-  )
-}
-
-function ContactDetails({ 
-  contact, 
-  showOrganization 
-}: { 
-  contact: ContactWithWeeklyContext
-  showOrganization: boolean 
-}) {
-  const isMobile = useIsMobile()
-  
-  return (
-    <div className={cn(
-      "gap-6",
-      isMobile ? "grid grid-cols-1 space-y-4" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-    )}>
-      {/* Contact Information */}
-      <div>
-        <h4 className={cn(
-          "mb-2 font-medium text-gray-900",
-          isMobile ? "text-base" : ""
-        )}>Contact Information</h4>
-        <div className={cn(
-          "space-y-2 text-gray-600",
-          isMobile ? "text-base" : "text-sm"
-        )}>
-          {contact.email && (
-            <div className="flex items-center gap-2">
-              <Mail className="h-3 w-3" />
-              <a href={`mailto:${contact.email}`} className="hover:text-primary">
-                {contact.email}
-              </a>
-            </div>
-          )}
-          {contact.phone && (
-            <div className="flex items-center gap-2">
-              <Phone className="h-3 w-3" />
-              <a href={`tel:${contact.phone}`} className="hover:text-primary">
-                {contact.phone}
-              </a>
-            </div>
-          )}
-          {contact.title && (
-            <div className="flex items-center gap-2">
-              <Briefcase className="h-3 w-3" />
-              <span>{contact.title}</span>
-            </div>
-          )}
-          {contact.address && (
-            <div className="flex items-center gap-2">
-              <MapPin className="h-3 w-3" />
-              <span>{contact.address}</span>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Organization Information */}
-      {showOrganization && contact.organization && (
+    <div className={semanticSpacing.stack.xl}>
+      {/* Decision Authority & Purchase Influence Summary */}
+      <div className={cn('grid grid-cols-1 md:grid-cols-3', semanticSpacing.gap.xl)}>
         <div>
-          <h4 className={cn(
-            "mb-2 font-medium text-gray-900",
-            isMobile ? "text-base" : ""
-          )}>Organization</h4>
-          <div className={cn(
-            "space-y-1 text-gray-600",
-            isMobile ? "text-base" : "text-sm"
-          )}>
-            <div className="font-medium text-gray-900">{contact.organization.name}</div>
-            {contact.organization.type && (
+          <h4
+            className={cn(
+              `${semanticSpacing.bottomGap.sm} ${fontWeight.medium} text-foreground`,
+              semanticTypography.label
+            )}
+          >
+            Decision Authority
+          </h4>
+          <div className={semanticSpacing.stack.sm}>
+            <div className={`flex items-center ${semanticSpacing.gap.sm}`}>
+              {contact.decision_authority_level === 'high' || contact.budget_authority ? (
+                <Crown className="size-4 text-warning" />
+              ) : contact.decision_authority_level === 'medium' || contact.technical_authority ? (
+                <Shield className="size-4 text-primary" />
+              ) : (
+                <Users className="size-4 text-muted-foreground" />
+              )}
+              <span className={`${semanticTypography.body} ${fontWeight.medium}`}>
+                {contact.decision_authority_level === 'high' || contact.budget_authority
+                  ? 'High Authority'
+                  : contact.decision_authority_level === 'medium' || contact.technical_authority
+                    ? 'Medium Authority'
+                    : 'Limited Authority'}
+              </span>
+            </div>
+
+            <div
+              className={`${semanticSpacing.stack.xs} ${semanticTypography.caption} text-muted-foreground`}
+            >
+              {contact.budget_authority && (
+                <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
+                  <span className={`size-2 ${semanticRadius.badge} bg-success`}></span>
+                  Budget Authority
+                </div>
+              )}
+              {contact.technical_authority && (
+                <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
+                  <span className={`size-2 ${semanticRadius.badge} bg-primary`}></span>
+                  Technical Authority
+                </div>
+              )}
+              {contact.user_authority && (
+                <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
+                  <span className={`size-2 ${semanticRadius.badge} bg-secondary`}></span>
+                  User Authority
+                </div>
+              )}
+              {contact.decision_authority && (
+                <div>Legacy Authority: {contact.decision_authority}</div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h4
+            className={cn(
+              `${semanticSpacing.bottomGap.sm} ${fontWeight.medium} text-foreground`,
+              semanticTypography.label
+            )}
+          >
+            Purchase Influence
+          </h4>
+          <div className={semanticSpacing.stack.sm}>
+            {contact.purchase_influence_score ? (
+              <div className={`flex items-center ${semanticSpacing.gap.sm}`}>
+                <div
+                  className={`h-2 w-16 overflow-hidden ${semanticRadius.progressBackground} bg-muted`}
+                >
+                  <div
+                    className={cn(
+                      `h-full ${semanticRadius.progressBar}`,
+                      contact.purchase_influence_score >= 80
+                        ? 'bg-success'
+                        : contact.purchase_influence_score >= 60
+                          ? 'bg-warning'
+                          : 'bg-destructive'
+                    )}
+                    style={{ width: `${contact.purchase_influence_score}%` }}
+                  />
+                </div>
+                <span className={`${semanticTypography.body} ${fontWeight.medium}`}>
+                  {contact.purchase_influence_score}
+                </span>
+              </div>
+            ) : contact.purchase_influence ? (
+              <div className={`${semanticTypography.body} text-muted-foreground`}>
+                Influence Level: {contact.purchase_influence}
+              </div>
+            ) : (
+              <div className={`${semanticTypography.body} italic text-muted-foreground`}>
+                Not assessed
+              </div>
+            )}
+
+            {contact.high_value_contact && (
+              <div className={`flex items-center ${semanticSpacing.gap.xs} text-success`}>
+                <Star className="size-3" />
+                <span className={semanticTypography.caption}>High Value Contact</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <h4
+            className={cn(
+              `${semanticSpacing.bottomGap.sm} ${fontWeight.medium} text-foreground`,
+              semanticTypography.label
+            )}
+          >
+            Weekly Context
+          </h4>
+          <div
+            className={`${semanticSpacing.stack.xs} ${semanticTypography.body} text-muted-foreground`}
+          >
+            <div className="flex justify-between">
+              <span>Recent Interactions:</span>
+              <span className={fontWeight.medium}>{contact.recent_interactions_count || 0}</span>
+            </div>
+            {contact.last_interaction_date && (
+              <div className="flex justify-between">
+                <span>Last Contact:</span>
+                <span className={fontWeight.medium}>
+                  {new Date(contact.last_interaction_date).toLocaleDateString()}
+                </span>
+              </div>
+            )}
+            {contact.needs_follow_up && (
+              <div className={`flex items-center ${semanticSpacing.gap.xs} text-destructive`}>
+                <span className={semanticTypography.caption}>⚠️ Follow-up needed</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Original contact details */}
+      <div className={cn('grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3', semanticSpacing.gap.xl)}>
+        {/* Contact Information */}
+        <div>
+          <h4
+            className={cn(
+              `${semanticSpacing.bottomGap.sm} ${fontWeight.medium} text-foreground`,
+              semanticTypography.label
+            )}
+          >
+            Contact Information
+          </h4>
+          <div
+            className={`${semanticSpacing.stack.xs} ${semanticTypography.body} text-muted-foreground`}
+          >
+            {contact.email && <div>Email: {contact.email}</div>}
+            {contact.phone && <div>Phone: {contact.phone}</div>}
+            {contact.department && <div>Department: {contact.department}</div>}
+          </div>
+        </div>
+
+        {/* Organization Details */}
+        {contact.organization && (
+          <div>
+            <h4
+              className={cn(
+                `${semanticSpacing.bottomGap.sm} ${fontWeight.medium} text-foreground`,
+                semanticTypography.label
+              )}
+            >
+              Organization
+            </h4>
+            <div
+              className={`${semanticSpacing.stack.xs} ${semanticTypography.body} text-muted-foreground`}
+            >
+              <div>Name: {contact.organization.name}</div>
               <div>Type: {contact.organization.type}</div>
+              {contact.organization.segment && <div>Segment: {contact.organization.segment}</div>}
+            </div>
+          </div>
+        )}
+
+        {/* Role & Status Details */}
+        <div>
+          <h4
+            className={cn(
+              `${semanticSpacing.bottomGap.sm} ${fontWeight.medium} text-foreground`,
+              semanticTypography.label
             )}
-            {contact.organization.segment && (
-              <div>Segment: {contact.organization.segment}</div>
+          >
+            Role Details
+          </h4>
+          <div
+            className={`${semanticSpacing.stack.xs} ${semanticTypography.body} text-muted-foreground`}
+          >
+            {contact.title && <div>Title: {contact.title}</div>}
+            <div>Primary Contact: {contact.is_primary_contact ? 'Yes' : 'No'}</div>
+            {contact.purchase_influence && (
+              <div>Legacy Influence: {contact.purchase_influence}</div>
             )}
           </div>
         </div>
-      )}
-
-      {/* Decision Authority & Influence */}
-      <div>
-        <h4 className={cn(
-          "mb-2 font-medium text-gray-900",
-          isMobile ? "text-base" : ""
-        )}>Authority & Influence</h4>
-        <div className="space-y-2">
-          {/* Decision Authority Level */}
-          {contact.decision_authority_level && (
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500">Decision Authority:</span>
-              <Badge 
-                variant="secondary" 
-                className={cn(
-                  "text-xs",
-                  contact.decision_authority_level === 'high' ? "border-green-200 bg-green-50 text-green-700" :
-                  contact.decision_authority_level === 'medium' ? "border-yellow-200 bg-yellow-50 text-yellow-700" :
-                  "border-gray-200 bg-gray-50 text-gray-700"
-                )}
-              >
-                {contact.decision_authority_level}
-              </Badge>
-            </div>
-          )}
-
-          {/* Purchase Influence Score */}
-          {contact.purchase_influence_score && (
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500">Purchase Influence:</span>
-              <Badge variant="secondary" className="border-blue-200 bg-blue-50 text-xs text-blue-700">
-                {contact.purchase_influence_score}%
-              </Badge>
-            </div>
-          )}
-
-          {/* Authority Types */}
-          <div className="flex flex-wrap gap-1">
-            {contact.budget_authority && (
-              <Badge variant="secondary" className="border-green-200 bg-green-50 text-xs text-green-700">
-                Budget Authority
-              </Badge>
-            )}
-            {contact.technical_authority && (
-              <Badge variant="secondary" className="border-blue-200 bg-blue-50 text-xs text-blue-700">
-                Technical Authority
-              </Badge>
-            )}
-            {contact.user_authority && (
-              <Badge variant="secondary" className="border-purple-200 bg-purple-50 text-xs text-purple-700">
-                User Authority
-              </Badge>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Recent Activity */}
-      <div>
-        <h4 className={cn(
-          "mb-2 font-medium text-gray-900",
-          isMobile ? "text-base" : ""
-        )}>Recent Activity</h4>
-        <div className={cn(
-          "space-y-1 text-gray-600",
-          isMobile ? "text-base" : "text-sm"
-        )}>
-          {contact.recent_interactions_count ? (
-            <div>{contact.recent_interactions_count} recent interactions</div>
-          ) : (
-            <span className="italic text-gray-400">No recent activity</span>
-          )}
-          {contact.last_interaction_date && (
-            <div>
-              Last interaction: {new Date(contact.last_interaction_date).toLocaleDateString()}
-            </div>
-          )}
-          {contact.needs_follow_up && (
-            <Badge variant="destructive" className="text-xs">
-              Needs Follow-up
-            </Badge>
-          )}
-        </div>
-      </div>
-
-      {/* Additional Info */}
-      <div>
-        <h4 className={cn(
-          "mb-2 font-medium text-gray-900",
-          isMobile ? "text-base" : ""
-        )}>Additional Information</h4>
-        <div className={cn(
-          "space-y-1 text-gray-600",
-          isMobile ? "text-base" : "text-sm"
-        )}>
-          {contact.is_primary_contact && (
-            <Badge variant="secondary" className="border-yellow-200 bg-yellow-50 text-xs text-yellow-700">
-              Primary Contact
-            </Badge>
-          )}
-          {contact.high_value_contact && (
-            <Badge variant="secondary" className="border-green-200 bg-green-50 text-xs text-green-700">
-              High Value Contact
-            </Badge>
-          )}
-          {contact.notes && (
-            <div>
-              <span className="font-medium">Notes:</span>
-              <p className="mt-1">{contact.notes}</p>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function ContactInteractions({ contact }: { contact: ContactWithWeeklyContext }) {
-  return (
-    <div className="space-y-4">
-      <div className="text-center text-gray-500">
-        <MessageSquare className="mx-auto h-8 w-8 mb-2" />
-        <p>Interaction timeline coming soon</p>
-        <p className="text-sm mt-1">
-          Integration with interaction tracking system
-        </p>
       </div>
     </div>
   )

@@ -9,7 +9,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { toast } from 'sonner'
@@ -63,7 +63,7 @@ describe('QuickInteractionBar', () => {
     vi.clearAllMocks()
     
     // Setup default mock implementation
-    ;(useCreateInteraction as any).mockReturnValue(mockCreateInteraction)
+    ;(useCreateInteraction as ReturnType<typeof vi.fn>).mockReturnValue(mockCreateInteraction)
     
     // Reset mock functions
     mockCreateInteraction.mutateAsync.mockResolvedValue({ id: 'new-interaction' })
@@ -356,7 +356,7 @@ describe('QuickInteractionBar', () => {
       
       // Mock pending state
       mockCreateInteraction.isPending = true
-      ;(useCreateInteraction as any).mockReturnValue(mockCreateInteraction)
+      ;(useCreateInteraction as ReturnType<typeof vi.fn>).mockReturnValue(mockCreateInteraction)
       
       render(<QuickInteractionBar {...defaultProps} />, { wrapper: createWrapper() })
 
@@ -369,7 +369,7 @@ describe('QuickInteractionBar', () => {
 
     it('should show "Adding..." text during submission', () => {
       mockCreateInteraction.isPending = true
-      ;(useCreateInteraction as any).mockReturnValue(mockCreateInteraction)
+      ;(useCreateInteraction as ReturnType<typeof vi.fn>).mockReturnValue(mockCreateInteraction)
       
       render(<QuickInteractionBar {...defaultProps} />, { wrapper: createWrapper() })
 

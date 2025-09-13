@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { cn } from '@/lib/utils'
 import {
   Card,
   CardContent,
@@ -11,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { semanticSpacing, semanticTypography, semanticRadius } from '@/styles/tokens'
 import { AlertCircle, Eye, EyeOff } from 'lucide-react'
 
 interface LoginFormProps {
@@ -48,21 +50,36 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
   return (
     <Card className="mx-auto w-full max-w-md">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
+        <CardTitle className={cn(semanticTypography.h2, semanticTypography.h2)}>
+          Welcome Back
+        </CardTitle>
         <CardDescription>Sign in to your KitchenPantry CRM account</CardDescription>
       </CardHeader>
 
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
+        <CardContent className={semanticSpacing.stackContainer}>
           {error && (
-            <div className="flex items-center gap-2 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+            <div
+              className={cn(
+                semanticRadius.default,
+                'flex items-center',
+                semanticSpacing.gap.xs,
+                'border border-red-200 bg-red-50',
+                semanticSpacing.cardContainer,
+                semanticTypography.body,
+                'text-red-600'
+              )}
+            >
               <AlertCircle size={16} />
               {error}
             </div>
           )}
 
-          <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium">
+          <div className={semanticSpacing.stack.xs}>
+            <label
+              htmlFor="email"
+              className={cn(semanticTypography.label, semanticTypography.body)}
+            >
               Email
             </label>
             <Input
@@ -77,8 +94,11 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
             />
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="password" className="text-sm font-medium">
+          <div className={semanticSpacing.stack.xs}>
+            <label
+              htmlFor="password"
+              className={cn(semanticTypography.label, semanticTypography.body)}
+            >
               Password
             </label>
             <div className="relative">
@@ -96,7 +116,7 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                className={`absolute right-0 top-0 h-full ${semanticSpacing.horizontalPadding.md} ${semanticSpacing.verticalPadding.xs} hover:bg-transparent`}
                 onClick={() => setShowPassword(!showPassword)}
                 disabled={loading}
               >
@@ -106,12 +126,12 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
           </div>
         </CardContent>
 
-        <CardFooter className="flex flex-col gap-4">
+        <CardFooter className={`flex flex-col ${semanticSpacing.gap.lg}`}>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? 'Signing in...' : 'Sign In'}
           </Button>
 
-          <div className="space-y-2 text-center">
+          <div className={`${semanticSpacing.stack.xs} text-center`}>
             {onForgotPassword && (
               <Button
                 type="button"
@@ -125,13 +145,13 @@ export function LoginForm({ onToggleMode, onForgotPassword }: LoginFormProps) {
             )}
 
             {onToggleMode && (
-              <div className="text-sm text-gray-600">
+              <div className={`${semanticTypography.body} text-gray-600`}>
                 Don&apos;t have an account?{' '}
                 <Button
                   type="button"
                   variant="link"
                   size="sm"
-                  className="h-auto p-0"
+                  className={`h-auto ${semanticSpacing.zero}`}
                   onClick={onToggleMode}
                   disabled={loading}
                 >

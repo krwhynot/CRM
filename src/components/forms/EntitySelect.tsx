@@ -5,6 +5,8 @@ import { EntitySelectLoadingState } from './entity-select/EntitySelectLoadingSta
 import { EntitySelectSearchBox } from './entity-select/EntitySelectSearchBox'
 import { EntitySelectOptionsList } from './entity-select/EntitySelectOptionsList'
 
+import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 export interface EntityOption {
   id: string
   name: string
@@ -58,7 +60,13 @@ export function EntitySelect({
         open={isOpen}
         onOpenChange={setIsOpen}
       >
-        <SelectTrigger className="h-12 px-4 text-base focus:ring-2 focus:ring-blue-200">
+        <SelectTrigger
+          className={cn(
+            semanticSpacing.cardX,
+            semanticTypography.body,
+            'h-12 focus:ring-2 focus:ring-blue-200'
+          )}
+        >
           <SelectValue placeholder={placeholder}>{selectedOption?.name || placeholder}</SelectValue>
         </SelectTrigger>
 

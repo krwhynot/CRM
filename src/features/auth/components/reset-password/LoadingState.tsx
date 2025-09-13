@@ -1,6 +1,8 @@
 import React from 'react'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 
+import { cn } from '@/lib/utils'
 interface LoadingStateProps {
   title: string
   description: string
@@ -14,11 +16,14 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
 }) => {
   return (
     <div
-      className={`flex min-h-screen items-center justify-center ${bgClassName} px-4 py-12 sm:px-6 lg:px-8`}
+      className={`flex min-h-screen items-center justify-center ${bgClassName} ${semanticSpacing.horizontalPadding.lg} ${semanticSpacing.verticalPadding.xxl} sm:${semanticSpacing.horizontalPadding.xl} lg:${semanticSpacing.horizontalPadding.xxl}`}
     >
       <Card className="mx-auto w-full max-w-md" role="status" aria-live="polite">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold" aria-label={`Loading: ${title}`}>
+          <CardTitle
+            className={cn(semanticTypography.h2, semanticTypography.title)}
+            aria-label={`Loading: ${title}`}
+          >
             {title}
           </CardTitle>
           <CardDescription aria-live="polite">{description}</CardDescription>

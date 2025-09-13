@@ -1,148 +1,142 @@
-import { useCallback } from 'react'
+import { useState, useCallback } from 'react'
+import { useDeleteOpportunity } from './useOpportunities'
+import { useOpportunitiesSelection } from './useOpportunitiesSelection'
 import { toast } from '@/lib/toast-styles'
-import { toPriorityLevel } from '@/lib/enum-guards'
-import {
-  useCreateOpportunity,
-  useUpdateOpportunity,
-  useDeleteOpportunity,
-} from './useOpportunities'
-import type {
-  Opportunity,
-  OpportunityInsert,
-  OpportunityUpdate,
-  OpportunityFormData,
-} from '@/types/entities'
+import { useBulkActionsContext } from '@/components/shared/BulkActions/BulkActionsProvider'
+import type { OpportunityWithLastActivity } from '@/types/opportunity.types'
 
-interface UseOpportunityActionsReturn {
+export function useOpportunityActions() {
+  // Bulk delete state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  // Try to use BulkActionsContext when available
+  let bulkActionsContext: ReturnType<
+    typeof useBulkActionsContext<OpportunityWithLastActivity>
+  > | null = null
+  try {
+    bulkActionsContext = useBulkActionsContext<OpportunityWithLastActivity>()
+  } catch {
+    // Context not available, will use legacy selection
+  }
+
+  // Fallback to legacy selection hook when not in BulkActionsProvider
+  const legacySelection = useOpportunitiesSelection()
+
+  // Use bulk actions context if available, otherwise use legacy
+  const selectedItems =
+    bulkActionsContext?.selection?.selectedItems ||
+    legacySelection?.selectedItems ||
+    new Set<string>()
+  const handleSelectAll =
+    bulkActionsContext?.selection?.handleSelectAll || legacySelection?.handleSelectAll || (() => {})
+  const handleSelectItem =
+    bulkActionsContext?.selection?.handleSelectItem ||
+    legacySelection?.handleSelectItem ||
+    (() => {})
+  const clearSelection =
+    bulkActionsContext?.selection?.clearSelection || legacySelection?.clearSelection || (() => {})
+
   // Mutations
-  createOpportunityMutation: ReturnType<typeof useCreateOpportunity>
-  updateOpportunityMutation: ReturnType<typeof useUpdateOpportunity>
-  deleteOpportunityMutation: ReturnType<typeof useDeleteOpportunity>
+  const deleteOpportunity = useDeleteOpportunity()
 
-  // Handlers
-  handleCreateOpportunity: (data: OpportunityFormData, onSuccess: () => void) => Promise<void>
-  handleUpdateOpportunity: (
-    data: OpportunityFormData,
-    opportunity: Opportunity,
-    onSuccess: () => void
-  ) => Promise<void>
-  handleDeleteOpportunity: (opportunity: Opportunity) => Promise<void>
-}
+  // Convert Set to Array for easier manipulation
+  const selectedIds = Array.from(selectedItems)
 
-export const useOpportunityActions = (): UseOpportunityActionsReturn => {
-  const createOpportunityMutation = useCreateOpportunity()
-  const updateOpportunityMutation = useUpdateOpportunity()
-  const deleteOpportunityMutation = useDeleteOpportunity()
+  // Individual action handlers
+  const handleEditOpportunity = useCallback((opportunity: OpportunityWithLastActivity) => {
+    // TODO: Open edit opportunity modal/form
+    toast('Edit Opportunity', {
+      description: `Editing opportunity: ${opportunity.name}`,
+    })
+  }, [])
 
-  const handleCreateOpportunity = useCallback(
-    async (data: OpportunityFormData, onSuccess: () => void) => {
-      try {
-        // Transform form data to database format (following interaction pattern)
-        const opportunityData: Omit<OpportunityInsert, 'created_by' | 'updated_by'> = {
-          name: data.name,
-          organization_id: data.organization_id,
-          estimated_value: data.estimated_value || null,
-          stage: data.stage,
-          status: 'Active', // Add missing required field with default
-          contact_id: data.contact_id || null,
-          estimated_close_date: data.estimated_close_date || null,
-          description: data.description || null,
-          notes: data.notes || null,
-          // Optional fields with proper null handling - use safe enum conversion
-          priority:
-            'priority' in data
-              ? toPriorityLevel((data as { priority?: string }).priority, null)
-              : null,
-          probability: data.probability || null,
-          opportunity_context: data.opportunity_context || null,
-          principal_organization_id: data.principal_id || null,
-          // Remove non-database fields: principals, auto_generated_name
-        }
+  const handleBulkDelete = () => {
+    setDeleteDialogOpen(true)
+  }
 
-        await createOpportunityMutation.mutateAsync(opportunityData as OpportunityInsert)
-        onSuccess()
-        toast.success('Opportunity created successfully!')
-      } catch (error: unknown) {
-        // Handle opportunity creation errors
+  const handleConfirmDelete = async () => {
+    if (selectedIds.length === 0) return
 
-        // Handle specific constraint violation errors
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-        const errorCode =
-          error && typeof error === 'object' && 'code' in error
-            ? (error as { code: string }).code
-            : null
+    setIsDeleting(true)
+    const results = []
+    let successCount = 0
+    let errorCount = 0
 
-        if (errorCode === '23505' && errorMessage.includes('uq_opp_org_name_active')) {
-          toast.error(
-            'An opportunity with this name already exists for the selected organization. Please choose a different name.'
-          )
-        } else {
-          toast.error('Failed to create opportunity. Please try again.')
-        }
-      }
-    },
-    [createOpportunityMutation]
-  )
-
-  const handleUpdateOpportunity = useCallback(
-    async (data: OpportunityFormData, opportunity: Opportunity, onSuccess: () => void) => {
-      try {
-        // Transform form data to OpportunityUpdate by removing non-database fields
-        const updateData = data
-
-        // Remove form fields that shouldn't be included in update
-
-        await updateOpportunityMutation.mutateAsync({
-          id: opportunity.id,
-          updates: updateData as unknown as OpportunityUpdate,
-        })
-        onSuccess()
-        toast.success('Opportunity updated successfully!')
-      } catch (error: unknown) {
-        // Handle opportunity update errors
-
-        // Handle specific constraint violation errors
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-        const errorCode =
-          error && typeof error === 'object' && 'code' in error
-            ? (error as { code: string }).code
-            : null
-
-        if (errorCode === '23505' && errorMessage.includes('uq_opp_org_name_active')) {
-          toast.error(
-            'An opportunity with this name already exists for the selected organization. Please choose a different name.'
-          )
-        } else {
-          toast.error('Failed to update opportunity. Please try again.')
-        }
-      }
-    },
-    [updateOpportunityMutation]
-  )
-
-  const handleDeleteOpportunity = useCallback(
-    async (opportunity: Opportunity) => {
-      if (
-        window.confirm(`Are you sure you want to delete the opportunity "${opportunity.name}"?`)
-      ) {
+    try {
+      // Process deletions sequentially for maximum safety
+      for (const opportunityId of selectedIds) {
         try {
-          await deleteOpportunityMutation.mutateAsync(opportunity.id)
-          toast.success('Opportunity deleted successfully!')
+          await deleteOpportunity.mutateAsync(opportunityId)
+          results.push({ id: opportunityId, status: 'success' })
+          successCount++
         } catch (error) {
-          // Handle opportunity deletion errors
-          toast.error('Failed to delete opportunity. Please try again.')
+          // Log error to results for user feedback
+          results.push({
+            id: opportunityId,
+            status: 'error',
+            error: error instanceof Error ? error.message : 'Unknown error',
+          })
+          errorCount++
         }
       }
-    },
-    [deleteOpportunityMutation]
-  )
+
+      // Show results to user
+      if (successCount > 0 && errorCount === 0) {
+        toast.success(
+          `Successfully archived ${successCount} opportunit${successCount !== 1 ? 'ies' : 'y'}`
+        )
+      } else if (successCount > 0 && errorCount > 0) {
+        toast.warning(`Archived ${successCount} opportunities, but ${errorCount} failed`)
+      } else if (errorCount > 0) {
+        toast.error(`Failed to archive ${errorCount} opportunit${errorCount !== 1 ? 'ies' : 'y'}`)
+      }
+
+      // Clear selection if any operations succeeded
+      if (successCount > 0) {
+        clearSelection()
+      }
+    } catch (error) {
+      // Handle unexpected errors during bulk delete operation
+      toast.error('An unexpected error occurred during bulk deletion')
+    } finally {
+      setIsDeleting(false)
+      setDeleteDialogOpen(false)
+    }
+  }
+
+  // Single opportunity delete handler
+  const handleDeleteOpportunity = async (opportunity: OpportunityWithLastActivity) => {
+    try {
+      await deleteOpportunity.mutateAsync(opportunity.id)
+      toast.success('Opportunity archived successfully')
+    } catch (error) {
+      toast.error('Failed to archive opportunity')
+    }
+  }
 
   return {
-    createOpportunityMutation,
-    updateOpportunityMutation,
-    deleteOpportunityMutation,
-    handleCreateOpportunity,
-    handleUpdateOpportunity,
+    // Selection state
+    selectedItems,
+    selectedIds,
+
+    // Selection handlers
+    handleSelectAll,
+    handleSelectItem,
+    clearSelection,
+
+    // Individual actions
+    handleEditOpportunity,
     handleDeleteOpportunity,
+
+    // Bulk delete state
+    deleteDialogOpen,
+    setDeleteDialogOpen,
+    // Bulk delete handlers
+    handleBulkDelete,
+    handleConfirmDelete,
+
+    // Loading states
+    isDeleting: deleteOpportunity.isPending,
   }
 }

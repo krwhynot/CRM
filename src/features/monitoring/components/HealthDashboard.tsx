@@ -7,6 +7,7 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useHealthStatus } from '@/lib/monitoring'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 import { AlertCircle, CheckCircle, Clock } from 'lucide-react'
 import { useHealthDashboardState } from '@/hooks/useHealthDashboardState'
 import { SystemStatusOverview } from './health-dashboard/SystemStatusOverview'
@@ -28,8 +29,10 @@ export function HealthDashboard({
   if (!status) {
     return (
       <Card>
-        <CardContent className="flex items-center justify-center py-8">
-          <div className="flex items-center space-x-2">
+        <CardContent
+          className={`flex items-center justify-center ${semanticSpacing.verticalPadding.xxl}`}
+        >
+          <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
             <Clock className="size-4 animate-spin" />
             <span>Loading system health...</span>
           </div>
@@ -116,14 +119,16 @@ export function HealthDashboard({
   }
 
   return (
-    <div className="space-y-4">
+    <div className={semanticSpacing.layoutContainer}>
       <SystemStatusOverview status={systemStatus} summary={healthSummary} isHealthy={isHealthy} />
 
       <PerformanceMetrics performance={status.performance} />
 
       {showDetails && <DetailedSystemInfo status={detailedSystemStatus} />}
 
-      <div className="flex items-center justify-between text-sm text-gray-500">
+      <div
+        className={`flex items-center justify-between ${semanticTypography.body} text-muted-foreground`}
+      >
         <span>Last updated: {lastUpdated.toLocaleTimeString()}</span>
         <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
           Refresh Status
@@ -140,13 +145,13 @@ export function HealthStatusIndicator() {
   const { summary, isHealthy } = useHealthStatus()
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
       {isHealthy ? (
-        <CheckCircle className="size-4 text-green-500" />
+        <CheckCircle className="size-4 text-success" />
       ) : (
-        <AlertCircle className="size-4 text-red-500" />
+        <AlertCircle className="size-4 text-destructive" />
       )}
-      <span className="text-sm">{summary}</span>
+      <span className={semanticTypography.caption}>{summary}</span>
     </div>
   )
 }

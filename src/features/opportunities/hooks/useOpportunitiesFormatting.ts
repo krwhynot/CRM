@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { formatCurrency } from '@/lib/formatters'
 
 interface StageConfig {
   dot: string
@@ -25,11 +26,11 @@ export const useOpportunitiesFormatting = (): UseOpportunitiesFormattingReturn =
     return configs[stage] || configs['New Lead']
   }, [])
 
-  const formatCurrency = useCallback((value: number | null): string => {
+  const formatCurrencyCallback = useCallback((value: number | null): string => {
     if (!value) return 'N/A'
     if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`
     if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`
-    return `$${value.toLocaleString()}`
+    return formatCurrency(value, { showCents: false })
   }, [])
 
   const formatActivityType = useCallback((type: string | null): string => {
@@ -39,7 +40,7 @@ export const useOpportunitiesFormatting = (): UseOpportunitiesFormattingReturn =
 
   return {
     getStageConfig,
-    formatCurrency,
+    formatCurrency: formatCurrencyCallback,
     formatActivityType,
   }
 }

@@ -37,7 +37,7 @@ export function useTableSelection<T>({
   const [selectedItems, setSelectedItems] = useState<Set<string>>(initialSelected)
 
   const handleSelectItem = useCallback((itemId: string, checked: boolean) => {
-    setSelectedItems(prev => {
+    setSelectedItems((prev) => {
       const newSet = new Set(prev)
       if (checked) {
         newSet.add(itemId)
@@ -48,32 +48,41 @@ export function useTableSelection<T>({
     })
   }, [])
 
-  const handleSelectAll = useCallback((checked: boolean, items: T[]) => {
-    if (checked) {
-      // Select all visible items
-      const allIds = new Set(items.map(getItemId))
-      setSelectedItems(prev => new Set([...prev, ...allIds]))
-    } else {
-      // Deselect all visible items
-      const visibleIds = new Set(items.map(getItemId))
-      setSelectedItems(prev => new Set([...prev].filter(id => !visibleIds.has(id))))
-    }
-  }, [getItemId])
+  const handleSelectAll = useCallback(
+    (checked: boolean, items: T[]) => {
+      if (checked) {
+        // Select all visible items
+        const allIds = new Set(items.map(getItemId))
+        setSelectedItems((prev) => new Set([...prev, ...allIds]))
+      } else {
+        // Deselect all visible items
+        const visibleIds = new Set(items.map(getItemId))
+        setSelectedItems((prev) => new Set([...prev].filter((id) => !visibleIds.has(id))))
+      }
+    },
+    [getItemId]
+  )
 
   const clearSelection = useCallback(() => {
     setSelectedItems(new Set())
   }, [])
 
-  const isAllSelected = useCallback((items: T[]) => {
-    if (items.length === 0) return false
-    return items.every(item => selectedItems.has(getItemId(item)))
-  }, [selectedItems, getItemId])
+  const isAllSelected = useCallback(
+    (items: T[]) => {
+      if (items.length === 0) return false
+      return items.every((item) => selectedItems.has(getItemId(item)))
+    },
+    [selectedItems, getItemId]
+  )
 
-  const isIndeterminate = useCallback((items: T[]) => {
-    if (items.length === 0) return false
-    const selectedCount = items.filter(item => selectedItems.has(getItemId(item))).length
-    return selectedCount > 0 && selectedCount < items.length
-  }, [selectedItems, getItemId])
+  const isIndeterminate = useCallback(
+    (items: T[]) => {
+      if (items.length === 0) return false
+      const selectedCount = items.filter((item) => selectedItems.has(getItemId(item))).length
+      return selectedCount > 0 && selectedCount < items.length
+    },
+    [selectedItems, getItemId]
+  )
 
   const getSelectedIds = useCallback(() => {
     return Array.from(selectedItems)

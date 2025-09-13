@@ -102,11 +102,9 @@ function App() {
                     path="/organizations"
                     element={
                       <ProtectedRoute>
-                        <Layout>
-                          <Suspense fallback={<LoadingSpinner />}>
-                            <OrganizationsPage />
-                          </Suspense>
-                        </Layout>
+                        <Suspense fallback={<LoadingSpinner />}>
+                          <OrganizationsPage />
+                        </Suspense>
                       </ProtectedRoute>
                     }
                   />
@@ -114,11 +112,9 @@ function App() {
                     path="/contacts"
                     element={
                       <ProtectedRoute>
-                        <Layout>
-                          <Suspense fallback={<LoadingSpinner />}>
-                            <ContactsPage />
-                          </Suspense>
-                        </Layout>
+                        <Suspense fallback={<LoadingSpinner />}>
+                          <ContactsPage />
+                        </Suspense>
                       </ProtectedRoute>
                     }
                   />
@@ -126,11 +122,9 @@ function App() {
                     path="/opportunities"
                     element={
                       <ProtectedRoute>
-                        <Layout>
-                          <Suspense fallback={<LoadingSpinner />}>
-                            <OpportunitiesPage />
-                          </Suspense>
-                        </Layout>
+                        <Suspense fallback={<LoadingSpinner />}>
+                          <OpportunitiesPage />
+                        </Suspense>
                       </ProtectedRoute>
                     }
                   />
@@ -150,11 +144,9 @@ function App() {
                     path="/products"
                     element={
                       <ProtectedRoute>
-                        <Layout>
-                          <Suspense fallback={<LoadingSpinner />}>
-                            <ProductsPage />
-                          </Suspense>
-                        </Layout>
+                        <Suspense fallback={<LoadingSpinner />}>
+                          <ProductsPage />
+                        </Suspense>
                       </ProtectedRoute>
                     }
                   />
@@ -162,11 +154,9 @@ function App() {
                     path="/interactions"
                     element={
                       <ProtectedRoute>
-                        <Layout>
-                          <Suspense fallback={<LoadingSpinner />}>
-                            <InteractionsPage />
-                          </Suspense>
-                        </Layout>
+                        <Suspense fallback={<LoadingSpinner />}>
+                          <InteractionsPage />
+                        </Suspense>
                       </ProtectedRoute>
                     }
                   />

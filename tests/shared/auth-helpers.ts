@@ -5,6 +5,7 @@
  */
 
 import { getTestEnvironment as getCentralizedTestEnv, testConfig } from '@/config/environment'
+import { isValidEmail } from '@/lib/validation'
 
 export interface TestCredentials {
   email: string;
@@ -37,13 +38,6 @@ export function getTestCredentials(): TestCredentials | null {
   return { email, password, role };
 }
 
-/**
- * Validate email format
- */
-export function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
 
 /**
  * Validate password strength
