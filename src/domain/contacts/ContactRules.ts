@@ -1,4 +1,4 @@
-import {
+import type {
   ContactDomain,
   ContactRole,
   PurchaseInfluenceLevel,
@@ -7,6 +7,8 @@ import {
   ContactDisplayInfo,
   ContactInfluenceMetrics,
   ContactValidationContext,
+} from './ContactTypes'
+import {
   CONTACT_ROLES,
   PURCHASE_INFLUENCE_LEVELS,
   DECISION_AUTHORITY_ROLES,

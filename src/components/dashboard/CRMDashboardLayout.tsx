@@ -260,7 +260,7 @@ export function ResponsiveDashboard({
             >
               {title}
             </h1>
-            {subtitle && <p className="text-muted-foreground mt-1">{subtitle}</p>}
+            {subtitle && <p className="mt-1 text-muted-foreground">{subtitle}</p>}
           </div>
           {actions && (
             <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>{actions}</div>

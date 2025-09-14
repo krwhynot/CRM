@@ -1,11 +1,11 @@
-import { semanticTypography, semanticRadius, semanticSpacing } from '@/styles/tokens'
+import { semanticTypography, semanticRadius, semanticSpacing, semanticShadows } from '@/styles/tokens'
 ;('use client')
 
 import * as React from 'react'
 import * as RechartsPrimitive from 'recharts'
 
 import { cn } from '@/lib/utils'
-import { isDevelopment } from '@/config/environment'
+import { debugWarn } from '@/utils/debug'
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: '', dark: '.dark' } as const
@@ -111,10 +111,7 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
       })
     } catch (error) {
       // Chart styling errors handled gracefully - charts will fall back to default colors
-      if (isDevelopment) {
-        // eslint-disable-next-line no-console
-        console.warn('Failed to insert chart styles:', error)
-      }
+      debugWarn('Failed to insert chart styles:', error)
     }
 
     // Cleanup function prevents memory leaks
@@ -204,7 +201,7 @@ function ChartTooltipContent({
   return (
     <div
       className={cn(
-        `border-border/50 bg-background grid min-w-[8rem] items-start ${semanticSpacing.gap.lg} ${semanticRadius.lg} border px-2.5 ${semanticSpacing.verticalPadding.lg} text-xs shadow-xl`,
+        `border-border/50 bg-background grid min-w-[8rem] items-start ${semanticSpacing.gap.lg} ${semanticRadius.lg} border px-2.5 ${semanticSpacing.verticalPadding.lg} text-xs ${semanticShadows.tooltip}`,
         className
       )}
     >

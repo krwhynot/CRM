@@ -294,7 +294,7 @@ export const FilterGroup: React.FC<FilterGroupProps> = ({
     const { title, icon, badge, collapsible = true } = group
 
     const headerContent = (
-      <div className="flex items-center justify-between w-full">
+      <div className="flex w-full items-center justify-between">
         <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
           {icon && <span className="shrink-0">{icon}</span>}
           <h3 className={cn(semanticTypography.label, compact && 'text-xs')}>{title}</h3>
@@ -308,9 +308,9 @@ export const FilterGroup: React.FC<FilterGroupProps> = ({
         {collapsible && (
           <span className="shrink-0">
             {isExpanded ? (
-              <ChevronDown className="h-4 w-4" />
+              <ChevronDown className="size-4" />
             ) : (
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="size-4" />
             )}
           </span>
         )}

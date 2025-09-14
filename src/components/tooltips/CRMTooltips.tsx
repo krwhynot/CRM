@@ -34,23 +34,23 @@ import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
 
 // Tooltip Variants
-const tooltipVariants = cva('z-50 rounded-md px-3 py-1.5 text-xs text-balance shadow-lg border', {
+const tooltipVariants = cva('z-50 text-balance rounded-md border px-3 py-1.5 text-xs shadow-lg', {
   variants: {
     variant: {
-      default: 'bg-primary text-primary-foreground border-primary',
-      secondary: 'bg-secondary text-secondary-foreground border-secondary',
+      default: 'border-primary bg-primary text-primary-foreground',
+      secondary: 'border-secondary bg-secondary text-secondary-foreground',
       success: `${semanticColors.success.primary} ${textColors.inverse} ${borderColors.success}`,
       warning: `${semanticColors.warning.primary} ${textColors.inverse} ${borderColors.warning}`,
       destructive: `${semanticColors.destructive} ${borderColors.error}`,
       info: `${semanticColors.info.primary} ${textColors.inverse} ${borderColors.info}`,
-      dark: 'bg-popover text-popover-foreground border-border',
-      light: 'bg-card text-card-foreground border-border shadow-md',
+      dark: 'border-border bg-popover text-popover-foreground',
+      light: 'border-border bg-card text-card-foreground shadow-md',
     },
     size: {
-      sm: 'px-2 py-1 text-xs max-w-48',
-      md: 'px-3 py-1.5 text-xs max-w-64',
-      lg: 'px-4 py-2 text-sm max-w-80',
-      xl: 'px-4 py-3 text-sm max-w-96',
+      sm: 'max-w-48 px-2 py-1 text-xs',
+      md: 'max-w-64 px-3 py-1.5 text-xs',
+      lg: 'max-w-80 px-4 py-2 text-sm',
+      xl: 'max-w-96 px-4 py-3 text-sm',
     },
   },
   defaultVariants: {
@@ -255,7 +255,7 @@ export function EntityPreviewTooltip({ entityType, data, children }: EntityPrevi
           </div>
         )}
 
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <h4 className={cn(semanticTypography.label, 'truncate')}>{data.name}</h4>
           {data.subtitle && (
             <p className={cn(semanticTypography.caption, 'opacity-75 truncate')}>{data.subtitle}</p>

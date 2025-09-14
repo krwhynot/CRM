@@ -121,7 +121,7 @@ export function AccessibilityDemo() {
         <CardTitle
           className={cn(semanticTypography.h4, semanticSpacing.inline.xs, 'flex items-center')}
         >
-          <Contrast className="h-5 w-5" />
+          <Contrast className="size-5" />
           <span>Color Contrast Ratios</span>
         </CardTitle>
         <CardDescription>WCAG AAA compliance for text readability</CardDescription>
@@ -164,7 +164,7 @@ export function AccessibilityDemo() {
         </div>
 
         <Alert>
-          <Info className="h-4 w-4" />
+          <Info className="size-4" />
           <AlertTitle>Contrast Standards</AlertTitle>
           <AlertDescription>
             <ul
@@ -242,7 +242,7 @@ export function AccessibilityDemo() {
         <CardTitle
           className={cn(semanticTypography.h4, semanticSpacing.inline.xs, 'flex items-center')}
         >
-          <Keyboard className="h-5 w-5" />
+          <Keyboard className="size-5" />
           <span>Focus Management</span>
         </CardTitle>
         <CardDescription>Keyboard navigation and focus indicators</CardDescription>
@@ -255,7 +255,7 @@ export function AccessibilityDemo() {
           </div>
 
           <Alert>
-            <Keyboard className="h-4 w-4" />
+            <Keyboard className="size-4" />
             <AlertTitle>Keyboard Navigation</AlertTitle>
             <AlertDescription>
               Press Tab to cycle through focusable elements. Focus indicators are always visible for
@@ -274,7 +274,7 @@ export function AccessibilityDemo() {
                   size="sm"
                   onClick={() => copyCode(focus.cssCode, `${focus.name} Focus`)}
                 >
-                  <Copy className="h-3 w-3" />
+                  <Copy className="size-3" />
                 </Button>
               </div>
 
@@ -379,14 +379,14 @@ export function AccessibilityDemo() {
         <CardTitle
           className={cn(semanticTypography.h4, semanticSpacing.inline.xs, 'flex items-center')}
         >
-          <MousePointer className="h-5 w-5" />
+          <MousePointer className="size-5" />
           <span>Touch Target Sizing</span>
         </CardTitle>
         <CardDescription>Minimum 44px touch targets for mobile accessibility</CardDescription>
       </CardHeader>
       <CardContent className={`${semanticSpacing.stack.lg}`}>
         <Alert>
-          <Info className="h-4 w-4" />
+          <Info className="size-4" />
           <AlertTitle>Touch Target Guidelines</AlertTitle>
           <AlertDescription>
             All interactive elements must be at least 44px × 44px for comfortable touch interaction,
@@ -406,9 +406,9 @@ export function AccessibilityDemo() {
                 <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
                   <span className={`${semanticTypography.caption}`}>{target.size}</span>
                   {target.compliant ? (
-                    <Check className="h-4 w-4 text-success" />
+                    <Check className="size-4 text-success" />
                   ) : (
-                    <AlertCircle className="h-4 w-4 text-destructive" />
+                    <AlertCircle className="size-4 text-destructive" />
                   )}
                 </div>
               </div>
@@ -475,7 +475,7 @@ export function AccessibilityDemo() {
         <CardTitle
           className={cn(semanticTypography.h4, semanticSpacing.inline.xs, 'flex items-center')}
         >
-          <Volume2 className="h-5 w-5" />
+          <Volume2 className="size-5" />
           <span>Screen Reader Support</span>
         </CardTitle>
         <CardDescription>Semantic markup and ARIA labels for assistive technology</CardDescription>
@@ -503,7 +503,7 @@ export function AccessibilityDemo() {
             >
               <div className={cn(semanticSpacing.inline.sm, 'flex items-center')}>
                 <Button variant="outline" size="icon">
-                  <Heart className="h-4 w-4" />
+                  <Heart className="size-4" />
                   <span
                     className={cn(
                       semanticSpacing.minimalX,
@@ -661,7 +661,7 @@ export function AccessibilityDemo() {
                 <div>
                   <Label htmlFor="required-field">
                     Organization Name
-                    <span className="text-destructive ml-1" aria-label="required">
+                    <span className="ml-1 text-destructive" aria-label="required">
                       *
                     </span>
                   </Label>
@@ -707,7 +707,7 @@ export function AccessibilityDemo() {
         <CardTitle
           className={cn(semanticTypography.h4, semanticSpacing.inline.xs, 'flex items-center')}
         >
-          <Check className="h-5 w-5" />
+          <Check className="size-5" />
           <span>Accessibility Checklist</span>
         </CardTitle>
         <CardDescription>Complete WCAG AAA compliance checklist for the CRM</CardDescription>
@@ -718,35 +718,35 @@ export function AccessibilityDemo() {
             <h4 className={cn(semanticTypography.h4, 'mb-3')}>✅ Implemented Features</h4>
             <ul className={cn(semanticSpacing.stack.xs, semanticTypography.body)}>
               <li className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
-                <Check className="h-4 w-4 text-success" />
+                <Check className="size-4 text-success" />
                 <span>AAA color contrast ratios (7:1+)</span>
               </li>
               <li className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
-                <Check className="h-4 w-4 text-success" />
+                <Check className="size-4 text-success" />
                 <span>Keyboard navigation support</span>
               </li>
               <li className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
-                <Check className="h-4 w-4 text-success" />
+                <Check className="size-4 text-success" />
                 <span>Screen reader compatibility</span>
               </li>
               <li className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
-                <Check className="h-4 w-4 text-success" />
+                <Check className="size-4 text-success" />
                 <span>44px minimum touch targets</span>
               </li>
               <li className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
-                <Check className="h-4 w-4 text-success" />
+                <Check className="size-4 text-success" />
                 <span>Reduced motion preferences</span>
               </li>
               <li className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
-                <Check className="h-4 w-4 text-success" />
+                <Check className="size-4 text-success" />
                 <span>High contrast mode support</span>
               </li>
               <li className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
-                <Check className="h-4 w-4 text-success" />
+                <Check className="size-4 text-success" />
                 <span>Semantic HTML structure</span>
               </li>
               <li className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
-                <Check className="h-4 w-4 text-success" />
+                <Check className="size-4 text-success" />
                 <span>ARIA labels and descriptions</span>
               </li>
             </ul>

@@ -4,7 +4,7 @@ import { InteractionTimelineEmbed } from '@/features/interactions/components/Int
 import { QuickInteractionBar } from '@/features/interactions/components/QuickInteractionBar'
 import { MessageSquare, FileText, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { semanticSpacing, semanticTypography } from '@/styles/tokens'
+import { semanticSpacing, semanticTypography, semanticColors } from '@/styles/tokens'
 import { useIsMobile, useIsIPad } from '@/hooks/useMediaQuery'
 import { useQueryClient } from '@tanstack/react-query'
 import { interactionKeys } from '@/features/interactions/hooks/useInteractions'
@@ -44,14 +44,14 @@ export function OpportunityExpandedContent({
   return (
     <div
       className={cn(
-        'bg-gray-50/50 border-l-4 border-primary/20',
+        '{semanticColors.backgrounds.subtle} border-l-4 border-primary/20',
         isMobile ? semanticSpacing.leftGap.lg : semanticSpacing.leftGap.xl
       )}
     >
       {/* Tab Header */}
       <div
         className={cn(
-          'flex items-center justify-between border-b bg-white',
+          'flex items-center justify-between border-b', semanticColors.cardBackground,
           isMobile
             ? `${semanticSpacing.cardContainer} ${semanticSpacing.verticalContainer} flex-col ${semanticSpacing.gap.md}`
             : `${semanticSpacing.layoutContainer} ${semanticSpacing.compactY} flex-row`
@@ -160,7 +160,7 @@ function OpportunityDetails({ opportunity }: { opportunity: OpportunityWithLastA
       <div>
         <h4
           className={cn(
-            `${semanticSpacing.bottomGap.sm} font-medium text-gray-900`,
+            `${semanticSpacing.bottomGap.sm} font-medium {semanticColors.text.primary}`,
             isMobile ? semanticTypography.h4 : semanticTypography.label
           )}
         >
@@ -168,7 +168,7 @@ function OpportunityDetails({ opportunity }: { opportunity: OpportunityWithLastA
         </h4>
         <div
           className={cn(
-            `${semanticSpacing.stack.xs} text-gray-600`,
+            `${semanticSpacing.stack.xs} {semanticColors.text.secondary}`,
             isMobile ? semanticTypography.cardTitle : semanticTypography.body
           )}
         >
@@ -183,7 +183,7 @@ function OpportunityDetails({ opportunity }: { opportunity: OpportunityWithLastA
       <div>
         <h4
           className={cn(
-            `${semanticSpacing.bottomGap.sm} font-medium text-gray-900`,
+            `${semanticSpacing.bottomGap.sm} font-medium {semanticColors.text.primary}`,
             isMobile ? semanticTypography.h4 : semanticTypography.label
           )}
         >
@@ -191,7 +191,7 @@ function OpportunityDetails({ opportunity }: { opportunity: OpportunityWithLastA
         </h4>
         <div
           className={cn(
-            `${semanticSpacing.stack.xs} text-gray-600`,
+            `${semanticSpacing.stack.xs} {semanticColors.text.secondary}`,
             isMobile ? semanticTypography.cardTitle : semanticTypography.body
           )}
         >
@@ -205,7 +205,7 @@ function OpportunityDetails({ opportunity }: { opportunity: OpportunityWithLastA
       <div>
         <h4
           className={cn(
-            `${semanticSpacing.bottomGap.sm} font-medium text-gray-900`,
+            `${semanticSpacing.bottomGap.sm} font-medium {semanticColors.text.primary}`,
             isMobile ? semanticTypography.h4 : semanticTypography.label
           )}
         >
@@ -213,7 +213,7 @@ function OpportunityDetails({ opportunity }: { opportunity: OpportunityWithLastA
         </h4>
         <div
           className={cn(
-            `${semanticSpacing.stack.xs} text-gray-600`,
+            `${semanticSpacing.stack.xs} {semanticColors.text.secondary}`,
             isMobile ? semanticTypography.cardTitle : semanticTypography.body
           )}
         >

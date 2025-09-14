@@ -1,18 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ArrowLeft, ArrowRight, CheckCircle2, AlertCircle, LogIn } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { SmartImportWizard } from './SmartImportWizard'
 import { getNextStep } from '../utils/wizard-steps'
-import { SmartUploadStep } from './SmartUploadStep'
-import { SmartFieldMapping } from './SmartFieldMapping'
 import { useSmartImport } from '../hooks/useSmartImport'
 import { useFileUpload } from '@/hooks/useFileUpload' // For template download
 import { Progress } from '@/components/ui/progress'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { semanticSpacing, semanticTypography, semanticRadius, fontWeight } from '@/styles/tokens'
+import { TableSkeleton } from '@/components/loading'
+
+// Lazy load heavy import/export processing components
+const SmartUploadStep = lazy(() => import('./SmartUploadStep'))
+const SmartFieldMapping = lazy(() => import('./SmartFieldMapping'))
 
 // Import result type - matching the structure from useSmartImport
 interface ImportResult {
@@ -182,38 +185,42 @@ export function SmartImportOrchestrator({
     switch (state.currentStep) {
       case 'upload':
         return (
-          <SmartUploadStep
-            file={state.file}
-            config={state.config}
-            error={state.error}
-            warnings={state.warnings}
-            onFileUpload={actions.uploadFile}
-            onConfigUpdate={actions.updateConfig}
-            onDownloadTemplate={downloadTemplate}
-            onClearFile={actions.clearFile}
-          />
+          <Suspense fallback={<TableSkeleton />}>
+            <SmartUploadStep
+              file={state.file}
+              config={state.config}
+              error={state.error}
+              warnings={state.warnings}
+              onFileUpload={actions.uploadFile}
+              onConfigUpdate={actions.updateConfig}
+              onDownloadTemplate={downloadTemplate}
+              onClearFile={actions.clearFile}
+            />
+          </Suspense>
         )
 
       case 'review':
         return (
-          <SmartFieldMapping
-            parsedData={state.parsedData}
-            mappings={state.fieldMappings}
-            aiInProgress={state.mappingInProgress}
-            onGenerateAIMappings={actions.generateAIMappings}
-            onUpdateMapping={actions.updateFieldMapping}
-            onConfirmMapping={actions.confirmMapping}
-            onSkipField={actions.skipField}
-            onConfirmAll={() => {
-              // Confirm all mappings that need review
-              state.fieldMappings.forEach((mapping) => {
-                if (mapping.status === 'needs_review' && mapping.crmField) {
-                  actions.confirmMapping(mapping.csvHeader)
-                }
-              })
-            }}
-            onProceedToImport={handleNext}
-          />
+          <Suspense fallback={<TableSkeleton />}>
+            <SmartFieldMapping
+              parsedData={state.parsedData}
+              mappings={state.fieldMappings}
+              aiInProgress={state.mappingInProgress}
+              onGenerateAIMappings={actions.generateAIMappings}
+              onUpdateMapping={actions.updateFieldMapping}
+              onConfirmMapping={actions.confirmMapping}
+              onSkipField={actions.skipField}
+              onConfirmAll={() => {
+                // Confirm all mappings that need review
+                state.fieldMappings.forEach((mapping) => {
+                  if (mapping.status === 'needs_review' && mapping.crmField) {
+                    actions.confirmMapping(mapping.csvHeader)
+                  }
+                })
+              }}
+              onProceedToImport={handleNext}
+            />
+          </Suspense>
         )
 
       case 'import':

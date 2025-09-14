@@ -1,4 +1,4 @@
-import { semanticSpacing, semanticTypography } from '@/styles/tokens'
+import { semanticSpacing, semanticTypography, semanticShadows } from '@/styles/tokens'
 /**
  * Bulk Actions Toolbar
  *
@@ -7,6 +7,7 @@ import { semanticSpacing, semanticTypography } from '@/styles/tokens'
  */
 
 import React, { useState } from 'react'
+import { debugError } from '@/utils/debug'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -74,7 +75,7 @@ export function BulkActionsToolbar({
       setExecutingAction(action.id)
       await executeBulkAction(action.id)
     } catch (error) {
-      console.error(`Failed to execute bulk action ${action.id}:`, error)
+      debugError(`Failed to execute bulk action ${action.id}:`, error)
       // TODO: Show error toast/notification
     } finally {
       setExecutingAction(null)
@@ -96,7 +97,7 @@ export function BulkActionsToolbar({
   const positionClasses = {
     top: 'border-b',
     bottom: 'border-t',
-    floating: 'rounded-lg shadow-lg border',
+    floating: `rounded-lg ${semanticShadows.cardElevated} border`,
   }
 
   // Animation classes
@@ -134,7 +135,7 @@ export function BulkActionsToolbar({
                   'h-8 text-muted-foreground hover:text-foreground'
                 )}
               >
-                <X className={`h-3 w-3 ${semanticSpacing.rightGap.xs}`} />
+                <X className={`size-3 ${semanticSpacing.rightGap.xs}`} />
                 Clear
               </Button>
             </>
@@ -158,9 +159,9 @@ export function BulkActionsToolbar({
                 title={action.disabled ? action.disabledReason : undefined}
               >
                 {isExecuting ? (
-                  <Loader2 className={`h-3 w-3 ${semanticSpacing.rightGap.xs} animate-spin`} />
+                  <Loader2 className={`size-3 ${semanticSpacing.rightGap.xs} animate-spin`} />
                 ) : action.icon ? (
-                  <action.icon className={`h-3 w-3 ${semanticSpacing.rightGap.xs}`} />
+                  <action.icon className={`size-3 ${semanticSpacing.rightGap.xs}`} />
                 ) : null}
                 {action.label}
               </Button>
@@ -204,7 +205,7 @@ export function BulkActionsToolbar({
               'flex items-center text-muted-foreground'
             )}
           >
-            <AlertTriangle className="h-4 w-4" />
+            <AlertTriangle className="size-4" />
             This action cannot be undone.
           </div>
         </StandardDialog>

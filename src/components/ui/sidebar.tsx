@@ -232,7 +232,7 @@ const Sidebar = React.forwardRef<
         >
           <div
             data-sidebar="sidebar"
-            className={`flex size-full flex-col bg-sidebar group-data-[variant=floating]:${semanticRadius.lg} group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow`}
+            className={`group-data-[variant=floating]: flex size-full flex-col bg-sidebar${semanticRadius.lg} group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow`}
           >
             {children}
           </div>
@@ -496,7 +496,7 @@ const SidebarMenuItem = React.forwardRef<HTMLLIElement, React.ComponentProps<'li
 SidebarMenuItem.displayName = 'SidebarMenuItem'
 
 const sidebarMenuButtonVariants = cva(
-  `peer/menu-button flex w-full items-center ${semanticSpacing.gap.xs} overflow-hidden rounded-md ${semanticSpacing.layoutPadding.xs} text-left ${semanticTypography.body} outline-none ring-sidebar-ring transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!${semanticSpacing.layoutPadding.xs} [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0`,
+  `peer/menu-button flex w-full items-center ${semanticSpacing.gap.xs} overflow-hidden rounded-md ${semanticSpacing.layoutPadding.xs} text-left ${semanticTypography.body} group-data-[collapsible=icon]:! outline-none ring-sidebar-ring transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8${semanticSpacing.layoutPadding.xs} [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0`,
   {
     variants: {
       variant: {
@@ -507,7 +507,7 @@ const sidebarMenuButtonVariants = cva(
       size: {
         default: 'h-8 text-sm',
         sm: 'h-7 text-xs',
-        lg: `h-12 text-sm group-data-[collapsible=icon]:!${semanticSpacing.zero}`,
+        lg: `group-data-[collapsible=icon]:! h-12 text-sm${semanticSpacing.zero}`,
       },
     },
     defaultVariants: {

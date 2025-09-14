@@ -170,7 +170,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
         </div>
       </div>
 
-      <div className={`${semanticSpacing.topGap.xs} shrink-0 sm:${semanticSpacing.topGap.zero}`}>
+      <div className={`${semanticSpacing.topGap.xs} sm: shrink-0${semanticSpacing.topGap.zero}`}>
         {renderActions()}
       </div>
     </header>

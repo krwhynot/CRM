@@ -73,7 +73,7 @@ export function createFocusTrap(container: HTMLElement) {
 
     // Restore focus to the previously focused element
     if (previousActiveElement && 'focus' in previousActiveElement) {
-      ;(previousActiveElement as HTMLElement).focus()
+      (previousActiveElement as HTMLElement).focus()
     }
   }
 
@@ -125,7 +125,7 @@ export function createFocusRestoration() {
 
   const restore = () => {
     if (storedElement && 'focus' in storedElement) {
-      ;(storedElement as HTMLElement).focus()
+      (storedElement as HTMLElement).focus()
       storedElement = null
     }
   }

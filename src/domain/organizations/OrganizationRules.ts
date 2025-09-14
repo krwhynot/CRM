@@ -9,6 +9,8 @@ import type {
   OrganizationPerformance,
   OrganizationValidationContext,
   OrganizationTerritory,
+} from './OrganizationTypes'
+import {
   ORGANIZATION_TYPES,
   ORGANIZATION_PRIORITIES,
   FOOD_SERVICE_SEGMENTS,

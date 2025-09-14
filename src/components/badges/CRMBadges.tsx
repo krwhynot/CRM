@@ -147,7 +147,7 @@ export function StatusBadge({
         className
       )}
     >
-      {showIcon && <Icon className="h-3 w-3" />}
+      {showIcon && <Icon className="size-3" />}
       {displayLabel}
     </Badge>
   )
@@ -215,7 +215,7 @@ export function PriorityBadge({
         className
       )}
     >
-      {showIcon && <Icon className="h-3 w-3" />}
+      {showIcon && <Icon className="size-3" />}
       {displayLabel}
     </Badge>
   )
@@ -272,7 +272,7 @@ export function OrganizationTypeBadge({
         className
       )}
     >
-      {showIcon && <Icon className="h-3 w-3" />}
+      {showIcon && <Icon className="size-3" />}
       {displayLabel}
     </Badge>
   )
@@ -381,7 +381,7 @@ export function OpportunityStageBadge({
         className
       )}
     >
-      {showIcon && <Icon className="h-3 w-3" />}
+      {showIcon && <Icon className="size-3" />}
       {displayLabel}
     </Badge>
   )
@@ -498,7 +498,7 @@ export function InteractionTypeBadge({
         className
       )}
     >
-      {showIcon && <Icon className="h-3 w-3" />}
+      {showIcon && <Icon className="size-3" />}
       {displayLabel}
     </Badge>
   )
@@ -570,7 +570,7 @@ export function HealthBadge({
         className
       )}
     >
-      {showIcon && <Icon className="h-3 w-3" />}
+      {showIcon && <Icon className="size-3" />}
       {displayLabel}
     </Badge>
   )
@@ -632,7 +632,7 @@ export function EngagementBadge({
         className
       )}
     >
-      {showIcon && <Icon className="h-3 w-3" />}
+      {showIcon && <Icon className="size-3" />}
       {displayLabel}
     </Badge>
   )
@@ -701,7 +701,7 @@ export function TrendBadge({
         className
       )}
     >
-      {showIcon && <Icon className="h-3 w-3" />}
+      {showIcon && <Icon className="size-3" />}
       <span>{displayLabel}</span>
       {value && <span className={cn(semanticTypography.caption, 'font-semibold')}>({value})</span>}
     </Badge>
@@ -746,7 +746,7 @@ export function CustomBadge({
         className
       )}
     >
-      {Icon && <Icon className="h-3 w-3" />}
+      {Icon && <Icon className="size-3" />}
       {children || label}
     </Badge>
   )

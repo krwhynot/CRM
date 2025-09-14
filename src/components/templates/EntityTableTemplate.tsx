@@ -87,9 +87,7 @@ function EntityTableContent<T extends { id: string }>({
       {filters}
 
       {/* Bulk Actions Toolbar */}
-      {bulkActionsToolbar || (
-        <BulkActionsToolbar />
-      )}
+      {bulkActionsToolbar}
 
       {/* Data Table with Card Wrapper */}
       <Card className={cardClassName}>

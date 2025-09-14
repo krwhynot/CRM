@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo } from 'react'
 import { useDebounce } from '@/lib/performance-optimizations'
 import { getDateRangeDescription, getMemoizedDateRange } from '@/lib/date-range-utils'
 import { applyQuickViewPreset, getQuickViewPreset } from '@/lib/quick-view-presets'
+import { debugWarn } from '@/utils/debug'
 import type {
   UniversalFilterState,
   UseUniversalFiltersReturn,
@@ -63,7 +64,7 @@ export const useUniversalFilters = (
       const validation = validateFilters(newFilters)
 
       if (!validation.isValid) {
-        console.warn('Filter validation failed:', validation.errors)
+        debugWarn('Filter validation failed:', validation.errors)
         return
       }
 

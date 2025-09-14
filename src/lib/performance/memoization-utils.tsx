@@ -6,6 +6,7 @@
  */
 
 import React from 'react'
+import { debugLog, debugWarn } from '@/utils/debug'
 
 // =============================================================================
 // SHALLOW COMPARISON UTILITIES
@@ -150,9 +151,7 @@ export function useRenderCount(componentName: string) {
 
   React.useEffect(() => {
     renderCount.current++
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`${componentName} rendered ${renderCount.current} times`)
-    }
+    debugLog(`${componentName} rendered ${renderCount.current} times`)
   })
 
   return renderCount.current
@@ -179,7 +178,7 @@ export function useWhyDidYouUpdate<T extends Record<string, any>>(componentName:
       })
 
       if (Object.keys(changedProps).length) {
-        console.log(`[${componentName}] Props changed:`, changedProps)
+        debugLog(`[${componentName}] Props changed:`, changedProps)
       }
     }
 
@@ -354,7 +353,7 @@ export function usePerformanceMonitor(
       const renderTime = performance.now() - renderStart.current
       if (renderTime > 16) {
         // More than one frame
-        console.warn(`[${componentName}] Slow render: ${renderTime.toFixed(2)}ms`)
+        debugWarn(`[${componentName}] Slow render: ${renderTime.toFixed(2)}ms`)
       }
     }
   })
@@ -373,8 +372,8 @@ export function useComputationTime<T>(
     const result = computation()
     const end = performance.now()
 
-    if (process.env.NODE_ENV === 'development' && name) {
-      console.log(`[${name}] Computation time: ${(end - start).toFixed(2)}ms`)
+    if (name) {
+      debugLog(`[${name}] Computation time: ${(end - start).toFixed(2)}ms`)
     }
 
     return result

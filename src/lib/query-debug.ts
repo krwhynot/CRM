@@ -4,7 +4,7 @@
  */
 
 import type { QueryKey, Query } from '@tanstack/react-query'
-import { isDevelopment } from '@/config/environment'
+import { debugLog, debugWarn, debugError } from '@/utils/debug'
 
 export interface QueryDebugInfo {
   queryKey: QueryKey
@@ -58,23 +58,21 @@ export function debugQueryState(
     fetchStatus: queryState.fetchStatus,
   }
 
-  if (isDevelopment) {
-    console.log(`🔍 [${hookName}] Query State:`, debugInfo)
+  debugLog(`🔍 [${hookName}] Query State:`, debugInfo)
 
-    // Warn about potential issues
-    if (queryState.isError) {
-      console.warn(`⚠️  [${hookName}] Query failed:`, queryState.error)
-    }
+  // Warn about potential issues
+  if (queryState.isError) {
+    debugWarn(`⚠️  [${hookName}] Query failed:`, queryState.error)
+  }
 
-    if (Array.isArray(data) && data.length === 0 && !queryState.isLoading) {
-      console.warn(`⚠️  [${hookName}] Query returned empty array - potential data issue`)
-    }
+  if (Array.isArray(data) && data.length === 0 && !queryState.isLoading) {
+    debugWarn(`⚠️  [${hookName}] Query returned empty array - potential data issue`)
+  }
 
-    if (queryState.dataUpdatedAt && Date.now() - queryState.dataUpdatedAt > 5 * 60 * 1000) {
-      console.warn(
-        `⚠️  [${hookName}] Data is stale (${Math.round((Date.now() - queryState.dataUpdatedAt) / 1000 / 60)} minutes old)`
-      )
-    }
+  if (queryState.dataUpdatedAt && Date.now() - queryState.dataUpdatedAt > 5 * 60 * 1000) {
+    debugWarn(
+      `⚠️  [${hookName}] Data is stale (${Math.round((Date.now() - queryState.dataUpdatedAt) / 1000 / 60)} minutes old)`
+    )
   }
 
   return debugInfo
@@ -109,22 +107,20 @@ export function compareQueryStates(
     },
   }
 
-  if (isDevelopment) {
-    console.log(`🔀 Comparing query states: ${component1} vs ${component2}`)
-    console.table(comparison)
+  debugLog(`🔀 Comparing query states: ${component1} vs ${component2}`)
+  debugLog('Query State Comparison:', comparison)
 
-    // Flag inconsistencies
-    if (state1.data?.count !== state2.data?.count) {
-      console.error(
-        `❌ DATA INCONSISTENCY: ${component1} has ${state1.data?.count} items, ${component2} has ${state2.data?.count} items`
-      )
-    }
+  // Flag inconsistencies
+  if (state1.data?.count !== state2.data?.count) {
+    debugError(
+      `❌ DATA INCONSISTENCY: ${component1} has ${state1.data?.count} items, ${component2} has ${state2.data?.count} items`
+    )
+  }
 
-    if (state1.isError !== state2.isError) {
-      console.error(
-        `❌ ERROR STATE MISMATCH: ${component1} error=${state1.isError}, ${component2} error=${state2.isError}`
-      )
-    }
+  if (state1.isError !== state2.isError) {
+    debugError(
+      `❌ ERROR STATE MISMATCH: ${component1} error=${state1.isError}, ${component2} error=${state2.isError}`
+    )
   }
 
   return comparison
@@ -148,24 +144,22 @@ export function monitorQueryCache(
       query.queryKey.some((key: unknown) => typeof key === 'string' && keyPattern.includes(key))
   )
 
-  if (isDevelopment) {
-    console.log(`📊 Query Cache Analysis for pattern [${keyPattern.join(', ')}]:`)
-    console.log(`Total queries in cache: ${queries.length}`)
-    console.log(`Matching queries: ${matchingQueries.length}`)
+  debugLog(`📊 Query Cache Analysis for pattern [${keyPattern.join(', ')}]:`)
+  debugLog(`Total queries in cache: ${queries.length}`)
+  debugLog(`Matching queries: ${matchingQueries.length}`)
 
-    matchingQueries.forEach((query: Query, index: number) => {
-      console.log(`Query ${index + 1}:`, {
-        key: query.queryKey,
-        state: query.state.status,
-        dataCount: Array.isArray(query.state.data) ? query.state.data.length : 'non-array',
-        lastUpdated: new Date(query.state.dataUpdatedAt).toLocaleTimeString(),
-        isStale: query.isStale(),
-        // Note: isInactive() is not a standard Query method, removing it
-        // Active/inactive status can be determined by checking observers
-        hasObservers: query.getObserversCount() > 0,
-      })
+  matchingQueries.forEach((query: Query, index: number) => {
+    debugLog(`Query ${index + 1}:`, {
+      key: query.queryKey,
+      state: query.state.status,
+      dataCount: Array.isArray(query.state.data) ? query.state.data.length : 'non-array',
+      lastUpdated: new Date(query.state.dataUpdatedAt).toLocaleTimeString(),
+      isStale: query.isStale(),
+      // Note: isInactive() is not a standard Query method, removing it
+      // Active/inactive status can be determined by checking observers
+      hasObservers: query.getObserversCount() > 0,
     })
-  }
+  })
 
   return matchingQueries
 }
@@ -185,25 +179,23 @@ export function logNetworkRequest(
   response?: unknown,
   error?: NetworkError
 ) {
-  if (isDevelopment) {
-    const timestamp = new Date().toISOString()
+  const timestamp = new Date().toISOString()
 
-    if (error) {
-      console.error(`🌐 [${timestamp}] ${method} ${url} FAILED:`, {
-        error: error.message,
-        status: error.status,
-        payload,
-      })
-    } else {
-      console.log(`🌐 [${timestamp}] ${method} ${url} SUCCESS:`, {
-        responseSize: response
-          ? Array.isArray(response)
-            ? response.length
-            : 'non-array'
-          : 'unknown',
-        payload,
-      })
-    }
+  if (error) {
+    debugError(`🌐 [${timestamp}] ${method} ${url} FAILED:`, {
+      error: error.message,
+      status: error.status,
+      payload,
+    })
+  } else {
+    debugLog(`🌐 [${timestamp}] ${method} ${url} SUCCESS:`, {
+      responseSize: response
+        ? Array.isArray(response)
+          ? response.length
+          : 'non-array'
+        : 'unknown',
+      payload,
+    })
   }
 }
 
@@ -217,9 +209,7 @@ export function measureQueryPerformance(operationName: string) {
     end: () => {
       const endTime = performance.now()
       const duration = endTime - startTime
-      if (isDevelopment) {
-        console.log(`⏱️  [${operationName}] took ${duration.toFixed(2)}ms`)
-      }
+      debugLog(`⏱️  [${operationName}] took ${duration.toFixed(2)}ms`)
       return duration
     },
   }

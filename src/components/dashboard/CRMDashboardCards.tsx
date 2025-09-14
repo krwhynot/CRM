@@ -42,16 +42,16 @@ const dashboardCardVariants = cva('relative overflow-hidden transition-all durat
     },
     variant: {
       default: 'bg-card hover:bg-accent/5',
-      primary: 'bg-primary/5 border-primary/20 hover:bg-primary/10',
+      primary: 'border-primary/20 bg-primary/5 hover:bg-primary/10',
       success:
-        'bg-green-50 border-green-200 hover:bg-green-100 dark:bg-green-950/20 dark:border-green-900/50 dark:hover:bg-green-950/30',
+        'border-green-200 bg-green-50 hover:bg-green-100 dark:border-green-900/50 dark:bg-green-950/20 dark:hover:bg-green-950/30',
       warning:
-        'bg-yellow-50 border-yellow-200 hover:bg-yellow-100 dark:bg-yellow-950/20 dark:border-yellow-900/50 dark:hover:bg-yellow-950/30',
+        'border-yellow-200 bg-yellow-50 hover:bg-yellow-100 dark:border-yellow-900/50 dark:bg-yellow-950/20 dark:hover:bg-yellow-950/30',
       destructive:
-        'bg-red-50 border-red-200 hover:bg-red-100 dark:bg-red-950/20 dark:border-red-900/50 dark:hover:bg-red-950/30',
+        'border-red-200 bg-red-50 hover:bg-red-100 dark:border-red-900/50 dark:bg-red-950/20 dark:hover:bg-red-950/30',
     },
     interactive: {
-      true: 'cursor-pointer hover:shadow-md hover:scale-[1.02]',
+      true: 'cursor-pointer hover:scale-[1.02] hover:shadow-md',
       false: '',
     },
   },
@@ -137,14 +137,14 @@ export function MetricCard({
         </div>
 
         <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
-          {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
+          {Icon && <Icon className="size-4 text-muted-foreground" />}
 
           {/* Actions Dropdown */}
           {(actions.length > 0 || onRefresh) && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <MoreHorizontal className="h-4 w-4" />
+                <Button variant="ghost" className="size-8 p-0">
+                  <MoreHorizontal className="size-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -170,9 +170,9 @@ export function MetricCard({
           )}
 
           {href && (
-            <Button variant="ghost" className="h-8 w-8 p-0" asChild>
+            <Button variant="ghost" className="size-8 p-0" asChild>
               <a href={href} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="h-4 w-4" />
+                <ExternalLink className="size-4" />
               </a>
             </Button>
           )}
@@ -260,7 +260,7 @@ export function ProgressCard({
         <CardTitle className={cn(semanticTypography.body, semanticTypography.label)}>
           {title}
         </CardTitle>
-        {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
+        {Icon && <Icon className="size-4 text-muted-foreground" />}
       </CardHeader>
 
       <CardContent className={`${semanticSpacing.stack.sm}`}>
@@ -407,7 +407,7 @@ export function ActivityCard({
                 >
                   <div className="relative">
                     {activity.user?.avatar ? (
-                      <Avatar className="h-6 w-6">
+                      <Avatar className="size-6">
                         <AvatarImage src={activity.user.avatar} />
                         <AvatarFallback className={`${semanticTypography.caption}`}>
                           {activity.user.name
@@ -423,7 +423,7 @@ export function ActivityCard({
                           'h-6 w-6 bg-muted flex items-center justify-center'
                         )}
                       >
-                        <IconComponent className="h-3 w-3" />
+                        <IconComponent className="size-3" />
                       </div>
                     )}
 
@@ -529,8 +529,8 @@ export function QuickActionsCard({
               disabled={action.disabled}
             >
               <div className={cn(semanticSpacing.inline.xs, 'flex items-center w-full')}>
-                <action.icon className="h-4 w-4 shrink-0" />
-                <div className="flex-1 text-left min-w-0">
+                <action.icon className="size-4 shrink-0" />
+                <div className="min-w-0 flex-1 text-left">
                   <div
                     className={cn(semanticTypography.body, semanticTypography.label, 'truncate')}
                   >
@@ -611,8 +611,8 @@ export function ChartCard({
           {actions.length > 0 && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <MoreHorizontal className="h-4 w-4" />
+                <Button variant="ghost" className="size-8 p-0">
+                  <MoreHorizontal className="size-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -631,7 +631,7 @@ export function ChartCard({
       </CardHeader>
 
       <CardContent>
-        <div className="w-full h-full min-h-[200px] flex items-center justify-center">
+        <div className="flex size-full min-h-[200px] items-center justify-center">
           {children}
         </div>
       </CardContent>

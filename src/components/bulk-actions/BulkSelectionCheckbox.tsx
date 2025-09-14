@@ -75,9 +75,9 @@ export function BulkSelectionCheckbox({
       )}
     >
       {indeterminate ? (
-        <Minus className="h-3 w-3" />
+        <Minus className="size-3" />
       ) : checked ? (
-        <Check className="h-3 w-3" />
+        <Check className="size-3" />
       ) : null}
     </button>
   )

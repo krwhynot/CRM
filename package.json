@@ -118,7 +118,6 @@
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
     "web-vitals": "^5.1.0",
-    "xlsx": "^0.18.5",
     "zod": "^3.25.76",
     "zustand": "^5.0.8"
   },
@@ -136,8 +135,6 @@
     "@types/node": "^24.3.1",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
-    "@types/uuid": "^9.0.8",
-    "@types/xlsx": "^0.0.35",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "@vitejs/plugin-react": "^5.0.2",
@@ -160,8 +157,8 @@
     "rollup-plugin-visualizer": "^6.0.3",
     "storybook": "^9.1.5",
     "tailwindcss": "^3.3.3",
+    "terser": "^5.44.0",
     "typescript": "^5.0.2",
-    "uuid": "^9.0.1",
     "vite": "^7.1.4",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4"

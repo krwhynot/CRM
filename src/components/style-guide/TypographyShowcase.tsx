@@ -259,7 +259,7 @@ export function TypographyShowcase() {
                   onClick={() => copyToClipboard(weight.className, `${weight.name} Weight`)}
                   className="h-8"
                 >
-                  <Copy className="h-3 w-3" />
+                  <Copy className="size-3" />
                 </Button>
               </div>
               <div
@@ -287,7 +287,7 @@ export function TypographyShowcase() {
         <CardTitle
           className={cn(semanticTypography.h4, semanticSpacing.inline.xs, 'flex items-center')}
         >
-          <Eye className="h-5 w-5" />
+          <Eye className="size-5" />
           <span>Text Colors & Accessibility</span>
         </CardTitle>
         <CardDescription>AAA compliant text color hierarchy</CardDescription>
@@ -308,7 +308,7 @@ export function TypographyShowcase() {
                     onClick={() => copyToClipboard(color.className, `${color.name} Color`)}
                     className="h-8"
                   >
-                    <Copy className="h-3 w-3" />
+                    <Copy className="size-3" />
                   </Button>
                 </div>
               </div>
@@ -362,7 +362,7 @@ export function TypographyShowcase() {
               <div className={`${semanticSpacing.stack.sm}`}>
                 <div className="flex items-center justify-between">
                   <div className={`${semanticSpacing.stack.xs}`}>
-                    <p className="text-body text-body">Called Premier Restaurant Group</p>
+                    <p className="text-body">Called Premier Restaurant Group</p>
                     <p className="text-caption text-muted">Discussed Q2 product catalog updates</p>
                   </div>
                   <div className="text-right">
@@ -373,7 +373,7 @@ export function TypographyShowcase() {
 
                 <div className="flex items-center justify-between">
                   <div className={`${semanticSpacing.stack.xs}`}>
-                    <p className="text-body text-body">Email sent to Healthy Foods Inc.</p>
+                    <p className="text-body">Email sent to Healthy Foods Inc.</p>
                     <p className="text-caption text-muted">Product proposal for new organic line</p>
                   </div>
                   <div className="text-right">
@@ -451,7 +451,7 @@ export function TypographyShowcase() {
                   'flex items-center'
                 )}
               >
-                <Type className="h-5 w-5" />
+                <Type className="size-5" />
                 <span>Typography Scale</span>
               </CardTitle>
               <CardDescription>

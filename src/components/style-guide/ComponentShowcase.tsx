@@ -167,7 +167,7 @@ export function ComponentShowcase() {
             <Button size="default">Default</Button>
             <Button size="lg">Large</Button>
             <Button size="icon">
-              <Settings className="h-4 w-4" />
+              <Settings className="size-4" />
             </Button>
           </div>
         </div>
@@ -564,7 +564,7 @@ export function ComponentShowcase() {
       </CardHeader>
       <CardContent className={`${semanticSpacing.stack.md}`}>
         <Alert>
-          <Info className="h-4 w-4" />
+          <Info className="size-4" />
           <AlertTitle>Information</AlertTitle>
           <AlertDescription>
             This is an informational alert with helpful context for the user.
@@ -572,7 +572,7 @@ export function ComponentShowcase() {
         </Alert>
 
         <Alert className="border-warning/50 text-warning dark:border-warning [&>svg]:text-warning">
-          <AlertTriangle className="h-4 w-4" />
+          <AlertTriangle className="size-4" />
           <AlertTitle>Warning</AlertTitle>
           <AlertDescription>
             This is a warning alert indicating something needs attention.
@@ -580,7 +580,7 @@ export function ComponentShowcase() {
         </Alert>
 
         <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
+          <AlertCircle className="size-4" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>
             This is an error alert indicating something went wrong.
@@ -588,7 +588,7 @@ export function ComponentShowcase() {
         </Alert>
 
         <Alert className="border-success/50 text-success dark:border-success [&>svg]:text-success">
-          <CheckCircle className="h-4 w-4" />
+          <CheckCircle className="size-4" />
           <AlertTitle>Success</AlertTitle>
           <AlertDescription>
             This is a success alert confirming an action was completed.
@@ -714,7 +714,7 @@ export function ComponentShowcase() {
                   </TableCell>
                   <TableCell>
                     <Button variant="ghost" size="sm">
-                      <MoreHorizontal className="h-4 w-4" />
+                      <MoreHorizontal className="size-4" />
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -733,7 +733,7 @@ export function ComponentShowcase() {
                   </TableCell>
                   <TableCell>
                     <Button variant="ghost" size="sm">
-                      <MoreHorizontal className="h-4 w-4" />
+                      <MoreHorizontal className="size-4" />
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -752,7 +752,7 @@ export function ComponentShowcase() {
                   </TableCell>
                   <TableCell>
                     <Button variant="ghost" size="sm">
-                      <MoreHorizontal className="h-4 w-4" />
+                      <MoreHorizontal className="size-4" />
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -767,14 +767,14 @@ export function ComponentShowcase() {
         <div className={`${semanticSpacing.stack.sm}`}>
           <Label>Avatars</Label>
           <div className={cn(semanticSpacing.inline.sm, 'flex items-center')}>
-            <Avatar className="h-8 w-8">
+            <Avatar className="size-8">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
-            <Avatar className="h-10 w-10">
+            <Avatar className="size-10">
               <AvatarFallback>JS</AvatarFallback>
             </Avatar>
-            <Avatar className="h-12 w-12">
+            <Avatar className="size-12">
               <AvatarFallback>MF</AvatarFallback>
             </Avatar>
           </div>
@@ -910,7 +910,7 @@ export function ComponentShowcase() {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button variant="outline" size="icon">
-                    <Info className="h-4 w-4" />
+                    <Info className="size-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>

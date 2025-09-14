@@ -226,7 +226,7 @@ function StyleGuide() {
         </Tabs>
       </div>
       {/* Footer */}
-      <footer className="border-t bg-card mt-16">
+      <footer className="mt-16 border-t bg-card">
         <div className={`container mx-auto ${semanticSpacing.pageContainer}`}>
           <div className="flex items-center justify-between">
             <div>
@@ -238,10 +238,10 @@ function StyleGuide() {
               </p>
             </div>
             <div className={`flex items-center ${semanticSpacing.inline.sm}`}>
-              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+              <Badge variant="outline" className="border-primary/20 bg-primary/10 text-primary">
                 Production Ready
               </Badge>
-              <Badge variant="outline" className="bg-success/10 text-success border-success/20">
+              <Badge variant="outline" className="border-success/20 bg-success/10 text-success">
                 WCAG AAA
               </Badge>
             </div>

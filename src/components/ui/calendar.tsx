@@ -5,7 +5,7 @@ import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react
 import { DayButton, DayPicker, getDefaultClassNames } from 'react-day-picker'
 
 import { cn } from '@/lib/utils'
-import { semanticSpacing, semanticTypography, semanticRadius } from '@/styles/tokens'
+import { semanticSpacing, semanticTypography, semanticRadius, semanticColors, semanticShadows } from '@/styles/tokens'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
 
@@ -65,7 +65,7 @@ function Calendar({
           defaultClassNames.dropdowns
         ),
         dropdown_root: cn(
-          `relative has-focus:border-ring border border-input shadow-xs has-focus:ring-ring/50 has-focus:ring-[3px] ${semanticRadius.default}`,
+          `relative has-focus:border-ring border border-input ${semanticShadows.input} has-focus:ring-ring/50 has-focus:ring-[3px] ${semanticRadius.default}`,
           defaultClassNames.dropdown_root
         ),
         dropdown: cn('absolute bg-popover inset-0 opacity-0', defaultClassNames.dropdown),
@@ -76,7 +76,7 @@ function Calendar({
             : `${semanticRadius.default} ${semanticSpacing.compactLeft} pr-1 flex items-center ${semanticSpacing.gap.xs} ${semanticTypography.body} h-8 [&>svg]:text-muted-foreground [&>svg]:size-3.5`,
           defaultClassNames.caption_label
         ),
-        table: 'w-full border-collapse',
+        table: cn('w-full border-collapse', semanticColors.borderDefault),
         weekdays: cn('flex', defaultClassNames.weekdays),
         weekday: cn(
           `text-muted-foreground ${semanticRadius.default} flex-1 font-normal ${semanticTypography.caption} select-none`,
@@ -139,16 +139,11 @@ function Calendar({
           return <ChevronDownIcon className={cn('size-4', className)} {...props} />
         },
         DayButton: CalendarDayButton,
-        WeekNumber: ({
-          children,
-          ...props
-        }: {
-          children?: React.ReactNode
-          [key: string]: unknown
-        }) => {
+        WeekNumber: (props: React.ThHTMLAttributes<HTMLTableCellElement>) => {
+          const { children, ...rest } = props;
           return (
-            <td {...props}>
-              <div className="flex size-8 items-center justify-center text-center">{children}</div>
+            <td {...rest}>
+              <div className={cn('flex size-8 items-center justify-center text-center', semanticColors.text.secondary)}>{children}</div>
             </td>
           )
         },

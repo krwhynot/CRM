@@ -462,7 +462,7 @@ export function useSmartImport(): UseSmartImportReturn {
               } else if (crmField === 'is_active') {
                 transformedRow.is_active = Boolean(value)
               } else {
-                ;(transformedRow as any)[crmField] = value
+                (transformedRow as any)[crmField] = value
               }
             }
           })
@@ -742,7 +742,7 @@ export function useSmartImport(): UseSmartImportReturn {
       }
 
       // Perform AI mapping asynchronously
-      ;(async () => {
+      (async () => {
         try {
           // For large files, use a smaller sample to reduce API costs and processing time
           const sampleSize = currentState.parsedData!.rows.length > 100 ? 10 : 3
@@ -839,7 +839,7 @@ export function useSmartImport(): UseSmartImportReturn {
 
       setState((currentState) => {
         // Perform validation asynchronously
-        ;(async () => {
+        (async () => {
           try {
             const fieldMappingDict = Object.fromEntries(
               currentState.fieldMappings
@@ -883,7 +883,7 @@ export function useSmartImport(): UseSmartImportReturn {
       }
 
       // Perform duplicate detection asynchronously
-      ;(async () => {
+      (async () => {
         try {
           const duplicateResults = await detectDuplicatesWithAI(prev.parsedData!.rows, 100)
           setState((prevState) => ({ ...prevState, duplicateResults }))

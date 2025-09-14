@@ -22,8 +22,18 @@ const MultiPrincipalOpportunityPage = lazy(() => import('@/pages/MultiPrincipalO
 const ProductsPage = lazy(() => import('@/pages/Products'))
 const InteractionsPage = lazy(() => import('@/pages/Interactions'))
 const ImportExportPage = lazy(() => import('@/pages/ImportExport'))
-const StyleGuideTestPage = lazy(() => import('@/pages/StyleGuideTest'))
-const StyleGuide = lazy(() => import('@/pages/StyleGuide'))
+
+// Development-only components - only loaded in development builds
+const StyleGuideTestPage = lazy(() =>
+  import.meta.env.DEV
+    ? import('@/pages/StyleGuideTest')
+    : Promise.resolve({ default: () => <div>Development only</div> })
+)
+const StyleGuide = lazy(() =>
+  import.meta.env.DEV
+    ? import('@/pages/StyleGuide')
+    : Promise.resolve({ default: () => <div>Development only</div> })
+)
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -172,30 +182,35 @@ function App() {
                       </ProtectedRoute>
                     }
                   />
-                  <Route
-                    path="/style-test"
-                    element={
-                      <ProtectedRoute>
-                        <Layout>
-                          <Suspense fallback={<LoadingSpinner />}>
-                            <StyleGuideTestPage />
-                          </Suspense>
-                        </Layout>
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/style-guide"
-                    element={
-                      <ProtectedRoute>
-                        <Layout>
-                          <Suspense fallback={<LoadingSpinner />}>
-                            <StyleGuide />
-                          </Suspense>
-                        </Layout>
-                      </ProtectedRoute>
-                    }
-                  />
+                  {/* Development-only routes */}
+                  {import.meta.env.DEV && (
+                    <>
+                      <Route
+                        path="/style-test"
+                        element={
+                          <ProtectedRoute>
+                            <Layout>
+                              <Suspense fallback={<LoadingSpinner />}>
+                                <StyleGuideTestPage />
+                              </Suspense>
+                            </Layout>
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/style-guide"
+                        element={
+                          <ProtectedRoute>
+                            <Layout>
+                              <Suspense fallback={<LoadingSpinner />}>
+                                <StyleGuide />
+                              </Suspense>
+                            </Layout>
+                          </ProtectedRoute>
+                        }
+                      />
+                    </>
+                  )}
                 </Routes>
               </AuthCallbackHandler>
               <Toaster />

@@ -178,7 +178,7 @@ export function MotionGallery() {
           size="sm"
           onClick={() => copyCode(timing.cssCode, `${timing.name} Timing`)}
         >
-          <Copy className="h-3 w-3" />
+          <Copy className="size-3" />
         </Button>
       </div>
 
@@ -193,7 +193,7 @@ export function MotionGallery() {
           )}
           onClick={() => triggerAnimation(timing.name)}
         >
-          <Play className="h-6 w-6 text-white" />
+          <Play className="size-6 text-white" />
         </div>
       </div>
 
@@ -227,7 +227,7 @@ export function MotionGallery() {
           size="sm"
           onClick={() => copyCode(animation.cssCode, `${animation.name} Animation`)}
         >
-          <Copy className="h-3 w-3" />
+          <Copy className="size-3" />
         </Button>
       </div>
 
@@ -303,7 +303,7 @@ export function MotionGallery() {
           size="sm"
           onClick={() => copyCode(animation.cssCode, `${animation.name} Animation`)}
         >
-          <Copy className="h-3 w-3" />
+          <Copy className="size-3" />
         </Button>
       </div>
 
@@ -385,7 +385,7 @@ export function MotionGallery() {
             <Button variant="destructive" className="button-press">
               Delete Record
             </Button>
-            <Button variant="ghost" className="hover:bg-accent transition-colors duration-150">
+            <Button variant="ghost" className="transition-colors duration-150 hover:bg-accent">
               Cancel
             </Button>
           </div>
@@ -520,7 +520,7 @@ export function MotionGallery() {
             )}
           >
             <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
-              <Timer className="h-5 w-5 text-warning" />
+              <Timer className="size-5 text-warning" />
               <span className={cn(semanticTypography.label, 'text-warning')}>
                 Reduced Motion Active
               </span>
@@ -592,7 +592,7 @@ export function MotionGallery() {
                   'flex items-center'
                 )}
               >
-                <Timer className="h-5 w-5" />
+                <Timer className="size-5" />
                 <span>Animation Timing</span>
               </CardTitle>
               <CardDescription>
@@ -622,7 +622,7 @@ export function MotionGallery() {
                   'flex items-center'
                 )}
               >
-                <MousePointer className="h-5 w-5" />
+                <MousePointer className="size-5" />
                 <span>Interaction Animations</span>
               </CardTitle>
               <CardDescription>Hover states, focus effects, and micro-interactions</CardDescription>
@@ -650,7 +650,7 @@ export function MotionGallery() {
                   'flex items-center'
                 )}
               >
-                <Loader className="h-5 w-5" />
+                <Loader className="size-5" />
                 <span>Loading Animations</span>
               </CardTitle>
               <CardDescription>Feedback animations and loading states</CardDescription>

@@ -116,7 +116,7 @@ export const WithSubtitleAndMeta: Story = {
               <Badge variant="secondary" className="mt-2">
                 {org.type}
               </Badge>
-              <p className={`${semanticTypography.caption} text-muted-foreground mt-1`}>{org.contacts} contacts</p>
+              <p className={`${semanticTypography.caption} mt-1 text-muted-foreground`}>{org.contacts} contacts</p>
             </div>
           ))}
         </div>
@@ -206,7 +206,7 @@ export const WithFilterSidebar: Story = {
           {
             id: 'search',
             title: 'Search',
-            icon: <Search className="h-4 w-4" />,
+            icon: <Search className="size-4" />,
             defaultExpanded: true,
             controls: [
               {
@@ -221,7 +221,7 @@ export const WithFilterSidebar: Story = {
           {
             id: 'type',
             title: 'Organization Type',
-            icon: <Building2 className="h-4 w-4" />,
+            icon: <Building2 className="size-4" />,
             badge: '1',
             controls: [
               {
@@ -240,7 +240,7 @@ export const WithFilterSidebar: Story = {
           {
             id: 'quick-filters',
             title: 'Quick Filters',
-            icon: <Filter className="h-4 w-4" />,
+            icon: <Filter className="size-4" />,
             controls: [
               {
                 type: 'multiselect',
@@ -260,15 +260,15 @@ export const WithFilterSidebar: Story = {
       />
     ),
     children: (
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className={semanticSpacing.stack.md}>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {sampleOrganizations.map((org) => (
             <div key={org.id} className="rounded-lg border border-border bg-card p-4">
               <h3 className="font-semibold">{org.name}</h3>
               <Badge variant="secondary" className="mt-2">
                 {org.type}
               </Badge>
-              <p className={`${semanticTypography.caption} text-muted-foreground mt-1`}>{org.contacts} contacts</p>
+              <p className={`${semanticTypography.caption} mt-1 text-muted-foreground`}>{org.contacts} contacts</p>
             </div>
           ))}
         </div>
@@ -338,10 +338,10 @@ export const CompleteExample: Story = {
           {
             id: 'search',
             title: 'Search',
-            icon: <Search className="h-4 w-4" />,
+            icon: <Search className="size-4" />,
             defaultExpanded: true,
             content: (
-              <div className="space-y-3">
+              <div className={semanticSpacing.stack.sm}>
                 <Input placeholder="Search contacts..." />
                 <Input placeholder="Search by organization..." />
               </div>
@@ -350,7 +350,7 @@ export const CompleteExample: Story = {
           {
             id: 'role',
             title: 'Decision Authority',
-            icon: <Users className="h-4 w-4" />,
+            icon: <Users className="size-4" />,
             controls: [
               {
                 type: 'multiselect',
@@ -370,16 +370,16 @@ export const CompleteExample: Story = {
       />
     ),
     children: (
-      <div className="space-y-6">
+      <div className={semanticSpacing.stack.lg}>
         <div className="rounded-lg border border-border bg-card">
-          <div className="p-6 border-b border-border">
+          <div className="border-b border-border p-6">
             <h3 className="text-lg font-semibold">Contact Directory</h3>
             <p className="text-muted-foreground">
               All your business contacts organized by relationship and authority level.
             </p>
           </div>
           <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {[
                 {
                   name: 'John Smith',
@@ -409,7 +409,7 @@ export const CompleteExample: Story = {
                 <div key={index} className="rounded-lg border border-border bg-muted/50 p-4">
                   <h4 className="font-semibold">{contact.name}</h4>
                   <p className="text-sm text-muted-foreground">{contact.role}</p>
-                  <p className="text-sm font-medium mt-1">{contact.org}</p>
+                  <p className="mt-1 text-sm font-medium">{contact.org}</p>
                   <Badge
                     variant={contact.authority === 'primary' ? 'default' : 'secondary'}
                     className="mt-2"
@@ -477,10 +477,10 @@ export const MobileResponsive: Story = {
       />
     ),
     children: (
-      <div className="space-y-4">
+      <div className={semanticSpacing.stack.md}>
         {sampleOrganizations.map((org) => (
           <div key={org.id} className="rounded-lg border border-border bg-card p-4">
-            <h3 className="font-semibold text-sm">{org.name}</h3>
+            <h3 className="text-sm font-semibold">{org.name}</h3>
             <Badge variant="secondary" className="mt-1 text-xs">
               {org.type}
             </Badge>

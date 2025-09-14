@@ -64,6 +64,62 @@ const migrationPatterns = [
     type: 'colors',
     description: 'Secondary text color',
   },
+
+  // SHADOW MIGRATIONS
+  {
+    pattern: /className="([^"]*)\bshadow-sm\b([^"]*)"/g,
+    replacement: 'className={cn("$1{semanticShadows.card}$2")}',
+    type: 'shadows',
+    description: 'Card shadow',
+  },
+  {
+    pattern: /className="([^"]*)\bshadow-md\b([^"]*)"/g,
+    replacement: 'className={cn("$1{semanticShadows.cardHover}$2")}',
+    type: 'shadows',
+    description: 'Card hover shadow',
+  },
+  {
+    pattern: /className="([^"]*)\bshadow-lg\b([^"]*)"/g,
+    replacement: 'className={cn("$1{semanticShadows.cardElevated}$2")}',
+    type: 'shadows',
+    description: 'Elevated card shadow',
+  },
+  {
+    pattern: /className="([^"]*)\bshadow-xl\b([^"]*)"/g,
+    replacement: 'className={cn("$1{semanticShadows.modal}$2")}',
+    type: 'shadows',
+    description: 'Modal shadow',
+  },
+  {
+    pattern: /className="([^"]*)\bshadow-2xl\b([^"]*)"/g,
+    replacement: 'className={cn("$1{semanticShadows.extra}$2")}',
+    type: 'shadows',
+    description: 'Extra large shadow',
+  },
+  {
+    pattern: /className="([^"]*)\bshadow-xs\b([^"]*)"/g,
+    replacement: 'className={cn("$1{semanticShadows.subtle}$2")}',
+    type: 'shadows',
+    description: 'Subtle shadow',
+  },
+  {
+    pattern: /className="([^"]*)\bshadow-none\b([^"]*)"/g,
+    replacement: 'className={cn("$1{semanticShadows.disabled}$2")}',
+    type: 'shadows',
+    description: 'No shadow',
+  },
+  {
+    pattern: /className="([^"]*)\bhover:shadow-md\b([^"]*)"/g,
+    replacement: 'className={cn("$1hover:{semanticShadows.cardHover}$2")}',
+    type: 'shadows',
+    description: 'Hover card shadow',
+  },
+  {
+    pattern: /className="([^"]*)\bhover:shadow-sm\b([^"]*)"/g,
+    replacement: 'className={cn("$1hover:{semanticShadows.card}$2")}',
+    type: 'shadows',
+    description: 'Hover subtle shadow',
+  },
 ]
 
 // Test the migration script with dry-run

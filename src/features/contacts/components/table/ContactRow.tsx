@@ -111,7 +111,7 @@ export function useContactColumns({
             <div className={`flex items-center ${semanticSpacing.gap.sm}`}>
               <div
                 className={cn(
-                  `size-8 ${semanticRadius.full} flex items-center justify-center text-white ${fontWeight.medium}`,
+                  `size-8 ${semanticRadius.full} flex items-center justify-center ${semanticColors.text.inverse} ${fontWeight.medium}`,
                   colors.primary[500],
                   semanticRadius.full,
                   semanticTypography.caption
@@ -257,13 +257,13 @@ export function useContactColumns({
             <div className={`flex ${semanticSpacing.gap.xs} ${semanticSpacing.topGap.xs}`}>
               {contact.budget_authority && (
                 <div
-                  className={cn('size-2 rounded-full bg-green-500', semanticRadius.full)}
+                  className={cn('size-2 rounded-full', semanticColors.success.primary, semanticRadius.full)}
                   title="Budget Authority"
                 />
               )}
               {contact.technical_authority && (
                 <div
-                  className={cn('size-2 rounded-full bg-blue-500', semanticRadius.full)}
+                  className={cn('size-2 rounded-full', semanticColors.info.primary, semanticRadius.full)}
                   title="Technical Authority"
                 />
               )}

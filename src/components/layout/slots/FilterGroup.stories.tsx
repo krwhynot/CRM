@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useState } from 'react'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 
 const meta: Meta<typeof FilterGroup> = {
   title: 'Layout/Slots/FilterGroup',
@@ -65,7 +66,7 @@ export const BasicSearch: Story = {
       {
         id: 'search',
         title: 'Search',
-        icon: <Search className="h-4 w-4" />,
+        icon: <Search className="size-4" />,
         defaultExpanded: true,
         controls: [
           {
@@ -88,7 +89,7 @@ export const TypeFilter: Story = {
       {
         id: 'type',
         title: 'Organization Type',
-        icon: <Building2 className="h-4 w-4" />,
+        icon: <Building2 className="size-4" />,
         badge: '1',
         controls: [
           {
@@ -116,7 +117,7 @@ export const MultiSelectFilter: Story = {
       {
         id: 'priority',
         title: 'Priority Filters',
-        icon: <Filter className="h-4 w-4" />,
+        icon: <Filter className="size-4" />,
         badge: 2,
         controls: [
           {
@@ -145,7 +146,7 @@ export const ToggleFilters: Story = {
       {
         id: 'status',
         title: 'Status Filters',
-        icon: <Users className="h-4 w-4" />,
+        icon: <Users className="size-4" />,
         controls: [
           {
             type: 'toggle',
@@ -174,11 +175,11 @@ export const CustomContentFilter: Story = {
       {
         id: 'advanced',
         title: 'Advanced Filters',
-        icon: <MapPin className="h-4 w-4" />,
+        icon: <MapPin className="size-4" />,
         content: (
-          <div className="space-y-3">
+          <div className={semanticSpacing.stack.md}>
             <div>
-              <label className="text-sm font-medium">Location</label>
+              <label className={semanticTypography.caption}>Location</label>
               <Select>
                 <SelectTrigger>
                   <SelectValue placeholder="Select region" />
@@ -192,8 +193,8 @@ export const CustomContentFilter: Story = {
               </Select>
             </div>
             <div>
-              <label className="text-sm font-medium">Revenue Range</label>
-              <div className="flex gap-2">
+              <label className={semanticTypography.caption}>Revenue Range</label>
+              <div className={`flex ${semanticSpacing.gap.xs}`}>
                 <Input placeholder="Min" type="number" />
                 <Input placeholder="Max" type="number" />
               </div>
@@ -212,7 +213,7 @@ export const CompleteFilterSidebar: Story = {
       {
         id: 'search',
         title: 'Search',
-        icon: <Search className="h-4 w-4" />,
+        icon: <Search className="size-4" />,
         defaultExpanded: true,
         controls: [
           {
@@ -227,7 +228,7 @@ export const CompleteFilterSidebar: Story = {
       {
         id: 'type',
         title: 'Organization Type',
-        icon: <Building2 className="h-4 w-4" />,
+        icon: <Building2 className="size-4" />,
         badge: '1',
         controls: [
           {
@@ -246,7 +247,7 @@ export const CompleteFilterSidebar: Story = {
       {
         id: 'quick-filters',
         title: 'Quick Filters',
-        icon: <Filter className="h-4 w-4" />,
+        icon: <Filter className="size-4" />,
         controls: [
           {
             type: 'multiselect',
@@ -265,18 +266,18 @@ export const CompleteFilterSidebar: Story = {
       {
         id: 'advanced',
         title: 'Advanced Options',
-        icon: <MapPin className="h-4 w-4" />,
+        icon: <MapPin className="size-4" />,
         content: (
-          <div className="space-y-3">
+          <div className={semanticSpacing.stack.md}>
             <div>
-              <label className="text-sm font-medium block mb-1">Date Range</label>
-              <div className="grid grid-cols-2 gap-2">
+              <label className={`mb-1 block ${semanticTypography.caption}`}>Date Range</label>
+              <div className={`grid grid-cols-2 ${semanticSpacing.gap.xs}`}>
                 <Input type="date" />
                 <Input type="date" />
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium block mb-1">Location</label>
+              <label className={`mb-1 block ${semanticTypography.caption}`}>Location</label>
               <Select>
                 <SelectTrigger>
                   <SelectValue placeholder="Any location" />
@@ -355,7 +356,7 @@ export const WithDividers: Story = {
       {
         id: 'basic',
         title: 'Basic Filters',
-        icon: <Search className="h-4 w-4" />,
+        icon: <Search className="size-4" />,
         controls: [
           {
             type: 'search',
@@ -369,7 +370,7 @@ export const WithDividers: Story = {
       {
         id: 'category',
         title: 'Category',
-        icon: <Building2 className="h-4 w-4" />,
+        icon: <Building2 className="size-4" />,
         controls: [
           {
             type: 'select',
@@ -387,7 +388,7 @@ export const WithDividers: Story = {
       {
         id: 'status',
         title: 'Status',
-        icon: <Filter className="h-4 w-4" />,
+        icon: <Filter className="size-4" />,
         controls: [
           {
             type: 'toggle',
@@ -409,7 +410,7 @@ export const NonCollapsible: Story = {
       {
         id: 'search',
         title: 'Quick Search',
-        icon: <Search className="h-4 w-4" />,
+        icon: <Search className="size-4" />,
         collapsible: false,
         controls: [
           {
@@ -424,7 +425,7 @@ export const NonCollapsible: Story = {
       {
         id: 'filters',
         title: 'Filters',
-        icon: <Filter className="h-4 w-4" />,
+        icon: <Filter className="size-4" />,
         collapsible: true,
         badge: 3,
         controls: [
@@ -466,7 +467,7 @@ export const InteractiveExample: Story = {
           {
             id: 'search',
             title: 'Search',
-            icon: <Search className="h-4 w-4" />,
+            icon: <Search className="size-4" />,
             defaultExpanded: true,
             controls: [
               {
@@ -482,7 +483,7 @@ export const InteractiveExample: Story = {
           {
             id: 'type',
             title: 'Type',
-            icon: <Building2 className="h-4 w-4" />,
+            icon: <Building2 className="size-4" />,
             badge: selectedType !== 'all' ? '1' : undefined,
             controls: [
               {
@@ -502,7 +503,7 @@ export const InteractiveExample: Story = {
           {
             id: 'priority',
             title: 'Priority',
-            icon: <Filter className="h-4 w-4" />,
+            icon: <Filter className="size-4" />,
             badge: priorities.length > 0 ? priorities.length : undefined,
             controls: [
               {

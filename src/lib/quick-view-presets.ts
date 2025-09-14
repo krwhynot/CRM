@@ -3,6 +3,7 @@
  * Defines preset filter combinations for common dashboard views
  */
 
+import { debugWarn, debugError } from '@/utils/debug'
 import type {
   QuickViewType,
   QuickViewPresetConfig,
@@ -128,7 +129,7 @@ export function applyQuickViewPreset(
   const presetConfig = QUICK_VIEW_PRESETS[preset]
 
   if (!presetConfig) {
-    console.warn(`Unknown quick view preset: ${preset}`)
+    debugWarn(`Unknown quick view preset: ${preset}`)
     return currentFilters
   }
 
@@ -198,7 +199,7 @@ export async function getPresetBadgeCount(preset: QuickViewType): Promise<number
     badgeCache.set(preset, { count, timestamp: Date.now() })
     return count
   } catch (error) {
-    console.error(`Error getting badge count for preset ${preset}:`, error)
+    debugError(`Error getting badge count for preset ${preset}:`, error)
     return 0
   }
 }

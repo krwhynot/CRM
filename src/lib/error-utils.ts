@@ -5,7 +5,7 @@
 
 import type { SupabaseClient, User } from '@supabase/supabase-js'
 import type { Database } from '@/lib/database.types'
-import { isDevelopment } from '@/config/environment'
+import { debugError } from '@/utils/debug'
 
 export interface DatabaseError extends Error {
   code?: string
@@ -21,16 +21,14 @@ export function surfaceError(err: unknown): string {
   // Type guard for database errors
   const dbError = err as DatabaseError
 
-  // Log the full error structure for debugging (development only)
-  if (isDevelopment) {
-    console.error('DB ERROR DETAILS', {
-      code: dbError?.code,
-      message: dbError?.message,
-      details: dbError?.details,
-      hint: dbError?.hint,
-      status: dbError?.status,
-    })
-  }
+  // Log the full error structure for debugging
+  debugError('DB ERROR DETAILS', {
+    code: dbError?.code,
+    message: dbError?.message,
+    details: dbError?.details,
+    hint: dbError?.hint,
+    status: dbError?.status,
+  })
 
   // Return user-friendly error message
   if (dbError?.code === '23505') {

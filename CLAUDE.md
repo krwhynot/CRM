@@ -17,23 +17,33 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # Development
-npm run dev              # Start development server
+npm run dev              # Start development server (localhost:5173)
 npm run type-check       # TypeScript compilation check
 npm run lint             # ESLint with max 20 warnings
 npm run build            # Production build
 npm run quality-gates    # Run comprehensive quality validation
 
+# Development Utilities
+npm run format           # Format code with Prettier
+npm run format:check     # Check code formatting
+npm run clean            # Clean dist and build artifacts
+npm run fresh            # Full reset: clean + reinstall dependencies
+npm run dev:health       # Check development environment health
+npm run dev:fix          # Auto-fix common development issues
+
 # Testing & Validation
 npm run test             # Run MCP integration tests
-npm run test:backend     # Database and backend tests
+npm run test:backend     # Database and backend tests (Vitest)
 npm run test:ui-consistency  # Component consistency tests
 npm run test:architecture    # Architecture compliance tests
 npm run tokens:coverage      # Design token coverage report
+npm run validate         # TypeScript + lint + build (pre-commit check)
 
 # Quality & Performance
-npm run analyze          # Bundle size analysis
+npm run analyze          # Bundle size analysis with visualizer
 npm run validate:table-consistency  # Table component validation
 npm run debt:audit       # Technical debt analysis
+npm run lint:architecture        # Architecture pattern validation
 ```
 
 ## Architecture Overview
@@ -64,9 +74,11 @@ src/
 
 ### Key Architectural Decisions
 - **Unified DataTable**: Single table component (`src/components/ui/DataTable.tsx`) handles all use cases with auto-virtualization at 500+ rows
+- **Recent Refactoring**: Completed table architecture refactoring (September 2025) - all tables now use unified DataTable component
 - **Design Token System**: 88% coverage via `src/styles/tokens/` - prefer semantic tokens over hardcoded Tailwind
 - **Feature Isolation**: Each entity module is self-contained with own components/hooks/types
 - **Strict TypeScript**: Full type safety with path aliases (`@/`, `@/features/*`, etc.)
+- **Migration from Yup to Zod**: All validation now uses Zod schemas for better TypeScript integration
 
 ## Core Tech Stack Details
 
@@ -258,8 +270,8 @@ npm run test:performance  # Performance benchmarks
 
 ### Design Token Issues
 ```bash
-npm run tokens:coverage  # Check token usage
-npm run tokens:validate  # Validate token consistency
+npm run tokens:coverage  # Check token usage and coverage report
+npm run validate:design-tokens  # Validate token consistency
 # Replace hardcoded Tailwind with semantic tokens from @/styles/tokens
 ```
 
@@ -267,7 +279,18 @@ npm run tokens:validate  # Validate token consistency
 ```bash
 npm run quality-gates  # Full validation suite
 npm run validate      # TypeScript + lint + build
+npm run dev:health    # Check environment and dependencies
 # Check .env file against .env.example for missing variables
+```
+
+### Environment Setup Issues
+```bash
+# Copy environment template and configure
+cp .env.example .env
+# Edit .env with your Supabase credentials:
+# VITE_SUPABASE_URL=your_supabase_project_url_here
+# VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+# NODE_ENV=development
 ```
 
 ---

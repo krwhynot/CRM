@@ -4,12 +4,12 @@ import { cn } from '@/lib/utils'
 
 // Base Skeleton Variants
 import { semanticSpacing, semanticRadius, semanticTypography } from '@/styles/tokens'
-const skeletonVariants = cva('animate-pulse bg-muted rounded', {
+const skeletonVariants = cva('animate-pulse rounded bg-muted', {
   variants: {
     variant: {
       default: 'bg-muted',
-      shimmer: 'bg-gradient-to-r from-muted via-muted/50 to-muted animate-shimmer',
-      pulse: 'bg-muted animate-pulse-slow',
+      shimmer: 'animate-shimmer bg-gradient-to-r from-muted via-muted/50 to-muted',
+      pulse: 'animate-pulse-slow bg-muted',
     },
     size: {
       xs: 'h-3',
@@ -217,7 +217,7 @@ export function CardSkeleton({
 
       {/* Footer */}
       {showFooter && (
-        <div className="flex items-center justify-between pt-2 border-t">
+        <div className="flex items-center justify-between border-t pt-2">
           <Skeleton className="h-4 w-20" />
           <div className={cn(semanticSpacing.inline.xs, 'flex')}>
             <Skeleton className={cn(semanticRadius.small, 'h-8 w-16')} />
@@ -311,11 +311,11 @@ export function ContactCardSkeleton({ className }: { className?: string }) {
       </div>
       <div className={`${semanticSpacing.stack.xs}`}>
         <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
-          <Skeleton className="h-4 w-4" />
+          <Skeleton className="size-4" />
           <Skeleton className="h-4 w-36" />
         </div>
         <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
-          <Skeleton className="h-4 w-4" />
+          <Skeleton className="size-4" />
           <Skeleton className="h-4 w-28" />
         </div>
       </div>
@@ -335,7 +335,7 @@ export function OrganizationCardSkeleton({ className }: { className?: string }) 
               'size-12 bg-muted animate-pulse flex items-center justify-center'
             )}
           >
-            <Skeleton className="h-6 w-6" />
+            <Skeleton className="size-6" />
           </div>
           <div className={`${semanticSpacing.stack.xs}`}>
             <Skeleton className="h-5 w-40" />
@@ -504,7 +504,7 @@ export function ChartSkeleton({
         )}
 
         {type === 'pie' && (
-          <div className="w-full flex items-center justify-center">
+          <div className="flex w-full items-center justify-center">
             <div className="relative">
               <Skeleton className={cn(semanticRadius.full, 'h-40 w-40')} />
               <Skeleton
@@ -518,9 +518,9 @@ export function ChartSkeleton({
         )}
 
         {(type === 'line' || type === 'area') && (
-          <div className="w-full h-full relative">
+          <div className="relative size-full">
             <Skeleton className="absolute bottom-0 left-0 w-full h-1/2 ${semanticRadius.default}-t-lg" />
-            <div className="absolute bottom-0 left-0 w-full h-full flex items-end">
+            <div className="absolute bottom-0 left-0 flex size-full items-end">
               {Array.from({ length: 12 }).map((_, i) => (
                 <div key={i} className="flex-1">
                   <Skeleton

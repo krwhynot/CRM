@@ -8,6 +8,8 @@ import type {
   OpportunityStatus,
   PipelineMetrics,
   OpportunityNameContext,
+} from './OpportunityTypes'
+import {
   OPPORTUNITY_STAGES,
 } from './OpportunityTypes'
 import type { BaseRepository } from '../shared/BaseEntity'

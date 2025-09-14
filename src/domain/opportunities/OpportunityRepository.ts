@@ -27,10 +27,10 @@ export class OpportunityRepository implements BaseRepository<OpportunityDomain> 
       stage: dbRow.stage as OpportunityDomain['stage'],
       status: dbRow.status as OpportunityDomain['status'],
       estimated_value: dbRow.estimated_value || 0,
-      close_date: dbRow.expected_close_date, // Database uses expected_close_date
+      close_date: dbRow.estimated_close_date, // Database uses estimated_close_date
       notes: dbRow.notes,
       context: dbRow.opportunity_context as OpportunityDomain['context'], // Database uses opportunity_context
-      stage_updated_at: dbRow.stage_changed_at, // Database uses stage_changed_at
+      stage_updated_at: dbRow.updated_at, // Use general updated_at as fallback
     }
   }
 
@@ -48,10 +48,10 @@ export class OpportunityRepository implements BaseRepository<OpportunityDomain> 
       stage: entity.stage,
       status: entity.status,
       estimated_value: entity.estimated_value,
-      expected_close_date: entity.close_date, // Database uses expected_close_date
+      estimated_close_date: entity.close_date, // Database uses estimated_close_date
       notes: entity.notes,
       opportunity_context: entity.context, // Database uses opportunity_context
-      stage_changed_at: entity.stage_updated_at, // Database uses stage_changed_at
+      // stage_changed_at field doesn't exist in database schema
     }
   }
 
@@ -67,10 +67,10 @@ export class OpportunityRepository implements BaseRepository<OpportunityDomain> 
       stage: entity.stage,
       status: entity.status,
       estimated_value: entity.estimated_value,
-      expected_close_date: entity.close_date, // Database uses expected_close_date
+      estimated_close_date: entity.close_date, // Database uses estimated_close_date
       notes: entity.notes,
       opportunity_context: entity.context, // Database uses opportunity_context
-      stage_changed_at: entity.stage_updated_at, // Database uses stage_changed_at
+      // stage_changed_at field doesn't exist in database schema
       updated_at: new Date().toISOString(),
     }
   }

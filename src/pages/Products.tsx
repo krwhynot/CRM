@@ -1,3 +1,5 @@
+import React, { useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { ProductsDataDisplay } from '@/features/products/components/ProductsDataDisplay'
 import { ProductDialogs } from '@/features/products/components/ProductDialogs'
 import { useProducts } from '@/features/products/hooks/useProducts'
@@ -8,6 +10,7 @@ import { PageLayout } from '@/components/layout'
 import { usePageLayout } from '@/hooks'
 
 function ProductsPage() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const { data: products = [], isLoading, isError, error, refetch } = useProducts()
 
   const {
@@ -25,6 +28,20 @@ function ProductsPage() {
 
   const { handleCreate, handleUpdate, handleDelete, isCreating, isUpdating, isDeleting } =
     useProductsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
+
+  // Handle URL action parameters (e.g., ?action=create)
+  useEffect(() => {
+    const action = searchParams.get('action')
+    if (action === 'create') {
+      openCreateDialog()
+      // Remove the action parameter from URL to clean up
+      setSearchParams((prev) => {
+        const newParams = new URLSearchParams(prev)
+        newParams.delete('action')
+        return newParams
+      })
+    }
+  }, [searchParams, setSearchParams, openCreateDialog])
 
   // Use the page layout hook for slot composition
   const { pageLayoutProps } = usePageLayout({

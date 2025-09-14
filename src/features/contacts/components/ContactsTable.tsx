@@ -11,9 +11,8 @@ import type { Contact } from '@/types/entities'
 
 // Extended contact interface with weekly context and decision authority tracking
 interface ContactWithWeeklyContext extends Contact {
-  decision_authority?: string
+  // Note: decision_authority is required in base Contact type, purchase_influence inherited
   decision_authority_level?: 'high' | 'medium' | 'low'
-  purchase_influence?: string
   purchase_influence_score?: number
   recent_interactions_count?: number
   last_interaction_date?: string | Date
@@ -50,7 +49,7 @@ function ContactsTableContainer({ filters, onEdit, onDelete }: ContactsTableProp
 
   // Actions
   const { selectedItems, handleSelectItem, handleEditContact, handleDeleteContact } =
-    useContactActions()
+    useContactActions({ onEdit })
 
   // Use passed props if available, otherwise use local handlers
   const handleEdit = onEdit || handleEditContact

@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 import type { User, Session, AuthError } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import { appConfig, isDevelopment } from '@/config/environment'
+import { securityLogger } from '@/lib/logging'
 
 interface AuthContextType {
   user: User | null
@@ -43,9 +44,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
       window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
     if (isDevelopment && bypassAuth && isLocalhost) {
-      console.warn('🚨 AUTH BYPASS ACTIVE: Development mode with bypassed authentication')
-      console.warn('🔓 This should NEVER be enabled in production!')
-      console.warn('🔧 To disable: Set VITE_DEV_BYPASS_AUTH=false in .env.development')
+      securityLogger.authBypassWarning({
+        hostname: window.location.hostname,
+        bypassEnabled: true,
+        disableInstructions: 'Set VITE_DEV_BYPASS_AUTH=false in .env.development'
+      })
 
       // Create a mock user for development
       const mockUser: User = {

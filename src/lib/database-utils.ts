@@ -6,7 +6,7 @@
  */
 
 import type { PostgrestError } from '@supabase/supabase-js'
-import { isDevelopment } from '@/config/environment'
+import { debugWarn } from '@/utils/debug'
 
 // ============================================================================
 // TYPES
@@ -119,14 +119,12 @@ export function safeArrayAccess<T>(
   operation: string = 'array access'
 ): T[] {
   if (data === null || data === undefined) {
-    // eslint-disable-next-line no-console
-    console.warn(`Safe array access: ${operation} returned null/undefined, returning empty array`)
+    debugWarn(`Safe array access: ${operation} returned null/undefined, returning empty array`)
     return []
   }
 
   if (!Array.isArray(data)) {
-    // eslint-disable-next-line no-console
-    console.warn(`Safe array access: ${operation} did not return an array, returning empty array`)
+    debugWarn(`Safe array access: ${operation} did not return an array, returning empty array`)
     return []
   }
 

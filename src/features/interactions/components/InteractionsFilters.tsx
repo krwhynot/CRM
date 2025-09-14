@@ -2,6 +2,7 @@ import React from 'react'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Search } from 'lucide-react'
+import { debugWarn } from '@/utils/debug'
 import {
   GenericWeeksFilter,
   GenericPrincipalFilter,
@@ -33,7 +34,7 @@ export const InteractionsFilters: React.FC<InteractionsFiltersProps> = ({
 }) => {
   // ✨ Defensive programming: handle undefined filters
   if (!filters) {
-    console.warn('InteractionsFilters: filters prop is undefined, returning null')
+    debugWarn('InteractionsFilters: filters prop is undefined, returning null')
     return null
   }
   const handleSearchChange = (search: string) => {

@@ -161,7 +161,7 @@ export function StandardDialog(props: StandardDialogProps) {
             {headerActions}
           </DialogHeader>
 
-          <div className={cn(scrollClasses, scroll === 'content' && 'pr-2')}>{children}</div>
+          <div className={cn(scrollClasses, scroll === 'content' && semanticSpacing.horizontalPadding.xs)}>{children}</div>
 
           {footer && <DialogFooter>{footer}</DialogFooter>}
         </DialogContextProvider>

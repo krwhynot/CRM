@@ -89,8 +89,8 @@ export const DebouncedInput = React.memo<DebouncedInputProps>(
 
         {/* Loading indicator */}
         {loading && (
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+            <Loader2 className="size-4 animate-spin text-muted-foreground" />
           </div>
         )}
 
@@ -99,10 +99,10 @@ export const DebouncedInput = React.memo<DebouncedInputProps>(
           <button
             type="button"
             onClick={handleClear}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
             aria-label="Clear input"
           >
-            <X className="h-4 w-4" />
+            <X className="size-4" />
           </button>
         )}
       </div>
@@ -154,7 +154,7 @@ export const DebouncedSearchInput = React.memo<DebouncedSearchInputProps>(
       <div className="relative">
         {/* Search icon */}
         {showSearchIcon && (
-          <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2">
             <Search className={cn('text-muted-foreground', iconSizeClasses[size])} />
           </div>
         )}
@@ -172,7 +172,7 @@ export const DebouncedSearchInput = React.memo<DebouncedSearchInputProps>(
 
         {/* Loading indicator */}
         {showLoadingIndicator && loading && (
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+          <div className="absolute right-3 top-1/2 -translate-y-1/2">
             <Loader2 className={cn('animate-spin text-muted-foreground', iconSizeClasses[size])} />
           </div>
         )}
@@ -182,7 +182,7 @@ export const DebouncedSearchInput = React.memo<DebouncedSearchInputProps>(
           <button
             type="button"
             onClick={() => onChange('')}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
             aria-label="Clear search"
           >
             <X className={iconSizeClasses[size]} />
@@ -279,7 +279,7 @@ export const DebouncedFilterInput = React.memo<DebouncedFilterInputProps>(
               className="text-muted-foreground hover:text-foreground"
               aria-label={`Remove ${value}`}
             >
-              <X className="h-3 w-3" />
+              <X className="size-3" />
             </button>
           </span>
         ))}

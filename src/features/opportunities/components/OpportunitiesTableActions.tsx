@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { MoreHorizontal, Pencil, Trash2, ExternalLink } from 'lucide-react'
-import { semanticSpacing, semanticRadius } from '@/styles/tokens'
+import { semanticSpacing, semanticRadius, semanticColors } from '@/styles/tokens'
 import type { OpportunityWithLastActivity } from '@/types/opportunity.types'
 
 interface OpportunitiesTableActionsProps {
@@ -29,7 +29,7 @@ export const OpportunitiesTableActions: React.FC<OpportunitiesTableActionsProps>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className={cn(semanticRadius.small, 'size-6', semanticSpacing.zero, 'hover:bg-gray-100')}
+          className={cn(semanticRadius.small, 'size-6', semanticSpacing.zero, '{semanticColors.hover.primarySubtle}')}
         >
           <span className="sr-only">Open menu</span>
           <MoreHorizontal className="size-3" />

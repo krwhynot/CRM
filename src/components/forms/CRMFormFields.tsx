@@ -62,7 +62,7 @@ export function TextFormField<T extends FieldValues>({
           <FormLabel
             className={
               required
-                ? `after:content-['*'] after:${semanticSpacing.leftGap.xs} after:text-destructive`
+                ? `after: after:content-['*']${semanticSpacing.leftGap.xs} after:text-destructive`
                 : undefined
             }
           >
@@ -90,7 +90,7 @@ export function EmailFormField<T extends FieldValues>(props: BaseFieldProps<T>) 
           <FormLabel
             className={
               props.required
-                ? `after:content-['*'] after:${semanticSpacing.leftGap.xs} after:text-destructive`
+                ? `after: after:content-['*']${semanticSpacing.leftGap.xs} after:text-destructive`
                 : undefined
             }
           >
@@ -98,7 +98,7 @@ export function EmailFormField<T extends FieldValues>(props: BaseFieldProps<T>) 
           </FormLabel>
           <FormControl>
             <div className="relative">
-              <Mail className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Mail className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
               <Input
                 type="email"
                 placeholder={props.placeholder || 'name@example.com'}
@@ -127,7 +127,7 @@ export function PhoneFormField<T extends FieldValues>(props: BaseFieldProps<T>) 
           <FormLabel
             className={
               props.required
-                ? `after:content-['*'] after:${semanticSpacing.leftGap.xs} after:text-destructive`
+                ? `after: after:content-['*']${semanticSpacing.leftGap.xs} after:text-destructive`
                 : undefined
             }
           >
@@ -135,7 +135,7 @@ export function PhoneFormField<T extends FieldValues>(props: BaseFieldProps<T>) 
           </FormLabel>
           <FormControl>
             <div className="relative">
-              <Phone className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Phone className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
               <Input
                 type="tel"
                 placeholder={props.placeholder || '+1 (555) 123-4567'}
@@ -164,7 +164,7 @@ export function UrlFormField<T extends FieldValues>(props: BaseFieldProps<T>) {
           <FormLabel
             className={
               props.required
-                ? `after:content-['*'] after:${semanticSpacing.leftGap.xs} after:text-destructive`
+                ? `after: after:content-['*']${semanticSpacing.leftGap.xs} after:text-destructive`
                 : undefined
             }
           >
@@ -172,7 +172,7 @@ export function UrlFormField<T extends FieldValues>(props: BaseFieldProps<T>) {
           </FormLabel>
           <FormControl>
             <div className="relative">
-              <Globe className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Globe className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
               <Input
                 type="url"
                 placeholder={props.placeholder || 'https://example.com'}
@@ -203,7 +203,7 @@ export function CurrencyFormField<T extends FieldValues>(
           <FormLabel
             className={
               props.required
-                ? `after:content-['*'] after:${semanticSpacing.leftGap.xs} after:text-destructive`
+                ? `after: after:content-['*']${semanticSpacing.leftGap.xs} after:text-destructive`
                 : undefined
             }
           >
@@ -211,7 +211,7 @@ export function CurrencyFormField<T extends FieldValues>(
           </FormLabel>
           <FormControl>
             <div className="relative">
-              <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <DollarSign className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
               <Input
                 type="number"
                 step="0.01"
@@ -254,7 +254,7 @@ export function TextareaFormField<T extends FieldValues>(
           <FormLabel
             className={
               props.required
-                ? `after:content-['*'] after:${semanticSpacing.leftGap.xs} after:text-destructive`
+                ? `after: after:content-['*']${semanticSpacing.leftGap.xs} after:text-destructive`
                 : undefined
             }
           >
@@ -292,7 +292,7 @@ export function SelectFormField<T extends FieldValues>(
           <FormLabel
             className={
               props.required
-                ? `after:content-['*'] after:${semanticSpacing.leftGap.xs} after:text-destructive`
+                ? `after: after:content-['*']${semanticSpacing.leftGap.xs} after:text-destructive`
                 : undefined
             }
           >
@@ -335,7 +335,7 @@ export function DateFormField<T extends FieldValues>(props: BaseFieldProps<T>) {
           <FormLabel
             className={
               props.required
-                ? `after:content-['*'] after:${semanticSpacing.leftGap.xs} after:text-destructive`
+                ? `after: after:content-['*']${semanticSpacing.leftGap.xs} after:text-destructive`
                 : undefined
             }
           >
@@ -357,7 +357,7 @@ export function DateFormField<T extends FieldValues>(props: BaseFieldProps<T>) {
                   ) : (
                     <span>{props.placeholder || 'Pick a date'}</span>
                   )}
-                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  <CalendarIcon className="ml-auto size-4 opacity-50" />
                 </Button>
               </FormControl>
             </PopoverTrigger>
@@ -403,7 +403,7 @@ export function CheckboxFormField<T extends FieldValues>(props: BaseFieldProps<T
             <FormLabel
               className={
                 props.required
-                  ? `after:content-['*'] after:${semanticSpacing.leftGap.xs} after:text-destructive`
+                  ? `after: after:content-['*']${semanticSpacing.leftGap.xs} after:text-destructive`
                   : undefined
               }
             >
@@ -435,7 +435,7 @@ export function SwitchFormField<T extends FieldValues>(props: BaseFieldProps<T>)
             <FormLabel
               className={
                 props.required
-                  ? `after:content-['*'] after:${semanticSpacing.leftGap.xs} after:text-destructive`
+                  ? `after: after:content-['*']${semanticSpacing.leftGap.xs} after:text-destructive`
                   : 'text-base'
               }
             >
@@ -471,7 +471,7 @@ export function RadioFormField<T extends FieldValues>(
           <FormLabel
             className={
               props.required
-                ? `after:content-['*'] after:${semanticSpacing.leftGap.xs} after:text-destructive`
+                ? `after: after:content-['*']${semanticSpacing.leftGap.xs} after:text-destructive`
                 : undefined
             }
           >
@@ -530,7 +530,7 @@ export function AddressFormFields<T extends FieldValues>({
       <div
         className={cn(semanticSpacing.inline.xs, semanticSpacing.bottomGap.sm, 'flex items-center')}
       >
-        <MapPin className="h-5 w-5 text-muted-foreground" />
+        <MapPin className="size-5 text-muted-foreground" />
         <h3 className={cn(semanticTypography.h4, semanticTypography.label)}>Address Information</h3>
       </div>
 
@@ -629,7 +629,7 @@ export function TagsFormField<T extends FieldValues>(
             <FormLabel
               className={
                 props.required
-                  ? `after:content-['*'] after:${semanticSpacing.leftGap.xs} after:text-destructive`
+                  ? `after: after:content-['*']${semanticSpacing.leftGap.xs} after:text-destructive`
                   : undefined
               }
             >
@@ -650,11 +650,11 @@ export function TagsFormField<T extends FieldValues>(
                         <Button
                           variant="ghost"
                           size="sm"
-                          className={`h-4 w-4 ${semanticSpacing.zero} ${semanticSpacing.leftGap.xs} hover:bg-destructive hover:text-destructive-foreground`}
+                          className={`size-4 ${semanticSpacing.zero} ${semanticSpacing.leftGap.xs} hover:bg-destructive hover:text-destructive-foreground`}
                           onClick={() => removeTag(tag)}
                           type="button"
                         >
-                          <X className="h-3 w-3" />
+                          <X className="size-3" />
                         </Button>
                       </Badge>
                     ))}
@@ -690,7 +690,7 @@ export function TagsFormField<T extends FieldValues>(
                           onClick={() => addTag(suggestion)}
                           type="button"
                         >
-                          <Plus className={`h-3 w-3 ${semanticSpacing.rightGap.xs}`} />
+                          <Plus className={`size-3 ${semanticSpacing.rightGap.xs}`} />
                           {suggestion}
                         </Button>
                       ))}

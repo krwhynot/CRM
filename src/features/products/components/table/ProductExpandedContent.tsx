@@ -45,7 +45,7 @@ export function ProductExpandedContent({ product, isExpanded }: ProductExpandedC
             className={`${semanticSpacing.stack.xs} ${semanticTypography.body} text-muted-foreground`}
           >
             <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
-              <Package className="h-3 w-3" />
+              <Package className="size-3" />
               <span>SKU: {product.sku || 'Not assigned'}</span>
             </div>
             {product.category && <div>Category: {product.category}</div>}
@@ -65,7 +65,7 @@ export function ProductExpandedContent({ product, isExpanded }: ProductExpandedC
           >
             {product.list_price && (
               <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
-                <DollarSign className="h-3 w-3" />
+                <DollarSign className="size-3" />
                 <span>List Price: {formatPrice(product.list_price)}</span>
               </div>
             )}
@@ -103,7 +103,7 @@ export function ProductExpandedContent({ product, isExpanded }: ProductExpandedC
                 variant="secondary"
                 className={`border-green-200 bg-green-50 ${semanticTypography.caption} text-green-700`}
               >
-                <Calendar className={`h-3 w-3 ${semanticSpacing.rightGap.xxs}`} />
+                <Calendar className={`size-3 ${semanticSpacing.rightGap.xxs}`} />
                 Promoted This Week
               </Badge>
             ) : product.was_promoted_recently ? (
@@ -148,7 +148,7 @@ export function ProductExpandedContent({ product, isExpanded }: ProductExpandedC
             </div>
             {product.weekly_sales_velocity && (
               <div className={`flex items-center ${semanticSpacing.gap.xs}`}>
-                <TrendingUp className="h-3 w-3" />
+                <TrendingUp className="size-3" />
                 <span>Weekly Velocity: {product.weekly_sales_velocity}</span>
               </div>
             )}

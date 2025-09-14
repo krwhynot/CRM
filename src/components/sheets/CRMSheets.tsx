@@ -250,13 +250,13 @@ export function EntityDetailSheet({
           </Button>
           {onEdit && (
             <Button variant="outline" size="sm" onClick={onEdit}>
-              <Edit className="size-4 mr-1" />
+              <Edit className="mr-1 size-4" />
               Edit
             </Button>
           )}
           {onDelete && (
             <Button variant="destructive" size="sm" onClick={onDelete}>
-              <Trash2 className="size-4 mr-1" />
+              <Trash2 className="mr-1 size-4" />
               Delete
             </Button>
           )}
@@ -286,7 +286,7 @@ export function EntityDetailSheet({
                     </AvatarFallback>
                   </Avatar>
                 )}
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0 flex-1">
                   <h3 className={cn(semanticTypography.h4, semanticTypography.h4, 'truncate')}>
                     {data.name || data.title}
                   </h3>
@@ -333,8 +333,8 @@ export function EntityDetailSheet({
                       key={field.key}
                       className={cn(semanticSpacing.gap.sm, 'flex items-center')}
                     >
-                      <field.icon className="size-4 text-muted-foreground shrink-0" />
-                      <div className="flex-1 min-w-0">
+                      <field.icon className="size-4 shrink-0 text-muted-foreground" />
+                      <div className="min-w-0 flex-1">
                         <div className={cn(semanticTypography.body, 'text-muted-foreground')}>
                           {field.label}
                         </div>
@@ -460,7 +460,7 @@ export function EntityDetailSheet({
                       </div>
                     )}
 
-                    <div className="flex-1 min-w-0">
+                    <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between">
                         <h5 className={cn(semanticTypography.body, semanticTypography.label)}>
                           {activity.title}
@@ -671,7 +671,7 @@ export function QuickActionsSheet({
         {/* Search */}
         {searchable && (
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search actions..."
               value={searchQuery}
@@ -698,7 +698,7 @@ export function QuickActionsSheet({
               >
                 <div className={cn(semanticSpacing.gap.sm, 'flex items-center w-full')}>
                   {action.icon && <action.icon className="size-4 shrink-0" />}
-                  <div className="flex-1 text-left min-w-0">
+                  <div className="min-w-0 flex-1 text-left">
                     <div className={cn(semanticTypography.label, semanticTypography.body)}>
                       {action.label}
                     </div>

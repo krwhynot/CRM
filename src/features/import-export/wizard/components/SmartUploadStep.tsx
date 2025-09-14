@@ -43,7 +43,7 @@ const FILE_REQUIREMENTS = {
   ],
 }
 
-export function SmartUploadStep({
+function SmartUploadStep({
   file,
   config,
   error,
@@ -333,3 +333,5 @@ export function SmartUploadStep({
     </div>
   )
 }
+
+export default SmartUploadStep

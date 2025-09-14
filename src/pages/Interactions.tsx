@@ -1,3 +1,5 @@
+import React, { useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   useInteractions,
   InteractionsDataDisplay,
@@ -10,6 +12,7 @@ import { PageLayout } from '@/components/layout'
 import { usePageLayout } from '@/hooks'
 
 function InteractionsPage() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const { data: interactions = [], isLoading, error, isError, refetch } = useInteractions()
 
   const {
@@ -32,6 +35,20 @@ function InteractionsPage() {
   const refreshInteractions = () => {
     refetch()
   }
+
+  // Handle URL action parameters (e.g., ?action=create)
+  useEffect(() => {
+    const action = searchParams.get('action')
+    if (action === 'create') {
+      openCreateDialog()
+      // Remove the action parameter from URL to clean up
+      setSearchParams((prev) => {
+        const newParams = new URLSearchParams(prev)
+        newParams.delete('action')
+        return newParams
+      })
+    }
+  }, [searchParams, setSearchParams, openCreateDialog])
 
   // Use the page layout hook for slot composition
   const { pageLayoutProps } = usePageLayout({

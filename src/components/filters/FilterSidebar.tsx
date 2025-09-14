@@ -59,10 +59,10 @@ export function FilterSidebar({
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" size="sm" className={cn('gap-2', className)}>
-            <Filter className="h-4 w-4" />
+            <Filter className="size-4" />
             <span>Filters</span>
             {activeFilterCount > 0 && (
-              <Badge variant="destructive" className="ml-1 h-4 w-4 rounded-full p-0 text-xs">
+              <Badge variant="destructive" className="ml-1 size-4 rounded-full p-0 text-xs">
                 {activeFilterCount}
               </Badge>
             )}
@@ -71,7 +71,7 @@ export function FilterSidebar({
         <SheetContent side="left" className="w-80 p-0">
           <SheetHeader className={cn(semanticSpacing.layoutPadding.md, 'border-b')}>
             <SheetTitle className="flex items-center gap-2">
-              <Filter className="h-4 w-4" />
+              <Filter className="size-4" />
               Filters
               {activeFilterCount > 0 && (
                 <Badge variant="secondary" className="ml-auto">
@@ -120,11 +120,11 @@ export function FilterSidebar({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" onClick={toggleCollapsed} className="h-8 w-8">
+              <Button variant="ghost" size="icon" onClick={toggleCollapsed} className="size-8">
                 {isCollapsed ? (
-                  <ChevronRight className="h-4 w-4" />
+                  <ChevronRight className="size-4" />
                 ) : (
-                  <Filter className="h-4 w-4" />
+                  <Filter className="size-4" />
                 )}
               </Button>
             </TooltipTrigger>
@@ -205,13 +205,13 @@ function CollapsedFilterIcons({ sections }: { sections: FilterSection[] }) {
           <Tooltip key={section.id}>
             <TooltipTrigger asChild>
               <div className="relative">
-                <Button variant="ghost" size="icon" className="h-10 w-10">
-                  {section.icon || <Filter className="h-4 w-4" />}
+                <Button variant="ghost" size="icon" className="size-10">
+                  {section.icon || <Filter className="size-4" />}
                 </Button>
                 {section.badge && (
                   <Badge
                     variant="destructive"
-                    className="absolute -right-1 -top-1 h-4 w-4 rounded-full p-0 text-[10px]"
+                    className="absolute -right-1 -top-1 size-4 rounded-full p-0 text-[10px]"
                   >
                     {section.badge}
                   </Badge>

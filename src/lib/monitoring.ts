@@ -5,6 +5,7 @@
  */
 
 import { isProduction } from '@/config/environment'
+import { monitoringLogger, logger } from '@/lib/logging'
 
 interface HealthCheck {
   service: string
@@ -168,7 +169,7 @@ class ProductionMonitor {
    * Comprehensive system health check
    */
   async performHealthCheck(): Promise<SystemMetrics> {
-    console.log('🔍 Performing comprehensive health check...')
+    logger.info('Performing comprehensive health check')
 
     const [database, auth, api] = await Promise.all([
       this.checkDatabaseHealth(),
@@ -231,19 +232,25 @@ class ProductionMonitor {
 
     const { database, auth, api, performance } = this.metrics
 
-    console.log('📊 System Health Status:')
-    console.log(`  Database: ${database.status} (${database.responseTime}ms)`)
-    console.log(`  Auth: ${auth.status} (${auth.responseTime}ms)`)
-    console.log(`  API: ${api.status} (${api.responseTime}ms)`)
-    console.log(`  Performance:`)
-    console.log(`    Query Time: ${performance.averageQueryTime}ms`)
-    console.log(`    Page Load: ${performance.pageLoadTime}ms`)
-    console.log(`    Error Rate: ${performance.errorRate}%`)
+    // Log individual service health checks
+    monitoringLogger.healthCheck('database', database.status, database.responseTime)
+    monitoringLogger.healthCheck('auth', auth.status, auth.responseTime)
+    monitoringLogger.healthCheck('api', api.status, api.responseTime)
+
+    // Log performance metrics
+    monitoringLogger.performanceMetrics({
+      averageQueryTime: performance.averageQueryTime,
+      pageLoadTime: performance.pageLoadTime,
+      errorRate: performance.errorRate
+    })
 
     // Alert if any service is down
     const downServices = [database, auth, api].filter((service) => service.status === 'down')
     if (downServices.length > 0) {
-      console.error('🚨 ALERT: Services down:', downServices.map((s) => s.service).join(', '))
+      monitoringLogger.systemAlert(
+        'Services down detected',
+        downServices.map((s) => s.service)
+      )
     }
   }
 
@@ -284,7 +291,7 @@ export const productionMonitor = new ProductionMonitor()
 export async function initializeMonitoring(): Promise<void> {
   if (!isProduction) return
 
-  console.log('🚀 Initializing production monitoring...')
+  logger.info('Initializing production monitoring')
 
   try {
     await productionMonitor.performHealthCheck()
@@ -297,9 +304,9 @@ export async function initializeMonitoring(): Promise<void> {
       5 * 60 * 1000
     )
 
-    console.log('✅ Production monitoring initialized')
+    logger.info('Production monitoring initialized successfully')
   } catch (error) {
-    console.error('❌ Failed to initialize monitoring:', error)
+    logger.error('Failed to initialize monitoring', error as Error)
   }
 }
 

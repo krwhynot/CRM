@@ -70,7 +70,7 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
 
   return (
     <div
-      className={cn('text-center py-12 bg-card rounded-lg border shadow-sm', className)}
+      className={cn(`text-center py-12 bg-card rounded-lg border ${semanticShadows.card}`, className)}
       role="status"
       aria-live="polite"
     >
@@ -121,7 +121,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
 
   return (
     <div
-      className={cn('text-center py-12 bg-card rounded-lg border shadow-sm', className)}
+      className={cn(`text-center py-12 bg-card rounded-lg border ${semanticShadows.card}`, className)}
       role="alert"
     >
       <div className={cn(semanticSpacing.stack.lg, 'mx-auto max-w-md')}>
@@ -176,7 +176,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   className,
 }) => {
   return (
-    <div className={cn('text-center py-16 bg-card rounded-lg border shadow-sm', className)}>
+    <div className={cn(`text-center py-16 bg-card rounded-lg border ${semanticShadows.card}`, className)}>
       <div className={cn(semanticSpacing.stack.lg, 'mx-auto max-w-md')}>
         {icon && <div className="flex justify-center text-muted">{icon}</div>}
         <div className={`${semanticSpacing.stack.xs}`}>

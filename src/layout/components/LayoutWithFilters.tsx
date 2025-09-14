@@ -68,7 +68,7 @@ export function LayoutWithFilters({
         </FilterSidebar>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex min-w-0 flex-1 flex-col">
           <Header />
           <main className={cn('flex-1 overflow-auto', semanticSpacing.pageContainer)}>
             {children}

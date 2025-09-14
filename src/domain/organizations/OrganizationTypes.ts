@@ -10,7 +10,7 @@ export const ORGANIZATION_TYPES = [
   'customer',
   'distributor',
   'principal',
-  'supplier',
+  'unknown', // Note: "supplier" mapped to "unknown" in database
   'prospect',
   'vendor',
 ] as const

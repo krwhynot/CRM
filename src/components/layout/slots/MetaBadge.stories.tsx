@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { Users, CheckCircle, AlertTriangle, Info, Building2 } from 'lucide-react'
 import { MetaBadge } from './MetaBadge'
 import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 
 const meta: Meta<typeof MetaBadge> = {
   title: 'Layout/Slots/MetaBadge',
@@ -241,7 +243,7 @@ export const CustomComponents: Story = {
       {
         type: 'custom',
         component: (
-          <Badge variant="outline" className="gap-1">
+          <Badge variant="outline" className={semanticSpacing.gap.xs}>
             <Building2 className="size-3" />
             Mixed Types
           </Badge>
@@ -260,9 +262,9 @@ export const CustomComponents: Story = {
 // Different sizes
 export const SizeVariations: Story = {
   render: () => (
-    <div className="space-y-6">
+    <div className={semanticSpacing.stack.lg}>
       <div>
-        <h3 className="text-sm font-medium mb-2">Small</h3>
+        <h3 className={cn(semanticTypography.caption, 'mb-2 font-medium')}>Small</h3>
         <MetaBadge
           size="sm"
           items={[
@@ -273,7 +275,7 @@ export const SizeVariations: Story = {
       </div>
 
       <div>
-        <h3 className="text-sm font-medium mb-2">Medium (Default)</h3>
+        <h3 className={cn(semanticTypography.caption, 'mb-2 font-medium')}>Medium (Default)</h3>
         <MetaBadge
           size="md"
           items={[
@@ -284,7 +286,7 @@ export const SizeVariations: Story = {
       </div>
 
       <div>
-        <h3 className="text-sm font-medium mb-2">Large</h3>
+        <h3 className={cn(semanticTypography.caption, 'mb-2 font-medium')}>Large</h3>
         <MetaBadge
           size="lg"
           items={[

@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Search, Building2, Users, Filter } from 'lucide-react'
+import { useSearchParams } from 'react-router-dom'
 import {
   useOrganizations,
   useRefreshOrganizations,
@@ -28,6 +29,7 @@ import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 import type { FilterSection } from '@/components/filters/FilterSidebar.types'
 
 function OrganizationsPage() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const { data: organizations = [], isLoading, error, isError } = useOrganizations()
   const refreshOrganizations = useRefreshOrganizations()
 
@@ -59,13 +61,27 @@ function OrganizationsPage() {
 
   const { initialData: editFormInitialData } = useOrganizationFormData(selectedOrganization)
 
+  // Handle URL action parameters (e.g., ?action=create)
+  useEffect(() => {
+    const action = searchParams.get('action')
+    if (action === 'create') {
+      openCreateDialog()
+      // Remove the action parameter from URL to clean up
+      setSearchParams((prev) => {
+        const newParams = new URLSearchParams(prev)
+        newParams.delete('action')
+        return newParams
+      })
+    }
+  }, [searchParams, setSearchParams, openCreateDialog])
+
   // Create filter sections for the sidebar
   const filterSections: FilterSection[] = React.useMemo(
     () => [
       {
         id: 'search',
         title: 'Search',
-        icon: <Search className="h-4 w-4" />,
+        icon: <Search className="size-4" />,
         defaultExpanded: true,
         content: (
           <div className={semanticSpacing.stack.sm}>
@@ -81,7 +97,7 @@ function OrganizationsPage() {
       {
         id: 'type',
         title: 'Organization Type',
-        icon: <Building2 className="h-4 w-4" />,
+        icon: <Building2 className="size-4" />,
         defaultExpanded: true,
         badge: activeFilter !== 'all' ? '1' : undefined,
         content: (
@@ -104,7 +120,7 @@ function OrganizationsPage() {
       {
         id: 'quick-filters',
         title: 'Quick Filters',
-        icon: <Filter className="h-4 w-4" />,
+        icon: <Filter className="size-4" />,
         defaultExpanded: true,
         content: (
           <div className={cn(semanticSpacing.stack.sm, 'space-y-2')}>

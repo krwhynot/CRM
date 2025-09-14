@@ -12,6 +12,7 @@ import {
  */
 
 import React, { useState, useCallback, useMemo } from 'react'
+import { debugError } from '@/utils/debug'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -162,7 +163,7 @@ export function AdvancedSearchPanel({
       const searchResults = await onSearch(query, filters, selectedEntityTypes)
       setResults(searchResults)
     } catch (error) {
-      console.error('Search failed:', error)
+      debugError('Search failed:', error)
       setResults([])
     } finally {
       setLoading(false)
@@ -254,11 +255,11 @@ export function AdvancedSearchPanel({
           )}
         >
           <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
-            <Search className="h-5 w-5" />
+            <Search className="size-5" />
             <h2 className={cn(semanticTypography.h4, semanticTypography.h4)}>Advanced Search</h2>
           </div>
           <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
-            <X className="h-4 w-4" />
+            <X className="size-4" />
           </Button>
         </div>
 
@@ -290,11 +291,11 @@ export function AdvancedSearchPanel({
 
         <div className="flex-1 overflow-hidden">
           {activeTab === 'search' ? (
-            <div className="h-full flex flex-col">
+            <div className="flex h-full flex-col">
               {/* Search Input */}
               <div className={cn(semanticSpacing.cardContainer, semanticSpacing.stack.md)}>
                 <div className="relative">
-                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Search className="absolute left-3 top-3 size-4 text-muted-foreground" />
                   <Input
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
@@ -367,7 +368,7 @@ export function AdvancedSearchPanel({
                           className="h-auto p-0 hover:bg-transparent"
                           onClick={() => removeFilter(filter.id)}
                         >
-                          <X className="h-3 w-3" />
+                          <X className="size-3" />
                         </Button>
                       </Badge>
                     ))}
@@ -476,11 +477,11 @@ export function AdvancedSearchPanel({
                           {typeResults.map((result) => (
                             <Card
                               key={result.id}
-                              className="cursor-pointer hover:bg-accent transition-colors"
+                              className="cursor-pointer transition-colors hover:bg-accent"
                               onClick={() => onResultSelect(result)}
                             >
                               <CardContent className={`${semanticSpacing.compact}`}>
-                                <div className="flex justify-between items-start">
+                                <div className="flex items-start justify-between">
                                   <div>
                                     <h4 className={`${semanticTypography.label}`}>
                                       {result.title}
@@ -537,7 +538,7 @@ export function AdvancedSearchPanel({
                   savedSearches.map((savedSearch) => (
                     <Card
                       key={savedSearch.id}
-                      className="cursor-pointer hover:bg-accent transition-colors"
+                      className="cursor-pointer transition-colors hover:bg-accent"
                       onClick={() => loadSavedSearch(savedSearch)}
                     >
                       <CardContent className={`${semanticSpacing.compact}`}>
@@ -550,7 +551,7 @@ export function AdvancedSearchPanel({
                                 'flex items-center'
                               )}
                             >
-                              {savedSearch.isStarred && <Star className="h-3 w-3 fill-current" />}
+                              {savedSearch.isStarred && <Star className="size-3 fill-current" />}
                               {savedSearch.name}
                             </h4>
                             <p className={cn(semanticTypography.body, 'text-muted-foreground')}>
@@ -563,7 +564,7 @@ export function AdvancedSearchPanel({
                                 'flex items-center'
                               )}
                             >
-                              <Clock className="h-3 w-3 text-muted-foreground" />
+                              <Clock className="size-3 text-muted-foreground" />
                               <span
                                 className={cn(semanticTypography.caption, 'text-muted-foreground')}
                               >

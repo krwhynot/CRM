@@ -135,7 +135,7 @@ export function SpacingDemo() {
           size="sm"
           onClick={() => copyCode(spacing.className, `${spacing.name} Spacing`)}
         >
-          <Copy className="h-3 w-3" />
+          <Copy className="size-3" />
         </Button>
       </div>
 
@@ -211,13 +211,13 @@ export function SpacingDemo() {
           size="sm"
           onClick={() => copyCode(padding.className, `${padding.name} Padding`)}
         >
-          <Copy className="h-3 w-3" />
+          <Copy className="size-3" />
         </Button>
       </div>
 
       <div className={cn(semanticRadius.large, 'border overflow-hidden')}>
         <div
-          className={`${padding.className} bg-primary/10 border-2 border-dashed border-primary/30`}
+          className={`${padding.className} border-2 border-dashed border-primary/30 bg-primary/10`}
         >
           <div
             className={cn(
@@ -258,19 +258,19 @@ export function SpacingDemo() {
           size="sm"
           onClick={() => copyCode(radius.className, `${radius.name} Radius`)}
         >
-          <Copy className="h-3 w-3" />
+          <Copy className="size-3" />
         </Button>
       </div>
 
       <div className="flex justify-center">
         <div
-          className={`w-24 h-24 bg-primary/20 border-2 border-primary ${radius.className} flex items-center justify-center`}
+          className={`size-24 border-2 border-primary bg-primary/20 ${radius.className} flex items-center justify-center`}
         >
           <span className={cn(semanticTypography.caption, 'text-center')}>{radius.value}</span>
         </div>
       </div>
 
-      <p className="text-caption text-muted text-center">{radius.usage}</p>
+      <p className="text-caption text-center text-muted">{radius.usage}</p>
 
       <code
         className={cn(
@@ -294,7 +294,7 @@ export function SpacingDemo() {
           size="sm"
           onClick={() => copyCode(grid.className, `${grid.name} Grid`)}
         >
-          <Copy className="h-3 w-3" />
+          <Copy className="size-3" />
         </Button>
       </div>
 
@@ -533,7 +533,7 @@ export function SpacingDemo() {
                   'flex items-center'
                 )}
               >
-                <Ruler className="h-5 w-5" />
+                <Ruler className="size-5" />
                 <span>8-Point Spacing System</span>
               </CardTitle>
               <CardDescription>
@@ -603,7 +603,7 @@ export function SpacingDemo() {
                   'flex items-center'
                 )}
               >
-                <Grid className="h-5 w-5" />
+                <Grid className="size-5" />
                 <span>Grid Systems</span>
               </CardTitle>
               <CardDescription>Responsive grid patterns for different layouts</CardDescription>

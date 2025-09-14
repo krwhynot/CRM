@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { semanticTypography, semanticSpacing, semanticRadius } from '@/styles/tokens'
+import { debugLog } from '@/utils/debug'
 import {
   Building,
   Users,
@@ -45,10 +46,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
+import { useNavigate } from 'react-router-dom'
 
 // Sidebar Variants
 const sidebarVariants = cva(
-  'flex flex-col bg-background border-r border-border transition-all duration-300',
+  'flex flex-col border-r border-border bg-background transition-all duration-300',
   {
     variants: {
       size: {
@@ -159,7 +161,7 @@ const NavigationItemComponent: React.FC<{
 
       {!collapsed && (
         <>
-          <span className="flex-1 text-left truncate">{item.label}</span>
+          <span className="flex-1 truncate text-left">{item.label}</span>
 
           {item.badge && (
             <Badge
@@ -367,7 +369,7 @@ const RecentItemsSection: React.FC<{
                 )}
               </div>
 
-              <div className="flex-1 min-w-0 text-left">
+              <div className="min-w-0 flex-1 text-left">
                 <div className={cn(semanticTypography.body, semanticTypography.label, 'truncate')}>
                   {item.name}
                 </div>
@@ -464,12 +466,12 @@ export function CRMSidebar({
       {!collapsed && (
         <div className={cn(semanticSpacing.compact, 'border-b border-border')}>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder={searchPlaceholder}
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
-              className="pl-10 h-8"
+              className="h-8 pl-10"
             />
           </div>
         </div>
@@ -551,7 +553,7 @@ export function CRMSidebar({
                 </div>
 
                 {!collapsed && (
-                  <div className="flex-1 min-w-0 text-left">
+                  <div className="min-w-0 flex-1 text-left">
                     <div
                       className={cn(semanticTypography.body, semanticTypography.label, 'truncate')}
                     >
@@ -700,33 +702,68 @@ export const defaultCRMNavigation: NavigationItem[] = [
   },
 ]
 
-// Default Quick Actions
+// Hook to create quick actions with navigation
+export function useDefaultQuickActions(): QuickAction[] {
+  const navigate = useNavigate()
+
+  return [
+    {
+      id: 'new-contact',
+      label: 'New Contact',
+      icon: Users,
+      shortcut: 'Ctrl+N',
+      onClick: () => navigate('/contacts?action=create'),
+    },
+    {
+      id: 'new-organization',
+      label: 'New Organization',
+      icon: Building,
+      shortcut: 'Ctrl+O',
+      onClick: () => navigate('/organizations?action=create'),
+    },
+    {
+      id: 'new-opportunity',
+      label: 'New Opportunity',
+      icon: TrendingUp,
+      shortcut: 'Ctrl+P',
+      onClick: () => navigate('/opportunities?action=create'),
+    },
+    {
+      id: 'import-data',
+      label: 'Import Data',
+      icon: Upload,
+      onClick: () => navigate('/import-export?mode=import'),
+    },
+  ]
+}
+
+// Default Quick Actions (deprecated - use useDefaultQuickActions hook instead)
 export const defaultQuickActions: QuickAction[] = [
   {
     id: 'new-contact',
     label: 'New Contact',
     icon: Users,
     shortcut: 'Ctrl+N',
-    onClick: () => console.log('Create new contact'),
+    onClick: () => debugLog('Create new contact'),
   },
   {
     id: 'new-organization',
     label: 'New Organization',
     icon: Building,
     shortcut: 'Ctrl+O',
-    onClick: () => console.log('Create new organization'),
+    onClick: () => debugLog('Create new organization'),
   },
   {
     id: 'new-opportunity',
     label: 'New Opportunity',
     icon: TrendingUp,
     shortcut: 'Ctrl+P',
-    onClick: () => console.log('Create new opportunity'),
+    onClick: () => debugLog('Create new opportunity'),
   },
   {
     id: 'import-data',
     label: 'Import Data',
     icon: Upload,
-    onClick: () => console.log('Import data'),
+    onClick: () => debugLog('Import data'),
   },
 ]

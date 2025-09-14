@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
-import { semanticSpacing, semanticTypography } from '@/styles/tokens'
+import { semanticSpacing, semanticTypography, semanticRadius } from '@/styles/tokens'
 import type { Organization } from '@/types/entities'
 // Organization type imported directly where needed
 

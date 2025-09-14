@@ -1,4 +1,6 @@
-import { OpportunitiesTable } from '@/features/opportunities/components/OpportunitiesTableRefactored'
+import React, { useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { OpportunitiesTable } from '@/features/opportunities/components/OpportunitiesTable'
 import {
   useOpportunities,
   useCreateOpportunity,
@@ -17,6 +19,7 @@ import { PageLayout } from '@/components/layout'
 import { usePageLayout } from '@/hooks'
 
 function OpportunitiesPage() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const { data: opportunities = [] } = useOpportunities()
 
   // Custom hooks
@@ -46,6 +49,20 @@ function OpportunitiesPage() {
       // Error handling is done in the mutation
     }
   }
+
+  // Handle URL action parameters (e.g., ?action=create)
+  useEffect(() => {
+    const action = searchParams.get('action')
+    if (action === 'create') {
+      pageState.openCreateDialog()
+      // Remove the action parameter from URL to clean up
+      setSearchParams((prev) => {
+        const newParams = new URLSearchParams(prev)
+        newParams.delete('action')
+        return newParams
+      })
+    }
+  }, [searchParams, setSearchParams, pageState.openCreateDialog])
 
   // Use the page layout hook for slot composition
   const { pageLayoutProps } = usePageLayout({

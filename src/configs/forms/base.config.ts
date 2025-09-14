@@ -264,7 +264,7 @@ export const dataTransformers = {
     const result = { ...data }
     for (const [key, value] of Object.entries(result)) {
       if (value === '') {
-        ;(result as T)[key as keyof T] = null as T[keyof T]
+        (result as T)[key as keyof T] = null as T[keyof T]
       }
     }
     return result
@@ -277,7 +277,7 @@ export const dataTransformers = {
     const result = { ...data }
     for (const [key, value] of Object.entries(result)) {
       if (typeof value === 'string') {
-        ;(result as T)[key as keyof T] = value.trim() as T[keyof T]
+        (result as T)[key as keyof T] = value.trim() as T[keyof T]
       }
     }
     return result

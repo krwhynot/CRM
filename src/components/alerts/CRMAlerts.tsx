@@ -20,7 +20,7 @@ import { cn } from '@/lib/utils'
 
 // Enhanced Alert Variants for CRM Context
 const crmAlertVariants = cva(
-  'relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[1rem_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current',
+  'relative grid w-full grid-cols-[0_1fr] items-start gap-y-0.5 rounded-lg border px-4 py-3 text-sm has-[>svg]:grid-cols-[1rem_1fr] has-[>svg]:gap-x-3 [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current',
   {
     variants: {
       variant: {
@@ -418,13 +418,13 @@ export function AlertContainer({
 
       {/* More alerts indicator */}
       {hasMoreAlerts && (
-        <div className="text-center pt-2">
+        <div className="pt-2 text-center">
           <Button
             variant="outline"
             size="sm"
             className={cn(semanticSpacing.compactX, semanticTypography.caption, 'h-7')}
           >
-            <Lightbulb className="size-3 mr-1" />
+            <Lightbulb className="mr-1 size-3" />
             View {alerts.length - maxAlerts} More
           </Button>
         </div>

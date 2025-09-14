@@ -1,6 +1,6 @@
 // Contacts Feature - Main Exports
 export { ContactForm } from './components/ContactForm'
-export { ContactsTable } from './components/ContactsTableRefactored'
+export { ContactsTable } from './components/ContactsTable'
 export { ContactsFilters } from './components/ContactsFilters'
 export { ContactActions } from './components/ContactActions'
 export { ContactBadges } from './components/ContactBadges'

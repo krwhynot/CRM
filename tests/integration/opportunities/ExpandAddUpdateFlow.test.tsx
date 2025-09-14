@@ -12,7 +12,7 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { OpportunitiesTableRefactored as OpportunitiesTable } from '@/features/opportunities/components/OpportunitiesTableRefactored'
+import { OpportunitiesTable } from '@/features/opportunities/components/OpportunitiesTable'
 // Removed unused: import { supabase } from '@/lib/supabase'
 import '../../backend/setup/test-setup'
 

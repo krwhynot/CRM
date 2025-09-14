@@ -7,6 +7,7 @@ import { semanticSpacing, semanticRadius, semanticTypography } from '@/styles/to
  */
 
 import React, { useState, useCallback, useMemo } from 'react'
+import { debugError } from '@/utils/debug'
 import { Button } from '@/components/ui/button'
 // Removed unused: import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -89,7 +90,7 @@ export function QuickSearch({
         const searchResults = await onSearch(searchQuery)
         setResults(searchResults.slice(0, maxResults))
       } catch (error) {
-        console.error('Quick search failed:', error)
+        debugError('Quick search failed:', error)
         setResults([])
       } finally {
         setLoading(false)
@@ -200,7 +201,7 @@ export function QuickSearch({
                     onSelect={() => handleRecentSearchSelect(recentQuery)}
                     className={cn(semanticSpacing.gap.xs, 'flex items-center')}
                   >
-                    <Clock className="h-4 w-4 text-muted-foreground" />
+                    <Clock className="size-4 text-muted-foreground" />
                     <span>{recentQuery}</span>
                   </CommandItem>
                 ))}
@@ -229,7 +230,7 @@ export function QuickSearch({
                       }}
                     >
                       Try Advanced Search
-                      <ArrowRight className="h-3 w-3 ml-1" />
+                      <ArrowRight className="ml-1 size-3" />
                     </Button>
                   )}
                 </div>
@@ -246,9 +247,9 @@ export function QuickSearch({
                   >
                     <div className={cn(semanticSpacing.gap.sm, 'flex items-center flex-1 min-w-0')}>
                       {result.icon && (
-                        <result.icon className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <result.icon className="size-4 shrink-0 text-muted-foreground" />
                       )}
-                      <div className="flex-1 min-w-0">
+                      <div className="min-w-0 flex-1">
                         <div className={cn(semanticTypography.label, 'truncate')}>
                           {result.title}
                         </div>
@@ -295,7 +296,7 @@ export function QuickSearch({
                 >
                   <Search className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4')} />
                   View all results in Advanced Search
-                  <ArrowRight className="h-3 w-3 ml-1" />
+                  <ArrowRight className="ml-1 size-3" />
                 </CommandItem>
               </CommandGroup>
             )}

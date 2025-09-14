@@ -102,5 +102,3 @@ export function OpportunitiesTable({
   )
 }
 
-// Export with the name expected by tests
-export const OpportunitiesTableRefactored = OpportunitiesTable

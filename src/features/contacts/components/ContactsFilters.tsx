@@ -1,7 +1,7 @@
 import React from 'react'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
-import { semanticSpacing, semanticTypography } from '@/styles/tokens'
+import { semanticSpacing, semanticTypography, semanticShadows, semanticRadius } from '@/styles/tokens'
 import { cn } from '@/lib/utils'
 import {
   GenericWeeksFilter,

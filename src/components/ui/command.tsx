@@ -43,7 +43,7 @@ function CommandDialog({
       size="lg"
     >
       <Command
-        className={`[&_[cmdk-group-heading]]:${semanticSpacing.horizontalPadding.xs} [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:${semanticSpacing.zero} [&_[cmdk-group]]:${semanticSpacing.horizontalPadding.xs} [&_[cmdk-input-wrapper]_svg]:size-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:${semanticSpacing.horizontalPadding.xs} [&_[cmdk-item]]:${semanticSpacing.verticalPadding.lg} [&_[cmdk-item]_svg]:size-5`}
+        className={`[&_[cmdk-group-heading]]:${semanticSpacing.horizontalPadding.xs} [&_[cmdk-group]:not([hidden])_~[cmdk-group]]: [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground${semanticSpacing.zero} [&_[cmdk-group]]:${semanticSpacing.horizontalPadding.xs} [&_[cmdk-item]]: [&_[cmdk-input-wrapper]_svg]:size-5 [&_[cmdk-input]]:h-12${semanticSpacing.horizontalPadding.xs} [&_[cmdk-item]]:${semanticSpacing.verticalPadding.lg} [&_[cmdk-item]_svg]:size-5`}
       >
         {children}
       </Command>

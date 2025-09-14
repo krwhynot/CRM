@@ -3,6 +3,7 @@ import { useContactsSelection } from './useContactsSelection'
 import { useDeleteContact, useUpdateContact } from './useContacts'
 import { toast } from 'sonner'
 import { useBulkActionsContext } from '@/components/shared/BulkActions/BulkActionsProvider'
+import { debugError } from '@/utils/debug'
 import type { Contact } from '@/types/entities'
 
 // Extended contact interface with weekly context and decision authority tracking
@@ -26,7 +27,11 @@ interface ContactWithWeeklyContext extends Contact {
   }
 }
 
-export function useContactActions() {
+interface UseContactActionsOptions {
+  onEdit?: (contact: Contact) => void
+}
+
+export function useContactActions(options: UseContactActionsOptions = {}) {
   // Try to use BulkActionsContext when available
   let bulkActionsContext: ReturnType<
     typeof useBulkActionsContext<ContactWithWeeklyContext>
@@ -59,11 +64,16 @@ export function useContactActions() {
   const updateContactsMutation = useUpdateContact()
 
   const handleEditContact = useCallback((contact: ContactWithWeeklyContext) => {
-    // TODO: Open edit contact modal/form
-    toast('Edit Contact', {
-      description: `Editing contact: ${contact.first_name} ${contact.last_name}`,
-    })
-  }, [])
+    if (options.onEdit) {
+      // Use the provided onEdit callback (connects to dialog system)
+      options.onEdit(contact)
+    } else {
+      // Fallback behavior when no onEdit callback is provided
+      toast('Edit Contact', {
+        description: `Editing contact: ${contact.first_name} ${contact.last_name}`,
+      })
+    }
+  }, [options.onEdit])
 
   const handleDeleteContact = useCallback(
     async (contact: ContactWithWeeklyContext) => {
@@ -76,7 +86,7 @@ export function useContactActions() {
         toast.error('Delete Failed', {
           description: 'Failed to delete contact. Please try again.',
         })
-        console.error('Delete contact error:', error)
+        debugError('Delete contact error:', error)
       }
     },
     [deleteContactsMutation]
@@ -97,7 +107,7 @@ export function useContactActions() {
         toast.error('Bulk Delete Failed', {
           description: 'Failed to delete selected contacts. Please try again.',
         })
-        console.error('Bulk delete error:', error)
+        debugError('Bulk delete error:', error)
       }
     },
     [deleteContactsMutation, clearSelection]
@@ -118,7 +128,7 @@ export function useContactActions() {
         toast.error('Bulk Update Failed', {
           description: 'Failed to update selected contacts. Please try again.',
         })
-        console.error('Bulk update error:', error)
+        debugError('Bulk update error:', error)
       }
     },
     [updateContactsMutation, clearSelection]

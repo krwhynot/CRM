@@ -17,7 +17,7 @@ import { useState } from 'react'
 import { ImportResultsSimplified } from './ImportResultsSimplified'
 import type { SmartFieldMapping } from '../hooks/useSmartImport'
 import type { ParsedData } from '@/hooks/useFileUpload'
-import { semanticSpacing, semanticTypography, semanticColors } from '@/styles/tokens'
+import { semanticSpacing, semanticTypography, semanticColors, semanticRadius } from '@/styles/tokens'
 
 interface SmartPreviewComponentProps {
   parsedData: ParsedData | null

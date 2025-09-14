@@ -518,13 +518,13 @@ export function ProcessProgress({
                   )}
                 >
                   {step.status === 'completed' ? (
-                    <CheckCircle className="h-4 w-4" />
+                    <CheckCircle className="size-4" />
                   ) : step.status === 'error' ? (
-                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTriangle className="size-4" />
                   ) : showStepNumbers ? (
                     index + 1
                   ) : (
-                    <Circle className="h-4 w-4" />
+                    <Circle className="size-4" />
                   )}
                 </div>
 
@@ -620,7 +620,7 @@ export function CircularProgress({
   return (
     <div className={cn('inline-flex flex-col items-center', className)}>
       <div className="relative" style={{ width: size, height: size }}>
-        <svg className="transform -rotate-90" width={size} height={size}>
+        <svg className="-rotate-90" width={size} height={size}>
           {/* Background circle */}
           <circle
             cx={size / 2}
@@ -722,7 +722,7 @@ export function ProgressComparison({
         </div>
 
         {/* Change Indicator */}
-        <div className="flex items-center justify-between pt-2 border-t">
+        <div className="flex items-center justify-between border-t pt-2">
           <span className={cn(semanticTypography.body, textColors.secondary)}>Change {period}</span>
           <div className={cn(semanticSpacing.inline.xs, 'flex items-center')}>
             {isImprovement ? (

@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { debugError } from '@/utils/debug'
 import type {
   UseFilterSidebarOptions,
   UseFilterSidebarReturn,
@@ -39,7 +40,7 @@ export function useFilterSidebar({
         }
       }
     } catch (error) {
-      console.error('Failed to load filter sidebar state:', error)
+      debugError('Failed to load filter sidebar state:', error)
     }
 
     return {
@@ -66,7 +67,7 @@ export function useFilterSidebar({
           })
         )
       } catch (error) {
-        console.error('Failed to save filter sidebar state:', error)
+        debugError('Failed to save filter sidebar state:', error)
       }
     }, 100)
 

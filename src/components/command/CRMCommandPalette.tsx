@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { cn } from '@/lib/utils'
 import { semanticSpacing, semanticRadius, semanticTypography } from '@/styles/tokens'
+import { debugWarn } from '@/utils/debug'
 import {
   CommandDialog,
   CommandInput,
@@ -274,13 +275,54 @@ export function CRMCommandPalette({
 
   const createAndClose = (type: string) => {
     setOpen(false)
-    onCreateRecord?.(type)
+    // Use onCreateRecord callback if provided, otherwise navigate with create parameter
+    if (onCreateRecord) {
+      onCreateRecord(type)
+    } else {
+      // Navigate to the entity page with create action
+      switch (type) {
+        case 'organization':
+          navigate('/organizations?action=create')
+          break
+        case 'contact':
+          navigate('/contacts?action=create')
+          break
+        case 'product':
+          navigate('/products?action=create')
+          break
+        case 'opportunity':
+          navigate('/opportunities?action=create')
+          break
+        case 'interaction':
+          navigate('/interactions?action=create')
+          break
+        default:
+          debugWarn('Unknown create type:', type)
+      }
+    }
   }
 
   const actionAndClose = (action: string) => {
     setOpen(false)
-    console.log('Performing action:', action)
-    // Handle specific actions here
+    // Handle specific actions
+    switch (action) {
+      case 'export':
+        navigate('/import-export?mode=export')
+        break
+      case 'import':
+        navigate('/import-export?mode=import')
+        break
+      case 'report':
+        // Navigate to dashboard reports section when reports are implemented
+        navigate('/?tab=reports')
+        break
+      case 'meeting':
+        // Navigate to dashboard calendar section when calendar is implemented
+        navigate('/?tab=calendar')
+        break
+      default:
+        debugWarn('Unknown action:', action)
+    }
   }
 
   const handleSelect = (command: CRMCommand | SearchResult) => {
@@ -292,10 +334,10 @@ export function CRMCommandPalette({
       {/* Trigger Button */}
       <Button
         variant="outline"
-        className="relative h-9 w-9 p-0 xl:h-10 xl:w-60 xl:justify-start xl:px-3 xl:py-2"
+        className="relative size-9 p-0 xl:h-10 xl:w-60 xl:justify-start xl:px-3 xl:py-2"
         onClick={() => setOpen(true)}
       >
-        <Search className="h-4 w-4 xl:mr-2" />
+        <Search className="size-4 xl:mr-2" />
         <span className="hidden xl:inline-flex">Search or run command...</span>
         <span className="sr-only">Search</span>
         <kbd
@@ -331,7 +373,7 @@ export function CRMCommandPalette({
                 'flex flex-col items-center'
               )}
             >
-              <Search className="h-8 w-8 text-muted-foreground" />
+              <Search className="size-8 text-muted-foreground" />
               <p className={cn(semanticTypography.body, 'text-muted-foreground')}>
                 No results found for "{query}"
               </p>
@@ -351,7 +393,7 @@ export function CRMCommandPalette({
                   onSelect={() => handleSelect(result)}
                 >
                   <result.icon className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4')} />
-                  <div className="flex-1 min-w-0">
+                  <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between">
                       <span className={cn(semanticTypography.label, 'truncate')}>
                         {result.title}
@@ -381,7 +423,7 @@ export function CRMCommandPalette({
                     className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4 text-muted-foreground')}
                   />
                   <item.icon className={cn(semanticSpacing.rightGap.xs, 'h-4 w-4')} />
-                  <div className="flex-1 min-w-0">
+                  <div className="min-w-0 flex-1">
                     <span className="truncate">{item.title}</span>
                     <p className={cn(semanticTypography.caption, 'text-muted-foreground truncate')}>
                       {item.subtitle}
@@ -516,7 +558,7 @@ export function useCommandPalette() {
 }
 
 // Sample search function for demonstration
-export function sampleSearchFunction(query: string): SearchResult[] {
+export function sampleSearchFunction(query: string, navigate?: (path: string) => void): SearchResult[] {
   // This would typically call your actual search API
   const sampleData: SearchResult[] = [
     {
@@ -525,7 +567,10 @@ export function sampleSearchFunction(query: string): SearchResult[] {
       subtitle: 'Customer • Chicago, IL • A+ Priority',
       type: 'organization',
       icon: Building2,
-      action: () => console.log('Navigate to Metro Restaurant Group'),
+      action: () => {
+        // Navigate to organization detail page when implemented
+        navigate?.('/organizations')
+      },
       metadata: { type: 'customer', priority: 'a-plus' },
     },
     {
@@ -534,7 +579,10 @@ export function sampleSearchFunction(query: string): SearchResult[] {
       subtitle: 'Contact • Metro Restaurant Group • Primary Manager',
       type: 'contact',
       icon: User,
-      action: () => console.log('Navigate to Sarah Johnson'),
+      action: () => {
+        // Navigate to contact detail page when implemented
+        navigate?.('/contacts')
+      },
       metadata: { organization: 'Metro Restaurant Group' },
     },
     {
@@ -543,7 +591,10 @@ export function sampleSearchFunction(query: string): SearchResult[] {
       subtitle: 'Product • Fresh Proteins • $12.99/lb',
       type: 'product',
       icon: Package,
-      action: () => console.log('Navigate to Organic Chicken Breast'),
+      action: () => {
+        // Navigate to product detail page when implemented
+        navigate?.('/products')
+      },
       metadata: { category: 'Fresh Proteins' },
     },
   ]

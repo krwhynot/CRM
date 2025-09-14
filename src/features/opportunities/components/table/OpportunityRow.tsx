@@ -160,7 +160,7 @@ export function useOpportunityColumns({
                   </span>
                   <div className="flex items-center">
                     <div
-                      className={cn(semanticRadius.full, 'h-1.5 w-12 overflow-hidden bg-gray-200')}
+                      className={cn(semanticRadius.full, 'h-1.5 w-12 overflow-hidden {semanticColors.backgrounds.muted}')}
                     >
                       <div
                         className={cn(
@@ -220,7 +220,7 @@ export function useOpportunityColumns({
               <span className={cn(semanticTypography.label, semanticTypography.body)}>
                 {opportunity.stage}
               </span>
-              <span className={`${semanticTypography.caption} text-gray-400`}>
+              <span className={`${semanticTypography.caption} {semanticColors.text.tertiary}`}>
                 {stageConfig.position}/7
               </span>
             </div>
@@ -237,7 +237,7 @@ export function useOpportunityColumns({
             <div className={cn(semanticTypography.label, semanticTypography.body)}>
               {formatCurrency(opportunity.estimated_value)}
             </div>
-            <div className={`${semanticTypography.caption} text-gray-500`}>
+            <div className={`${semanticTypography.caption} {semanticColors.text.secondary}`}>
               {opportunity.probability ? `${opportunity.probability}% likely` : 'No probability'}
             </div>
           </div>
@@ -250,10 +250,10 @@ export function useOpportunityColumns({
         header: 'Last Activity',
         cell: (opportunity) => (
           <div>
-            <div className={`${semanticTypography.body} text-gray-900`}>
+            <div className={`${semanticTypography.body} {semanticColors.text.primary}`}>
               {formatTimeAgo(opportunity.last_activity_date || null)}
             </div>
-            <div className={`${semanticTypography.caption} text-gray-500`}>
+            <div className={`${semanticTypography.caption} {semanticColors.text.secondary}`}>
               {formatActivityType(opportunity.last_activity_type || null)}
             </div>
           </div>

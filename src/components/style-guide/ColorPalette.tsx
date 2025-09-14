@@ -7,7 +7,7 @@ import { Copy, Check, Eye } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { cn } from '@/lib/utils'
-import { semanticSpacing, semanticTypography, semanticRadius } from '@/styles/tokens'
+import { semanticSpacing, semanticTypography, semanticRadius, semanticShadows } from '@/styles/tokens'
 import { semanticColors } from '@/styles/tokens/colors'
 interface ColorSwatch {
   name: string
@@ -253,17 +253,17 @@ export function ColorPalette() {
         )}
       >
         {colors.map((color) => (
-          <Card key={color.name} className="overflow-hidden hover:shadow-md transition-shadow">
+          <Card key={color.name} className={`overflow-hidden transition-shadow hover:${semanticShadows.cardHover}`}>
             <div
-              className="h-24 w-full relative group cursor-pointer"
+              className="group relative h-24 w-full cursor-pointer"
               style={{ backgroundColor: color.value }}
               onClick={() => copyToClipboard(color.value, color.name)}
             >
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/10">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 hover:bg-white text-black"
+                  className="bg-white/90 text-black opacity-0 transition-opacity hover:bg-white group-hover:opacity-100"
                 >
                   {copiedColor === color.name ? (
                     <>
@@ -310,9 +310,9 @@ export function ColorPalette() {
                     onClick={() =>
                       copyToClipboard(`hsl(var(${color.cssVar}))`, `${color.name} CSS`)
                     }
-                    className="h-6 w-6 p-0"
+                    className="size-6 p-0"
                   >
-                    <Copy className="h-3 w-3" />
+                    <Copy className="size-3" />
                   </Button>
                 </div>
               </div>
@@ -370,10 +370,10 @@ export function ColorPalette() {
             >
               Distributor
             </Badge>
-            <Badge variant="outline" className="bg-purple-100 text-purple-800 border-purple-300">
+            <Badge variant="outline" className="border-purple-300 bg-purple-100 text-purple-800">
               Principal
             </Badge>
-            <Badge variant="outline" className="bg-indigo-100 text-indigo-800 border-indigo-300">
+            <Badge variant="outline" className="border-indigo-300 bg-indigo-100 text-indigo-800">
               Supplier
             </Badge>
           </div>
@@ -397,7 +397,7 @@ export function ColorPalette() {
             >
               Pending
             </Badge>
-            <Badge variant="outline" className="bg-muted text-foreground border-border">
+            <Badge variant="outline" className="border-border bg-muted text-foreground">
               Inactive
             </Badge>
           </div>
@@ -449,7 +449,7 @@ export function ColorPalette() {
           <CardTitle
             className={cn(semanticTypography.h4, semanticSpacing.inline.xs, 'flex items-center')}
           >
-            <Eye className="h-5 w-5" />
+            <Eye className="size-5" />
             <span>Accessibility Compliance</span>
           </CardTitle>
           <CardDescription>All colors meet WCAG AAA standards</CardDescription>

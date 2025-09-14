@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { semanticSpacing, semanticTypography } from '@/styles/tokens'
 
 const meta: Meta<typeof ActionGroup> = {
   title: 'Layout/Slots/ActionGroup',
@@ -316,10 +317,10 @@ export const ResponsiveWrapping: Story = {
 // Different alignments
 export const AlignmentVariations: Story = {
   render: () => (
-    <div className="space-y-8">
+    <div className={semanticSpacing.stack.xl}>
       <div>
-        <h3 className="text-sm font-medium mb-2">Start Aligned</h3>
-        <div className="border border-border rounded-lg p-4">
+        <h3 className={`mb-2 ${semanticTypography.caption}`}>Start Aligned</h3>
+        <div className={`rounded-lg border border-border ${semanticSpacing.cardContainer}`}>
           <ActionGroup
             align="start"
             actions={[
@@ -331,8 +332,8 @@ export const AlignmentVariations: Story = {
       </div>
 
       <div>
-        <h3 className="text-sm font-medium mb-2">Center Aligned</h3>
-        <div className="border border-border rounded-lg p-4">
+        <h3 className={`mb-2 ${semanticTypography.caption}`}>Center Aligned</h3>
+        <div className={`rounded-lg border border-border ${semanticSpacing.cardContainer}`}>
           <ActionGroup
             align="center"
             actions={[
@@ -344,8 +345,8 @@ export const AlignmentVariations: Story = {
       </div>
 
       <div>
-        <h3 className="text-sm font-medium mb-2">End Aligned</h3>
-        <div className="border border-border rounded-lg p-4">
+        <h3 className={`mb-2 ${semanticTypography.caption}`}>End Aligned</h3>
+        <div className={`rounded-lg border border-border ${semanticSpacing.cardContainer}`}>
           <ActionGroup
             align="end"
             actions={[

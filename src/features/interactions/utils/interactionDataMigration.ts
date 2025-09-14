@@ -5,6 +5,7 @@
  * to match the enhanced interaction tracking system.
  */
 
+import { debugWarn } from '@/utils/debug'
 import type {
   InteractionType,
   InteractionPriority,
@@ -116,7 +117,7 @@ export function parseInteractionType(rawType?: string): InteractionType {
   }
 
   // Default fallback
-  console.warn(`Unknown interaction type: ${rawType}, defaulting to 'follow_up'`)
+  debugWarn(`Unknown interaction type: ${rawType}, defaulting to 'follow_up'`)
   return 'follow_up'
 }
 
@@ -142,7 +143,7 @@ export function parsePriority(rawPriority?: string): InteractionPriority | null 
     return PRIORITY_MAPPING[matchingKey]
   }
 
-  console.warn(`Unknown priority: ${rawPriority}, skipping`)
+  debugWarn(`Unknown priority: ${rawPriority}, skipping`)
   return null
 }
 
@@ -225,10 +226,10 @@ export function parseInteractionDate(rawDate?: string): string {
       return jsDate.toISOString()
     }
 
-    console.warn(`Could not parse date: ${rawDate}, using current date`)
+    debugWarn(`Could not parse date: ${rawDate}, using current date`)
     return new Date().toISOString()
   } catch (error) {
-    console.warn(`Error parsing date: ${rawDate}, using current date`)
+    debugWarn(`Error parsing date: ${rawDate}, using current date`)
     return new Date().toISOString()
   }
 }

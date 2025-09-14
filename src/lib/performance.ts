@@ -10,7 +10,7 @@ import {
   type LCPMetric,
   type TTFBMetric,
 } from 'web-vitals'
-import { isDevelopment } from '@/config/environment'
+import { debugLog, debugWarn } from '@/utils/debug'
 import { safeGetJSON, safeSetJSON } from '@/lib/secure-storage'
 
 type WebVitalsMetric = CLSMetric | INPMetric | FCPMetric | LCPMetric | TTFBMetric
@@ -36,12 +36,10 @@ function sendToAnalytics(metric: WebVitalsMetric) {
   // Keep last 50 metrics and store safely
   const success = safeSetJSON('perfMetrics', perfMetrics.slice(-50))
 
-  // Development-only performance logging
-  if (isDevelopment) {
-    console.log(`Performance: ${metric.name}: ${metric.value}ms`)
-    if (!success) {
-      console.warn('Failed to store performance metrics - localStorage may be full or disabled')
-    }
+  // Performance logging
+  debugLog(`Performance: ${metric.name}: ${metric.value}ms`)
+  if (!success) {
+    debugWarn('Failed to store performance metrics - localStorage may be full or disabled')
   }
 }
 

@@ -159,7 +159,7 @@ export const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
               )}
               aria-label={isOpen ? `Collapse ${title}` : `Expand ${title}`}
             >
-              {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+              {isOpen ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
             </Button>
           </CollapsibleTrigger>
         </div>

@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import type { FieldValues, UseFormReturn, RegisterOptions } from 'react-hook-form'
-import { semanticSpacing, semanticRadius } from '@/styles/tokens'
+import { semanticSpacing, semanticRadius, semanticColors } from '@/styles/tokens'
 
 export interface FormSection<T extends FieldValues> {
   id: string
@@ -91,7 +91,7 @@ export const useFormLayout = <T extends FieldValues>({
     (section: FormSection<T>): string => {
       const baseClass = `${semanticSpacing.stack.xl} ${section.className || ''}`
       return entityType === 'activity'
-        ? `${baseClass} bg-blue-50/50 ${semanticSpacing.cardContainer} ${semanticRadius.card}`
+        ? `${baseClass} ${semanticColors.background.info} ${semanticSpacing.cardContainer} ${semanticRadius.card}`
         : baseClass
     },
     [entityType]

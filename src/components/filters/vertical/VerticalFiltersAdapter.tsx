@@ -139,7 +139,7 @@ export function createFilterSections({
     sections.push({
       id: 'time-range',
       title: 'Time Range',
-      icon: <Calendar className="h-4 w-4" />,
+      icon: <Calendar className="size-4" />,
       badge: filters.timeRange !== 'this_month' ? 1 : undefined,
       defaultExpanded: true,
       content: (
@@ -162,7 +162,7 @@ export function createFilterSections({
     sections.push({
       id: 'focus',
       title: 'Focus',
-      icon: <Target className="h-4 w-4" />,
+      icon: <Target className="size-4" />,
       badge: filters.focus !== 'all_activity' ? 1 : undefined,
       defaultExpanded: true,
       content: (
@@ -180,7 +180,7 @@ export function createFilterSections({
     sections.push({
       id: 'quick-view',
       title: 'Quick View',
-      icon: <Eye className="h-4 w-4" />,
+      icon: <Eye className="size-4" />,
       badge: filters.quickView !== 'none' ? 1 : undefined,
       content: (
         <QuickViewFilter
@@ -197,7 +197,7 @@ export function createFilterSections({
     sections.push({
       id: 'principal',
       title: 'Principal',
-      icon: <Package className="h-4 w-4" />,
+      icon: <Package className="size-4" />,
       badge: filters.principal && filters.principal !== 'all' ? 1 : undefined,
       content: (
         <PrincipalSelector
@@ -219,7 +219,7 @@ export function createFilterSections({
     sections.push({
       id: 'manager',
       title: 'Manager',
-      icon: <Users className="h-4 w-4" />,
+      icon: <Users className="size-4" />,
       badge: filters.focus === 'my_tasks' ? 1 : undefined,
       content: (
         <ManagerSelector

@@ -70,3 +70,4 @@ export function SmartFieldMappingComponent({
 
 // Export alias for backward compatibility
 export { SmartFieldMappingComponent as SmartFieldMapping }
+export default SmartFieldMappingComponent

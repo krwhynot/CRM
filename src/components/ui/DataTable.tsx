@@ -508,7 +508,7 @@ const VirtualRow = React.memo(<T,>({ index, style, data }: VirtualRowProps<T>) =
 
       {/* Expanded content */}
       {isExpanded && expandableContent && (
-        <div className={`${semanticSpacing.cardContainer} bg-gray-50/50 border-t`}>
+        <div className={`${semanticSpacing.cardContainer} border-t bg-gray-50/50`}>
           {expandableContent(row)}
         </div>
       )}
@@ -555,7 +555,7 @@ function VirtualTableHeader<T>({
     >
       {/* Selection header */}
       {hasSelection && (
-        <div className="flex items-center mr-3">
+        <div className="mr-3 flex items-center">
           <input
             type="checkbox"
             checked={isAllSelected}

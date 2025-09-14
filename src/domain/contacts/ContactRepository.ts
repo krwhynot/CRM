@@ -58,6 +58,7 @@ export class ContactRepository implements BaseRepository<ContactDomain> {
       decision_authority: entity.decision_authority,
       is_primary_contact: entity.is_primary_contact,
       notes: entity.notes,
+      created_by: 'system', // TODO: Replace with actual user ID from auth context
     }
   }
 

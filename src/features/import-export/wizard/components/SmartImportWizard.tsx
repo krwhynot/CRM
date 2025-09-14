@@ -12,6 +12,7 @@ import {
   semanticRadius,
   fontWeight,
   semanticColors,
+  semanticShadows,
 } from '@/styles/tokens'
 
 // Re-export WizardStep for consumers
@@ -120,7 +121,7 @@ export function SmartImportWizard({
                   className={cn(
                     `flex flex-col items-center ${semanticSpacing.stack.xs} ${semanticSpacing.layoutPadding.lg} ${semanticRadius.lg} transition-all`,
                     'min-h-[80px] touch-manipulation', // iPad touch optimization
-                    isClickable && 'hover:bg-white hover:shadow-sm active:scale-95',
+                    isClickable && `hover:bg-white hover:${semanticShadows.card} active:scale-95`,
                     step.current && 'bg-primary/10 border border-primary/20',
                     step.completed &&
                       `${semanticColors.background.success} border ${semanticColors.border.success}`,

@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Trash2, X, CheckSquare, Square } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-import { semanticTypography, semanticSpacing } from '@/styles/tokens'
+import { semanticTypography, semanticSpacing, semanticColors } from '@/styles/tokens'
 export interface BulkAction {
   /** Unique identifier for the action */
   id: string
@@ -77,7 +77,7 @@ export function BulkActionsToolbar({
         </div>
         <div className={cn(semanticSpacing.gap.xs, 'flex items-center')}>
           <Button variant="outline" size="sm" onClick={onSelectAll} className="h-8">
-            <CheckSquare className="h-3 w-3 mr-1" />
+            <CheckSquare className="mr-1 size-3" />
             Select All
           </Button>
         </div>
@@ -87,14 +87,14 @@ export function BulkActionsToolbar({
 
   // Show full toolbar when items are selected
   return (
-    <Card className={cn('border-primary/20 bg-primary/5', className)}>
+    <Card className={cn(semanticColors.background.info, semanticColors.border.infoSubtle, className)}>
       <div className={cn(semanticSpacing.compact, 'flex items-center justify-between')}>
         <div className={cn(semanticSpacing.gap.sm, 'flex items-center')}>
-          <Badge variant="secondary" className="bg-primary/10 text-primary">
+          <Badge variant="secondary" className={semanticColors.background.info}>
             {selectedCount} selected
           </Badge>
 
-          <div className={cn(semanticTypography.body, 'text-gray-600')}>
+          <div className={cn(semanticTypography.body, semanticColors.text.secondary)}>
             {selectedCount} of {totalCount} {entityType} selected
           </div>
         </div>
@@ -110,12 +110,12 @@ export function BulkActionsToolbar({
           >
             {selectedCount === totalCount ? (
               <>
-                <Square className="h-3 w-3 mr-1" />
+                <Square className="mr-1 size-3" />
                 Deselect All
               </>
             ) : (
               <>
-                <CheckSquare className="h-3 w-3 mr-1" />
+                <CheckSquare className="mr-1 size-3" />
                 Select All
               </>
             )}
@@ -132,7 +132,7 @@ export function BulkActionsToolbar({
               className="h-8"
               title={action.tooltip}
             >
-              <action.icon className="h-3 w-3 mr-1" />
+              <action.icon className="mr-1 size-3" />
               {action.label}
             </Button>
           ))}
@@ -146,7 +146,7 @@ export function BulkActionsToolbar({
               disabled={isLoading}
               className="h-8"
             >
-              <Trash2 className="h-3 w-3 mr-1" />
+              <Trash2 className="mr-1 size-3" />
               Delete
             </Button>
           )}
@@ -159,7 +159,7 @@ export function BulkActionsToolbar({
             disabled={isLoading}
             className="h-8"
           >
-            <X className="h-3 w-3" />
+            <X className="size-3" />
           </Button>
         </div>
       </div>

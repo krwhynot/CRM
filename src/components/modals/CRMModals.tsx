@@ -53,7 +53,7 @@ const modalVariants = cva('sm:max-w-lg', {
       confirmation: 'sm:max-w-md',
       details: 'sm:max-w-2xl',
       wizard: 'sm:max-w-3xl',
-      fullscreen: 'sm:max-w-[95vw] sm:h-[95vh]',
+      fullscreen: 'sm:h-[95vh] sm:max-w-[95vw]',
     },
   },
   defaultVariants: {
@@ -342,7 +342,7 @@ export function WizardModal({
           </div>
 
           <Button variant="outline" onClick={handlePrevious} disabled={isFirstStep || loading}>
-            <ChevronLeft className="size-4 mr-1" />
+            <ChevronLeft className="mr-1 size-4" />
             Previous
           </Button>
 
@@ -363,7 +363,7 @@ export function WizardModal({
               />
             )}
             {isLastStep ? 'Complete' : 'Next'}
-            {!isLastStep && <ChevronRight className="size-4 ml-1" />}
+            {!isLastStep && <ChevronRight className="ml-1 size-4" />}
           </Button>
         </>
       }
@@ -551,7 +551,7 @@ export function EntityFormModal({
                 )}
               />
             )}
-            <Save className="size-4 mr-1" />
+            <Save className="mr-1 size-4" />
             {mode === 'create' ? 'Create' : 'Save Changes'}
           </Button>
         </>
@@ -748,7 +748,7 @@ export function BulkActionsModal({
               'flex items-start text-orange-800 bg-orange-50 border border-orange-200 dark:bg-orange-950/20 dark:text-orange-200 dark:border-orange-900'
             )}
           >
-            <AlertTriangle className="size-4 mt-0.5 shrink-0" />
+            <AlertTriangle className="mt-0.5 size-4 shrink-0" />
             <div>
               <p className={`${semanticTypography.label}`}>Confirm Action</p>
               <p>

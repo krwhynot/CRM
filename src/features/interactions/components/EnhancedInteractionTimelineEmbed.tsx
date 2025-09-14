@@ -183,7 +183,7 @@ export function EnhancedInteractionTimelineEmbed({
           <div key={groupName}>
             {showGrouping && (
               <div
-                className={`sticky top-0 z-10 ${semanticSpacing.bottomGap.md} bg-white ${semanticSpacing.bottomPadding.xs}`}
+                className={`sticky top-0 z-10 ${semanticSpacing.bottomGap.md} ${semanticColors.cardBackground} ${semanticSpacing.bottomPadding.xs}`}
               >
                 <h4
                   className={`flex items-center ${semanticSpacing.gap.xs} ${semanticTypography.body} ${fontWeight.semibold} text-muted-foreground`}

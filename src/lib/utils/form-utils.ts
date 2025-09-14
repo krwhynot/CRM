@@ -1,5 +1,5 @@
 import type { DialogSize } from '@/contexts/DialogContext'
-import { semanticSpacing, semanticTypography } from '@/styles/tokens'
+import { semanticSpacing, semanticTypography, semanticShadows } from '@/styles/tokens'
 
 /**
  * Form Utilities - Responsive width and spacing utilities for forms
@@ -87,11 +87,11 @@ export function getFormButtonClasses(isInDialog: boolean): string {
 // Form card classes - integrate with existing Card component
 export function getFormCardClasses(isInDialog: boolean): string {
   if (!isInDialog) {
-    return 'mx-auto w-full max-w-4xl rounded-lg border bg-white shadow-sm'
+    return `mx-auto w-full max-w-4xl rounded-lg border bg-white ${semanticShadows.card}`
   }
 
   // In dialog - remove border/shadow, adapt to dialog container
-  return 'w-full bg-transparent border-0 shadow-none'
+  return `w-full bg-transparent border-0 ${semanticShadows.disabled}`
 }
 
 /**
