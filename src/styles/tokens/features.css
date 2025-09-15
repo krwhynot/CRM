@@ -1,0 +1,329 @@
+/**
+ * FEATURES LAYER - Feature-Specific Design Token Enhancements
+ *
+ * Advanced feature-specific tokens for density modes, high contrast, colorblind support,
+ * and other specialized functionality. This is the top layer that can reference all lower layers.
+ *
+ * HIERARCHY: PRIMITIVES → SEMANTIC → COMPONENTS → FEATURES (this file)
+ *
+ * CRITICAL: This file contains feature-specific enhancements and adaptations.
+ * All values should reference semantic, component, or primitive tokens when possible.
+ */
+
+@layer base {
+  :root {
+    /* =======================================================================
+     * DENSITY SYSTEM FEATURE TOKENS
+     * Advanced density system with responsive adaptation
+     * ======================================================================= */
+
+    /* Base density tokens - default to comfortable mode */
+    --density-mode: 'comfortable';
+    --density-scale: 1;
+    --density-multiplier: 1;
+
+    /* Responsive density breakpoints for automatic adaptation */
+    --density-mobile-threshold: 768px;
+    --density-tablet-threshold: 1024px;
+    --density-desktop-threshold: 1280px;
+
+    /* Density-aware color tokens that integrate with semantic tokens */
+    --density-surface: hsl(var(--background));
+    --density-surface-elevated: hsl(var(--card));
+    --density-border: hsl(var(--border));
+    --density-focus-ring: var(--focus-ring);
+    --density-text-primary: var(--text-primary);
+    --density-text-secondary: var(--text-muted);
+
+    /* Density-aware shadow system */
+    --density-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / calc(0.05 * var(--density-multiplier)));
+    --density-shadow-md: 0 4px 6px -1px rgb(0 0 0 / calc(0.1 * var(--density-multiplier))), 0 2px 4px -2px rgb(0 0 0 / calc(0.1 * var(--density-multiplier)));
+    --density-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / calc(0.1 * var(--density-multiplier))), 0 4px 6px -4px rgb(0 0 0 / calc(0.1 * var(--density-multiplier)));
+
+    /* Density-aware border radius that scales with mode */
+    --density-radius-sm: calc(var(--radius-sm) * var(--density-scale));
+    --density-radius-md: calc(var(--radius-md) * var(--density-scale));
+    --density-radius-lg: calc(var(--radius-lg) * var(--density-scale));
+    --density-radius-xl: calc(var(--radius-xl) * var(--density-scale));
+
+    /* Density-aware spacing that scales with mode */
+    --density-space-xs: calc(var(--space-1) * var(--density-scale));
+    --density-space-sm: calc(var(--space-2) * var(--density-scale));
+    --density-space-md: calc(var(--space-4) * var(--density-scale));
+    --density-space-lg: calc(var(--space-6) * var(--density-scale));
+    --density-space-xl: calc(var(--space-8) * var(--density-scale));
+
+    /* Density-aware typography scaling */
+    --density-font-scale: var(--density-scale);
+    --density-font-size-xs: calc(var(--font-size-xs) * var(--density-font-scale));
+    --density-font-size-sm: calc(var(--font-size-sm) * var(--density-font-scale));
+    --density-font-size-base: calc(var(--font-size-base) * var(--density-font-scale));
+    --density-font-size-lg: calc(var(--font-size-lg) * var(--density-font-scale));
+
+    /* =======================================================================
+     * HIGH CONTRAST MODE FEATURE TOKENS
+     * Enhanced visibility for high contrast preferences and accessibility
+     * ======================================================================= */
+
+    /* High Contrast Primary Colors - Semantic variants referencing MFB primitives */
+    --hc-primary-bg: var(--mfb-green-active);         /* Enhanced contrast primary using darker MFB green */
+    --hc-primary-text: var(--mfb-white);              /* High contrast text using MFB white */
+    --hc-primary-border: var(--mfb-green-active);     /* Enhanced border using same dark variant */
+    --hc-primary-hover: var(--mfb-green-active);      /* Hover state using dark MFB variant */
+    --hc-primary-focus: var(--mfb-green-focus);       /* Focus ring referencing MFB focus ring */
+
+    /* High Contrast Secondary Colors - Semantic variants referencing MFB clay primitives */
+    --hc-secondary-bg: var(--mfb-clay-active);        /* Enhanced contrast secondary using darker MFB clay */
+    --hc-secondary-text: var(--mfb-white);            /* High contrast text using MFB white */
+    --hc-secondary-border: var(--mfb-clay-active);    /* Enhanced border using same dark clay variant */
+    --hc-secondary-hover: var(--mfb-clay-active);     /* Hover state using dark MFB clay variant */
+    --hc-secondary-focus: var(--mfb-clay-focus);      /* Focus ring referencing MFB clay focus */
+
+    /* High Contrast Semantic Colors - Semantic variants referencing MFB semantic primitives */
+    --hc-success-bg: var(--mfb-success-active);       /* Enhanced contrast success using darker MFB success */
+    --hc-success-text: var(--mfb-white);              /* High contrast text using MFB white */
+    --hc-success-border: var(--mfb-success-active);   /* Enhanced border using same dark success variant */
+
+    --hc-warning-bg: var(--mfb-warning-active);       /* Enhanced contrast warning using darker MFB warning */
+    --hc-warning-text: var(--mfb-white);              /* High contrast text using MFB white */
+    --hc-warning-border: var(--mfb-warning-active);   /* Enhanced border using same dark warning variant */
+
+    --hc-danger-bg: var(--mfb-danger-active);         /* Enhanced contrast danger using darker MFB danger */
+    --hc-danger-text: var(--mfb-white);               /* High contrast text using MFB white */
+    --hc-danger-border: var(--mfb-danger-active);     /* Enhanced border using same dark danger variant */
+
+    --hc-info-bg: var(--mfb-info-active);             /* Enhanced contrast info using darker MFB info */
+    --hc-info-text: var(--mfb-white);                 /* High contrast text using MFB white */
+    --hc-info-border: var(--mfb-info-active);         /* Enhanced border using same dark info variant */
+
+    /* High Contrast Background System */
+    --hc-background: hsl(0 0% 100%);                   /* Pure white background for maximum contrast */
+    --hc-background-elevated: hsl(0 0% 98%);          /* Slightly off-white for elevated surfaces */
+    --hc-foreground: hsl(0 0% 0%);                     /* Pure black text for maximum contrast */
+    --hc-border: hsl(0 0% 20%);                        /* Dark borders for clear definition */
+    --hc-muted: hsl(0 0% 90%);                         /* Light muted backgrounds */
+    --hc-muted-foreground: hsl(0 0% 20%);              /* Dark muted text */
+
+    /* =======================================================================
+     * COLORBLIND-FRIENDLY FEATURE TOKENS
+     * Alternative color schemes for different types of color vision deficiency
+     * ======================================================================= */
+
+    /* Deuteranopia-friendly colors (red-green colorblind - most common) */
+    --cb-primary: oklch(0.6200 0.1400 240);           /* Blue instead of green for primary */
+    --cb-success: oklch(0.6000 0.1500 200);           /* Blue-green for success */
+    --cb-warning: oklch(0.7200 0.1800 60);            /* Keep amber/yellow for warning */
+    --cb-danger: oklch(0.5800 0.2200 25);             /* Keep red for danger, but enhance */
+    --cb-info: oklch(0.6200 0.1400 260);              /* Purple-blue for info */
+
+    /* Protanopia-friendly colors (red-blind) */
+    --cb-proto-primary: oklch(0.6000 0.1500 200);     /* Blue-green for primary */
+    --cb-proto-success: oklch(0.6000 0.1500 200);     /* Blue-green for success */
+    --cb-proto-warning: oklch(0.7200 0.1800 60);      /* Yellow for warning */
+    --cb-proto-danger: oklch(0.4500 0.1200 20);       /* Dark brown for danger */
+    --cb-proto-info: oklch(0.6200 0.1400 240);        /* Blue for info */
+
+    /* Tritanopia-friendly colors (blue-yellow colorblind - rare) */
+    --cb-trita-primary: oklch(0.6800 0.1800 130);     /* Keep green for primary */
+    --cb-trita-success: oklch(0.6500 0.1600 142);     /* Keep green for success */
+    --cb-trita-warning: oklch(0.5800 0.2200 25);      /* Red instead of yellow for warning */
+    --cb-trita-danger: oklch(0.5800 0.2200 25);       /* Red for danger */
+    --cb-trita-info: oklch(0.5000 0.1000 300);        /* Magenta for info */
+
+    /* =======================================================================
+     * ANIMATION AND MOTION FEATURE TOKENS
+     * Motion preferences and animation timing
+     * ======================================================================= */
+
+    /* Motion timing tokens */
+    --motion-duration-instant: 0ms;
+    --motion-duration-fast: 150ms;
+    --motion-duration-normal: 250ms;
+    --motion-duration-slow: 350ms;
+    --motion-duration-slower: 500ms;
+
+    /* Motion easing tokens */
+    --motion-ease-linear: linear;
+    --motion-ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --motion-ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --motion-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --motion-ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    /* Reduced motion overrides */
+    --motion-duration-reduced: 1ms;
+    --motion-ease-reduced: linear;
+
+    /* =======================================================================
+     * THEME SWITCHING FEATURE TOKENS
+     * Tokens for theme transition animations
+     * ======================================================================= */
+
+    --theme-transition-duration: var(--motion-duration-normal);
+    --theme-transition-easing: var(--motion-ease-in-out);
+    --theme-transition-property: background-color, color, border-color, box-shadow;
+
+    /* =======================================================================
+     * PRINT MODE FEATURE TOKENS
+     * Optimized tokens for print media
+     * ======================================================================= */
+
+    --print-background: white;
+    --print-foreground: black;
+    --print-border: black;
+    --print-muted: #666666;
+    --print-shadow: none;
+    --print-radius: 0;
+
+    /* =======================================================================
+     * MOBILE OPTIMIZATION FEATURE TOKENS
+     * Mobile-specific enhancements
+     * ======================================================================= */
+
+    --mobile-touch-target-min: 44px;                  /* iOS HIG minimum touch target */
+    --mobile-tap-highlight: transparent;              /* Disable webkit tap highlight */
+    --mobile-scroll-padding: var(--space-4);          /* Scroll padding for mobile */
+    --mobile-safe-area-top: env(safe-area-inset-top);
+    --mobile-safe-area-bottom: env(safe-area-inset-bottom);
+    --mobile-safe-area-left: env(safe-area-inset-left);
+    --mobile-safe-area-right: env(safe-area-inset-right);
+
+    /* =======================================================================
+     * FOCUS MANAGEMENT FEATURE TOKENS
+     * Advanced focus ring and keyboard navigation
+     * ======================================================================= */
+
+    --focus-visible-outline: 2px solid var(--focus-ring);
+    --focus-visible-outline-offset: 2px;
+    --focus-visible-shadow: 0 0 0 4px hsl(var(--focus-ring) / 0.3);
+    --focus-visible-transition: outline-offset var(--motion-duration-fast) var(--motion-ease-out);
+
+    /* Skip link tokens */
+    --skip-link-bg: var(--mfb-green);
+    --skip-link-text: var(--mfb-white);
+    --skip-link-padding: var(--space-2) var(--space-4);
+    --skip-link-radius: var(--radius-md);
+    --skip-link-shadow: var(--shadow-lg);
+  }
+
+  /* =======================================================================
+   * DENSITY MODE VARIANTS
+   * Specific density implementations
+   * ======================================================================= */
+
+  /* Compact Density - Optimized for mobile sales workflow */
+  .density-compact {
+    --density-mode: 'compact';
+    --density-scale: 0.85;
+    --density-multiplier: 0.8;
+
+    /* Component size overrides */
+    --kpi-card-height: 140px;
+    --chart-height: 200px;
+    --chart-height-sm: 160px;
+    --chart-height-lg: 240px;
+    --button-height: 36px;
+    --input-height: 36px;
+    --nav-item-height: 40px;
+
+    /* Typography scale for compact mode */
+    --density-font-scale: 0.9;
+    --font-size-body: calc(var(--font-size-base) * var(--density-font-scale));
+    --font-size-heading: calc(var(--font-size-lg) * var(--density-font-scale));
+  }
+
+  /* Spacious Density - Optimized for desktop with generous spacing */
+  .density-spacious {
+    --density-mode: 'spacious';
+    --density-scale: 1.15;
+    --density-multiplier: 1.2;
+
+    /* Component size overrides */
+    --kpi-card-height: 220px;
+    --chart-height: 320px;
+    --chart-height-sm: 280px;
+    --chart-height-lg: 360px;
+    --button-height: 48px;
+    --input-height: 48px;
+    --nav-item-height: 52px;
+
+    /* Typography scale for spacious mode */
+    --density-font-scale: 1.1;
+    --font-size-body: calc(var(--font-size-base) * var(--density-font-scale));
+    --font-size-heading: calc(var(--font-size-lg) * var(--density-font-scale));
+  }
+
+  /* =======================================================================
+   * ACCESSIBILITY FEATURE OVERRIDES
+   * System-level accessibility preferences
+   * ======================================================================= */
+
+  /* High contrast preference */
+  @media (prefers-contrast: high) {
+    :root {
+      --primary: var(--hc-primary-bg);
+      --primary-foreground: var(--hc-primary-text);
+      --secondary: var(--hc-secondary-bg);
+      --secondary-foreground: var(--hc-secondary-text);
+      --success: var(--hc-success-bg);
+      --success-foreground: var(--hc-success-text);
+      --warning: var(--hc-warning-bg);
+      --warning-foreground: var(--hc-warning-text);
+      --destructive: var(--hc-danger-bg);
+      --destructive-foreground: var(--hc-danger-text);
+      --background: var(--hc-background);
+      --foreground: var(--hc-foreground);
+      --border: var(--hc-border);
+      --muted: var(--hc-muted);
+      --muted-foreground: var(--hc-muted-foreground);
+    }
+  }
+
+  /* Reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --motion-duration-fast: var(--motion-duration-reduced);
+      --motion-duration-normal: var(--motion-duration-reduced);
+      --motion-duration-slow: var(--motion-duration-reduced);
+      --motion-duration-slower: var(--motion-duration-reduced);
+      --motion-ease-in: var(--motion-ease-reduced);
+      --motion-ease-out: var(--motion-ease-reduced);
+      --motion-ease-in-out: var(--motion-ease-reduced);
+      --motion-ease-elastic: var(--motion-ease-reduced);
+    }
+  }
+
+  /* =======================================================================
+   * RESPONSIVE FEATURE ADAPTATIONS
+   * Responsive design system features
+   * ======================================================================= */
+
+  /* Mobile-first responsive features */
+  @media (max-width: 767px) {
+    :root {
+      --density-scale: 0.9; /* Slightly more compact on mobile */
+      --touch-target-min: var(--mobile-touch-target-min);
+      --scroll-padding: var(--mobile-scroll-padding);
+    }
+  }
+
+  /* Tablet adaptations */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    :root {
+      --density-scale: 0.95; /* Slightly less compact on tablet */
+    }
+  }
+
+  /* Desktop adaptations */
+  @media (min-width: 1024px) {
+    :root {
+      --density-scale: 1; /* Full scale on desktop */
+    }
+  }
+
+  /* Large desktop adaptations */
+  @media (min-width: 1280px) {
+    :root {
+      --density-scale: 1.05; /* Slightly more spacious on large screens */
+    }
+  }
+}

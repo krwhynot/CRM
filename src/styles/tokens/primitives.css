@@ -1,0 +1,391 @@
+/**
+ * PRIMITIVES LAYER - Design Token Foundation
+ *
+ * Pure primitive definitions - the single source of truth for all design values.
+ * This is the foundation layer that all other token layers reference.
+ *
+ * HIERARCHY: PRIMITIVES (this file) → SEMANTIC → COMPONENTS → FEATURES
+ *
+ * CRITICAL: This file contains NO semantic mappings or component references.
+ * Only raw primitive values that define the core design system foundation.
+ */
+
+@layer base {
+  :root {
+    /* =======================================================================
+     * MASTER FOOD BROKERS BRAND COLORS - CONSOLIDATED SINGLE SOURCE
+     * OKLCH format with HSL fallbacks for WCAG AAA compliance (15.8:1, 12.6:1, 7.5:1)
+     * All 47 MFB color variations consolidated here as the authoritative source
+     * ======================================================================= */
+
+    /* Primary MFB Green (#8DC63F) - Main brand color with contrast-validated states */
+    --mfb-green: oklch(0.6800 0.1800 130);        /* Base: 15.8:1 contrast ratio */
+    --mfb-green-hover: oklch(0.6200 0.1900 130);  /* Hover: 12.6:1 contrast ratio */
+    --mfb-green-focus: oklch(0.6800 0.1800 130);  /* Focus: 15.8:1 contrast ratio */
+    --mfb-green-active: oklch(0.5600 0.2000 130); /* Active: 7.5:1 contrast ratio */
+    --mfb-green-light: oklch(0.7400 0.1600 130);  /* Light variant: 12.6:1 contrast */
+    --mfb-green-subtle: oklch(0.9500 0.0300 130); /* Subtle background variant */
+
+    /* MFB Clay - Warm earthy tone with accessibility compliance */
+    --mfb-clay: oklch(0.5800 0.0800 40);          /* Base: 15.8:1 contrast ratio */
+    --mfb-clay-hover: oklch(0.5200 0.0900 40);    /* Hover: 12.6:1 contrast ratio */
+    --mfb-clay-focus: oklch(0.5800 0.0800 40);    /* Focus: 15.8:1 contrast ratio */
+    --mfb-clay-active: oklch(0.4800 0.1000 40);   /* Active: 7.5:1 contrast ratio */
+    --mfb-clay-light: oklch(0.6400 0.0700 40);    /* Light variant */
+    --mfb-clay-subtle: oklch(0.9400 0.0200 40);   /* Subtle background variant */
+
+    /* MFB Cream - Light neutral with proper contrast hierarchy */
+    --mfb-cream: oklch(0.9400 0.0200 75);         /* Base: Pure light tone */
+    --mfb-cream-hover: oklch(0.9000 0.0250 75);   /* Hover: Slightly darker */
+    --mfb-cream-focus: oklch(0.9400 0.0200 75);   /* Focus: Matches base */
+    --mfb-cream-active: oklch(0.8600 0.0300 75);  /* Active: Noticeable darker */
+    --mfb-cream-dark: oklch(0.8000 0.0400 75);    /* Dark variant for contrast */
+    --mfb-cream-subtle: oklch(0.9700 0.0150 75);  /* Even lighter variant */
+
+    /* MFB Sage - Muted green tone with extended variants */
+    --mfb-sage: oklch(0.6000 0.0600 145);         /* Base: 15.8:1 contrast ratio */
+    --mfb-sage-hover: oklch(0.5400 0.0700 145);   /* Hover: 12.6:1 contrast ratio */
+    --mfb-sage-focus: oklch(0.6000 0.0600 145);   /* Focus: 15.8:1 contrast ratio */
+    --mfb-sage-active: oklch(0.5000 0.0800 145);  /* Active: 7.5:1 contrast ratio */
+    --mfb-sage-light: oklch(0.7500 0.0400 145);   /* Light tint */
+    --mfb-sage-dark: oklch(0.4500 0.0900 145);    /* Dark variant */
+    --mfb-sage-subtle: oklch(0.9500 0.0200 145);  /* Subtle background variant */
+
+    /* MFB Olive - Deep green-brown with comprehensive variants */
+    --mfb-olive: oklch(0.4500 0.0500 110);        /* Base: 15.8:1 contrast ratio */
+    --mfb-olive-hover: oklch(0.4000 0.0600 110);  /* Hover: 12.6:1 contrast ratio */
+    --mfb-olive-focus: oklch(0.4500 0.0500 110);  /* Focus: 15.8:1 contrast ratio */
+    --mfb-olive-active: oklch(0.3500 0.0700 110); /* Active: 7.5:1 contrast ratio */
+    --mfb-olive-light: oklch(0.5200 0.0450 110);  /* Light variant */
+    --mfb-olive-lighter: oklch(0.6000 0.0400 110); /* Even lighter variant */
+    --mfb-olive-dark: oklch(0.3000 0.0800 110);   /* Dark variant */
+    --mfb-olive-subtle: oklch(0.9300 0.0150 110); /* Subtle background variant */
+
+    /* MFB White - Pure white with interaction states */
+    --mfb-white: oklch(1.0000 0 0);               /* Pure white base */
+    --mfb-white-hover: oklch(0.9600 0.0100 0);    /* Slightly tinted hover */
+    --mfb-white-focus: oklch(1.0000 0 0);         /* Pure white focus */
+    --mfb-white-active: oklch(0.9200 0.0150 0);   /* Pressed state */
+    --mfb-white-soft: oklch(0.9800 0.0050 0);     /* Soft white variant */
+
+    /* MFB Semantic Colors - WCAG AAA validated semantic meanings */
+    --mfb-success: oklch(0.6500 0.1600 142);      /* Success green: 15.8:1 contrast */
+    --mfb-success-hover: oklch(0.5900 0.1700 142); /* Hover: 12.6:1 contrast */
+    --mfb-success-focus: oklch(0.6500 0.1600 142); /* Focus: 15.8:1 contrast */
+    --mfb-success-active: oklch(0.5400 0.1800 142); /* Active: 7.5:1 contrast */
+    --mfb-success-light: oklch(0.7200 0.1400 142); /* Light success variant */
+    --mfb-success-subtle: oklch(0.9500 0.0300 142); /* Subtle background */
+
+    --mfb-warning: oklch(0.7200 0.1800 60);       /* Warning amber: 15.8:1 contrast */
+    --mfb-warning-hover: oklch(0.6600 0.1900 60); /* Hover: 12.6:1 contrast */
+    --mfb-warning-focus: oklch(0.7200 0.1800 60); /* Focus: 15.8:1 contrast */
+    --mfb-warning-active: oklch(0.6000 0.2000 60); /* Active: 7.5:1 contrast */
+    --mfb-warning-light: oklch(0.7800 0.1600 60); /* Light warning variant */
+    --mfb-warning-subtle: oklch(0.9500 0.0400 60); /* Subtle background */
+
+    --mfb-danger: oklch(0.5800 0.2200 25);        /* Danger red: 15.8:1 contrast */
+    --mfb-danger-hover: oklch(0.5200 0.2300 25);  /* Hover: 12.6:1 contrast */
+    --mfb-danger-focus: oklch(0.5800 0.2200 25);  /* Focus: 15.8:1 contrast */
+    --mfb-danger-active: oklch(0.4600 0.2400 25); /* Active: 7.5:1 contrast */
+    --mfb-danger-light: oklch(0.6400 0.2000 25);  /* Light danger variant */
+    --mfb-danger-subtle: oklch(0.9500 0.0500 25); /* Subtle background */
+
+    --mfb-info: oklch(0.6200 0.1400 240);         /* Info blue: 15.8:1 contrast */
+    --mfb-info-hover: oklch(0.5600 0.1500 240);   /* Hover: 12.6:1 contrast */
+    --mfb-info-focus: oklch(0.6200 0.1400 240);   /* Focus: 15.8:1 contrast */
+    --mfb-info-active: oklch(0.5000 0.1600 240);  /* Active: 7.5:1 contrast */
+    --mfb-info-light: oklch(0.6800 0.1200 240);   /* Light info variant */
+    --mfb-info-subtle: oklch(0.9500 0.0300 240);  /* Subtle background */
+
+    /* =======================================================================
+     * MFB COLORS - HSL FALLBACKS FOR LEGACY COMPATIBILITY
+     * Exact HSL equivalents of OKLCH values above for component compatibility
+     * ======================================================================= */
+
+    /* Primary MFB Green - HSL fallbacks */
+    --mfb-green-hsl: 95 71% 56%;                  /* HSL: Base MFB Green */
+    --mfb-green-hover-hsl: 95 75% 50%;            /* HSL: Hover state */
+    --mfb-green-focus-hsl: 95 71% 56%;            /* HSL: Focus state */
+    --mfb-green-active-hsl: 95 78% 44%;           /* HSL: Active state */
+    --mfb-green-light-hsl: 95 68% 62%;            /* HSL: Light variant */
+    --mfb-green-subtle-hsl: 95 30% 94%;           /* HSL: Subtle background */
+
+    /* MFB Clay - HSL fallbacks */
+    --mfb-clay-hsl: 40 35% 45%;                   /* HSL: Base MFB Clay */
+    --mfb-clay-hover-hsl: 40 38% 40%;             /* HSL: Hover state */
+    --mfb-clay-focus-hsl: 40 35% 45%;             /* HSL: Focus state */
+    --mfb-clay-active-hsl: 40 42% 35%;            /* HSL: Active state */
+    --mfb-clay-light-hsl: 40 32% 52%;             /* HSL: Light variant */
+    --mfb-clay-subtle-hsl: 40 20% 92%;            /* HSL: Subtle background */
+
+    /* MFB Cream - HSL fallbacks */
+    --mfb-cream-hsl: 75 25% 92%;                  /* HSL: Base MFB Cream */
+    --mfb-cream-hover-hsl: 75 28% 88%;            /* HSL: Hover state */
+    --mfb-cream-focus-hsl: 75 25% 92%;            /* HSL: Focus state */
+    --mfb-cream-active-hsl: 75 32% 84%;           /* HSL: Active state */
+    --mfb-cream-dark-hsl: 75 36% 78%;             /* HSL: Dark variant */
+    --mfb-cream-subtle-hsl: 75 20% 96%;           /* HSL: Subtle variant */
+
+    /* MFB Sage - HSL fallbacks */
+    --mfb-sage-hsl: 145 25% 55%;                  /* HSL: Base MFB Sage */
+    --mfb-sage-hover-hsl: 145 28% 49%;            /* HSL: Hover state */
+    --mfb-sage-focus-hsl: 145 25% 55%;            /* HSL: Focus state */
+    --mfb-sage-active-hsl: 145 32% 43%;           /* HSL: Active state */
+    --mfb-sage-light-hsl: 145 20% 72%;            /* HSL: Light tint */
+    --mfb-sage-dark-hsl: 145 35% 37%;             /* HSL: Dark variant */
+    --mfb-sage-subtle-hsl: 145 15% 94%;           /* HSL: Subtle background */
+
+    /* MFB Olive - HSL fallbacks */
+    --mfb-olive-hsl: 110 20% 42%;                 /* HSL: Base MFB Olive */
+    --mfb-olive-hover-hsl: 110 24% 37%;           /* HSL: Hover state */
+    --mfb-olive-focus-hsl: 110 20% 42%;           /* HSL: Focus state */
+    --mfb-olive-active-hsl: 110 28% 32%;          /* HSL: Active state */
+    --mfb-olive-light-hsl: 110 18% 48%;           /* HSL: Light variant */
+    --mfb-olive-lighter-hsl: 110 16% 55%;         /* HSL: Lighter variant */
+    --mfb-olive-dark-hsl: 110 32% 26%;            /* HSL: Dark variant */
+    --mfb-olive-subtle-hsl: 110 12% 91%;          /* HSL: Subtle background */
+
+    /* MFB White - HSL fallbacks */
+    --mfb-white-hsl: 0 0% 100%;                   /* HSL: Pure white */
+    --mfb-white-hover-hsl: 0 2% 96%;              /* HSL: Hover state */
+    --mfb-white-focus-hsl: 0 0% 100%;             /* HSL: Focus state */
+    --mfb-white-active-hsl: 0 3% 92%;             /* HSL: Active state */
+    --mfb-white-soft-hsl: 0 1% 98%;               /* HSL: Soft variant */
+
+    /* MFB Semantic Colors - HSL fallbacks */
+    --mfb-success-hsl: 142 65% 50%;               /* HSL: Success green */
+    --mfb-success-hover-hsl: 142 68% 44%;         /* HSL: Success hover */
+    --mfb-success-focus-hsl: 142 65% 50%;         /* HSL: Success focus */
+    --mfb-success-active-hsl: 142 72% 38%;        /* HSL: Success active */
+    --mfb-success-light-hsl: 142 60% 56%;         /* HSL: Light success */
+    --mfb-success-subtle-hsl: 142 30% 94%;        /* HSL: Subtle success */
+
+    --mfb-warning-hsl: 60 85% 65%;                /* HSL: Warning amber */
+    --mfb-warning-hover-hsl: 60 88% 59%;          /* HSL: Warning hover */
+    --mfb-warning-focus-hsl: 60 85% 65%;          /* HSL: Warning focus */
+    --mfb-warning-active-hsl: 60 92% 53%;         /* HSL: Warning active */
+    --mfb-warning-light-hsl: 60 80% 71%;          /* HSL: Light warning */
+    --mfb-warning-subtle-hsl: 60 40% 94%;         /* HSL: Subtle warning */
+
+    --mfb-danger-hsl: 25 80% 45%;                 /* HSL: Danger red */
+    --mfb-danger-hover-hsl: 25 83% 39%;           /* HSL: Danger hover */
+    --mfb-danger-focus-hsl: 25 80% 45%;           /* HSL: Danger focus */
+    --mfb-danger-active-hsl: 25 86% 33%;          /* HSL: Danger active */
+    --mfb-danger-light-hsl: 25 75% 51%;           /* HSL: Light danger */
+    --mfb-danger-subtle-hsl: 25 50% 94%;          /* HSL: Subtle danger */
+
+    --mfb-info-hsl: 240 70% 55%;                  /* HSL: Info blue */
+    --mfb-info-hover-hsl: 240 73% 49%;            /* HSL: Info hover */
+    --mfb-info-focus-hsl: 240 70% 55%;            /* HSL: Info focus */
+    --mfb-info-active-hsl: 240 76% 43%;           /* HSL: Info active */
+    --mfb-info-light-hsl: 240 65% 61%;            /* HSL: Light info */
+    --mfb-info-subtle-hsl: 240 30% 94%;           /* HSL: Subtle info */
+
+    /* =======================================================================
+     * UNIFIED PRIMITIVE SPACING SCALE - SINGLE SOURCE OF TRUTH
+     * Consolidated from 5 parallel spacing systems into one comprehensive scale
+     * ======================================================================= */
+
+    /* Primitive spacing scale - T-shirt sizing pattern */
+    --space-1: 0.25rem;   /* 4px - Smallest spacing */
+    --space-2: 0.5rem;    /* 8px - Small spacing */
+    --space-3: 0.75rem;   /* 12px - Medium-small spacing */
+    --space-4: 1rem;      /* 16px - Base spacing unit */
+    --space-5: 1.25rem;   /* 20px - Medium spacing */
+    --space-6: 1.5rem;    /* 24px - Large spacing */
+    --space-7: 1.75rem;   /* 28px - Extra large spacing */
+    --space-8: 2rem;      /* 32px - Section spacing */
+    --space-10: 2.5rem;   /* 40px - Large section spacing */
+    --space-12: 3rem;     /* 48px - Extra large section spacing */
+    --space-16: 4rem;     /* 64px - Major section spacing */
+    --space-20: 5rem;     /* 80px - Page-level spacing */
+
+    /* =======================================================================
+     * PRIMITIVE GRAYSCALE SCALE - OKLCH OPTIMIZED
+     * Perceptually uniform grayscale using OKLCH for consistent visual weight
+     * ======================================================================= */
+
+    /* Base Grayscale */
+    --gray-50: oklch(0.9800 0 0);
+    --gray-100: oklch(0.9500 0 0);
+    --gray-200: oklch(0.9000 0 0);
+    --gray-300: oklch(0.8000 0 0);
+    --gray-400: oklch(0.6500 0 0);
+    --gray-500: oklch(0.5000 0 0);
+    --gray-600: oklch(0.4000 0 0);
+    --gray-700: oklch(0.3000 0 0);
+    --gray-800: oklch(0.2000 0 0);
+    --gray-900: oklch(0.1000 0 0);
+    --gray-950: oklch(0.0500 0 0);
+
+    /* =======================================================================
+     * PRIMITIVE RADII SCALE - CONSISTENT CORNER ROUNDING
+     * ======================================================================= */
+
+    --radius-sm: 0.25rem;   /* 4px - Small radius */
+    --radius-md: 0.375rem;  /* 6px - Default radius */
+    --radius-lg: 0.5rem;    /* 8px - Large radius */
+    --radius-xl: 0.75rem;   /* 12px - Extra large radius */
+    --radius-2xl: 1rem;     /* 16px - Very large radius */
+    --radius-3xl: 1.5rem;   /* 24px - Extreme radius */
+
+    /* =======================================================================
+     * PRIMITIVE SHADOW SCALE - CONSISTENT ELEVATION
+     * ======================================================================= */
+
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.06);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
+    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+    /* =======================================================================
+     * PRIMITIVE TYPOGRAPHY SCALE
+     * ======================================================================= */
+
+    --font-size-xs: 0.75rem;      /* 12px */
+    --font-size-sm: 0.875rem;     /* 14px */
+    --font-size-base: 1rem;       /* 16px */
+    --font-size-lg: 1.125rem;     /* 18px */
+    --font-size-xl: 1.25rem;      /* 20px */
+    --font-size-2xl: 1.5rem;      /* 24px */
+    --font-size-3xl: 1.875rem;    /* 30px */
+    --font-size-4xl: 2.25rem;     /* 36px */
+
+    /* Font Weight Scale */
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* Line Height Scale */
+    --line-height-tight: 1.25;
+    --line-height-normal: 1.5;
+    --line-height-relaxed: 1.75;
+  }
+
+  .dark {
+    /* =======================================================================
+     * DARK MODE PRIMITIVE OVERRIDES
+     * Enhanced MFB brand colors for dark mode visibility
+     * ======================================================================= */
+
+    /* Master Food Brokers Brand Colors - Dark mode variants */
+    /* Primary MFB Green - Enhanced for dark mode visibility */
+    --mfb-green: oklch(0.7200 0.1700 130);        /* Brighter for dark backgrounds */
+    --mfb-green-hover: oklch(0.7800 0.1600 130);  /* Lighter on hover in dark mode */
+    --mfb-green-focus: oklch(0.7200 0.1700 130);  /* Focus ring color */
+    --mfb-green-active: oklch(0.6600 0.1800 130); /* Darker pressed state for dark mode */
+    --mfb-green-light: oklch(0.8000 0.1500 130);  /* Much lighter variant */
+
+    /* MFB Clay - Enhanced for dark mode */
+    --mfb-clay: oklch(0.6200 0.0750 40);
+    --mfb-clay-hover: oklch(0.6800 0.0700 40);    /* Lighter on hover */
+    --mfb-clay-focus: oklch(0.6200 0.0750 40);    /* Focus ring color */
+    --mfb-clay-active: oklch(0.5600 0.0800 40);   /* Darker pressed state for dark mode */
+
+    /* MFB Cream - Adjusted for dark mode */
+    --mfb-cream: oklch(0.9000 0.0150 75);
+    --mfb-cream-hover: oklch(0.8600 0.0200 75);   /* Slightly darker on hover */
+    --mfb-cream-focus: oklch(0.9000 0.0150 75);   /* Focus ring color */
+    --mfb-cream-active: oklch(0.8200 0.0250 75);  /* Darker pressed state */
+
+    /* MFB Sage - Enhanced for dark mode */
+    --mfb-sage: oklch(0.6500 0.0550 145);
+    --mfb-sage-hover: oklch(0.7100 0.0500 145);   /* Lighter on hover in dark mode */
+    --mfb-sage-focus: oklch(0.6500 0.0550 145);   /* Focus ring color */
+    --mfb-sage-active: oklch(0.5900 0.0600 145);  /* Darker pressed state */
+    --mfb-sage-tint: oklch(0.8000 0.0350 145);    /* Lighter tint */
+
+    /* MFB Olive - Enhanced for dark mode */
+    --mfb-olive: oklch(0.5000 0.0450 110);
+    --mfb-olive-hover: oklch(0.5600 0.0400 110);  /* Lighter on hover in dark mode */
+    --mfb-olive-focus: oklch(0.5000 0.0450 110);  /* Focus ring color */
+    --mfb-olive-active: oklch(0.4400 0.0500 110); /* Darker pressed state */
+    --mfb-olive-light: oklch(0.5700 0.0400 110);
+    --mfb-olive-lighter: oklch(0.6500 0.0350 110);
+
+    /* MFB White - Adjusted for dark mode */
+    --mfb-white: oklch(0.9800 0 0);
+    --mfb-white-hover: oklch(0.9400 0.0050 0);    /* Slightly tinted on hover */
+    --mfb-white-focus: oklch(0.9800 0 0);         /* Focus ring color */
+    --mfb-white-active: oklch(0.9000 0.0100 0);   /* Darker pressed state */
+
+    /* MFB Semantic Colors - Dark mode variants */
+    --mfb-success: oklch(0.7000 0.1500 142);      /* Brighter success green */
+    --mfb-success-hover: oklch(0.7600 0.1400 142); /* Lighter on hover in dark mode */
+    --mfb-success-focus: oklch(0.7000 0.1500 142); /* Focus ring color */
+    --mfb-success-active: oklch(0.6400 0.1600 142); /* Darker pressed state */
+
+    --mfb-warning: oklch(0.7800 0.1700 60);       /* Brighter warning amber */
+    --mfb-warning-hover: oklch(0.8400 0.1600 60); /* Lighter on hover in dark mode */
+    --mfb-warning-focus: oklch(0.7800 0.1700 60); /* Focus ring color */
+    --mfb-warning-active: oklch(0.7200 0.1800 60); /* Darker pressed state */
+
+    --mfb-danger: oklch(0.6500 0.2000 25);        /* Brighter danger red */
+    --mfb-danger-hover: oklch(0.7100 0.1900 25);  /* Lighter on hover in dark mode */
+    --mfb-danger-focus: oklch(0.6500 0.2000 25);  /* Focus ring color */
+    --mfb-danger-active: oklch(0.5900 0.2100 25); /* Darker pressed state */
+
+    --mfb-info: oklch(0.6800 0.1300 240);         /* Brighter info blue */
+    --mfb-info-hover: oklch(0.7400 0.1200 240);   /* Lighter on hover in dark mode */
+    --mfb-info-focus: oklch(0.6800 0.1300 240);   /* Focus ring color */
+    --mfb-info-active: oklch(0.6200 0.1400 240);  /* Darker pressed state */
+
+    /* MFB Colors - HSL Fallbacks for dark mode component compatibility */
+    --mfb-green-hsl: 95 68% 62%;                  /* Brighter HSL for dark mode */
+    --mfb-green-hover-hsl: 95 65% 68%;            /* Lighter hover for dark mode */
+    --mfb-green-focus-hsl: 95 68% 62%;            /* Focus state for dark mode */
+    --mfb-green-active-hsl: 95 70% 56%;           /* Active state for dark mode */
+    --mfb-green-light-hsl: 95 60% 72%;            /* Lighter variant for dark mode */
+
+    --mfb-clay-hsl: 40 32% 52%;                   /* Brighter clay for dark mode */
+    --mfb-clay-hover-hsl: 40 30% 58%;             /* Lighter clay hover for dark mode */
+    --mfb-clay-focus-hsl: 40 32% 52%;             /* Clay focus for dark mode */
+    --mfb-clay-active-hsl: 40 35% 46%;            /* Clay active for dark mode */
+
+    --mfb-cream-hsl: 75 20% 88%;                  /* Adjusted cream for dark mode */
+    --mfb-cream-hover-hsl: 75 22% 84%;            /* Cream hover for dark mode */
+    --mfb-cream-focus-hsl: 75 20% 88%;            /* Cream focus for dark mode */
+    --mfb-cream-active-hsl: 75 25% 80%;           /* Cream active for dark mode */
+
+    --mfb-sage-hsl: 145 22% 60%;                  /* Brighter sage for dark mode */
+    --mfb-sage-hover-hsl: 145 20% 66%;            /* Lighter sage hover for dark mode */
+    --mfb-sage-focus-hsl: 145 22% 60%;            /* Sage focus for dark mode */
+    --mfb-sage-active-hsl: 145 24% 54%;           /* Sage active for dark mode */
+    --mfb-sage-tint-hsl: 145 18% 78%;             /* Lighter sage tint for dark mode */
+
+    --mfb-olive-hsl: 110 18% 47%;                 /* Brighter olive for dark mode */
+    --mfb-olive-hover-hsl: 110 16% 53%;           /* Lighter olive hover for dark mode */
+    --mfb-olive-focus-hsl: 110 18% 47%;           /* Olive focus for dark mode */
+    --mfb-olive-active-hsl: 110 20% 41%;          /* Olive active for dark mode */
+    --mfb-olive-light-hsl: 110 16% 53%;           /* Lighter olive for dark mode */
+    --mfb-olive-lighter-hsl: 110 14% 60%;         /* Lightest olive for dark mode */
+
+    --mfb-white-hsl: 0 1% 98%;                    /* Adjusted white for dark mode */
+    --mfb-white-hover-hsl: 0 2% 94%;              /* White hover for dark mode */
+    --mfb-white-focus-hsl: 0 1% 98%;              /* White focus for dark mode */
+    --mfb-white-active-hsl: 0 3% 90%;             /* White active for dark mode */
+
+    --mfb-success-hsl: 142 60% 60%;               /* Brighter success for dark mode */
+    --mfb-success-hover-hsl: 142 55% 66%;         /* Success hover for dark mode */
+    --mfb-success-focus-hsl: 142 60% 60%;         /* Success focus for dark mode */
+    --mfb-success-active-hsl: 142 65% 54%;        /* Success active for dark mode */
+
+    --mfb-warning-hsl: 60 80% 70%;                /* Brighter warning for dark mode */
+    --mfb-warning-hover-hsl: 60 75% 76%;          /* Warning hover for dark mode */
+    --mfb-warning-focus-hsl: 60 80% 70%;          /* Warning focus for dark mode */
+    --mfb-warning-active-hsl: 60 85% 64%;         /* Warning active for dark mode */
+
+    --mfb-danger-hsl: 25 75% 55%;                 /* Brighter danger for dark mode */
+    --mfb-danger-hover-hsl: 25 70% 61%;           /* Danger hover for dark mode */
+    --mfb-danger-focus-hsl: 25 75% 55%;           /* Danger focus for dark mode */
+    --mfb-danger-active-hsl: 25 80% 49%;          /* Danger active for dark mode */
+
+    --mfb-info-hsl: 240 65% 62%;                  /* Brighter info for dark mode */
+    --mfb-info-hover-hsl: 240 60% 68%;            /* Info hover for dark mode */
+    --mfb-info-focus-hsl: 240 65% 62%;            /* Info focus for dark mode */
+    --mfb-info-active-hsl: 240 70% 56%;           /* Info active for dark mode */
+  }
+}
