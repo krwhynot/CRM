@@ -1,5 +1,5 @@
 import React from 'react'
-import { ContactsTable } from './ContactsTable'
+import { ContactsList } from './ContactsList'
 import { LoadingState, ErrorState } from '@/components/ui/data-state'
 import type { Contact, ContactWithOrganization } from '@/types/entities'
 
@@ -44,5 +44,5 @@ export const ContactsDataDisplay: React.FC<ContactsDataDisplayProps> = ({
     )
   }
 
-  return <ContactsTable contacts={contacts} onEdit={onEdit} onDelete={onDelete} />
+  return <ContactsList contacts={contacts} onEdit={onEdit} onDelete={onDelete} />
 }

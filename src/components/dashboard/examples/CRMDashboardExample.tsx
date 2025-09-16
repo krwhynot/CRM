@@ -108,9 +108,9 @@ export function CRMDashboardExample() {
   ]
 
   const mockChart = (
-    <div className="w-full h-full bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/20 dark:to-blue-900/20 rounded-lg flex items-center justify-center text-muted-foreground">
+    <div className="flex size-full items-center justify-center rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 text-muted-foreground dark:from-blue-950/20 dark:to-blue-900/20">
       <div className="text-center">
-        <BarChart3 className="h-12 w-12 mx-auto mb-2 opacity-50" />
+        <BarChart3 className="mx-auto mb-2 size-12 opacity-50" />
         <p className="text-sm">Chart placeholder</p>
       </div>
     </div>
@@ -184,12 +184,12 @@ export function CRMDashboardExample() {
       </div>
 
       {/* Features Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="p-4">
           <div className="flex items-center space-x-2">
             <Badge variant="default">Responsive</Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-2">
+          <p className="mt-2 text-sm text-muted-foreground">
             Mobile-first responsive design with adaptive layouts
           </p>
         </Card>
@@ -198,7 +198,7 @@ export function CRMDashboardExample() {
           <div className="flex items-center space-x-2">
             <Badge variant="secondary">Interactive</Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-2">
+          <p className="mt-2 text-sm text-muted-foreground">
             Rich interaction patterns with actions and drill-downs
           </p>
         </Card>
@@ -207,7 +207,7 @@ export function CRMDashboardExample() {
           <div className="flex items-center space-x-2">
             <Badge variant="outline">Performance</Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-2">
+          <p className="mt-2 text-sm text-muted-foreground">
             Optimized rendering with lazy loading and priority
           </p>
         </Card>
@@ -216,7 +216,7 @@ export function CRMDashboardExample() {
           <div className="flex items-center space-x-2">
             <Badge variant="destructive">CRM-Ready</Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-2">
+          <p className="mt-2 text-sm text-muted-foreground">
             Pre-built components for sales, marketing, and service
           </p>
         </Card>
@@ -259,7 +259,7 @@ export function CRMDashboardExample() {
                   onClick={() => setViewMode('desktop')}
                   className="h-7 px-2"
                 >
-                  <Monitor className="h-3 w-3" />
+                  <Monitor className="size-3" />
                 </Button>
                 <Button
                   variant={viewMode === 'tablet' ? 'default' : 'ghost'}
@@ -267,7 +267,7 @@ export function CRMDashboardExample() {
                   onClick={() => setViewMode('tablet')}
                   className="h-7 px-2"
                 >
-                  <Tablet className="h-3 w-3" />
+                  <Tablet className="size-3" />
                 </Button>
                 <Button
                   variant={viewMode === 'mobile' ? 'default' : 'ghost'}
@@ -275,7 +275,7 @@ export function CRMDashboardExample() {
                   onClick={() => setViewMode('mobile')}
                   className="h-7 px-2"
                 >
-                  <Smartphone className="h-3 w-3" />
+                  <Smartphone className="size-3" />
                 </Button>
               </div>
             </div>
@@ -289,11 +289,11 @@ export function CRMDashboardExample() {
               onClick={handleRefresh}
               disabled={refreshing}
             >
-              <RefreshCw className={`h-4 w-4 mr-1 ${refreshing ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`mr-1 size-4 ${refreshing ? 'animate-spin' : ''}`} />
               Refresh Data
             </Button>
 
-            <div className="text-xs text-muted-foreground ml-auto">
+            <div className="ml-auto text-xs text-muted-foreground">
               Current breakpoint: <Badge variant="outline">{breakpoint}</Badge>
             </div>
           </div>
@@ -304,7 +304,7 @@ export function CRMDashboardExample() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Layout className="h-5 w-5" />
+            <Layout className="size-5" />
             Live Dashboard Demo
           </CardTitle>
           <CardDescription>
@@ -320,11 +320,11 @@ export function CRMDashboardExample() {
               actions={
                 <div className="flex items-center space-x-2">
                   <Button variant="outline" size="sm">
-                    <Filter className="h-4 w-4 mr-1" />
+                    <Filter className="mr-1 size-4" />
                     Filter
                   </Button>
                   <Button variant="outline" size="sm">
-                    <Download className="h-4 w-4 mr-1" />
+                    <Download className="mr-1 size-4" />
                     Export
                   </Button>
                 </div>
@@ -433,7 +433,7 @@ export function CRMDashboardExample() {
                     ]}
                     filters={
                       <Select defaultValue="12m">
-                        <SelectTrigger className="w-24 h-7">
+                        <SelectTrigger className="h-7 w-24">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -510,7 +510,7 @@ export function CRMDashboardExample() {
 
         {/* Card Types */}
         <TabsContent value="cards" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle>Metric Cards</CardTitle>
@@ -606,60 +606,60 @@ export function CRMDashboardExample() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="border rounded-lg p-4">
-                    <h4 className="font-medium mb-2">Executive Layout</h4>
-                    <p className="text-sm text-muted-foreground mb-3">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                  <div className="rounded-lg border p-4">
+                    <h4 className="mb-2 font-medium">Executive Layout</h4>
+                    <p className="mb-3 text-sm text-muted-foreground">
                       High-level KPIs and summary information
                     </p>
-                    <div className="grid grid-cols-3 gap-1 mb-2">
+                    <div className="mb-2 grid grid-cols-3 gap-1">
                       {Array.from({length: 3}).map((_, i) => (
-                        <div key={i} className="h-6 bg-primary/20 rounded" />
+                        <div key={i} className="h-6 rounded bg-primary/20" />
                       ))}
                     </div>
                     <div className="grid grid-cols-2 gap-1">
                       {Array.from({length: 4}).map((_, i) => (
-                        <div key={i} className="h-4 bg-muted rounded" />
+                        <div key={i} className="h-4 rounded bg-muted" />
                       ))}
                     </div>
                   </div>
 
-                  <div className="border rounded-lg p-4">
-                    <h4 className="font-medium mb-2">Sales Layout</h4>
-                    <p className="text-sm text-muted-foreground mb-3">
+                  <div className="rounded-lg border p-4">
+                    <h4 className="mb-2 font-medium">Sales Layout</h4>
+                    <p className="mb-3 text-sm text-muted-foreground">
                       Pipeline, activities, and performance metrics
                     </p>
-                    <div className="grid grid-cols-4 gap-1 mb-2">
+                    <div className="mb-2 grid grid-cols-4 gap-1">
                       {Array.from({length: 4}).map((_, i) => (
-                        <div key={i} className="h-4 bg-green-200 rounded" />
+                        <div key={i} className="h-4 rounded bg-green-200" />
                       ))}
                     </div>
-                    <div className="grid grid-cols-2 gap-1 mb-2">
+                    <div className="mb-2 grid grid-cols-2 gap-1">
                       {Array.from({length: 2}).map((_, i) => (
-                        <div key={i} className="h-8 bg-muted rounded" />
+                        <div key={i} className="h-8 rounded bg-muted" />
                       ))}
                     </div>
                     <div className="grid grid-cols-3 gap-1">
                       {Array.from({length: 3}).map((_, i) => (
-                        <div key={i} className="h-4 bg-muted rounded" />
+                        <div key={i} className="h-4 rounded bg-muted" />
                       ))}
                     </div>
                   </div>
 
-                  <div className="border rounded-lg p-4">
-                    <h4 className="font-medium mb-2">Analytics Layout</h4>
-                    <p className="text-sm text-muted-foreground mb-3">
+                  <div className="rounded-lg border p-4">
+                    <h4 className="mb-2 font-medium">Analytics Layout</h4>
+                    <p className="mb-3 text-sm text-muted-foreground">
                       Detailed charts and comprehensive reporting
                     </p>
-                    <div className="grid grid-cols-6 gap-1 mb-2">
+                    <div className="mb-2 grid grid-cols-6 gap-1">
                       {Array.from({length: 6}).map((_, i) => (
-                        <div key={i} className="h-3 bg-blue-200 rounded" />
+                        <div key={i} className="h-3 rounded bg-blue-200" />
                       ))}
                     </div>
-                    <div className="h-8 bg-muted rounded mb-2" />
+                    <div className="mb-2 h-8 rounded bg-muted" />
                     <div className="grid grid-cols-4 gap-1">
                       {Array.from({length: 4}).map((_, i) => (
-                        <div key={i} className="h-4 bg-muted rounded" />
+                        <div key={i} className="h-4 rounded bg-muted" />
                       ))}
                     </div>
                   </div>
@@ -671,7 +671,7 @@ export function CRMDashboardExample() {
 
         {/* Responsive Design */}
         <TabsContent value="responsive" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle>Breakpoint System</CardTitle>
@@ -682,7 +682,7 @@ export function CRMDashboardExample() {
               <CardContent>
                 <div className="space-y-3">
                   <div className="text-sm">
-                    <p className="font-medium mb-1">Current breakpoint: {breakpoint}</p>
+                    <p className="mb-1 font-medium">Current breakpoint: {breakpoint}</p>
                     <ul className="space-y-1 text-muted-foreground">
                       <li>• <code>sm</code> - &lt; 640px (Mobile)</li>
                       <li>• <code>md</code> - 640px - 768px (Large mobile)</li>
@@ -730,7 +730,7 @@ export function CRMDashboardExample() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <pre className="text-xs bg-muted p-4 rounded-md overflow-auto">
+                <pre className="overflow-auto rounded-md bg-muted p-4 text-xs">
 {`import { 
   ResponsiveDashboard, 
   MetricCard, 
@@ -775,7 +775,7 @@ export function SalesDashboard() {
                 <CardTitle>Custom Layout with Sections</CardTitle>
               </CardHeader>
               <CardContent>
-                <pre className="text-xs bg-muted p-4 rounded-md overflow-auto">
+                <pre className="overflow-auto rounded-md bg-muted p-4 text-xs">
 {`export function CustomDashboard() {
   return (
     <ResponsiveDashboard
@@ -816,7 +816,7 @@ export function SalesDashboard() {
                 <CardTitle>Responsive Hooks Usage</CardTitle>
               </CardHeader>
               <CardContent>
-                <pre className="text-xs bg-muted p-4 rounded-md overflow-auto">
+                <pre className="overflow-auto rounded-md bg-muted p-4 text-xs">
 {`import { 
   useDashboardBreakpoints, 
   useDashboardCardSizes 

@@ -71,7 +71,7 @@ export function createFocusTrap(container: HTMLElement) {
 
     // Restore focus to the previously focused element
     if (previousActiveElement && 'focus' in previousActiveElement) {
-      ;(previousActiveElement as HTMLElement).focus()
+      (previousActiveElement as HTMLElement).focus()
     }
   }
 
@@ -123,7 +123,7 @@ export function createFocusRestoration() {
 
   const restore = () => {
     if (storedElement && 'focus' in storedElement) {
-      ;(storedElement as HTMLElement).focus()
+      (storedElement as HTMLElement).focus()
       storedElement = null
     }
   }
@@ -390,7 +390,7 @@ export function SkipLink({ href, children, className }: SkipLinkProps) {
   return (
     <a
       href={href}
-      className={`sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:shadow-lg ${className || ''}`}
+      className={`sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:shadow-lg ${className || ''}`}
       onFocus={(e) => {
         // Ensure the target exists and is focusable
         const target = document.querySelector(href)

@@ -4,12 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a KitchenPantry CRM system built for the food service industry, specifically designed for Master Food Brokers. The project uses a modern React + TypeScript stack with shadcn/ui components and follows a specialized agent-based architecture for CRM development.
+This is a KitchenPantry CRM system built for the food service industry, specifically designed for Master Food Brokers. The project uses a modern React + TypeScript stack with shadcn/ui components and follows a layout-driven architecture with comprehensive form management.
 
-## Project Structure
+## Current Architecture
 
-The codebase contains one main application:
-- **Root Vite App** (`/src/`): Primary React + TypeScript + Vite application with shadcn/ui components
+The codebase follows a **simplified, component-driven architecture** after major refactoring:
+
+- **Feature-Based Organization**: Domain logic organized by business features (`src/features/`)
+- **Simplified Forms**: Core form components (`SimpleForm`, `FormField`) with Zod validation
+- **Advanced Data Tables**: Comprehensive table system with filtering (`src/components/data-table/`)
+- **Comprehensive Type System**: Zod-based validation with consolidated type definitions in `src/types/`
 
 ## Development Commands
 
@@ -96,117 +100,160 @@ npm run validate:design-tokens # Design system validation
 - **TanStack Query** for server state management
 - **Zustand** for client UI state management
 
-### File Structure & Feature Organization
-The codebase follows a **feature-based architecture** with clear separation of concerns:
+### Current File Structure & Organization
+The codebase follows a **simplified, feature-driven architecture**:
 
 ```
 src/
-├── features/              # Feature modules (core business logic)
-│   ├── auth/             # Authentication (login, signup, session management)
-│   ├── contacts/         # Contact management (CRUD, filtering, forms)
-│   ├── dashboard/        # Minimal dashboard (clean welcome screen)
-│   ├── import-export/    # CSV/Excel data import/export functionality
-│   ├── interactions/     # Customer interaction tracking and timeline
-│   ├── monitoring/       # System health monitoring and performance
-│   ├── opportunities/    # Sales opportunity management and pipeline
-│   ├── organizations/    # Company/business entity management
-│   └── products/         # Product catalog and inventory
 ├── components/           # Shared UI components
-│   ├── ui/              # shadcn/ui primitives (atoms & molecules)
-│   ├── forms/           # Reusable form components and patterns
-│   ├── templates/       # Page templates following atomic design
-│   ├── layout/          # Layout containers and wrappers
-│   └── [other shared]/  # Global components (Command Palette, etc.)
-├── lib/                 # Utilities and shared functions
-│   ├── supabase.ts      # Database client configuration
-│   ├── query-optimizations.ts # TanStack Query patterns
-│   └── [other utils]/   # Performance, validation, formatting
-├── stores/              # Zustand stores for client UI state
-├── types/               # TypeScript type definitions
-└── hooks/               # Shared custom React hooks
+│   ├── ui/              # shadcn/ui primitives (Button, Input, etc.)
+│   ├── forms/           # Form components (SimpleForm, FormField)
+│   ├── data-table/      # Advanced data tables with filtering
+│   ├── layout/          # Page layout and container components
+│   ├── app/             # Dashboard and app-level components
+│   └── dashboard/       # KPI cards, charts, and dashboard widgets
+├── features/            # Domain-specific business logic
+│   ├── auth/           # Authentication components and hooks
+│   ├── contacts/       # Contact-specific hooks and components
+│   ├── organizations/  # Organization-specific logic
+│   ├── opportunities/  # Opportunity management
+│   ├── products/       # Product catalog management
+│   ├── interactions/   # Communication tracking
+│   ├── dashboard/      # Dashboard-specific features
+│   ├── import-export/  # Data import/export functionality
+│   └── monitoring/     # System monitoring features
+├── lib/                 # Core utilities
+│   ├── form-*.ts       # Form utilities and transforms
+│   ├── design-tokens.ts # Design system tokens
+│   └── utils.ts        # General utilities
+├── services/           # Service layer (minimal usage)
+├── stores/             # State management (Zustand)
+├── types/              # TypeScript definitions
+│   ├── *.types.ts     # Entity-specific types with Zod schemas
+│   ├── forms/         # Form-specific types
+│   └── index.ts       # Main type exports
+└── hooks/              # Shared React hooks
 ```
 
-**Each feature module** (`src/features/*`) contains:
-- `components/` - Feature-specific React components
-- `hooks/` - Feature-specific custom hooks (TanStack Query integration)
-- `types/` - Feature-specific TypeScript types
-- `index.ts` - Public API exports
+**Key Patterns**:
+- Feature-driven architecture with domain-specific organization
+- Simplified form system with Zod validation
+- Advanced data table system with comprehensive filtering
+- Unified Zod validation with consolidated schemas and TypeScript types
+- Component composition using shadcn/ui primitives
 
-**Component Organization**: Follow feature-based architecture with clear separation between shared and feature-specific components. See [`/docs/COMPONENT_ORGANIZATION_GUIDELINES.md`](/docs/COMPONENT_ORGANIZATION_GUIDELINES.md) for detailed guidelines.
+### Component-Driven Architecture
 
-### Atomic Design Architecture
+**✅ CURRENT IMPLEMENTATION**: Simplified component architecture with advanced data tables:
 
-**✅ IMPLEMENTED (January 2025)**: Complete atomic design system following design hierarchy:
+#### Data Table System
 
-- **Atoms**: Base UI primitives (Button, Input, Badge from shadcn/ui)
-- **Molecules**: Composed components (FormField, DataTable, StatusIndicator)  
-- **Organisms**: Complex sections (PageHeader, EntityTable, BulkActionsToolbar)
-- **Templates**: Page layouts (EntityManagementTemplate with variants)
-- **Pages**: Concrete implementations using templates
+**Location**: `src/components/data-table/`
 
-#### EntityManagementTemplate System
-
-**Location**: `/src/components/templates/EntityManagementTemplate.tsx`
-
-Provides consistent CRUD page structure across all entity types:
+Advanced data table with responsive filtering and expandable rows:
 
 ```typescript
-// Base template for all entity management pages
-<EntityManagementTemplate 
-  entityType="ORGANIZATION"
-  entityCount={organizations.length}
-  onAddClick={handleAdd}
+// Example: Using DataTable with responsive filters
+<DataTable
+  data={organizations}
+  columns={organizationColumns}
+  useResponsiveFilters={true}
+  entityType="organizations"
+  entityFilters={filters}
+  onEntityFiltersChange={setFilters}
+  onRowClick={handleRowClick}
+/>
+
+// Alternative: Direct ResponsiveFilterWrapper usage
+<FilterLayoutProvider>
+  <ResponsiveFilterWrapper
+    entityType="organizations"
+    filters={filters}
+    onFiltersChange={setFilters}
+    title="Organization Filters"
+  />
+  <DataTable data={organizations} columns={organizationColumns} />
+</FilterLayoutProvider>
+```
+
+#### Form System
+
+**Location**: `src/components/forms/`
+
+Simplified form components with Zod validation:
+
+```typescript
+// Simple form with validation
+<SimpleForm
+  onSubmit={handleSubmit}
+  resolver={zodResolver(organizationSchema)}
 >
-  {/* Entity-specific content goes here */}
-</EntityManagementTemplate>
-
-// Specialized variants available
-<OrganizationManagementTemplate entityCount={count} onAddClick={handler}>
-<ContactManagementTemplate entityCount={count} onAddClick={handler}>
-<ProductManagementTemplate entityCount={count} onAddClick={handler}>
-<OpportunityManagementTemplate entityCount={count} onAddClick={handler}>
+  <FormField name="name" label="Organization Name" />
+  <FormField name="city" label="City" />
+</SimpleForm>
 ```
 
-**Benefits**:
-- Consistent page layouts and header structure
-- Centralized copy management via `/src/lib/copy.ts`
-- 40% reduction in duplicate page-level code
-- Unified responsive design patterns
+**Key Components**:
+- **SimpleForm** (`src/components/forms/SimpleForm.tsx`): Basic form wrapper with validation
+- **FormField** (`src/components/forms/FormField.tsx`): Reusable form field component
+- **DataTable** (`src/components/ui/DataTable.tsx`): Advanced data table with responsive filtering
+- **ResponsiveFilterWrapper** (`src/components/data-table/filters/ResponsiveFilterWrapper.tsx`): Smart responsive filter system with mobile/tablet/desktop adaptations
+- **FilterLayoutProvider** (`src/contexts/FilterLayoutContext.tsx`): Context provider for device-aware filter layouts
+- **EntityFilters** (`src/components/data-table/filters/EntityFilters.tsx`): Unified filter component with adaptive rendering
 
-#### DataTable Component Architecture
+#### Form Architecture
 
-**Location**: `/src/components/ui/DataTable.tsx`
+**Core Form System**:
+- **Form Resolver**: (`src/lib/form-resolver.ts`) Zod-only validation and error handling
+- **Form Transforms**: (`src/lib/form-transforms.ts`) Comprehensive Zod transformation utilities
+- **Validation Setup**: (`src/hooks/useCoreFormSetup.ts`) Centralized form configuration with Zod schemas
+- **Type Safety**: Consolidated Zod schemas in `src/types/*.types.ts` for runtime validation
 
-The unified DataTable component consolidates all table functionality with TypeScript generics and expandable row support:
+#### Responsive Filter Architecture
+
+**✅ CURRENT IMPLEMENTATION**: Advanced responsive filter system with device-aware layouts:
+
+**Core Components**:
+- **ResponsiveFilterWrapper**: Smart wrapper that automatically adapts between mobile drawer, tablet sheet, and desktop inline modes
+- **FilterLayoutProvider**: React context for device detection and layout state management
+- **EntityFilters**: Unified filter component with responsive grid layouts and touch optimizations
+
+**Device Behavior**:
+- **Mobile**: Bottom drawer with 44px touch targets and enhanced spacing
+- **Tablet Portrait**: Side sheet with optimized filter organization
+- **Tablet Landscape**: Inline filters with desktop-like layout
+- **Desktop**: Inline filters embedded in page layout
+- **iPad Specific**: Portrait = drawer mode, Landscape = inline mode (enterprise optimization)
 
 ```typescript
-// ✅ Standard table usage
-<DataTable<Organization>
-  data={organizations}
-  columns={columns}
-  rowKey={(row) => row.id}
-  loading={isLoading}
+// Recommended: DataTable integration
+<DataTable
+  useResponsiveFilters={true}
+  entityType="contacts"
+  entityFilters={filters}
+  onEntityFiltersChange={setFilters}
+  responsiveFilterTitle="Contact Filters"
 />
 
-// ✅ With expandable rows (integrated inline)
-<DataTable<Organization>
-  data={organizations}
-  columns={columns}
-  rowKey={(row) => row.id}
-  expandableContent={(row) => <DetailComponent {...row} />}
-  expandedRows={expandedRowIds}
-  onToggleRow={toggleRow}
-/>
+// Alternative: Direct usage with context
+<FilterLayoutProvider>
+  <ResponsiveFilterWrapper
+    entityType="contacts"
+    filters={filters}
+    onFiltersChange={setFilters}
+    lazyRender={true}
+    showTimeRange={true}
+    showQuickFilters={true}
+  />
+</FilterLayoutProvider>
 ```
 
 **Key Features**:
-- **TypeScript Generics**: Full type safety for any entity type
-- **Expandable Rows**: Inline expansion within table structure (not separate DOM elements)
-- **Responsive Design**: Hide/show columns based on screen size via `hidden` prop
-- **Accessibility**: Full ARIA support, keyboard navigation, screen reader compatible
-- **Loading States**: Built-in skeleton loading with proper animations
-
-**Migration Pattern**: All table components (Organizations, Contacts, Products, Opportunities) use this unified pattern with expandable content rendered as additional `<tr>` elements using `flatMap()` for seamless DOM integration.
+- **Progressive Enhancement**: Works without context (inline fallback) and with full context (all responsive features)
+- **iPad Enterprise Support**: Orientation-aware behavior with smooth transitions
+- **Performance Optimization**: Lazy rendering for overlay modes, React.memo optimization
+- **Accessibility**: Proper ARIA labels, keyboard navigation, screen reader support
+- **Feature Flag Support**: Gradual rollout capabilities with `FEATURE_FLAGS.ENABLE_RESPONSIVE_FILTERS`
 
 ### Key Design Patterns
 
@@ -241,18 +288,20 @@ The system is built around 5 core entities:
 6. **State Separation**: Use TanStack Query for server data, Zustand for client UI state only
 
 **Critical Development Practices:**
-- **Use Sub-Agents**: Leverage specialized MCP agents whenever possible for focused tasks
+- **Component-First**: Use shadcn/ui primitives and compose into feature-specific components
+- **Zod-Only Validation**: All forms use consolidated Zod schemas for validation
 - **Import Alias**: Use `@/*` path alias for all imports (`@/components`, `@/lib`, `@/features`)
-- **Supabase Client**: Import from `@/lib/supabase` - pre-configured with proper auth settings
-- **Bundle Optimization**: Vite config includes code splitting and tree-shaking optimizations
+- **Feature-Based Organization**: Group related functionality within feature directories
+- **Type Safety**: Use consolidated Zod schemas in `src/types/*.types.ts` for runtime validation
 
 ### Build Configuration & Performance
 
 **Vite Configuration** (`vite.config.ts`):
-- **Manual Chunks**: Optimized bundle splitting (vendor, ui, router, supabase, query)
+- **Manual Chunks**: Optimized bundle splitting (vendor, ui, router, supabase, query, design-tokens)
 - **Tree Shaking**: Dead code elimination enabled
 - **Console Removal**: All console statements dropped in production
 - **Bundle Visualizer**: Integrated analysis with gzip size reporting
+- **Design Token Optimization**: Advanced CSS variable tree-shaking in production
 - **Chunk Size Limit**: 1000KB warning threshold
 - **Path Aliases**: `@/` resolves to `./src/`
 
@@ -398,41 +447,34 @@ See `/docs/MCP_TOOL_REFERENCE_GUIDE.md` for comprehensive usage guidelines.
 - `docs/CRM_AGENT_ARCHITECTURE.md`: Detailed agent architecture
 - `docs/Coding_Rules.md`: 10 essential coding rules for the project
 
-## Current Implementation Status (MVP COMPLETE + EXCEL IMPORT)
+## Current Implementation Status (ARCHITECTURE REFACTOR)
 
-### ✅ Phase 1: Foundation (COMPLETED)
-- **Stage 1**: Database Implementation - Full schema, indexes, RLS policies
-- **Stage 2**: Type Definitions & Interfaces - Validation schemas, hooks
-- **Stage 3**: Authentication Implementation - Supabase auth, context, routes
+### 🚧 Current Phase: Architecture Simplification (COMPLETED)
+The codebase has completed major architectural simplification focusing on:
 
-### ✅ Phase 2: Core Features (COMPLETED) 
-- **Stage 4**: Component Implementation - CRUD forms, data tables, wizard
-- **Stage 5**: Route Integration & Navigation - React Router, layout, pages
-- **Stage 6**: Dashboard Implementation - Principal cards, activity feed, metrics
+- **Simplified Architecture**: Removed complex layout systems in favor of direct component composition
+- **Feature-Based Organization**: Clear separation of concerns by business domain
+- **Advanced Data Tables**: Comprehensive table system with filtering and expansion
+- **Enhanced Type Safety**: Consolidated Zod schemas with TypeScript definitions
 
-### ✅ Phase 3: Testing & Validation (COMPLETED)
-- **Stage 7**: Comprehensive Testing - Database (95%), UI/UX (88%), Auth (94%), Performance (100%), UAT (95%)
-- **Stage 8**: Production Deployment - Vercel deployment, documentation (100%)
+### ✅ Implemented Features
+- **Component System**: Simplified form and data table components
+- **Feature Architecture**: Complete feature-based organization with domain-specific hooks
+- **Data Table System**: Advanced filtering, sorting, and expandable rows
+- **Type System**: Zod schemas for validation with TypeScript types
+- **Component Library**: Enhanced shadcn/ui integration with custom components
 
-### ✅ Phase 4: Excel Import Integration (COMPLETED)
-- **Stage 9**: Excel to PostgreSQL Migration MVP - Complete import functionality (100%)
-- **Stage 10**: Production Deployment with Import - Live at https://crm.kjrcloud.com (100%)
+### 🔄 Migration Status
+- **Legacy Features**: Some features still use older patterns (feature-based)
+- **Active Development**: Layout system actively being expanded
+- **Testing Framework**: Architecture validation tests in place
+- **Documentation**: Internal docs being maintained in `.docs/`
 
-### 🎯 Production-Ready Features
-- **5 Core Entities**: Organizations, Contacts, Products, Opportunities, Interactions
-- **Authentication**: Supabase Auth with RLS security
-- **Business Logic**: Database constraints, validation triggers
-- **Mobile-Optimized**: iPad-focused responsive design
-- **Performance**: Sub-5ms database queries, <3s page loads
-- **Search**: Full-text search with trigram indexing
-- **Dashboard**: Clean minimal interface ready for customization
-- **Excel Import**: Complete Excel to PostgreSQL migration with MVP approach
-  - CSV file upload with drag-and-drop interface
-  - Hard-coded field mappings for organization data
-  - Real-time progress tracking and error reporting
-  - Batch processing with comprehensive validation
-  - Manager names stored as text (Phase 2: UUID mapping)
-  - Unmapped data preservation in import_notes field
+### 🎯 Architectural Goals
+- **Consistency**: Unified approach to data display and form handling
+- **Flexibility**: Easy to configure and extend layouts
+- **Performance**: Optimized rendering with proper state management
+- **Developer Experience**: Clear patterns and comprehensive tooling
 
 ### 📚 Documentation
 - **User Guide**: `/docs/USER_GUIDE.md` - Complete Sales Manager guide
@@ -441,14 +483,16 @@ See `/docs/MCP_TOOL_REFERENCE_GUIDE.md` for comprehensive usage guidelines.
 - **Deployment Guide**: `/docs/PRODUCTION_DEPLOYMENT_GUIDE.md`
 
 ## Development Notes
-- Always check `docs/` folder for architecture decisions and development guidelines
-- Use the path alias `@/*` for imports (`@/components`, `@/lib`)
-- Follow the mobile-first responsive design approach
-- Prioritize shadcn/ui components for UI consistency
-- Implement optimistic UI updates with proper error handling
-- **MVP is production-ready** - All testing phases completed with >90% confidence
-- **Excel Import MVP**: Follow checklist at `/docs/checklists/excel-to-postgresql-migration.md`
-- **Production URL**: https://crm.kjrcloud.com - Live with Excel import functionality
+- **Component-First Development**: Use shadcn/ui primitives and compose into feature-specific components
+- **Responsive Filter Development**: Use `ResponsiveFilterWrapper` with DataTable `useResponsiveFilters={true}` for all entity filtering
+- **Zod-Only Validation**: Use consolidated Zod schemas in `src/types/*.types.ts` for all validation
+- Use the path alias `@/*` for imports (`@/components`, `@/lib`, `@/features`)
+- **Feature Organization**: Group related components, hooks, and logic within feature directories
+- **Form Development**: Use `createTypedZodResolver` for all form validation
+- **Filter Development**: Always wrap components with `FilterLayoutProvider` and use `EntityFilterState` interface
+- Check both `docs/` and `.docs/` folders for architecture decisions
+- **Current State**: Simplified feature-driven architecture with responsive filters and consolidated schemas
+- **Testing**: Run architecture validation tests to ensure compliance with patterns
 
 ### Quality Gates & Testing
 **Before Committing:**
@@ -511,15 +555,6 @@ See `/docs/MCP_TOOL_REFERENCE_GUIDE.md` for complete guidelines and `/docs/templ
 
 ### UI Component Documentation
 - **Dialog Patterns**: `/docs/ui/dialog.md` - StandardDialog API, migration guide, and best practices
-- Coding Rules:
-1. Write Code Like It’s Going to be Reviewed by Your Future Self
-2. DRY (Don’t Repeat Yourself), but Avoid “Magic”
-3. Comment for the “Why,” Not the “What”
-4. Single Responsibility Principle: Keep Functions Focused
-5. Version Control is Not Optional (and Commit with Care)
-6. Be Mindful of Dependencies
-7. Refactor Regularly and Ruthlessly
-8. Think in Systems, Not Just Code
-9. Think Before You Code
-10. Prioritize Small, Releasable Units
+- **Responsive Filters**: `/docs/guides/responsive-filters.md` - Complete ResponsiveFilterWrapper guide, migration patterns, and best practices
+
 

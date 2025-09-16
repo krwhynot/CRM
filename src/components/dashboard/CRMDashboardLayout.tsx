@@ -170,7 +170,7 @@ export const DashboardLayouts = {
       </DashboardGrid>
       
       {/* Pipeline and Activities */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {Array.isArray(children) ? children.slice(4, 6) : null}
       </div>
       
@@ -249,7 +249,7 @@ export function ResponsiveDashboard({
           <div>
             <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
             {subtitle && (
-              <p className="text-muted-foreground mt-1">{subtitle}</p>
+              <p className="mt-1 text-muted-foreground">{subtitle}</p>
             )}
           </div>
           {actions && (

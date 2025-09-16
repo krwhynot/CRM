@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { DataTable, type DataTableColumn } from '@/components/ui/DataTable'
-import { OrganizationsFilters } from './OrganizationsFilters'
 import { BulkActionsToolbar } from './BulkActionsToolbar'
 import { BulkDeleteDialog } from './BulkDeleteDialog'
 import { OrganizationBadges } from './OrganizationBadges'
@@ -676,17 +675,7 @@ export function OrganizationsTable({
 
   return (
     <div className="space-y-4">
-      {/* Filters Component */}
-      <OrganizationsFilters
-        filters={organizationFilters}
-        onFiltersChange={handleFiltersChange}
-        principals={[]} // TODO: Add principals data from hook
-        isLoading={loading}
-        totalOrganizations={organizations.length}
-        filteredCount={filteredOrganizations.length}
-        showBadges={true}
-        onAddNew={onAddNew}
-      />
+      {/* Note: Filters component removed - OrganizationsList now uses ResponsiveFilterWrapper */}
 
       {/* Bulk Actions Toolbar */}
       <BulkActionsToolbar

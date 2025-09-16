@@ -46,6 +46,7 @@ export const featureFlags = {
   enableDebugLogs: isDevelopment,
   enableTestMode: isTest,
   enableProductionMonitoring: isProduction,
+  enableResponsiveFilters: import.meta.env.VITE_ENABLE_RESPONSIVE_FILTERS === 'true',
 } as const
 
 // Validation helpers

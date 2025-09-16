@@ -1,13 +1,11 @@
 import { useState } from 'react'
 import { DataTable, type DataTableColumn } from '@/components/ui/DataTable'
-import { BulkActionsToolbar } from '@/features/organizations/components/BulkActionsToolbar'
-import { BulkDeleteDialog } from '@/features/organizations/components/BulkDeleteDialog'
+import { BulkActionsToolbar, BulkDeleteDialog } from '@/components/bulk-actions'
 import { useOpportunitiesWithLastActivity, useDeleteOpportunity } from '../hooks/useOpportunities'
 import { useOpportunitiesSelection } from '../hooks/useOpportunitiesSelection'
 import { useOpportunitiesSorting } from '../hooks/useOpportunitiesSorting'
 import { useOpportunitiesFormatting } from '../hooks/useOpportunitiesFormatting'
 import { useOpportunitiesDisplay } from '../hooks/useOpportunitiesDisplay'
-import { OpportunitiesFilters } from './OpportunitiesFilters'
 import { OpportunitiesTableActions } from './OpportunitiesTableActions'
 import { InteractionTimelineEmbed } from '@/features/interactions/components/InteractionTimelineEmbed'
 import { QuickInteractionBar } from '@/features/interactions/components/QuickInteractionBar'
@@ -517,16 +515,9 @@ export function OpportunitiesTable({
 
   return (
     <div className="space-y-4">
-      {/* Filters */}
-      <OpportunitiesFilters
-        filters={opportunityFilters}
-        onFiltersChange={setOpportunityFilters}
-        principals={[]} // TODO: Add principals data from hook
-        isLoading={isLoading}
-        totalOpportunities={opportunities.length}
-        filteredCount={sortedOpportunities.length}
-        showBadges={true}
-      />
+      {/* DEPRECATED: OpportunitiesFilters has been removed.
+          Use OpportunitiesList with ResponsiveFilterWrapper instead.
+          This legacy component is no longer used in the application. */}
 
       {/* Bulk Actions Toolbar */}
       <BulkActionsToolbar
@@ -536,6 +527,8 @@ export function OpportunitiesTable({
         onClearSelection={clearSelection}
         onSelectAll={handleSelectAllFromToolbar}
         onSelectNone={handleSelectNoneFromToolbar}
+        entityType="opportunity"
+        entityTypePlural="opportunities"
       />
 
       {/* Table Container with Integrated Row Expansion */}
@@ -559,7 +552,7 @@ export function OpportunitiesTable({
       <BulkDeleteDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
-        organizations={selectedOpportunities}
+        entities={selectedOpportunities}
         onConfirm={handleConfirmDelete}
         isDeleting={isDeleting}
         entityType="opportunity"

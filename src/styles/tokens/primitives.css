@@ -182,23 +182,14 @@
     --mfb-info-subtle-hsl: 240 30% 94%;           /* HSL: Subtle info */
 
     /* =======================================================================
-     * UNIFIED PRIMITIVE SPACING SCALE - SINGLE SOURCE OF TRUTH
-     * Consolidated from 5 parallel spacing systems into one comprehensive scale
+     * BRAND-SPECIFIC SPACING TOKENS
+     * Only brand-specific spacing that differs from Tailwind defaults
+     * Standard spacing (4px, 8px, 16px, etc.) should use Tailwind classes directly
      * ======================================================================= */
 
-    /* Primitive spacing scale - T-shirt sizing pattern */
-    --space-1: 0.25rem;   /* 4px - Smallest spacing */
-    --space-2: 0.5rem;    /* 8px - Small spacing */
-    --space-3: 0.75rem;   /* 12px - Medium-small spacing */
-    --space-4: 1rem;      /* 16px - Base spacing unit */
-    --space-5: 1.25rem;   /* 20px - Medium spacing */
-    --space-6: 1.5rem;    /* 24px - Large spacing */
-    --space-7: 1.75rem;   /* 28px - Extra large spacing */
-    --space-8: 2rem;      /* 32px - Section spacing */
-    --space-10: 2.5rem;   /* 40px - Large section spacing */
-    --space-12: 3rem;     /* 48px - Extra large section spacing */
-    --space-16: 4rem;     /* 64px - Major section spacing */
-    --space-20: 5rem;     /* 80px - Page-level spacing */
+    /* Brand-specific spacing - Professional appearance requirements */
+    --space-card-padding: 1.5rem;        /* 24px - Professional card padding */
+    --space-dashboard-grid-gap: 1.5rem;  /* 24px - Dashboard grid consistency */
 
     /* =======================================================================
      * PRIMITIVE GRAYSCALE SCALE - OKLCH OPTIMIZED
@@ -219,15 +210,12 @@
     --gray-950: oklch(0.0500 0 0);
 
     /* =======================================================================
-     * PRIMITIVE RADII SCALE - CONSISTENT CORNER ROUNDING
+     * BRAND-SPECIFIC RADIUS TOKENS
+     * Only brand-specific radius that provides professional appearance
+     * Standard radius values should use Tailwind classes directly
      * ======================================================================= */
 
-    --radius-sm: 0.25rem;   /* 4px - Small radius */
-    --radius-md: 0.375rem;  /* 6px - Default radius */
-    --radius-lg: 0.5rem;    /* 8px - Large radius */
-    --radius-xl: 0.75rem;   /* 12px - Extra large radius */
-    --radius-2xl: 1rem;     /* 16px - Very large radius */
-    --radius-3xl: 1.5rem;   /* 24px - Extreme radius */
+    --radius-card: 0.75rem;    /* 12px - Professional card appearance */
 
     /* =======================================================================
      * PRIMITIVE SHADOW SCALE - CONSISTENT ELEVATION
@@ -241,28 +229,76 @@
     --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
 
     /* =======================================================================
-     * PRIMITIVE TYPOGRAPHY SCALE
+     * MFB BRAND-SPECIFIC TYPOGRAPHY TOKENS
+     * Essential typography tokens that must be preserved for MFB brand identity.
+     * Standard font sizes/weights are replaced with Tailwind defaults.
      * ======================================================================= */
 
-    --font-size-xs: 0.75rem;      /* 12px */
-    --font-size-sm: 0.875rem;     /* 14px */
-    --font-size-base: 1rem;       /* 16px */
-    --font-size-lg: 1.125rem;     /* 18px */
-    --font-size-xl: 1.25rem;      /* 20px */
-    --font-size-2xl: 1.5rem;      /* 24px */
-    --font-size-3xl: 1.875rem;    /* 30px */
-    --font-size-4xl: 2.25rem;     /* 36px */
+    /* Brand-Specific Font Family - REQUIRED for MFB */
+    --font-family-nunito: 'Nunito', system-ui, -apple-system, sans-serif;
 
-    /* Font Weight Scale */
-    --font-weight-normal: 400;
-    --font-weight-medium: 500;
-    --font-weight-semibold: 600;
-    --font-weight-bold: 700;
+    /* Brand-Specific Font Size - REQUIRED for MFB body text */
+    --font-size-body-mfb: 0.9375rem;  /* 15px - Brand-specific body text size */
 
-    /* Line Height Scale */
-    --line-height-tight: 1.25;
-    --line-height-normal: 1.5;
-    --line-height-relaxed: 1.75;
+    /* Brand-Specific Typography Colors - REQUIRED for MFB headings */
+    --text-heading-mfb: var(--mfb-olive);  /* MFB Olive for h1, h3 headings */
+
+    /*
+     * NOTE: Standard font sizes (xs, sm, base, lg, xl, 2xl, 3xl, 4xl) now use Tailwind defaults
+     * NOTE: Standard font weights (400, 500, 600, 700) now use Tailwind defaults
+     * NOTE: Standard line heights (1.25, 1.5, 1.75) now use Tailwind defaults
+     * These are available via Tailwind classes: text-xs, text-sm, font-medium, leading-normal, etc.
+     */
+
+    /* =======================================================================
+     * CRITICAL ACCESSIBILITY TOKENS (moved from features layer)
+     * Essential motion and mobile tokens for accessibility compliance
+     * ======================================================================= */
+
+    /* Motion timing tokens - minimal set */
+    --motion-duration-fast: 150ms;
+    --motion-duration-normal: 250ms;
+    --motion-duration-slow: 350ms;
+
+    /* Motion easing tokens - minimal set */
+    --motion-ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --motion-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Reduced motion overrides */
+    --motion-duration-reduced: 1ms;
+    --motion-ease-reduced: linear;
+
+    /* Safe area insets for mobile devices */
+    --mobile-safe-area-top: env(safe-area-inset-top);
+    --mobile-safe-area-bottom: env(safe-area-inset-bottom);
+    --mobile-safe-area-left: env(safe-area-inset-left);
+    --mobile-safe-area-right: env(safe-area-inset-right);
+
+    /* Minimum touch target size */
+    --mobile-touch-target-min: 44px;
+  }
+
+  /* =======================================================================
+   * ESSENTIAL ACCESSIBILITY OVERRIDES (moved from features layer)
+   * System-level accessibility preferences
+   * ======================================================================= */
+
+  /* Reduced motion preference - essential for accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --motion-duration-fast: var(--motion-duration-reduced);
+      --motion-duration-normal: var(--motion-duration-reduced);
+      --motion-duration-slow: var(--motion-duration-reduced);
+      --motion-ease-out: var(--motion-ease-reduced);
+      --motion-ease-in-out: var(--motion-ease-reduced);
+    }
+  }
+
+  /* Mobile adaptations - minimal set */
+  @media (max-width: 767px) {
+    :root {
+      --touch-target-min: var(--mobile-touch-target-min);
+    }
   }
 
   .dark {

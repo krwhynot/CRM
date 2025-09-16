@@ -1,11 +1,11 @@
 import { SimpleForm, type SimpleFormField } from '@/components/forms'
-import { contactSchema, type ContactFormData, CONTACT_ROLES } from '@/types/contact.types'
+import { contactZodSchema, type ContactZodFormData, CONTACT_ROLES } from '@/types/contact.types'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
 import { placeholderUrls } from '@/config/urls'
 
 interface ContactFormProps {
-  onSubmit: (data: ContactFormData) => Promise<void> | void
-  initialData?: Partial<ContactFormData>
+  onSubmit: (data: ContactZodFormData) => Promise<void> | void
+  initialData?: Partial<ContactZodFormData>
   loading?: boolean
   submitLabel?: string
   preselectedOrganization?: string
@@ -253,7 +253,7 @@ export function ContactForm({
     <SimpleForm<ContactFormData>
       fields={fields}
       onSubmit={onSubmit}
-      validationSchema={contactSchema}
+      validationSchema={contactZodSchema}
       defaultValues={enhancedInitialData}
       loading={loading}
       submitLabel={submitLabel}

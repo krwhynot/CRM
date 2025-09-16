@@ -27,21 +27,7 @@ vi.mock('@/features/organizations/hooks/useOrganizationsDisplay', () => ({
   }),
 }))
 
-// Mock the child components
-vi.mock('../OrganizationsFilters', () => ({
-  OrganizationsFilters: ({
-    totalOrganizations,
-    filteredCount,
-  }: {
-    totalOrganizations: number
-    filteredCount: number
-  }) => (
-    <div data-testid="organizations-filters">
-      <span>Total: {totalOrganizations}</span>
-      <span>Filtered: {filteredCount}</span>
-    </div>
-  ),
-}))
+// Note: OrganizationsFilters component removed - using ResponsiveFilterWrapper instead
 
 
 const mockOrganizations: Organization[] = [
@@ -75,10 +61,7 @@ describe('OrganizationsTable', () => {
   it('should render organizations table with data', () => {
     render(<OrganizationsTable organizations={mockOrganizations} />)
 
-    expect(screen.getByTestId('organizations-filters')).toBeInTheDocument()
-    expect(screen.getByText('Total: 2')).toBeInTheDocument()
-    expect(screen.getByText('Filtered: 2')).toBeInTheDocument()
-
+    // Note: Filters component removed - OrganizationsList now uses ResponsiveFilterWrapper
     expect(screen.getByTestId('organization-row-1')).toBeInTheDocument()
     expect(screen.getByTestId('organization-row-2')).toBeInTheDocument()
     expect(screen.getByText('ACME Corp')).toBeInTheDocument()
@@ -128,10 +111,11 @@ describe('OrganizationsTable', () => {
   it('should use default organizations when none provided', () => {
     render(<OrganizationsTable />)
 
-    // Should render with default organizations
-    expect(screen.getByTestId('organizations-filters')).toBeInTheDocument()
-    // The default organizations include 3 items
-    expect(screen.getByText('Total: 3')).toBeInTheDocument()
+    // Should render with default organizations (3 items)
+    // Note: Filters component removed - OrganizationsList now uses ResponsiveFilterWrapper
+    expect(screen.getByText('040 KITCHEN INC')).toBeInTheDocument()
+    expect(screen.getByText('2D RESTAURANT GROUP')).toBeInTheDocument()
+    expect(screen.getByText('ACME FOOD DISTRIBUTORS')).toBeInTheDocument()
   })
 
   it('should render results summary when organizations exist', () => {

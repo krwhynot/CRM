@@ -1,12 +1,12 @@
 import {
   useInteractions,
-  InteractionsDataDisplay,
   InteractionDialogs,
 } from '@/features/interactions'
+import { InteractionsList } from '@/features/interactions/components/InteractionsList'
 import { useInteractionsPageState } from '@/features/interactions/hooks/useInteractionsPageState'
 import { useInteractionsPageActions } from '@/features/interactions/hooks/useInteractionsPageActions'
-import { QueryErrorBoundary } from '@/components/error-boundaries/QueryErrorBoundary'
-import { EntityManagementTemplate } from '@/components/templates/EntityManagementTemplate'
+import { EntityListWrapper } from '@/components/layout/EntityListWrapper'
+import { FilterLayoutProvider } from '@/contexts/FilterLayoutContext'
 
 function InteractionsPage() {
   const { data: interactions = [], isLoading, error, isError, refetch } = useInteractions()
@@ -25,36 +25,36 @@ function InteractionsPage() {
     handleViewInteraction,
   } = useInteractionsPageState()
 
-  const { 
-    handleCreate, 
-    handleUpdate, 
-    handleDelete, 
-    isCreating, 
-    isUpdating, 
-    isDeleting 
+  const {
+    handleCreate,
+    handleUpdate,
+    handleDelete,
+    isCreating,
+    isUpdating,
+    isDeleting
   } = useInteractionsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
-
 
   const refreshInteractions = () => {
     refetch()
   }
 
   return (
-    <QueryErrorBoundary>
-      <EntityManagementTemplate
-        entityType="INTERACTION"
-        entityCount={interactions.length}
-        onAddClick={openCreateDialog}
+    <FilterLayoutProvider>
+      <EntityListWrapper
+        title="Interactions"
+        description={`Track ${interactions.length} interactions across your CRM`}
+        action={{
+          label: "Add Interaction",
+          onClick: openCreateDialog
+        }}
       >
-        <InteractionsDataDisplay
-          isLoading={isLoading}
-          isError={isError}
-          error={error}
+        <InteractionsList
           interactions={interactions}
+          loading={isLoading}
           onEdit={openEditDialog}
           onDelete={openDeleteDialog}
           onView={handleViewInteraction}
-          onRefresh={refreshInteractions}
+          onAddNew={openCreateDialog}
         />
 
         <InteractionDialogs
@@ -68,8 +68,8 @@ function InteractionsPage() {
           isCreating={isCreating}
           isUpdating={isUpdating}
         />
-      </EntityManagementTemplate>
-    </QueryErrorBoundary>
+      </EntityListWrapper>
+    </FilterLayoutProvider>
   )
 }
 

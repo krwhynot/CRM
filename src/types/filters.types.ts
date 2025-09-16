@@ -201,3 +201,14 @@ export interface FilterValidationResult {
     message: string
   }>
 }
+
+// Filter layout mode types
+export type FilterLayoutMode = 'inline' | 'sheet' | 'drawer' | 'auto'
+
+// Filter layout context integration
+export interface FilterLayoutIntegration {
+  layoutMode?: FilterLayoutMode
+  onLayoutModeChange?: (mode: FilterLayoutMode) => void
+  isLayoutOpen?: boolean
+  onLayoutOpenChange?: (open: boolean) => void
+}

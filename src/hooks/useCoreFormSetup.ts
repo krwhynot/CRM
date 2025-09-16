@@ -1,12 +1,12 @@
 import type { FieldValues, DefaultValues, SubmitHandler } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { useFormLayout } from '@/hooks/useFormLayout'
-import type * as yup from 'yup'
+import type { z } from 'zod'
 import type { FormSection, ConditionalSection } from '@/hooks/useFormLayout'
+import { createResolver } from '@/lib/form-resolver'
 
 interface CoreFormSetupProps<T extends FieldValues> {
-  formSchema: yup.ObjectSchema<T>
+  formSchema: z.ZodType<T>
   initialData?: Partial<T>
   entityType: 'organization' | 'contact' | 'product' | 'opportunity' | 'activity'
   showAdvancedOptions?: boolean
@@ -27,7 +27,7 @@ export function useCoreFormSetup<T extends FieldValues>({
   onSubmit,
 }: CoreFormSetupProps<T>) {
   const form = useForm<T>({
-    resolver: yupResolver(formSchema) as never,
+    resolver: createResolver(formSchema) as never,
     defaultValues: initialData as DefaultValues<T>,
   })
 

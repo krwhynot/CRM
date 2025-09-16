@@ -1,204 +1,219 @@
 /**
  * Form Transform Utilities
  *
- * Reusable transform functions for Yup schemas to handle common type conversion
- * patterns and prevent TypeScript type mismatches between forms and validation.
+ * Zod-based transform utilities for form validation and data processing.
+ * Provides consistent patterns for handling form data transformations.
  */
 
-import { isDevelopment } from '@/config/environment'
-
-/**
- * Transforms empty strings to null values
- * Essential for nullable fields where HTML inputs produce empty strings
- * but database/validation expects null for "empty" values
- */
-export const emptyStringToNull = (value: unknown): string | null => {
-  if (typeof value === 'string' && value.trim() === '') {
-    return null
-  }
-  return typeof value === 'string' ? value : null
-}
+import { z } from 'zod'
 
 /**
- * Transforms empty strings to null for number fields
- * Handles cases where number inputs can be empty strings
+ * Zod transform utilities using preprocessing and transform methods
+ * These provide comprehensive form data transformation patterns
  */
-export const emptyStringToNullNumber = (value: unknown): number | null => {
-  if (value === '' || value === null || value === undefined) {
-    return null
-  }
-  const num = Number(value)
-  return isNaN(num) ? null : num
-}
-
-/**
- * Transforms empty strings to null for URL fields
- * Ensures proper URL validation while handling empty inputs
- */
-export const emptyStringToNullUrl = (value: unknown): string | null => {
-  if (typeof value === 'string' && value.trim() === '') {
-    return null
-  }
-  return typeof value === 'string' ? value : null
-}
-
-/**
- * Transforms empty arrays to null
- * Useful for optional array fields that should be null when empty
- */
-export const emptyArrayToNull = <T>(value: T[]): T[] | null => {
-  if (Array.isArray(value) && value.length === 0) {
-    return null
-  }
-  return value
-}
-
-/**
- * Transforms empty arrays to empty array (preserves array type)
- * Useful for required array fields that should never be null
- * Also filters out undefined values from the array
- */
-export const ensureArray = <T>(value: (T | undefined)[] | T | null | undefined): T[] => {
-  if (value === null || value === undefined) {
-    return []
-  }
-  if (Array.isArray(value)) {
-    return value.filter((item): item is T => item !== undefined)
-  }
-  return []
-}
-
-/**
- * Transforms boolean strings to actual booleans
- * Handles form inputs that might send boolean values as strings
- */
-export const stringToBoolean = (value: unknown): boolean => {
-  if (typeof value === 'string') {
-    return value.toLowerCase() === 'true'
-  }
-  return Boolean(value)
-}
-
-/**
- * Trims whitespace from strings and converts empty to null
- * Comprehensive string cleaning for form inputs
- */
-export const trimAndNullify = (value: unknown): string | null => {
-  if (typeof value !== 'string') {
-    return null
-  }
-  const trimmed = value.trim()
-  return trimmed === '' ? null : trimmed
-}
-
-/**
- * Phone number normalizer - removes non-digits and formats
- * Handles various phone input formats
- */
-export const normalizePhone = (value: unknown): string | null => {
-  if (typeof value !== 'string' || value.trim() === '') {
-    return null
-  }
-  // Remove all non-digit characters
-  const digits = value.replace(/\D/g, '')
-  return digits === '' ? null : digits
-}
-
-/**
- * Email normalizer - converts to lowercase and trims
- */
-export const normalizeEmail = (value: unknown): string | null => {
-  if (typeof value !== 'string' || value.trim() === '') {
-    return null
-  }
-  return value.trim().toLowerCase()
-}
-
-/**
- * UUID validator transform - ensures proper UUID format or null
- */
-export const normalizeUuid = (value: unknown): string | null => {
-  if (typeof value !== 'string' || value.trim() === '') {
-    return null
-  }
-  const trimmed = value.trim()
-  // Basic UUID format check
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
-  return uuidRegex.test(trimmed) ? trimmed : null
-}
-
-/**
- * Transform factory for conditional required fields
- * Returns a transform that makes field required when condition is met
- */
-export const conditionalTransform = <T, TValues = Record<string, unknown>>(
-  condition: (allValues: TValues) => boolean,
-  requiredTransform: (value: unknown) => T,
-  optionalTransform: (value: unknown) => T | null = (value: unknown) =>
-    emptyStringToNull(value) as T | null
-) => {
-  return function (this: { parent: TValues }, value: unknown) {
-    const isRequired = condition(this.parent)
-    return isRequired ? requiredTransform(value) : optionalTransform(value)
-  }
-}
-
-/**
- * Common transform combinations for typical form fields
- */
-export const FormTransforms = {
-  // Standard nullable string field (most common)
-  nullableString: emptyStringToNull,
+// Export with both names for compatibility
+export const ZodTransforms = {
+  // Standard nullable string field (most common pattern)
+  nullableString: z.preprocess((val) => {
+    if (typeof val === 'string' && val.trim() === '') return null
+    return typeof val === 'string' ? val : null
+  }, z.string().nullable()),
 
   // Required string field that trims whitespace
-  requiredString: (value: unknown): string => {
-    if (typeof value !== 'string' || value.trim() === '') {
+  requiredString: z.preprocess((val) => {
+    if (typeof val !== 'string' || val.trim() === '') {
       throw new Error('Value is required')
     }
-    return value.trim()
-  },
+    return val.trim()
+  }, z.string()),
 
-  // Nullable number field
-  nullableNumber: emptyStringToNullNumber,
+  // Nullable number field with empty string handling
+  nullableNumber: z.preprocess((val) => {
+    if (val === '' || val === null || val === undefined) return null
+    const num = Number(val)
+    return isNaN(num) ? null : num
+  }, z.number().nullable()),
 
   // Nullable email field with normalization
-  nullableEmail: normalizeEmail,
+  nullableEmail: z.preprocess((val) => {
+    if (typeof val !== 'string' || val.trim() === '') return null
+    return val.trim().toLowerCase()
+  }, z.string().email().nullable()),
 
   // Nullable phone field with normalization
-  nullablePhone: normalizePhone,
+  nullablePhone: z.preprocess((val) => {
+    if (typeof val !== 'string' || val.trim() === '') return null
+    // Remove all non-digit characters
+    const digits = val.replace(/\D/g, '')
+    return digits === '' ? null : digits
+  }, z.string().nullable()),
 
   // Nullable URL field
-  nullableUrl: emptyStringToNullUrl,
+  nullableUrl: z.preprocess((val) => {
+    if (typeof val !== 'string' || val.trim() === '') return null
+    return typeof val === 'string' ? val : null
+  }, z.string().url().nullable()),
 
   // Array field that preserves empty arrays
-  optionalArray: ensureArray,
+  optionalArray: <T extends z.ZodTypeAny>(itemSchema: T) =>
+    z.preprocess((val) => {
+      if (val === null || val === undefined) return []
+      if (Array.isArray(val)) {
+        return val.filter(item => item !== undefined)
+      }
+      return []
+    }, z.array(itemSchema)),
 
   // Array field that becomes null when empty
-  nullableArray: emptyArrayToNull,
+  nullableArray: <T extends z.ZodTypeAny>(itemSchema: T) =>
+    z.preprocess((val) => {
+      if (Array.isArray(val) && val.length === 0) return null
+      return val
+    }, z.array(itemSchema).nullable()),
 
   // Boolean field with string conversion
-  booleanField: stringToBoolean,
+  booleanField: z.preprocess((val) => {
+    if (typeof val === 'string') {
+      return val.toLowerCase() === 'true'
+    }
+    return Boolean(val)
+  }, z.boolean()),
 
   // UUID field with validation
-  uuidField: normalizeUuid,
+  uuidField: z.preprocess((val) => {
+    if (typeof val !== 'string' || val.trim() === '') return null
+    const trimmed = val.trim()
+    // Basic UUID format check
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+    return uuidRegex.test(trimmed) ? trimmed : null
+  }, z.string().uuid().nullable()),
+
+  // Alias for normalizeUuid (matches Yup transform naming)
+  normalizeUuid: z.preprocess((val) => {
+    if (typeof val !== 'string' || val.trim() === '') return null
+    const trimmed = val.trim()
+    // Basic UUID format check
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+    return uuidRegex.test(trimmed) ? trimmed : null
+  }, z.string().uuid().nullable()),
+
+  // String trimming and nullification
+  trimAndNullify: z.preprocess((val) => {
+    if (typeof val !== 'string') return null
+    const trimmed = val.trim()
+    return trimmed === '' ? null : trimmed
+  }, z.string().nullable()),
+
+  // Conditional validation for Zod schemas
+  // Returns a function that can be used in .refine() with the parent data context
+  // Usage: .refine(ZodTransforms.conditionalRequired(data, 'mode', 'create'), { message: 'Required when creating' })
+  conditionalRequired: <TData extends Record<string, any>>(
+    parentData: TData,
+    conditionField: keyof TData,
+    conditionValue: any
+  ) => {
+    return (val: any) => {
+      const shouldBeRequired = parentData[conditionField] === conditionValue
+      if (shouldBeRequired) {
+        return val !== null && val !== undefined && val !== ''
+      }
+      return true // Not required, so always valid
+    }
+  },
+
+  // Alternative approach using discriminated union factory
+  // This is the preferred Zod pattern for complex conditional validation
+  createConditionalSchema: <TBase extends z.ZodRawShape>(
+    baseFields: TBase,
+    discriminator: keyof TBase,
+    conditionalCases: Record<string, Partial<TBase>>
+  ) => {
+    const cases = Object.entries(conditionalCases).map(([value, additionalFields]) => {
+      return z.object({
+        ...baseFields,
+        ...additionalFields,
+        [discriminator]: z.literal(value)
+      })
+    })
+    return z.discriminatedUnion(discriminator as any, cases as any)
+  },
+
+  // Empty string to null transform for optional fields
+  emptyToNull: z.preprocess((val) => {
+    if (typeof val === 'string' && val.trim() === '') return null
+    return val
+  }, z.string().nullable()),
+
+  // Positive number with null handling
+  positiveNumber: z.preprocess((val) => {
+    if (val === '' || val === null || val === undefined) return null
+    const num = Number(val)
+    return isNaN(num) ? null : num
+  }, z.number().positive().nullable()),
+
+  // Integer with null handling
+  nullableInt: z.preprocess((val) => {
+    if (val === '' || val === null || val === undefined) return null
+    const num = Number(val)
+    return isNaN(num) ? null : Math.floor(num)
+  }, z.number().int().nullable()),
 }
 
 /**
- * Type guard to check if a value is a valid transform function
+ * Schema factory functions for common patterns
+ * These help create Zod schemas with consistent transform behavior
  */
-export const isTransformFunction = (value: unknown): value is Function => {
-  return typeof value === 'function'
-}
+export const SchemaFactories = {
+  // Creates a nullable string schema with empty string → null transform
+  nullableString: (constraints?: { min?: number; max?: number; regex?: RegExp; message?: string }) =>
+    FormTransforms.nullableString.refine(
+      (val) => {
+        if (val === null) return true
+        if (constraints?.min && val.length < constraints.min) return false
+        if (constraints?.max && val.length > constraints.max) return false
+        if (constraints?.regex && !constraints.regex.test(val)) return false
+        return true
+      },
+      { message: constraints?.message || 'Invalid input' }
+    ),
 
-/**
- * Development helper to log transform operations
- * Only active in development mode
- */
-export const debugTransform = () => {
-  if (isDevelopment) {
-    // Transform debugging is handled silently
-    // Use browser dev tools for debugging if needed
+  // Creates a nullable email schema with normalization
+  nullableEmail: (required = false) => {
+    const schema = FormTransforms.nullableEmail
+    return required
+      ? schema.refine(val => val !== null, { message: 'Email is required' })
+      : schema
+  },
+
+  // Creates a nullable phone schema with normalization
+  nullablePhone: (required = false) => {
+    const schema = FormTransforms.nullablePhone
+    return required
+      ? schema.refine(val => val !== null, { message: 'Phone number is required' })
+      : schema
+  },
+
+  // Creates a UUID schema with null handling
+  nullableUuid: (required = false) => {
+    const schema = FormTransforms.uuidField
+    return required
+      ? schema.refine(val => val !== null, { message: 'ID is required' })
+      : schema
+  },
+
+  // Creates a discriminated union for conditional validation
+  conditionalSchema: <T extends Record<string, any>>(
+    discriminator: keyof T,
+    cases: Record<string | number, z.ZodObject<any>>
+  ) => {
+    const schemas = Object.entries(cases).map(([value, schema]) =>
+      schema.extend({ [discriminator]: z.literal(value) })
+    )
+    return z.discriminatedUnion(discriminator as any, schemas as any)
   }
 }
 
-export default FormTransforms
+// Export with both names for backward compatibility
+export const FormTransforms = ZodTransforms
+
+export default ZodTransforms

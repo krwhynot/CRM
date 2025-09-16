@@ -2,7 +2,7 @@
 // This file re-exports entity types from individual type files
 
 // Import database types for supporting entities
-import type { Database } from './database.types'
+import type { Database } from '../lib/database.types'
 
 // Re-export main entity types from individual files
 export type {

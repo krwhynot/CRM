@@ -1,8 +1,7 @@
 import { useState, useMemo } from 'react'
 import { DataTable, type DataTableColumn } from '@/components/ui/DataTable'
-import { InteractionsFilters } from './InteractionsFilters'
 import { InteractionsTableActions } from './InteractionsTableActions'
-import { BulkActionsToolbar } from '@/features/organizations/components/BulkActionsToolbar'
+import { BulkActionsToolbar } from '@/components/bulk-actions'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -377,51 +376,53 @@ export function InteractionsTable({
 
   return (
     <div className="space-y-4">
-      {/* Filters */}
-      <InteractionsFilters
-        filters={filters}
-        onFiltersChange={setFilters}
-        totalInteractions={interactions.length}
-        filteredCount={filteredInteractions.length}
-        isLoading={loading}
-      />
+      {/* Note: Filters are now handled by ResponsiveFilterWrapper via DataTable integration */}
 
       {/* Bulk Actions */}
       {selectedItems.size > 0 && (
-        <BulkActionsToolbar
-          selectedCount={selectedItems.size}
-          onClearSelection={() => setSelectedItems(new Set())}
-          actions={[
-            {
-              label: 'Mark Complete',
-              onClick: () => {
+        <div className="space-y-2">
+          <BulkActionsToolbar
+            selectedCount={selectedItems.size}
+            totalCount={filteredInteractions.length}
+            onBulkDelete={() => {
+              if (
+                confirm(
+                  `Delete ${selectedItems.size} interactions? This action cannot be undone.`
+                )
+              ) {
+                toast.success(`Deleted ${selectedItems.size} interactions`)
+                setSelectedItems(new Set())
+              }
+            }}
+            onClearSelection={() => setSelectedItems(new Set())}
+            onSelectAll={() => setSelectedItems(new Set(filteredInteractions.map(i => i.id)))}
+            onSelectNone={() => setSelectedItems(new Set())}
+            entityType="interaction"
+            entityTypePlural="interactions"
+          />
+
+          {/* Additional interaction-specific actions */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
                 toast.success(`Marked ${selectedItems.size} interactions as complete`)
                 setSelectedItems(new Set())
-              },
-            },
-            {
-              label: 'Require Follow-up',
-              onClick: () => {
+              }}
+              className="rounded bg-green-50 px-3 py-1 text-sm text-green-700 hover:bg-green-100"
+            >
+              Mark Complete
+            </button>
+            <button
+              onClick={() => {
                 toast.success(`Added follow-up requirement to ${selectedItems.size} interactions`)
                 setSelectedItems(new Set())
-              },
-            },
-            {
-              label: 'Delete',
-              onClick: () => {
-                if (
-                  confirm(
-                    `Delete ${selectedItems.size} interactions? This action cannot be undone.`
-                  )
-                ) {
-                  toast.success(`Deleted ${selectedItems.size} interactions`)
-                  setSelectedItems(new Set())
-                }
-              },
-              variant: 'destructive',
-            },
-          ]}
-        />
+              }}
+              className="rounded bg-blue-50 px-3 py-1 text-sm text-blue-700 hover:bg-blue-100"
+            >
+              Require Follow-up
+            </button>
+          </div>
+        </div>
       )}
 
       {/* Data Table */}

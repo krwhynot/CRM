@@ -1,16 +1,16 @@
 import type React from 'react'
 import { useForm } from 'react-hook-form'
-import { contactSchema, type ContactFormData } from '@/types/contact.types'
-import { createTypedYupResolver } from '@/lib/form-resolver'
+import { contactZodSchema, type ContactZodFormData } from '@/types/contact.zod'
+import { createTypedZodResolver } from '@/lib/form-resolver'
 
 interface UseContactFormStateProps {
-  initialData?: Partial<ContactFormData>
+  initialData?: Partial<ContactZodFormData>
   preselectedOrganization?: string
-  onSubmit: (data: ContactFormData) => void
+  onSubmit: (data: ContactZodFormData) => void
 }
 
 interface UseContactFormStateReturn {
-  form: ReturnType<typeof useForm<ContactFormData>>
+  form: ReturnType<typeof useForm<ContactZodFormData>>
   handleSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>
 }
 
@@ -19,12 +19,13 @@ export const useContactFormState = ({
   preselectedOrganization,
   onSubmit,
 }: UseContactFormStateProps): UseContactFormStateReturn => {
-  const form = useForm<ContactFormData>({
-    resolver: createTypedYupResolver<ContactFormData>(contactSchema),
+  const form = useForm<ContactZodFormData>({
+    resolver: createTypedZodResolver<ContactZodFormData>(contactZodSchema),
     defaultValues: {
       first_name: initialData?.first_name || '',
       last_name: initialData?.last_name || '',
-      organization_id: preselectedOrganization || initialData?.organization_id || '',
+      organization_mode: initialData?.organization_mode || 'existing',
+      organization_id: preselectedOrganization || initialData?.organization_id || null,
       purchase_influence: initialData?.purchase_influence || 'Unknown',
       decision_authority: initialData?.decision_authority || 'Gatekeeper',
       role: initialData?.role || null,

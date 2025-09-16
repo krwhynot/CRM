@@ -7,8 +7,11 @@ import {
   OrganizationsDataDisplay,
   OrganizationDialogs,
 } from '@/features/organizations'
-import { OrganizationsErrorBoundary } from '@/components/error-boundaries/QueryErrorBoundary'
-import { OrganizationManagementTemplate } from '@/components/templates/EntityManagementTemplate'
+// TODO: Re-implement error boundary after component consolidation
+import { PageLayout } from '@/components/layout/PageLayout'
+import { PageHeader } from '@/components/layout/PageHeader'
+import { ContentSection } from '@/components/layout/ContentSection'
+import { FilterLayoutProvider } from '@/contexts/FilterLayoutContext'
 
 function OrganizationsPage() {
   const { data: organizations = [], isLoading, error, isError } = useOrganizations()
@@ -33,40 +36,48 @@ function OrganizationsPage() {
   const { initialData: editFormInitialData } = useOrganizationFormData(selectedOrganization)
 
   return (
-    <OrganizationsErrorBoundary>
-      <OrganizationManagementTemplate
-        entityCount={organizations.length}
-        onAddClick={openCreateDialog}
-      >
-        <OrganizationsDataDisplay
-          isLoading={isLoading}
-          isError={isError}
-          error={error}
-          organizations={organizations}
-          onEdit={openEditDialog}
-          onDelete={openDeleteDialog}
-          onRefresh={refreshOrganizations}
-        />
+    <FilterLayoutProvider>
+      <PageLayout>
+          <PageHeader
+            title="Organizations"
+            description={`Manage ${organizations.length} organizations in your CRM`}
+            action={{
+              label: "Add Organization",
+              onClick: openCreateDialog
+            }}
+          />
 
-        <OrganizationDialogs
-          isCreateDialogOpen={isCreateDialogOpen}
-          isEditDialogOpen={isEditDialogOpen}
-          isDeleteDialogOpen={isDeleteDialogOpen}
-          selectedOrganization={selectedOrganization}
-          editFormInitialData={editFormInitialData}
-          onCreateSubmit={handleCreate}
-          onEditSubmit={handleUpdate}
-          onDeleteConfirm={handleDelete}
-          onCreateDialogChange={closeCreateDialog}
-          onEditDialogChange={closeEditDialog}
-          onDeleteDialogChange={closeDeleteDialog}
-          onDeleteCancel={closeDeleteDialog}
-          isCreating={isCreating}
-          isUpdating={isUpdating}
-          isDeleting={isDeleting}
-        />
-      </OrganizationManagementTemplate>
-    </OrganizationsErrorBoundary>
+          <ContentSection>
+            <OrganizationsDataDisplay
+              isLoading={isLoading}
+              isError={isError}
+              error={error}
+              organizations={organizations}
+              onEdit={openEditDialog}
+              onDelete={openDeleteDialog}
+              onRefresh={refreshOrganizations}
+            />
+          </ContentSection>
+
+          <OrganizationDialogs
+            isCreateDialogOpen={isCreateDialogOpen}
+            isEditDialogOpen={isEditDialogOpen}
+            isDeleteDialogOpen={isDeleteDialogOpen}
+            selectedOrganization={selectedOrganization}
+            editFormInitialData={editFormInitialData}
+            onCreateSubmit={handleCreate}
+            onEditSubmit={handleUpdate}
+            onDeleteConfirm={handleDelete}
+            onCreateDialogChange={closeCreateDialog}
+            onEditDialogChange={closeEditDialog}
+            onDeleteDialogChange={closeDeleteDialog}
+            onDeleteCancel={closeDeleteDialog}
+            isCreating={isCreating}
+            isUpdating={isUpdating}
+            isDeleting={isDeleting}
+          />
+        </PageLayout>
+    </FilterLayoutProvider>
   )
 }
 

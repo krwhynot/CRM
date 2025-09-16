@@ -87,11 +87,26 @@ module.exports = {
     
     // CRM Architecture Enforcement Rules
     'no-restricted-imports': ['error', {
-      paths: [{
-        name: '@supabase/supabase-js',
-        importNames: ['createClient'],
-        message: 'Use feature-specific hooks instead of direct Supabase calls in components. Import supabase from existing hook files only.'
-      }],
+      paths: [
+        {
+          name: '@supabase/supabase-js',
+          importNames: ['createClient'],
+          message: 'Use feature-specific hooks instead of direct Supabase calls in components. Import supabase from existing hook files only.'
+        },
+        // Component organization rules - moved components guidance
+        {
+          name: '@/components/ChartCard',
+          message: 'ChartCard has been moved to @/features/dashboard/components/ChartCard'
+        },
+        {
+          name: '@/components/QuickActions',
+          message: 'QuickActions has been moved to @/features/dashboard/components/QuickActions'
+        },
+        {
+          name: '@/components/StatsCards',
+          message: 'StatsCards has been moved to @/features/dashboard/components/StatsCards'
+        }
+      ],
       patterns: [
         {
           group: ['@/components/forms/entity-select/specialized/*'],
@@ -114,8 +129,50 @@ module.exports = {
           group: ['@/components/ui/simple-table'],
           message: 'Use DataTable from @/components/ui/DataTable instead of SimpleTable. SimpleTable is deprecated after DataTable unification migration.'
         },
+        // Strategic shared component exceptions for migration
+        {
+          group: ['@/features/*/components/Bulk*'],
+          message: 'Bulk action components have been moved to shared location. Import from @/components/bulk-actions/* instead.'
+        },
+        {
+          group: ['@/features/organizations/components/BulkActionsToolbar', '@/features/organizations/components/BulkDeleteDialog'],
+          message: 'Bulk components have been moved to shared location. Import from @/components/bulk-actions/* instead.'
+        },
+        // Component organization rules - prevent cross-feature component imports
+        {
+          group: ['../features/*/components/*', '../../features/*/components/*'],
+          message: 'Do not import feature-specific components from other features. Move to shared components if needed across features.'
+        },
+        {
+          group: ['@/features/*/components/*'],
+          message: 'Feature-specific imports should use relative paths within the same feature, or import from @/components/* for shared functionality.'
+        }
       ]
     }],
+
+    // Component organization enforcement (import plugin not available)
+    // Note: These rules would require eslint-plugin-import to be installed
+    // 'import/no-restricted-paths': [
+    //   'error',
+    //   {
+    //     zones: [
+    //       {
+    //         target: './src/components',
+    //         from: './src/features',
+    //         message: 'Shared components should not import from feature directories.'
+    //       },
+    //       {
+    //         target: './src/features/*/!(index.ts)',
+    //         from: './src/features',
+    //         except: ['./src/features/*/index.ts'],
+    //         message: 'Features should not directly import from other features.'
+    //       }
+    //     ]
+    //   }
+    // ],
+
+    // Component file naming enforcement would require eslint-plugin-filenames
+    // 'filenames/match-exported': ['error', 'pascal', '\\.(tsx|ts)$'],
     
     // State Management Architecture Rules
     'no-restricted-syntax': [

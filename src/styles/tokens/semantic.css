@@ -28,10 +28,10 @@
   /* Brand Color Semantic Mappings */
   --primary: var(--mfb-green-hsl);        /* MFB Green → Primary Brand Color */
   --primary-foreground: 0 0% 98%;
-  --primary-50: 95 60% 95%;
-  --primary-100: 95 65% 90%;
-  --primary-400: 95 68% 48%;
-  --primary-600: 95 75% 42%;
+  --primary-50: var(--mfb-green-subtle-hsl);   /* References MFB Green subtle variant */
+  --primary-100: var(--mfb-green-light-hsl);    /* References MFB Green light variant */
+  --primary-400: var(--mfb-green-hsl);          /* References MFB Green base */
+  --primary-600: var(--mfb-green-active-hsl);   /* References MFB Green active variant */
 
   --secondary: var(--mfb-clay-hsl);       /* MFB Clay → Secondary Brand Color */
   --secondary-foreground: 0 0% 98%;
@@ -126,53 +126,21 @@
   --key-partner: linear-gradient(45deg, hsl(142 71% 45%), hsl(160 84% 39%)); /* Key Partner → Green Gradient */
 
   /*
-   * Unified Spacing Semantic Mappings
-   * Maps primitive spacing scale to semantic meanings for components and layout
+   * Essential Brand Spacing Semantic Mappings
+   * Only brand-specific spacing that requires tokens
+   * Standard spacing should use Tailwind classes (p-4, m-6, gap-4, etc.)
    */
 
-  /* Component-level semantic spacing */
-  --space-component-xs: var(--space-1);      /* 4px - Tight component spacing */
-  --space-component-sm: var(--space-2);      /* 8px - Small component spacing */
-  --space-component-md: var(--space-4);      /* 16px - Default component spacing */
-  --space-component-lg: var(--space-6);      /* 24px - Large component spacing */
-  --space-component-xl: var(--space-8);      /* 32px - Extra large component spacing */
-
-  /* Section-level semantic spacing */
-  --space-section-xs: var(--space-2);        /* 8px - Tight section gaps */
-  --space-section-sm: var(--space-4);        /* 16px - Small section gaps */
-  --space-section-md: var(--space-6);        /* 24px - Default section gaps */
-  --space-section-lg: var(--space-8);        /* 32px - Large section gaps */
-  --space-section-xl: var(--space-12);       /* 48px - Extra large section gaps */
-
-  /* Card-specific semantic spacing */
-  --space-card-padding-sm: var(--space-3);   /* 12px - Small card padding */
-  --space-card-padding: var(--space-6);      /* 24px - Default card padding */
-  --space-card-padding-lg: var(--space-8);   /* 32px - Large card padding */
-  --space-card-gap: var(--space-4);          /* 16px - Gap between cards */
-
-  /* Button semantic spacing */
-  --space-button-padding-x: var(--space-4);  /* 16px - Button horizontal padding */
-  --space-button-padding-y: var(--space-2);  /* 8px - Button vertical padding */
-  --space-button-gap: var(--space-2);        /* 8px - Gap between buttons */
-
-  /* Form semantic spacing */
-  --space-form-field-gap: var(--space-4);    /* 16px - Gap between form fields */
-  --space-form-section-gap: var(--space-6);  /* 24px - Gap between form sections */
-  --space-form-padding: var(--space-6);      /* 24px - Form container padding */
-
-  /* Dashboard semantic spacing */
-  --space-dashboard-grid-gap: var(--space-6); /* 24px - Dashboard grid gaps */
-  --space-kpi-padding: var(--space-6);       /* 24px - KPI card padding */
-  --space-chart-margin: var(--space-4);      /* 16px - Chart margins */
+  /* Brand-specific semantic spacing */
+  --space-card-padding: var(--space-card-padding);      /* 24px - Professional card padding */
+  --space-dashboard-grid-gap: var(--space-dashboard-grid-gap); /* 24px - Dashboard grid consistency */
 
   /*
-   * Semantic Radius Mappings
-   * Maps primitive radius to component meanings
+   * Essential Brand Radius Mappings
+   * Only brand-specific radius that provides professional appearance
+   * Standard radius should use Tailwind classes (rounded-md, rounded-lg, etc.)
    */
-  --radius-button: var(--radius-md);          /* Button radius */
-  --radius-card: var(--radius-xl);            /* Card radius */
-  --radius-dialog: var(--radius-2xl);         /* Dialog radius */
-  --radius-input: var(--radius-md);           /* Input radius */
+  --radius-card: var(--radius-card);          /* Professional card radius (12px) */
 
   /*
    * Semantic Shadow Mappings
@@ -186,15 +154,22 @@
   --shadow-popover: var(--shadow-lg);         /* Popover elevation */
 
   /*
-   * Semantic Typography Mappings
-   * Maps primitive typography to semantic meanings
+   * MFB Brand Typography Semantic Mappings
+   * Maps MFB brand typography to semantic meanings while using Tailwind defaults
    */
-  --font-size-display: var(--font-size-4xl);   /* Large display text */
-  --font-size-title: var(--font-size-2xl);     /* Page/section titles */
-  --font-size-heading: var(--font-size-lg);    /* Headings */
-  --font-size-body: var(--font-size-base);     /* Body text */
-  --font-size-caption: var(--font-size-sm);    /* Captions and labels */
-  --font-size-small: var(--font-size-xs);      /* Small text */
+  --font-family-body: var(--font-family-nunito);  /* MFB brand font for all body text */
+  --font-family-heading: var(--font-family-nunito); /* MFB brand font for headings */
+  --font-size-body: var(--font-size-body-mfb);    /* MFB brand body text size (15px) */
+  --text-heading: var(--text-heading-mfb);        /* MFB Olive for headings */
+
+  /*
+   * NOTE: Other typography sizes now use Tailwind defaults:
+   * - Display text: use Tailwind text-4xl class
+   * - Page titles: use Tailwind text-2xl class
+   * - Headings: use Tailwind text-lg class
+   * - Captions: use Tailwind text-sm class
+   * - Small text: use Tailwind text-xs class
+   */
 
   /*
    * AAA Text Contrast Semantic Mappings
@@ -223,35 +198,16 @@
   --chart-accent: 262 83% 58%;      /* Purple accent */
 
   /*
-   * Common Layout Semantic Dimensions
-   * Maps to semantic layout meanings
+   * Essential Brand Layout Dimensions
+   * iPad-optimized and professional appearance requirements
    */
-  --header-height: 4rem;
-  --dialog-max-height: min(80vh, 40rem); /* Responsive with 640px cap */
-  --search-width-sm: 12rem;
-  --search-width-lg: 18rem;
-  --filter-width-sm: 8.75rem; /* 140px */
-  --filter-width-md: 11.25rem; /* 180px */
-  --table-min-width-xs: 5rem;
-  --table-min-width-sm: 6rem;
-  --table-min-width-md: 7rem;
-  --table-min-width-lg: 14rem;
+  --dialog-max-height: min(80vh, 40rem); /* iPad-optimized responsive dialog height */
 
-  /* Chart and Feed Heights */
-  --chart-height: 15rem; /* 240px - reduced from 300px */
-  --chart-height-sm: 12.5rem; /* 200px - reduced from 250px */
-  --chart-height-lg: 17.5rem; /* 280px - reduced from 380px */
-  --activity-feed-height: 25rem; /* 400px */
-  --kanban-column-min-width: 8.125rem; /* 130px */
-  --kanban-content-height: 11.25rem; /* 180px */
-
-  /* Dashboard Semantic Shadows */
-  --dashboard-shadow: 0 2px 8px rgba(141, 198, 63, 0.15);
-  --quick-action-shadow: 0 2px 4px rgba(141, 198, 63, 0.2);
-  --quick-action-shadow-hover: 0 4px 8px rgba(141, 198, 63, 0.3);
-
-  /* Header Shadow */
-  --header-shadow: 0 2px 8px rgba(141, 198, 63, 0.15);
+  /*
+   * Note: Standard layout dimensions, shadows, and typography now use Tailwind classes.
+   * Components should use Tailwind utilities (w-60, h-96, shadow-lg, text-sm, etc.)
+   * Only essential brand-specific tokens retained above.
+   */
 }
 
 /*
@@ -270,10 +226,10 @@
   /* Brand Color Semantic Mappings - Dark Mode */
   --primary: var(--mfb-green-hsl);        /* Still maps to MFB Green (dark variant) */
   --primary-foreground: 0 0% 98%;
-  --primary-50: 95 60% 15%;
-  --primary-100: 95 65% 20%;
-  --primary-400: 95 68% 60%;
-  --primary-600: 95 75% 50%;
+  --primary-50: var(--mfb-green-subtle-hsl);   /* References MFB Green subtle variant (dark mode) */
+  --primary-100: var(--mfb-green-light-hsl);    /* References MFB Green light variant (dark mode) */
+  --primary-400: var(--mfb-green-hsl);          /* References MFB Green base (dark mode) */
+  --primary-600: var(--mfb-green-active-hsl);   /* References MFB Green active variant (dark mode) */
 
   --secondary: var(--mfb-clay-hsl);       /* Still maps to MFB Clay (dark variant) */
   --secondary-foreground: 0 0% 98%;

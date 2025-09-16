@@ -9,8 +9,8 @@ import {
   type WeeklyTimeRangeType
 } from '@/types/shared-filters.types'
 
-// Mock shared filter components
-vi.mock('@/components/filters/shared', () => ({
+// Mock consolidated filter components
+vi.mock('@/components/data-table/filters', () => ({
   GenericWeeksFilter: ({ value, onChange }: any) => (
     <div data-testid="weeks-filter">
       <select 
@@ -150,12 +150,7 @@ const OpportunitiesFilters = createMockFilterComponent('opportunities', [
   { value: 'needs_follow_up', label: 'Needs Follow Up' }
 ])
 
-const InteractionsFilters = createMockFilterComponent('interactions', [
-  { value: 'follow_ups_due', label: 'Follow-ups Due' },
-  { value: 'overdue_actions', label: 'Overdue Actions' },
-  { value: 'this_week_activity', label: 'This Week Activity' },
-  { value: 'high_value_interactions', label: 'High Value Interactions' }
-])
+// InteractionsFilters removed - now uses ResponsiveFilterWrapper
 
 const ProductsFilters = createMockFilterComponent('products', [
   { value: 'promoted_this_week', label: 'Promoted This Week' },
@@ -183,7 +178,7 @@ const mockPrincipals = [
   { id: 'p3', name: 'Principal 3', company: 'Company 3' }
 ]
 
-describe('Phase 7: Cross-Page Filter Consistency Tests', () => {
+describe('Cross-Page Filter Consistency Tests - Simplified Architecture', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
@@ -191,7 +186,7 @@ describe('Phase 7: Cross-Page Filter Consistency Tests', () => {
   describe('Weekly Filter Pattern Consistency', () => {
     const testFeatures = [
       { name: 'opportunities', component: OpportunitiesFilters },
-      { name: 'interactions', component: InteractionsFilters },
+      // Note: interactions now uses ResponsiveFilterWrapper, not a dedicated filter component
       { name: 'products', component: ProductsFilters },
       { name: 'organizations', component: OrganizationsFilters },
       { name: 'contacts', component: ContactsFilters }
@@ -373,25 +368,7 @@ describe('Phase 7: Cross-Page Filter Consistency Tests', () => {
       })
     })
 
-    it('should provide appropriate quick view options for interactions', async () => {
-      const user = userEvent.setup()
-      const mockOnFiltersChange = vi.fn()
-      
-      render(
-        <InteractionsFilters
-          filters={DEFAULT_WEEKLY_FILTERS}
-          onFiltersChange={mockOnFiltersChange}
-          principals={mockPrincipals}
-          isLoading={false}
-        />
-      )
-
-      // Verify interaction-specific options exist
-      expect(screen.getByText('Follow-ups Due')).toBeInTheDocument()
-      expect(screen.getByText('Overdue Actions')).toBeInTheDocument()
-      expect(screen.getByText('This Week Activity')).toBeInTheDocument()
-      expect(screen.getByText('High Value Interactions')).toBeInTheDocument()
-    })
+    // Note: Interactions test removed - now uses ResponsiveFilterWrapper instead of dedicated filter component
 
     it('should provide appropriate quick view options for products', () => {
       render(
@@ -454,7 +431,7 @@ describe('Phase 7: Cross-Page Filter Consistency Tests', () => {
 
       const testFeatures = [
         { name: 'opportunities', component: OpportunitiesFilters },
-        { name: 'interactions', component: InteractionsFilters },
+        // Note: interactions uses ResponsiveFilterWrapper, not a dedicated component
         { name: 'products', component: ProductsFilters },
         { name: 'organizations', component: OrganizationsFilters },
         { name: 'contacts', component: ContactsFilters }
@@ -529,7 +506,7 @@ describe('Phase 7: Cross-Page Filter Consistency Tests', () => {
 
       const testFeatures = [
         { name: 'opportunities', component: OpportunitiesFilters },
-        { name: 'interactions', component: InteractionsFilters },
+        // Note: interactions uses ResponsiveFilterWrapper, not a dedicated component
         { name: 'products', component: ProductsFilters },
         { name: 'organizations', component: OrganizationsFilters },
         { name: 'contacts', component: ContactsFilters }
@@ -564,8 +541,8 @@ describe('Phase 7: Cross-Page Filter Consistency Tests', () => {
       })
 
       const testFeatures = [
-        { name: 'opportunities', component: OpportunitiesFilters },
-        { name: 'interactions', component: InteractionsFilters }
+        { name: 'opportunities', component: OpportunitiesFilters }
+        // Note: interactions uses ResponsiveFilterWrapper, not a dedicated component
       ]
 
       testFeatures.forEach(({ name, component: FilterComponent }) => {
@@ -615,40 +592,6 @@ describe('Phase 7: Cross-Page Filter Consistency Tests', () => {
       })
     })
 
-    it('should maintain filter structure integrity during updates', async () => {
-      const user = userEvent.setup()
-      const mockOnFiltersChange = vi.fn()
-      
-      const initialFilters = {
-        ...DEFAULT_WEEKLY_FILTERS,
-        timeRange: 'last_month' as WeeklyTimeRangeType,
-        principal: 'p2'
-      }
-      
-      render(
-        <InteractionsFilters
-          filters={initialFilters}
-          onFiltersChange={mockOnFiltersChange}
-          principals={mockPrincipals}
-          isLoading={false}
-        />
-      )
-
-      const quickViewSelect = screen.getByTestId('quickview-select')
-      
-      await user.selectOptions(quickViewSelect, 'follow_ups_due')
-      
-      // Verify the update maintains all existing properties while adding the new one
-      expect(mockOnFiltersChange).toHaveBeenCalledWith({
-        ...initialFilters,
-        quickView: 'follow_ups_due'
-      })
-      
-      // Verify no properties were lost
-      const [updateCall] = mockOnFiltersChange.mock.calls[0]
-      expect(updateCall.timeRange).toBe('last_month')
-      expect(updateCall.principal).toBe('p2')
-      expect(updateCall.quickView).toBe('follow_ups_due')
-    })
+    // Note: Interactions filter structure test removed - now uses ResponsiveFilterWrapper
   })
 })

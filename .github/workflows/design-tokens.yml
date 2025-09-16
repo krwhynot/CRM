@@ -1,0 +1,348 @@
+name: Design Tokens Governance
+
+on:
+  push:
+    branches: [ main, develop, feature/architecture-simplification ]
+    paths:
+      - 'src/index.css'
+      - 'src/styles/**/*.css'
+      - 'scripts/validate-design-tokens.sh'
+      - 'scripts/token-changelog.js'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/index.css'
+      - 'src/styles/**/*.css'
+      - 'scripts/validate-design-tokens.sh'
+      - 'scripts/token-changelog.js'
+
+jobs:
+  design-token-governance:
+    name: Design Token Validation & Governance
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Need previous commit for change tracking
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Make scripts executable
+        run: |
+          chmod +x scripts/validate-design-tokens.sh
+          chmod +x scripts/token-changelog.js
+
+      - name: Run Design Token Validation
+        id: validation
+        run: |
+          echo "Running comprehensive design token validation..."
+          ./scripts/validate-design-tokens.sh
+
+      - name: Run Token Governance Checks
+        id: governance
+        run: |
+          echo "Running token governance and change tracking..."
+          node scripts/token-changelog.js
+
+      - name: Run Performance Analysis
+        id: performance
+        run: |
+          echo "Running token performance analysis..."
+          npm run tokens:analyze
+          npm run tokens:optimize
+
+          # Check if optimization meets target (25% reduction)
+          if [ -f "dist/optimization-report.json" ]; then
+            REDUCTION=$(node -e "const report = require('./dist/optimization-report.json'); console.log(report.stats.reductionPercent);")
+            if [ "$REDUCTION" -ge 20 ]; then
+              echo "✅ Performance target achieved: ${REDUCTION}% reduction"
+            else
+              echo "⚠️ Performance target not met: ${REDUCTION}% reduction (20% minimum)"
+            fi
+          fi
+
+      - name: Check for governance violations
+        if: failure()
+        run: |
+          echo "❌ Design token governance checks failed!"
+          echo "Please review the output above for specific violations."
+          echo ""
+          echo "Common issues and fixes:"
+          echo "1. Primitive tokens defined outside src/index.css"
+          echo "   → Move primitive definitions to src/index.css"
+          echo ""
+          echo "2. Circular token references detected"
+          echo "   → Remove self-referencing token definitions"
+          echo ""
+          echo "3. Components bypassing semantic layer"
+          echo "   → Use semantic tokens (--primary) instead of primitives (--primary-500)"
+          echo ""
+          echo "4. Duplicate token definitions"
+          echo "   → Consolidate duplicate definitions following hierarchy rules"
+          echo ""
+          echo "5. WCAG contrast violations"
+          echo "   → Ensure minimum 4.5:1 contrast ratio (AA) or 7:1 (AAA)"
+          echo ""
+          exit 1
+
+      - name: Upload token exports (on success)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: design-tokens-export-${{ github.sha }}
+          path: design-tokens-export/
+          retention-days: 30
+
+      - name: Upload performance reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: token-performance-reports-${{ github.sha }}
+          path: |
+            dist/token-analysis-report.json
+            dist/token-analysis-report.html
+            dist/optimization-report.json
+            dist/optimization-report.html
+            dist/critical-tokens.css
+            dist/consolidated-tokens.css
+          retention-days: 30
+
+      - name: Comment PR with governance results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // Check if changelog was updated
+            let changelogContent = '';
+            try {
+              if (fs.existsSync('DESIGN_TOKENS_CHANGELOG.md')) {
+                changelogContent = fs.readFileSync('DESIGN_TOKENS_CHANGELOG.md', 'utf8');
+              }
+            } catch (error) {
+              console.log('No changelog found');
+            }
+
+            // Check if documentation was updated
+            let docContent = '';
+            try {
+              if (fs.existsSync('DESIGN_TOKENS.md')) {
+                docContent = fs.readFileSync('DESIGN_TOKENS.md', 'utf8');
+              }
+            } catch (error) {
+              console.log('No documentation found');
+            }
+
+            // Read performance report if available
+            let performanceData = '';
+            try {
+              if (fs.existsSync('dist/optimization-report.json')) {
+                const perfReport = JSON.parse(fs.readFileSync('dist/optimization-report.json', 'utf8'));
+                performanceData = `
+            ### 🚀 Performance Analysis
+            - **Bundle Size Reduction**: ${perfReport.stats.reductionPercent}% (Target: 20%+)
+            - **Unused Tokens Removed**: ${perfReport.stats.removedTokens}
+            - **Duplicates Eliminated**: ${perfReport.stats.duplicatesRemoved}
+            - **Critical Tokens Inlined**: ${perfReport.stats.inlinedTokens}
+            - **Optimization Status**: ${perfReport.performance.targetAchieved ? '✅ Target Achieved' : '⚠️ Below Target'}`;
+              }
+            } catch (error) {
+              performanceData = '\n            ### 🚀 Performance Analysis\n            - ⚠️ Performance report not available';
+            }
+
+            const body = `## 🎨 Design Token Governance Report
+
+            ### ✅ Validation Status
+            - ✅ Token hierarchy validation passed
+            - ✅ WCAG contrast compliance verified
+            - ✅ Governance rules enforced
+            - ✅ No circular references detected
+
+            ### 📊 Changes Summary
+            ${changelogContent.length > 0 ? '- 📝 Token changelog updated' : '- ℹ️ No token changes detected'}
+            ${docContent.length > 0 ? '- 📚 Documentation regenerated' : ''}
+            ${performanceData}
+
+            ### 🎯 Design Tool Exports
+            - ✅ JSON export generated for Figma/Sketch integration
+            - ✅ CSS custom properties exported
+            - ✅ SCSS variables generated
+
+            ### 🏛️ Governance Compliance
+            All design tokens follow the strict four-tier hierarchy:
+            1. **Primitives** (src/index.css) - Base values only
+            2. **Semantic** (semantic-tokens.css) - Meaningful abstractions
+            3. **Components** (component-tokens.css) - Component-specific tokens
+            4. **Features** (advanced files) - Specialized use cases
+
+            The design system maintains single source of truth with no duplicate definitions.
+
+            ---
+            *This report was generated automatically by the Design Token Governance system.*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+  wcag-accessibility-audit:
+    name: WCAG Accessibility Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: design-token-governance
+    if: success()
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run WCAG Contrast Validation
+        run: |
+          echo "🔍 Running comprehensive WCAG accessibility audit..."
+
+          # Extract token validation score from script
+          VALIDATION_OUTPUT=$(./scripts/validate-design-tokens.sh)
+          echo "$VALIDATION_OUTPUT"
+
+          # Check if score meets threshold (≥85/140 for good compliance)
+          SCORE=$(echo "$VALIDATION_OUTPUT" | grep -o "Score: [0-9]*/140" | grep -o "[0-9]*" | head -1)
+
+          if [ -n "$SCORE" ] && [ "$SCORE" -ge 85 ]; then
+            echo "✅ WCAG compliance score: $SCORE/140 (GOOD or better)"
+          else
+            echo "❌ WCAG compliance score: ${SCORE:-0}/140 (Below threshold)"
+            echo "Minimum required score: 85/140"
+            exit 1
+          fi
+
+      - name: Generate accessibility report
+        if: always()
+        run: |
+          echo "📊 Generating accessibility compliance report..."
+
+          cat > accessibility-report.md << EOF
+          # WCAG Accessibility Compliance Report
+
+          Generated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+
+          ## Overview
+          This report validates design token contrast ratios against WCAG 2.1 AA/AAA standards.
+
+          ## Validation Results
+          - **MFB Brand Colors**: Validated against light/dark backgrounds
+          - **Priority System Colors**: Critical accessibility validation
+          - **Semantic Colors**: Success, warning, destructive, info tokens
+          - **Text Contrast**: Primary, body, muted, disabled text validation
+
+          ## Standards Applied
+          - **WCAG AA**: Minimum 4.5:1 contrast ratio (normal text)
+          - **WCAG AAA**: Minimum 7:1 contrast ratio (enhanced)
+          - **Large Text**: Minimum 3:1 (AA) / 4.5:1 (AAA)
+
+          ## Automated Validation
+          All design tokens are automatically validated for:
+          1. Color contrast ratios
+          2. Hierarchy compliance
+          3. Duplicate prevention
+          4. Circular reference detection
+
+          For detailed validation results, see the Design Token Governance job output.
+          EOF
+
+      - name: Upload accessibility report
+        uses: actions/upload-artifact@v4
+        with:
+          name: wcag-accessibility-report-${{ github.sha }}
+          path: accessibility-report.md
+          retention-days: 30
+
+  design-tool-integration:
+    name: Design Tool Integration
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: design-token-governance
+    if: success() && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate design tool exports
+        run: |
+          echo "🎨 Generating exports for design tools..."
+          node scripts/token-changelog.js
+
+      - name: Validate export files
+        run: |
+          echo "✅ Validating generated export files..."
+
+          if [ ! -f "design-tokens-export/design-tokens.json" ]; then
+            echo "❌ JSON export missing"
+            exit 1
+          fi
+
+          if [ ! -f "design-tokens-export/design-tokens.css" ]; then
+            echo "❌ CSS export missing"
+            exit 1
+          fi
+
+          if [ ! -f "design-tokens-export/design-tokens.scss" ]; then
+            echo "❌ SCSS export missing"
+            exit 1
+          fi
+
+          echo "✅ All design tool exports generated successfully"
+
+      - name: Upload design tool exports
+        uses: actions/upload-artifact@v4
+        with:
+          name: design-tool-exports-main-${{ github.sha }}
+          path: design-tokens-export/
+          retention-days: 90  # Keep main branch exports longer
+
+      - name: Create release assets (on tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          echo "📦 Preparing release assets..."
+          tar -czf design-tokens-${{ github.ref_name }}.tar.gz design-tokens-export/
+          echo "✅ Release assets prepared"
+
+      - name: Upload to release (on tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/upload-artifact@v4
+        with:
+          name: design-tokens-release-${{ github.ref_name }}
+          path: design-tokens-${{ github.ref_name }}.tar.gz
+          retention-days: 365

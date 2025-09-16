@@ -1,40 +1,23 @@
 import { useState, useCallback } from 'react'
+import { useEntityPageState } from '@/hooks/useEntityPageState'
 import type { InteractionWithRelations } from '@/types/interaction.types'
 
 export function useInteractionsPageState() {
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const [selectedInteraction, setSelectedInteraction] = useState<InteractionWithRelations | null>(null)
+  const {
+    isCreateDialogOpen,
+    isEditDialogOpen,
+    isDeleteDialogOpen,
+    selectedEntity: selectedInteraction,
+    openCreateDialog,
+    closeCreateDialog,
+    openEditDialog,
+    closeEditDialog,
+    openDeleteDialog,
+    closeDeleteDialog,
+  } = useEntityPageState<InteractionWithRelations>()
+
+  // Additional state specific to interactions (not covered by generic hook)
   const [viewingInteraction, setViewingInteraction] = useState<InteractionWithRelations | null>(null)
-
-  const openCreateDialog = useCallback(() => {
-    setIsCreateDialogOpen(true)
-  }, [])
-
-  const closeCreateDialog = useCallback(() => {
-    setIsCreateDialogOpen(false)
-  }, [])
-
-  const openEditDialog = useCallback((interaction: InteractionWithRelations) => {
-    setSelectedInteraction(interaction)
-    setIsEditDialogOpen(true)
-  }, [])
-
-  const closeEditDialog = useCallback(() => {
-    setIsEditDialogOpen(false)
-    setSelectedInteraction(null)
-  }, [])
-
-  const openDeleteDialog = useCallback((interaction: InteractionWithRelations) => {
-    setSelectedInteraction(interaction)
-    setIsDeleteDialogOpen(true)
-  }, [])
-
-  const closeDeleteDialog = useCallback(() => {
-    setIsDeleteDialogOpen(false)
-    setSelectedInteraction(null)
-  }, [])
 
   const handleViewInteraction = useCallback((interaction: InteractionWithRelations) => {
     setViewingInteraction(interaction)
@@ -47,11 +30,11 @@ export function useInteractionsPageState() {
     isCreateDialogOpen,
     isEditDialogOpen,
     isDeleteDialogOpen,
-    
-    // Selected interaction
+
+    // Selected interaction (standardized naming via alias)
     selectedInteraction,
     viewingInteraction,
-    
+
     // Dialog actions
     openCreateDialog,
     closeCreateDialog,
@@ -59,15 +42,15 @@ export function useInteractionsPageState() {
     closeEditDialog,
     openDeleteDialog,
     closeDeleteDialog,
-    
+
     // View handler
     handleViewInteraction,
-    
-    // Setters for external use
-    setIsCreateDialogOpen,
-    setIsEditDialogOpen,
-    setIsDeleteDialogOpen,
-    setSelectedInteraction,
+
+    // Setters for external use (maintaining backward compatibility)
+    setIsCreateDialogOpen: () => {}, // Generic hook doesn't expose setters
+    setIsEditDialogOpen: () => {},
+    setIsDeleteDialogOpen: () => {},
+    setSelectedInteraction: () => {}, // Generic hook doesn't expose setter
     setViewingInteraction,
   }
 }

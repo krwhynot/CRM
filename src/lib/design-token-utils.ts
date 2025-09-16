@@ -13,8 +13,7 @@
  * - TypeScript definitions for enhanced IntelliSense
  * - Theme validation and accessibility compliance
  *
- * @see /src/lib/design-tokens.ts - Core design token definitions
- * @see /src/index.css - CSS variable definitions
+ * @see /src/index.css - Core CSS variable definitions
  */
 
 // =============================================================================
@@ -63,8 +62,8 @@ export interface ThemeValidationResult {
 }
 
 export interface DesignTokenKey {
-  spacing: keyof typeof import('./design-tokens').spacing
-  typography: keyof typeof import('./design-tokens').typography.fontSize
+  spacing: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  typography: 'xs' | 'sm' | 'base' | 'lg' | 'xl'
   colors: string // CSS variable names are dynamic
 }
 
@@ -630,5 +629,4 @@ export function createDesignTokenDebugger(): {
 // EXPORTS
 // =============================================================================
 
-// Re-export everything for easy access
-export * from './design-tokens'
+// Design token utilities - no re-exports needed

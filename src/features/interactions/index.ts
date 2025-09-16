@@ -3,7 +3,7 @@
 // Page Components
 export { InteractionsDataDisplay } from './components/InteractionsDataDisplay'
 export { InteractionsTable } from './components/InteractionsTable'
-export { InteractionsFilters } from './components/InteractionsFilters'
+export { InteractionsList } from './components/InteractionsList'
 export { InteractionsTableActions } from './components/InteractionsTableActions'
 
 // Timeline Components
@@ -30,3 +30,4 @@ export { useInteractionTimelineState } from './hooks/useInteractionTimelineState
 export { useInteractionTimelineActions } from './hooks/useInteractionTimelineActions'
 export { useInteractionTimelineItemActions } from './hooks/useInteractionTimelineItemActions'
 export { useInteractionTimelineItemFormatting } from './hooks/useInteractionTimelineItemFormatting'
+export { useInteractionsSelection } from './hooks/useInteractionsSelection'

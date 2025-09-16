@@ -8,6 +8,17 @@ export { useEntitySelectState } from './useEntitySelectState'
 export { useFormLayout } from './useFormLayout'
 export { useProgressiveDetails } from './useProgressiveDetails'
 
+// Generic Entity Hooks
+export { useEntitySelection, type UseEntitySelectionReturn } from './useEntitySelection'
+export { useEntityPageState, type UseEntityPageStateReturn } from './useEntityPageState'
+
+// Data Table Hooks
+export {
+  useStandardDataTable,
+  type StandardDataTableConfig,
+  type StandardDataTableReturn
+} from './useStandardDataTable'
+
 // File & Upload Hooks
 export { useFileUpload } from './useFileUpload'
 
@@ -21,3 +32,18 @@ export { useNavigationCounts } from './useNavigationCounts'
 
 // Dashboard & Health Hooks
 export { useHealthDashboardState } from './useHealthDashboardState'
+
+// Filter Layout Hooks
+export {
+  useFilterLayout,
+  useFilterLayoutExtended,
+  useFilterTrigger,
+  useFilterContainer,
+  useFilterModeSelector,
+  type FilterLayoutContextValue,
+  type FilterLayoutMode,
+  type FilterLayoutPreference,
+  type FilterLayoutState,
+  type FilterLayoutActions,
+  FilterLayoutUtils
+} from './useFilterLayout'

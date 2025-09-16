@@ -59,13 +59,13 @@ const dashboardCardVariants = cva(
       },
       variant: {
         default: "bg-card hover:bg-accent/5",
-        primary: "bg-primary/5 border-primary/20 hover:bg-primary/10",
-        success: "bg-green-50 border-green-200 hover:bg-green-100 dark:bg-green-950/20 dark:border-green-900/50 dark:hover:bg-green-950/30",
-        warning: "bg-yellow-50 border-yellow-200 hover:bg-yellow-100 dark:bg-yellow-950/20 dark:border-yellow-900/50 dark:hover:bg-yellow-950/30",
-        destructive: "bg-red-50 border-red-200 hover:bg-red-100 dark:bg-red-950/20 dark:border-red-900/50 dark:hover:bg-red-950/30"
+        primary: "border-primary/20 bg-primary/5 hover:bg-primary/10",
+        success: "border-green-200 bg-green-50 hover:bg-green-100 dark:border-green-900/50 dark:bg-green-950/20 dark:hover:bg-green-950/30",
+        warning: "border-yellow-200 bg-yellow-50 hover:bg-yellow-100 dark:border-yellow-900/50 dark:bg-yellow-950/20 dark:hover:bg-yellow-950/30",
+        destructive: "border-red-200 bg-red-50 hover:bg-red-100 dark:border-red-900/50 dark:bg-red-950/20 dark:hover:bg-red-950/30"
       },
       interactive: {
-        true: "cursor-pointer hover:shadow-md hover:scale-[1.02]",
+        true: "cursor-pointer hover:scale-[1.02] hover:shadow-md",
         false: ""
       }
     },
@@ -137,7 +137,7 @@ export function MetricCard({
     >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="flex items-center space-x-2">
-          <CardTitle className="text-sm font-medium truncate">{title}</CardTitle>
+          <CardTitle className="truncate text-sm font-medium">{title}</CardTitle>
           {badge && (
             <Badge variant={badge.variant || 'secondary'} className="text-xs">
               {badge.text}
@@ -146,21 +146,21 @@ export function MetricCard({
         </div>
         
         <div className="flex items-center space-x-1">
-          {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
+          {Icon && <Icon className="size-4 text-muted-foreground" />}
           
           {/* Actions Dropdown */}
           {(actions.length > 0 || onRefresh) && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <MoreHorizontal className="h-4 w-4" />
+                <Button variant="ghost" className="size-8 p-0">
+                  <MoreHorizontal className="size-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {onRefresh && (
                   <>
                     <DropdownMenuItem onClick={onRefresh}>
-                      <RefreshCw className="mr-2 h-4 w-4" />
+                      <RefreshCw className="mr-2 size-4" />
                       Refresh
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -168,7 +168,7 @@ export function MetricCard({
                 )}
                 {actions.map((action, index) => (
                   <DropdownMenuItem key={index} onClick={action.onClick}>
-                    {action.icon && <action.icon className="mr-2 h-4 w-4" />}
+                    {action.icon && <action.icon className="mr-2 size-4" />}
                     {action.label}
                   </DropdownMenuItem>
                 ))}
@@ -177,9 +177,9 @@ export function MetricCard({
           )}
           
           {href && (
-            <Button variant="ghost" className="h-8 w-8 p-0" asChild>
+            <Button variant="ghost" className="size-8 p-0" asChild>
               <a href={href} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="h-4 w-4" />
+                <ExternalLink className="size-4" />
               </a>
             </Button>
           )}
@@ -189,11 +189,11 @@ export function MetricCard({
       <CardContent>
         {loading ? (
           <div className="space-y-2">
-            <div className="h-8 bg-muted animate-pulse rounded" />
-            <div className="h-4 bg-muted animate-pulse rounded w-1/2" />
+            <div className="h-8 animate-pulse rounded bg-muted" />
+            <div className="h-4 w-1/2 animate-pulse rounded bg-muted" />
           </div>
         ) : error ? (
-          <div className="text-destructive text-sm">{error}</div>
+          <div className="text-sm text-destructive">{error}</div>
         ) : (
           <div className="space-y-2">
             <div className="text-2xl font-bold">
@@ -263,7 +263,7 @@ export function ProgressCard({
     <Card className={cn(dashboardCardVariants({ size, variant }), className)} {...props}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
+        {Icon && <Icon className="size-4 text-muted-foreground" />}
       </CardHeader>
       
       <CardContent className="space-y-3">
@@ -294,7 +294,7 @@ export function ProgressCard({
                 <div className="flex items-center space-x-2">
                   {segment.color && (
                     <div 
-                      className="w-2 h-2 rounded-full" 
+                      className="size-2 rounded-full" 
                       style={{ backgroundColor: segment.color }}
                     />
                   )}
@@ -371,7 +371,7 @@ export function ActivityCard({
         <div>
           <CardTitle className="text-sm font-medium">{title}</CardTitle>
           {subtitle && (
-            <CardDescription className="text-xs mt-1">{subtitle}</CardDescription>
+            <CardDescription className="mt-1 text-xs">{subtitle}</CardDescription>
           )}
         </div>
         
@@ -384,8 +384,8 @@ export function ActivityCard({
       
       <CardContent className="space-y-3">
         {displayActivities.length === 0 ? (
-          <div className="text-center py-6 text-muted-foreground">
-            <Activity className="h-8 w-8 mx-auto mb-2 opacity-50" />
+          <div className="py-6 text-center text-muted-foreground">
+            <Activity className="mx-auto mb-2 size-8 opacity-50" />
             <p className="text-sm">No recent activity</p>
           </div>
         ) : (
@@ -397,15 +397,15 @@ export function ActivityCard({
                 <div key={activity.id} className="flex items-start space-x-3">
                   <div className="relative">
                     {activity.user?.avatar ? (
-                      <Avatar className="h-6 w-6">
+                      <Avatar className="size-6">
                         <AvatarImage src={activity.user.avatar} />
                         <AvatarFallback className="text-xs">
                           {activity.user.name.split(' ').map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
                     ) : (
-                      <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center">
-                        <IconComponent className="h-3 w-3" />
+                      <div className="flex size-6 items-center justify-center rounded-full bg-muted">
+                        <IconComponent className="size-3" />
                       </div>
                     )}
                     
@@ -417,9 +417,9 @@ export function ActivityCard({
                     )}
                   </div>
                   
-                  <div className="flex-1 min-w-0 space-y-1">
+                  <div className="min-w-0 flex-1 space-y-1">
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium truncate">{activity.title}</p>
+                      <p className="truncate text-sm font-medium">{activity.title}</p>
                       <div className="flex items-center space-x-1">
                         {activity.priority && activity.priority !== 'medium' && (
                           <Badge 
@@ -439,7 +439,7 @@ export function ActivityCard({
                     </div>
                     
                     {activity.description && (
-                      <p className="text-xs text-muted-foreground truncate">
+                      <p className="truncate text-xs text-muted-foreground">
                         {activity.description}
                       </p>
                     )}
@@ -501,18 +501,18 @@ export function QuickActionsCard({
               onClick={action.onClick}
               disabled={action.disabled}
             >
-              <div className="flex items-center space-x-2 w-full">
-                <action.icon className="h-4 w-4 shrink-0" />
-                <div className="flex-1 text-left min-w-0">
-                  <div className="text-sm font-medium truncate">{action.label}</div>
+              <div className="flex w-full items-center space-x-2">
+                <action.icon className="size-4 shrink-0" />
+                <div className="min-w-0 flex-1 text-left">
+                  <div className="truncate text-sm font-medium">{action.label}</div>
                   {action.description && (
-                    <div className="text-xs text-muted-foreground truncate">
+                    <div className="truncate text-xs text-muted-foreground">
                       {action.description}
                     </div>
                   )}
                 </div>
                 {action.shortcut && (
-                  <kbd className="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+                  <kbd className="hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground sm:inline-flex">
                     {action.shortcut}
                   </kbd>
                 )}
@@ -550,7 +550,7 @@ export function ChartCard({
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <div>
           <CardTitle className="text-sm font-medium">{title}</CardTitle>
-          {subtitle && <CardDescription className="text-xs mt-1">{subtitle}</CardDescription>}
+          {subtitle && <CardDescription className="mt-1 text-xs">{subtitle}</CardDescription>}
         </div>
         
         <div className="flex items-center space-x-2">
@@ -565,14 +565,14 @@ export function ChartCard({
           {actions.length > 0 && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <MoreHorizontal className="h-4 w-4" />
+                <Button variant="ghost" className="size-8 p-0">
+                  <MoreHorizontal className="size-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {actions.map((action, index) => (
                   <DropdownMenuItem key={index} onClick={action.onClick}>
-                    {action.icon && <action.icon className="mr-2 h-4 w-4" />}
+                    {action.icon && <action.icon className="mr-2 size-4" />}
                     {action.label}
                   </DropdownMenuItem>
                 ))}
@@ -583,7 +583,7 @@ export function ChartCard({
       </CardHeader>
       
       <CardContent>
-        <div className="w-full h-full min-h-[200px] flex items-center justify-center">
+        <div className="flex size-full min-h-[200px] items-center justify-center">
           {children}
         </div>
       </CardContent>
@@ -642,23 +642,23 @@ export function StatusOverviewCard({
             
             return (
               <div key={index} className="flex items-center justify-between">
-                <div className="flex items-center space-x-2 flex-1">
+                <div className="flex flex-1 items-center space-x-2">
                   <div 
-                    className="w-2 h-2 rounded-full shrink-0" 
+                    className="size-2 shrink-0 rounded-full" 
                     style={{ backgroundColor: item.color }}
                   />
-                  <span className="text-sm truncate">{item.label}</span>
+                  <span className="truncate text-sm">{item.label}</span>
                 </div>
                 
                 <div className="flex items-center space-x-2 text-right">
                   <span className="text-sm font-medium">{item.count.toLocaleString()}</span>
-                  <span className="text-xs text-muted-foreground w-8">
+                  <span className="w-8 text-xs text-muted-foreground">
                     {percentage}%
                   </span>
                   {item.trend && item.trend !== 'neutral' && (
                     item.trend === 'up' ? 
-                      <TrendingUp className="h-3 w-3 text-green-600" /> : 
-                      <TrendingDown className="h-3 w-3 text-red-600" />
+                      <TrendingUp className="size-3 text-green-600" /> : 
+                      <TrendingDown className="size-3 text-red-600" />
                   )}
                 </div>
               </div>

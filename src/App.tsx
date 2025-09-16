@@ -12,6 +12,7 @@ import { CommandPalette } from '@/components/CommandPalette'
 import { LoadingSpinner } from '@/components/ui/loading-spinner'
 import { setupPerformanceMonitoring } from '@/lib/performance'
 import { useCacheWarming } from '@/hooks/useStaticDataCache'
+import { ErrorBoundaryWrapper } from '@/components/ErrorBoundary'
 
 // Lazy load main pages for code splitting
 const HomePage = lazy(() => import('@/pages/Home'))
@@ -22,8 +23,6 @@ const MultiPrincipalOpportunityPage = lazy(() => import('@/pages/MultiPrincipalO
 const ProductsPage = lazy(() => import('@/pages/Products'))
 const InteractionsPage = lazy(() => import('@/pages/Interactions'))
 const ImportExportPage = lazy(() => import('@/pages/ImportExport'))
-const StyleGuideTestPage = lazy(() => import('@/pages/StyleGuideTest'))
-const StyleGuide = lazy(() => import('@/pages/StyleGuide'))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,6 +32,23 @@ const queryClient = new QueryClient({
     },
   },
 })
+
+// Reusable component for lazy-loaded pages with error boundaries
+function LazyPageWrapper({
+  children,
+  componentName
+}: {
+  children: React.ReactNode
+  componentName?: string
+}) {
+  return (
+    <ErrorBoundaryWrapper componentName={componentName}>
+      <Suspense fallback={<LoadingSpinner />}>
+        {children}
+      </Suspense>
+    </ErrorBoundaryWrapper>
+  )
+}
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
@@ -89,9 +105,9 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <Layout>
-                          <Suspense fallback={<LoadingSpinner />}>
+                          <LazyPageWrapper componentName="HomePage">
                             <HomePage />
-                          </Suspense>
+                          </LazyPageWrapper>
                         </Layout>
                       </ProtectedRoute>
                     }
@@ -103,9 +119,9 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <Layout>
-                          <Suspense fallback={<LoadingSpinner />}>
+                          <LazyPageWrapper componentName="OrganizationsPage">
                             <OrganizationsPage />
-                          </Suspense>
+                          </LazyPageWrapper>
                         </Layout>
                       </ProtectedRoute>
                     }
@@ -115,9 +131,9 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <Layout>
-                          <Suspense fallback={<LoadingSpinner />}>
+                          <LazyPageWrapper componentName="ContactsPage">
                             <ContactsPage />
-                          </Suspense>
+                          </LazyPageWrapper>
                         </Layout>
                       </ProtectedRoute>
                     }
@@ -127,9 +143,9 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <Layout>
-                          <Suspense fallback={<LoadingSpinner />}>
+                          <LazyPageWrapper componentName="OpportunitiesPage">
                             <OpportunitiesPage />
-                          </Suspense>
+                          </LazyPageWrapper>
                         </Layout>
                       </ProtectedRoute>
                     }
@@ -139,9 +155,9 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <Layout>
-                          <Suspense fallback={<LoadingSpinner />}>
+                          <LazyPageWrapper componentName="MultiPrincipalOpportunityPage">
                             <MultiPrincipalOpportunityPage />
-                          </Suspense>
+                          </LazyPageWrapper>
                         </Layout>
                       </ProtectedRoute>
                     }
@@ -151,9 +167,9 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <Layout>
-                          <Suspense fallback={<LoadingSpinner />}>
+                          <LazyPageWrapper componentName="ProductsPage">
                             <ProductsPage />
-                          </Suspense>
+                          </LazyPageWrapper>
                         </Layout>
                       </ProtectedRoute>
                     }
@@ -163,9 +179,9 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <Layout>
-                          <Suspense fallback={<LoadingSpinner />}>
+                          <LazyPageWrapper componentName="InteractionsPage">
                             <InteractionsPage />
-                          </Suspense>
+                          </LazyPageWrapper>
                         </Layout>
                       </ProtectedRoute>
                     }
@@ -175,33 +191,9 @@ function App() {
                     element={
                       <ProtectedRoute>
                         <Layout>
-                          <Suspense fallback={<LoadingSpinner />}>
+                          <LazyPageWrapper componentName="ImportExportPage">
                             <ImportExportPage />
-                          </Suspense>
-                        </Layout>
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/style-test"
-                    element={
-                      <ProtectedRoute>
-                        <Layout>
-                          <Suspense fallback={<LoadingSpinner />}>
-                            <StyleGuideTestPage />
-                          </Suspense>
-                        </Layout>
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/style-guide"
-                    element={
-                      <ProtectedRoute>
-                        <Layout>
-                          <Suspense fallback={<LoadingSpinner />}>
-                            <StyleGuide />
-                          </Suspense>
+                          </LazyPageWrapper>
                         </Layout>
                       </ProtectedRoute>
                     }

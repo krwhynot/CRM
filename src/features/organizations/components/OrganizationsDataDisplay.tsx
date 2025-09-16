@@ -1,5 +1,5 @@
 import React from 'react'
-import { OrganizationsTable } from './OrganizationsTable'
+import { OrganizationsList } from './OrganizationsList'
 import { LoadingState, ErrorState } from '@/components/ui/data-state'
 import type { Organization } from '@/types/entities'
 
@@ -44,5 +44,5 @@ export const OrganizationsDataDisplay: React.FC<OrganizationsDataDisplayProps> =
     )
   }
 
-  return <OrganizationsTable organizations={organizations} onEdit={onEdit} onDelete={onDelete} />
+  return <OrganizationsList organizations={organizations} onEdit={onEdit} onDelete={onDelete} />
 }

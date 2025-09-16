@@ -20,7 +20,7 @@ export type {
   ContactFilters,
 } from './contact.types'
 
-export { contactSchema, CONTACT_ROLES, getRoleLabel, getRoleValue } from './contact.types'
+export { contactZodSchema, CONTACT_ROLES, getRoleLabel, getRoleValue } from './contact.types'
 export * from './organization.types'
 export * from './opportunity.types'
 export * from './interaction.types'
@@ -120,14 +120,14 @@ export {
   isFormData,
   FormValidationPatterns,
   FormFieldRequirements,
-  createTypedYupResolver,
+  createTypedZodResolver,
 } from './forms/'
 
 // Form handler types with specific naming
 export type {
   FormSubmitHandler,
   FormValidationError,
-  TypedYupResolver,
+  TypedZodResolver,
   EnhancedFormProps,
   FormStateManager,
   FormValidationConfig,

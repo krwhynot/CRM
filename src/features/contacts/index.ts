@@ -1,7 +1,7 @@
 // Contacts Feature - Main Exports
 export { ContactForm } from './components/ContactForm'
-export { ContactsTable } from './components/ContactsTable'
-export { ContactsFilters } from './components/ContactsFilters'
+export { ContactsList } from './components/ContactsList'
+export { ContactsTable } from './components/ContactsTable' // Legacy - deprecated
 export { ContactActions } from './components/ContactActions'
 export { ContactBadges } from './components/ContactBadges'
 export { ContactsDialogs } from './components/ContactsDialogs'

@@ -34,4 +34,4 @@ export * from './query-debug'
 export * from './toast-styles'
 
 // Development & Quality
-// typescript-guardian removed - replaced with standard yupResolver
+// typescript-guardian removed - using standard zodResolver

@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { DataTable, type DataTableColumn } from '@/components/ui/DataTable'
-import { ContactsFilters } from './ContactsFilters'
+// import { ContactsFilters } from './ContactsFilters' // REMOVED: ContactsFilters component has been deleted
 import { ContactBadges } from './ContactBadges'
-import { BulkActionsToolbar } from '@/features/organizations/components/BulkActionsToolbar'
-import { BulkDeleteDialog } from '@/features/organizations/components/BulkDeleteDialog'
+import { BulkActionsToolbar, BulkDeleteDialog } from '@/components/bulk-actions'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -605,7 +604,8 @@ export function ContactsTable({
 
   return (
     <div className="space-y-4">
-      {/* Filters Section */}
+      {/* Filters Section - DEPRECATED: ContactsFilters has been removed */}
+      {/*
       <ContactsFilters
         filters={contactFilters}
         onFiltersChange={handleFiltersChange}
@@ -615,6 +615,9 @@ export function ContactsTable({
         filteredCount={filteredContacts.length}
         showBadges={true}
       />
+      */}
+
+      {/* NOTE: ContactsTable is deprecated. Use ContactsList with ResponsiveFilterWrapper instead. */}
 
       {/* Bulk Actions Toolbar */}
       <BulkActionsToolbar
@@ -624,6 +627,8 @@ export function ContactsTable({
         onClearSelection={clearSelection}
         onSelectAll={handleSelectAllFromToolbar}
         onSelectNone={handleSelectNoneFromToolbar}
+        entityType="contact"
+        entityTypePlural="contacts"
       />
 
       {/* Table Container with Integrated Row Expansion */}
@@ -651,7 +656,7 @@ export function ContactsTable({
       <BulkDeleteDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
-        organizations={selectedContactsForDialog}
+        entities={selectedContactsForDialog}
         onConfirm={handleConfirmDelete}
         isDeleting={isDeleting}
         entityType="contact"

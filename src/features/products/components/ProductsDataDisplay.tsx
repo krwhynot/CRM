@@ -1,5 +1,5 @@
 import React from 'react'
-import { ProductsTable } from './ProductsTable'
+import { ProductsList } from './ProductsList'
 import { LoadingState, ErrorState } from '@/components/ui/data-state'
 import type { Product } from '@/types/entities'
 import type { ProductWithPrincipal } from '@/types/product-extensions'
@@ -45,5 +45,5 @@ export const ProductsDataDisplay: React.FC<ProductsDataDisplayProps> = ({
     )
   }
 
-  return <ProductsTable products={products} onEdit={onEdit} onDelete={onDelete} />
+  return <ProductsList products={products} onEdit={onEdit} onDelete={onDelete} />
 }

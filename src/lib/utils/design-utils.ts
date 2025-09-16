@@ -7,7 +7,6 @@
 
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { designTokens } from '@/lib/design-tokens'
 
 // =============================================================================
 // CORE UTILITY FUNCTIONS

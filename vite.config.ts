@@ -3,14 +3,15 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
 
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
-    visualizer({ 
-      filename: 'dist/stats.html', 
+    visualizer({
+      filename: 'dist/stats.html',
       open: true,
-      gzipSize: true 
+      gzipSize: true
     })
   ],
   esbuild: {
@@ -37,11 +38,17 @@ export default defineConfig(({ mode }) => ({
           supabase: ['@supabase/supabase-js'],
           query: ['@tanstack/react-query'],
         },
-      },
+      }
     },
     // Enable tree-shaking for better dead code elimination
     sourcemap: false,
-    // Optimize chunk size
+    // Optimize chunk size with design token considerations
     chunkSizeWarningLimit: 1000,
+    // CSS optimization
+    cssCodeSplit: true,
+    // Performance monitoring
+    reportCompressedSize: true,
+    // Enable minification of CSS variables
+    cssMinify: 'esbuild',
   },
 }))
