@@ -114,12 +114,7 @@ export const FilterSheet = React.memo(function FilterSheet({
   showTrigger = true,
   sheetSize,
 }: FilterSheetProps) {
-  const {
-    currentMode,
-    isOpen,
-    setOpen,
-    deviceContext,
-  } = useFilterLayout()
+  const { currentMode, isOpen, setOpen, deviceContext } = useFilterLayout()
 
   const { deviceContext: detectedContext, isTouch } = useDeviceDetection()
   const sheetContentRef = useRef<HTMLDivElement>(null)
@@ -128,34 +123,40 @@ export const FilterSheet = React.memo(function FilterSheet({
   const isDraggingRef = useRef<boolean>(false)
 
   // Handle swipe gestures for mobile drawer dismissal
-  const handleTouchStart = useCallback((e: TouchEvent) => {
-    if (!isTouch || currentMode !== 'drawer' || !isOpen) return
+  const handleTouchStart = useCallback(
+    (e: TouchEvent) => {
+      if (!isTouch || currentMode !== 'drawer' || !isOpen) return
 
-    startYRef.current = e.touches[0].clientY
-    currentYRef.current = e.touches[0].clientY
-    isDraggingRef.current = true
-  }, [isTouch, currentMode, isOpen])
+      startYRef.current = e.touches[0].clientY
+      currentYRef.current = e.touches[0].clientY
+      isDraggingRef.current = true
+    },
+    [isTouch, currentMode, isOpen]
+  )
 
-  const handleTouchMove = useCallback((e: TouchEvent) => {
-    if (!isDraggingRef.current || !isTouch || currentMode !== 'drawer') return
+  const handleTouchMove = useCallback(
+    (e: TouchEvent) => {
+      if (!isDraggingRef.current || !isTouch || currentMode !== 'drawer') return
 
-    currentYRef.current = e.touches[0].clientY
-    const deltaY = currentYRef.current - startYRef.current
+      currentYRef.current = e.touches[0].clientY
+      const deltaY = currentYRef.current - startYRef.current
 
-    // Only allow downward swipes for closing
-    if (deltaY > 0 && sheetContentRef.current) {
-      // Prevent default scrolling when dragging down
-      if (deltaY > 10) {
-        e.preventDefault()
+      // Only allow downward swipes for closing
+      if (deltaY > 0 && sheetContentRef.current) {
+        // Prevent default scrolling when dragging down
+        if (deltaY > 10) {
+          e.preventDefault()
+        }
+
+        // Apply visual feedback with transform
+        const progress = Math.min(deltaY / 200, 1)
+        const opacity = 1 - progress * 0.5
+        sheetContentRef.current.style.transform = `translateY(${deltaY}px)`
+        sheetContentRef.current.style.opacity = opacity.toString()
       }
-
-      // Apply visual feedback with transform
-      const progress = Math.min(deltaY / 200, 1)
-      const opacity = 1 - progress * 0.5
-      sheetContentRef.current.style.transform = `translateY(${deltaY}px)`
-      sheetContentRef.current.style.opacity = opacity.toString()
-    }
-  }, [isTouch, currentMode])
+    },
+    [isTouch, currentMode]
+  )
 
   const handleTouchEnd = useCallback(() => {
     if (!isDraggingRef.current || !isTouch || currentMode !== 'drawer') return
@@ -202,7 +203,7 @@ export const FilterSheet = React.memo(function FilterSheet({
   }
 
   // Calculate active filter count for trigger button
-  const activeFilterCount = Object.keys(filters).filter(key => {
+  const activeFilterCount = Object.keys(filters).filter((key) => {
     const value = filters[key]
     return value && value !== '' && value !== 'all' && value !== 'none'
   }).length
@@ -216,13 +217,13 @@ export const FilterSheet = React.memo(function FilterSheet({
   const sheetDescription = description || `Adjust filters to refine your ${entityType} list`
 
   // Generate trigger label based on mode and device
-  const effectiveTriggerLabel = triggerLabel || (
-    currentMode === 'drawer'
+  const effectiveTriggerLabel =
+    triggerLabel ||
+    (currentMode === 'drawer'
       ? 'Filter Options'
       : currentMode === 'sheet'
-      ? 'Show Filters'
-      : 'Filters'
-  )
+        ? 'Show Filters'
+        : 'Filters')
 
   return (
     <>
@@ -249,17 +250,20 @@ export const FilterSheet = React.memo(function FilterSheet({
         scroll="content"
         className={cn(
           // Enhanced mobile styling
-          isTouch && currentMode === 'drawer' && [
-            'touch-pan-y',
-            '[&>[data-radix-sheet-overlay]]:touch-manipulation',
-          ]
+          isTouch &&
+            currentMode === 'drawer' && [
+              'touch-pan-y',
+              '[&>[data-radix-sheet-overlay]]:touch-manipulation',
+            ]
         )}
         headerActions={
           activeFilterCount > 0 && (
-            <div className={cn(
-              'text-sm text-muted-foreground',
-              detectedContext === 'mobile' && 'text-xs'
-            )}>
+            <div
+              className={cn(
+                'text-sm text-muted-foreground',
+                detectedContext === 'mobile' && 'text-xs'
+              )}
+            >
               {activeFilterCount} filter{activeFilterCount !== 1 ? 's' : ''} active
             </div>
           )

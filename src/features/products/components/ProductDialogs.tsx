@@ -20,14 +20,14 @@ export interface ProductWithPrincipalData
 
 // Helper function to transform ProductFormData to ProductWithPrincipalData
 function transformProductFormData(formData: ProductFormData): ProductWithPrincipalData {
-  const { 
-    principal_mode, 
-    principal_name, 
-    principal_segment, 
-    principal_phone, 
-    principal_email, 
-    principal_website, 
-    ...productData 
+  const {
+    principal_mode,
+    principal_name,
+    principal_segment,
+    principal_phone,
+    principal_email,
+    principal_website,
+    ...productData
   } = formData
 
   let result: ProductWithPrincipalData = {
@@ -116,7 +116,9 @@ export const ProductDialogs: React.FC<ProductDialogsProps> = ({
         {selectedProduct && (
           <ProductForm
             initialData={selectedProduct}
-            onSubmit={(data: ProductFormData) => onEditSubmit(transformProductFormData(data) as ProductUpdate)}
+            onSubmit={(data: ProductFormData) =>
+              onEditSubmit(transformProductFormData(data) as ProductUpdate)
+            }
             loading={isUpdating}
           />
         )}

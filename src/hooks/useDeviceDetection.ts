@@ -3,7 +3,12 @@ import { useDeviceType, useOrientation, useIsIPad } from './useMediaQuery'
 
 export type DeviceType = 'mobile' | 'tablet' | 'desktop' | 'large-desktop'
 export type Orientation = 'portrait' | 'landscape'
-export type DeviceContext = 'mobile' | 'tablet-portrait' | 'tablet-landscape' | 'desktop' | 'large-desktop'
+export type DeviceContext =
+  | 'mobile'
+  | 'tablet-portrait'
+  | 'tablet-landscape'
+  | 'desktop'
+  | 'large-desktop'
 
 export interface DeviceDetectionState {
   deviceType: DeviceType
@@ -22,7 +27,7 @@ export function useDeviceDetection(): DeviceDetectionState {
   const deviceType = useDeviceType()
   const orientation = useOrientation()
   const isIPad = useIsIPad()
-  
+
   const [isTouch, setIsTouch] = useState(false)
   const [hasChanged, setHasChanged] = useState(false)
   const [previousContext, setPreviousContext] = useState<DeviceContext>()
@@ -115,7 +120,7 @@ export const DeviceUtils = {
    */
   getStorageKey: (context: DeviceContext, key: string): string => {
     return `${key}-${context}`
-  }
+  },
 }
 
 export default useDeviceDetection

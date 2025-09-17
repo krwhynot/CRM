@@ -16,8 +16,19 @@ export { useEntityPageState, type UseEntityPageStateReturn } from './useEntityPa
 export {
   useStandardDataTable,
   type StandardDataTableConfig,
-  type StandardDataTableReturn
+  type StandardDataTableReturn,
 } from './useStandardDataTable'
+
+export {
+  useEntityDataState,
+  type EntityDataStateConfig,
+  type EntityDataStateReturn,
+  type EntityDataState,
+  type QueryDataState,
+  type CompatibleQueryResult,
+  createEntityDataState,
+  isCompatibleQueryResult,
+} from './useEntityDataState'
 
 // File & Upload Hooks
 export { useFileUpload } from './useFileUpload'
@@ -45,5 +56,5 @@ export {
   type FilterLayoutPreference,
   type FilterLayoutState,
   type FilterLayoutActions,
-  FilterLayoutUtils
+  FilterLayoutUtils,
 } from './useFilterLayout'

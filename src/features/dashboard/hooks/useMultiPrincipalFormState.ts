@@ -19,17 +19,17 @@ export function useMultiPrincipalFormState() {
   })
 
   const updatePrincipals = (principals: string[]) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       selectedPrincipals: principals,
-      isValid: principals.length > 0
+      isValid: principals.length > 0,
     }))
   }
 
   const updateFormData = (data: Record<string, any>) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
-      formData: { ...prev.formData, ...data }
+      formData: { ...prev.formData, ...data },
     }))
   }
 

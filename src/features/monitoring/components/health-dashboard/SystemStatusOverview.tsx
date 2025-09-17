@@ -15,11 +15,7 @@ export const SystemStatusOverview: React.FC<SystemStatusOverviewProps> = ({
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>System Health Status</span>
-          <Badge
-            status={isHealthy ? 'active' : 'inactive'}
-          >
-            {summary.overallHealth}
-          </Badge>
+          <Badge status={isHealthy ? 'active' : 'inactive'}>{summary.overallHealth}</Badge>
         </CardTitle>
       </CardHeader>
       <CardContent>

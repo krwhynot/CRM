@@ -36,7 +36,7 @@ export type InteractionWithRelations = Interaction & {
     formula?: string // Formula field like "Sysco Chicago"
   }
   opportunity: Database['public']['Tables']['opportunities']['Row'] // Required relationship
-  
+
   // New enhanced fields matching user's spreadsheet
   priority?: InteractionPriority
   account_manager?: AccountManager | string
@@ -47,62 +47,69 @@ export type InteractionWithRelations = Interaction & {
 // Zod Interaction validation schema - Enhanced with user's spreadsheet fields
 
 // Interaction business logic types
-export const InteractionTypeEnum = z.enum([
-  'call',
-  'email',
-  'meeting',
-  'demo',
-  'proposal',
-  'follow_up',
-  'trade_show',
-  'site_visit',
-  'contract_review',
-  'in_person',
-  'quoted',
-  'distribution',
-] as const, {
-  errorMap: () => ({ message: 'Invalid interaction type' })
-})
+export const InteractionTypeEnum = z.enum(
+  [
+    'call',
+    'email',
+    'meeting',
+    'demo',
+    'proposal',
+    'follow_up',
+    'trade_show',
+    'site_visit',
+    'contract_review',
+    'in_person',
+    'quoted',
+    'distribution',
+  ] as const,
+  {
+    errorMap: () => ({ message: 'Invalid interaction type' }),
+  }
+)
 
 export const InteractionPriorityEnum = z.enum(['A+', 'A', 'B', 'C', 'D'] as const, {
-  errorMap: () => ({ message: 'Invalid priority level' })
+  errorMap: () => ({ message: 'Invalid priority level' }),
 })
 
-export const InteractionOutcomeEnum = z.enum([
-  'successful',
-  'follow_up_needed',
-  'not_interested',
-  'postponed',
-  'no_response'
-] as const, {
-  errorMap: () => ({ message: 'Invalid outcome' })
-})
+export const InteractionOutcomeEnum = z.enum(
+  ['successful', 'follow_up_needed', 'not_interested', 'postponed', 'no_response'] as const,
+  {
+    errorMap: () => ({ message: 'Invalid outcome' }),
+  }
+)
 
-export const OpportunityStageEnum = z.enum([
-  'New Lead',
-  'Initial Outreach',
-  'Sample/Visit Offered',
-  'Awaiting Response',
-  'Feedback Logged',
-  'Demo Scheduled',
-  'Closed - Won',
-] as const, {
-  errorMap: () => ({ message: 'Invalid opportunity stage' })
-})
+export const OpportunityStageEnum = z.enum(
+  [
+    'New Lead',
+    'Initial Outreach',
+    'Sample/Visit Offered',
+    'Awaiting Response',
+    'Feedback Logged',
+    'Demo Scheduled',
+    'Closed - Won',
+  ] as const,
+  {
+    errorMap: () => ({ message: 'Invalid opportunity stage' }),
+  }
+)
 
-export const OpportunityContextEnum = z.enum([
-  'Site Visit',
-  'Food Show',
-  'New Product Interest',
-  'Follow-up',
-  'Demo Request',
-  'Sampling',
-  'Custom',
-] as const, {
-  errorMap: () => ({ message: 'Invalid opportunity context' })
-})
+export const OpportunityContextEnum = z.enum(
+  [
+    'Site Visit',
+    'Food Show',
+    'New Product Interest',
+    'Follow-up',
+    'Demo Request',
+    'Sampling',
+    'Custom',
+  ] as const,
+  {
+    errorMap: () => ({ message: 'Invalid opportunity context' }),
+  }
+)
 
-export const AccountManagerEnum = z.enum(['Sue', 'Gary', 'Dale'] as const)
+export const AccountManagerEnum = z
+  .enum(['Sue', 'Gary', 'Dale'] as const)
   .or(z.string().max(100, 'Account manager name must be 100 characters or less'))
 
 // Validation constants for interaction fields
@@ -145,55 +152,69 @@ const interactionCoreFields = z.object({
   opportunity_id: z.string().uuid('Invalid opportunity ID'),
 
   // OPTIONAL CORE FIELDS with ZodTransforms
-  location: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.location.max, {
-      message: 'Location must be 255 characters or less'
-    }),
+  location: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.location.max,
+    {
+      message: 'Location must be 255 characters or less',
+    }
+  ),
 
-  notes: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.notes.max, {
-      message: 'Notes must be 500 characters or less'
-    }),
+  notes: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.notes.max,
+    {
+      message: 'Notes must be 500 characters or less',
+    }
+  ),
 
   follow_up_required: z.boolean().default(false),
 
   follow_up_date: ZodTransforms.nullableString,
 
   // Additional database fields
-  duration_minutes: ZodTransforms.nullableNumber
-    .refine((val) => !val || val >= INTERACTION_VALIDATION_CONSTANTS.duration_minutes.min, {
-      message: 'Duration must be at least 1 minute'
-    }),
+  duration_minutes: ZodTransforms.nullableNumber.refine(
+    (val) => !val || val >= INTERACTION_VALIDATION_CONSTANTS.duration_minutes.min,
+    {
+      message: 'Duration must be at least 1 minute',
+    }
+  ),
 
   contact_id: ZodTransforms.uuidField,
   organization_id: ZodTransforms.uuidField,
 
-  description: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.description.max, {
-      message: 'Description must be 1000 characters or less'
-    }),
+  description: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.description.max,
+    {
+      message: 'Description must be 1000 characters or less',
+    }
+  ),
 
   outcome: InteractionOutcomeEnum.nullable(),
 
-  follow_up_notes: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.follow_up_notes.max, {
-      message: 'Follow-up notes must be 500 characters or less'
-    }),
+  follow_up_notes: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.follow_up_notes.max,
+    {
+      message: 'Follow-up notes must be 500 characters or less',
+    }
+  ),
 
   // Enhanced fields matching user's spreadsheet
   priority: InteractionPriorityEnum.nullable(),
 
-  account_manager: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.account_manager.max, {
-      message: 'Account manager name must be 100 characters or less'
-    }),
+  account_manager: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.account_manager.max,
+    {
+      message: 'Account manager name must be 100 characters or less',
+    }
+  ),
 
   principals: z.array(principalInfoSchema).nullable(),
 
-  import_notes: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.import_notes.max, {
-      message: 'Import notes must be 1000 characters or less'
-    }),
+  import_notes: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.import_notes.max,
+    {
+      message: 'Import notes must be 1000 characters or less',
+    }
+  ),
 })
 
 /**
@@ -210,7 +231,7 @@ export const interactionBaseSchema = interactionCoreFields.refine(
   },
   {
     message: 'Follow-up date is required when follow-up is needed',
-    path: ['follow_up_date']
+    path: ['follow_up_date'],
   }
 )
 
@@ -224,141 +245,161 @@ export const interactionSchema = interactionBaseSchema
  * Existing Opportunity Interaction Schema
  * For interactions linking to existing opportunities
  */
-const existingOpportunityInteractionSchema = z.object({
-  create_opportunity: z.literal(false).default(false),
+const existingOpportunityInteractionSchema = z
+  .object({
+    create_opportunity: z.literal(false).default(false),
 
-  // All core interaction fields
-  ...interactionCoreFields.shape,
+    // All core interaction fields
+    ...interactionCoreFields.shape,
 
-  // Opportunity creation fields should be null/optional in existing mode
-  opportunity_name: z.string().nullable().default(null),
-  opportunity_stage: OpportunityStageEnum.nullable().default(null),
-  principal_organization_id: ZodTransforms.uuidField.default(null),
-  opportunity_context: OpportunityContextEnum.nullable().default(null),
-}).refine(
-  (data) => {
-    // Follow-up logic validation: if follow_up_required is true, follow_up_date must be provided
-    if (data.follow_up_required && !data.follow_up_date) {
-      return false
+    // Opportunity creation fields should be null/optional in existing mode
+    opportunity_name: z.string().nullable().default(null),
+    opportunity_stage: OpportunityStageEnum.nullable().default(null),
+    principal_organization_id: ZodTransforms.uuidField.default(null),
+    opportunity_context: OpportunityContextEnum.nullable().default(null),
+  })
+  .refine(
+    (data) => {
+      // Follow-up logic validation: if follow_up_required is true, follow_up_date must be provided
+      if (data.follow_up_required && !data.follow_up_date) {
+        return false
+      }
+      return true
+    },
+    {
+      message: 'Follow-up date is required when follow-up is needed',
+      path: ['follow_up_date'],
     }
-    return true
-  },
-  {
-    message: 'Follow-up date is required when follow-up is needed',
-    path: ['follow_up_date']
-  }
-)
+  )
 
 /**
  * New Opportunity Interaction Schema
  * For interactions that create new opportunities during interaction creation
  */
-const newOpportunityInteractionSchema = z.object({
-  create_opportunity: z.literal(true),
+const newOpportunityInteractionSchema = z
+  .object({
+    create_opportunity: z.literal(true),
 
-  // Override organization_id to be required when creating opportunities
-  organization_id: z.string().uuid('Invalid organization ID'),
+    // Override organization_id to be required when creating opportunities
+    organization_id: z.string().uuid('Invalid organization ID'),
 
-  // Override opportunity_id to be nullable since we're creating it
-  opportunity_id: ZodTransforms.uuidField.default(null),
+    // Override opportunity_id to be nullable since we're creating it
+    opportunity_id: ZodTransforms.uuidField.default(null),
 
-  // All other core interaction fields
-  type: InteractionTypeEnum,
-  interaction_date: z.string().min(1, 'Interaction date is required'),
-  subject: z
-    .string()
-    .min(1, 'Subject is required')
-    .max(INTERACTION_VALIDATION_CONSTANTS.subject.max, 'Subject must be 255 characters or less'),
+    // All other core interaction fields
+    type: InteractionTypeEnum,
+    interaction_date: z.string().min(1, 'Interaction date is required'),
+    subject: z
+      .string()
+      .min(1, 'Subject is required')
+      .max(INTERACTION_VALIDATION_CONSTANTS.subject.max, 'Subject must be 255 characters or less'),
 
-  location: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.location.max, {
-      message: 'Location must be 255 characters or less'
-    }),
+    location: ZodTransforms.nullableString.refine(
+      (val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.location.max,
+      {
+        message: 'Location must be 255 characters or less',
+      }
+    ),
 
-  notes: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.notes.max, {
-      message: 'Notes must be 500 characters or less'
-    }),
+    notes: ZodTransforms.nullableString.refine(
+      (val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.notes.max,
+      {
+        message: 'Notes must be 500 characters or less',
+      }
+    ),
 
-  follow_up_required: z.boolean().default(false),
-  follow_up_date: ZodTransforms.nullableString,
+    follow_up_required: z.boolean().default(false),
+    follow_up_date: ZodTransforms.nullableString,
 
-  duration_minutes: ZodTransforms.nullableNumber
-    .refine((val) => !val || val >= INTERACTION_VALIDATION_CONSTANTS.duration_minutes.min, {
-      message: 'Duration must be at least 1 minute'
-    }),
+    duration_minutes: ZodTransforms.nullableNumber.refine(
+      (val) => !val || val >= INTERACTION_VALIDATION_CONSTANTS.duration_minutes.min,
+      {
+        message: 'Duration must be at least 1 minute',
+      }
+    ),
 
-  contact_id: ZodTransforms.uuidField,
+    contact_id: ZodTransforms.uuidField,
 
-  description: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.description.max, {
-      message: 'Description must be 1000 characters or less'
-    }),
+    description: ZodTransforms.nullableString.refine(
+      (val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.description.max,
+      {
+        message: 'Description must be 1000 characters or less',
+      }
+    ),
 
-  outcome: InteractionOutcomeEnum.nullable(),
+    outcome: InteractionOutcomeEnum.nullable(),
 
-  follow_up_notes: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.follow_up_notes.max, {
-      message: 'Follow-up notes must be 500 characters or less'
-    }),
+    follow_up_notes: ZodTransforms.nullableString.refine(
+      (val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.follow_up_notes.max,
+      {
+        message: 'Follow-up notes must be 500 characters or less',
+      }
+    ),
 
-  priority: InteractionPriorityEnum.nullable(),
+    priority: InteractionPriorityEnum.nullable(),
 
-  account_manager: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.account_manager.max, {
-      message: 'Account manager name must be 100 characters or less'
-    }),
+    account_manager: ZodTransforms.nullableString.refine(
+      (val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.account_manager.max,
+      {
+        message: 'Account manager name must be 100 characters or less',
+      }
+    ),
 
-  principals: z.array(principalInfoSchema).nullable(),
+    principals: z.array(principalInfoSchema).nullable(),
 
-  import_notes: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.import_notes.max, {
-      message: 'Import notes must be 1000 characters or less'
-    }),
+    import_notes: ZodTransforms.nullableString.refine(
+      (val) => !val || val.length <= INTERACTION_VALIDATION_CONSTANTS.import_notes.max,
+      {
+        message: 'Import notes must be 1000 characters or less',
+      }
+    ),
 
-  // Opportunity creation fields are required in new mode
-  opportunity_name: z
-    .string()
-    .min(1, 'Opportunity name is required when creating opportunity')
-    .max(INTERACTION_VALIDATION_CONSTANTS.opportunity_name.max, 'Opportunity name must be 255 characters or less'),
+    // Opportunity creation fields are required in new mode
+    opportunity_name: z
+      .string()
+      .min(1, 'Opportunity name is required when creating opportunity')
+      .max(
+        INTERACTION_VALIDATION_CONSTANTS.opportunity_name.max,
+        'Opportunity name must be 255 characters or less'
+      ),
 
-  opportunity_stage: OpportunityStageEnum,
+    opportunity_stage: OpportunityStageEnum,
 
-  // Optional opportunity fields for new mode
-  principal_organization_id: ZodTransforms.uuidField,
+    // Optional opportunity fields for new mode
+    principal_organization_id: ZodTransforms.uuidField,
 
-  opportunity_context: OpportunityContextEnum.nullable(),
-}).refine(
-  (data) => {
-    // Follow-up logic validation: if follow_up_required is true, follow_up_date must be provided
-    if (data.follow_up_required && !data.follow_up_date) {
-      return false
+    opportunity_context: OpportunityContextEnum.nullable(),
+  })
+  .refine(
+    (data) => {
+      // Follow-up logic validation: if follow_up_required is true, follow_up_date must be provided
+      if (data.follow_up_required && !data.follow_up_date) {
+        return false
+      }
+      return true
+    },
+    {
+      message: 'Follow-up date is required when follow-up is needed',
+      path: ['follow_up_date'],
     }
-    return true
-  },
-  {
-    message: 'Follow-up date is required when follow-up is needed',
-    path: ['follow_up_date']
-  }
-)
+  )
 
 /**
  * Interaction with Opportunity Creation Schema using Discriminated Union
  * Handles complex conditional validation based on create_opportunity flag
  * This represents the highest complexity validation pattern in the entire CRM system
  */
-export const interactionWithOpportunitySchema = z.union([
-  existingOpportunityInteractionSchema,
-  newOpportunityInteractionSchema,
-]).refine(
-  (data) => {
-    // Additional cross-validation can be added here if needed
-    return true
-  },
-  {
-    message: 'Invalid interaction with opportunity data'
-  }
-)
+export const interactionWithOpportunitySchema = z
+  .union([existingOpportunityInteractionSchema, newOpportunityInteractionSchema])
+  .refine(
+    (data) => {
+      // Additional cross-validation can be added here if needed
+      return true
+    },
+    {
+      message: 'Invalid interaction with opportunity data',
+    }
+  )
 
 /**
  * Interaction Create Schema
@@ -376,24 +417,27 @@ export const interactionUpdateSchema = interactionCoreFields.partial()
  * Interaction with Multi-Principal Schema
  * Specialized schema for handling multi-principal relationships
  */
-export const interactionWithMultiPrincipalSchema = interactionCoreFields.extend({
-  principals: z.array(principalInfoSchema)
-    .min(1, 'At least one principal is required')
-    .max(4, 'Maximum 4 principals allowed per interaction')
-    .transform((arr) => arr.filter(principal => principal.id !== undefined)),
-}).refine(
-  (data) => {
-    // Follow-up logic validation: if follow_up_required is true, follow_up_date must be provided
-    if (data.follow_up_required && !data.follow_up_date) {
-      return false
+export const interactionWithMultiPrincipalSchema = interactionCoreFields
+  .extend({
+    principals: z
+      .array(principalInfoSchema)
+      .min(1, 'At least one principal is required')
+      .max(4, 'Maximum 4 principals allowed per interaction')
+      .transform((arr) => arr.filter((principal) => principal.id !== undefined)),
+  })
+  .refine(
+    (data) => {
+      // Follow-up logic validation: if follow_up_required is true, follow_up_date must be provided
+      if (data.follow_up_required && !data.follow_up_date) {
+        return false
+      }
+      return true
+    },
+    {
+      message: 'Follow-up date is required when follow-up is needed',
+      path: ['follow_up_date'],
     }
-    return true
-  },
-  {
-    message: 'Follow-up date is required when follow-up is needed',
-    path: ['follow_up_date']
-  }
-)
+  )
 
 /**
  * TypeScript Type Inference from Zod Schemas
@@ -403,10 +447,14 @@ export type InteractionFormData = z.infer<typeof interactionSchema>
 export type InteractionWithOpportunityFormData = z.infer<typeof interactionWithOpportunitySchema>
 export type InteractionCreateFormData = z.infer<typeof interactionCreateSchema>
 export type InteractionUpdateFormData = z.infer<typeof interactionUpdateSchema>
-export type InteractionWithMultiPrincipalFormData = z.infer<typeof interactionWithMultiPrincipalSchema>
+export type InteractionWithMultiPrincipalFormData = z.infer<
+  typeof interactionWithMultiPrincipalSchema
+>
 
 // Specific type exports for discriminated union cases
-export type ExistingOpportunityInteractionFormData = z.infer<typeof existingOpportunityInteractionSchema>
+export type ExistingOpportunityInteractionFormData = z.infer<
+  typeof existingOpportunityInteractionSchema
+>
 export type NewOpportunityInteractionFormData = z.infer<typeof newOpportunityInteractionSchema>
 
 // Principal-related types
@@ -479,25 +527,25 @@ export const PRIORITY_COLORS = {
     border: 'border-destructive/20',
     badge: 'bg-destructive text-destructive-foreground',
   },
-  'A': {
-    bg: 'bg-warning/10', 
+  A: {
+    bg: 'bg-warning/10',
     text: 'text-warning',
     border: 'border-warning/20',
     badge: 'bg-warning text-warning-foreground',
   },
-  'B': {
+  B: {
     bg: 'bg-warning/5',
-    text: 'text-warning/80', 
+    text: 'text-warning/80',
     border: 'border-warning/10',
     badge: 'bg-warning/80 text-warning-foreground',
   },
-  'C': {
+  C: {
     bg: 'bg-primary/10',
     text: 'text-primary',
-    border: 'border-primary/20', 
+    border: 'border-primary/20',
     badge: 'bg-primary text-primary-foreground',
   },
-  'D': {
+  D: {
     bg: 'bg-muted',
     text: 'text-muted-foreground',
     border: 'border-muted-foreground/20',
@@ -506,11 +554,7 @@ export const PRIORITY_COLORS = {
 } as const
 
 // Account manager list (can be expanded as needed)
-export const ACCOUNT_MANAGERS = [
-  'Sue',
-  'Gary',
-  'Dale',
-] as const
+export const ACCOUNT_MANAGERS = ['Sue', 'Gary', 'Dale'] as const
 
 /**
  * Interaction Validation Class
@@ -582,9 +626,7 @@ export class InteractionValidation {
     const result = interactionSchema.safeParse(data)
     if (result.success) return []
 
-    return result.error.errors.map(err =>
-      `${err.path.join('.')}: ${err.message}`
-    )
+    return result.error.errors.map((err) => `${err.path.join('.')}: ${err.message}`)
   }
 
   /**
@@ -641,7 +683,7 @@ export class InteractionValidation {
     if (!Array.isArray(principals)) return false
     if (principals.length > 4) return false
 
-    return principals.every(principal => {
+    return principals.every((principal) => {
       if (typeof principal !== 'object' || !principal) return false
       const p = principal as Record<string, unknown>
 
@@ -671,7 +713,8 @@ export class InteractionValidation {
     if (data.organization_id && !uuidRegex.test(data.organization_id)) return false
     if (data.contact_id && !uuidRegex.test(data.contact_id)) return false
     if (data.opportunity_id && !uuidRegex.test(data.opportunity_id)) return false
-    if (data.principal_organization_id && !uuidRegex.test(data.principal_organization_id)) return false
+    if (data.principal_organization_id && !uuidRegex.test(data.principal_organization_id))
+      return false
 
     return true
   }
@@ -680,7 +723,9 @@ export class InteractionValidation {
    * Transform for handling form data to database format
    * Removes virtual fields and prepares for database insertion
    */
-  static transformForDatabase(formData: InteractionFormData): Omit<InteractionFormData, 'principals'> {
+  static transformForDatabase(
+    formData: InteractionFormData
+  ): Omit<InteractionFormData, 'principals'> {
     const { principals, ...interactionData } = formData
     return interactionData
   }
@@ -740,7 +785,7 @@ export class InteractionValidation {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     }
   }
 
@@ -756,25 +801,25 @@ export class InteractionValidation {
         border: 'border-destructive/20',
         badge: 'bg-destructive text-destructive-foreground',
       },
-      'A': {
+      A: {
         bg: 'bg-warning/10',
         text: 'text-warning',
         border: 'border-warning/20',
         badge: 'bg-warning text-warning-foreground',
       },
-      'B': {
+      B: {
         bg: 'bg-warning/5',
         text: 'text-warning/80',
         border: 'border-warning/10',
         badge: 'bg-warning/80 text-warning-foreground',
       },
-      'C': {
+      C: {
         bg: 'bg-primary/10',
         text: 'text-primary',
         border: 'border-primary/20',
         badge: 'bg-primary text-primary-foreground',
       },
-      'D': {
+      D: {
         bg: 'bg-muted',
         text: 'text-muted-foreground',
         border: 'border-muted-foreground/20',

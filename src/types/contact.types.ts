@@ -109,14 +109,12 @@ export const contactPreferredPrincipalZodSchema = z.object({
     (val) => val === null || (val >= 1 && val <= 10),
     { message: 'Advocacy strength must be between 1-10' }
   ),
-  relationship_type: ZodTransforms.nullableString.refine(
-    (val) => !val || val.length <= 100,
-    { message: 'Relationship type must be 100 characters or less' }
-  ),
-  advocacy_notes: ZodTransforms.nullableString.refine(
-    (val) => !val || val.length <= 500,
-    { message: 'Advocacy notes must be 500 characters or less' }
-  ),
+  relationship_type: ZodTransforms.nullableString.refine((val) => !val || val.length <= 100, {
+    message: 'Relationship type must be 100 characters or less',
+  }),
+  advocacy_notes: ZodTransforms.nullableString.refine((val) => !val || val.length <= 500, {
+    message: 'Advocacy notes must be 500 characters or less',
+  }),
 })
 
 export type ContactPreferredPrincipalFormData = z.infer<typeof contactPreferredPrincipalZodSchema>

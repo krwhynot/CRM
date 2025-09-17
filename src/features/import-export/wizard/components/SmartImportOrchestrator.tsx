@@ -44,7 +44,10 @@ export function SmartImportOrchestrator({
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const { data: { user }, error } = await supabase.auth.getUser()
+        const {
+          data: { user },
+          error,
+        } = await supabase.auth.getUser()
         if (error) {
           console.error('Auth check error:', error)
           setAuthState({ isAuthenticated: false, loading: false, error: error.message })
@@ -53,14 +56,14 @@ export function SmartImportOrchestrator({
         }
       } catch (error) {
         console.error('Auth check failed:', error)
-        setAuthState({ 
-          isAuthenticated: false, 
-          loading: false, 
-          error: error instanceof Error ? error.message : 'Authentication check failed'
+        setAuthState({
+          isAuthenticated: false,
+          loading: false,
+          error: error instanceof Error ? error.message : 'Authentication check failed',
         })
       }
     }
-    
+
     checkAuth()
   }, [])
 
@@ -103,7 +106,7 @@ export function SmartImportOrchestrator({
     if (state.currentStep === 'review' && !authState.isAuthenticated) {
       return 'You must be signed in to import data'
     }
-    
+
     switch (state.currentStep) {
       case 'upload':
         if (!state.file) return 'Please upload a CSV file'
@@ -130,29 +133,32 @@ export function SmartImportOrchestrator({
       // Check auth before starting import
       if (nextStep === 'import') {
         if (!authState.isAuthenticated) {
-          setAuthState(prev => ({ 
-            ...prev, 
-            error: 'You must be signed in to import data. Please sign in and try again.'
+          setAuthState((prev) => ({
+            ...prev,
+            error: 'You must be signed in to import data. Please sign in and try again.',
           }))
           return
         }
-        
+
         // Double-check auth right before import
         try {
-          const { data: { user }, error } = await supabase.auth.getUser()
+          const {
+            data: { user },
+            error,
+          } = await supabase.auth.getUser()
           if (error || !user) {
-            setAuthState(prev => ({ 
-              ...prev, 
-              error: 'Authentication expired. Please sign in again.'
+            setAuthState((prev) => ({
+              ...prev,
+              error: 'Authentication expired. Please sign in again.',
             }))
             return
           }
-          
+
           actions.executeImport()
         } catch (error) {
-          setAuthState(prev => ({ 
-            ...prev, 
-            error: 'Authentication check failed. Please try again.'
+          setAuthState((prev) => ({
+            ...prev,
+            error: 'Authentication check failed. Please try again.',
           }))
           return
         }
@@ -160,7 +166,7 @@ export function SmartImportOrchestrator({
       actions.nextStep()
     }
   }
-  
+
   const handleSignIn = () => {
     // Redirect to sign-in page or open auth modal
     window.location.href = '/auth/login'
@@ -199,7 +205,7 @@ export function SmartImportOrchestrator({
             onSkipField={actions.skipField}
             onConfirmAll={() => {
               // Confirm all mappings that need review
-              state.fieldMappings.forEach(mapping => {
+              state.fieldMappings.forEach((mapping) => {
                 if (mapping.status === 'needs_review' && mapping.crmField) {
                   actions.confirmMapping(mapping.csvHeader)
                 }
@@ -243,11 +249,7 @@ export function SmartImportOrchestrator({
       <div className="flex items-center space-x-2">
         {/* Previous Button */}
         {canGoPrevious() && (
-          <Button
-            variant="outline"
-            onClick={handlePrevious}
-            className="h-10 px-4"
-          >
+          <Button variant="outline" onClick={handlePrevious} className="h-10 px-4">
             <ArrowLeft className="mr-2 size-4" />
             Previous
           </Button>
@@ -312,7 +314,7 @@ export function SmartImportOrchestrator({
             </Alert>
           </div>
         )}
-        
+
         {/* Errors/Warnings - Now separate section */}
         {(state.error || state.warnings.length > 0) && (
           <div className="mt-4">
@@ -372,7 +374,9 @@ function ImportProgressStep({
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-foreground">Adding your organizations...</h3>
+                <h3 className="text-lg font-semibold text-foreground">
+                  Adding your organizations...
+                </h3>
                 <p className="mt-1 text-sm text-muted-foreground">
                   We're processing your data and adding it to the CRM
                 </p>
@@ -422,7 +426,8 @@ function ImportProgressStep({
                   <strong>{result.imported}</strong> organizations added to your CRM
                   {result.failed > 0 && (
                     <span>
-                      , <strong className="text-destructive">{result.failed}</strong> could not be added
+                      , <strong className="text-destructive">{result.failed}</strong> could not be
+                      added
                     </span>
                   )}
                 </div>

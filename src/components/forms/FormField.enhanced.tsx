@@ -1,4 +1,9 @@
-import { type Control, type FieldValues, type Path, type ControllerRenderProps } from 'react-hook-form'
+import {
+  type Control,
+  type FieldValues,
+  type Path,
+  type ControllerRenderProps,
+} from 'react-hook-form'
 import {
   FormControl,
   FormDescription,
@@ -36,7 +41,7 @@ import {
   Package,
   Target,
   Plus,
-  X
+  X,
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
@@ -71,7 +76,16 @@ export interface BaseFieldConfig {
 }
 
 export interface InputConfig extends BaseFieldConfig {
-  type: 'text' | 'email' | 'phone' | 'url' | 'password' | 'number' | 'date' | 'datetime-local' | 'time'
+  type:
+    | 'text'
+    | 'email'
+    | 'phone'
+    | 'url'
+    | 'password'
+    | 'number'
+    | 'date'
+    | 'datetime-local'
+    | 'time'
   autoComplete?: string
   min?: number
   max?: number
@@ -162,7 +176,7 @@ export function FormFieldEnhanced<T extends FieldValues = FieldValues>({
   name,
   config,
   disabled,
-  className
+  className,
 }: FormFieldEnhancedProps<T>) {
   const { isInDialog } = useDialogContext()
   const spacingClasses = getFormSpacingClasses(isInDialog)
@@ -175,7 +189,7 @@ export function FormFieldEnhanced<T extends FieldValues = FieldValues>({
 
     return (
       <div className={cn('col-span-full', config.className, className)}>
-        <HeadingTag className="text-md mb-2 mt-4 font-semibold text-gray-900 first:mt-0">
+        <HeadingTag className="text-md mb-2 mt-4 font-semibold text-foreground first:mt-0">
           {config.label}
         </HeadingTag>
       </div>
@@ -194,14 +208,12 @@ export function FormFieldEnhanced<T extends FieldValues = FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem className={cn(spacingClasses, config.className, className)}>
-          <FormLabel className="text-sm font-medium text-gray-700">
+          <FormLabel className="text-sm font-medium text-foreground">
             {config.label}
-            {config.required && <span className="ml-1 text-red-500">*</span>}
+            {config.required && <span className="ml-1 text-destructive">*</span>}
           </FormLabel>
 
-          <FormControl>
-            {renderFieldInput(field, config, disabled)}
-          </FormControl>
+          <FormControl>{renderFieldInput(field, config, disabled)}</FormControl>
 
           {config.description && (
             <FormDescription className="text-xs text-muted-foreground">
@@ -227,21 +239,13 @@ function renderFieldInput<T extends FieldValues>(
     case 'select': {
       const selectConfig = config as SelectConfig
       return (
-        <Select
-          value={field.value || ''}
-          onValueChange={field.onChange}
-          disabled={isDisabled}
-        >
+        <Select value={field.value || ''} onValueChange={field.onChange} disabled={isDisabled}>
           <SelectTrigger>
             <SelectValue placeholder={config.placeholder} />
           </SelectTrigger>
           <SelectContent>
             {selectConfig.options?.map((option) => (
-              <SelectItem
-                key={option.value}
-                value={option.value}
-                disabled={option.disabled}
-              >
+              <SelectItem key={option.value} value={option.value} disabled={option.disabled}>
                 <div className="flex items-center gap-2">
                   {option.icon && <span className="text-sm">{option.icon}</span>}
                   <div className="flex flex-col">
@@ -306,7 +310,7 @@ function renderFieldInput<T extends FieldValues>(
             disabled={isDisabled}
           />
           {checkboxConfig.checkboxLabel && (
-            <span className="text-sm text-gray-700">{checkboxConfig.checkboxLabel}</span>
+            <span className="text-sm text-foreground">{checkboxConfig.checkboxLabel}</span>
           )}
         </div>
       )
@@ -322,7 +326,7 @@ function renderFieldInput<T extends FieldValues>(
             disabled={isDisabled}
           />
           {switchConfig.switchLabel && (
-            <span className="text-sm text-gray-700">{switchConfig.switchLabel}</span>
+            <span className="text-sm text-foreground">{switchConfig.switchLabel}</span>
           )}
         </div>
       )
@@ -336,13 +340,17 @@ function renderFieldInput<T extends FieldValues>(
             <Button
               variant="outline"
               className={cn(
-                "w-full justify-start text-left font-normal",
-                !field.value && "text-muted-foreground"
+                'w-full justify-start text-left font-normal',
+                !field.value && 'text-muted-foreground'
               )}
               disabled={isDisabled}
             >
               <CalendarIcon className="mr-2 size-4" />
-              {field.value ? format(new Date(field.value), "PPP") : <span>{config.placeholder || "Pick a date"}</span>}
+              {field.value ? (
+                format(new Date(field.value), 'PPP')
+              ) : (
+                <span>{config.placeholder || 'Pick a date'}</span>
+              )}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
@@ -367,13 +375,17 @@ function renderFieldInput<T extends FieldValues>(
       const tags = Array.isArray(field.value) ? field.value : []
 
       const addTag = (tag: string) => {
-        if (tag && !tags.includes(tag) && (!tagsConfig.maxTags || tags.length < tagsConfig.maxTags)) {
+        if (
+          tag &&
+          !tags.includes(tag) &&
+          (!tagsConfig.maxTags || tags.length < tagsConfig.maxTags)
+        ) {
           field.onChange([...tags, tag])
         }
       }
 
       const removeTag = (tagToRemove: string) => {
-        field.onChange(tags.filter(tag => tag !== tagToRemove))
+        field.onChange(tags.filter((tag) => tag !== tagToRemove))
       }
 
       return (
@@ -385,7 +397,7 @@ function renderFieldInput<T extends FieldValues>(
                 <button
                   type="button"
                   onClick={() => removeTag(tag)}
-                  className="ml-1 size-3 rounded-full hover:bg-gray-300"
+                  className="ml-1 size-3 rounded-full hover:bg-muted"
                   disabled={isDisabled}
                 >
                   <X className="size-2" />
@@ -394,7 +406,7 @@ function renderFieldInput<T extends FieldValues>(
             ))}
           </div>
           <Input
-            placeholder={config.placeholder || "Add tags..."}
+            placeholder={config.placeholder || 'Add tags...'}
             disabled={isDisabled}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
@@ -415,7 +427,7 @@ function renderFieldInput<T extends FieldValues>(
       const currencyConfig = config as CurrencyConfig
       return (
         <div className="relative">
-          <DollarSign className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+          <DollarSign className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             {...field}
             type="number"
@@ -434,12 +446,12 @@ function renderFieldInput<T extends FieldValues>(
       const phoneConfig = config as PhoneConfig
       return (
         <div className="relative">
-          <Phone className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+          <Phone className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             {...field}
             type="tel"
             disabled={isDisabled}
-            placeholder={config.placeholder || "+1 (555) 123-4567"}
+            placeholder={config.placeholder || '+1 (555) 123-4567'}
             autoComplete="tel"
             className="pl-10"
           />
@@ -450,7 +462,7 @@ function renderFieldInput<T extends FieldValues>(
     case 'email':
       return (
         <div className="relative">
-          <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+          <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             {...field}
             type="email"
@@ -465,12 +477,12 @@ function renderFieldInput<T extends FieldValues>(
     case 'url':
       return (
         <div className="relative">
-          <Globe className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+          <Globe className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             {...field}
             type="url"
             disabled={isDisabled}
-            placeholder={config.placeholder || "https://example.com"}
+            placeholder={config.placeholder || 'https://example.com'}
             autoComplete="url"
             className="pl-10"
           />
@@ -494,34 +506,15 @@ function renderFieldInput<T extends FieldValues>(
     }
 
     case 'date':
-      return (
-        <Input
-          {...field}
-          type="date"
-          disabled={isDisabled}
-          value={field.value || ''}
-        />
-      )
+      return <Input {...field} type="date" disabled={isDisabled} value={field.value || ''} />
 
     case 'datetime-local':
       return (
-        <Input
-          {...field}
-          type="datetime-local"
-          disabled={isDisabled}
-          value={field.value || ''}
-        />
+        <Input {...field} type="datetime-local" disabled={isDisabled} value={field.value || ''} />
       )
 
     case 'time':
-      return (
-        <Input
-          {...field}
-          type="time"
-          disabled={isDisabled}
-          value={field.value || ''}
-        />
-      )
+      return <Input {...field} type="time" disabled={isDisabled} value={field.value || ''} />
 
     case 'password':
       return (

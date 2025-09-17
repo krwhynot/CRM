@@ -21,7 +21,7 @@ export function ResetPasswordPage() {
       <LoadingState
         title="Loading..."
         description="Verifying your password reset link"
-        bgClassName="bg-mfb-cream"
+        bgClassName="bg-background"
       />
     )
   }

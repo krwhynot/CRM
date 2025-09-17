@@ -4,23 +4,39 @@ on:
   push:
     branches: [ main, develop, feature/architecture-simplification ]
     paths:
-      - 'src/index.css'
-      - 'src/styles/**/*.css'
+      - 'src/styles/tokens/primitives.css'
+      - 'src/styles/tokens/semantic.css'
+      - 'src/lib/design-token-types.ts'
+      - 'src/lib/design-token-utils.ts'
+      - 'tailwind.config.js'
       - 'scripts/validate-design-tokens.sh'
-      - 'scripts/token-changelog.js'
+      - 'scripts/simplified-token-analysis.js'
   pull_request:
     branches: [ main ]
     paths:
-      - 'src/index.css'
-      - 'src/styles/**/*.css'
+      - 'src/styles/tokens/primitives.css'
+      - 'src/styles/tokens/semantic.css'
+      - 'src/lib/design-token-types.ts'
+      - 'src/lib/design-token-utils.ts'
+      - 'tailwind.config.js'
       - 'scripts/validate-design-tokens.sh'
-      - 'scripts/token-changelog.js'
+      - 'scripts/simplified-token-analysis.js'
+
+env:
+  # Feature flags for progressive validation
+  VALIDATION_LEVEL: ${{ github.event_name == 'pull_request' && 'strict' || 'full' }}
+  ENABLE_BUNDLE_ANALYSIS: ${{ github.event_name == 'pull_request' && 'true' || 'false' }}
+  TOKEN_ARCHITECTURE_VERSION: '2-layer'
 
 jobs:
   design-token-governance:
     name: Design Token Validation & Governance
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    outputs:
+      validation-level: ${{ env.VALIDATION_LEVEL }}
+      bundle-impact: ${{ steps.bundle-analysis.outputs.impact-score }}
+      architecture-compliance: ${{ steps.architecture-validation.outputs.compliance-score }}
 
     steps:
       - name: Checkout repository
@@ -42,33 +58,134 @@ jobs:
           chmod +x scripts/validate-design-tokens.sh
           chmod +x scripts/token-changelog.js
 
-      - name: Run Design Token Validation
-        id: validation
+      - name: 2-Layer Architecture Validation
+        id: architecture-validation
         run: |
-          echo "Running comprehensive design token validation..."
-          ./scripts/validate-design-tokens.sh
+          echo "🏗️ Validating 2-layer design token architecture..."
+          echo "Architecture: ${TOKEN_ARCHITECTURE_VERSION}"
+          echo "Validation Level: ${VALIDATION_LEVEL}"
 
-      - name: Run Token Governance Checks
-        id: governance
+          # Run architecture-specific validation
+          VALIDATION_OUTPUT=$(./scripts/validate-design-tokens.sh --architecture 2-layer --level "${VALIDATION_LEVEL}")
+          echo "$VALIDATION_OUTPUT"
+
+          # Extract compliance score
+          COMPLIANCE_SCORE=$(echo "$VALIDATION_OUTPUT" | grep -o "Score: [0-9]*/[0-9]*" | grep -o "[0-9]*" | head -1)
+          echo "compliance-score=${COMPLIANCE_SCORE:-0}" >> $GITHUB_OUTPUT
+
+          # Check minimum thresholds based on validation level
+          MIN_SCORE=85
+          if [ "$VALIDATION_LEVEL" = "strict" ]; then
+            MIN_SCORE=120
+          elif [ "$VALIDATION_LEVEL" = "full" ]; then
+            MIN_SCORE=100
+          fi
+
+          if [ "${COMPLIANCE_SCORE:-0}" -ge "$MIN_SCORE" ]; then
+            echo "✅ Architecture validation passed: ${COMPLIANCE_SCORE}/165 (>= ${MIN_SCORE})"
+          else
+            echo "❌ Architecture validation failed: ${COMPLIANCE_SCORE}/165 (< ${MIN_SCORE})"
+            exit 1
+          fi
+
+      - name: Bundle Impact Analysis
+        id: bundle-analysis
+        if: env.ENABLE_BUNDLE_ANALYSIS == 'true'
         run: |
-          echo "Running token governance and change tracking..."
-          node scripts/token-changelog.js
+          echo "📊 Analyzing bundle impact of design token changes..."
 
-      - name: Run Performance Analysis
+          # Create baseline build (current HEAD~1)
+          git stash push -m "temp-stash-for-baseline"
+          git checkout HEAD~1 -- src/styles/tokens/ tailwind.config.js || echo "No previous version found"
+
+          # Build baseline
+          npm run build > baseline-build.log 2>&1 || echo "Baseline build failed"
+          BASELINE_SIZE=0
+          if [ -d "dist" ]; then
+            BASELINE_SIZE=$(du -sb dist/ | cut -f1)
+            mv dist baseline-dist
+          fi
+
+          # Restore current changes
+          git stash pop || echo "No stash to pop"
+
+          # Build with changes
+          npm run build > current-build.log 2>&1
+          CURRENT_SIZE=0
+          if [ -d "dist" ]; then
+            CURRENT_SIZE=$(du -sb dist/ | cut -f1)
+          fi
+
+          # Calculate impact
+          SIZE_DIFF=$((CURRENT_SIZE - BASELINE_SIZE))
+          if [ "$BASELINE_SIZE" -gt 0 ]; then
+            PERCENT_CHANGE=$(echo "scale=2; ($SIZE_DIFF * 100) / $BASELINE_SIZE" | bc -l)
+          else
+            PERCENT_CHANGE="0"
+          fi
+
+          # Generate bundle analysis report
+          node scripts/simplified-token-analysis.js > bundle-analysis.log 2>&1
+
+          echo "impact-score=${PERCENT_CHANGE}" >> $GITHUB_OUTPUT
+          echo "📊 Bundle Impact Analysis:"
+          echo "   Baseline Size: $(numfmt --to=iec $BASELINE_SIZE)"
+          echo "   Current Size: $(numfmt --to=iec $CURRENT_SIZE)"
+          echo "   Size Change: $(numfmt --to=iec $SIZE_DIFF) (${PERCENT_CHANGE}%)"
+
+          # Check if impact exceeds threshold (5% for warnings, 15% for failure)
+          if (( $(echo "$PERCENT_CHANGE > 15" | bc -l) )); then
+            echo "❌ Bundle size increased by ${PERCENT_CHANGE}% (>15% threshold)"
+            exit 1
+          elif (( $(echo "$PERCENT_CHANGE > 5" | bc -l) )); then
+            echo "⚠️ Bundle size increased by ${PERCENT_CHANGE}% (>5% warning threshold)"
+          else
+            echo "✅ Bundle impact acceptable: ${PERCENT_CHANGE}%"
+          fi
+
+      - name: Progressive Performance Analysis
         id: performance
         run: |
-          echo "Running token performance analysis..."
-          npm run tokens:analyze
-          npm run tokens:optimize
+          echo "🚀 Running progressive performance analysis..."
+          echo "Level: ${VALIDATION_LEVEL}"
 
-          # Check if optimization meets target (25% reduction)
-          if [ -f "dist/optimization-report.json" ]; then
-            REDUCTION=$(node -e "const report = require('./dist/optimization-report.json'); console.log(report.stats.reductionPercent);")
-            if [ "$REDUCTION" -ge 20 ]; then
-              echo "✅ Performance target achieved: ${REDUCTION}% reduction"
-            else
-              echo "⚠️ Performance target not met: ${REDUCTION}% reduction (20% minimum)"
+          # Run simplified token analysis for all levels
+          node scripts/simplified-token-analysis.js > token-performance.log 2>&1
+
+          # Enhanced analysis for full and strict levels
+          if [ "$VALIDATION_LEVEL" = "full" ] || [ "$VALIDATION_LEVEL" = "strict" ]; then
+            echo "📈 Running enhanced performance analysis..."
+
+            # CSS token optimization check
+            CSS_VARS_DEFINED=$(grep -r "^[[:space:]]*--" src/styles/tokens/ | wc -l)
+            CSS_VARS_USED=$(grep -r "var(--" src/ --include="*.tsx" --include="*.ts" | wc -l)
+
+            if [ "$CSS_VARS_DEFINED" -gt 0 ]; then
+              USAGE_RATE=$(echo "scale=1; ($CSS_VARS_USED * 100) / $CSS_VARS_DEFINED" | bc -l)
+              echo "📊 Token Usage Rate: ${USAGE_RATE}% (${CSS_VARS_USED}/${CSS_VARS_DEFINED})"
+
+              # Strict mode requires higher usage efficiency
+              MIN_USAGE_RATE=20
+              if [ "$VALIDATION_LEVEL" = "strict" ]; then
+                MIN_USAGE_RATE=30
+              fi
+
+              if (( $(echo "$USAGE_RATE < $MIN_USAGE_RATE" | bc -l) )); then
+                echo "⚠️ Token usage rate below ${MIN_USAGE_RATE}% threshold"
+                if [ "$VALIDATION_LEVEL" = "strict" ]; then
+                  echo "❌ Strict mode: Token efficiency requirement not met"
+                  exit 1
+                fi
+              else
+                echo "✅ Token usage efficiency acceptable"
+              fi
             fi
+          fi
+
+          # Basic performance validation for all levels
+          if [ -f "token-performance.log" ]; then
+            echo "📋 Token Analysis Summary:"
+            tail -10 token-performance.log | head -5
           fi
 
       - name: Check for governance violations
@@ -95,26 +212,28 @@ jobs:
           echo ""
           exit 1
 
-      - name: Upload token exports (on success)
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: design-tokens-export-${{ github.sha }}
-          path: design-tokens-export/
-          retention-days: 30
-
-      - name: Upload performance reports
+      - name: Upload 2-Layer Token Analysis
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: token-performance-reports-${{ github.sha }}
+          name: design-tokens-analysis-${{ github.sha }}
           path: |
-            dist/token-analysis-report.json
-            dist/token-analysis-report.html
-            dist/optimization-report.json
-            dist/optimization-report.html
-            dist/critical-tokens.css
-            dist/consolidated-tokens.css
+            token-performance.log
+            bundle-analysis.log
+            baseline-build.log
+            current-build.log
+          retention-days: 30
+
+      - name: Upload bundle impact reports
+        if: env.ENABLE_BUNDLE_ANALYSIS == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-impact-reports-${{ github.sha }}
+          path: |
+            baseline-dist/
+            dist/
+            baseline-build.log
+            current-build.log
           retention-days: 30
 
       - name: Comment PR with governance results
@@ -164,15 +283,17 @@ jobs:
 
             const body = `## 🎨 Design Token Governance Report
 
-            ### ✅ Validation Status
-            - ✅ Token hierarchy validation passed
+            ### ✅ 2-Layer Architecture Validation (${process.env.VALIDATION_LEVEL || 'full'})
+            - ✅ Primitives layer validation passed
+            - ✅ Semantic layer validation passed
             - ✅ WCAG contrast compliance verified
-            - ✅ Governance rules enforced
             - ✅ No circular references detected
+            - ✅ Architecture compliance: ${{ steps.architecture-validation.outputs.compliance-score }}/165
 
-            ### 📊 Changes Summary
-            ${changelogContent.length > 0 ? '- 📝 Token changelog updated' : '- ℹ️ No token changes detected'}
-            ${docContent.length > 0 ? '- 📚 Documentation regenerated' : ''}
+            ### 📊 Bundle Impact Analysis
+            ${process.env.ENABLE_BUNDLE_ANALYSIS === 'true' ? '- 📈 Bundle impact: ${{ steps.bundle-analysis.outputs.impact-score }}%' : '- ℹ️ Bundle analysis skipped (not PR)'}
+            - 🏗️ Architecture: 2-layer system validated
+            - 🎯 Validation Level: ${process.env.VALIDATION_LEVEL || 'full'}
             ${performanceData}
 
             ### 🎯 Design Tool Exports
@@ -180,14 +301,12 @@ jobs:
             - ✅ CSS custom properties exported
             - ✅ SCSS variables generated
 
-            ### 🏛️ Governance Compliance
-            All design tokens follow the strict four-tier hierarchy:
-            1. **Primitives** (src/index.css) - Base values only
-            2. **Semantic** (semantic-tokens.css) - Meaningful abstractions
-            3. **Components** (component-tokens.css) - Component-specific tokens
-            4. **Features** (advanced files) - Specialized use cases
+            ### 🏛️ 2-Layer Architecture Compliance
+            All design tokens follow the validated 2-layer hierarchy:
+            1. **Primitives** (src/styles/tokens/primitives.css) - MFB brand colors in OKLCH with HSL fallbacks
+            2. **Semantic** (src/styles/tokens/semantic.css) - shadcn/ui mappings and contextual tokens
 
-            The design system maintains single source of truth with no duplicate definitions.
+            The simplified architecture eliminates circular dependencies and maintains OKLCH→HSL conversion pipeline.
 
             ---
             *This report was generated automatically by the Design Token Governance system.*`;

@@ -24,7 +24,7 @@ export const OrganizationTypeEnum = z.enum([
   'distributor',
   'prospect',
   'vendor',
-  'unknown'
+  'unknown',
 ] as const)
 
 // Priority enum with CRM business logic
@@ -73,66 +73,90 @@ export const organizationBaseSchema = z.object({
   is_distributor: z.boolean().default(false),
 
   // OPTIONAL FIELDS per specification with ZodTransforms
-  description: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.description.max, {
-      message: 'Description must be 500 characters or less'
-    }),
+  description: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.description.max,
+    {
+      message: 'Description must be 500 characters or less',
+    }
+  ),
 
-  email: ZodTransforms.nullableEmail
-    .refine((val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.email.max, {
-      message: 'Email must be 255 characters or less'
-    }),
+  email: ZodTransforms.nullableEmail.refine(
+    (val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.email.max,
+    {
+      message: 'Email must be 255 characters or less',
+    }
+  ),
 
-  phone: ZodTransforms.nullablePhone
-    .refine((val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.phone.max, {
-      message: 'Phone must be 50 characters or less'
-    }),
+  phone: ZodTransforms.nullablePhone.refine(
+    (val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.phone.max,
+    {
+      message: 'Phone must be 50 characters or less',
+    }
+  ),
 
-  website: ZodTransforms.nullableUrl
-    .refine((val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.website.max, {
-      message: 'Website must be 255 characters or less'
-    }),
+  website: ZodTransforms.nullableUrl.refine(
+    (val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.website.max,
+    {
+      message: 'Website must be 255 characters or less',
+    }
+  ),
 
   // ADDRESS FIELDS with proper validation
-  address_line_1: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.address_line_1.max, {
-      message: 'Address line 1 must be 255 characters or less'
-    }),
+  address_line_1: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.address_line_1.max,
+    {
+      message: 'Address line 1 must be 255 characters or less',
+    }
+  ),
 
-  address_line_2: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.address_line_2.max, {
-      message: 'Address line 2 must be 255 characters or less'
-    }),
+  address_line_2: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.address_line_2.max,
+    {
+      message: 'Address line 2 must be 255 characters or less',
+    }
+  ),
 
-  city: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.city.max, {
-      message: 'City must be 100 characters or less'
-    }),
+  city: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.city.max,
+    {
+      message: 'City must be 100 characters or less',
+    }
+  ),
 
-  state_province: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.state_province.max, {
-      message: 'State/Province must be 100 characters or less'
-    }),
+  state_province: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.state_province.max,
+    {
+      message: 'State/Province must be 100 characters or less',
+    }
+  ),
 
-  postal_code: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.postal_code.max, {
-      message: 'Postal code must be 20 characters or less'
-    }),
+  postal_code: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.postal_code.max,
+    {
+      message: 'Postal code must be 20 characters or less',
+    }
+  ),
 
-  country: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.country.max, {
-      message: 'Country must be 100 characters or less'
-    }),
+  country: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.country.max,
+    {
+      message: 'Country must be 100 characters or less',
+    }
+  ),
 
-  industry: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.industry.max, {
-      message: 'Industry must be 100 characters or less'
-    }),
+  industry: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.industry.max,
+    {
+      message: 'Industry must be 100 characters or less',
+    }
+  ),
 
-  notes: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.notes.max, {
-      message: 'Notes must be 500 characters or less'
-    }),
+  notes: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= ORGANIZATION_VALIDATION_CONSTANTS.notes.max,
+    {
+      message: 'Notes must be 500 characters or less',
+    }
+  ),
 })
 
 /**
@@ -290,9 +314,7 @@ export class OrganizationZodValidation {
     const result = organizationZodSchema.safeParse(data)
     if (result.success) return []
 
-    return result.error.errors.map(err =>
-      `${err.path.join('.')}: ${err.message}`
-    )
+    return result.error.errors.map((err) => `${err.path.join('.')}: ${err.message}`)
   }
 
   /**
@@ -305,7 +327,11 @@ export class OrganizationZodValidation {
   /**
    * Check if organization type requires specific flags
    */
-  static validateTypeAlignment(type: string, is_principal: boolean, is_distributor: boolean): boolean {
+  static validateTypeAlignment(
+    type: string,
+    is_principal: boolean,
+    is_distributor: boolean
+  ): boolean {
     switch (type) {
       case 'principal':
         return is_principal === true

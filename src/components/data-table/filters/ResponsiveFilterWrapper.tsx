@@ -156,7 +156,6 @@ const ResponsiveFilterWrapperInternal = React.memo(function ResponsiveFilterWrap
   // Rest of EntityFilters props
   ...entityFiltersProps
 }: ResponsiveFilterWrapperInternalProps) {
-
   // iPad-specific detection and orientation tracking
   const isIPad = useIsIPad()
   const orientation = useOrientation()
@@ -169,7 +168,9 @@ const ResponsiveFilterWrapperInternal = React.memo(function ResponsiveFilterWrap
   }, [forceInline, layoutModeOverride, layoutContainer?.mode])
 
   // iPad-specific optimization: track orientation changes for smooth transitions
-  const [previousOrientation, setPreviousOrientation] = React.useState<'portrait' | 'landscape' | null>(null)
+  const [previousOrientation, setPreviousOrientation] = React.useState<
+    'portrait' | 'landscape' | null
+  >(null)
 
   useEffect(() => {
     if (isIPad && previousOrientation && previousOrientation !== orientation) {
@@ -189,7 +190,7 @@ const ResponsiveFilterWrapperInternal = React.memo(function ResponsiveFilterWrap
 
   // Calculate active filter count for trigger button
   const activeFilterCount = useMemo(() => {
-    return Object.keys(filters).filter(key => {
+    return Object.keys(filters).filter((key) => {
       const value = filters[key]
       return value && value !== '' && value !== 'all' && value !== 'none'
     }).length
@@ -197,56 +198,44 @@ const ResponsiveFilterWrapperInternal = React.memo(function ResponsiveFilterWrap
 
   // Generate appropriate title and description
   const sheetTitle = title || `${entityType.charAt(0).toUpperCase() + entityType.slice(1)} Filters`
-  const sheetDesc = description || `Filter and search ${entityType} to find what you're looking for.`
+  const sheetDesc =
+    description || `Filter and search ${entityType} to find what you're looking for.`
 
   // Handle overlay open/close events
-  const handleOpenChange = useCallback((open: boolean) => {
-    layoutContainer?.sheetProps?.baseProps?.onOpenChange?.(open)
-    onOpenChange?.(open)
-  }, [layoutContainer?.sheetProps?.baseProps, onOpenChange])
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      layoutContainer?.sheetProps?.baseProps?.onOpenChange?.(open)
+      onOpenChange?.(open)
+    },
+    [layoutContainer?.sheetProps?.baseProps, onOpenChange]
+  )
 
   // Render EntityFilters with appropriate props
-  const renderFilters = useCallback((mode: FilterLayoutMode = effectiveMode) => (
-    <EntityFilters
-      entityType={entityType}
-      filters={filters}
-      onFiltersChange={onFiltersChange}
-      layoutMode={mode}
-      suppressLayoutContext={forceInline}
-      {...entityFiltersProps}
-    />
-  ), [
-    entityType,
-    filters,
-    onFiltersChange,
-    effectiveMode,
-    forceInline,
-    entityFiltersProps
-  ])
+  const renderFilters = useCallback(
+    (mode: FilterLayoutMode = effectiveMode) => (
+      <EntityFilters
+        entityType={entityType}
+        filters={filters}
+        onFiltersChange={onFiltersChange}
+        layoutMode={mode}
+        suppressLayoutContext={forceInline}
+        {...entityFiltersProps}
+      />
+    ),
+    [entityType, filters, onFiltersChange, effectiveMode, forceInline, entityFiltersProps]
+  )
 
   // For inline mode, render filters directly
   if (effectiveMode === 'inline' || !layoutContainer) {
-    return (
-      <div className={cn('w-full', wrapperClassName)}>
-        {renderFilters('inline')}
-      </div>
-    )
+    return <div className={cn('w-full', wrapperClassName)}>{renderFilters('inline')}</div>
   }
 
   // For sheet/drawer modes, render trigger + overlay
-  const {
-    isOverlayMode,
-    sheetProps: contextSheetProps,
-    containerProps
-  } = layoutContainer
+  const { isOverlayMode, sheetProps: contextSheetProps, containerProps } = layoutContainer
 
   if (!isOverlayMode || !contextSheetProps) {
     // Fallback to inline if overlay mode isn't available
-    return (
-      <div className={cn('w-full', wrapperClassName)}>
-        {renderFilters('inline')}
-      </div>
-    )
+    return <div className={cn('w-full', wrapperClassName)}>{renderFilters('inline')}</div>
   }
 
   const { baseProps, contentProps } = contextSheetProps
@@ -266,11 +255,7 @@ const ResponsiveFilterWrapperInternal = React.memo(function ResponsiveFilterWrap
       </div>
 
       {/* Sheet/Drawer Overlay */}
-      <Sheet
-        {...baseProps}
-        onOpenChange={handleOpenChange}
-        {...sheetProps}
-      >
+      <Sheet {...baseProps} onOpenChange={handleOpenChange} {...sheetProps}>
         <SheetContent
           {...contentProps}
           className={cn(
@@ -301,9 +286,7 @@ const ResponsiveFilterWrapperInternal = React.memo(function ResponsiveFilterWrap
           {/* Header */}
           <SheetHeader>
             <SheetTitle>{sheetTitle}</SheetTitle>
-            {description && (
-              <SheetDescription>{sheetDesc}</SheetDescription>
-            )}
+            {description && <SheetDescription>{sheetDesc}</SheetDescription>}
           </SheetHeader>
 
           {/* Filter Content */}
@@ -311,11 +294,13 @@ const ResponsiveFilterWrapperInternal = React.memo(function ResponsiveFilterWrap
             className={cn(
               'flex-1 overflow-y-auto',
               // iPad-optimized responsive padding
-              effectiveMode === 'drawer' ? [
-                'px-4 pb-4',
-                // iPad drawer gets extra bottom padding for home indicator
-                isIPad && 'pb-8',
-              ] : 'px-0 pb-4',
+              effectiveMode === 'drawer'
+                ? [
+                    'px-4 pb-4',
+                    // iPad drawer gets extra bottom padding for home indicator
+                    isIPad && 'pb-8',
+                  ]
+                : 'px-0 pb-4',
               // iPad-specific scroll optimization
               isIPad && 'overscroll-contain',
               containerProps?.className
@@ -397,7 +382,11 @@ export const ResponsiveFilterWrapperUtils = {
   /**
    * Get recommended mode for device (iPad-aware)
    */
-  getRecommendedMode: (deviceContext: string, isIPad?: boolean, orientation?: 'portrait' | 'landscape'): FilterLayoutMode => {
+  getRecommendedMode: (
+    deviceContext: string,
+    isIPad?: boolean,
+    orientation?: 'portrait' | 'landscape'
+  ): FilterLayoutMode => {
     // iPad-specific recommendations
     if (isIPad && orientation) {
       return orientation === 'portrait' ? 'drawer' : 'inline'
@@ -421,20 +410,29 @@ export const ResponsiveFilterWrapperUtils = {
   /**
    * Calculate transition performance impact
    */
-  getTransitionCost: (fromMode: FilterLayoutMode, toMode: FilterLayoutMode): 'low' | 'medium' | 'high' => {
+  getTransitionCost: (
+    fromMode: FilterLayoutMode,
+    toMode: FilterLayoutMode
+  ): 'low' | 'medium' | 'high' => {
     // Inline to inline = no cost
     if (fromMode === 'inline' && toMode === 'inline') return 'low'
 
     // Sheet to drawer or vice versa = medium cost (DOM restructure)
-    if ((fromMode === 'sheet' && toMode === 'drawer') ||
-        (fromMode === 'drawer' && toMode === 'sheet')) return 'medium'
+    if (
+      (fromMode === 'sheet' && toMode === 'drawer') ||
+      (fromMode === 'drawer' && toMode === 'sheet')
+    )
+      return 'medium'
 
     // Any overlay to inline or vice versa = high cost (component mount/unmount)
-    if ((fromMode === 'inline' && (toMode === 'sheet' || toMode === 'drawer')) ||
-        ((fromMode === 'sheet' || fromMode === 'drawer') && toMode === 'inline')) return 'high'
+    if (
+      (fromMode === 'inline' && (toMode === 'sheet' || toMode === 'drawer')) ||
+      ((fromMode === 'sheet' || fromMode === 'drawer') && toMode === 'inline')
+    )
+      return 'high'
 
     return 'low'
-  }
+  },
 }
 
 export type { ResponsiveFilterWrapperProps }

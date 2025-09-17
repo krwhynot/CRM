@@ -1,6 +1,6 @@
 /**
  * Smart Defaults - Pattern Matching Rules
- * 
+ *
  * Implements Tesler's Law by automatically detecting organization types
  * and providing intelligent field correlations for faster form completion.
  */
@@ -16,58 +16,143 @@ type OrganizationType = Database['public']['Enums']['organization_type']
 export const ORGANIZATION_TYPE_PATTERNS: Record<OrganizationType, string[]> = {
   customer: [
     // Food Service Establishments
-    'restaurant', 'cafe', 'bistro', 'diner', 'eatery', 'grill', 'kitchen', 'tavern', 
-    'bar', 'pub', 'steakhouse', 'pizzeria', 'bakery', 'coffee', 'catering',
-    
+    'restaurant',
+    'cafe',
+    'bistro',
+    'diner',
+    'eatery',
+    'grill',
+    'kitchen',
+    'tavern',
+    'bar',
+    'pub',
+    'steakhouse',
+    'pizzeria',
+    'bakery',
+    'coffee',
+    'catering',
+
     // Hospitality
-    'hotel', 'resort', 'lodge', 'inn', 'motel', 'casino',
-    
+    'hotel',
+    'resort',
+    'lodge',
+    'inn',
+    'motel',
+    'casino',
+
     // Institutional
-    'school', 'university', 'college', 'hospital', 'clinic', 'nursing home',
-    'senior living', 'assisted living', 'healthcare', 'medical center',
-    
+    'school',
+    'university',
+    'college',
+    'hospital',
+    'clinic',
+    'nursing home',
+    'senior living',
+    'assisted living',
+    'healthcare',
+    'medical center',
+
     // Corporate Dining
-    'corporate dining', 'employee dining', 'cafeteria', 'food service',
-    
+    'corporate dining',
+    'employee dining',
+    'cafeteria',
+    'food service',
+
     // Retail Food
-    'grocery', 'supermarket', 'market', 'store', 'retail'
+    'grocery',
+    'supermarket',
+    'market',
+    'store',
+    'retail',
   ],
-  
+
   principal: [
     // Manufacturing
-    'foods', 'food company', 'food corp', 'manufacturing', 'producers', 
-    'production', 'processing', 'brands', 'products', 'ingredients',
-    
+    'foods',
+    'food company',
+    'food corp',
+    'manufacturing',
+    'producers',
+    'production',
+    'processing',
+    'brands',
+    'products',
+    'ingredients',
+
     // Corporate Identifiers
-    'corporation', 'corp', 'incorporated', 'inc', 'company', 'co',
-    
+    'corporation',
+    'corp',
+    'incorporated',
+    'inc',
+    'company',
+    'co',
+
     // Food Industry Terms
-    'dairy', 'beverages', 'snacks', 'frozen', 'meat', 'seafood',
-    'organic', 'natural', 'farm', 'ranch', 'agriculture'
+    'dairy',
+    'beverages',
+    'snacks',
+    'frozen',
+    'meat',
+    'seafood',
+    'organic',
+    'natural',
+    'farm',
+    'ranch',
+    'agriculture',
   ],
-  
+
   distributor: [
     // Distribution Terms
-    'distribution', 'distributors', 'supply', 'supplies', 'logistics', 
-    'wholesale', 'warehousing', 'fulfillment',
-    
+    'distribution',
+    'distributors',
+    'supply',
+    'supplies',
+    'logistics',
+    'wholesale',
+    'warehousing',
+    'fulfillment',
+
     // Food Distribution
-    'food service', 'foodservice', 'food distribution', 'food supply',
-    'sysco', 'us foods', 'performance food', 'gordon food service'
+    'food service',
+    'foodservice',
+    'food distribution',
+    'food supply',
+    'sysco',
+    'us foods',
+    'performance food',
+    'gordon food service',
   ],
-  
+
   prospect: [
     // Potential Indicators
-    'new', 'opening', 'coming soon', 'planned', 'development',
-    'concept', 'startup', 'emerging'
+    'new',
+    'opening',
+    'coming soon',
+    'planned',
+    'development',
+    'concept',
+    'startup',
+    'emerging',
   ],
-  
+
   vendor: [
     // Service Providers
-    'services', 'consulting', 'solutions', 'technology', 'software',
-    'equipment', 'supplies', 'maintenance', 'cleaning', 'marketing',
-    'advertising', 'design', 'construction', 'hvac', 'refrigeration'
-  ]
+    'services',
+    'consulting',
+    'solutions',
+    'technology',
+    'software',
+    'equipment',
+    'supplies',
+    'maintenance',
+    'cleaning',
+    'marketing',
+    'advertising',
+    'design',
+    'construction',
+    'hvac',
+    'refrigeration',
+  ],
 }
 
 /**
@@ -85,12 +170,12 @@ export function detectOrganizationType(organizationName: string): OrganizationTy
     principal: 0,
     distributor: 0,
     prospect: 0,
-    vendor: 0
+    vendor: 0,
   }
 
   // Score each organization type based on pattern matches
   Object.entries(ORGANIZATION_TYPE_PATTERNS).forEach(([type, patterns]) => {
-    patterns.forEach(pattern => {
+    patterns.forEach((pattern) => {
       if (name.includes(pattern.toLowerCase())) {
         scores[type as OrganizationType] += pattern.length // Longer patterns get higher scores
       }
@@ -110,13 +195,16 @@ export function detectOrganizationType(organizationName: string): OrganizationTy
 /**
  * Gets confidence level for organization type detection
  */
-export function getDetectionConfidence(organizationName: string, detectedType: OrganizationType): number {
+export function getDetectionConfidence(
+  organizationName: string,
+  detectedType: OrganizationType
+): number {
   if (!organizationName || !detectedType) return 0
 
   const name = organizationName.toLowerCase().trim()
   const patterns = ORGANIZATION_TYPE_PATTERNS[detectedType]
-  const matchCount = patterns.filter(pattern => name.includes(pattern.toLowerCase())).length
-  
+  const matchCount = patterns.filter((pattern) => name.includes(pattern.toLowerCase())).length
+
   // Confidence based on number of matching patterns and name length
   const confidence = Math.min((matchCount / patterns.length) * 100, 95) // Cap at 95%
   return Math.round(confidence)
@@ -126,8 +214,19 @@ export function getDetectionConfidence(organizationName: string, detectedType: O
  * Common business entity suffixes that don't indicate type
  */
 export const BUSINESS_SUFFIXES = [
-  'llc', 'inc', 'corp', 'corporation', 'company', 'co', 'ltd', 'limited',
-  'enterprises', 'group', 'holdings', 'partners', 'associates'
+  'llc',
+  'inc',
+  'corp',
+  'corporation',
+  'company',
+  'co',
+  'ltd',
+  'limited',
+  'enterprises',
+  'group',
+  'holdings',
+  'partners',
+  'associates',
 ]
 
 /**
@@ -136,14 +235,14 @@ export const BUSINESS_SUFFIXES = [
  */
 export function cleanOrganizationName(name: string): string {
   if (!name) return ''
-  
+
   let cleaned = name.toLowerCase().trim()
-  
+
   // Remove business suffixes
-  BUSINESS_SUFFIXES.forEach(suffix => {
+  BUSINESS_SUFFIXES.forEach((suffix) => {
     const regex = new RegExp(`\\b${suffix}\\b\\.?$`, 'i')
     cleaned = cleaned.replace(regex, '').trim()
   })
-  
+
   return cleaned
 }

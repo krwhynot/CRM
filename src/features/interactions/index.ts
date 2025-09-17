@@ -1,7 +1,6 @@
 // Interactions Feature - Main Exports
 
 // Page Components
-export { InteractionsDataDisplay } from './components/InteractionsDataDisplay'
 export { InteractionsTable } from './components/InteractionsTable'
 export { InteractionsList } from './components/InteractionsList'
 export { InteractionsTableActions } from './components/InteractionsTableActions'
@@ -16,7 +15,6 @@ export { InteractionTimelineEmbed } from './components/InteractionTimelineEmbed'
 export { QuickInteractionBar } from './components/QuickInteractionBar'
 
 // Page Management Hooks
-export { useInteractionsPageState } from './hooks/useInteractionsPageState'
 export { useInteractionsPageActions } from './hooks/useInteractionsPageActions'
 export { useInteractionFormData } from './hooks/useInteractionFormData'
 

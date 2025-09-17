@@ -22,13 +22,13 @@ interface ContactWithWeeklyContext extends ContactWithOrganization {
   // Decision authority tracking
   decision_authority_level?: 'high' | 'medium' | 'low'
   purchase_influence_score?: number
-  
+
   // Weekly context
   recent_interactions_count?: number
   last_interaction_date?: string | Date
   needs_follow_up?: boolean
   high_value_contact?: boolean
-  
+
   // Enhanced authority fields
   budget_authority?: boolean
   technical_authority?: boolean
@@ -59,8 +59,9 @@ export function ContactsTable({
   onFiltersChange,
 }: ContactsTableProps) {
   // Use DEFAULT_CONTACTS when empty array is passed (for testing purposes)
-  const displayContacts = contacts.length === 0 ? DEFAULT_CONTACTS as ContactWithWeeklyContext[] : contacts
-  
+  const displayContacts =
+    contacts.length === 0 ? (DEFAULT_CONTACTS as ContactWithWeeklyContext[]) : contacts
+
   // Bulk delete state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -71,21 +72,20 @@ export function ContactsTable({
     principal: 'all',
     quickView: 'none',
     search: '',
-    ...filters // merge any filters passed as props
+    ...filters, // merge any filters passed as props
   })
 
   // Simple filtering logic (using the new weekly pattern)
-  const filteredContacts = displayContacts.filter(contact => {
+  const filteredContacts = displayContacts.filter((contact) => {
     // Apply search filter
     if (contactFilters.search) {
       const searchTerm = contactFilters.search.toLowerCase()
-      const matchesSearch = (
+      const matchesSearch =
         contact.first_name?.toLowerCase().includes(searchTerm) ||
         contact.last_name?.toLowerCase().includes(searchTerm) ||
         contact.email?.toLowerCase().includes(searchTerm) ||
         contact.title?.toLowerCase().includes(searchTerm) ||
         contact.organization?.name?.toLowerCase().includes(searchTerm)
-      )
       if (!matchesSearch) return false
     }
 
@@ -93,7 +93,11 @@ export function ContactsTable({
     if (contactFilters.quickView && contactFilters.quickView !== 'none') {
       switch (contactFilters.quickView) {
         case 'decision_makers':
-          return contact.decision_authority_level === 'high' || contact.decision_authority === 'high' || contact.budget_authority
+          return (
+            contact.decision_authority_level === 'high' ||
+            contact.decision_authority === 'high' ||
+            contact.budget_authority
+          )
         case 'recent_interactions':
           return (contact.recent_interactions_count || 0) > 0 || contact.last_interaction_date
         case 'needs_follow_up':
@@ -123,7 +127,7 @@ export function ContactsTable({
   // Convert Set to Array for easier manipulation
   const selectedIds = Array.from(selectedItems)
   const selectedContacts = displayContacts.filter((contact) => selectedItems.has(contact.id))
-  
+
   // Transform contacts to have 'name' property for BulkDeleteDialog
   const selectedContactsForDialog = selectedContacts.map((contact) => ({
     ...contact,
@@ -213,12 +217,14 @@ export function ContactsTable({
                 <Users className="size-4 text-gray-400" />
               )}
               <span className="text-sm font-medium">
-                {contact.decision_authority_level === 'high' || contact.budget_authority ? 'High Authority' :
-                 contact.decision_authority_level === 'medium' || contact.technical_authority ? 'Medium Authority' :
-                 'Limited Authority'}
+                {contact.decision_authority_level === 'high' || contact.budget_authority
+                  ? 'High Authority'
+                  : contact.decision_authority_level === 'medium' || contact.technical_authority
+                    ? 'Medium Authority'
+                    : 'Limited Authority'}
               </span>
             </div>
-            
+
             <div className="space-y-1 text-xs text-muted-foreground">
               {contact.budget_authority && (
                 <div className="flex items-center gap-1">
@@ -251,11 +257,14 @@ export function ContactsTable({
             {contact.purchase_influence_score ? (
               <div className="flex items-center gap-2">
                 <div className="h-2 w-16 overflow-hidden rounded-full bg-gray-200">
-                  <div 
+                  <div
                     className={cn(
-                      "h-full rounded-full",
-                      contact.purchase_influence_score >= 80 ? "bg-success" :
-                      contact.purchase_influence_score >= 60 ? "bg-warning" : "bg-destructive"
+                      'h-full rounded-full',
+                      contact.purchase_influence_score >= 80
+                        ? 'bg-success'
+                        : contact.purchase_influence_score >= 60
+                          ? 'bg-warning'
+                          : 'bg-destructive'
                     )}
                     style={{ width: `${contact.purchase_influence_score}%` }}
                   />
@@ -267,11 +276,9 @@ export function ContactsTable({
                 Influence Level: {contact.purchase_influence}
               </div>
             ) : (
-              <div className="text-sm italic text-muted-foreground">
-                Not assessed
-              </div>
+              <div className="text-sm italic text-muted-foreground">Not assessed</div>
             )}
-            
+
             {contact.high_value_contact && (
               <div className="flex items-center gap-1 text-green-600">
                 <Star className="size-3" />
@@ -324,9 +331,7 @@ export function ContactsTable({
             <div className="space-y-1 text-sm text-muted-foreground">
               <div>Name: {contact.organization.name}</div>
               <div>Type: {contact.organization.type}</div>
-              {contact.organization.segment && (
-                <div>Segment: {contact.organization.segment}</div>
-              )}
+              {contact.organization.segment && <div>Segment: {contact.organization.segment}</div>}
             </div>
           </div>
         )}
@@ -392,7 +397,7 @@ export function ContactsTable({
             <div className="text-base font-semibold text-primary">
               {contact.first_name} {contact.last_name}
             </div>
-            
+
             {/* Decision Authority Icons */}
             {contact.decision_authority_level === 'high' || contact.budget_authority ? (
               <TooltipProvider>
@@ -421,7 +426,7 @@ export function ContactsTable({
                 </Tooltip>
               </TooltipProvider>
             ) : null}
-            
+
             {contact.high_value_contact && (
               <TooltipProvider>
                 <Tooltip>
@@ -436,9 +441,9 @@ export function ContactsTable({
                 </Tooltip>
               </TooltipProvider>
             )}
-            
+
             {contact.is_primary_contact && <span className="fill-current text-yellow-500">⭐</span>}
-            
+
             {contact.needs_follow_up && (
               <TooltipProvider>
                 <Tooltip>
@@ -458,42 +463,53 @@ export function ContactsTable({
           <div className="flex flex-wrap items-center gap-1">
             {/* Authority Type Badges */}
             {contact.budget_authority && (
-              <Badge variant="secondary" className="border-green-200 bg-green-50 text-xs text-green-700">
+              <Badge
+                variant="secondary"
+                className="border-green-200 bg-green-50 text-xs text-green-700"
+              >
                 Budget
               </Badge>
             )}
             {contact.technical_authority && (
-              <Badge variant="secondary" className="border-blue-200 bg-blue-50 text-xs text-blue-700">
+              <Badge
+                variant="secondary"
+                className="border-blue-200 bg-blue-50 text-xs text-blue-700"
+              >
                 Technical
               </Badge>
             )}
             {contact.user_authority && (
-              <Badge variant="secondary" className="border-purple-200 bg-purple-50 text-xs text-purple-700">
+              <Badge
+                variant="secondary"
+                className="border-purple-200 bg-purple-50 text-xs text-purple-700"
+              >
                 User
               </Badge>
             )}
-            
+
             {/* Purchase Influence Badge */}
             {contact.purchase_influence_score && contact.purchase_influence_score > 60 && (
-              <Badge variant="secondary" className="border-orange-200 bg-orange-50 text-xs text-orange-700">
+              <Badge
+                variant="secondary"
+                className="border-orange-200 bg-orange-50 text-xs text-orange-700"
+              >
                 {contact.purchase_influence_score}% influence
               </Badge>
             )}
-            
+
             {/* Recent Activity Badge */}
             {(contact.recent_interactions_count || 0) > 0 && (
-              <Badge variant="secondary" className="border-gray-200 bg-gray-50 text-xs text-gray-700">
+              <Badge
+                variant="secondary"
+                className="border-gray-200 bg-gray-50 text-xs text-gray-700"
+              >
                 {contact.recent_interactions_count} recent
               </Badge>
             )}
           </div>
 
           {/* Title */}
-          {contact.title && (
-            <div className="text-xs text-muted-foreground">
-              {contact.title}
-            </div>
-          )}
+          {contact.title && <div className="text-xs text-muted-foreground">{contact.title}</div>}
         </div>
       ),
       className: 'font-semibold',
@@ -527,9 +543,7 @@ export function ContactsTable({
             {primaryContactInfo ? (
               <>
                 <span className="text-muted">📞</span>
-                <span className="font-mono text-sm text-muted">
-                  {primaryContactInfo}
-                </span>
+                <span className="font-mono text-sm text-muted">{primaryContactInfo}</span>
               </>
             ) : (
               <EmptyCell />
@@ -643,12 +657,14 @@ export function ContactsTable({
           .map((contact) => contact.id)}
         onToggleRow={toggleRowExpansion}
         empty={{
-          title: contactFilters.search || contactFilters.quickView !== 'none' 
-            ? 'No contacts match your criteria' 
-            : 'No contacts found',
-          description: contactFilters.search || contactFilters.quickView !== 'none'
-            ? 'Try adjusting your filters'
-            : 'Get started by adding your first contact',
+          title:
+            contactFilters.search || contactFilters.quickView !== 'none'
+              ? 'No contacts match your criteria'
+              : 'No contacts found',
+          description:
+            contactFilters.search || contactFilters.quickView !== 'none'
+              ? 'Try adjusting your filters'
+              : 'Get started by adding your first contact',
         }}
       />
 

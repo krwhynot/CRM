@@ -18,14 +18,19 @@ import { ZodTransforms } from '../lib/form-transforms'
 
 // Contact business logic types
 export const PurchaseInfluenceEnum = z.enum(['High', 'Medium', 'Low', 'Unknown'] as const)
-export const DecisionAuthorityEnum = z.enum(['Decision Maker', 'Influencer', 'End User', 'Gatekeeper'] as const)
+export const DecisionAuthorityEnum = z.enum([
+  'Decision Maker',
+  'Influencer',
+  'End User',
+  'Gatekeeper',
+] as const)
 export const ContactRoleEnum = z.enum([
   'decision_maker',
   'influencer',
   'buyer',
   'end_user',
   'gatekeeper',
-  'champion'
+  'champion',
 ] as const)
 
 // Organization types for organization creation mode
@@ -34,7 +39,7 @@ export const OrganizationTypeEnum = z.enum([
   'principal',
   'distributor',
   'prospect',
-  'vendor'
+  'vendor',
 ] as const)
 
 // Validation constants for contact fields
@@ -71,61 +76,75 @@ export const contactBaseSchema = z.object({
     .min(1, 'Last name is required')
     .max(CONTACT_VALIDATION_CONSTANTS.last_name.max, 'Last name must be 100 characters or less'),
 
-  purchase_influence: PurchaseInfluenceEnum
-    .default('Unknown')
-    .describe('Purchase influence level is required'),
+  purchase_influence: PurchaseInfluenceEnum.default('Unknown').describe(
+    'Purchase influence level is required'
+  ),
 
-  decision_authority: DecisionAuthorityEnum
-    .default('Gatekeeper')
-    .describe('Decision authority role is required'),
+  decision_authority: DecisionAuthorityEnum.default('Gatekeeper').describe(
+    'Decision authority role is required'
+  ),
 
   // OPTIONAL CORE FIELDS with ZodTransforms
-  role: ContactRoleEnum
-    .nullable()
+  role: ContactRoleEnum.nullable()
     .optional()
-    .transform(val => val || null),
+    .transform((val) => val || null),
 
-  email: ZodTransforms.nullableEmail
-    .refine((val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.email.max, {
-      message: 'Email must be 255 characters or less'
-    }),
+  email: ZodTransforms.nullableEmail.refine(
+    (val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.email.max,
+    {
+      message: 'Email must be 255 characters or less',
+    }
+  ),
 
-  title: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.title.max, {
-      message: 'Title must be 100 characters or less'
-    }),
+  title: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.title.max,
+    {
+      message: 'Title must be 100 characters or less',
+    }
+  ),
 
-  department: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.department.max, {
-      message: 'Department must be 100 characters or less'
-    }),
+  department: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.department.max,
+    {
+      message: 'Department must be 100 characters or less',
+    }
+  ),
 
-  phone: ZodTransforms.nullablePhone
-    .refine((val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.phone.max, {
-      message: 'Phone must be 50 characters or less'
-    }),
+  phone: ZodTransforms.nullablePhone.refine(
+    (val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.phone.max,
+    {
+      message: 'Phone must be 50 characters or less',
+    }
+  ),
 
-  mobile_phone: ZodTransforms.nullablePhone
-    .refine((val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.mobile_phone.max, {
-      message: 'Mobile phone must be 50 characters or less'
-    }),
+  mobile_phone: ZodTransforms.nullablePhone.refine(
+    (val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.mobile_phone.max,
+    {
+      message: 'Mobile phone must be 50 characters or less',
+    }
+  ),
 
-  linkedin_url: ZodTransforms.nullableUrl
-    .refine((val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.linkedin_url.max, {
-      message: 'LinkedIn URL must be 500 characters or less'
-    }),
+  linkedin_url: ZodTransforms.nullableUrl.refine(
+    (val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.linkedin_url.max,
+    {
+      message: 'LinkedIn URL must be 500 characters or less',
+    }
+  ),
 
   is_primary_contact: z.boolean().nullable().default(false),
 
-  notes: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.notes.max, {
-      message: 'Notes must be 500 characters or less'
-    }),
+  notes: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.notes.max,
+    {
+      message: 'Notes must be 500 characters or less',
+    }
+  ),
 
   // VIRTUAL FIELDS for form handling (not persisted to database)
-  preferred_principals: z.array(z.string().uuid('Invalid principal organization ID'))
+  preferred_principals: z
+    .array(z.string().uuid('Invalid principal organization ID'))
     .default([])
-    .transform((arr) => arr.filter(id => id !== undefined)),
+    .transform((arr) => arr.filter((id) => id !== undefined)),
 })
 
 /**
@@ -135,8 +154,9 @@ export const contactBaseSchema = z.object({
 const existingOrganizationContactSchema = contactBaseSchema.extend({
   organization_mode: z.literal('existing').default('existing'),
 
-  organization_id: ZodTransforms.uuidField
-    .refine(val => val !== null, { message: 'Organization is required when using existing organization' }),
+  organization_id: ZodTransforms.uuidField.refine((val) => val !== null, {
+    message: 'Organization is required when using existing organization',
+  }),
 
   // Organization creation fields should be null/optional in existing mode
   organization_name: z.string().nullable().default(null),
@@ -161,31 +181,43 @@ const newOrganizationContactSchema = contactBaseSchema.extend({
   organization_name: z
     .string()
     .min(1, 'Organization name is required when creating a new organization')
-    .max(CONTACT_VALIDATION_CONSTANTS.organization_name.max, 'Organization name must be 255 characters or less'),
+    .max(
+      CONTACT_VALIDATION_CONSTANTS.organization_name.max,
+      'Organization name must be 255 characters or less'
+    ),
 
-  organization_type: OrganizationTypeEnum
-    .describe('Organization type is required when creating a new organization'),
+  organization_type: OrganizationTypeEnum.describe(
+    'Organization type is required when creating a new organization'
+  ),
 
   // Optional organization fields for new mode
-  organization_phone: ZodTransforms.nullablePhone
-    .refine((val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.organization_phone.max, {
-      message: 'Phone must be 50 characters or less'
-    }),
+  organization_phone: ZodTransforms.nullablePhone.refine(
+    (val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.organization_phone.max,
+    {
+      message: 'Phone must be 50 characters or less',
+    }
+  ),
 
-  organization_email: ZodTransforms.nullableEmail
-    .refine((val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.organization_email.max, {
-      message: 'Email must be 255 characters or less'
-    }),
+  organization_email: ZodTransforms.nullableEmail.refine(
+    (val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.organization_email.max,
+    {
+      message: 'Email must be 255 characters or less',
+    }
+  ),
 
-  organization_website: ZodTransforms.nullableUrl
-    .refine((val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.organization_website.max, {
-      message: 'Website must be 500 characters or less'
-    }),
+  organization_website: ZodTransforms.nullableUrl.refine(
+    (val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.organization_website.max,
+    {
+      message: 'Website must be 500 characters or less',
+    }
+  ),
 
-  organization_notes: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.organization_notes.max, {
-      message: 'Notes must be 500 characters or less'
-    }),
+  organization_notes: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= CONTACT_VALIDATION_CONSTANTS.organization_notes.max,
+    {
+      message: 'Notes must be 500 characters or less',
+    }
+  ),
 })
 
 /**
@@ -215,16 +247,18 @@ export const contactUpdateSchema = contactBaseSchema.partial()
  */
 export const contactWithPreferredPrincipalsSchema = z.discriminatedUnion('organization_mode', [
   existingOrganizationContactSchema.extend({
-    preferred_principals: z.array(z.string().uuid('Invalid principal organization ID'))
+    preferred_principals: z
+      .array(z.string().uuid('Invalid principal organization ID'))
       .min(1, 'At least one preferred principal is required')
       .max(10, 'Maximum 10 preferred principals allowed')
-      .transform((arr) => arr.filter(id => id !== undefined)),
+      .transform((arr) => arr.filter((id) => id !== undefined)),
   }),
   newOrganizationContactSchema.extend({
-    preferred_principals: z.array(z.string().uuid('Invalid principal organization ID'))
+    preferred_principals: z
+      .array(z.string().uuid('Invalid principal organization ID'))
       .min(1, 'At least one preferred principal is required')
       .max(10, 'Maximum 10 preferred principals allowed')
-      .transform((arr) => arr.filter(id => id !== undefined)),
+      .transform((arr) => arr.filter((id) => id !== undefined)),
   }),
 ])
 
@@ -235,7 +269,9 @@ export const contactWithPreferredPrincipalsSchema = z.discriminatedUnion('organi
 export type ContactZodFormData = z.infer<typeof contactZodSchema>
 export type ContactCreateFormData = z.infer<typeof contactCreateSchema>
 export type ContactUpdateFormData = z.infer<typeof contactUpdateSchema>
-export type ContactWithPreferredPrincipalsFormData = z.infer<typeof contactWithPreferredPrincipalsSchema>
+export type ContactWithPreferredPrincipalsFormData = z.infer<
+  typeof contactWithPreferredPrincipalsSchema
+>
 
 // Specific type exports for discriminated union cases
 export type ExistingOrganizationContactFormData = z.infer<typeof existingOrganizationContactSchema>
@@ -293,9 +329,7 @@ export class ContactZodValidation {
     const result = contactZodSchema.safeParse(data)
     if (result.success) return []
 
-    return result.error.errors.map(err =>
-      `${err.path.join('.')}: ${err.message}`
-    )
+    return result.error.errors.map((err) => `${err.path.join('.')}: ${err.message}`)
   }
 
   /**
@@ -309,7 +343,11 @@ export class ContactZodValidation {
    * Validate organization mode logic
    * Ensures proper field requirements based on organization_mode
    */
-  static validateOrganizationMode(mode: string, organizationId?: string | null, organizationName?: string | null): boolean {
+  static validateOrganizationMode(
+    mode: string,
+    organizationId?: string | null,
+    organizationName?: string | null
+  ): boolean {
     switch (mode) {
       case 'existing':
         return !!organizationId // Must have organization_id
@@ -328,9 +366,10 @@ export class ContactZodValidation {
     if (!Array.isArray(principals)) return false
     if (principals.length > 10) return false
 
-    return principals.every(id =>
-      typeof id === 'string' &&
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)
+    return principals.every(
+      (id) =>
+        typeof id === 'string' &&
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)
     )
   }
 
@@ -338,7 +377,19 @@ export class ContactZodValidation {
    * Transform for handling form data to database format
    * Removes virtual fields and prepares for database insertion
    */
-  static transformForDatabase(formData: ContactZodFormData): Omit<ContactZodFormData, 'preferred_principals' | 'organization_mode' | 'organization_name' | 'organization_type' | 'organization_phone' | 'organization_email' | 'organization_website' | 'organization_notes'> {
+  static transformForDatabase(
+    formData: ContactZodFormData
+  ): Omit<
+    ContactZodFormData,
+    | 'preferred_principals'
+    | 'organization_mode'
+    | 'organization_name'
+    | 'organization_type'
+    | 'organization_phone'
+    | 'organization_email'
+    | 'organization_website'
+    | 'organization_notes'
+  > {
     const {
       preferred_principals,
       organization_mode,

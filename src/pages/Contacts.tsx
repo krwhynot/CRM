@@ -1,11 +1,12 @@
 import {
   useContacts,
   useRefreshContacts,
-  useContactsPageState,
   useContactsPageActions,
-  ContactsDataDisplay,
+  ContactsList,
   ContactsDialogs,
 } from '@/features/contacts'
+import { useEntityPageState } from '@/hooks/useEntityPageState'
+import type { Contact } from '@/types/entities'
 // TODO: Re-implement error boundary after component consolidation
 import { PageLayout } from '@/components/layout/PageLayout'
 import { PageHeader } from '@/components/layout/PageHeader'
@@ -20,14 +21,14 @@ function ContactsPage() {
     isCreateDialogOpen,
     isEditDialogOpen,
     isDeleteDialogOpen,
-    selectedContact,
+    selectedEntity: selectedContact,
     openCreateDialog,
     closeCreateDialog,
     openEditDialog,
     closeEditDialog,
     openDeleteDialog,
     closeDeleteDialog,
-  } = useContactsPageState()
+  } = useEntityPageState<Contact>()
 
   const { handleCreate, handleUpdate, handleDelete, isCreating, isUpdating, isDeleting } =
     useContactsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
@@ -35,44 +36,44 @@ function ContactsPage() {
   return (
     <FilterLayoutProvider>
       <PageLayout>
-          <PageHeader
-            title="Contacts"
-            description={`Manage ${contacts.length} contacts in your CRM`}
-            action={{
-              label: "Add Contact",
-              onClick: openCreateDialog
-            }}
-          />
+        <PageHeader
+          title="Contacts"
+          description={`Manage ${contacts.length} contacts in your CRM`}
+          action={{
+            label: 'Add Contact',
+            onClick: openCreateDialog,
+          }}
+        />
 
-          <ContentSection>
-            <ContactsDataDisplay
-              isLoading={isLoading}
-              isError={isError}
-              error={error}
-              contacts={contacts}
-              onEdit={openEditDialog}
-              onDelete={openDeleteDialog}
-              onRefresh={refreshContacts}
-            />
-          </ContentSection>
-
-          <ContactsDialogs
-            isCreateDialogOpen={isCreateDialogOpen}
-            isEditDialogOpen={isEditDialogOpen}
-            isDeleteDialogOpen={isDeleteDialogOpen}
-            selectedContact={selectedContact}
-            onCreateSubmit={handleCreate}
-            onEditSubmit={handleUpdate}
-            onDeleteConfirm={handleDelete}
-            onCreateDialogChange={closeCreateDialog}
-            onEditDialogChange={closeEditDialog}
-            onDeleteDialogChange={closeDeleteDialog}
-            onDeleteCancel={closeDeleteDialog}
-            isCreating={isCreating}
-            isUpdating={isUpdating}
-            isDeleting={isDeleting}
+        <ContentSection>
+          <ContactsList
+            contacts={contacts}
+            loading={isLoading}
+            isError={isError}
+            error={error}
+            onEdit={openEditDialog}
+            onDelete={openDeleteDialog}
+            onRefresh={refreshContacts}
           />
-        </PageLayout>
+        </ContentSection>
+
+        <ContactsDialogs
+          isCreateDialogOpen={isCreateDialogOpen}
+          isEditDialogOpen={isEditDialogOpen}
+          isDeleteDialogOpen={isDeleteDialogOpen}
+          selectedContact={selectedContact}
+          onCreateSubmit={handleCreate}
+          onEditSubmit={handleUpdate}
+          onDeleteConfirm={handleDelete}
+          onCreateDialogChange={closeCreateDialog}
+          onEditDialogChange={closeEditDialog}
+          onDeleteDialogChange={closeDeleteDialog}
+          onDeleteCancel={closeDeleteDialog}
+          isCreating={isCreating}
+          isUpdating={isUpdating}
+          isDeleting={isDeleting}
+        />
+      </PageLayout>
     </FilterLayoutProvider>
   )
 }

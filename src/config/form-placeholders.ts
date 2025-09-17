@@ -1,6 +1,6 @@
 /**
  * Form Placeholders Configuration
- * 
+ *
  * Centralized configuration for all form placeholders, validation messages,
  * and default values used throughout the application. This ensures consistency
  * and makes internationalization easier in the future.
@@ -108,30 +108,30 @@ export const fieldLabels = {
   website: 'Website',
   description: 'Description',
   notes: 'Notes',
-  
+
   // Organization specific
   organizationType: 'Organization Type',
   industry: 'Industry',
-  
+
   // Contact specific
   title: 'Job Title',
   mobilePhone: 'Mobile Phone',
   officePhone: 'Office Phone',
   linkedin: 'LinkedIn Profile',
-  
+
   // Address fields
   street: 'Street Address',
   city: 'City',
   state: 'State/Province',
   postalCode: 'Postal Code',
   country: 'Country',
-  
+
   // Opportunity specific
   opportunityValue: 'Opportunity Value',
   probability: 'Probability (%)',
   expectedCloseDate: 'Expected Close Date',
   stage: 'Stage',
-  
+
   // Product specific
   sku: 'SKU',
   category: 'Category',
@@ -149,7 +149,10 @@ export const defaultValues = {
 } as const
 
 // Helper functions for placeholder management
-export const getPlaceholder = (field: string, context: 'contact' | 'organization' | 'product' | 'opportunity' | 'search' = 'contact'): string => {
+export const getPlaceholder = (
+  field: string,
+  context: 'contact' | 'organization' | 'product' | 'opportunity' | 'search' = 'contact'
+): string => {
   const placeholderMaps = {
     contact: contactPlaceholders,
     organization: organizationPlaceholders,
@@ -157,12 +160,15 @@ export const getPlaceholder = (field: string, context: 'contact' | 'organization
     opportunity: opportunityPlaceholders,
     search: searchPlaceholders,
   }
-  
+
   const contextPlaceholders = placeholderMaps[context] as Record<string, string>
   return contextPlaceholders[field] || `Enter ${field}...`
 }
 
-export const getValidationMessage = (rule: keyof typeof validationMessages, ...params: unknown[]): string => {
+export const getValidationMessage = (
+  rule: keyof typeof validationMessages,
+  ...params: unknown[]
+): string => {
   const message = validationMessages[rule]
   return typeof message === 'function' ? (message as Function)(...params) : message
 }

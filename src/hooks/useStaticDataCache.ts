@@ -1,6 +1,6 @@
 /**
  * Static Data Cache Hook
- * 
+ *
  * React hook for accessing cached static data with automatic loading states
  * and error handling. Provides consistent interface for all static data types.
  */
@@ -34,14 +34,14 @@ export function useInteractionTypes() {
 
   const load = useCallback(async () => {
     try {
-      setState(prev => ({ ...prev, loading: true, error: null }))
+      setState((prev) => ({ ...prev, loading: true, error: null }))
       const data = await staticDataCache.getInteractionTypes()
       setState({ data, loading: false, error: null })
     } catch (error) {
-      setState({ 
-        data: null, 
-        loading: false, 
-        error: error instanceof Error ? error.message : 'Failed to load interaction types' 
+      setState({
+        data: null,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to load interaction types',
       })
     }
   }, [])
@@ -62,14 +62,14 @@ export function useStages() {
 
   const load = useCallback(async () => {
     try {
-      setState(prev => ({ ...prev, loading: true, error: null }))
+      setState((prev) => ({ ...prev, loading: true, error: null }))
       const data = await staticDataCache.getStages()
       setState({ data, loading: false, error: null })
     } catch (error) {
-      setState({ 
-        data: null, 
-        loading: false, 
-        error: error instanceof Error ? error.message : 'Failed to load stages' 
+      setState({
+        data: null,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to load stages',
       })
     }
   }, [])
@@ -90,14 +90,14 @@ export function useStatuses() {
 
   const load = useCallback(async () => {
     try {
-      setState(prev => ({ ...prev, loading: true, error: null }))
+      setState((prev) => ({ ...prev, loading: true, error: null }))
       const data = await staticDataCache.getStatuses()
       setState({ data, loading: false, error: null })
     } catch (error) {
-      setState({ 
-        data: null, 
-        loading: false, 
-        error: error instanceof Error ? error.message : 'Failed to load statuses' 
+      setState({
+        data: null,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to load statuses',
       })
     }
   }, [])
@@ -118,14 +118,14 @@ export function useLossReasons() {
 
   const load = useCallback(async () => {
     try {
-      setState(prev => ({ ...prev, loading: true, error: null }))
+      setState((prev) => ({ ...prev, loading: true, error: null }))
       const data = await staticDataCache.getLossReasons()
       setState({ data, loading: false, error: null })
     } catch (error) {
-      setState({ 
-        data: null, 
-        loading: false, 
-        error: error instanceof Error ? error.message : 'Failed to load loss reasons' 
+      setState({
+        data: null,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to load loss reasons',
       })
     }
   }, [])
@@ -146,14 +146,14 @@ export function useSources() {
 
   const load = useCallback(async () => {
     try {
-      setState(prev => ({ ...prev, loading: true, error: null }))
+      setState((prev) => ({ ...prev, loading: true, error: null }))
       const data = await staticDataCache.getSources()
       setState({ data, loading: false, error: null })
     } catch (error) {
-      setState({ 
-        data: null, 
-        loading: false, 
-        error: error instanceof Error ? error.message : 'Failed to load sources' 
+      setState({
+        data: null,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to load sources',
       })
     }
   }, [])
@@ -198,19 +198,15 @@ export function useAllStaticData() {
   const contactRoles = useContactRoles()
   const foodServiceSegments = useFoodServiceSegments()
 
-  const loading = 
+  const loading =
     interactionTypes.loading ||
     stages.loading ||
     statuses.loading ||
     lossReasons.loading ||
     sources.loading
 
-  const error = 
-    interactionTypes.error ||
-    stages.error ||
-    statuses.error ||
-    lossReasons.error ||
-    sources.error
+  const error =
+    interactionTypes.error || stages.error || statuses.error || lossReasons.error || sources.error
 
   const reload = useCallback(() => {
     interactionTypes.reload?.()
@@ -218,13 +214,7 @@ export function useAllStaticData() {
     statuses.reload?.()
     lossReasons.reload?.()
     sources.reload?.()
-  }, [
-    interactionTypes.reload,
-    stages.reload,
-    statuses.reload,
-    lossReasons.reload,
-    sources.reload,
-  ])
+  }, [interactionTypes.reload, stages.reload, statuses.reload, lossReasons.reload, sources.reload])
 
   return {
     data: {

@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { Badge } from "@/components/ui/badge"
-import { Package, TrendingUp, Users } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { formatCurrency } from "@/lib/metrics-utils"
-import type { Organization } from "@/types/entities"
+import * as React from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Package, TrendingUp, Users } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { formatCurrency } from '@/lib/metrics-utils'
+import type { Organization } from '@/types/entities'
 
 // Extended organization interface with expansion data
 interface OrganizationWithExpansionData extends Organization {
@@ -56,9 +56,13 @@ export function OrganizationExpansion({ organization }: OrganizationExpansionPro
         <div>
           <h4 className="mb-2 font-medium text-gray-900">Top Principal Products</h4>
           <div className="space-y-2">
-            {organization.top_principal_products && organization.top_principal_products.length > 0 ? (
+            {organization.top_principal_products &&
+            organization.top_principal_products.length > 0 ? (
               organization.top_principal_products.slice(0, 3).map((product) => (
-                <div key={product.id} className="flex items-center justify-between rounded-md bg-gray-50 p-2">
+                <div
+                  key={product.id}
+                  className="flex items-center justify-between rounded-md bg-gray-50 p-2"
+                >
                   <div className="flex items-center gap-2">
                     <Package className="size-3 text-gray-500" />
                     <div>
@@ -97,7 +101,9 @@ export function OrganizationExpansion({ organization }: OrganizationExpansionPro
             </div>
             <div className="flex justify-between">
               <span>Active Opportunities:</span>
-              <span className="font-medium text-green-600">{organization.active_opportunities || 0}</span>
+              <span className="font-medium text-green-600">
+                {organization.active_opportunities || 0}
+              </span>
             </div>
             <div className="flex justify-between">
               <span>Total Products:</span>
@@ -110,14 +116,19 @@ export function OrganizationExpansion({ organization }: OrganizationExpansionPro
                   <div className="h-1.5 w-16 overflow-hidden rounded-full bg-gray-200">
                     <div
                       className={cn(
-                        "h-full rounded-full",
-                        organization.weekly_engagement_score >= 70 ? "bg-green-500" :
-                        organization.weekly_engagement_score >= 40 ? "bg-yellow-500" : "bg-red-500"
+                        'h-full rounded-full',
+                        organization.weekly_engagement_score >= 70
+                          ? 'bg-green-500'
+                          : organization.weekly_engagement_score >= 40
+                            ? 'bg-yellow-500'
+                            : 'bg-red-500'
                       )}
                       style={{ width: `${organization.weekly_engagement_score}%` }}
                     />
                   </div>
-                  <span className="text-xs font-medium">{organization.weekly_engagement_score}</span>
+                  <span className="text-xs font-medium">
+                    {organization.weekly_engagement_score}
+                  </span>
                 </div>
               </div>
             )}
@@ -152,9 +163,11 @@ export function OrganizationExpansion({ organization }: OrganizationExpansionPro
                 <span className="text-sm">⚠️ Low activity - needs attention</span>
               </div>
             )}
-            {!organization.high_engagement_this_week && !organization.multiple_opportunities && !organization.inactive_status && (
-              <span className="text-sm italic text-gray-400">Standard activity level</span>
-            )}
+            {!organization.high_engagement_this_week &&
+              !organization.multiple_opportunities &&
+              !organization.inactive_status && (
+                <span className="text-sm italic text-gray-400">Standard activity level</span>
+              )}
           </div>
         </div>
       </div>
@@ -218,23 +231,35 @@ export function OrganizationExpansion({ organization }: OrganizationExpansionPro
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">Priority:</span>
-              <Badge variant="outline" className={cn(
-                organization.priority === 'A' ? 'bg-red-100 text-red-800 border-red-300' :
-                organization.priority === 'B' ? 'bg-orange-100 text-orange-800 border-orange-300' :
-                organization.priority === 'C' ? 'bg-yellow-100 text-yellow-800 border-yellow-300' :
-                'bg-gray-100 text-gray-700 border-gray-300'
-              )}>
+              <Badge
+                variant="outline"
+                className={cn(
+                  organization.priority === 'A'
+                    ? 'bg-red-100 text-red-800 border-red-300'
+                    : organization.priority === 'B'
+                      ? 'bg-orange-100 text-orange-800 border-orange-300'
+                      : organization.priority === 'C'
+                        ? 'bg-yellow-100 text-yellow-800 border-yellow-300'
+                        : 'bg-gray-100 text-gray-700 border-gray-300'
+                )}
+              >
                 {organization.priority}
               </Badge>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">Type:</span>
-              <Badge variant="outline" className={cn(
-                organization.type === 'customer' ? 'bg-blue-100 text-blue-800 border-blue-300' :
-                organization.type === 'distributor' ? 'bg-green-100 text-green-800 border-green-300' :
-                organization.type === 'principal' ? 'bg-purple-100 text-purple-800 border-purple-300' :
-                'bg-indigo-100 text-indigo-800 border-indigo-300'
-              )}>
+              <Badge
+                variant="outline"
+                className={cn(
+                  organization.type === 'customer'
+                    ? 'bg-blue-100 text-blue-800 border-blue-300'
+                    : organization.type === 'distributor'
+                      ? 'bg-green-100 text-green-800 border-green-300'
+                      : organization.type === 'principal'
+                        ? 'bg-purple-100 text-purple-800 border-purple-300'
+                        : 'bg-indigo-100 text-indigo-800 border-indigo-300'
+                )}
+              >
                 {organization.type}
               </Badge>
             </div>

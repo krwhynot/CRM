@@ -19,42 +19,42 @@ export function usePrincipalSelection(mode: 'single' | 'multiple' = 'multiple') 
   })
 
   const selectPrincipal = useCallback((principalId: string) => {
-    setState(prev => {
+    setState((prev) => {
       if (prev.selectionMode === 'single') {
         return {
           ...prev,
-          selectedPrincipals: [principalId]
+          selectedPrincipals: [principalId],
         }
       } else {
         const isSelected = prev.selectedPrincipals.includes(principalId)
         return {
           ...prev,
           selectedPrincipals: isSelected
-            ? prev.selectedPrincipals.filter(id => id !== principalId)
-            : [...prev.selectedPrincipals, principalId]
+            ? prev.selectedPrincipals.filter((id) => id !== principalId)
+            : [...prev.selectedPrincipals, principalId],
         }
       }
     })
   }, [])
 
   const deselectPrincipal = useCallback((principalId: string) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
-      selectedPrincipals: prev.selectedPrincipals.filter(id => id !== principalId)
+      selectedPrincipals: prev.selectedPrincipals.filter((id) => id !== principalId),
     }))
   }, [])
 
   const clearSelection = useCallback(() => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
-      selectedPrincipals: []
+      selectedPrincipals: [],
     }))
   }, [])
 
   const setSelecting = useCallback((isSelecting: boolean) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
-      isSelecting
+      isSelecting,
     }))
   }, [])
 

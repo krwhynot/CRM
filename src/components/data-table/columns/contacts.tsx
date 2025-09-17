@@ -1,25 +1,20 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import type { ColumnDef } from "@tanstack/react-table"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import {
-  MoreHorizontal,
-  Mail,
-  Phone,
-  Star
-} from "lucide-react"
+import * as React from 'react'
+import type { ColumnDef } from '@tanstack/react-table'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { MoreHorizontal, Mail, Phone, Star } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { cn } from "@/lib/utils"
-import type { Contact } from "@/types/entities"
-import { formatTimeAgo } from "@/lib/utils"
+} from '@/components/ui/dropdown-menu'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { cn } from '@/lib/utils'
+import type { Contact } from '@/types/entities'
+import { formatTimeAgo } from '@/lib/utils'
 
 // Extended contact interface with computed fields
 interface ContactWithComputedFields extends Contact {
@@ -55,7 +50,7 @@ interface ContactActions {
 }
 
 // Helper component for empty cell display
-const EmptyCell = () => <span className="italic text-gray-400">Not provided</span>
+const EmptyCell = () => <span className="italic text-muted-foreground">Not provided</span>
 
 // Contact authority badges component
 const AuthorityBadges: React.FC<{
@@ -63,20 +58,32 @@ const AuthorityBadges: React.FC<{
   decisionAuthority: string
 }> = ({ purchaseInfluence, decisionAuthority }) => (
   <div className="flex flex-wrap items-center gap-1">
-    <Badge variant="outline" className={cn(
-      purchaseInfluence === 'High' ? 'bg-green-100 text-green-800 border-green-300' :
-      purchaseInfluence === 'Medium' ? 'bg-yellow-100 text-yellow-800 border-yellow-300' :
-      purchaseInfluence === 'Low' ? 'bg-red-100 text-red-800 border-red-300' :
-      'bg-gray-100 text-gray-700 border-gray-300'
-    )}>
+    <Badge
+      variant="outline"
+      className={cn(
+        purchaseInfluence === 'High'
+          ? 'bg-success text-success-foreground border-success'
+          : purchaseInfluence === 'Medium'
+            ? 'bg-warning text-warning-foreground border-warning'
+            : purchaseInfluence === 'Low'
+              ? 'bg-destructive text-destructive-foreground border-destructive'
+              : 'bg-muted text-muted-foreground border-border'
+      )}
+    >
       {purchaseInfluence} Influence
     </Badge>
-    <Badge variant="outline" className={cn(
-      decisionAuthority === 'Decision Maker' ? 'bg-purple-100 text-purple-800 border-purple-300' :
-      decisionAuthority === 'Influencer' ? 'bg-blue-100 text-blue-800 border-blue-300' :
-      decisionAuthority === 'End User' ? 'bg-orange-100 text-orange-800 border-orange-300' :
-      'bg-gray-100 text-gray-700 border-gray-300'
-    )}>
+    <Badge
+      variant="outline"
+      className={cn(
+        decisionAuthority === 'Decision Maker'
+          ? 'bg-org-principal text-org-principal-foreground border-org-principal'
+          : decisionAuthority === 'Influencer'
+            ? 'bg-org-customer text-org-customer-foreground border-org-customer'
+            : decisionAuthority === 'End User'
+              ? 'bg-org-supplier text-org-supplier-foreground border-org-supplier'
+              : 'bg-muted text-muted-foreground border-border'
+      )}
+    >
       {decisionAuthority}
     </Badge>
   </div>
@@ -89,25 +96,17 @@ const ContactActionsDropdown: React.FC<{
 }> = ({ contact, actions }) => (
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
-      <Button
-        variant="ghost"
-        className="size-8 p-0"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <Button variant="ghost" className="size-8 p-0" onClick={(e) => e.stopPropagation()}>
         <span className="sr-only">Open menu</span>
         <MoreHorizontal className="size-4" />
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
       {actions?.onView && (
-        <DropdownMenuItem onClick={() => actions.onView!(contact)}>
-          View Details
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => actions.onView!(contact)}>View Details</DropdownMenuItem>
       )}
       {actions?.onEdit && (
-        <DropdownMenuItem onClick={() => actions.onEdit!(contact)}>
-          Edit Contact
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => actions.onEdit!(contact)}>Edit Contact</DropdownMenuItem>
       )}
       {actions?.onCreateOpportunity && (
         <DropdownMenuItem onClick={() => actions.onCreateOpportunity!(contact)}>
@@ -115,10 +114,7 @@ const ContactActionsDropdown: React.FC<{
         </DropdownMenuItem>
       )}
       {actions?.onDelete && (
-        <DropdownMenuItem
-          onClick={() => actions.onDelete!(contact)}
-          className="text-red-600"
-        >
+        <DropdownMenuItem onClick={() => actions.onDelete!(contact)} className="text-destructive">
           Archive Contact
         </DropdownMenuItem>
       )}
@@ -155,8 +151,8 @@ export function createContactColumns(
   // Main columns
   columns.push(
     {
-      id: "contact",
-      header: "Contact",
+      id: 'contact',
+      header: 'Contact',
       accessorFn: (row) => `${row.first_name} ${row.last_name}`, // Maps to 'first_name' and 'last_name' fields
       cell: ({ row }) => {
         const contact = row.original
@@ -165,14 +161,14 @@ export function createContactColumns(
         return (
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <div className="text-base font-semibold text-gray-900">
+              <div className="text-base font-semibold text-foreground">
                 {fullName || <EmptyCell />}
               </div>
               {contact.is_primary_contact && (
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Star className="size-3 fill-current text-yellow-500" />
+                      <Star className="size-3 fill-current text-warning" />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>Primary Contact</p>
@@ -181,28 +177,32 @@ export function createContactColumns(
                 </TooltipProvider>
               )}
               {contact.high_value_contact && (
-                <Badge variant="secondary" className="border-green-200 bg-green-50 text-xs text-green-700">
+                <Badge
+                  variant="secondary"
+                  className="border-success bg-success/10 text-xs text-success-foreground"
+                >
                   High Value
                 </Badge>
               )}
               {contact.needs_follow_up && (
-                <Badge variant="secondary" className="border-orange-200 bg-orange-50 text-xs text-orange-700">
+                <Badge
+                  variant="secondary"
+                  className="border-warning bg-warning/10 text-xs text-warning-foreground"
+                >
                   Follow-up
                 </Badge>
               )}
             </div>
 
             {contact.title && (
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-muted-foreground">
                 {contact.title}
                 {contact.department && ` • ${contact.department}`}
               </div>
             )}
 
             {contact.organization && (
-              <div className="text-xs text-gray-500">
-                {contact.organization.name}
-              </div>
+              <div className="text-xs text-muted-foreground">{contact.organization.name}</div>
             )}
           </div>
         )
@@ -211,8 +211,8 @@ export function createContactColumns(
       enableHiding: false,
     },
     {
-      id: "primary_contact",
-      header: "Contact Info",
+      id: 'primary_contact',
+      header: 'Contact Info',
       accessorFn: (row) => row.email || row.phone, // Maps to 'email' and 'phone' fields
       cell: ({ row }) => {
         const { email, phone, mobile_phone } = row.original
@@ -220,10 +220,10 @@ export function createContactColumns(
           <div className="space-y-1">
             {email && (
               <div className="flex items-center gap-1 text-sm">
-                <Mail className="size-3 text-gray-400" />
+                <Mail className="size-3 text-muted-foreground" />
                 <a
                   href={`mailto:${email}`}
-                  className="text-blue-600 hover:text-blue-800"
+                  className="text-info hover:text-info-hover"
                   onClick={(e) => e.stopPropagation()}
                 >
                   {email}
@@ -232,13 +232,11 @@ export function createContactColumns(
             )}
             {(phone || mobile_phone) && (
               <div className="flex items-center gap-1 text-sm">
-                <Phone className="size-3 text-gray-400" />
+                <Phone className="size-3 text-muted-foreground" />
                 <span className="text-foreground">
                   {phone || mobile_phone}
                   {phone && mobile_phone && phone !== mobile_phone && (
-                    <span className="ml-1 text-xs text-gray-500">
-                      (Mobile: {mobile_phone})
-                    </span>
+                    <span className="ml-1 text-xs text-muted-foreground">(Mobile: {mobile_phone})</span>
                   )}
                 </span>
               </div>
@@ -251,19 +249,15 @@ export function createContactColumns(
       enableHiding: true,
     },
     {
-      id: "position",
-      header: "Position",
-      accessorKey: "title", // Maps to 'title' field
+      id: 'position',
+      header: 'Position',
+      accessorKey: 'title', // Maps to 'title' field
       cell: ({ row }) => {
         const { title, department } = row.original
         return (
           <div className="space-y-1">
-            <div className="text-sm font-medium text-gray-900">
-              {title || <EmptyCell />}
-            </div>
-            {department && (
-              <div className="text-xs text-gray-600">{department}</div>
-            )}
+            <div className="text-sm font-medium text-foreground">{title || <EmptyCell />}</div>
+            {department && <div className="text-xs text-muted-foreground">{department}</div>}
           </div>
         )
       },
@@ -271,8 +265,8 @@ export function createContactColumns(
       enableHiding: true,
     },
     {
-      id: "authority",
-      header: "Authority",
+      id: 'authority',
+      header: 'Authority',
       accessorFn: (row) => `${row.purchase_influence} ${row.decision_authority}`, // Maps to 'purchase_influence' and 'decision_authority' fields
       cell: ({ row }) => {
         const { purchase_influence, decision_authority } = row.original
@@ -285,17 +279,26 @@ export function createContactColumns(
             {/* Authority indicators */}
             <div className="flex gap-1">
               {row.original.budget_authority && (
-                <Badge variant="outline" className="border-green-300 bg-green-50 text-xs text-green-700">
+                <Badge
+                  variant="outline"
+                  className="border-success bg-success/10 text-xs text-success-foreground"
+                >
                   Budget
                 </Badge>
               )}
               {row.original.technical_authority && (
-                <Badge variant="outline" className="border-blue-300 bg-blue-50 text-xs text-blue-700">
+                <Badge
+                  variant="outline"
+                  className="border-info bg-info/10 text-xs text-info-foreground"
+                >
                   Technical
                 </Badge>
               )}
               {row.original.user_authority && (
-                <Badge variant="outline" className="border-purple-300 bg-purple-50 text-xs text-purple-700">
+                <Badge
+                  variant="outline"
+                  className="border-org-principal bg-org-principal/10 text-xs text-org-principal-foreground"
+                >
                   User
                 </Badge>
               )}
@@ -307,20 +310,20 @@ export function createContactColumns(
       enableHiding: true,
     },
     {
-      id: "activity",
-      header: "Recent Activity",
+      id: 'activity',
+      header: 'Recent Activity',
       accessorFn: (row) => row.last_interaction_date, // Maps to computed field
       cell: ({ row }) => {
         const { recent_interactions_count, last_interaction_date } = row.original
         return (
           <div className="space-y-1">
             {recent_interactions_count !== undefined && (
-              <div className="text-sm font-medium text-gray-900">
+              <div className="text-sm font-medium text-foreground">
                 {recent_interactions_count} interaction{recent_interactions_count !== 1 ? 's' : ''}
               </div>
             )}
             {last_interaction_date && (
-              <div className="text-xs text-gray-600">
+              <div className="text-xs text-muted-foreground">
                 {formatTimeAgo(new Date(last_interaction_date))}
               </div>
             )}
@@ -332,14 +335,9 @@ export function createContactColumns(
       enableHiding: true,
     },
     {
-      id: "actions",
-      header: "Actions",
-      cell: ({ row }) => (
-        <ContactActionsDropdown
-          contact={row.original}
-          actions={actions}
-        />
-      ),
+      id: 'actions',
+      header: 'Actions',
+      cell: ({ row }) => <ContactActionsDropdown contact={row.original} actions={actions} />,
       enableSorting: false,
       enableHiding: false,
       size: 80,

@@ -69,7 +69,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           description: 'text-sm',
           spacing: 'space-y-3',
           iconSpacing: 'mb-3',
-          maxWidth: 'max-w-sm'
+          maxWidth: 'max-w-sm',
         }
       case 'lg':
         return {
@@ -78,7 +78,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           description: 'text-base',
           spacing: 'space-y-6',
           iconSpacing: 'mb-6',
-          maxWidth: 'max-w-lg'
+          maxWidth: 'max-w-lg',
         }
       default: // md
         return {
@@ -87,7 +87,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           description: 'text-sm',
           spacing: 'space-y-4',
           iconSpacing: 'mb-4',
-          maxWidth: 'max-w-md'
+          maxWidth: 'max-w-md',
         }
     }
   }
@@ -112,9 +112,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 
         {/* Content */}
         <div className="space-y-2">
-          <h3 className={cn(sizeClasses.title, 'text-foreground')}>
-            {title}
-          </h3>
+          <h3 className={cn(sizeClasses.title, 'text-foreground')}>{title}</h3>
           {description && (
             <p className={cn(sizeClasses.description, 'text-muted-foreground leading-relaxed')}>
               {description}
@@ -145,10 +143,12 @@ export const EmptyStatePresets = {
     title: `No ${entityName} found`,
     description: `Start by creating your first ${entityName.toLowerCase()}`,
     variant: 'create',
-    action: onAdd ? {
-      label: `Add ${entityName}`,
-      onClick: onAdd,
-    } : undefined,
+    action: onAdd
+      ? {
+          label: `Add ${entityName}`,
+          onClick: onAdd,
+        }
+      : undefined,
   }),
 
   noSearchResults: (searchTerm?: string): EmptyStateProps => ({
@@ -163,22 +163,26 @@ export const EmptyStatePresets = {
     title: 'Unable to load data',
     description: 'Something went wrong while loading the data. Please try again.',
     variant: 'error',
-    action: onRetry ? {
-      label: 'Try again',
-      onClick: onRetry,
-      variant: 'outline',
-    } : undefined,
+    action: onRetry
+      ? {
+          label: 'Try again',
+          onClick: onRetry,
+          variant: 'outline',
+        }
+      : undefined,
   }),
 
   filtered: (onClearFilters?: () => void): EmptyStateProps => ({
     title: 'No matches found',
     description: 'No items match your current filters. Try adjusting or clearing them.',
     variant: 'search',
-    action: onClearFilters ? {
-      label: 'Clear filters',
-      onClick: onClearFilters,
-      variant: 'outline',
-    } : undefined,
+    action: onClearFilters
+      ? {
+          label: 'Clear filters',
+          onClick: onClearFilters,
+          variant: 'outline',
+        }
+      : undefined,
   }),
 }
 

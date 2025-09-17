@@ -3,8 +3,8 @@ import { DataTable } from '@/components/data-table/data-table'
 import { createOrganizationColumns } from '@/components/data-table/columns/organizations'
 import { useDeleteOrganization } from '@/features/organizations/hooks/useOrganizations'
 import { BulkActionsToolbar, BulkDeleteDialog } from '@/components/bulk-actions'
-import { EntityListWrapper } from '@/components/layout/EntityListWrapper'
 import { useStandardDataTable } from '@/hooks/useStandardDataTable'
+import { useUnifiedBulkOperations } from '@/hooks/useUnifiedBulkOperations'
 import { Package, TrendingUp, Users, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { formatCurrency } from '@/lib/metrics-utils'
@@ -39,6 +39,9 @@ interface OrganizationWithWeeklyContext extends Organization {
 interface OrganizationsListProps {
   organizations?: OrganizationWithWeeklyContext[]
   loading?: boolean
+  isError?: boolean
+  error?: Error | null
+  onRetry?: () => void
   onEdit?: (organization: Organization) => void
   onDelete?: (organization: Organization) => void
   onView?: (organization: Organization) => void
@@ -49,17 +52,15 @@ interface OrganizationsListProps {
 export function OrganizationsList({
   organizations = [],
   loading = false,
+  isError = false,
+  error = null,
+  onRetry,
   onEdit,
   onDelete,
   onView,
   onContact,
   onAddNew,
 }: OrganizationsListProps) {
-  // Selection state management
-  const [selectedIds, setSelectedIds] = useState<string[]>([])
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
-
   // Filter state for the new DataTable system
   const [filters, setFilters] = useState<EntityFilterState>({
     timeRange: 'this_month',
@@ -68,8 +69,19 @@ export function OrganizationsList({
     search: '',
   })
 
+  // Use organizations directly - DataTable will handle filtering via ResponsiveFilterWrapper
+  const displayOrganizations = organizations
+
   // Hooks
   const deleteOrganization = useDeleteOrganization()
+
+  // Unified bulk operations
+  const bulkOperations = useUnifiedBulkOperations({
+    entities: displayOrganizations,
+    deleteEntity: (id: string) => deleteOrganization.mutateAsync(id),
+    entityType: 'organization',
+    entityTypePlural: 'organizations',
+  })
 
   // Standard DataTable configuration with ResponsiveFilterWrapper
   const { dataTableProps } = useStandardDataTable({
@@ -80,9 +92,6 @@ export function OrganizationsList({
     expandable: true,
   })
 
-  // Use organizations directly - DataTable will handle filtering via ResponsiveFilterWrapper
-  const displayOrganizations = organizations
-
   // Expandable content renderer
   const renderExpandableContent = (organization: OrganizationWithWeeklyContext) => (
     <div className="space-y-6">
@@ -91,9 +100,13 @@ export function OrganizationsList({
         <div>
           <h4 className="mb-2 font-medium text-gray-900">Top Principal Products</h4>
           <div className="space-y-2">
-            {organization.top_principal_products && organization.top_principal_products.length > 0 ? (
+            {organization.top_principal_products &&
+            organization.top_principal_products.length > 0 ? (
               organization.top_principal_products.slice(0, 3).map((product) => (
-                <div key={product.id} className="flex items-center justify-between rounded-md bg-gray-50 p-2">
+                <div
+                  key={product.id}
+                  className="flex items-center justify-between rounded-md bg-gray-50 p-2"
+                >
                   <div className="flex items-center gap-2">
                     <Package className="size-3 text-gray-500" />
                     <div>
@@ -132,7 +145,9 @@ export function OrganizationsList({
             </div>
             <div className="flex justify-between">
               <span>Active Opportunities:</span>
-              <span className="font-medium text-green-600">{organization.active_opportunities || 0}</span>
+              <span className="font-medium text-green-600">
+                {organization.active_opportunities || 0}
+              </span>
             </div>
             <div className="flex justify-between">
               <span>Total Products:</span>
@@ -145,14 +160,19 @@ export function OrganizationsList({
                   <div className="h-1.5 w-16 overflow-hidden rounded-full bg-gray-200">
                     <div
                       className={cn(
-                        "h-full rounded-full",
-                        organization.weekly_engagement_score >= 70 ? "bg-green-500" :
-                        organization.weekly_engagement_score >= 40 ? "bg-yellow-500" : "bg-red-500"
+                        'h-full rounded-full',
+                        organization.weekly_engagement_score >= 70
+                          ? 'bg-green-500'
+                          : organization.weekly_engagement_score >= 40
+                            ? 'bg-yellow-500'
+                            : 'bg-red-500'
                       )}
                       style={{ width: `${organization.weekly_engagement_score}%` }}
                     />
                   </div>
-                  <span className="text-xs font-medium">{organization.weekly_engagement_score}</span>
+                  <span className="text-xs font-medium">
+                    {organization.weekly_engagement_score}
+                  </span>
                 </div>
               </div>
             )}
@@ -187,9 +207,11 @@ export function OrganizationsList({
                 <span className="text-sm">⚠️ Low activity - needs attention</span>
               </div>
             )}
-            {!organization.high_engagement_this_week && !organization.multiple_opportunities && !organization.inactive_status && (
-              <span className="text-sm italic text-gray-400">Standard activity level</span>
-            )}
+            {!organization.high_engagement_this_week &&
+              !organization.multiple_opportunities &&
+              !organization.inactive_status && (
+                <span className="text-sm italic text-gray-400">Standard activity level</span>
+              )}
           </div>
         </div>
       </div>
@@ -257,81 +279,6 @@ export function OrganizationsList({
     </div>
   )
 
-  // Selection handlers
-  const handleSelectionChange = (selectedIds: string[]) => {
-    setSelectedIds(selectedIds)
-  }
-
-  const handleSelectAllFromToolbar = () => {
-    setSelectedIds(displayOrganizations.map((org) => org.id))
-  }
-
-  const handleSelectNoneFromToolbar = () => {
-    setSelectedIds([])
-  }
-
-  const handleClearSelection = () => {
-    setSelectedIds([])
-  }
-
-  const handleBulkDelete = () => {
-    setDeleteDialogOpen(true)
-  }
-
-  const handleConfirmDelete = async () => {
-    if (selectedIds.length === 0) return
-
-    setIsDeleting(true)
-    const results = []
-    let successCount = 0
-    let errorCount = 0
-
-    try {
-      // Process deletions sequentially for maximum safety
-      for (const organizationId of selectedIds) {
-        try {
-          await deleteOrganization.mutateAsync(organizationId)
-          results.push({ id: organizationId, status: 'success' })
-          successCount++
-        } catch (error) {
-          // Log error to results for user feedback
-          results.push({
-            id: organizationId,
-            status: 'error',
-            error: error instanceof Error ? error.message : 'Unknown error',
-          })
-          errorCount++
-        }
-      }
-
-      // Show results to user
-      if (successCount > 0 && errorCount === 0) {
-        toast.success(
-          `Successfully archived ${successCount} organization${successCount !== 1 ? 's' : ''}`
-        )
-      } else if (successCount > 0 && errorCount > 0) {
-        toast.warning(`Archived ${successCount} organizations, but ${errorCount} failed`)
-      } else if (errorCount > 0) {
-        toast.error(`Failed to archive ${errorCount} organization${errorCount !== 1 ? 's' : ''}`)
-      }
-
-      // Clear selection if any operations succeeded
-      if (successCount > 0) {
-        const successfulIds = results.filter((r) => r.status === 'success').map((r) => r.id)
-        setSelectedIds((prev) => prev.filter((id) => !successfulIds.includes(id)))
-      }
-    } catch (error) {
-      // Handle unexpected errors during bulk delete operation
-      toast.error('An unexpected error occurred during bulk deletion')
-    } finally {
-      setIsDeleting(false)
-      setDeleteDialogOpen(false)
-    }
-  }
-
-  // Get selected organizations for dialog
-  const selectedOrganizations = organizations.filter((org) => selectedIds.includes(org.id))
-
   // Create columns with actions (selection and expansion handled by DataTable)
   const columns = createOrganizationColumns({
     onEdit,
@@ -341,49 +288,44 @@ export function OrganizationsList({
   })
 
   return (
-    <EntityListWrapper
-      title="Organizations"
-      description="Manage your organization relationships and contacts"
-      action={onAddNew ? {
-        label: "Add Organization",
-        onClick: onAddNew,
-        icon: <Plus className="size-4" />
-      } : undefined}
-    >
+    <div className="space-y-4">
       {/* Bulk Actions Toolbar */}
-      {selectedIds.length > 0 && (
+      {bulkOperations.showBulkActions && (
         <BulkActionsToolbar
-          selectedCount={selectedIds.length}
+          selectedCount={bulkOperations.selectedCount}
           totalCount={displayOrganizations.length}
-          onBulkDelete={handleBulkDelete}
-          onClearSelection={handleClearSelection}
-          onSelectAll={handleSelectAllFromToolbar}
-          onSelectNone={handleSelectNoneFromToolbar}
+          onBulkDelete={() => bulkOperations.setIsDeleteDialogOpen(true)}
+          onClearSelection={bulkOperations.clearSelection}
+          onSelectAll={() => bulkOperations.handleSelectAll(true, displayOrganizations)}
+          onSelectNone={() => bulkOperations.handleSelectAll(false, displayOrganizations)}
           entityType="organization"
           entityTypePlural="organizations"
         />
       )}
 
-      {/* Data Table with integrated ResponsiveFilterWrapper */}
+      {/* Data Table with integrated ResponsiveFilterWrapper and error state support */}
       <DataTable<OrganizationWithWeeklyContext, any>
         {...dataTableProps}
         data={displayOrganizations}
         columns={columns}
         loading={loading}
+        isError={isError}
+        error={error}
+        onRetry={onRetry}
         expandedContent={renderExpandableContent}
-        onSelectionChange={handleSelectionChange}
+        onSelectionChange={bulkOperations.handleSelectionChange}
         entityFilters={filters}
         onEntityFiltersChange={setFilters}
         priorities={[
           { value: 'high', label: 'High Priority' },
           { value: 'medium', label: 'Medium Priority' },
-          { value: 'low', label: 'Low Priority' }
+          { value: 'low', label: 'Low Priority' },
         ]}
         statuses={[
           { value: 'active', label: 'Active' },
           { value: 'inactive', label: 'Inactive' },
           { value: 'prospect', label: 'Prospect' },
-          { value: 'customer', label: 'Customer' }
+          { value: 'customer', label: 'Customer' },
         ]}
         totalCount={organizations.length}
         filteredCount={displayOrganizations.length}
@@ -391,7 +333,10 @@ export function OrganizationsList({
           title: 'No organizations found',
           description: 'Get started by adding your first organization',
           action: onAddNew ? (
-            <button onClick={onAddNew} className="flex items-center gap-2 rounded bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90">
+            <button
+              onClick={onAddNew}
+              className="flex items-center gap-2 rounded bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90"
+            >
               <Plus className="size-4" />
               Add Organization
             </button>
@@ -401,14 +346,14 @@ export function OrganizationsList({
 
       {/* Bulk Delete Dialog */}
       <BulkDeleteDialog
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        entities={selectedOrganizations}
-        onConfirm={handleConfirmDelete}
-        isDeleting={isDeleting}
+        open={bulkOperations.isDeleteDialogOpen}
+        onOpenChange={bulkOperations.setIsDeleteDialogOpen}
+        entities={bulkOperations.selectedEntities}
+        onConfirm={bulkOperations.handleBulkDelete}
+        isDeleting={bulkOperations.isDeleting}
         entityType="organization"
         entityTypePlural="organizations"
       />
-    </EntityListWrapper>
+    </div>
   )
 }

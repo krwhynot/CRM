@@ -2,7 +2,14 @@ import { Component } from 'react'
 import type { ErrorInfo, ReactNode } from 'react'
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 
 interface ErrorBoundaryProps {
   children: ReactNode
@@ -80,20 +87,25 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               </div>
               <CardTitle className="text-xl font-bold">Something went wrong</CardTitle>
               <CardDescription>
-                We're sorry, but something unexpected happened. This might be due to a temporary issue with loading the page.
+                We&apos;re sorry, but something unexpected happened. This might be due to a temporary
+                issue with loading the page.
               </CardDescription>
             </CardHeader>
             <CardContent>
               {process.env.NODE_ENV === 'development' && this.state.error && (
                 <details className="mt-4 rounded-md bg-muted p-3 text-sm">
-                  <summary className="cursor-pointer font-medium">Error Details (Development)</summary>
+                  <summary className="cursor-pointer font-medium">
+                    Error Details (Development)
+                  </summary>
                   <div className="mt-2 space-y-2">
                     <div>
                       <strong>Error:</strong> {this.state.error.message}
                     </div>
                     <div>
                       <strong>Stack:</strong>
-                      <pre className="mt-1 whitespace-pre-wrap text-xs">{this.state.error.stack}</pre>
+                      <pre className="mt-1 whitespace-pre-wrap text-xs">
+                        {this.state.error.stack}
+                      </pre>
                     </div>
                     {this.state.errorInfo && (
                       <div>
@@ -146,7 +158,9 @@ interface ErrorBoundaryWrapperProps {
 export function ErrorBoundaryWrapper({ children, componentName }: ErrorBoundaryWrapperProps) {
   const handleError = (error: Error, errorInfo: ErrorInfo) => {
     // Add component context to error reporting
-    const enhancedError = new Error(`Error in ${componentName || 'Unknown Component'}: ${error.message}`)
+    const enhancedError = new Error(
+      `Error in ${componentName || 'Unknown Component'}: ${error.message}`
+    )
     enhancedError.stack = error.stack
 
     console.error('Enhanced error:', enhancedError, errorInfo)
@@ -155,9 +169,5 @@ export function ErrorBoundaryWrapper({ children, componentName }: ErrorBoundaryW
     // sendErrorToService(enhancedError, { ...errorInfo, componentName })
   }
 
-  return (
-    <ErrorBoundary onError={handleError}>
-      {children}
-    </ErrorBoundary>
-  )
+  return <ErrorBoundary onError={handleError}>{children}</ErrorBoundary>
 }

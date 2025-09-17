@@ -1,22 +1,17 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import type { Table } from "@tanstack/react-table"
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
+import * as React from 'react'
+import type { Table } from '@tanstack/react-table'
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { cn } from "@/lib/utils"
+} from '@/components/ui/select'
+import { cn } from '@/lib/utils'
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>
@@ -53,16 +48,16 @@ export function DataTablePagination<TData>({
   const endRow = Math.min((pageIndex + 1) * pageSize, totalRows)
 
   return (
-    <div className={cn("flex items-center justify-between px-2", className)}>
+    <div className={cn('flex items-center justify-between px-2', className)}>
       <div className="flex-1 text-sm text-muted-foreground">
         {showSelected && selectedRows > 0 && (
           <span>
-            {selectedRows} of {totalRows} row{totalRows !== 1 ? "s" : ""} selected.
+            {selectedRows} of {totalRows} row{totalRows !== 1 ? 's' : ''} selected.
           </span>
         )}
         {(!showSelected || selectedRows === 0) && totalRows > 0 && (
           <span>
-            Showing {startRow} to {endRow} of {totalRows} result{totalRows !== 1 ? "s" : ""}
+            Showing {startRow} to {endRow} of {totalRows} result{totalRows !== 1 ? 's' : ''}
           </span>
         )}
       </div>
@@ -158,9 +153,9 @@ export function DataTablePaginationSimple<TData>({
   const totalRows = getFilteredRowModel().rows.length
 
   return (
-    <div className={cn("flex items-center justify-between", className)}>
+    <div className={cn('flex items-center justify-between', className)}>
       <div className="text-sm text-muted-foreground">
-        {totalRows} result{totalRows !== 1 ? "s" : ""}
+        {totalRows} result{totalRows !== 1 ? 's' : ''}
       </div>
 
       <div className="flex items-center space-x-2">
@@ -173,14 +168,9 @@ export function DataTablePaginationSimple<TData>({
           Previous
         </Button>
         <div className="flex min-w-[80px] items-center justify-center text-sm font-medium">
-          {getPageCount() > 0 ? `${pageIndex + 1} of ${getPageCount()}` : "0 of 0"}
+          {getPageCount() > 0 ? `${pageIndex + 1} of ${getPageCount()}` : '0 of 0'}
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => nextPage()}
-          disabled={!getCanNextPage()}
-        >
+        <Button variant="outline" size="sm" onClick={() => nextPage()} disabled={!getCanNextPage()}>
           Next
         </Button>
       </div>
@@ -196,7 +186,7 @@ export function DataTablePageInput<TData>({
   table: Table<TData>
   className?: string
 }) {
-  const [pageInput, setPageInput] = React.useState("")
+  const [pageInput, setPageInput] = React.useState('')
   const { getState, setPageIndex, getPageCount } = table
   const { pageIndex } = getState().pagination
 
@@ -205,12 +195,12 @@ export function DataTablePageInput<TData>({
     const page = Number(pageInput)
     if (page >= 1 && page <= getPageCount()) {
       setPageIndex(page - 1)
-      setPageInput("")
+      setPageInput('')
     }
   }
 
   return (
-    <form onSubmit={handlePageSubmit} className={cn("flex items-center space-x-2", className)}>
+    <form onSubmit={handlePageSubmit} className={cn('flex items-center space-x-2', className)}>
       <span className="text-sm text-muted-foreground">Go to page:</span>
       <input
         type="number"
@@ -236,12 +226,8 @@ export function DataTableRowInfo<TData>({
   table: Table<TData>
   className?: string
 }) {
-  const {
-    getState,
-    getFilteredSelectedRowModel,
-    getFilteredRowModel,
-    getPreFilteredRowModel,
-  } = table
+  const { getState, getFilteredSelectedRowModel, getFilteredRowModel, getPreFilteredRowModel } =
+    table
 
   const { pageIndex, pageSize } = getState().pagination
   const totalRows = getPreFilteredRowModel().rows.length
@@ -252,20 +238,20 @@ export function DataTableRowInfo<TData>({
   const endRow = Math.min((pageIndex + 1) * pageSize, filteredRows)
 
   return (
-    <div className={cn("text-sm text-muted-foreground", className)}>
+    <div className={cn('text-sm text-muted-foreground', className)}>
       {selectedRows > 0 && (
         <div>
-          {selectedRows} of {filteredRows} row{filteredRows !== 1 ? "s" : ""} selected
+          {selectedRows} of {filteredRows} row{filteredRows !== 1 ? 's' : ''} selected
         </div>
       )}
       <div>
         {filteredRows > 0 ? (
           <>
-            Showing {startRow} to {endRow} of {filteredRows} result{filteredRows !== 1 ? "s" : ""}
+            Showing {startRow} to {endRow} of {filteredRows} result{filteredRows !== 1 ? 's' : ''}
             {filteredRows !== totalRows && ` (filtered from ${totalRows} total)`}
           </>
         ) : (
-          "No results found"
+          'No results found'
         )}
       </div>
     </div>

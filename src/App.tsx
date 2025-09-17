@@ -36,16 +36,14 @@ const queryClient = new QueryClient({
 // Reusable component for lazy-loaded pages with error boundaries
 function LazyPageWrapper({
   children,
-  componentName
+  componentName,
 }: {
   children: React.ReactNode
   componentName?: string
 }) {
   return (
     <ErrorBoundaryWrapper componentName={componentName}>
-      <Suspense fallback={<LoadingSpinner />}>
-        {children}
-      </Suspense>
+      <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
     </ErrorBoundaryWrapper>
   )
 }
@@ -88,7 +86,11 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+        >
           <TooltipProvider>
             <Router>
               <AuthCallbackHandler>

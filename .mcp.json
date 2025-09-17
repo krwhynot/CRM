@@ -14,33 +14,6 @@
             "startupDelay": 400,
             "priority": "optional",
             "timeout": 15000
-        },
-        "perplexity-ask": {
-            "command": "npx",
-            "args": [
-                "-y",
-                "server-perplexity-ask"
-            ],
-            "env": {
-                "PERPLEXITY_API_KEY": "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",
-                "PERPLEXITY_MODEL": "sonar-reasoning-pro"
-            },
-            "disabled": true,
-            "startupDelay": 1300,
-            "priority": "optional",
-            "timeout": 30000
-        },
-        "shadcn-ui": {
-            "command": "npx",
-            "args": [
-                "@jpisnice/shadcn-ui-mcp-server",
-                "--github-api-key",
-                "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"
-            ], 
-            "disabled": false,
-            "startupDelay": 1100,
-            "priority": "optional",
-            "timeout": 30000
         }
     }
 }

@@ -5,10 +5,11 @@ export const priorityIndicatorVariants = cva(
   {
     variants: {
       priority: {
-        low: 'border-muted bg-muted text-muted-foreground',
-        medium: 'border-organization-customer bg-organization-customer text-organization-customer-foreground',
-        high: 'border-warning bg-warning text-warning-foreground',
-        critical: 'border-destructive bg-destructive text-destructive-foreground',
+        low: 'border-priority-low bg-priority-low text-priority-low-foreground',
+        medium: 'border-priority-medium bg-priority-medium text-priority-medium-foreground',
+        normal: 'border-priority-normal bg-priority-normal text-priority-normal-foreground',
+        high: 'border-priority-high bg-priority-high text-priority-high-foreground',
+        critical: 'border-priority-critical bg-priority-critical text-priority-critical-foreground',
       },
       size: {
         sm: 'size-6 min-h-11 min-w-11 p-2',
@@ -17,7 +18,7 @@ export const priorityIndicatorVariants = cva(
       },
     },
     defaultVariants: {
-      priority: 'medium',
+      priority: 'normal',
       size: 'default',
     },
   }

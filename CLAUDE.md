@@ -17,38 +17,77 @@ The codebase follows a **simplified, component-driven architecture** after major
 
 ## Development Commands
 
+> **📋 Build Pipeline Rationalization (January 2025)**
+> The build system has been rationalized from 70+ scripts to ~25 parameterized commands. Both legacy and new consolidated commands work during the transition. See the [Migration Guide](/.docs/plans/build-pipeline-rationalization/migration-guide.md) for complete details.
+>
+> **Key Changes:**
+> - **Parameterized Commands**: Use `npm run test -- backend --mode coverage` instead of separate `npm run test:backend:coverage`
+> - **Backward Compatibility**: All existing scripts preserved during transition
+> - **Enhanced Functionality**: New validation levels (`--level full`, `--level architecture`)
+> - **CI/CD Safe**: GitHub workflows continue using preserved script names
+
 ### Essential Commands
 ```bash
 # Development & Building
 npm run dev                    # Start development server (Vite)
 npm run build                  # Production build with optimizations
+npm run build:enhanced         # Enhanced build with custom optimizations
+npm run build:analyze          # Build with bundle analysis
 npm run preview                # Preview production build locally
 npm run type-check             # TypeScript compilation check
 npm run lint                   # ESLint with architectural rules (max 20 warnings)
 npm run format                 # Prettier code formatting
 npm run validate               # Complete pipeline: type-check + lint + build
 
+# Enhanced Build Commands
+npm run build:validate         # Build with validation mode
+npm run build:watch            # Build in watch mode with verbose output
+npm run analyze                # Bundle analysis with auto-open
+
 # Quality & Architecture
 npm run quality-gates          # 6-stage comprehensive validation pipeline
+npm run validate:enhanced      # Enhanced validation with custom script
+npm run validate:full          # Complete validation pipeline
+npm run validate:architecture-only # Architecture-focused validation
+npm run validate:performance-only  # Performance-focused validation
 npm run validate:architecture  # Architecture pattern validation
-npm run validate:performance   # Performance baseline validation
-npm run lint:architecture      # Custom architectural lint rules
-npm run dev:health            # Development health check
-npm run dev:fix               # Auto-fix common development issues
+npm run validate:architecture:state      # State boundary validation
+npm run validate:architecture:components # Component placement validation
+npm run dev:setup              # Development environment setup
+npm run dev:health             # Development health check
+npm run dev:fix                # Auto-fix common development issues
 
-# Testing
+# Testing (Actual Commands)
 npm test                      # Run all MCP tests
-npm run test:backend          # Vitest unit/integration tests
+npm run test:unified          # Unified test runner with parameters
+npm run test:backend          # Vitest backend tests
+npm run test:backend:watch    # Backend tests in watch mode
 npm run test:backend:coverage # Backend tests with coverage
+npm run test:backend:database # Database-specific tests
+npm run test:backend:security # Security validation tests
 npm run test:architecture     # Architecture boundary validation
-npm run test:db              # Database-specific tests
-npm run test:security        # Security validation tests
+npm run test:architecture:state      # State boundary tests
+npm run test:architecture:components # Component placement tests
+npm run test:mcp              # MCP authentication tests
+npm run test:auth             # Authentication flow tests
+npm run test:crud             # CRUD operation tests
 
-# Bundle Analysis & Performance  
-npm run analyze              # Bundle visualizer with gzip analysis
-npm run optimize:performance # Performance optimization analysis
+# Bundle Analysis & Performance
+npm run analyze              # Bundle visualizer with auto-open
+npm run performance          # Basic performance monitoring
+npm run performance:build    # Build-time performance analysis
+npm run performance:runtime  # Runtime performance monitoring
+npm run performance:full     # Complete performance analysis
 npm run clean                # Clean build artifacts
-npm run fresh                # Clean install (removes node_modules)
+npm run clean:all            # Full cleanup including node_modules
+npm run clean:fresh          # Clean reinstall
+npm run fresh                # Full clean install
+
+# Technical Debt Management
+npm run debt                 # Technical debt monitor
+npm run debt:audit           # Technical debt analysis
+npm run debt:scan            # Scan for debt patterns
+npm run debt:report          # Generate debt report
 
 # Documentation
 npm run docs:lint           # Markdown linting
@@ -56,36 +95,104 @@ npm run docs:validate       # Full documentation validation
 ```
 
 ### Single Test Execution
+
+#### Traditional Commands (Preserved for CI/CD Compatibility)
 ```bash
-# Run specific test suites
+# MCP test suites (preserved for GitHub workflows)
 npm run test:auth           # Authentication flow tests
-npm run test:crud           # CRUD operation tests  
+npm run test:crud           # CRUD operation tests
 npm run test:dashboard      # Dashboard functionality tests
 npm run test:mobile         # Mobile/responsive tests
+
+# Backend test suites (preserved for workflows)
+npm run test:backend        # Vitest backend tests
+npm run test:security       # Security validation tests
 npm run test:performance    # Performance benchmark tests
 npm run test:integrity      # Data integrity validation
+```
 
-# Architecture-specific tests
-npm run test:architecture:state      # State boundary validation
+#### Unified Test Commands (New System)
+```bash
+# MCP test suites
+npm run test:mcp:unified         # Unified MCP test runner
+npm run test:auth               # Authentication tests
+npm run test:crud               # CRUD operation tests
+npm run test:dashboard          # Dashboard functionality tests
+npm run test:mobile             # Mobile/responsive tests
+
+# Backend test suites with unified runner
+npm run test:backend:unified    # Unified backend test runner
+npm run test:backend            # Basic backend tests
+npm run test:backend:database   # Database-specific tests
+npm run test:backend:security   # Security tests
+npm run test:backend:performance # Performance tests
+npm run test:backend:integrity  # Data integrity tests
+
+# Architecture test suites
+npm run test:architecture:unified # Unified architecture test runner
+npm run test:architecture       # Basic architecture validation
+npm run test:architecture:state # State boundary validation
 npm run test:architecture:components # Component placement rules
 npm run test:architecture:performance # Performance patterns
 npm run test:architecture:eslint     # Custom ESLint rule validation
+
+# Design token testing
+npm run test:design-tokens      # Complete design token validation
+npm run test:design-tokens:visual    # Visual regression tests
+npm run test:design-tokens:contracts # Contract validation tests
 ```
 
 ### Development Workflow Commands
+
+#### Core Workflow (Enhanced)
 ```bash
 # Pre-commit validation
 npm run hooks:install       # Install git hooks for validation
-npm run validate           # Run before committing (required)
+npm run validate           # Basic validation (type-check + lint + build)
+npm run validate:enhanced  # Enhanced validation with custom script
+npm run validate:full      # Complete validation pipeline
 
-# Technical debt management  
+# Enhanced validation levels
+npm run validate:architecture-only # Architecture-focused validation
+npm run validate:performance-only  # Performance-focused validation
+npm run validate:quality-gates     # Quality gates validation
+```
+
+#### Technical Debt Management
+```bash
+# Technical debt commands
+npm run debt               # Technical debt monitor
 npm run debt:audit         # Technical debt analysis
 npm run debt:scan          # Scan for debt patterns
 npm run debt:report        # Generate debt report
+npm run debt:validate      # Validate debt tracking
+npm run debt:issues        # Create GitHub issues for technical debt
+```
 
-# UI compliance validation
+#### Development Utilities (Enhanced)
+```bash
+# Development assistance commands
+npm run dev:setup           # Development environment setup
+npm run dev:health          # Development health check
+npm run dev:fix             # Auto-fix common development issues
+npm run dev:assist          # Development assistant
+
+# Cleanup utilities
+npm run clean               # Basic cleanup (build artifacts)
+npm run clean:all           # Full cleanup including node_modules
+npm run clean:fresh         # Clean reinstall with npm install
+npm run fresh               # Full clean install (removes node_modules)
+```
+
+#### UI & Design System Validation
+```bash
+# Design system validation
 npm run test:ui-compliance    # UI design token compliance
 npm run validate:design-tokens # Design system validation
+
+# New parameterized design token testing
+npm run test -- design-tokens --type visual    # Visual regression tests
+npm run test -- design-tokens --type contracts # Contract validation tests
 ```
 
 ## Architecture Guidelines
@@ -379,10 +486,26 @@ npm run lint:architecture
 npm run optimize:performance
 
 # Complete validation pipeline
-npm run validate
-npm run quality-gates        # Run comprehensive 6-stage quality gates
-npm run validate:architecture # Validate architectural patterns
-npm run validate:performance  # Validate performance benchmarks
+npm run validate               # Basic validation (type-check + lint + build)
+npm run validate:enhanced      # Enhanced validation with custom script
+npm run validate:full          # Complete validation pipeline
+npm run quality-gates          # Run comprehensive 6-stage quality gates
+
+# Enhanced quality validation with levels
+npm run validate:architecture-only # Architecture-focused validation
+npm run validate:performance-only  # Performance-focused validation
+npm run validate:quality-gates     # Quality gates validation
+
+# Architecture validation
+npm run validate:architecture  # Basic architecture validation
+npm run validate:architecture:state      # State boundary validation
+npm run validate:architecture:components # Component placement validation
+
+# Performance validation
+npm run performance            # Basic performance monitoring
+npm run performance:build      # Build-time performance analysis
+npm run performance:runtime    # Runtime performance monitoring
+npm run performance:full       # Complete performance analysis
 ```
 
 **📚 Complete Documentation**:
@@ -484,6 +607,8 @@ The codebase has completed major architectural simplification focusing on:
 
 ## Development Notes
 - **Component-First Development**: Use shadcn/ui primitives and compose into feature-specific components
+- **Design Token Architecture**: Follow 2-layer architecture (Primitives → Semantic) - no Component or Feature token layers
+- **Theme Provider**: Use enhanced theme provider with DOM class management for light/dark mode switching
 - **Responsive Filter Development**: Use `ResponsiveFilterWrapper` with DataTable `useResponsiveFilters={true}` for all entity filtering
 - **Zod-Only Validation**: Use consolidated Zod schemas in `src/types/*.types.ts` for all validation
 - Use the path alias `@/*` for imports (`@/components`, `@/lib`, `@/features`)
@@ -556,5 +681,14 @@ See `/docs/MCP_TOOL_REFERENCE_GUIDE.md` for complete guidelines and `/docs/templ
 ### UI Component Documentation
 - **Dialog Patterns**: `/docs/ui/dialog.md` - StandardDialog API, migration guide, and best practices
 - **Responsive Filters**: `/docs/guides/responsive-filters.md` - Complete ResponsiveFilterWrapper guide, migration patterns, and best practices
+
+## Command Reference Notes
+
+⚠️ **Important**: All commands listed above are verified against the actual `package.json` scripts. The project uses a combination of:
+- **Direct npm scripts**: Defined in `package.json`
+- **Shell script wrappers**: Located in `/scripts/` directory with parameterized options
+- **Unified test runner**: New system using `./scripts/test.sh` with parameters
+
+**Command Verification**: Always check `package.json` and `/scripts/` directory for the most current command syntax. Some commands may use shell script parameters that are not visible in package.json but are documented in the script files themselves.
 
 

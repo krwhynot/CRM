@@ -6,10 +6,7 @@
  */
 
 // Direct Zod schema imports from consolidated schema files
-export {
-  productZodSchema,
-  opportunityProductZodSchema,
-} from './product.types'
+export { productZodSchema, opportunityProductZodSchema } from './product.types'
 
 export {
   organizationZodSchema,
@@ -24,15 +21,9 @@ export {
   contactPreferredPrincipalZodSchema,
 } from './contact.types'
 
-export {
-  opportunityZodSchema,
-  multiPrincipalOpportunityZodSchema,
-} from './opportunity.types'
+export { opportunityZodSchema, multiPrincipalOpportunityZodSchema } from './opportunity.types'
 
-export {
-  interactionSchema,
-  interactionWithOpportunitySchema,
-} from './interaction.types'
+export { interactionSchema, interactionWithOpportunitySchema } from './interaction.types'
 
 // Re-export Zod types for development
 export type { ProductZodFormData, OpportunityProductZodFormData } from './product.types'
@@ -51,15 +42,15 @@ export type {
   OpportunityZodFormData,
   MultiPrincipalOpportunityZodFormData,
 } from './opportunity.types'
-export type {
-  InteractionFormData,
-  InteractionWithOpportunityFormData,
-} from './interaction.types'
+export type { InteractionFormData, InteractionWithOpportunityFormData } from './interaction.types'
 
 // Legacy type aliases for backward compatibility
 export type { ContactZodFormData as ContactFormData } from './contact.types'
 export type { OrganizationZodFormData as OrganizationFormData } from './organization.types'
-export type { OpportunityZodFormData as OpportunityFormData, MultiPrincipalOpportunityZodFormData as MultiPrincipalOpportunityFormData } from './opportunity.types'
+export type {
+  OpportunityZodFormData as OpportunityFormData,
+  MultiPrincipalOpportunityZodFormData as MultiPrincipalOpportunityFormData,
+} from './opportunity.types'
 // InteractionFormData and InteractionWithOpportunityFormData are already exported above
 export type { ProductZodFormData as ProductFormData } from './product.types'
 export type { OpportunityProductZodFormData as OpportunityProductFormData } from './product.types'

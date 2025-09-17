@@ -2,7 +2,7 @@ import React from 'react'
 import type { FilterState } from './dashboard'
 
 // Time range options for universal filtering
-export type TimeRangeType = 
+export type TimeRangeType =
   | 'this_week'
   | 'last_week'
   | 'this_month'
@@ -14,7 +14,7 @@ export type TimeRangeType =
   | 'custom'
 
 // Focus type for activity and task filtering
-export type FocusType = 
+export type FocusType =
   | 'all_activity'
   | 'my_tasks'
   | 'team_activity'
@@ -23,7 +23,7 @@ export type FocusType =
   | 'pending_approval'
 
 // Quick view shortcuts for dashboard
-export type QuickViewType = 
+export type QuickViewType =
   | 'action_items_due'
   | 'pipeline_movers'
   | 'recent_wins'
@@ -64,23 +64,23 @@ export interface EnhancedUniversalFiltersProps extends UniversalFiltersProps {
   // Responsive options
   maxColumns?: 1 | 2 | 3 | 4 | 5
   compactMode?: 'minimal' | 'standard' | 'full'
-  
+
   // Organization integration
   principals?: FilterOrganizationData[]
   managers?: string[]
   availableFocusOptions?: FocusType[]
   availableQuickViews?: QuickViewType[]
-  
+
   // Context-aware features
   showPrincipalSelector?: boolean
   showManagerSelector?: boolean
   showQuickViews?: boolean
   enableActiveFilterManagement?: boolean
-  
+
   // UI customization
   variant?: 'card' | 'inline' | 'minimal'
   headerActions?: React.ReactNode
-  
+
   // Callback enhancements
   onPrincipalChange?: (principalId: string) => void
   onManagerChange?: (managerName: string) => void
@@ -97,7 +97,7 @@ export interface TimeRangeOption {
   description?: string
 }
 
-// Focus option configuration  
+// Focus option configuration
 export interface FocusOption {
   value: FocusType
   label: string
@@ -122,7 +122,7 @@ export const DEFAULT_UNIVERSAL_FILTERS: UniversalFilterState = {
   principal: 'all',
   product: 'all',
   weeks: 'Last 4 Weeks',
-  
+
   // Universal filter defaults
   timeRange: 'this_month',
   focus: 'all_activity',
@@ -164,23 +164,26 @@ export interface UseUniversalFiltersReturn {
   filters: UniversalFilterState
   debouncedFilters: UniversalFilterState
   isLoading: boolean
-  
+
   // Basic filter functions
   handleFiltersChange: (newFilters: UniversalFilterState) => void
   resetFilters: () => void
   resetUniversalFilters: () => void
   resetDashboardFilters: () => void
-  
+
   // Enhanced individual update functions
-  updateFilter: <K extends keyof UniversalFilterState>(field: K, value: UniversalFilterState[K]) => void
+  updateFilter: <K extends keyof UniversalFilterState>(
+    field: K,
+    value: UniversalFilterState[K]
+  ) => void
   updateTimeRange: (range: TimeRangeType, customDates?: { start: Date; end: Date }) => void
   updateFocus: (focus: FocusType) => void
   updateQuickView: (preset: QuickViewType | 'none') => void
-  
+
   // Quick view presets
   applyQuickView: (preset: QuickViewType) => void
   clearQuickView: () => void
-  
+
   // Computed properties
   computed: ComputedFilterProperties
 }

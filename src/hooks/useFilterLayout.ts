@@ -12,7 +12,7 @@ export {
   type FilterLayoutPreference,
   type FilterLayoutState,
   type FilterLayoutActions,
-  FilterLayoutUtils
+  FilterLayoutUtils,
 } from '../contexts/FilterLayoutContext'
 
 /**
@@ -20,7 +20,11 @@ export {
  */
 
 import { useCallback, useMemo } from 'react'
-import { useFilterLayout as useFilterLayoutBase, FilterLayoutUtils, type FilterLayoutMode } from '../contexts/FilterLayoutContext'
+import {
+  useFilterLayout as useFilterLayoutBase,
+  FilterLayoutUtils,
+  type FilterLayoutMode,
+} from '../contexts/FilterLayoutContext'
 import type { DeviceContext } from './useDeviceDetection'
 import { useIsIPad, useOrientation } from './useMediaQuery'
 
@@ -68,43 +72,46 @@ export function useFilterLayoutExtended() {
   }, [isOverlayMode, base])
 
   // Check if mode is device-appropriate (iPad-aware)
-  const isModeOptimal = useCallback((mode: FilterLayoutMode): boolean => {
-    if (mode === 'auto') return true
+  const isModeOptimal = useCallback(
+    (mode: FilterLayoutMode): boolean => {
+      if (mode === 'auto') return true
 
-    const context = enhancedDeviceContext
+      const context = enhancedDeviceContext
 
-    // Mobile works best with drawer
-    if (context === 'mobile') {
-      return mode === 'drawer' || mode === 'auto'
-    }
+      // Mobile works best with drawer
+      if (context === 'mobile') {
+        return mode === 'drawer' || mode === 'auto'
+      }
 
-    // iPad portrait behaves like mobile (drawer)
-    if (context === 'tablet-portrait' && isIPad) {
-      return mode === 'drawer' || mode === 'auto'
-    }
+      // iPad portrait behaves like mobile (drawer)
+      if (context === 'tablet-portrait' && isIPad) {
+        return mode === 'drawer' || mode === 'auto'
+      }
 
-    // Tablet portrait (non-iPad) works well with sheet
-    if (context === 'tablet-portrait' && !isIPad) {
-      return mode === 'sheet' || mode === 'auto'
-    }
+      // Tablet portrait (non-iPad) works well with sheet
+      if (context === 'tablet-portrait' && !isIPad) {
+        return mode === 'sheet' || mode === 'auto'
+      }
 
-    // iPad landscape behaves like desktop (inline)
-    if (context === 'tablet-landscape' && isIPad) {
-      return mode === 'inline' || mode === 'auto'
-    }
+      // iPad landscape behaves like desktop (inline)
+      if (context === 'tablet-landscape' && isIPad) {
+        return mode === 'inline' || mode === 'auto'
+      }
 
-    // Tablet landscape (non-iPad) works well with sheet
-    if (context === 'tablet-landscape' && !isIPad) {
-      return mode === 'sheet' || mode === 'auto'
-    }
+      // Tablet landscape (non-iPad) works well with sheet
+      if (context === 'tablet-landscape' && !isIPad) {
+        return mode === 'sheet' || mode === 'auto'
+      }
 
-    // Desktop works best with inline
-    if (context === 'desktop' || context === 'large-desktop') {
-      return mode === 'inline' || mode === 'auto'
-    }
+      // Desktop works best with inline
+      if (context === 'desktop' || context === 'large-desktop') {
+        return mode === 'inline' || mode === 'auto'
+      }
 
-    return true
-  }, [enhancedDeviceContext, isIPad])
+      return true
+    },
+    [enhancedDeviceContext, isIPad]
+  )
 
   return {
     ...base,
@@ -132,7 +139,8 @@ export function useFilterLayoutExtended() {
  * Hook for filter trigger buttons with iPad-specific optimizations
  */
 export function useFilterTrigger() {
-  const { showTrigger, smartOpen, currentMode, enhancedDeviceContext, isIPad } = useFilterLayoutExtended()
+  const { showTrigger, smartOpen, currentMode, enhancedDeviceContext, isIPad } =
+    useFilterLayoutExtended()
 
   const getTriggerLabel = useCallback(() => {
     switch (currentMode) {
@@ -260,40 +268,48 @@ export function useFilterContainer() {
  * Hook for mode selection UI with iPad-specific recommendations
  */
 export function useFilterModeSelector() {
-  const { preferredMode, setPreferredMode, enhancedDeviceContext, isModeOptimal, isIPad, orientation } = useFilterLayoutExtended()
+  const {
+    preferredMode,
+    setPreferredMode,
+    enhancedDeviceContext,
+    isModeOptimal,
+    isIPad,
+    orientation,
+  } = useFilterLayoutExtended()
 
-  const availableModes: { value: FilterLayoutMode; label: string; optimal: boolean; description?: string }[] = [
+  const availableModes: {
+    value: FilterLayoutMode
+    label: string
+    optimal: boolean
+    description?: string
+  }[] = [
     {
       value: 'auto',
       label: 'Auto (Recommended)',
       optimal: true,
       description: isIPad
         ? `Adapts to iPad orientation: ${orientation === 'portrait' ? 'drawer' : 'inline'}`
-        : 'Adapts to your device automatically'
+        : 'Adapts to your device automatically',
     },
     {
       value: 'inline',
       label: 'Always Inline',
       optimal: isModeOptimal('inline'),
-      description: isIPad && orientation === 'portrait'
-        ? 'May be cramped on iPad portrait'
-        : undefined
+      description:
+        isIPad && orientation === 'portrait' ? 'May be cramped on iPad portrait' : undefined,
     },
     {
       value: 'sheet',
       label: 'Side Panel',
       optimal: isModeOptimal('sheet'),
-      description: isIPad
-        ? 'Works well for non-iPad tablets'
-        : undefined
+      description: isIPad ? 'Works well for non-iPad tablets' : undefined,
     },
     {
       value: 'drawer',
       label: 'Bottom Drawer',
       optimal: isModeOptimal('drawer'),
-      description: isIPad && orientation === 'portrait'
-        ? 'Recommended for iPad portrait'
-        : undefined
+      description:
+        isIPad && orientation === 'portrait' ? 'Recommended for iPad portrait' : undefined,
     },
   ]
 

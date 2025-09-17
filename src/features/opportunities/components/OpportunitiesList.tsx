@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { EntityListWrapper } from '@/components/layout/EntityListWrapper'
 import { DataTable } from '@/components/data-table/data-table'
 import { createOpportunityColumns } from '@/components/data-table/columns/opportunities'
 import { BulkActionsToolbar, BulkDeleteDialog } from '@/components/bulk-actions'
@@ -23,22 +22,12 @@ interface OpportunitiesListProps {
   initialFilters?: OpportunityFilters
   onEdit?: (opportunity: OpportunityWithLastActivity) => void
   onDelete?: (opportunity: OpportunityWithLastActivity) => void
-  title?: string
-  description?: string
-  action?: {
-    label: string
-    onClick: () => void
-    icon?: React.ReactNode
-  }
 }
 
 export function OpportunitiesList({
   initialFilters,
   onEdit,
   onDelete,
-  title = "Opportunities",
-  description = "Manage your sales opportunities and pipeline",
-  action,
 }: OpportunitiesListProps) {
   // Bulk delete state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -67,8 +56,7 @@ export function OpportunitiesList({
   const isMobile = useIsMobile()
   const isIPad = useIsIPad()
 
-  const { selectedItems, handleSelectAll, clearSelection } =
-    useOpportunitiesSelection()
+  const { selectedItems, handleSelectAll, clearSelection } = useOpportunitiesSelection()
 
   // Use opportunities directly - DataTable will handle filtering and sorting via ResponsiveFilterWrapper
   const displayOpportunities = opportunities
@@ -151,82 +139,67 @@ export function OpportunitiesList({
     const isExpanded = isRowExpanded(opportunity.id)
 
     const setActiveTab = (tab: 'interactions' | 'details') => {
-      setActiveTabs(prev => ({ ...prev, [opportunity.id]: tab }))
+      setActiveTabs((prev) => ({ ...prev, [opportunity.id]: tab }))
     }
 
     const toggleQuickAdd = () => {
-      setShowQuickAdd(prev => ({ ...prev, [opportunity.id]: !prev[opportunity.id] }))
+      setShowQuickAdd((prev) => ({ ...prev, [opportunity.id]: !prev[opportunity.id] }))
     }
 
     const handleQuickAddSuccess = () => {
-      setShowQuickAdd(prev => ({ ...prev, [opportunity.id]: false }))
+      setShowQuickAdd((prev) => ({ ...prev, [opportunity.id]: false }))
       // Invalidate the specific opportunity interactions
       queryClient.invalidateQueries({
-        queryKey: interactionKeys.byOpportunity(opportunity.id)
+        queryKey: interactionKeys.byOpportunity(opportunity.id),
       })
     }
 
     const handleQuickAddCancel = () => {
-      setShowQuickAdd(prev => ({ ...prev, [opportunity.id]: false }))
+      setShowQuickAdd((prev) => ({ ...prev, [opportunity.id]: false }))
     }
 
     return (
-      <div className={cn(
-        "bg-gray-50/50 border-l-4 border-primary/20",
-        isMobile ? "ml-4" : "ml-10"
-      )}>
+      <div
+        className={cn('bg-gray-50/50 border-l-4 border-primary/20', isMobile ? 'ml-4' : 'ml-10')}
+      >
         {/* Tab Header - mobile optimized */}
-        <div className={cn(
-          "flex items-center justify-between border-b bg-white",
-          isMobile ? "px-4 py-3 flex-col gap-3" : "px-6 py-2 flex-row"
-        )}>
-          <div className={cn(
-            "flex gap-1",
-            isMobile ? "w-full justify-center" : ""
-          )}>
+        <div
+          className={cn(
+            'flex items-center justify-between border-b bg-white',
+            isMobile ? 'px-4 py-3 flex-col gap-3' : 'px-6 py-2 flex-row'
+          )}
+        >
+          <div className={cn('flex gap-1', isMobile ? 'w-full justify-center' : '')}>
             <Button
               variant={activeTab === 'interactions' ? 'default' : 'ghost'}
-              size={isMobile ? "default" : "sm"}
+              size={isMobile ? 'default' : 'sm'}
               onClick={() => setActiveTab('interactions')}
-              className={cn(
-                isMobile ? "flex-1 h-12 touch-manipulation" : ""
-              )}
+              className={cn(isMobile ? 'flex-1 h-12 touch-manipulation' : '')}
             >
-              <MessageSquare className={cn(
-                isMobile ? "h-4 w-4 mr-2" : "h-3 w-3 mr-1"
-              )} />
-              {isMobile ?
-                `Activity (${opportunity.interaction_count || 0})` :
-                `Activity (${opportunity.interaction_count || 0})`
-              }
+              <MessageSquare className={cn(isMobile ? 'h-4 w-4 mr-2' : 'h-3 w-3 mr-1')} />
+              {isMobile
+                ? `Activity (${opportunity.interaction_count || 0})`
+                : `Activity (${opportunity.interaction_count || 0})`}
             </Button>
             <Button
               variant={activeTab === 'details' ? 'default' : 'ghost'}
-              size={isMobile ? "default" : "sm"}
+              size={isMobile ? 'default' : 'sm'}
               onClick={() => setActiveTab('details')}
-              className={cn(
-                isMobile ? "flex-1 h-12 touch-manipulation" : ""
-              )}
+              className={cn(isMobile ? 'flex-1 h-12 touch-manipulation' : '')}
             >
-              <FileText className={cn(
-                isMobile ? "h-4 w-4 mr-2" : "h-3 w-3 mr-1"
-              )} />
+              <FileText className={cn(isMobile ? 'h-4 w-4 mr-2' : 'h-3 w-3 mr-1')} />
               Details
             </Button>
           </div>
 
           {activeTab === 'interactions' && (
             <Button
-              size={isMobile ? "default" : "sm"}
+              size={isMobile ? 'default' : 'sm'}
               variant={isQuickAddOpen ? 'default' : 'outline'}
               onClick={toggleQuickAdd}
-              className={cn(
-                isMobile ? "w-full h-12 touch-manipulation" : ""
-              )}
+              className={cn(isMobile ? 'w-full h-12 touch-manipulation' : '')}
             >
-              <Plus className={cn(
-                isMobile ? "h-4 w-4 mr-2" : "h-3 w-3 mr-1"
-              )} />
+              <Plus className={cn(isMobile ? 'h-4 w-4 mr-2' : 'h-3 w-3 mr-1')} />
               Quick Add
             </Button>
           )}
@@ -244,13 +217,11 @@ export function OpportunitiesList({
         )}
 
         {/* Tab Content */}
-        <div className={cn(
-          isMobile ? "p-4" : "p-6"
-        )}>
+        <div className={cn(isMobile ? 'p-4' : 'p-6')}>
           {activeTab === 'interactions' ? (
             <InteractionTimelineEmbed
               opportunityId={opportunity.id}
-              maxHeight={isMobile ? "300px" : isIPad ? "450px" : "400px"}
+              maxHeight={isMobile ? '300px' : isIPad ? '450px' : '400px'}
               showEmptyState={true}
               variant="compact"
               onAddNew={toggleQuickAdd}
@@ -258,23 +229,26 @@ export function OpportunitiesList({
             />
           ) : (
             // Pipeline stages and value tracking details - migrated from old table
-            <div className={cn(
-              "gap-6",
-              isMobile ? "grid grid-cols-1 space-y-4" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-            )}>
+            <div
+              className={cn(
+                'gap-6',
+                isMobile
+                  ? 'grid grid-cols-1 space-y-4'
+                  : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+              )}
+            >
               <div>
-                <h4 className={cn(
-                  "mb-2 font-medium text-gray-900",
-                  isMobile ? "text-base" : ""
-                )}>Pipeline Details</h4>
-                <div className={cn(
-                  "space-y-1 text-gray-600",
-                  isMobile ? "text-base" : "text-sm"
-                )}>
+                <h4 className={cn('mb-2 font-medium text-gray-900', isMobile ? 'text-base' : '')}>
+                  Pipeline Details
+                </h4>
+                <div className={cn('space-y-1 text-gray-600', isMobile ? 'text-base' : 'text-sm')}>
                   {opportunity.stage && <div>Stage: {opportunity.stage}</div>}
                   {opportunity.status && <div>Status: {opportunity.status}</div>}
                   {opportunity.estimated_close_date && (
-                    <div>Expected Close: {new Date(opportunity.estimated_close_date).toLocaleDateString()}</div>
+                    <div>
+                      Expected Close:{' '}
+                      {new Date(opportunity.estimated_close_date).toLocaleDateString()}
+                    </div>
                   )}
                   {opportunity.created_at && (
                     <div>Created: {new Date(opportunity.created_at).toLocaleDateString()}</div>
@@ -283,38 +257,24 @@ export function OpportunitiesList({
               </div>
 
               <div>
-                <h4 className={cn(
-                  "mb-2 font-medium text-gray-900",
-                  isMobile ? "text-base" : ""
-                )}>Value Tracking</h4>
-                <div className={cn(
-                  "space-y-1 text-gray-600",
-                  isMobile ? "text-base" : "text-sm"
-                )}>
+                <h4 className={cn('mb-2 font-medium text-gray-900', isMobile ? 'text-base' : '')}>
+                  Value Tracking
+                </h4>
+                <div className={cn('space-y-1 text-gray-600', isMobile ? 'text-base' : 'text-sm')}>
                   {opportunity.estimated_value && (
                     <div>Estimated Value: ${opportunity.estimated_value}</div>
                   )}
-                  {opportunity.probability && (
-                    <div>Probability: {opportunity.probability}%</div>
-                  )}
-                  {opportunity.deal_owner && (
-                    <div>Deal Owner: {opportunity.deal_owner}</div>
-                  )}
+                  {opportunity.probability && <div>Probability: {opportunity.probability}%</div>}
+                  {opportunity.deal_owner && <div>Deal Owner: {opportunity.deal_owner}</div>}
                 </div>
               </div>
 
               <div>
-                <h4 className={cn(
-                  "mb-2 font-medium text-gray-900",
-                  isMobile ? "text-base" : ""
-                )}>Additional Information</h4>
-                <div className={cn(
-                  "space-y-1 text-gray-600",
-                  isMobile ? "text-base" : "text-sm"
-                )}>
-                  {opportunity.description && (
-                    <div>Description: {opportunity.description}</div>
-                  )}
+                <h4 className={cn('mb-2 font-medium text-gray-900', isMobile ? 'text-base' : '')}>
+                  Additional Information
+                </h4>
+                <div className={cn('space-y-1 text-gray-600', isMobile ? 'text-base' : 'text-sm')}>
+                  {opportunity.description && <div>Description: {opportunity.description}</div>}
                   {opportunity.notes ? (
                     <div>Notes: {opportunity.notes}</div>
                   ) : (
@@ -347,7 +307,9 @@ export function OpportunitiesList({
     searchPlaceholder: 'Search opportunities by name, organization, stage, or value...',
   })
 
-  const emptyMessage = filters.search ? 'No opportunities match your search.' : 'No opportunities yet'
+  const emptyMessage = filters.search
+    ? 'No opportunities match your search.'
+    : 'No opportunities yet'
   const emptySubtext = filters.search
     ? 'Try adjusting your search terms'
     : 'Get started by adding your first opportunity'
@@ -370,12 +332,7 @@ export function OpportunitiesList({
   ]
 
   return (
-    <EntityListWrapper
-      title={title}
-      description={description}
-      action={action}
-    >
-
+    <>
       {/* Bulk Actions Toolbar */}
       <BulkActionsToolbar
         selectedCount={selectedItems.size}
@@ -418,6 +375,6 @@ export function OpportunitiesList({
         entityType="opportunity"
         entityTypePlural="opportunities"
       />
-    </EntityListWrapper>
+    </>
   )
 }

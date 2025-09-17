@@ -47,7 +47,7 @@ export const OpportunityContextEnum = z.enum([
   'Follow-up',
   'Demo Request',
   'Sampling',
-  'Custom'
+  'Custom',
 ] as const)
 
 export const OpportunityStatusEnum = z.enum([
@@ -56,7 +56,7 @@ export const OpportunityStatusEnum = z.enum([
   'Closed - Won',
   'Closed - Lost',
   'Nurturing',
-  'Qualified'
+  'Qualified',
 ] as const)
 
 // Stage validation with dual enum support (DB display values + code values)
@@ -109,12 +109,14 @@ export const opportunityBaseSchema = z.object({
     .min(1, 'Opportunity name is required')
     .max(OPPORTUNITY_VALIDATION_CONSTANTS.name.max, 'Name must be 255 characters or less'),
 
-  organization_id: ZodTransforms.uuidField
-    .refine(val => val !== null, { message: 'Organization is required' }),
+  organization_id: ZodTransforms.uuidField.refine((val) => val !== null, {
+    message: 'Organization is required',
+  }),
 
   estimated_value: z.preprocess(
     ZodTransforms.nullableNumber.parse,
-    z.number()
+    z
+      .number()
       .min(OPPORTUNITY_VALIDATION_CONSTANTS.estimated_value.min, 'Estimated value must be positive')
       .describe('Estimated value is required')
   ),
@@ -127,20 +129,25 @@ export const opportunityBaseSchema = z.object({
 
   estimated_close_date: ZodTransforms.nullableString,
 
-  description: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= OPPORTUNITY_VALIDATION_CONSTANTS.description.max, {
-      message: 'Description must be 1000 characters or less'
-    }),
+  description: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= OPPORTUNITY_VALIDATION_CONSTANTS.description.max,
+    {
+      message: 'Description must be 1000 characters or less',
+    }
+  ),
 
-  notes: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= OPPORTUNITY_VALIDATION_CONSTANTS.notes.max, {
-      message: 'Notes must be 500 characters or less'
-    }),
+  notes: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= OPPORTUNITY_VALIDATION_CONSTANTS.notes.max,
+    {
+      message: 'Notes must be 500 characters or less',
+    }
+  ),
 
   // FIELDS for Principal CRM (optional for form compatibility)
-  principals: z.array(z.string().uuid('Invalid principal organization ID'))
+  principals: z
+    .array(z.string().uuid('Invalid principal organization ID'))
     .default([])
-    .transform((arr) => arr.filter(id => id !== undefined)),
+    .transform((arr) => arr.filter((id) => id !== undefined)),
 
   product_id: ZodTransforms.uuidField,
 
@@ -152,16 +159,19 @@ export const opportunityBaseSchema = z.object({
 
   probability: z.preprocess(
     ZodTransforms.nullableNumber.parse,
-    z.number()
+    z
+      .number()
       .min(OPPORTUNITY_VALIDATION_CONSTANTS.probability.min, 'Probability must be between 0-100')
       .max(OPPORTUNITY_VALIDATION_CONSTANTS.probability.max, 'Probability must be between 0-100')
       .nullable()
   ),
 
-  deal_owner: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= OPPORTUNITY_VALIDATION_CONSTANTS.deal_owner.max, {
-      message: 'Deal owner must be 100 characters or less'
-    }),
+  deal_owner: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= OPPORTUNITY_VALIDATION_CONSTANTS.deal_owner.max,
+    {
+      message: 'Deal owner must be 100 characters or less',
+    }
+  ),
 })
 
 /**
@@ -176,58 +186,73 @@ export const opportunityZodSchema = opportunityBaseSchema
  */
 export const multiPrincipalOpportunityBaseZodSchema = z.object({
   // Organization and context info
-  organization_id: ZodTransforms.uuidField
-    .refine(val => val !== null, { message: 'Organization is required' }),
+  organization_id: ZodTransforms.uuidField.refine((val) => val !== null, {
+    message: 'Organization is required',
+  }),
 
   contact_id: ZodTransforms.uuidField,
 
   // Multiple principals selection with enhanced validation
-  principals: z.array(z.string().uuid('Invalid principal organization ID'))
+  principals: z
+    .array(z.string().uuid('Invalid principal organization ID'))
     .min(1, 'At least one principal must be selected')
     .max(10, 'Maximum of 10 principals allowed per opportunity')
     .transform((arr) => {
       // Remove undefined/null values and filter unique UUIDs
-      const cleaned = arr.filter(id => id !== undefined && id !== null)
+      const cleaned = arr.filter((id) => id !== undefined && id !== null)
       const unique = Array.from(new Set(cleaned))
       return unique
     })
-    .refine((arr) => {
-      // Validate no duplicates after transformation
-      return arr.length === new Set(arr).size
-    }, {
-      message: 'Duplicate principals are not allowed'
-    })
-    .refine((arr) => {
-      // Validate each principal ID format
-      return arr.every(id =>
-        typeof id === 'string' &&
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)
-      )
-    }, {
-      message: 'All principal IDs must be valid UUIDs'
-    }),
+    .refine(
+      (arr) => {
+        // Validate no duplicates after transformation
+        return arr.length === new Set(arr).size
+      },
+      {
+        message: 'Duplicate principals are not allowed',
+      }
+    )
+    .refine(
+      (arr) => {
+        // Validate each principal ID format
+        return arr.every(
+          (id) =>
+            typeof id === 'string' &&
+            /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)
+        )
+      },
+      {
+        message: 'All principal IDs must be valid UUIDs',
+      }
+    ),
 
   // Auto-naming configuration with conditional requirements
   auto_generated_name: z.boolean().default(true),
 
-  opportunity_context: OpportunityContextEnum
-    .describe('Opportunity context is required for auto-naming'),
+  opportunity_context: OpportunityContextEnum.describe(
+    'Opportunity context is required for auto-naming'
+  ),
 
-  custom_context: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= OPPORTUNITY_VALIDATION_CONSTANTS.custom_context.max, {
-      message: 'Custom context must be 50 characters or less'
-    }),
+  custom_context: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= OPPORTUNITY_VALIDATION_CONSTANTS.custom_context.max,
+    {
+      message: 'Custom context must be 50 characters or less',
+    }
+  ),
 
   // Optional name field for manual naming override
-  name: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= OPPORTUNITY_VALIDATION_CONSTANTS.name.max, {
-      message: 'Name must be 255 characters or less'
-    }),
+  name: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= OPPORTUNITY_VALIDATION_CONSTANTS.name.max,
+    {
+      message: 'Name must be 255 characters or less',
+    }
+  ),
 
   // Enhanced estimated value with multi-principal considerations
   estimated_value: z.preprocess(
     ZodTransforms.nullableNumber.parse,
-    z.number()
+    z
+      .number()
       .min(OPPORTUNITY_VALIDATION_CONSTANTS.estimated_value.min, 'Estimated value must be positive')
       .nullable()
   ),
@@ -236,12 +261,12 @@ export const multiPrincipalOpportunityBaseZodSchema = z.object({
   stage: z.preprocess((val) => {
     // Handle legacy code values by mapping to DB values
     const legacyStageMapping: Record<string, string> = {
-      'lead': 'New Lead',
-      'qualified': 'Initial Outreach',
-      'proposal': 'Sample/Visit Offered',
-      'negotiation': 'Demo Scheduled',
-      'closed_won': 'Closed - Won',
-      'closed_lost': 'Closed - Lost'
+      lead: 'New Lead',
+      qualified: 'Initial Outreach',
+      proposal: 'Sample/Visit Offered',
+      negotiation: 'Demo Scheduled',
+      closed_won: 'Closed - Won',
+      closed_lost: 'Closed - Lost',
     }
 
     if (typeof val === 'string' && val in legacyStageMapping) {
@@ -253,12 +278,12 @@ export const multiPrincipalOpportunityBaseZodSchema = z.object({
   status: z.preprocess((val) => {
     // Handle legacy status values by mapping to DB values
     const legacyStatusMapping: Record<string, string> = {
-      'active': 'Active',
-      'on_hold': 'On Hold',
-      'closed_won': 'Closed - Won',
-      'closed_lost': 'Closed - Lost',
-      'nurturing': 'Nurturing',
-      'qualified': 'Qualified'
+      active: 'Active',
+      on_hold: 'On Hold',
+      closed_won: 'Closed - Won',
+      closed_lost: 'Closed - Lost',
+      nurturing: 'Nurturing',
+      qualified: 'Qualified',
     }
 
     if (typeof val === 'string' && val in legacyStatusMapping) {
@@ -269,7 +294,8 @@ export const multiPrincipalOpportunityBaseZodSchema = z.object({
 
   probability: z.preprocess(
     ZodTransforms.nullableNumber.parse,
-    z.number()
+    z
+      .number()
       .min(OPPORTUNITY_VALIDATION_CONSTANTS.probability.min, 'Probability must be between 0-100')
       .max(OPPORTUNITY_VALIDATION_CONSTANTS.probability.max, 'Probability must be between 0-100')
       .nullable()
@@ -277,59 +303,79 @@ export const multiPrincipalOpportunityBaseZodSchema = z.object({
 
   estimated_close_date: ZodTransforms.nullableString,
 
-  notes: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= OPPORTUNITY_VALIDATION_CONSTANTS.notes.max, {
-      message: 'Notes must be 500 characters or less'
-    }),
+  notes: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= OPPORTUNITY_VALIDATION_CONSTANTS.notes.max,
+    {
+      message: 'Notes must be 500 characters or less',
+    }
+  ),
 
   // Optional description field for detailed multi-principal context
-  description: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= OPPORTUNITY_VALIDATION_CONSTANTS.description.max, {
-      message: 'Description must be 1000 characters or less'
-    }),
+  description: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= OPPORTUNITY_VALIDATION_CONSTANTS.description.max,
+    {
+      message: 'Description must be 1000 characters or less',
+    }
+  ),
 
   // Deal owner for multi-principal coordination
-  deal_owner: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= OPPORTUNITY_VALIDATION_CONSTANTS.deal_owner.max, {
-      message: 'Deal owner must be 100 characters or less'
-    }),
+  deal_owner: ZodTransforms.nullableString.refine(
+    (val) => !val || val.length <= OPPORTUNITY_VALIDATION_CONSTANTS.deal_owner.max,
+    {
+      message: 'Deal owner must be 100 characters or less',
+    }
+  ),
 })
 
 /**
  * Multi-Principal Opportunity Schema
  * Enhanced schema with sophisticated participant validation, auto-naming, and duplicate detection
  */
-export const multiPrincipalOpportunityZodSchema = multiPrincipalOpportunityBaseZodSchema.refine((data) => {
-  // Conditional custom context validation using refinement
-  if (data.opportunity_context === 'Custom') {
-    return data.custom_context !== null &&
-           data.custom_context !== undefined &&
-           data.custom_context.trim().length > 0
-  }
-  return true
-}, {
-  message: 'Custom context is required when selecting Custom',
-  path: ['custom_context']
-}).refine((data) => {
-  // Auto-naming validation - if auto_generated_name is true, name should be empty or null
-  if (data.auto_generated_name) {
-    return !data.name || data.name.trim().length === 0
-  }
-  // If auto_generated_name is false, manual name is required
-  return data.name && data.name.trim().length > 0
-}, {
-  message: 'Manual name is required when auto-naming is disabled',
-  path: ['name']
-}).refine((data) => {
-  // Business logic: principal organization cannot be the same as the target organization
-  if (data.organization_id && data.principals.length > 0) {
-    return !data.principals.includes(data.organization_id)
-  }
-  return true
-}, {
-  message: 'Target organization cannot be included as a principal',
-  path: ['principals']
-})
+export const multiPrincipalOpportunityZodSchema = multiPrincipalOpportunityBaseZodSchema
+  .refine(
+    (data) => {
+      // Conditional custom context validation using refinement
+      if (data.opportunity_context === 'Custom') {
+        return (
+          data.custom_context !== null &&
+          data.custom_context !== undefined &&
+          data.custom_context.trim().length > 0
+        )
+      }
+      return true
+    },
+    {
+      message: 'Custom context is required when selecting Custom',
+      path: ['custom_context'],
+    }
+  )
+  .refine(
+    (data) => {
+      // Auto-naming validation - if auto_generated_name is true, name should be empty or null
+      if (data.auto_generated_name) {
+        return !data.name || data.name.trim().length === 0
+      }
+      // If auto_generated_name is false, manual name is required
+      return data.name && data.name.trim().length > 0
+    },
+    {
+      message: 'Manual name is required when auto-naming is disabled',
+      path: ['name'],
+    }
+  )
+  .refine(
+    (data) => {
+      // Business logic: principal organization cannot be the same as the target organization
+      if (data.organization_id && data.principals.length > 0) {
+        return !data.principals.includes(data.organization_id)
+      }
+      return true
+    },
+    {
+      message: 'Target organization cannot be included as a principal',
+      path: ['principals'],
+    }
+  )
 
 /**
  * Multi-Principal Schema Variants for Different Use Cases
@@ -339,156 +385,201 @@ export const multiPrincipalOpportunityZodSchema = multiPrincipalOpportunityBaseZ
  * Multi-Principal Create Schema
  * For creating new multi-principal opportunities with required validation
  */
-export const multiPrincipalOpportunityCreateZodSchema = multiPrincipalOpportunityBaseZodSchema.omit({
-  name: true, // Auto-generated, so omit from create
-}).extend({
-  // Override auto_generated_name to be required for create
-  auto_generated_name: z.boolean().default(true)
-}).refine((data) => {
-  // Conditional custom context validation using refinement
-  if (data.opportunity_context === 'Custom') {
-    return data.custom_context !== null &&
-           data.custom_context !== undefined &&
-           data.custom_context.trim().length > 0
-  }
-  return true
-}, {
-  message: 'Custom context is required when selecting Custom',
-  path: ['custom_context']
-}).refine((data) => {
-  // Business logic: principal organization cannot be the same as the target organization
-  if (data.organization_id && data.principals.length > 0) {
-    return !data.principals.includes(data.organization_id)
-  }
-  return true
-}, {
-  message: 'Target organization cannot be included as a principal',
-  path: ['principals']
-})
+export const multiPrincipalOpportunityCreateZodSchema = multiPrincipalOpportunityBaseZodSchema
+  .omit({
+    name: true, // Auto-generated, so omit from create
+  })
+  .extend({
+    // Override auto_generated_name to be required for create
+    auto_generated_name: z.boolean().default(true),
+  })
+  .refine(
+    (data) => {
+      // Conditional custom context validation using refinement
+      if (data.opportunity_context === 'Custom') {
+        return (
+          data.custom_context !== null &&
+          data.custom_context !== undefined &&
+          data.custom_context.trim().length > 0
+        )
+      }
+      return true
+    },
+    {
+      message: 'Custom context is required when selecting Custom',
+      path: ['custom_context'],
+    }
+  )
+  .refine(
+    (data) => {
+      // Business logic: principal organization cannot be the same as the target organization
+      if (data.organization_id && data.principals.length > 0) {
+        return !data.principals.includes(data.organization_id)
+      }
+      return true
+    },
+    {
+      message: 'Target organization cannot be included as a principal',
+      path: ['principals'],
+    }
+  )
 
 /**
  * Multi-Principal Update Schema
  * For updating existing multi-principal opportunities (most fields optional)
  */
-export const multiPrincipalOpportunityUpdateZodSchema = multiPrincipalOpportunityBaseZodSchema.partial().extend({
-  // Keep principals required if provided (no empty arrays)
-  principals: z.array(z.string().uuid('Invalid principal organization ID'))
-    .min(1, 'At least one principal must be selected')
-    .max(10, 'Maximum of 10 principals allowed per opportunity')
-    .transform((arr) => {
-      const cleaned = arr.filter(id => id !== undefined && id !== null)
-      const unique = Array.from(new Set(cleaned))
-      return unique
-    })
-    .optional()
-}).refine((data) => {
-  // Conditional custom context validation for updates (only if context is provided)
-  if (data.opportunity_context === 'Custom') {
-    return data.custom_context !== null &&
-           data.custom_context !== undefined &&
-           data.custom_context.trim().length > 0
-  }
-  return true
-}, {
-  message: 'Custom context is required when selecting Custom',
-  path: ['custom_context']
-}).refine((data) => {
-  // Auto-naming validation for updates (only if both fields are provided)
-  if (data.auto_generated_name !== undefined && data.name !== undefined) {
-    if (data.auto_generated_name) {
-      return !data.name || data.name.trim().length === 0
+export const multiPrincipalOpportunityUpdateZodSchema = multiPrincipalOpportunityBaseZodSchema
+  .partial()
+  .extend({
+    // Keep principals required if provided (no empty arrays)
+    principals: z
+      .array(z.string().uuid('Invalid principal organization ID'))
+      .min(1, 'At least one principal must be selected')
+      .max(10, 'Maximum of 10 principals allowed per opportunity')
+      .transform((arr) => {
+        const cleaned = arr.filter((id) => id !== undefined && id !== null)
+        const unique = Array.from(new Set(cleaned))
+        return unique
+      })
+      .optional(),
+  })
+  .refine(
+    (data) => {
+      // Conditional custom context validation for updates (only if context is provided)
+      if (data.opportunity_context === 'Custom') {
+        return (
+          data.custom_context !== null &&
+          data.custom_context !== undefined &&
+          data.custom_context.trim().length > 0
+        )
+      }
+      return true
+    },
+    {
+      message: 'Custom context is required when selecting Custom',
+      path: ['custom_context'],
     }
-    return data.name && data.name.trim().length > 0
-  }
-  return true
-}, {
-  message: 'Manual name is required when auto-naming is disabled',
-  path: ['name']
-}).refine((data) => {
-  // Business logic: principal organization cannot be the same as the target organization
-  if (data.organization_id && data.principals && data.principals.length > 0) {
-    return !data.principals.includes(data.organization_id)
-  }
-  return true
-}, {
-  message: 'Target organization cannot be included as a principal',
-  path: ['principals']
-})
+  )
+  .refine(
+    (data) => {
+      // Auto-naming validation for updates (only if both fields are provided)
+      if (data.auto_generated_name !== undefined && data.name !== undefined) {
+        if (data.auto_generated_name) {
+          return !data.name || data.name.trim().length === 0
+        }
+        return data.name && data.name.trim().length > 0
+      }
+      return true
+    },
+    {
+      message: 'Manual name is required when auto-naming is disabled',
+      path: ['name'],
+    }
+  )
+  .refine(
+    (data) => {
+      // Business logic: principal organization cannot be the same as the target organization
+      if (data.organization_id && data.principals && data.principals.length > 0) {
+        return !data.principals.includes(data.organization_id)
+      }
+      return true
+    },
+    {
+      message: 'Target organization cannot be included as a principal',
+      path: ['principals'],
+    }
+  )
 
 /**
  * Multi-Principal Quick Create Schema
  * Simplified schema for rapid opportunity creation with minimal required fields
  */
-export const multiPrincipalOpportunityQuickCreateZodSchema = z.object({
-  organization_id: ZodTransforms.uuidField
-    .refine(val => val !== null, { message: 'Organization is required' }),
-
-  principals: z.array(z.string().uuid('Invalid principal organization ID'))
-    .min(1, 'At least one principal must be selected')
-    .max(10, 'Maximum of 10 principals allowed per opportunity')
-    .transform((arr) => {
-      const cleaned = arr.filter(id => id !== undefined && id !== null)
-      const unique = Array.from(new Set(cleaned))
-      return unique
+export const multiPrincipalOpportunityQuickCreateZodSchema = z
+  .object({
+    organization_id: ZodTransforms.uuidField.refine((val) => val !== null, {
+      message: 'Organization is required',
     }),
 
-  opportunity_context: OpportunityContextEnum,
+    principals: z
+      .array(z.string().uuid('Invalid principal organization ID'))
+      .min(1, 'At least one principal must be selected')
+      .max(10, 'Maximum of 10 principals allowed per opportunity')
+      .transform((arr) => {
+        const cleaned = arr.filter((id) => id !== undefined && id !== null)
+        const unique = Array.from(new Set(cleaned))
+        return unique
+      }),
 
-  custom_context: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= OPPORTUNITY_VALIDATION_CONSTANTS.custom_context.max, {
-      message: 'Custom context must be 50 characters or less'
-    }),
+    opportunity_context: OpportunityContextEnum,
 
-  // Optional fields with defaults
-  auto_generated_name: z.boolean().default(true),
-  stage: OpportunityStageEnum.default('New Lead'),
-  status: OpportunityStatusEnum.default('Active'),
-  contact_id: ZodTransforms.uuidField,
-  estimated_value: z.preprocess(
-    ZodTransforms.nullableNumber.parse,
-    z.number().min(0, 'Estimated value must be positive').nullable()
-  ),
-}).refine((data) => {
-  // Custom context validation
-  if (data.opportunity_context === 'Custom') {
-    return data.custom_context !== null &&
-           data.custom_context !== undefined &&
-           data.custom_context.trim().length > 0
-  }
-  return true
-}, {
-  message: 'Custom context is required when selecting Custom',
-  path: ['custom_context']
-}).refine((data) => {
-  // Business logic: principal organization cannot be the same as the target organization
-  if (data.organization_id && data.principals.length > 0) {
-    return !data.principals.includes(data.organization_id)
-  }
-  return true
-}, {
-  message: 'Target organization cannot be included as a principal',
-  path: ['principals']
-})
+    custom_context: ZodTransforms.nullableString.refine(
+      (val) => !val || val.length <= OPPORTUNITY_VALIDATION_CONSTANTS.custom_context.max,
+      {
+        message: 'Custom context must be 50 characters or less',
+      }
+    ),
+
+    // Optional fields with defaults
+    auto_generated_name: z.boolean().default(true),
+    stage: OpportunityStageEnum.default('New Lead'),
+    status: OpportunityStatusEnum.default('Active'),
+    contact_id: ZodTransforms.uuidField,
+    estimated_value: z.preprocess(
+      ZodTransforms.nullableNumber.parse,
+      z.number().min(0, 'Estimated value must be positive').nullable()
+    ),
+  })
+  .refine(
+    (data) => {
+      // Custom context validation
+      if (data.opportunity_context === 'Custom') {
+        return (
+          data.custom_context !== null &&
+          data.custom_context !== undefined &&
+          data.custom_context.trim().length > 0
+        )
+      }
+      return true
+    },
+    {
+      message: 'Custom context is required when selecting Custom',
+      path: ['custom_context'],
+    }
+  )
+  .refine(
+    (data) => {
+      // Business logic: principal organization cannot be the same as the target organization
+      if (data.organization_id && data.principals.length > 0) {
+        return !data.principals.includes(data.organization_id)
+      }
+      return true
+    },
+    {
+      message: 'Target organization cannot be included as a principal',
+      path: ['principals'],
+    }
+  )
 
 /**
  * Multi-Principal Participant Schema
  * For validating individual participant relationships
  */
 export const multiPrincipalParticipantZodSchema = z.object({
-  opportunity_id: ZodTransforms.uuidField
-    .refine(val => val !== null, { message: 'Opportunity ID is required' }),
+  opportunity_id: ZodTransforms.uuidField.refine((val) => val !== null, {
+    message: 'Opportunity ID is required',
+  }),
 
-  organization_id: ZodTransforms.uuidField
-    .refine(val => val !== null, { message: 'Organization ID is required' }),
+  organization_id: ZodTransforms.uuidField.refine((val) => val !== null, {
+    message: 'Organization ID is required',
+  }),
 
   role: z.enum(['principal', 'distributor', 'stakeholder']).default('principal'),
 
   sequence_order: z.number().int().min(1).optional(),
 
-  notes: ZodTransforms.nullableString
-    .refine((val) => !val || val.length <= 500, {
-      message: 'Participant notes must be 500 characters or less'
-    }),
+  notes: ZodTransforms.nullableString.refine((val) => !val || val.length <= 500, {
+    message: 'Participant notes must be 500 characters or less',
+  }),
 
   created_by: ZodTransforms.uuidField,
   created_at: z.string().datetime().optional(),
@@ -511,15 +602,25 @@ export const opportunityUpdateZodSchema = opportunityBaseSchema.partial()
  * Equivalent to z.infer<typeof opportunitySchema>
  */
 export type OpportunityZodFormData = z.infer<typeof opportunityZodSchema>
-export type MultiPrincipalOpportunityZodFormData = z.infer<typeof multiPrincipalOpportunityZodSchema>
+export type MultiPrincipalOpportunityZodFormData = z.infer<
+  typeof multiPrincipalOpportunityZodSchema
+>
 export type OpportunityCreateZodFormData = z.infer<typeof opportunityCreateZodSchema>
 export type OpportunityUpdateZodFormData = z.infer<typeof opportunityUpdateZodSchema>
 
 // Multi-Principal Schema Type Variants
-export type MultiPrincipalOpportunityCreateZodFormData = z.infer<typeof multiPrincipalOpportunityCreateZodSchema>
-export type MultiPrincipalOpportunityUpdateZodFormData = z.infer<typeof multiPrincipalOpportunityUpdateZodSchema>
-export type MultiPrincipalOpportunityQuickCreateZodFormData = z.infer<typeof multiPrincipalOpportunityQuickCreateZodSchema>
-export type MultiPrincipalParticipantZodFormData = z.infer<typeof multiPrincipalParticipantZodSchema>
+export type MultiPrincipalOpportunityCreateZodFormData = z.infer<
+  typeof multiPrincipalOpportunityCreateZodSchema
+>
+export type MultiPrincipalOpportunityUpdateZodFormData = z.infer<
+  typeof multiPrincipalOpportunityUpdateZodSchema
+>
+export type MultiPrincipalOpportunityQuickCreateZodFormData = z.infer<
+  typeof multiPrincipalOpportunityQuickCreateZodSchema
+>
+export type MultiPrincipalParticipantZodFormData = z.infer<
+  typeof multiPrincipalParticipantZodSchema
+>
 
 // Legacy type aliases for backward compatibility
 export type OpportunityFormData = OpportunityZodFormData
@@ -654,7 +755,9 @@ export class OpportunityZodValidation {
   static validateMultiPrincipalCreate(data: unknown): MultiPrincipalOpportunityCreateZodFormData {
     const result = multiPrincipalOpportunityCreateZodSchema.safeParse(data)
     if (!result.success) {
-      throw new Error(`Multi-principal opportunity create validation failed: ${result.error.message}`)
+      throw new Error(
+        `Multi-principal opportunity create validation failed: ${result.error.message}`
+      )
     }
     return result.data
   }
@@ -665,7 +768,9 @@ export class OpportunityZodValidation {
   static validateMultiPrincipalUpdate(data: unknown): MultiPrincipalOpportunityUpdateZodFormData {
     const result = multiPrincipalOpportunityUpdateZodSchema.safeParse(data)
     if (!result.success) {
-      throw new Error(`Multi-principal opportunity update validation failed: ${result.error.message}`)
+      throw new Error(
+        `Multi-principal opportunity update validation failed: ${result.error.message}`
+      )
     }
     return result.data
   }
@@ -673,10 +778,14 @@ export class OpportunityZodValidation {
   /**
    * Validate multi-principal quick create data
    */
-  static validateMultiPrincipalQuickCreate(data: unknown): MultiPrincipalOpportunityQuickCreateZodFormData {
+  static validateMultiPrincipalQuickCreate(
+    data: unknown
+  ): MultiPrincipalOpportunityQuickCreateZodFormData {
     const result = multiPrincipalOpportunityQuickCreateZodSchema.safeParse(data)
     if (!result.success) {
-      throw new Error(`Multi-principal opportunity quick create validation failed: ${result.error.message}`)
+      throw new Error(
+        `Multi-principal opportunity quick create validation failed: ${result.error.message}`
+      )
     }
     return result.data
   }
@@ -763,9 +872,7 @@ export class OpportunityZodValidation {
     const result = opportunityZodSchema.safeParse(data)
     if (result.success) return []
 
-    return result.error.errors.map(err =>
-      `${err.path.join('.')}: ${err.message}`
-    )
+    return result.error.errors.map((err) => `${err.path.join('.')}: ${err.message}`)
   }
 
   /**
@@ -775,9 +882,7 @@ export class OpportunityZodValidation {
     const result = multiPrincipalOpportunityZodSchema.safeParse(data)
     if (result.success) return []
 
-    return result.error.errors.map(err =>
-      `${err.path.join('.')}: ${err.message}`
-    )
+    return result.error.errors.map((err) => `${err.path.join('.')}: ${err.message}`)
   }
 
   /**
@@ -791,7 +896,7 @@ export class OpportunityZodValidation {
    * Validate stage value (handles legacy values)
    */
   static validateStage(stage: string): boolean {
-    return DB_STAGES.includes(stage as any) || CODE_STAGES.includes(stage as any)
+    return (DB_STAGES as ReadonlyArray<string>).includes(stage) || (CODE_STAGES as ReadonlyArray<string>).includes(stage)
   }
 
   /**
@@ -800,9 +905,19 @@ export class OpportunityZodValidation {
   static validateStatus(status: string): boolean {
     const validStatuses = [
       // DB values
-      'Active', 'On Hold', 'Closed - Won', 'Closed - Lost', 'Nurturing', 'Qualified',
+      'Active',
+      'On Hold',
+      'Closed - Won',
+      'Closed - Lost',
+      'Nurturing',
+      'Qualified',
       // Legacy code values
-      'active', 'on_hold', 'closed_won', 'closed_lost', 'nurturing', 'qualified'
+      'active',
+      'on_hold',
+      'closed_won',
+      'closed_lost',
+      'nurturing',
+      'qualified',
     ]
     return validStatuses.includes(status)
   }
@@ -822,9 +937,10 @@ export class OpportunityZodValidation {
     if (principals.length > 10) return false // Maximum limit
 
     // Check for valid UUIDs
-    const validUUIDs = principals.every(id =>
-      typeof id === 'string' &&
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)
+    const validUUIDs = principals.every(
+      (id) =>
+        typeof id === 'string' &&
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)
     )
     if (!validUUIDs) return false
 
@@ -895,7 +1011,7 @@ export class OpportunityZodValidation {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     }
   }
 
@@ -905,9 +1021,9 @@ export class OpportunityZodValidation {
    */
   static validateCustomContext(context: string | null, customContext: string | null): boolean {
     if (context === 'Custom') {
-      return customContext !== null &&
-             customContext !== undefined &&
-             customContext.trim().length > 0
+      return (
+        customContext !== null && customContext !== undefined && customContext.trim().length > 0
+      )
     }
     return true
   }
@@ -916,7 +1032,9 @@ export class OpportunityZodValidation {
    * Transform for handling form data to database format
    * Removes virtual fields and prepares for database insertion
    */
-  static transformForDatabase(formData: OpportunityZodFormData): Omit<OpportunityZodFormData, 'principals'> {
+  static transformForDatabase(
+    formData: OpportunityZodFormData
+  ): Omit<OpportunityZodFormData, 'principals'> {
     const { principals, ...opportunityData } = formData
     return opportunityData
   }
@@ -952,17 +1070,19 @@ export class OpportunityZodValidation {
   ): string {
     // Truncate organization name if too long
     const ORGANIZATION_MAX_DISPLAY_LENGTH = 50
-    const truncatedOrg = organizationName.length > ORGANIZATION_MAX_DISPLAY_LENGTH
-      ? organizationName.substring(0, ORGANIZATION_MAX_DISPLAY_LENGTH - 3) + '...'
-      : organizationName
+    const truncatedOrg =
+      organizationName.length > ORGANIZATION_MAX_DISPLAY_LENGTH
+        ? organizationName.substring(0, ORGANIZATION_MAX_DISPLAY_LENGTH - 3) + '...'
+        : organizationName
 
     // Handle principal display
     let principalDisplay: string
     if (principalNames.length === 1) {
       const PRINCIPAL_MAX_DISPLAY_LENGTH = 40
-      principalDisplay = principalNames[0].length > PRINCIPAL_MAX_DISPLAY_LENGTH
-        ? principalNames[0].substring(0, PRINCIPAL_MAX_DISPLAY_LENGTH - 3) + '...'
-        : principalNames[0]
+      principalDisplay =
+        principalNames[0].length > PRINCIPAL_MAX_DISPLAY_LENGTH
+          ? principalNames[0].substring(0, PRINCIPAL_MAX_DISPLAY_LENGTH - 3) + '...'
+          : principalNames[0]
     } else {
       principalDisplay = `Multi-Principal (${principalNames.length})`
     }
@@ -970,9 +1090,10 @@ export class OpportunityZodValidation {
     // Format context
     const contextDisplay = context === 'Custom' && customContext ? customContext : context
     const CONTEXT_MAX_DISPLAY_LENGTH = 30
-    const truncatedContext = contextDisplay.length > CONTEXT_MAX_DISPLAY_LENGTH
-      ? contextDisplay.substring(0, CONTEXT_MAX_DISPLAY_LENGTH - 3) + '...'
-      : contextDisplay
+    const truncatedContext =
+      contextDisplay.length > CONTEXT_MAX_DISPLAY_LENGTH
+        ? contextDisplay.substring(0, CONTEXT_MAX_DISPLAY_LENGTH - 3) + '...'
+        : contextDisplay
 
     // Format date
     const date = new Date()
@@ -1001,13 +1122,13 @@ export class OpportunityZodValidation {
       'Follow-up',
       'Demo Request',
       'Sampling',
-      'Custom'
+      'Custom',
     ]
 
     if (!validContexts.includes(context)) {
       return {
         isValid: false,
-        error: 'Invalid opportunity context'
+        error: 'Invalid opportunity context',
       }
     }
 
@@ -1015,13 +1136,13 @@ export class OpportunityZodValidation {
       if (!customContext || customContext.trim().length === 0) {
         return {
           isValid: false,
-          error: 'Custom context is required when selecting Custom'
+          error: 'Custom context is required when selecting Custom',
         }
       }
       if (customContext.length > OPPORTUNITY_VALIDATION_CONSTANTS.custom_context.max) {
         return {
           isValid: false,
-          error: 'Custom context must be 50 characters or less'
+          error: 'Custom context must be 50 characters or less',
         }
       }
     }
@@ -1042,8 +1163,10 @@ export class OpportunityZodValidation {
    */
   static validateProbability(value: number | null): boolean {
     if (value === null) return true
-    return value >= OPPORTUNITY_VALIDATION_CONSTANTS.probability.min &&
-           value <= OPPORTUNITY_VALIDATION_CONSTANTS.probability.max
+    return (
+      value >= OPPORTUNITY_VALIDATION_CONSTANTS.probability.min &&
+      value <= OPPORTUNITY_VALIDATION_CONSTANTS.probability.max
+    )
   }
 }
 

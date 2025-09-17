@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import type { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, ChevronRight, MoreHorizontal } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import * as React from 'react'
+import type { ColumnDef } from '@tanstack/react-table'
+import { ArrowUpDown, ChevronDown, ChevronRight, MoreHorizontal } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,16 +12,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
+} from '@/components/ui/dropdown-menu'
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
 
 // Column helper function for sortable headers
 export function createSortableHeader(title: string) {
   return ({ column }: { column: any }) => (
     <Button
       variant="ghost"
-      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       className="h-auto p-0 font-medium hover:bg-transparent"
     >
       {title}
@@ -33,12 +33,11 @@ export function createSortableHeader(title: string) {
 // Column helper for selection checkbox
 export function createSelectColumn<TData>(): ColumnDef<TData> {
   return {
-    id: "select",
+    id: 'select',
     header: ({ table }) => (
       <Checkbox
         checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+          table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -63,8 +62,8 @@ export function createExpandColumn<TData>(
   expandedContent?: (row: TData) => React.ReactNode
 ): ColumnDef<TData> {
   return {
-    id: "expand",
-    header: "",
+    id: 'expand',
+    header: '',
     cell: ({ row }) => {
       if (!expandedContent) return null
 
@@ -80,14 +79,8 @@ export function createExpandColumn<TData>(
           }}
           className="size-8 p-0"
         >
-          {isExpanded ? (
-            <ChevronDown className="size-4" />
-          ) : (
-            <ChevronRight className="size-4" />
-          )}
-          <span className="sr-only">
-            {isExpanded ? "Collapse" : "Expand"} row
-          </span>
+          {isExpanded ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
+          <span className="sr-only">{isExpanded ? 'Collapse' : 'Expand'} row</span>
         </Button>
       )
     },
@@ -103,20 +96,17 @@ export function createActionsColumn<TData>(
     label: string
     onClick: (row: TData) => void
     icon?: React.ReactNode
-    variant?: "default" | "destructive"
+    variant?: 'default' | 'destructive'
     shortcut?: string
   }>
 ): ColumnDef<TData> {
   return {
-    id: "actions",
-    header: "",
+    id: 'actions',
+    header: '',
     cell: ({ row }) => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="flex size-8 p-0 data-[state=open]:bg-muted"
-          >
+          <Button variant="ghost" className="flex size-8 p-0 data-[state=open]:bg-muted">
             <MoreHorizontal className="size-4" />
             <span className="sr-only">Open menu</span>
           </Button>
@@ -126,15 +116,11 @@ export function createActionsColumn<TData>(
             <React.Fragment key={action.label}>
               <DropdownMenuItem
                 onClick={() => action.onClick(row.original)}
-                className={cn(
-                  action.variant === "destructive" && "text-destructive"
-                )}
+                className={cn(action.variant === 'destructive' && 'text-destructive')}
               >
                 {action.icon && <span className="mr-2">{action.icon}</span>}
                 {action.label}
-                {action.shortcut && (
-                  <DropdownMenuShortcut>{action.shortcut}</DropdownMenuShortcut>
-                )}
+                {action.shortcut && <DropdownMenuShortcut>{action.shortcut}</DropdownMenuShortcut>}
               </DropdownMenuItem>
               {index < actions.length - 1 && <DropdownMenuSeparator />}
             </React.Fragment>
@@ -152,11 +138,14 @@ export function createActionsColumn<TData>(
 export function createStatusColumn<TData>(
   accessor: keyof TData,
   title: string,
-  statusConfig: Record<string, {
-    label: string
-    variant: "default" | "secondary" | "destructive" | "outline"
-    className?: string
-  }>
+  statusConfig: Record<
+    string,
+    {
+      label: string
+      variant: 'default' | 'secondary' | 'destructive' | 'outline'
+      className?: string
+    }
+  >
 ): ColumnDef<TData> {
   return {
     accessorKey: accessor as string,
@@ -165,7 +154,7 @@ export function createStatusColumn<TData>(
       const status = row.getValue(accessor as string) as string
       const config = statusConfig[status] || {
         label: status,
-        variant: "outline" as const,
+        variant: 'outline' as const,
       }
 
       return (
@@ -185,7 +174,7 @@ export function createDateColumn<TData>(
   accessor: keyof TData,
   title: string,
   options?: {
-    format?: "date" | "datetime" | "relative"
+    format?: 'date' | 'datetime' | 'relative'
     className?: string
   }
 ): ColumnDef<TData> {
@@ -199,24 +188,20 @@ export function createDateColumn<TData>(
       const dateObj = new Date(date as string)
 
       let formatted: string
-      switch (options?.format || "date") {
-        case "datetime":
+      switch (options?.format || 'date') {
+        case 'datetime':
           formatted = dateObj.toLocaleString()
           break
-        case "relative":
+        case 'relative':
           formatted = formatRelativeTime(dateObj)
           break
         default:
           formatted = dateObj.toLocaleDateString()
       }
 
-      return (
-        <div className={cn("font-medium", options?.className)}>
-          {formatted}
-        </div>
-      )
+      return <div className={cn('font-medium', options?.className)}>{formatted}</div>
     },
-    sortingFn: "datetime",
+    sortingFn: 'datetime',
   }
 }
 
@@ -237,18 +222,14 @@ export function createCurrencyColumn<TData>(
       const amount = row.getValue(accessor as string) as number
       if (amount === null || amount === undefined) return null
 
-      const formatted = new Intl.NumberFormat(options?.locale || "en-US", {
-        style: "currency",
-        currency: options?.currency || "USD",
+      const formatted = new Intl.NumberFormat(options?.locale || 'en-US', {
+        style: 'currency',
+        currency: options?.currency || 'USD',
       }).format(amount)
 
-      return (
-        <div className={cn("font-medium", options?.className)}>
-          {formatted}
-        </div>
-      )
+      return <div className={cn('font-medium', options?.className)}>{formatted}</div>
     },
-    sortingFn: "basic",
+    sortingFn: 'basic',
   }
 }
 
@@ -270,20 +251,18 @@ export function createTextColumn<TData>(
       if (!text) return null
 
       const maxLength = options?.maxLength || 50
-      const truncated = text.length > maxLength
-        ? `${text.substring(0, maxLength)}...`
-        : text
+      const truncated = text.length > maxLength ? `${text.substring(0, maxLength)}...` : text
 
       return (
         <div
-          className={cn("max-w-[200px]", options?.className)}
+          className={cn('max-w-[200px]', options?.className)}
           title={options?.showTooltip && text.length > maxLength ? text : undefined}
         >
           {truncated}
         </div>
       )
     },
-    filterFn: "includesString",
+    filterFn: 'includesString',
   }
 }
 
@@ -292,7 +271,7 @@ function formatRelativeTime(date: Date): string {
   const now = new Date()
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
 
-  if (diffInSeconds < 60) return "Just now"
+  if (diffInSeconds < 60) return 'Just now'
   if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`
   if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`
   if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)}d ago`
@@ -301,4 +280,4 @@ function formatRelativeTime(date: Date): string {
 }
 
 // Export types for external use
-export type { ColumnDef } from "@tanstack/react-table"
+export type { ColumnDef } from '@tanstack/react-table'

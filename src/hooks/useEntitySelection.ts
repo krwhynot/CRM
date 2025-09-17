@@ -19,16 +19,13 @@ export interface UseEntitySelectionReturn {
 export const useEntitySelection = <T extends { id: string }>(): UseEntitySelectionReturn => {
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set())
 
-  const handleSelectAll = useCallback(
-    (checked: boolean, items: T[]) => {
-      if (checked) {
-        setSelectedItems(new Set(items.map((item) => item.id)))
-      } else {
-        setSelectedItems(new Set())
-      }
-    },
-    []
-  )
+  const handleSelectAll = useCallback((checked: boolean, items: T[]) => {
+    if (checked) {
+      setSelectedItems(new Set(items.map((item) => item.id)))
+    } else {
+      setSelectedItems(new Set())
+    }
+  }, [])
 
   const handleSelectItem = useCallback((id: string, checked: boolean) => {
     setSelectedItems((prev) => {

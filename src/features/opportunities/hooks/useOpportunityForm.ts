@@ -127,7 +127,7 @@ export const useOpportunityForm = ({
     // Handle Zod error format
     if (fieldError) {
       if (Array.isArray(fieldError)) {
-        return fieldError.map(err => err.message || 'Invalid value')
+        return fieldError.map((err) => err.message || 'Invalid value')
       }
       return [fieldError.message || 'Invalid value']
     }

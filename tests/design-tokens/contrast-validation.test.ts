@@ -2,12 +2,16 @@
  * Design Token Contrast Validation Tests
  *
  * Automated accessibility testing for design tokens with WCAG AA/AAA
- * compliance validation, contrast ratio checking, and visual regression
- * testing for design token changes.
+ * compliance validation, proper contrast ratio algorithms, colorblind
+ * accessibility validation, and performance-optimized testing for CI/CD.
  *
- * @see /src/styles/accessibility-tokens.css - Accessibility token definitions
- * @see /src/lib/design-token-utils.ts - Utility functions for contrast validation
- * @see /scripts/validate-design-tokens.sh - Design token validation script
+ * Enhanced for design token system overhaul with zero MFB reference validation,
+ * new brand color system testing, and comprehensive accessibility coverage.
+ *
+ * @see /src/styles/tokens/primitives.css - New OKLCH primitive tokens
+ * @see /src/styles/tokens/semantic.css - Enhanced semantic mappings
+ * @see /src/lib/design-token-utils.ts - OKLCH conversion and contrast utilities
+ * @see /scripts/validate-design-tokens.sh - Enhanced validation script
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
@@ -19,20 +23,29 @@ import { parseColorToRgb, calculateContrastRatio, validateContrastWCAG } from '.
 const TEST_CONFIG = {
   // WCAG compliance levels to test
   wcagLevels: ['AA', 'AAA'] as const,
-  // Color token files to analyze
+  // Color token files to analyze (updated for 2-layer architecture)
   tokenFiles: [
+    'src/styles/tokens/primitives.css',
+    'src/styles/tokens/semantic.css',
     'src/index.css',
     'src/styles/accessibility-tokens.css',
-    'src/styles/component-tokens.css',
-    'src/styles/advanced-colors.css',
   ],
-  // Critical color combinations that must pass AAA
+  // Critical color combinations that must pass AAA (post-overhaul)
   criticalCombinations: [
     { fg: '--text-primary', bg: '--background' },
     { fg: '--text-body', bg: '--card' },
-    { fg: '--mfb-green', bg: '--background' },
+    { fg: '--brand-primary', bg: '--background' },
     { fg: '--destructive-foreground', bg: '--destructive' },
     { fg: '--success-foreground', bg: '--success' },
+    { fg: '--warning-foreground', bg: '--warning' },
+    { fg: '--info-foreground', bg: '--info' },
+  ],
+  // Colorblind test combinations
+  colorblindCombinations: [
+    { fg: '--cb-success-text', bg: '--cb-success-bg' },
+    { fg: '--cb-warning-text', bg: '--cb-warning-bg' },
+    { fg: '--cb-error-text', bg: '--cb-error-bg' },
+    { fg: '--cb-info-text', bg: '--cb-info-bg' },
   ],
   // Minimum contrast ratios
   contrastThresholds: {

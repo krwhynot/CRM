@@ -22,12 +22,8 @@ export function ContentSection({
     <section className={cn('space-y-6', className)} {...props}>
       {(title || description) && (
         <div className="space-y-1">
-          {title && (
-            <h2 className="text-lg font-medium">{title}</h2>
-          )}
-          {description && (
-            <p className="text-sm text-muted-foreground">{description}</p>
-          )}
+          {title && <h2 className="text-lg font-medium">{title}</h2>}
+          {description && <p className="text-sm text-muted-foreground">{description}</p>}
         </div>
       )}
       <div>{children}</div>

@@ -80,7 +80,13 @@ const formatValidationError = (error: any, config: RegularFieldConfig): string =
   return 'Invalid value'
 }
 
-export function FormFieldNew<T extends FieldValues = FieldValues>({ control, name, config, disabled, className }: FormFieldProps<T>) {
+export function FormFieldNew<T extends FieldValues = FieldValues>({
+  control,
+  name,
+  config,
+  disabled,
+  className,
+}: FormFieldProps<T>) {
   const { isInDialog } = useDialogContext()
   const spacingClasses = getFormSpacingClasses(isInDialog)
 
@@ -89,10 +95,10 @@ export function FormFieldNew<T extends FieldValues = FieldValues>({ control, nam
     const headingConfig = config as HeadingFieldConfig
     const level = headingConfig.level || 3
     const HeadingTag = `h${level}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
-    
+
     return (
       <div className={cn('col-span-full', config.className, className)}>
-        <HeadingTag className="text-md mb-2 mt-4 font-semibold text-gray-900 first:mt-0">
+        <HeadingTag className="text-md mb-2 mt-4 font-semibold text-foreground first:mt-0">
           {config.label}
         </HeadingTag>
       </div>
@@ -113,9 +119,9 @@ export function FormFieldNew<T extends FieldValues = FieldValues>({ control, nam
       name={name}
       render={({ field }) => (
         <FormItem className={cn(spacingClasses, config.className, className)}>
-          <FormLabel className="text-sm font-medium text-gray-700">
+          <FormLabel className="text-sm font-medium text-foreground">
             {config.label}
-            {regularConfig.required && <span className="ml-1 text-red-500">*</span>}
+            {regularConfig.required && <span className="ml-1 text-destructive">*</span>}
           </FormLabel>
 
           <FormControl>

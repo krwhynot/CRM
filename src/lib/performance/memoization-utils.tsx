@@ -1,6 +1,6 @@
 /**
  * Memoization Utilities
- * 
+ *
  * Performance optimization utilities for React components including
  * custom memoization hooks and component optimizers.
  */
@@ -16,7 +16,7 @@ import React from 'react'
  */
 export function shallowEqual(obj1: any, obj2: any): boolean {
   if (obj1 === obj2) return true
-  
+
   if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
     return false
   }
@@ -41,7 +41,7 @@ export function shallowEqual(obj1: any, obj2: any): boolean {
 export function shallowEqualArray<T>(arr1: T[], arr2: T[]): boolean {
   if (arr1 === arr2) return true
   if (arr1.length !== arr2.length) return false
-  
+
   return arr1.every((item, index) => item === arr2[index])
 }
 
@@ -109,7 +109,7 @@ export function memoWithComparison<P extends object>(
   areEqual?: (prevProps: P, nextProps: P) => boolean
 ) {
   const defaultComparison = (prevProps: P, nextProps: P) => shallowEqual(prevProps, nextProps)
-  
+
   return React.memo(Component, areEqual || defaultComparison)
 }
 
@@ -147,7 +147,7 @@ export function memoWithArrayProps<P extends object>(
  */
 export function useRenderCount(componentName: string) {
   const renderCount = React.useRef(0)
-  
+
   React.useEffect(() => {
     renderCount.current++
     if (process.env.NODE_ENV === 'development') {
@@ -161,10 +161,7 @@ export function useRenderCount(componentName: string) {
 /**
  * Track prop changes for debugging
  */
-export function useWhyDidYouUpdate<T extends Record<string, any>>(
-  componentName: string,
-  props: T
-) {
+export function useWhyDidYouUpdate<T extends Record<string, any>>(componentName: string, props: T) {
   const previousProps = React.useRef<T>()
 
   React.useEffect(() => {
@@ -217,12 +214,15 @@ export function useThrottle<T>(value: T, limit: number): T {
   const lastRan = React.useRef(Date.now())
 
   React.useEffect(() => {
-    const handler = setTimeout(() => {
-      if (Date.now() - lastRan.current >= limit) {
-        setThrottledValue(value)
-        lastRan.current = Date.now()
-      }
-    }, limit - (Date.now() - lastRan.current))
+    const handler = setTimeout(
+      () => {
+        if (Date.now() - lastRan.current >= limit) {
+          setThrottledValue(value)
+          lastRan.current = Date.now()
+        }
+      },
+      limit - (Date.now() - lastRan.current)
+    )
 
     return () => {
       clearTimeout(handler)
@@ -268,11 +268,8 @@ export function useVirtualizedList<T>(
 
   const visibleRange = React.useMemo(() => {
     const start = Math.floor(scrollTop / itemHeight)
-    const end = Math.min(
-      start + Math.ceil(containerHeight / itemHeight) + overscan,
-      items.length
-    )
-    
+    const end = Math.min(start + Math.ceil(containerHeight / itemHeight) + overscan, items.length)
+
     return {
       start: Math.max(0, start - overscan),
       end,
@@ -340,7 +337,10 @@ export function createSplitContext<T extends Record<string, any>>() {
 /**
  * Measure component render performance
  */
-export function usePerformanceMonitor(componentName: string, enabled = process.env.NODE_ENV === 'development') {
+export function usePerformanceMonitor(
+  componentName: string,
+  enabled = process.env.NODE_ENV === 'development'
+) {
   const renderStart = React.useRef<number>()
 
   React.useLayoutEffect(() => {
@@ -352,7 +352,8 @@ export function usePerformanceMonitor(componentName: string, enabled = process.e
   React.useEffect(() => {
     if (enabled && renderStart.current) {
       const renderTime = performance.now() - renderStart.current
-      if (renderTime > 16) { // More than one frame
+      if (renderTime > 16) {
+        // More than one frame
         console.warn(`[${componentName}] Slow render: ${renderTime.toFixed(2)}ms`)
       }
     }
@@ -371,11 +372,11 @@ export function useComputationTime<T>(
     const start = performance.now()
     const result = computation()
     const end = performance.now()
-    
+
     if (process.env.NODE_ENV === 'development' && name) {
       console.log(`[${name}] Computation time: ${(end - start).toFixed(2)}ms`)
     }
-    
+
     return result
   }, deps)
 }
@@ -389,30 +390,30 @@ export const performanceUtils = {
   shallowEqual,
   shallowEqualArray,
   equalFunctions,
-  
+
   // Memoization
   useMemoCustom,
   useMemoShallow,
   useCallbackShallow,
   useStableObject,
-  
+
   // Component optimization
   memoWithComparison,
   memoWithArrayProps,
-  
+
   // Performance hooks
   useRenderCount,
   useWhyDidYouUpdate,
   useDebounce,
   useThrottle,
-  
+
   // List optimization
   useOptimizedList,
   useVirtualizedList,
-  
+
   // Context optimization
   createSplitContext,
-  
+
   // Monitoring
   usePerformanceMonitor,
   useComputationTime,

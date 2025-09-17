@@ -1,12 +1,12 @@
-"use client"
+'use client'
 
-import * as React from "react"
+import * as React from 'react'
 import type {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
-} from "@tanstack/react-table"
+} from '@tanstack/react-table'
 import {
   flexRender,
   getCoreRowModel,
@@ -14,8 +14,8 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-import { cn } from "@/lib/utils"
+} from '@tanstack/react-table'
+import { cn } from '@/lib/utils'
 import {
   Table,
   TableBody,
@@ -23,14 +23,18 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Skeleton } from "@/components/ui/skeleton"
-import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react"
-import { DataTablePagination } from "./pagination"
-import { DataTableToolbar } from "./toolbar"
-import { ResponsiveFilterWrapper, type ResponsiveFilterWrapperProps } from "./filters/ResponsiveFilterWrapper"
-import { EmptyState, EmptyStatePresets, type EmptyStateProps } from "@/components/layout/EmptyState"
-import { FEATURE_FLAGS } from "@/lib/feature-flags"
+} from '@/components/ui/table'
+import { Skeleton } from '@/components/ui/skeleton'
+import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
+import { DataTablePagination } from './pagination'
+import { DataTableToolbar } from './toolbar'
+import {
+  ResponsiveFilterWrapper,
+  type ResponsiveFilterWrapperProps,
+} from './filters/ResponsiveFilterWrapper'
+import { EmptyState, EmptyStatePresets, type EmptyStateProps } from '@/components/layout/EmptyState'
+import { ErrorState } from '@/components/ui/data-state'
+import { FEATURE_FLAGS } from '@/lib/feature-flags'
 
 // Enhanced sort direction type
 export type SortDirection = 'asc' | 'desc' | 'none'
@@ -61,13 +65,20 @@ export interface DataTableProps<TData, TValue> {
   pageSize?: number
   rowActions?: (row: TData) => React.ReactNode
   expandedContent?: (row: TData) => React.ReactNode
-  emptyState?: EmptyStateProps | {
-    title: string
-    description?: string
-    action?: React.ReactNode
-  }
+  emptyState?:
+    | EmptyStateProps
+    | {
+        title: string
+        description?: string
+        action?: React.ReactNode
+      }
   className?: string
   onRowClick?: (row: TData) => void
+
+  // Error state support
+  isError?: boolean
+  error?: Error | null
+  onRetry?: () => void
 
   // Enhanced features from CRMTable
   selectable?: boolean
@@ -115,7 +126,7 @@ export function DataTable<TData, TValue>({
   data,
   loading = false,
   searchKey,
-  searchPlaceholder = "Search...",
+  searchPlaceholder = 'Search...',
   enableColumnFilters = true,
   enableSorting = true,
   enablePagination = true,
@@ -126,6 +137,11 @@ export function DataTable<TData, TValue>({
   className,
   onRowClick,
 
+  // Error state support
+  isError = false,
+  error = null,
+  onRetry,
+
   // Enhanced CRMTable features
   selectable = false,
   expandable = false,
@@ -133,7 +149,7 @@ export function DataTable<TData, TValue>({
   stickyHeader = false,
   striped = false,
   rowKey,
-  emptyMessage = "No data available",
+  emptyMessage = 'No data available',
   onSort,
 
   // ResponsiveFilterWrapper integration
@@ -207,15 +223,18 @@ export function DataTable<TData, TValue>({
     },
   })
 
-  const getRowId = React.useCallback((row: TData) => {
-    // Use provided rowKey function or fallback
-    if (rowKey) {
-      return rowKey(row)
-    }
-    // Try to get an ID from the row, fallback to index
-    const rowWithId = row as any
-    return rowWithId.id || rowWithId._id || JSON.stringify(row)
-  }, [rowKey])
+  const getRowId = React.useCallback(
+    (row: TData) => {
+      // Use provided rowKey function or fallback
+      if (rowKey) {
+        return rowKey(row)
+      }
+      // Try to get an ID from the row, fallback to index
+      const rowWithId = row as any
+      return rowWithId.id || rowWithId._id || JSON.stringify(row)
+    },
+    [rowKey]
+  )
 
   // Note: Removed duplicate selection/expansion handlers.
   // Selection handlers are now provided by TanStack Table's built-in functionality.
@@ -224,44 +243,59 @@ export function DataTable<TData, TValue>({
   // Sync TanStack Table selection with onSelectionChange callback
   React.useEffect(() => {
     if (onSelectionChange) {
-      const selectedIds = Object.keys(rowSelection).filter(id => rowSelection[id])
+      const selectedIds = Object.keys(rowSelection).filter((id) => rowSelection[id])
       onSelectionChange(selectedIds)
     }
   }, [rowSelection, onSelectionChange])
 
   // Manual sort handler for backward compatibility
-  const handleSort = React.useCallback((column: string) => {
-    let newDirection: SortDirection = 'asc'
+  const handleSort = React.useCallback(
+    (column: string) => {
+      let newDirection: SortDirection = 'asc'
 
-    if (sortConfig.column === column) {
-      if (sortConfig.direction === 'asc') {
-        newDirection = 'desc'
-      } else if (sortConfig.direction === 'desc') {
-        newDirection = 'none'
-      } else {
-        newDirection = 'asc'
+      if (sortConfig.column === column) {
+        if (sortConfig.direction === 'asc') {
+          newDirection = 'desc'
+        } else if (sortConfig.direction === 'desc') {
+          newDirection = 'none'
+        } else {
+          newDirection = 'asc'
+        }
       }
-    }
 
-    setSortConfig({ column, direction: newDirection })
-    onSort?.(column, newDirection)
-  }, [sortConfig, onSort])
+      setSortConfig({ column, direction: newDirection })
+      onSort?.(column, newDirection)
+    },
+    [sortConfig, onSort]
+  )
 
   // Get sort icon for manual sorting
-  const getSortIcon = React.useCallback((column: string) => {
-    if (sortConfig.column !== column || sortConfig.direction === 'none') {
-      return <ChevronsUpDown className="size-4 opacity-50" />
-    }
-    return sortConfig.direction === 'asc'
-      ? <ChevronUp className="size-4" />
-      : <ChevronDown className="size-4" />
-  }, [sortConfig])
+  const getSortIcon = React.useCallback(
+    (column: string) => {
+      if (sortConfig.column !== column || sortConfig.direction === 'none') {
+        return <ChevronsUpDown className="size-4 opacity-50" />
+      }
+      return sortConfig.direction === 'asc' ? (
+        <ChevronUp className="size-4" />
+      ) : (
+        <ChevronDown className="size-4" />
+      )
+    },
+    [sortConfig]
+  )
 
   // Helper to check if emptyState is the new format vs legacy
   const isNewEmptyStateFormat = (state: unknown): state is EmptyStateProps => {
     if (!state || typeof state !== 'object') return false
     const stateObj = state as Record<string, unknown>
-    return 'variant' in stateObj || 'icon' in stateObj || ('action' in stateObj && typeof stateObj.action === 'object' && stateObj.action !== null && 'label' in (stateObj.action as Record<string, unknown>))
+    return (
+      'variant' in stateObj ||
+      'icon' in stateObj ||
+      ('action' in stateObj &&
+        typeof stateObj.action === 'object' &&
+        stateObj.action !== null &&
+        'label' in (stateObj.action as Record<string, unknown>))
+    )
   }
 
   // Note: Removed duplicate selection state helpers.
@@ -274,11 +308,13 @@ export function DataTable<TData, TValue>({
       return EmptyStatePresets.noSearchResults(entityFilters.search)
     }
 
-    if (shouldUseResponsiveFilters && entityType && (
-      entityFilters?.statusFilter ||
-      entityFilters?.principalFilter ||
-      entityFilters?.timeRange?.type !== 'all'
-    )) {
+    if (
+      shouldUseResponsiveFilters &&
+      entityType &&
+      (entityFilters?.statusFilter ||
+        entityFilters?.principalFilter ||
+        entityFilters?.timeRange?.type !== 'all')
+    ) {
       // Has active filters - show filtered results empty state
       return EmptyStatePresets.filtered()
     }
@@ -290,7 +326,7 @@ export function DataTable<TData, TValue>({
         contacts: 'Contacts',
         opportunities: 'Opportunities',
         products: 'Products',
-        interactions: 'Interactions'
+        interactions: 'Interactions',
       }
       return EmptyStatePresets.noData(entityNames[entityType])
     }
@@ -299,16 +335,71 @@ export function DataTable<TData, TValue>({
     return {
       title: 'No data available',
       description: emptyMessage || 'No results found.',
-      variant: 'default'
+      variant: 'default',
     }
   }, [shouldUseResponsiveFilters, entityType, entityFilters, emptyMessage])
+
+  // Error state handling - render ErrorState before table rendering
+  if (isError) {
+    return (
+      <div className={cn('space-y-4', className)}>
+        {/* ResponsiveFilterWrapper Integration - Only if feature flag is enabled */}
+        {shouldUseResponsiveFilters && entityType && entityFilters && onEntityFiltersChange && (
+          <ResponsiveFilterWrapper
+            entityType={entityType}
+            filters={entityFilters}
+            onFiltersChange={onEntityFiltersChange}
+            searchPlaceholder={searchPlaceholder}
+            principals={principals}
+            statuses={statuses}
+            priorities={priorities}
+            showTimeRange={showTimeRange}
+            showQuickFilters={showQuickFilters}
+            showPrincipalFilter={showPrincipalFilter}
+            showStatusFilter={showStatusFilter}
+            showPriorityFilter={showPriorityFilter}
+            isLoading={loading}
+            totalCount={totalCount}
+            filteredCount={filteredCount}
+            title={responsiveFilterTitle}
+            description={responsiveFilterDescription}
+            layoutModeOverride={responsiveFilterLayoutModeOverride}
+            customTrigger={responsiveFilterCustomTrigger}
+            forceInline={responsiveFilterForceInline}
+            lazyRender={responsiveFilterLazyRender}
+            wrapperClassName={responsiveFilterWrapperClassName}
+            triggerClassName={responsiveFilterTriggerClassName}
+            sheetProps={responsiveFilterSheetProps}
+            sheetContentProps={responsiveFilterSheetContentProps}
+            onLayoutModeChange={onResponsiveFilterLayoutModeChange}
+            onOpenChange={onResponsiveFilterOpenChange}
+          />
+        )}
+
+        {enableToolbar && !shouldUseResponsiveFilters && (
+          <DataTableToolbar
+            table={table}
+            searchKey={searchKey}
+            searchPlaceholder={searchPlaceholder}
+          />
+        )}
+
+        <ErrorState
+          title="Failed to load data"
+          message={error?.message || 'An error occurred while loading the data. Please try again.'}
+          onRetry={onRetry}
+          variant="default"
+        />
+      </div>
+    )
+  }
 
   if (loading) {
     return <DataTableSkeleton columns={columns} />
   }
 
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={cn('space-y-4', className)}>
       {/* ResponsiveFilterWrapper Integration - Only if feature flag is enabled */}
       {shouldUseResponsiveFilters && entityType && entityFilters && onEntityFiltersChange && (
         <ResponsiveFilterWrapper
@@ -359,10 +450,7 @@ export function DataTable<TData, TValue>({
                   <TableHead key={header.id} className="h-12">
                     {header.isPlaceholder
                       ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                      : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
               </TableRow>
@@ -374,12 +462,12 @@ export function DataTable<TData, TValue>({
                 const mainRow = (
                   <TableRow
                     key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
+                    data-state={row.getIsSelected() && 'selected'}
                     className={cn(
-                      "transition-colors hover:bg-muted/50",
+                      'transition-colors hover:bg-muted/50',
                       striped && index % 2 === 1 && 'bg-muted/50',
                       row.getIsSelected() && 'bg-primary/5 border-primary/20',
-                      onRowClick && "cursor-pointer"
+                      onRowClick && 'cursor-pointer'
                     )}
                     onClick={onRowClick ? () => onRowClick(row.original) : undefined}
                   >
@@ -398,10 +486,7 @@ export function DataTable<TData, TValue>({
               })
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 p-0 text-center"
-                >
+                <TableCell colSpan={columns.length} className="h-24 p-0 text-center">
                   {emptyState ? (
                     isNewEmptyStateFormat(emptyState) ? (
                       // New EmptyStateProps format
@@ -421,11 +506,7 @@ export function DataTable<TData, TValue>({
                             {emptyState.description}
                           </div>
                         )}
-                        {emptyState.action && (
-                          <div className="mt-4">
-                            {emptyState.action}
-                          </div>
-                        )}
+                        {emptyState.action && <div className="mt-4">{emptyState.action}</div>}
                       </div>
                     )
                   ) : (
@@ -442,18 +523,12 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      {enablePagination && (
-        <DataTablePagination table={table} />
-      )}
+      {enablePagination && <DataTablePagination table={table} />}
     </div>
   )
 }
 
-function DataTableSkeleton<TData, TValue>({
-  columns,
-}: {
-  columns: ColumnDef<TData, TValue>[]
-}) {
+function DataTableSkeleton<TData, TValue>({ columns }: { columns: ColumnDef<TData, TValue>[] }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -504,9 +579,12 @@ function DataTableSkeleton<TData, TValue>({
 // If you need to access table state, use TanStack Table's built-in hooks instead.
 
 // Legacy context - kept for backward compatibility but functionality moved to column definitions
-export const DataTableContext = React.createContext<{
-  // Context now empty - functionality moved to TanStack Table built-ins
-} | null>(null)
+export const DataTableContext = React.createContext<
+  | {
+      // Context now empty - functionality moved to TanStack Table built-ins
+    }
+  | null
+>(null)
 
 export function useDataTable() {
   const context = React.useContext(DataTableContext)
@@ -523,11 +601,16 @@ export const StatusBadge: React.FC<{
     active: 'bg-green-100 text-green-800 border-green-300',
     inactive: 'bg-gray-100 text-gray-700 border-gray-300',
     pending: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-    archived: 'bg-red-100 text-red-800 border-red-300'
+    archived: 'bg-red-100 text-red-800 border-red-300',
   }
 
   return (
-    <span className={cn('inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border', variants[status])}>
+    <span
+      className={cn(
+        'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border',
+        variants[status]
+      )}
+    >
       {children || status}
     </span>
   )
@@ -540,14 +623,19 @@ export const PriorityBadge: React.FC<{
 }> = ({ priority, children }) => {
   const variants = {
     'a-plus': 'bg-red-100 text-red-800 border-red-300',
-    'a': 'bg-red-50 text-red-700 border-red-200',
-    'b': 'bg-orange-100 text-orange-800 border-orange-300',
-    'c': 'bg-yellow-100 text-yellow-800 border-yellow-300',
-    'd': 'bg-gray-100 text-gray-700 border-gray-300'
+    a: 'bg-red-50 text-red-700 border-red-200',
+    b: 'bg-orange-100 text-orange-800 border-orange-300',
+    c: 'bg-yellow-100 text-yellow-800 border-yellow-300',
+    d: 'bg-gray-100 text-gray-700 border-gray-300',
   }
 
   return (
-    <span className={cn('inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border', variants[priority])}>
+    <span
+      className={cn(
+        'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border',
+        variants[priority]
+      )}
+    >
       {children || priority.toUpperCase()}
     </span>
   )
@@ -562,11 +650,16 @@ export const OrgTypeBadge: React.FC<{
     customer: 'bg-blue-100 text-blue-800 border-blue-300',
     distributor: 'bg-green-100 text-green-800 border-green-300',
     principal: 'bg-purple-100 text-purple-800 border-purple-300',
-    supplier: 'bg-indigo-100 text-indigo-800 border-indigo-300'
+    supplier: 'bg-indigo-100 text-indigo-800 border-indigo-300',
   }
 
   return (
-    <span className={cn('inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border', variants[type])}>
+    <span
+      className={cn(
+        'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border',
+        variants[type]
+      )}
+    >
       {children || type}
     </span>
   )

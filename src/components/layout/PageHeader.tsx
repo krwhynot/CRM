@@ -37,25 +37,23 @@ export function PageHeader({
   children,
   className,
   showLayoutToggle = false,
-  showLayoutDebug = false
+  showLayoutDebug = false,
 }: PageHeaderProps) {
   return (
-    <div className={cn('flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6', className)}>
+    <div
+      className={cn(
+        'flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6',
+        className
+      )}
+    >
       <div className="space-y-1">
         <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-        {description && (
-          <p className="text-sm text-muted-foreground">{description}</p>
-        )}
+        {description && <p className="text-sm text-muted-foreground">{description}</p>}
       </div>
 
       <div className="flex items-center gap-2">
         {/* Layout toggle controls (development/testing) */}
-        {showLayoutToggle && (
-          <FilterLayoutToggle
-            showDebugInfo={showLayoutDebug}
-            compact
-          />
-        )}
+        {showLayoutToggle && <FilterLayoutToggle showDebugInfo={showLayoutDebug} compact />}
 
         {children}
         {action && (

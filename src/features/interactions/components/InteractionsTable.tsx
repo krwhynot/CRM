@@ -24,10 +24,14 @@ import {
 interface InteractionsTableProps {
   interactions?: InteractionWithRelations[]
   filters?: InteractionFilters
-  loading?: boolean
+  isLoading?: boolean
+  isError?: boolean
+  error?: Error | null
   onEdit?: (interaction: InteractionWithRelations) => void
   onDelete?: (interaction: InteractionWithRelations) => void
   onView?: (interaction: InteractionWithRelations) => void
+  onRefresh?: () => void
+  onFiltersChange?: (filters: InteractionFilters) => void
 }
 
 const INTERACTION_COLORS = {
@@ -49,16 +53,26 @@ const INTERACTION_COLORS = {
 export function InteractionsTable({
   interactions = [],
   filters: propFilters,
-  loading = false,
+  isLoading = false,
+  isError = false,
+  error = null,
   onEdit,
   onDelete,
   onView,
+  onRefresh,
+  onFiltersChange,
 }: InteractionsTableProps) {
   // ✨ Updated to use proper filters state
   const [filters, setFilters] = useState<InteractionFilters>(() => ({
     ...DEFAULT_WEEKLY_FILTERS,
     ...propFilters,
   }))
+
+  // Update local filters when props change and notify parent
+  const updateFilters = (newFilters: InteractionFilters) => {
+    setFilters(newFilters)
+    onFiltersChange?.(newFilters)
+  }
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set())
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
   const { getInteractionIcon } = useInteractionIconMapping()
@@ -386,16 +400,14 @@ export function InteractionsTable({
             totalCount={filteredInteractions.length}
             onBulkDelete={() => {
               if (
-                confirm(
-                  `Delete ${selectedItems.size} interactions? This action cannot be undone.`
-                )
+                confirm(`Delete ${selectedItems.size} interactions? This action cannot be undone.`)
               ) {
                 toast.success(`Deleted ${selectedItems.size} interactions`)
                 setSelectedItems(new Set())
               }
             }}
             onClearSelection={() => setSelectedItems(new Set())}
-            onSelectAll={() => setSelectedItems(new Set(filteredInteractions.map(i => i.id)))}
+            onSelectAll={() => setSelectedItems(new Set(filteredInteractions.map((i) => i.id)))}
             onSelectNone={() => setSelectedItems(new Set())}
             entityType="interaction"
             entityTypePlural="interactions"
@@ -429,13 +441,21 @@ export function InteractionsTable({
       <DataTable<InteractionWithRelations>
         data={filteredInteractions}
         columns={columns}
-        loading={loading}
+        loading={isLoading}
+        isError={isError}
+        error={error}
+        onRetry={onRefresh}
         rowKey={(row) => row.id}
         expandableContent={renderExpandableContent}
         expandedRows={Array.from(expandedRows)}
         onToggleRow={toggleRowExpansion}
         emptyMessage="No interactions found"
         emptyDescription="Get started by logging your first customer interaction"
+        useResponsiveFilters={true}
+        entityType="interactions"
+        entityFilters={filters}
+        onEntityFiltersChange={updateFilters}
+        responsiveFilterTitle="Interaction Filters"
       />
     </div>
   )

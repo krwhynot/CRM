@@ -29,7 +29,6 @@ vi.mock('@/features/organizations/hooks/useOrganizationsDisplay', () => ({
 
 // Note: OrganizationsFilters component removed - using ResponsiveFilterWrapper instead
 
-
 const mockOrganizations: Organization[] = [
   createTestOrganization({
     id: '1',

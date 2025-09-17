@@ -9,7 +9,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { CheckCircle2, X, AlertTriangle, HelpCircle, CheckCircleIcon, Settings2 } from 'lucide-react'
+import {
+  CheckCircle2,
+  X,
+  AlertTriangle,
+  HelpCircle,
+  CheckCircleIcon,
+  Settings2,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { cleanFieldName } from '../utils/import-simplifier'
 import type { SmartFieldMapping } from '../hooks/useSmartImport'
@@ -58,7 +65,7 @@ function QuickMappingRow({
   const isHighConfidence = mapping.confidence >= 0.95
   const isMediumConfidence = mapping.confidence >= 0.7 && mapping.confidence < 0.95
   const isLowConfidence = mapping.confidence < 0.7
-  
+
   // Determine border and background color based on confidence
   const getCardStyling = () => {
     if (needsAttention || isLowConfidence) {
@@ -72,12 +79,14 @@ function QuickMappingRow({
     }
     return 'border-slate-200 bg-white'
   }
-  
+
   return (
-    <div className={cn(
-      'grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border rounded-lg',
-      getCardStyling()
-    )}>
+    <div
+      className={cn(
+        'grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border rounded-lg',
+        getCardStyling()
+      )}
+    >
       {/* CSV Data Preview */}
       <div className="space-y-2">
         <div className="space-y-1">
@@ -85,9 +94,7 @@ function QuickMappingRow({
             {cleanFieldName(mapping.csvHeader) || 'Unnamed Column'}
           </div>
           {mapping.csvHeader !== cleanFieldName(mapping.csvHeader) && (
-            <div className="font-mono text-xs text-slate-500">
-              CSV: "{mapping.csvHeader}"
-            </div>
+            <div className="font-mono text-xs text-slate-500">CSV: "{mapping.csvHeader}"</div>
           )}
         </div>
         {mapping.reason && (
@@ -96,38 +103,49 @@ function QuickMappingRow({
           </div>
         )}
         {mapping.confidence > 0 && (
-          <Badge 
+          <Badge
             variant={
-              mapping.confidence >= 0.95 ? "default" : 
-              mapping.confidence >= 0.7 ? "secondary" : "destructive"
+              mapping.confidence >= 0.95
+                ? 'default'
+                : mapping.confidence >= 0.7
+                  ? 'secondary'
+                  : 'destructive'
             }
             className={cn(
-              "text-xs",
-              mapping.confidence >= 0.95 ? "bg-green-100 text-green-800 border-green-200" :
-              mapping.confidence >= 0.7 ? "bg-blue-100 text-blue-800 border-blue-200" :
-              "bg-amber-100 text-amber-800 border-amber-200"
+              'text-xs',
+              mapping.confidence >= 0.95
+                ? 'bg-green-100 text-green-800 border-green-200'
+                : mapping.confidence >= 0.7
+                  ? 'bg-blue-100 text-blue-800 border-blue-200'
+                  : 'bg-amber-100 text-amber-800 border-amber-200'
             )}
           >
             {Math.round(mapping.confidence * 100)}% confident
           </Badge>
         )}
-        
+
         {/* Status Badge */}
         {mapping.status && (
-          <Badge 
+          <Badge
             variant="outline"
             className={cn(
-              "text-xs",
-              mapping.status === 'confirmed' ? "bg-green-50 text-green-700 border-green-200" :
-              mapping.status === 'auto' ? "bg-blue-50 text-blue-700 border-blue-200" :
-              mapping.status === 'skipped' ? "bg-gray-50 text-gray-700 border-gray-200" :
-              "bg-amber-50 text-amber-700 border-amber-200"
+              'text-xs',
+              mapping.status === 'confirmed'
+                ? 'bg-green-50 text-green-700 border-green-200'
+                : mapping.status === 'auto'
+                  ? 'bg-blue-50 text-blue-700 border-blue-200'
+                  : mapping.status === 'skipped'
+                    ? 'bg-gray-50 text-gray-700 border-gray-200'
+                    : 'bg-amber-50 text-amber-700 border-amber-200'
             )}
           >
-            {mapping.status === 'auto' ? 'Auto-mapped' :
-             mapping.status === 'confirmed' ? 'Confirmed' :
-             mapping.status === 'skipped' ? 'Skipped' :
-             'Needs Review'}
+            {mapping.status === 'auto'
+              ? 'Auto-mapped'
+              : mapping.status === 'confirmed'
+                ? 'Confirmed'
+                : mapping.status === 'skipped'
+                  ? 'Skipped'
+                  : 'Needs Review'}
           </Badge>
         )}
       </div>
@@ -147,25 +165,29 @@ function QuickMappingRow({
             <SelectItem value="none">
               <span className="text-muted-foreground">Skip this field</span>
             </SelectItem>
-            
+
             {/* Group options by category */}
-            {['Essential', 'Contact', 'Address', 'Business', 'Management', 'Other'].map(category => {
-              const categoryOptions = QUICK_FIELD_OPTIONS.filter(opt => opt.category === category)
-              if (categoryOptions.length === 0) return null
-              
-              return (
-                <div key={category}>
-                  <div className="mt-1 border-t px-2 py-1 text-xs font-semibold text-muted-foreground">
-                    {category}
+            {['Essential', 'Contact', 'Address', 'Business', 'Management', 'Other'].map(
+              (category) => {
+                const categoryOptions = QUICK_FIELD_OPTIONS.filter(
+                  (opt) => opt.category === category
+                )
+                if (categoryOptions.length === 0) return null
+
+                return (
+                  <div key={category}>
+                    <div className="mt-1 border-t px-2 py-1 text-xs font-semibold text-muted-foreground">
+                      {category}
+                    </div>
+                    {categoryOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
                   </div>
-                  {categoryOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </div>
-              )
-            })}
+                )
+              }
+            )}
           </SelectContent>
         </Select>
       </div>
@@ -173,16 +195,12 @@ function QuickMappingRow({
       {/* Actions */}
       <div className="flex gap-2">
         {mapping.status === 'needs_review' && mapping.crmField && (
-          <Button
-            size="sm"
-            onClick={() => onConfirmMapping(mapping.csvHeader)}
-            className="flex-1"
-          >
+          <Button size="sm" onClick={() => onConfirmMapping(mapping.csvHeader)} className="flex-1">
             <CheckCircle2 className="mr-1 size-4" />
             Looks Good
           </Button>
         )}
-        
+
         <Button
           size="sm"
           variant="ghost"
@@ -205,11 +223,11 @@ export function QuickFieldReview({
   onConfirmAll,
   className,
 }: QuickFieldReviewProps) {
-  const needsReviewMappings = mappings.filter(m => m.status === 'needs_review')
-  const allMappings = mappings.filter(m => m.crmField !== null || m.status === 'skipped')
-  const confirmedMappings = mappings.filter(m => m.status === 'confirmed' || m.status === 'auto')
-  const skippedMappings = mappings.filter(m => m.status === 'skipped')
-  
+  const needsReviewMappings = mappings.filter((m) => m.status === 'needs_review')
+  const allMappings = mappings.filter((m) => m.crmField !== null || m.status === 'skipped')
+  const confirmedMappings = mappings.filter((m) => m.status === 'confirmed' || m.status === 'auto')
+  const skippedMappings = mappings.filter((m) => m.status === 'skipped')
+
   // Stats for display
   const stats = {
     total: mappings.length,
@@ -217,7 +235,7 @@ export function QuickFieldReview({
     confirmed: confirmedMappings.length,
     needsReview: needsReviewMappings.length,
     skipped: skippedMappings.length,
-    avgConfidence: mappings.reduce((sum, m) => sum + m.confidence, 0) / mappings.length
+    avgConfidence: mappings.reduce((sum, m) => sum + m.confidence, 0) / mappings.length,
   }
 
   return (
@@ -239,7 +257,9 @@ export function QuickFieldReview({
               <div className="text-sm text-slate-600">need review</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-blue-600">{Math.round(stats.avgConfidence * 100)}%</div>
+              <div className="text-2xl font-bold text-blue-600">
+                {Math.round(stats.avgConfidence * 100)}%
+              </div>
               <div className="text-sm text-slate-600">avg confidence</div>
             </div>
           </div>
@@ -255,7 +275,7 @@ export function QuickFieldReview({
       </Card>
 
       {/* Tabbed Interface */}
-      <Tabs defaultValue={needsReviewMappings.length > 0 ? "review" : "all"} className="w-full">
+      <Tabs defaultValue={needsReviewMappings.length > 0 ? 'review' : 'all'} className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="review" className="flex items-center space-x-2">
             <AlertTriangle className="size-4" />
@@ -274,7 +294,9 @@ export function QuickFieldReview({
                 <div className="text-center">
                   <CheckCircle2 className="mx-auto size-12 text-green-600" />
                   <h3 className="mt-2 text-lg font-medium text-green-900">All Fields Confirmed!</h3>
-                  <p className="text-sm text-green-700">All field mappings have been reviewed and confirmed.</p>
+                  <p className="text-sm text-green-700">
+                    All field mappings have been reviewed and confirmed.
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -286,11 +308,10 @@ export function QuickFieldReview({
                     <AlertTriangle className="size-4 text-amber-600" />
                   </div>
                   <div>
-                    <CardTitle className="text-lg text-amber-900">
-                      Quick Review Needed
-                    </CardTitle>
+                    <CardTitle className="text-lg text-amber-900">Quick Review Needed</CardTitle>
                     <p className="text-sm text-amber-700">
-                      {needsReviewMappings.length} field{needsReviewMappings.length !== 1 ? 's' : ''} need your attention
+                      {needsReviewMappings.length} field
+                      {needsReviewMappings.length !== 1 ? 's' : ''} need your attention
                     </p>
                   </div>
                 </div>
@@ -343,12 +364,24 @@ export function QuickFieldReview({
             <div className="space-y-2 text-sm text-slate-600">
               <p className="font-medium">Field Mapping Guide</p>
               <ul className="space-y-1 text-xs">
-                <li>• <strong>Green (95%+)</strong>: Auto-confirmed, high confidence matches</li>
-                <li>• <strong>Blue (70-94%)</strong>: Good matches, worth reviewing</li>
-                <li>• <strong>Yellow (&lt;70%)</strong>: Low confidence, needs your attention</li>
-                <li>• <strong>Company Name</strong> is required for all imports</li>
-                <li>• <strong>Skip</strong> fields you don't need - they won't be imported</li>
-                <li>• <strong>Priority A-D</strong> helps organize your prospects (A=highest priority)</li>
+                <li>
+                  • <strong>Green (95%+)</strong>: Auto-confirmed, high confidence matches
+                </li>
+                <li>
+                  • <strong>Blue (70-94%)</strong>: Good matches, worth reviewing
+                </li>
+                <li>
+                  • <strong>Yellow (&lt;70%)</strong>: Low confidence, needs your attention
+                </li>
+                <li>
+                  • <strong>Company Name</strong> is required for all imports
+                </li>
+                <li>
+                  • <strong>Skip</strong> fields you don't need - they won't be imported
+                </li>
+                <li>
+                  • <strong>Priority A-D</strong> helps organize your prospects (A=highest priority)
+                </li>
               </ul>
             </div>
           </div>

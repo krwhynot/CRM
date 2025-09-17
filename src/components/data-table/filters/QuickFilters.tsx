@@ -4,7 +4,14 @@ import { Button } from '@/components/ui/button'
 import { Star, TrendingUp, Users, AlertTriangle, CheckCircle, Clock } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-export type QuickFilterValue = 'none' | 'high_engagement' | 'multiple_opportunities' | 'inactive_orgs' | 'recent_activity' | 'high_priority' | 'needs_attention'
+export type QuickFilterValue =
+  | 'none'
+  | 'high_engagement'
+  | 'multiple_opportunities'
+  | 'inactive_orgs'
+  | 'recent_activity'
+  | 'high_priority'
+  | 'needs_attention'
 
 interface QuickFilterOption {
   value: QuickFilterValue
@@ -28,33 +35,123 @@ interface QuickFiltersProps {
 const QUICK_FILTER_CONFIGS: Record<string, QuickFilterOption[]> = {
   organizations: [
     { value: 'none', label: 'All Organizations', icon: Users },
-    { value: 'high_engagement', label: 'High Engagement', icon: Star, color: 'default', description: 'Organizations with frequent interactions' },
-    { value: 'multiple_opportunities', label: 'Multiple Opportunities', icon: TrendingUp, color: 'secondary', description: 'Organizations with 2+ active opportunities' },
-    { value: 'inactive_orgs', label: 'Inactive', icon: AlertTriangle, color: 'destructive', description: 'No activity in last 30 days' },
+    {
+      value: 'high_engagement',
+      label: 'High Engagement',
+      icon: Star,
+      color: 'default',
+      description: 'Organizations with frequent interactions',
+    },
+    {
+      value: 'multiple_opportunities',
+      label: 'Multiple Opportunities',
+      icon: TrendingUp,
+      color: 'secondary',
+      description: 'Organizations with 2+ active opportunities',
+    },
+    {
+      value: 'inactive_orgs',
+      label: 'Inactive',
+      icon: AlertTriangle,
+      color: 'destructive',
+      description: 'No activity in last 30 days',
+    },
   ],
   contacts: [
     { value: 'none', label: 'All Contacts', icon: Users },
-    { value: 'high_engagement', label: 'Decision Makers', icon: Star, color: 'default', description: 'Contacts with decision authority' },
-    { value: 'recent_activity', label: 'Recent Activity', icon: Clock, color: 'secondary', description: 'Contacts with recent interactions' },
-    { value: 'needs_attention', label: 'Needs Follow-up', icon: AlertTriangle, color: 'destructive', description: 'Contacts requiring attention' },
+    {
+      value: 'high_engagement',
+      label: 'Decision Makers',
+      icon: Star,
+      color: 'default',
+      description: 'Contacts with decision authority',
+    },
+    {
+      value: 'recent_activity',
+      label: 'Recent Activity',
+      icon: Clock,
+      color: 'secondary',
+      description: 'Contacts with recent interactions',
+    },
+    {
+      value: 'needs_attention',
+      label: 'Needs Follow-up',
+      icon: AlertTriangle,
+      color: 'destructive',
+      description: 'Contacts requiring attention',
+    },
   ],
   opportunities: [
     { value: 'none', label: 'All Opportunities', icon: TrendingUp },
-    { value: 'high_priority', label: 'High Priority', icon: Star, color: 'default', description: 'Priority opportunities' },
-    { value: 'recent_activity', label: 'Recent Updates', icon: Clock, color: 'secondary', description: 'Recently updated opportunities' },
-    { value: 'needs_attention', label: 'Stalled', icon: AlertTriangle, color: 'destructive', description: 'Opportunities needing attention' },
+    {
+      value: 'high_priority',
+      label: 'High Priority',
+      icon: Star,
+      color: 'default',
+      description: 'Priority opportunities',
+    },
+    {
+      value: 'recent_activity',
+      label: 'Recent Updates',
+      icon: Clock,
+      color: 'secondary',
+      description: 'Recently updated opportunities',
+    },
+    {
+      value: 'needs_attention',
+      label: 'Stalled',
+      icon: AlertTriangle,
+      color: 'destructive',
+      description: 'Opportunities needing attention',
+    },
   ],
   products: [
     { value: 'none', label: 'All Products', icon: CheckCircle },
-    { value: 'high_engagement', label: 'Top Performers', icon: Star, color: 'default', description: 'Best selling products' },
-    { value: 'recent_activity', label: 'Recently Added', icon: Clock, color: 'secondary', description: 'Newly added products' },
-    { value: 'needs_attention', label: 'Low Stock', icon: AlertTriangle, color: 'destructive', description: 'Products with low inventory' },
+    {
+      value: 'high_engagement',
+      label: 'Top Performers',
+      icon: Star,
+      color: 'default',
+      description: 'Best selling products',
+    },
+    {
+      value: 'recent_activity',
+      label: 'Recently Added',
+      icon: Clock,
+      color: 'secondary',
+      description: 'Newly added products',
+    },
+    {
+      value: 'needs_attention',
+      label: 'Low Stock',
+      icon: AlertTriangle,
+      color: 'destructive',
+      description: 'Products with low inventory',
+    },
   ],
   interactions: [
     { value: 'none', label: 'All Interactions', icon: Users },
-    { value: 'recent_activity', label: 'This Week', icon: Clock, color: 'secondary', description: 'Interactions from this week' },
-    { value: 'high_priority', label: 'Important', icon: Star, color: 'default', description: 'High-priority interactions' },
-    { value: 'needs_attention', label: 'Follow-up Required', icon: AlertTriangle, color: 'destructive', description: 'Interactions requiring follow-up' },
+    {
+      value: 'recent_activity',
+      label: 'This Week',
+      icon: Clock,
+      color: 'secondary',
+      description: 'Interactions from this week',
+    },
+    {
+      value: 'high_priority',
+      label: 'Important',
+      icon: Star,
+      color: 'default',
+      description: 'High-priority interactions',
+    },
+    {
+      value: 'needs_attention',
+      label: 'Follow-up Required',
+      icon: AlertTriangle,
+      color: 'destructive',
+      description: 'Interactions requiring follow-up',
+    },
   ],
 }
 
@@ -65,7 +162,7 @@ export function QuickFilters({
   isLoading = false,
   compact = false,
   showBadges = true,
-  className = ''
+  className = '',
 }: QuickFiltersProps) {
   const options = QUICK_FILTER_CONFIGS[entityType] || QUICK_FILTER_CONFIGS.organizations
 
@@ -83,9 +180,7 @@ export function QuickFilters({
   return (
     <div className={cn('flex flex-col space-y-2', className)}>
       {!compact && (
-        <label className="text-xs font-medium text-muted-foreground">
-          Quick Filters
-        </label>
+        <label className="text-xs font-medium text-muted-foreground">Quick Filters</label>
       )}
 
       <div className="flex flex-wrap gap-2">
@@ -109,20 +204,13 @@ export function QuickFilters({
               title={option.description}
             >
               {IconComponent && (
-                <IconComponent className={cn(
-                  compact ? 'mr-1 size-3' : 'mr-2 size-4'
-                )} />
+                <IconComponent className={cn(compact ? 'mr-1 size-3' : 'mr-2 size-4')} />
               )}
 
-              <span className={compact ? 'text-xs' : 'text-sm'}>
-                {option.label}
-              </span>
+              <span className={compact ? 'text-xs' : 'text-sm'}>{option.label}</span>
 
               {showBadges && isActive && !compact && (
-                <Badge
-                  variant="secondary"
-                  className="ml-2 h-4 px-1 text-xs"
-                >
+                <Badge variant="secondary" className="ml-2 h-4 px-1 text-xs">
                   Active
                 </Badge>
               )}
@@ -134,7 +222,7 @@ export function QuickFilters({
       {/* Active filter description */}
       {!compact && value !== 'none' && (
         <div className="text-xs text-muted-foreground">
-          {options.find(opt => opt.value === value)?.description}
+          {options.find((opt) => opt.value === value)?.description}
         </div>
       )}
     </div>

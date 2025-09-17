@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import type { ColumnDef } from "@tanstack/react-table"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import * as React from 'react'
+import type { ColumnDef } from '@tanstack/react-table'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import {
   Phone,
   Mail,
@@ -16,18 +16,18 @@ import {
   MoreHorizontal,
   Edit,
   Trash2,
-  Eye
-} from "lucide-react"
+  Eye,
+} from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { cn } from "@/lib/utils"
+} from '@/components/ui/dropdown-menu'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { cn } from '@/lib/utils'
 import { formatDistanceToNow, format, parseISO } from 'date-fns'
-import type { InteractionWithRelations } from "@/types/interaction.types"
+import type { InteractionWithRelations } from '@/types/interaction.types'
 
 // Extended interaction interface with additional context
 interface InteractionWithContext extends InteractionWithRelations {
@@ -45,20 +45,20 @@ interface InteractionActions {
   onContact?: (interaction: InteractionWithRelations) => void
 }
 
-// Interaction type colors mapping
+// Interaction type colors mapping using semantic tokens
 const INTERACTION_COLORS = {
-  call: 'bg-blue-50 text-blue-700 border-blue-200',
-  email: 'bg-green-50 text-green-700 border-green-200',
-  meeting: 'bg-purple-50 text-purple-700 border-purple-200',
-  demo: 'bg-orange-50 text-orange-700 border-orange-200',
-  proposal: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-  follow_up: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-  trade_show: 'bg-pink-50 text-pink-700 border-pink-200',
-  site_visit: 'bg-teal-50 text-teal-700 border-teal-200',
-  contract_review: 'bg-red-50 text-red-700 border-red-200',
-  in_person: 'bg-blue-100 text-blue-800 border-blue-300',
-  quoted: 'bg-green-100 text-green-800 border-green-300',
-  distribution: 'bg-gray-50 text-gray-700 border-gray-200',
+  call: 'bg-info/10 text-info-foreground border-info',
+  email: 'bg-success/10 text-success-foreground border-success',
+  meeting: 'bg-org-principal/10 text-org-principal-foreground border-org-principal',
+  demo: 'bg-demo/10 text-demo-foreground border-demo',
+  proposal: 'bg-org-supplier/10 text-org-supplier-foreground border-org-supplier',
+  follow_up: 'bg-warning/10 text-warning-foreground border-warning',
+  trade_show: 'bg-trade-show/10 text-trade-show-foreground border-trade-show',
+  site_visit: 'bg-site-visit/10 text-site-visit-foreground border-site-visit',
+  contract_review: 'bg-destructive/10 text-destructive-foreground border-destructive',
+  in_person: 'bg-info text-info-foreground border-info',
+  quoted: 'bg-success text-success-foreground border-success',
+  distribution: 'bg-muted text-muted-foreground border-border',
 } as const
 
 // Get icon for interaction type
@@ -86,7 +86,7 @@ function InteractionActionsCell({
   onEdit,
   onDelete,
   onView,
-  onContact
+  onContact,
 }: {
   interaction: InteractionWithContext
 } & InteractionActions) {
@@ -118,10 +118,7 @@ function InteractionActionsCell({
           </DropdownMenuItem>
         )}
         {onDelete && (
-          <DropdownMenuItem
-            onClick={() => onDelete(interaction)}
-            className="text-destructive"
-          >
+          <DropdownMenuItem onClick={() => onDelete(interaction)} className="text-destructive">
             <Trash2 className="mr-2 size-4" />
             Delete
           </DropdownMenuItem>
@@ -135,22 +132,23 @@ function InteractionActionsCell({
  * Creates interaction table columns with proper typing and action handlers
  * Note: Selection and expansion columns are NOT included here - they are handled by DataTable component
  */
-export function createInteractionColumns(actions: InteractionActions = {}): ColumnDef<InteractionWithContext>[] {
+export function createInteractionColumns(
+  actions: InteractionActions = {}
+): ColumnDef<InteractionWithContext>[] {
   return [
     // Type Column with Icon and Duration
     {
-      accessorKey: "type",
-      header: "Type",
+      accessorKey: 'type',
+      header: 'Type',
       cell: ({ row }) => {
         const interaction = row.original
         const icon = getInteractionIcon(interaction.type)
-        const colorClass = INTERACTION_COLORS[interaction.type] || 'bg-gray-50 text-gray-700 border-gray-200'
+        const colorClass =
+          INTERACTION_COLORS[interaction.type] || 'bg-muted text-muted-foreground border-border'
 
         return (
           <div className="flex items-center gap-2">
-            <div className={cn('p-2 rounded-lg border', colorClass)}>
-              {icon}
-            </div>
+            <div className={cn('p-2 rounded-lg border', colorClass)}>{icon}</div>
             <div className="space-y-1">
               <div className="text-sm font-medium capitalize">
                 {interaction.type.replace('_', ' ')}
@@ -170,16 +168,14 @@ export function createInteractionColumns(actions: InteractionActions = {}): Colu
 
     // Subject and Details Column
     {
-      accessorKey: "subject",
-      header: "Subject & Details",
+      accessorKey: 'subject',
+      header: 'Subject & Details',
       cell: ({ row }) => {
         const interaction = row.original
 
         return (
           <div className="space-y-1">
-            <div className="text-sm font-medium">
-              {interaction.subject || 'No subject'}
-            </div>
+            <div className="text-sm font-medium">{interaction.subject || 'No subject'}</div>
             {interaction.description && (
               <div className="line-clamp-2 max-w-[300px] text-xs text-muted-foreground">
                 {interaction.description}
@@ -199,7 +195,12 @@ export function createInteractionColumns(actions: InteractionActions = {}): Colu
               )}
               {interaction.interaction_priority && (
                 <Badge
-                  variant={interaction.interaction_priority === 'A+' || interaction.interaction_priority === 'A' ? 'destructive' : 'secondary'}
+                  variant={
+                    interaction.interaction_priority === 'A+' ||
+                    interaction.interaction_priority === 'A'
+                      ? 'destructive'
+                      : 'secondary'
+                  }
                   className="text-xs"
                 >
                   {interaction.interaction_priority}
@@ -214,8 +215,8 @@ export function createInteractionColumns(actions: InteractionActions = {}): Colu
 
     // Related Entities Column
     {
-      accessorKey: "relationships",
-      header: "Related To",
+      accessorKey: 'relationships',
+      header: 'Related To',
       cell: ({ row }) => {
         const interaction = row.original
 
@@ -250,8 +251,8 @@ export function createInteractionColumns(actions: InteractionActions = {}): Colu
 
     // Date and Follow-up Column
     {
-      accessorKey: "interaction_date",
-      header: "Date & Follow-up",
+      accessorKey: 'interaction_date',
+      header: 'Date & Follow-up',
       cell: ({ row }) => {
         const interaction = row.original
 
@@ -267,7 +268,7 @@ export function createInteractionColumns(actions: InteractionActions = {}): Colu
               {formatDistanceToNow(parseISO(interaction.interaction_date), { addSuffix: true })}
             </div>
             {interaction.follow_up_date && (
-              <div className="text-xs font-medium text-orange-600">
+              <div className="text-xs font-medium text-warning">
                 Follow-up: {format(parseISO(interaction.follow_up_date), 'MMM d')}
               </div>
             )}
@@ -279,14 +280,9 @@ export function createInteractionColumns(actions: InteractionActions = {}): Colu
 
     // Actions Column
     {
-      id: "actions",
-      header: "Actions",
-      cell: ({ row }) => (
-        <InteractionActionsCell
-          interaction={row.original}
-          {...actions}
-        />
-      ),
+      id: 'actions',
+      header: 'Actions',
+      cell: ({ row }) => <InteractionActionsCell interaction={row.original} {...actions} />,
       size: 100,
     },
   ]

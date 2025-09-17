@@ -13,7 +13,12 @@ interface PageLayoutProps extends React.HTMLAttributes<HTMLDivElement> {
  * Replaces the complex layout system with standard React composition.
  * Includes optional breadcrumb navigation for entity pages.
  */
-export function PageLayout({ children, className, showBreadcrumbs = true, ...props }: PageLayoutProps) {
+export function PageLayout({
+  children,
+  className,
+  showBreadcrumbs = true,
+  ...props
+}: PageLayoutProps) {
   return (
     <div className={cn('min-h-screen bg-background', className)} {...props}>
       <PageContainer>

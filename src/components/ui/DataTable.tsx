@@ -198,7 +198,7 @@ export function DataTable<T>({
               data.flatMap((row) => {
                 const rowKeyValue = rowKey(row)
                 const isExpanded = expandedRows.includes(rowKeyValue)
-                
+
                 const mainRow = (
                   <tr
                     key={rowKeyValue}
@@ -238,15 +238,14 @@ export function DataTable<T>({
                   </tr>
                 )
 
-                const expandedRow = isExpanded && expandableContent ? (
-                  <tr key={`${rowKeyValue}-expanded`} className="border-b bg-gray-50/50">
-                    <td colSpan={columns.length} className="p-0">
-                      <div className="p-6">
-                        {expandableContent(row)}
-                      </div>
-                    </td>
-                  </tr>
-                ) : null
+                const expandedRow =
+                  isExpanded && expandableContent ? (
+                    <tr key={`${rowKeyValue}-expanded`} className="border-b bg-gray-50/50">
+                      <td colSpan={columns.length} className="p-0">
+                        <div className="p-6">{expandableContent(row)}</div>
+                      </td>
+                    </tr>
+                  ) : null
 
                 return expandedRow ? [mainRow, expandedRow] : [mainRow]
               })

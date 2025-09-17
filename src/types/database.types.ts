@@ -83,7 +83,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: 'v_org_roles'
             referencedColumns: ['organization_id']
-          }
+          },
         ]
       }
       contacts: {
@@ -177,7 +177,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: 'v_org_roles'
             referencedColumns: ['organization_id']
-          }
+          },
         ]
       }
       interaction_type_lu: {
@@ -323,7 +323,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: 'v_org_roles'
             referencedColumns: ['organization_id']
-          }
+          },
         ]
       }
       loss_reason_lu: {
@@ -564,7 +564,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: 'v_org_roles'
             referencedColumns: ['organization_id']
-          }
+          },
         ]
       }
       opportunity_participants: {
@@ -645,7 +645,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: 'v_org_roles'
             referencedColumns: ['organization_id']
-          }
+          },
         ]
       }
       opportunity_products: {
@@ -703,7 +703,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: 'products'
             referencedColumns: ['id']
-          }
+          },
         ]
       }
       organization_roles: {
@@ -743,7 +743,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: 'v_org_roles'
             referencedColumns: ['organization_id']
-          }
+          },
         ]
       }
       organizations: {
@@ -898,7 +898,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: 'v_org_roles'
             referencedColumns: ['organization_id']
-          }
+          },
         ]
       }
       principal_distributor_relationships: {
@@ -983,7 +983,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: 'v_org_roles'
             referencedColumns: ['organization_id']
-          }
+          },
         ]
       }
       products: {
@@ -1074,7 +1074,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: 'v_org_roles'
             referencedColumns: ['organization_id']
-          }
+          },
         ]
       }
       source_lu: {
@@ -1369,7 +1369,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: 'v_org_roles'
             referencedColumns: ['organization_id']
-          }
+          },
         ]
       }
       phase_3_validation_summary: {
@@ -1741,7 +1741,13 @@ export type Database = {
         | 'qualified'
         | 'closed_won'
         | 'closed_lost'
-      organization_type: 'customer' | 'principal' | 'distributor' | 'prospect' | 'vendor' | 'unknown'
+      organization_type:
+        | 'customer'
+        | 'principal'
+        | 'distributor'
+        | 'prospect'
+        | 'vendor'
+        | 'unknown'
       priority_level: 'low' | 'medium' | 'high' | 'critical'
       product_category:
         | 'beverages'
@@ -1786,10 +1792,8 @@ export type Tables<
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] &
-        DefaultSchema['Views'])
-    ? (DefaultSchema['Tables'] &
-        DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
+    ? (DefaultSchema['Tables'] & DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -1893,7 +1897,7 @@ export const Constants = {
         'follow_up',
         'trade_show',
         'site_visit',
-        'contract_review'
+        'contract_review',
       ],
       opportunity_priority: ['low', 'medium', 'high', 'critical'],
       opportunity_stage: [
@@ -1910,7 +1914,7 @@ export const Constants = {
         'proposal',
         'negotiation',
         'closed_won',
-        'closed_lost'
+        'closed_lost',
       ],
       opportunity_status: [
         'Active',
@@ -1924,7 +1928,7 @@ export const Constants = {
         'nurturing',
         'qualified',
         'closed_won',
-        'closed_lost'
+        'closed_lost',
       ],
       organization_type: ['customer', 'principal', 'distributor', 'prospect', 'vendor', 'unknown'],
       priority_level: ['low', 'medium', 'high', 'critical'],
@@ -1940,8 +1944,8 @@ export const Constants = {
         'baking_supplies',
         'cleaning_supplies',
         'paper_products',
-        'equipment'
-      ]
-    }
-  }
+        'equipment',
+      ],
+    },
+  },
 } as const

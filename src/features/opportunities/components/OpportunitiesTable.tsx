@@ -13,7 +13,16 @@ import { toast } from '@/lib/toast-styles'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ChevronDown, ChevronRight, Plus, MessageSquare, FileText, TrendingUp, Zap, Target } from 'lucide-react'
+import {
+  ChevronDown,
+  ChevronRight,
+  Plus,
+  MessageSquare,
+  FileText,
+  TrendingUp,
+  Zap,
+  Target,
+} from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn, formatTimeAgo, isOpportunityStalled, getStalledDays } from '@/lib/utils'
 import { useIsMobile, useIsIPad } from '@/hooks/useMediaQuery'
@@ -28,15 +37,11 @@ interface OpportunitiesTableProps {
   onDelete?: (opportunity: OpportunityWithLastActivity) => void
 }
 
-export function OpportunitiesTable({
-  filters,
-  onEdit,
-  onDelete,
-}: OpportunitiesTableProps) {
+export function OpportunitiesTable({ filters, onEdit, onDelete }: OpportunitiesTableProps) {
   // Bulk delete state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
-  
+
   // Tab state for expanded rows
   const [activeTabs, setActiveTabs] = useState<Record<string, 'interactions' | 'details'>>({})
   const [showQuickAdd, setShowQuickAdd] = useState<Record<string, boolean>>({})
@@ -47,17 +52,17 @@ export function OpportunitiesTable({
     principal: 'all',
     quickView: 'none',
     search: '',
-    ...filters // merge any filters passed as props
+    ...filters, // merge any filters passed as props
   })
 
   // Hooks - combine component filters with prop filters
   const { data: opportunities = [], isLoading } = useOpportunitiesWithLastActivity({
     ...opportunityFilters,
-    ...filters // prop filters override component filters
+    ...filters, // prop filters override component filters
   })
   const deleteOpportunity = useDeleteOpportunity()
   const queryClient = useQueryClient()
-  
+
   // Mobile detection
   const isMobile = useIsMobile()
   const isIPad = useIsIPad()
@@ -146,84 +151,69 @@ export function OpportunitiesTable({
     const activeTab = activeTabs[opportunity.id] || 'interactions'
     const isQuickAddOpen = showQuickAdd[opportunity.id] || false
     const isExpanded = isRowExpanded(opportunity.id)
-    
+
     const setActiveTab = (tab: 'interactions' | 'details') => {
-      setActiveTabs(prev => ({ ...prev, [opportunity.id]: tab }))
+      setActiveTabs((prev) => ({ ...prev, [opportunity.id]: tab }))
     }
-    
+
     const toggleQuickAdd = () => {
-      setShowQuickAdd(prev => ({ ...prev, [opportunity.id]: !prev[opportunity.id] }))
+      setShowQuickAdd((prev) => ({ ...prev, [opportunity.id]: !prev[opportunity.id] }))
     }
-    
+
     const handleQuickAddSuccess = () => {
-      setShowQuickAdd(prev => ({ ...prev, [opportunity.id]: false }))
+      setShowQuickAdd((prev) => ({ ...prev, [opportunity.id]: false }))
       // Invalidate the specific opportunity interactions
       queryClient.invalidateQueries({
-        queryKey: interactionKeys.byOpportunity(opportunity.id)
+        queryKey: interactionKeys.byOpportunity(opportunity.id),
       })
     }
-    
+
     const handleQuickAddCancel = () => {
-      setShowQuickAdd(prev => ({ ...prev, [opportunity.id]: false }))
+      setShowQuickAdd((prev) => ({ ...prev, [opportunity.id]: false }))
     }
 
     return (
-      <div className={cn(
-        "bg-gray-50/50 border-l-4 border-primary/20",
-        isMobile ? "ml-4" : "ml-10"
-      )}>
+      <div
+        className={cn('bg-gray-50/50 border-l-4 border-primary/20', isMobile ? 'ml-4' : 'ml-10')}
+      >
         {/* Tab Header - mobile optimized */}
-        <div className={cn(
-          "flex items-center justify-between border-b bg-white",
-          isMobile ? "px-4 py-3 flex-col gap-3" : "px-6 py-2 flex-row"
-        )}>
-          <div className={cn(
-            "flex gap-1",
-            isMobile ? "w-full justify-center" : ""
-          )}>
+        <div
+          className={cn(
+            'flex items-center justify-between border-b bg-white',
+            isMobile ? 'px-4 py-3 flex-col gap-3' : 'px-6 py-2 flex-row'
+          )}
+        >
+          <div className={cn('flex gap-1', isMobile ? 'w-full justify-center' : '')}>
             <Button
               variant={activeTab === 'interactions' ? 'default' : 'ghost'}
-              size={isMobile ? "default" : "sm"}
+              size={isMobile ? 'default' : 'sm'}
               onClick={() => setActiveTab('interactions')}
-              className={cn(
-                isMobile ? "flex-1 h-12 touch-manipulation" : ""
-              )}
+              className={cn(isMobile ? 'flex-1 h-12 touch-manipulation' : '')}
             >
-              <MessageSquare className={cn(
-                isMobile ? "h-4 w-4 mr-2" : "h-3 w-3 mr-1"
-              )} />
-              {isMobile ? 
-                `Activity (${opportunity.interaction_count || 0})` : 
-                `Activity (${opportunity.interaction_count || 0})`
-              }
+              <MessageSquare className={cn(isMobile ? 'h-4 w-4 mr-2' : 'h-3 w-3 mr-1')} />
+              {isMobile
+                ? `Activity (${opportunity.interaction_count || 0})`
+                : `Activity (${opportunity.interaction_count || 0})`}
             </Button>
             <Button
               variant={activeTab === 'details' ? 'default' : 'ghost'}
-              size={isMobile ? "default" : "sm"}
+              size={isMobile ? 'default' : 'sm'}
               onClick={() => setActiveTab('details')}
-              className={cn(
-                isMobile ? "flex-1 h-12 touch-manipulation" : ""
-              )}
+              className={cn(isMobile ? 'flex-1 h-12 touch-manipulation' : '')}
             >
-              <FileText className={cn(
-                isMobile ? "h-4 w-4 mr-2" : "h-3 w-3 mr-1"
-              )} />
+              <FileText className={cn(isMobile ? 'h-4 w-4 mr-2' : 'h-3 w-3 mr-1')} />
               Details
             </Button>
           </div>
-          
+
           {activeTab === 'interactions' && (
             <Button
-              size={isMobile ? "default" : "sm"}
+              size={isMobile ? 'default' : 'sm'}
               variant={isQuickAddOpen ? 'default' : 'outline'}
               onClick={toggleQuickAdd}
-              className={cn(
-                isMobile ? "w-full h-12 touch-manipulation" : ""
-              )}
+              className={cn(isMobile ? 'w-full h-12 touch-manipulation' : '')}
             >
-              <Plus className={cn(
-                isMobile ? "h-4 w-4 mr-2" : "h-3 w-3 mr-1"
-              )} />
+              <Plus className={cn(isMobile ? 'h-4 w-4 mr-2' : 'h-3 w-3 mr-1')} />
               Quick Add
             </Button>
           )}
@@ -241,13 +231,11 @@ export function OpportunitiesTable({
         )}
 
         {/* Tab Content */}
-        <div className={cn(
-          isMobile ? "p-4" : "p-6"
-        )}>
+        <div className={cn(isMobile ? 'p-4' : 'p-6')}>
           {activeTab === 'interactions' ? (
             <InteractionTimelineEmbed
               opportunityId={opportunity.id}
-              maxHeight={isMobile ? "300px" : isIPad ? "450px" : "400px"}
+              maxHeight={isMobile ? '300px' : isIPad ? '450px' : '400px'}
               showEmptyState={true}
               variant="compact"
               onAddNew={toggleQuickAdd}
@@ -255,19 +243,19 @@ export function OpportunitiesTable({
             />
           ) : (
             // Existing details view - mobile optimized
-            <div className={cn(
-              "gap-6",
-              isMobile ? "grid grid-cols-1 space-y-4" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-            )}>
+            <div
+              className={cn(
+                'gap-6',
+                isMobile
+                  ? 'grid grid-cols-1 space-y-4'
+                  : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+              )}
+            >
               <div>
-                <h4 className={cn(
-                  "mb-2 font-medium text-gray-900",
-                  isMobile ? "text-base" : ""
-                )}>Opportunity Details</h4>
-                <div className={cn(
-                  "space-y-1 text-gray-600",
-                  isMobile ? "text-base" : "text-sm"
-                )}>
+                <h4 className={cn('mb-2 font-medium text-gray-900', isMobile ? 'text-base' : '')}>
+                  Opportunity Details
+                </h4>
+                <div className={cn('space-y-1 text-gray-600', isMobile ? 'text-base' : 'text-sm')}>
                   {opportunity.stage && <div>Stage: {opportunity.stage}</div>}
                   {opportunity.name && <div>Name: {opportunity.name}</div>}
                   {opportunity.created_at && (
@@ -277,32 +265,22 @@ export function OpportunitiesTable({
               </div>
 
               <div>
-                <h4 className={cn(
-                  "mb-2 font-medium text-gray-900",
-                  isMobile ? "text-base" : ""
-                )}>Financial</h4>
-                <div className={cn(
-                  "space-y-1 text-gray-600",
-                  isMobile ? "text-base" : "text-sm"
-                )}>
+                <h4 className={cn('mb-2 font-medium text-gray-900', isMobile ? 'text-base' : '')}>
+                  Financial
+                </h4>
+                <div className={cn('space-y-1 text-gray-600', isMobile ? 'text-base' : 'text-sm')}>
                   {opportunity.estimated_value && (
                     <div>Estimated Value: ${opportunity.estimated_value}</div>
                   )}
-                  {opportunity.probability && (
-                    <div>Probability: {opportunity.probability}%</div>
-                  )}
+                  {opportunity.probability && <div>Probability: {opportunity.probability}%</div>}
                 </div>
               </div>
 
               <div>
-                <h4 className={cn(
-                  "mb-2 font-medium text-gray-900",
-                  isMobile ? "text-base" : ""
-                )}>Notes</h4>
-                <div className={cn(
-                  "space-y-1 text-gray-600",
-                  isMobile ? "text-base" : "text-sm"
-                )}>
+                <h4 className={cn('mb-2 font-medium text-gray-900', isMobile ? 'text-base' : '')}>
+                  Notes
+                </h4>
+                <div className={cn('space-y-1 text-gray-600', isMobile ? 'text-base' : 'text-sm')}>
                   {opportunity.notes ? (
                     <p>{opportunity.notes}</p>
                   ) : (
@@ -360,22 +338,39 @@ export function OpportunitiesTable({
       cell: (opportunity) => {
         const getActivityIcon = () => {
           switch (opportunity.weeklyActivity) {
-            case 'high': return <Zap className="size-3 text-green-500" />
-            case 'medium': return <Target className="size-3 text-yellow-500" />
-            default: return null
+            case 'high':
+              return <Zap className="size-3 text-green-500" />
+            case 'medium':
+              return <Target className="size-3 text-yellow-500" />
+            default:
+              return null
           }
         }
-        
+
         const getActivityBadge = () => {
           if (opportunity.weeklyActivity === 'high') {
-            return <Badge variant="secondary" className="border-green-200 bg-green-50 text-xs text-green-700">High Activity</Badge>
+            return (
+              <Badge
+                variant="secondary"
+                className="border-green-200 bg-green-50 text-xs text-green-700"
+              >
+                High Activity
+              </Badge>
+            )
           }
           if (opportunity.weeklyActivity === 'medium') {
-            return <Badge variant="secondary" className="border-yellow-200 bg-yellow-50 text-xs text-yellow-700">Active</Badge>
+            return (
+              <Badge
+                variant="secondary"
+                className="border-yellow-200 bg-yellow-50 text-xs text-yellow-700"
+              >
+                Active
+              </Badge>
+            )
           }
           return null
         }
-        
+
         return (
           <div>
             <div className="flex items-center gap-2">
@@ -409,16 +404,21 @@ export function OpportunitiesTable({
                 <span className="text-xs text-gray-400">Engagement:</span>
                 <div className="flex items-center">
                   <div className="h-1.5 w-12 overflow-hidden rounded-full bg-gray-200">
-                    <div 
+                    <div
                       className={cn(
-                        "h-full rounded-full",
-                        opportunity.weeklyEngagementScore >= 80 ? "bg-green-500" :
-                        opportunity.weeklyEngagementScore >= 60 ? "bg-yellow-500" : "bg-blue-500"
+                        'h-full rounded-full',
+                        opportunity.weeklyEngagementScore >= 80
+                          ? 'bg-green-500'
+                          : opportunity.weeklyEngagementScore >= 60
+                            ? 'bg-yellow-500'
+                            : 'bg-blue-500'
                       )}
                       style={{ width: `${opportunity.weeklyEngagementScore}%` }}
                     />
                   </div>
-                  <span className="ml-1 text-xs text-gray-400">{opportunity.weeklyEngagementScore}</span>
+                  <span className="ml-1 text-xs text-gray-400">
+                    {opportunity.weeklyEngagementScore}
+                  </span>
                 </div>
               </div>
             )}
@@ -508,7 +508,9 @@ export function OpportunitiesTable({
     },
   ]
 
-  const emptyMessage = opportunityFilters.search ? 'No opportunities match your search.' : 'No opportunities yet'
+  const emptyMessage = opportunityFilters.search
+    ? 'No opportunities match your search.'
+    : 'No opportunities yet'
   const emptySubtext = opportunityFilters.search
     ? 'Try adjusting your search terms'
     : 'Get started by adding your first opportunity'

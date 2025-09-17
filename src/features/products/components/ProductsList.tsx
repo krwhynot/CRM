@@ -3,7 +3,7 @@ import { DataTable } from '@/components/data-table/data-table'
 import { createProductColumns } from '@/components/data-table/columns/products'
 import { type EntityFilterState } from '@/components/data-table/filters/EntityFilters'
 import { BulkActionsToolbar, BulkDeleteDialog } from '@/components/bulk-actions'
-import { useBulkOperations } from '@/components/bulk-actions/useBulkOperations'
+import { useUnifiedBulkOperations } from '@/hooks/useUnifiedBulkOperations'
 import { useStandardDataTable } from '@/hooks/useStandardDataTable'
 import { useProductsDisplay } from '../hooks/useProductsDisplay'
 import { useDeleteProduct } from '../hooks/useProducts'
@@ -34,7 +34,6 @@ interface ProductWithWeeklyContext extends ProductWithPrincipal {
 
 interface ProductsListProps {
   products?: ProductWithWeeklyContext[]
-  loading?: boolean
   onEdit?: (product: Product) => void
   onDelete?: (product: Product) => void
   onView?: (product: Product) => void
@@ -47,7 +46,6 @@ const DEFAULT_PRODUCTS: ProductWithWeeklyContext[] = []
 
 export function ProductsList({
   products = DEFAULT_PRODUCTS,
-  loading = false,
   onEdit,
   onDelete,
   onView,
@@ -55,6 +53,7 @@ export function ProductsList({
   principals = [],
   onBulkDelete,
 }: ProductsListProps) {
+
   // Filter state for EntityFilters
   const [filters, setFilters] = useState<EntityFilterState>({
     timeRange: 'this_month',
@@ -81,35 +80,13 @@ export function ProductsList({
   // Use products directly - DataTable will handle filtering via ResponsiveFilterWrapper
   const displayProducts = products
 
-  // Bulk operations using the standard hook
-  const bulkOperations = useBulkOperations({
+  // Unified bulk operations
+  const bulkOperations = useUnifiedBulkOperations({
     entities: displayProducts,
-    onBulkDelete: async (products: ProductWithWeeklyContext[]) => {
-      if (onBulkDelete) {
-        await onBulkDelete(products)
-      } else {
-        // Fallback to individual deletions
-        let successCount = 0
-        let errorCount = 0
-
-        for (const product of products) {
-          try {
-            await deleteProduct.mutateAsync(product.id)
-            successCount++
-          } catch (error) {
-            errorCount++
-          }
-        }
-
-        if (successCount > 0 && errorCount === 0) {
-          toast.success(`Successfully deleted ${successCount} product${successCount !== 1 ? 's' : ''}`)
-        } else if (successCount > 0 && errorCount > 0) {
-          toast.warning(`Deleted ${successCount} products, but ${errorCount} failed`)
-        } else if (errorCount > 0) {
-          toast.error(`Failed to delete ${errorCount} product${errorCount !== 1 ? 's' : ''}`)
-        }
-      }
-    },
+    onBulkDelete,
+    deleteEntity: (id: string) => deleteProduct.mutateAsync(id),
+    entityType: 'product',
+    entityTypePlural: 'products',
   })
 
   // Expandable content renderer with enhanced layout
@@ -170,15 +147,9 @@ export function ProductsList({
         <div>
           <h4 className="mb-2 font-medium text-gray-900">Pricing</h4>
           <div className="space-y-1 text-sm text-gray-600">
-            {product.list_price && (
-              <div>List Price: {formatCurrency(product.list_price)}</div>
-            )}
-            {product.unit_cost && (
-              <div>Unit Cost: {formatCurrency(product.unit_cost)}</div>
-            )}
-            {product.min_order_quantity && (
-              <div>Min Order: {product.min_order_quantity}</div>
-            )}
+            {product.list_price && <div>List Price: {formatCurrency(product.list_price)}</div>}
+            {product.unit_cost && <div>Unit Cost: {formatCurrency(product.unit_cost)}</div>}
+            {product.min_order_quantity && <div>Min Order: {product.min_order_quantity}</div>}
           </div>
         </div>
       </div>
@@ -186,9 +157,7 @@ export function ProductsList({
       {/* Product Description */}
       <div>
         <h4 className="mb-2 font-medium text-gray-900">Description</h4>
-        <p className="text-sm text-gray-600">
-          {product.description || 'No description available'}
-        </p>
+        <p className="text-sm text-gray-600">{product.description || 'No description available'}</p>
       </div>
 
       {/* Product Specifications */}
@@ -205,12 +174,8 @@ export function ProductsList({
         <div>
           <h4 className="mb-2 font-medium text-gray-900">Storage & Handling</h4>
           <div className="space-y-1 text-sm text-gray-600">
-            {product.shelf_life_days && (
-              <div>Shelf Life: {product.shelf_life_days} days</div>
-            )}
-            {product.storage_requirements && (
-              <div>Storage: {product.storage_requirements}</div>
-            )}
+            {product.shelf_life_days && <div>Shelf Life: {product.shelf_life_days} days</div>}
+            {product.storage_requirements && <div>Storage: {product.storage_requirements}</div>}
           </div>
         </div>
       </div>
@@ -227,7 +192,6 @@ export function ProductsList({
 
   return (
     <div className="space-y-4">
-
       {/* Bulk Actions Toolbar */}
       {bulkOperations.showBulkActions && (
         <BulkActionsToolbar
@@ -247,19 +211,12 @@ export function ProductsList({
         {...dataTableProps}
         columns={columns}
         data={displayProducts}
-        loading={loading}
         entityFilters={filters}
         onEntityFiltersChange={setFilters}
         principals={principals}
         totalCount={products.length}
         filteredCount={displayProducts.length}
-        onSelectionChange={(selectedRowIds) => {
-          // Convert to boolean selection for bulk operations
-          bulkOperations.clearSelection()
-          selectedRowIds.forEach(id => {
-            bulkOperations.handleSelectItem(id, true)
-          })
-        }}
+        onSelectionChange={bulkOperations.handleSelectionChange}
         expandedContent={renderExpandableContent}
         emptyState={{
           title: 'No products found',

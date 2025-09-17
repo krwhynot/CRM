@@ -106,7 +106,7 @@ export const useIsIPad = () => {
 
       // Screen resolution checks for common iPad sizes
       const { screen } = window
-      const isIPadResolution = (
+      const isIPadResolution =
         // iPad Pro 12.9" (2048x2732)
         (screen.width === 1024 && screen.height === 1366) ||
         (screen.width === 1366 && screen.height === 1024) ||
@@ -122,7 +122,6 @@ export const useIsIPad = () => {
         // Standard iPad (1620x2160)
         (screen.width === 810 && screen.height === 1080) ||
         (screen.width === 1080 && screen.height === 810)
-      )
 
       const result = hasSafariMobile || hasIOSPattern || isIPadResolution
       detectionRef.current = result
@@ -146,8 +145,12 @@ export const useIsIPad = () => {
  * iPad-specific model detection utility with memoization
  */
 export const useIPadModel = () => {
-  const [model, setModel] = useState<'mini' | 'standard' | 'air' | 'pro-11' | 'pro-12' | 'unknown'>('unknown')
-  const modelRef = useRef<'mini' | 'standard' | 'air' | 'pro-11' | 'pro-12' | 'unknown' | null>(null)
+  const [model, setModel] = useState<'mini' | 'standard' | 'air' | 'pro-11' | 'pro-12' | 'unknown'>(
+    'unknown'
+  )
+  const modelRef = useRef<'mini' | 'standard' | 'air' | 'pro-11' | 'pro-12' | 'unknown' | null>(
+    null
+  )
 
   // Memoize model detection to avoid repeated calculations
   const detectModel = useCallback(() => {
@@ -224,7 +227,7 @@ export const useDeviceType = () => {
   const isTablet = useIsTablet()
   const isDesktop = useIsDesktop()
   const isLargeDesktop = useLargeDesktop()
-  
+
   if (isMobile) return 'mobile'
   if (isTablet) return 'tablet'
   if (isLargeDesktop) return 'large-desktop'

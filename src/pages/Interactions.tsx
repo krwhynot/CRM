@@ -1,11 +1,10 @@
-import {
-  useInteractions,
-  InteractionDialogs,
-} from '@/features/interactions'
-import { InteractionsList } from '@/features/interactions/components/InteractionsList'
-import { useInteractionsPageState } from '@/features/interactions/hooks/useInteractionsPageState'
+import { useInteractions, InteractionDialogs, InteractionsList } from '@/features/interactions'
 import { useInteractionsPageActions } from '@/features/interactions/hooks/useInteractionsPageActions'
-import { EntityListWrapper } from '@/components/layout/EntityListWrapper'
+import { useEntityPageState } from '@/hooks/useEntityPageState'
+import type { InteractionWithRelations } from '@/types/interaction.types'
+import { PageLayout } from '@/components/layout/PageLayout'
+import { PageHeader } from '@/components/layout/PageHeader'
+import { ContentSection } from '@/components/layout/ContentSection'
 import { FilterLayoutProvider } from '@/contexts/FilterLayoutContext'
 
 function InteractionsPage() {
@@ -15,60 +14,52 @@ function InteractionsPage() {
     isCreateDialogOpen,
     isEditDialogOpen,
     isDeleteDialogOpen,
-    selectedInteraction,
+    selectedEntity: selectedInteraction,
     openCreateDialog,
     closeCreateDialog,
     openEditDialog,
     closeEditDialog,
     openDeleteDialog,
     closeDeleteDialog,
-    handleViewInteraction,
-  } = useInteractionsPageState()
+  } = useEntityPageState<InteractionWithRelations>()
 
-  const {
-    handleCreate,
-    handleUpdate,
-    handleDelete,
-    isCreating,
-    isUpdating,
-    isDeleting
-  } = useInteractionsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
-
-  const refreshInteractions = () => {
-    refetch()
-  }
+  const { handleCreate, handleUpdate, handleDelete, isCreating, isUpdating, isDeleting } =
+    useInteractionsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
 
   return (
     <FilterLayoutProvider>
-      <EntityListWrapper
-        title="Interactions"
-        description={`Track ${interactions.length} interactions across your CRM`}
-        action={{
-          label: "Add Interaction",
-          onClick: openCreateDialog
-        }}
-      >
-        <InteractionsList
-          interactions={interactions}
-          loading={isLoading}
-          onEdit={openEditDialog}
-          onDelete={openDeleteDialog}
-          onView={handleViewInteraction}
-          onAddNew={openCreateDialog}
+      <PageLayout showBreadcrumbs={true}>
+        <PageHeader
+          title="Interactions"
+          description={`Track ${interactions.length} interactions across your CRM`}
+          action={{
+            label: 'Add Interaction',
+            onClick: openCreateDialog,
+          }}
         />
 
-        <InteractionDialogs
-          isCreateDialogOpen={isCreateDialogOpen}
-          isEditDialogOpen={isEditDialogOpen}
-          editingInteraction={selectedInteraction}
-          onCreateSubmit={handleCreate}
-          onEditSubmit={handleUpdate}
-          onCreateDialogChange={closeCreateDialog}
-          onEditDialogChange={closeEditDialog}
-          isCreating={isCreating}
-          isUpdating={isUpdating}
-        />
-      </EntityListWrapper>
+        <ContentSection>
+          <InteractionsList
+            interactions={interactions}
+            loading={isLoading}
+            onEdit={openEditDialog}
+            onDelete={openDeleteDialog}
+            onAddNew={openCreateDialog}
+          />
+
+          <InteractionDialogs
+            isCreateDialogOpen={isCreateDialogOpen}
+            isEditDialogOpen={isEditDialogOpen}
+            editingInteraction={selectedInteraction}
+            onCreateSubmit={handleCreate}
+            onEditSubmit={handleUpdate}
+            onCreateDialogChange={closeCreateDialog}
+            onEditDialogChange={closeEditDialog}
+            isCreating={isCreating}
+            isUpdating={isUpdating}
+          />
+        </ContentSection>
+      </PageLayout>
     </FilterLayoutProvider>
   )
 }

@@ -13,11 +13,10 @@ import { UserMenu } from '@/features/auth/components/UserMenu'
 import { ThemeToggle } from '@/components/theme-toggle'
 
 export function Header() {
-
   return (
     <header
       className="flex h-16 shrink-0 items-center justify-between border-b-2 border-primary-400 bg-gradient-to-r from-background to-primary-50 px-6"
-      style={{ boxShadow: 'var(--header-shadow)' }}
+      style={{ boxShadow: 'var(--header-shadow, 0 1px 3px 0 rgb(0 0 0 / 0.1))' }}
     >
       <div className="flex items-center gap-4">
         {/* Mobile menu toggle - hidden on larger screens since we use fixed sidebar */}
@@ -33,11 +32,10 @@ export function Header() {
             &ldquo;Partnering with Excellence&rdquo;
           </span>
         </div>
-
       </div>
 
       <div className="flex items-center gap-4">
-<ThemeToggle />
+        <ThemeToggle />
         <UserMenu />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -57,7 +55,6 @@ export function Header() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
     </header>
   )
 }

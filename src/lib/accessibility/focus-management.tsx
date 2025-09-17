@@ -1,6 +1,6 @@
 /**
  * Focus Management System
- * 
+ *
  * Comprehensive focus management utilities for accessibility compliance.
  * Provides focus trap, restoration, and keyboard navigation helpers.
  */
@@ -26,8 +26,8 @@ function getFocusableElements(container: HTMLElement): HTMLElement[] {
   ].join(', ')
 
   const elements = Array.from(container.querySelectorAll(focusableSelectors)) as HTMLElement[]
-  
-  return elements.filter(element => {
+
+  return elements.filter((element) => {
     // Filter out elements that are not visible or have negative tabindex
     const style = window.getComputedStyle(element)
     return (
@@ -71,7 +71,7 @@ export function createFocusTrap(container: HTMLElement) {
 
     // Restore focus to the previously focused element
     if (previousActiveElement && 'focus' in previousActiveElement) {
-      (previousActiveElement as HTMLElement).focus()
+      ;(previousActiveElement as HTMLElement).focus()
     }
   }
 
@@ -123,7 +123,7 @@ export function createFocusRestoration() {
 
   const restore = () => {
     if (storedElement && 'focus' in storedElement) {
-      (storedElement as HTMLElement).focus()
+      ;(storedElement as HTMLElement).focus()
       storedElement = null
     }
   }
@@ -142,9 +142,7 @@ export function createFocusRestoration() {
 /**
  * Hook to create and manage a focus trap
  */
-export function useFocusTrap<T extends HTMLElement = HTMLElement>(
-  active: boolean = false
-) {
+export function useFocusTrap<T extends HTMLElement = HTMLElement>(active: boolean = false) {
   const ref = React.useRef<T>(null)
   const trapRef = React.useRef<ReturnType<typeof createFocusTrap> | null>(null)
 
@@ -435,19 +433,22 @@ export function useAnnouncer() {
     }
   }, [])
 
-  const announce = React.useCallback((message: string, priority: 'polite' | 'assertive' = 'polite') => {
-    if (announcerRef.current) {
-      announcerRef.current.setAttribute('aria-live', priority)
-      announcerRef.current.textContent = message
-      
-      // Clear after announcement
-      setTimeout(() => {
-        if (announcerRef.current) {
-          announcerRef.current.textContent = ''
-        }
-      }, 1000)
-    }
-  }, [])
+  const announce = React.useCallback(
+    (message: string, priority: 'polite' | 'assertive' = 'polite') => {
+      if (announcerRef.current) {
+        announcerRef.current.setAttribute('aria-live', priority)
+        announcerRef.current.textContent = message
+
+        // Clear after announcement
+        setTimeout(() => {
+          if (announcerRef.current) {
+            announcerRef.current.textContent = ''
+          }
+        }, 1000)
+      }
+    },
+    []
+  )
 
   return announce
 }
@@ -475,20 +476,16 @@ export function isFocusable(element: HTMLElement): boolean {
  * Find the next/previous focusable sibling
  */
 export function findFocusableSibling(
-  element: HTMLElement, 
+  element: HTMLElement,
   direction: 'next' | 'previous'
 ): HTMLElement | null {
-  let sibling = direction === 'next' 
-    ? element.nextElementSibling 
-    : element.previousElementSibling
+  let sibling = direction === 'next' ? element.nextElementSibling : element.previousElementSibling
 
   while (sibling) {
     if (sibling instanceof HTMLElement && isFocusable(sibling)) {
       return sibling
     }
-    sibling = direction === 'next' 
-      ? sibling.nextElementSibling 
-      : sibling.previousElementSibling
+    sibling = direction === 'next' ? sibling.nextElementSibling : sibling.previousElementSibling
   }
 
   return null

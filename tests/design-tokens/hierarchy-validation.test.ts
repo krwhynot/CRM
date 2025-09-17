@@ -2,19 +2,16 @@
  * Design Token Hierarchy Validation Tests
  *
  * Automated tests to catch design system drift before it occurs.
- * Validates the four-tier token hierarchy: Primitives → Semantic → Components → Features
+ * Validates the two-tier token hierarchy: Primitives → Semantic
  */
 
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-// Test file paths
+// Test file paths (2-layer architecture)
 const TOKEN_FILES = {
-  primitives: 'src/index.css',
-  semantic: 'src/styles/semantic-tokens.css',
-  components: 'src/styles/component-tokens.css',
-  features: 'src/styles/advanced-colors.css',
-  density: 'src/styles/density.css'
+  primitives: 'src/styles/tokens/primitives.css',
+  semantic: 'src/styles/tokens/semantic.css'
 };
 
 // Helper function to read CSS file content
@@ -95,19 +92,16 @@ describe('Design Token Hierarchy Validation', () => {
       });
     });
 
-    test('should not reference non-primitive tokens', () => {
+    test('should not reference any other tokens (primitives are base layer)', () => {
       const references = extractCSSReferences(primitivesContent);
-      const invalidReferences = references.filter(ref =>
-        ref.variable.startsWith('btn-') ||
-        ref.variable.startsWith('card-') ||
-        ref.variable.startsWith('dialog-')
-      );
+      // In 2-layer system, primitives should not reference any other tokens
+      const anyReferences = references.filter(ref => true); // All references are invalid for primitives
 
-      expect(invalidReferences).toHaveLength(0);
+      expect(anyReferences).toHaveLength(0);
     });
   });
 
-  describe('Semantic Token Layer (semantic-tokens.css)', () => {
+  describe('Semantic Token Layer (2-layer system)', () => {
     let semanticContent: string;
     let semanticVariables: Array<{ name: string; value: string; line: number }>;
     let semanticReferences: Array<{ variable: string; line: number }>;
@@ -126,16 +120,20 @@ describe('Design Token Hierarchy Validation', () => {
       });
     });
 
-    test('should only reference primitive tokens', () => {
+    test('should only reference primitive tokens (2-layer system)', () => {
+      // In 2-layer system, semantic should only reference primitives
+      // Check for any references to non-existent layers
       const invalidReferences = semanticReferences.filter(ref =>
         ref.variable.startsWith('btn-') ||
         ref.variable.startsWith('card-') ||
         ref.variable.startsWith('dialog-') ||
-        ref.variable.startsWith('input-')
+        ref.variable.startsWith('input-') ||
+        ref.variable.startsWith('component-') ||
+        ref.variable.startsWith('feature-')
       );
 
       if (invalidReferences.length > 0) {
-        console.log('Invalid references in semantic layer:', invalidReferences);
+        console.log('Invalid references in semantic layer (non-existent layers):', invalidReferences);
       }
 
       expect(invalidReferences).toHaveLength(0);
@@ -155,92 +153,8 @@ describe('Design Token Hierarchy Validation', () => {
     });
   });
 
-  describe('Component Token Layer (component-tokens.css)', () => {
-    let componentContent: string;
-    let componentVariables: Array<{ name: string; value: string; line: number }>;
-    let componentReferences: Array<{ variable: string; line: number }>;
-
-    beforeAll(() => {
-      componentContent = readCSSFile(TOKEN_FILES.components);
-      componentVariables = extractCSSVariables(componentContent);
-      componentReferences = extractCSSReferences(componentContent);
-    });
-
-    test('should use component-specific prefixes', () => {
-      const validPrefixes = ['btn-', 'card-', 'dialog-', 'input-', 'select-', 'popover-', 'table-'];
-      const unprefixedTokens = componentVariables.filter(v =>
-        !validPrefixes.some(prefix => v.name.startsWith(prefix)) &&
-        !v.name.match(/^(background|foreground|border|ring)/)
-      );
-
-      if (unprefixedTokens.length > 0) {
-        console.log('Component tokens without proper prefixes:', unprefixedTokens.map(t => t.name));
-      }
-
-      // Allow some flexibility for common tokens
-      expect(unprefixedTokens.length).toBeLessThanOrEqual(5);
-    });
-
-    test('should reference semantic tokens, not primitives', () => {
-      const primitiveReferences = componentReferences.filter(ref =>
-        ref.variable.match(/^(primary|secondary|mfb)-\d+$/) ||
-        ref.variable.startsWith('color-')
-      );
-
-      if (primitiveReferences.length > 0) {
-        console.log('Direct primitive references in component layer:', primitiveReferences);
-      }
-
-      expect(primitiveReferences).toHaveLength(0);
-    });
-
-    test('should properly structure button tokens', () => {
-      const buttonTokens = componentVariables.filter(v => v.name.startsWith('btn-'));
-      expect(buttonTokens.length).toBeGreaterThan(0);
-
-      // Check for essential button states
-      const essentialButtonStates = ['btn-primary-bg', 'btn-primary-bg-hover', 'btn-primary-text'];
-      essentialButtonStates.forEach(state => {
-        expect(componentVariables.some(v => v.name === state)).toBe(true);
-      });
-    });
-  });
-
-  describe('Feature Token Layer (advanced-colors.css)', () => {
-    let featureContent: string;
-    let featureVariables: Array<{ name: string; value: string; line: number }>;
-    let featureReferences: Array<{ variable: string; line: number }>;
-
-    beforeAll(() => {
-      featureContent = readCSSFile(TOKEN_FILES.features);
-      featureVariables = extractCSSVariables(featureContent);
-      featureReferences = extractCSSReferences(featureContent);
-    });
-
-    test('should prefer semantic tokens over primitives', () => {
-      const primitiveBypass = featureReferences.filter(ref =>
-        ref.variable.match(/^(primary|secondary|mfb)-\d+$/) &&
-        !ref.variable.match(/^(primary|secondary)$/)
-      );
-
-      if (primitiveBypass.length > 0) {
-        console.log('Feature layer bypassing semantic tokens:', primitiveBypass);
-      }
-
-      // Allow some flexibility for advanced features
-      expect(primitiveBypass.length).toBeLessThanOrEqual(3);
-    });
-
-    test('should provide accessibility enhancements', () => {
-      const accessibilityTokens = featureVariables.filter(v =>
-        v.name.includes('contrast') ||
-        v.name.includes('focus') ||
-        v.name.includes('accessible')
-      );
-
-      expect(accessibilityTokens.length).toBeGreaterThan(0);
-    });
-  });
+  // Component and Feature layers removed in 2-layer architecture
+  // Components should use semantic tokens directly from semantic.css
 
   describe('Circular Reference Detection', () => {
     test('should not have circular token references', () => {
@@ -312,55 +226,54 @@ describe('Design Token Hierarchy Validation', () => {
       expect(invalidFormats).toHaveLength(0);
     });
 
-    test('should prevent primitive token duplication across files', () => {
-      const primitiveFiles = [TOKEN_FILES.semantic, TOKEN_FILES.components, TOKEN_FILES.features];
+    test('should prevent primitive token duplication across files (2-layer system)', () => {
+      // In 2-layer system, only check semantic file for primitive duplication
+      const semanticFile = TOKEN_FILES.semantic;
       const duplicatedPrimitives: Array<{ file: string; token: string }> = [];
 
-      primitiveFiles.forEach(filePath => {
-        try {
-          const content = readCSSFile(filePath);
-          const variables = extractCSSVariables(content);
+      try {
+        const content = readCSSFile(semanticFile);
+        const variables = extractCSSVariables(content);
 
-          const primitiveDefinitions = variables.filter(v =>
-            (v.name.match(/^(primary|secondary|mfb)-\d+$/) || v.name.startsWith('color-')) &&
-            !v.value.includes('var(')
-          );
+        const primitiveDefinitions = variables.filter(v =>
+          (v.name.match(/^(primary|secondary|mfb)-\d+$/) || v.name.startsWith('color-')) &&
+          !v.value.includes('var(')
+        );
 
-          primitiveDefinitions.forEach(primitive => {
-            duplicatedPrimitives.push({
-              file: filePath,
-              token: primitive.name
-            });
+        primitiveDefinitions.forEach(primitive => {
+          duplicatedPrimitives.push({
+            file: semanticFile,
+            token: primitive.name
           });
-        } catch (error) {
-          // File might not exist, skip
-        }
-      });
+        });
+      } catch (error) {
+        // File might not exist, skip
+      }
 
       if (duplicatedPrimitives.length > 0) {
-        console.log('Duplicated primitive tokens:', duplicatedPrimitives);
+        console.log('Duplicated primitive tokens in semantic layer:', duplicatedPrimitives);
       }
 
       expect(duplicatedPrimitives).toHaveLength(0);
     });
   });
 
-  describe('Token Usage Validation', () => {
+  describe('Token Usage Validation (2-layer system)', () => {
     test('should have no unused tokens (sample check)', () => {
       // This is a simplified test - in practice, you'd scan all component files
       const primitivesContent = readCSSFile(TOKEN_FILES.primitives);
       const semanticContent = readCSSFile(TOKEN_FILES.semantic);
 
       const allReferences = [
-        ...extractCSSReferences(semanticContent),
-        ...extractCSSReferences(readCSSFile(TOKEN_FILES.components))
+        ...extractCSSReferences(semanticContent)
+        // In 2-layer system, we only check semantic layer references
       ];
 
       const referencedTokens = new Set(allReferences.map(ref => ref.variable));
       const primitiveVariables = extractCSSVariables(primitivesContent);
 
       // Check critical tokens are referenced
-      const criticalTokens = ['mfb-green', 'primary-500', 'background', 'foreground'];
+      const criticalTokens = ['mfb-green', 'background', 'foreground'];
       criticalTokens.forEach(token => {
         expect(
           referencedTokens.has(token) ||

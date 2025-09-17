@@ -506,34 +506,512 @@ function generateReport() {
   }
 }
 
+// Original function moved below with parameter support
+
 /**
- * Main validation function
+ * Show help information
  */
-async function runArchitectureValidation() {
+function showHelp() {
+  console.log(`
+🏗️  CRM Architecture Validation Tool
+
+USAGE:
+  node scripts/validate-architecture.js [focus-area]
+
+FOCUS AREAS:
+  (no args)      Run all standard validations
+  state          State management patterns (Zustand vs TanStack Query)
+  components     Component organization and placement
+  performance    Performance architecture patterns
+  eslint         ESLint architecture rules validation
+  naming         File and component naming conventions
+  imports        Import patterns and path validation
+  lint           Comprehensive lint validation (TypeScript + ESLint + organization)
+  comprehensive  All validations including external dependency checks
+
+EXAMPLES:
+  npm run validate:architecture                    # Run all standard validations
+  npm run validate:architecture state             # Focus on state management
+  npm run validate:architecture lint              # Comprehensive lint check
+  npm run validate:architecture comprehensive     # All validations
+
+CONSOLIDATED COMMANDS:
+  This script consolidates functionality from:
+  • validate-architecture.js (original)
+  • check-state-architecture.cjs (advanced state patterns)
+  • lint-architecture.sh (comprehensive lint validation)
+
+QUALITY THRESHOLDS:
+  • Architecture Score: ≥80% required
+  • Component Organization: Enforced
+  • State Management: Server/client separation enforced
+  • Performance Patterns: Anti-patterns flagged
+`);
+}
+
+/**
+ * Parse command line arguments for focus areas
+ */
+function parseArguments() {
+  const args = process.argv.slice(2);
+
+  // Show help if requested
+  if (args.includes('--help') || args.includes('-h') || args.includes('help')) {
+    showHelp();
+    process.exit(0);
+  }
+
+  const focus = {
+    all: args.length === 0,
+    state: args.includes('state'),
+    components: args.includes('components'),
+    performance: args.includes('performance'),
+    eslint: args.includes('eslint'),
+    naming: args.includes('naming'),
+    imports: args.includes('imports'),
+    lint: args.includes('lint'), // Comprehensive lint-architecture.sh functionality
+    comprehensive: args.includes('comprehensive') // All validations + external checks
+  };
+
+  // If specific focus areas are specified, disable 'all'
+  if (args.length > 0) {
+    focus.all = false;
+  }
+
+  return focus;
+}
+
+/**
+ * Run ESLint validation focused on architecture rules
+ */
+async function validateESLintArchitecture() {
+  console.log('🔍 Validating ESLint architecture rules...');
+
   try {
+    const { exec } = await import('child_process');
+    const { promisify } = await import('util');
+    const execAsync = promisify(exec);
+
+    // Run ESLint with architecture-specific rules
+    const { stdout, stderr } = await execAsync('npx eslint src --ext ts,tsx --format json --max-warnings 0');
+
+    if (stderr && !stderr.includes('warning')) {
+      const eslintResults = JSON.parse(stdout || '[]');
+      const architectureErrors = eslintResults
+        .flatMap(result => result.messages)
+        .filter(message =>
+          message.ruleId && (
+            message.ruleId.includes('react-hooks') ||
+            message.ruleId.includes('react') ||
+            message.ruleId.includes('@typescript-eslint')
+          )
+        );
+
+      if (architectureErrors.length > 0) {
+        architectureErrors.forEach(error => {
+          validationResults.errors.push({
+            type: 'eslint-architecture',
+            file: error.filePath || 'unknown',
+            message: `${error.ruleId}: ${error.message}`,
+            suggestion: `Fix ESLint rule violation for architectural compliance`
+          });
+        });
+      } else {
+        validationResults.passed.push({
+          type: 'eslint-architecture',
+          file: 'all files',
+          message: 'ESLint architecture rules passing'
+        });
+      }
+    } else {
+      validationResults.passed.push({
+        type: 'eslint-architecture',
+        file: 'all files',
+        message: 'ESLint architecture rules passing'
+      });
+    }
+  } catch (error) {
+    validationResults.warnings.push({
+      type: 'eslint-architecture',
+      file: 'eslint execution',
+      message: `ESLint validation failed: ${error.message}`,
+      suggestion: 'Check ESLint configuration and dependencies'
+    });
+  }
+}
+
+/**
+ * Run performance-focused architecture validation
+ */
+async function validatePerformanceArchitecture() {
+  console.log('⚡ Validating performance architecture patterns...');
+
+  const sourceFiles = await getFiles(join(projectRoot, 'src'), ['.ts', '.tsx']);
+
+  for (const file of sourceFiles) {
+    try {
+      const content = await readFile(file, 'utf8');
+      const relativePath = relative(projectRoot, file);
+
+      // Check for performance anti-patterns
+      const antiPatterns = [
+        { pattern: /useEffect\(\s*\(\)\s*=>.*\[\]\)/, message: 'Empty dependency array in useEffect might cause performance issues' },
+        { pattern: /console\.(log|warn|error)/, message: 'Console statements should be removed in production' },
+        { pattern: /JSON\.parse\(JSON\.stringify/, message: 'Deep cloning with JSON is inefficient' },
+        { pattern: /new Date\(\).*new Date\(\)/, message: 'Multiple Date instantiations in same scope' },
+      ];
+
+      antiPatterns.forEach(({ pattern, message }) => {
+        if (pattern.test(content)) {
+          validationResults.warnings.push({
+            type: 'performance-architecture',
+            file: relativePath,
+            message,
+            suggestion: 'Consider performance optimization alternatives'
+          });
+        }
+      });
+
+      // Check for performance optimizations
+      const optimizations = [
+        /React\.memo/,
+        /useMemo/,
+        /useCallback/,
+        /React\.lazy/,
+        /Suspense/,
+      ];
+
+      const hasOptimizations = optimizations.some(pattern => pattern.test(content));
+      if (hasOptimizations) {
+        validationResults.passed.push({
+          type: 'performance-architecture',
+          file: relativePath,
+          message: 'Contains performance optimizations'
+        });
+      }
+
+    } catch (error) {
+      // File read error
+    }
+  }
+}
+
+/**
+ * Advanced state management architecture validation
+ */
+async function validateAdvancedStateArchitecture() {
+  console.log('🏪 Validating advanced state management architecture...');
+
+  const sourceFiles = await getFiles(join(projectRoot, 'src'), ['.ts', '.tsx', '.js', '.jsx']);
+
+  // Anti-patterns to check for
+  const antiPatterns = {
+    ZUSTAND_SERVER_OPS: {
+      pattern: /create\([^)]*\).*(?:supabase|fetch|axios|api)/s,
+      message: 'Zustand store contains server operations - should use TanStack Query',
+      severity: 'error'
+    },
+    COMPONENT_DIRECT_DB: {
+      pattern: /supabase\.from\(/,
+      message: 'Component directly accessing Supabase - should use TanStack Query hooks',
+      severity: 'warning',
+      excludeFiles: ['/hooks/', '/lib/']
+    },
+    MANUAL_CACHE: {
+      pattern: /(?:cache|lastFetched|cacheTimeout).*supabase/s,
+      message: 'Manual cache management detected - TanStack Query handles this automatically',
+      severity: 'warning'
+    },
+    LOCAL_SERVER_STATE: {
+      pattern: /useState.*(?:organizations|contacts|opportunities|products)/,
+      message: 'Server data in useState - should use TanStack Query',
+      severity: 'warning'
+    }
+  };
+
+  const goodPatterns = {
+    TANSTACK_QUERY: {
+      pattern: /useQuery\s*\(\s*{/,
+      message: 'Proper server state management with TanStack Query'
+    },
+    ZUSTAND_CLIENT: {
+      pattern: /create.*\(set\).*(?:viewMode|sortBy|isOpen|preferences)/s,
+      message: 'Proper client state management with Zustand'
+    }
+  };
+
+  let goodPatternCount = 0;
+
+  for (const file of sourceFiles) {
+    try {
+      const content = await readFile(file, 'utf8');
+      const relativePath = relative(projectRoot, file);
+
+      // Skip test files
+      if (relativePath.includes('.test.') || relativePath.includes('.spec.')) {
+        continue;
+      }
+
+      // Check for anti-patterns
+      for (const [name, config] of Object.entries(antiPatterns)) {
+        if (config.excludeFiles && config.excludeFiles.some(exclude => relativePath.includes(exclude))) {
+          continue;
+        }
+
+        if (config.pattern.test(content)) {
+          if (config.severity === 'error') {
+            validationResults.errors.push({
+              type: 'advanced-state-architecture',
+              file: relativePath,
+              message: config.message,
+              suggestion: 'Refactor to use proper state management patterns'
+            });
+          } else {
+            validationResults.warnings.push({
+              type: 'advanced-state-architecture',
+              file: relativePath,
+              message: config.message,
+              suggestion: 'Consider using TanStack Query for server state'
+            });
+          }
+        }
+      }
+
+      // Check for good patterns
+      for (const [name, config] of Object.entries(goodPatterns)) {
+        if (config.pattern.test(content)) {
+          goodPatternCount++;
+          validationResults.passed.push({
+            type: 'advanced-state-architecture',
+            file: relativePath,
+            message: config.message
+          });
+        }
+      }
+
+    } catch (error) {
+      // File read error
+    }
+  }
+
+  console.log(`   Found ${goodPatternCount} files with proper state patterns`);
+}
+
+/**
+ * Run comprehensive lint-architecture validation
+ */
+async function validateComprehensiveLint() {
+  console.log('🔍 Running comprehensive lint architecture validation...');
+
+  try {
+    const { exec } = await import('child_process');
+    const { promisify } = await import('util');
+    const execAsync = promisify(exec);
+
+    // 1. TypeScript compilation check
+    console.log('   Checking TypeScript compilation...');
+    try {
+      await execAsync('npm run type-check');
+      validationResults.passed.push({
+        type: 'comprehensive-lint',
+        file: 'all files',
+        message: 'TypeScript compilation passed'
+      });
+    } catch (error) {
+      validationResults.errors.push({
+        type: 'comprehensive-lint',
+        file: 'TypeScript compilation',
+        message: 'TypeScript compilation failed',
+        suggestion: 'Run "npm run type-check" for details'
+      });
+    }
+
+    // 2. ESLint architecture rules
+    console.log('   Running ESLint with architecture rules...');
+    try {
+      await execAsync('npm run lint');
+      validationResults.passed.push({
+        type: 'comprehensive-lint',
+        file: 'all files',
+        message: 'ESLint validation passed'
+      });
+    } catch (error) {
+      validationResults.warnings.push({
+        type: 'comprehensive-lint',
+        file: 'ESLint validation',
+        message: 'ESLint found issues (some may be technical debt)',
+        suggestion: 'Run "npm run lint" for details'
+      });
+    }
+
+    // 3. Component organization checks
+    console.log('   Validating component organization...');
+    const sourceFiles = await getFiles(join(projectRoot, 'src'), ['.ts', '.tsx']);
+
+    // Check for legacy specialized imports
+    let legacyImportsFound = false;
+    let crossImportsFound = false;
+    let misplacedComponentsFound = false;
+
+    for (const file of sourceFiles) {
+      try {
+        const content = await readFile(file, 'utf8');
+        const relativePath = relative(projectRoot, file);
+
+        // Check for old specialized imports
+        if (content.includes('from.*specialized')) {
+          legacyImportsFound = true;
+          validationResults.errors.push({
+            type: 'comprehensive-lint',
+            file: relativePath,
+            message: 'Found legacy specialized entity select imports',
+            suggestion: 'Update to use new import patterns'
+          });
+        }
+
+        // Check for cross-feature component imports
+        if (relativePath.startsWith('src/features/') &&
+            content.includes('from.*@/features/') &&
+            content.includes('components') &&
+            !relativePath.includes('index.ts')) {
+          crossImportsFound = true;
+          validationResults.warnings.push({
+            type: 'comprehensive-lint',
+            file: relativePath,
+            message: 'Potential cross-feature component import',
+            suggestion: 'Use feature index exports or move to shared components'
+          });
+        }
+
+        // Check for feature-specific components in shared directory
+        const fileName = basename(file);
+        if (relativePath.startsWith('src/components/') &&
+            (fileName.includes('Contact') || fileName.includes('Organization') ||
+             fileName.includes('Product') || fileName.includes('Opportunity'))) {
+          misplacedComponentsFound = true;
+          validationResults.errors.push({
+            type: 'comprehensive-lint',
+            file: relativePath,
+            message: 'Feature-specific component in shared directory',
+            suggestion: 'Move to appropriate feature directory'
+          });
+        }
+
+      } catch (error) {
+        // File read error
+      }
+    }
+
+    if (!legacyImportsFound) {
+      validationResults.passed.push({
+        type: 'comprehensive-lint',
+        file: 'all files',
+        message: 'No legacy import patterns found'
+      });
+    }
+
+    if (!crossImportsFound) {
+      validationResults.passed.push({
+        type: 'comprehensive-lint',
+        file: 'all files',
+        message: 'No cross-feature component imports found'
+      });
+    }
+
+    if (!misplacedComponentsFound) {
+      validationResults.passed.push({
+        type: 'comprehensive-lint',
+        file: 'all files',
+        message: 'Component organization is correct'
+      });
+    }
+
+  } catch (error) {
+    validationResults.errors.push({
+      type: 'comprehensive-lint',
+      file: 'lint execution',
+      message: `Comprehensive lint validation failed: ${error.message}`,
+      suggestion: 'Check system dependencies and configurations'
+    });
+  }
+}
+
+/**
+ * Main validation function with focus area support
+ */
+async function runArchitectureValidation(focusAreas = null) {
+  try {
+    const focus = focusAreas || parseArguments();
+
     console.log('🚀 Starting architecture validation...\n');
-    
-    await validateComponentOrganization();
-    await validateImportPatterns();
-    await validateNamingConventions();
-    await validateStateManagement();
-    await validateFileSizes();
-    
+
+    // Standard validations
+    if (focus.all || focus.components) {
+      await validateComponentOrganization();
+    }
+
+    if (focus.all || focus.imports) {
+      await validateImportPatterns();
+    }
+
+    if (focus.all || focus.naming) {
+      await validateNamingConventions();
+    }
+
+    if (focus.all || focus.state) {
+      await validateStateManagement();
+      await validateAdvancedStateArchitecture();
+    }
+
+    if (focus.all) {
+      await validateFileSizes();
+    }
+
+    // Focus area specific validations
+    if (focus.eslint) {
+      await validateESLintArchitecture();
+    }
+
+    if (focus.performance) {
+      await validatePerformanceArchitecture();
+    }
+
+    // Comprehensive lint validation (includes TypeScript, ESLint, component organization)
+    if (focus.lint) {
+      await validateComprehensiveLint();
+    }
+
+    // Comprehensive validation (all checks including external dependencies)
+    if (focus.comprehensive) {
+      await validateComponentOrganization();
+      await validateImportPatterns();
+      await validateNamingConventions();
+      await validateStateManagement();
+      await validateAdvancedStateArchitecture();
+      await validateFileSizes();
+      await validateESLintArchitecture();
+      await validatePerformanceArchitecture();
+      await validateComprehensiveLint();
+    }
+
     calculateArchitectureScore();
     generateReport();
-    
+
     // Exit with error code if there are errors or score is too low
     const hasErrors = validationResults.errors.length > 0;
-    const lowScore = validationResults.metrics.architectureScore < 60;
-    
+    const lowScore = validationResults.metrics.architectureScore < 80; // Maintain 80% threshold
+
     if (hasErrors || lowScore) {
       console.log('\n❌ Validation failed');
+      if (lowScore) {
+        console.log(`   Architecture score ${validationResults.metrics.architectureScore}% is below required 80% threshold`);
+      }
       process.exit(1);
     } else {
       console.log('\n✅ Validation passed');
       process.exit(0);
     }
-    
+
   } catch (error) {
     console.error('❌ Architecture validation error:', error.message);
     process.exit(1);
@@ -545,4 +1023,4 @@ if (process.argv[1] === __filename) {
   runArchitectureValidation();
 }
 
-export { runArchitectureValidation, validationResults, ARCHITECTURE_RULES };
+export { runArchitectureValidation, validationResults, ARCHITECTURE_RULES, parseArguments };

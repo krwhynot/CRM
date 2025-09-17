@@ -111,7 +111,9 @@ export function SimpleForm<T extends FieldValues = FieldValues>({
           <div className="mb-6">
             <div className="mb-2 flex justify-between text-sm text-muted-foreground">
               <span>Form Progress</span>
-              <span>{progress.completed} of {progress.total} fields</span>
+              <span>
+                {progress.completed} of {progress.total} fields
+              </span>
             </div>
             <Progress value={(progress.completed / progress.total) * 100} className="h-2" />
           </div>

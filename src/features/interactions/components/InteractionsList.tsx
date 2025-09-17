@@ -4,7 +4,17 @@ import { createInteractionColumns } from '@/components/data-table/columns/intera
 import { useStandardDataTable } from '@/hooks/useStandardDataTable'
 import { BulkActionsToolbar, BulkDeleteDialog } from '@/components/bulk-actions'
 import { Button } from '@/components/ui/button'
-import { Plus, Phone, Mail, Users, Calendar, AlertCircle, Clock, Building, User } from 'lucide-react'
+import {
+  Plus,
+  Phone,
+  Mail,
+  Users,
+  Calendar,
+  AlertCircle,
+  Clock,
+  Building,
+  User,
+} from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { formatDistanceToNow, format, parseISO } from 'date-fns'
@@ -192,12 +202,16 @@ export function InteractionsList({
         <div className="flex justify-between">
           <div>
             <span>Created:</span>
-            <span className="ml-1">{format(parseISO(interaction.created_at), 'MMM d, yyyy h:mm a')}</span>
+            <span className="ml-1">
+              {format(parseISO(interaction.created_at), 'MMM d, yyyy h:mm a')}
+            </span>
           </div>
           {interaction.updated_at && interaction.updated_at !== interaction.created_at && (
             <div>
               <span>Updated:</span>
-              <span className="ml-1">{format(parseISO(interaction.updated_at), 'MMM d, yyyy h:mm a')}</span>
+              <span className="ml-1">
+                {format(parseISO(interaction.updated_at), 'MMM d, yyyy h:mm a')}
+              </span>
             </div>
           )}
         </div>
@@ -239,7 +253,7 @@ export function InteractionsList({
         try {
           // Call the actual delete function when available
           if (onDelete) {
-            const interaction = interactions.find(i => i.id === interactionId)
+            const interaction = interactions.find((i) => i.id === interactionId)
             if (interaction) {
               onDelete(interaction)
             }
@@ -274,7 +288,9 @@ export function InteractionsList({
   }
 
   // Get selected interactions for dialog
-  const selectedInteractions = interactions.filter((interaction) => selectedIds.includes(interaction.id))
+  const selectedInteractions = interactions.filter((interaction) =>
+    selectedIds.includes(interaction.id)
+  )
 
   // Create columns with actions
   const columns = createInteractionColumns({

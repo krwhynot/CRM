@@ -3,7 +3,15 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { DataTable } from '@/components/ui/DataTable'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { CheckCircle2, AlertTriangle, Users, Sparkles, RefreshCw, ToggleLeft, ToggleRight } from 'lucide-react'
+import {
+  CheckCircle2,
+  AlertTriangle,
+  Users,
+  Sparkles,
+  RefreshCw,
+  ToggleLeft,
+  ToggleRight,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 import { ImportResultsSimplified } from './ImportResultsSimplified'
@@ -85,7 +93,11 @@ export function SmartPreviewComponent({
             onClick={() => setIsSimplifiedView(false)}
             className="text-sm text-slate-600 hover:text-slate-900"
           >
-            {isSimplifiedView ? <ToggleLeft className="mr-2 size-4" /> : <ToggleRight className="mr-2 size-4" />}
+            {isSimplifiedView ? (
+              <ToggleLeft className="mr-2 size-4" />
+            ) : (
+              <ToggleRight className="mr-2 size-4" />
+            )}
             {isSimplifiedView ? 'Switch to Advanced View' : 'Switch to Simple View'}
           </Button>
         </div>
@@ -103,16 +115,16 @@ export function SmartPreviewComponent({
 
   // Calculate statistics
   const totalRecords = parsedData.rows.length
-  const mappedFields = mappings.filter(m => m.crmField && m.status !== 'skipped').length
-  const autoMappedFields = mappings.filter(m => m.status === 'auto').length
-  const needsReview = mappings.filter(m => m.status === 'needs_review').length
+  const mappedFields = mappings.filter((m) => m.crmField && m.status !== 'skipped').length
+  const autoMappedFields = mappings.filter((m) => m.status === 'auto').length
+  const needsReview = mappings.filter((m) => m.status === 'needs_review').length
   const isReadyToImport = needsReview === 0 && mappedFields > 0
 
   // Transform data for preview table
   const mappingDict = Object.fromEntries(
     mappings
-      .filter(m => m.crmField && m.status !== 'skipped')
-      .map(m => [m.csvHeader, m.crmField!])
+      .filter((m) => m.crmField && m.status !== 'skipped')
+      .map((m) => [m.csvHeader, m.crmField!])
   )
 
   // Create preview data with business-friendly column headers
@@ -120,19 +132,19 @@ export function SmartPreviewComponent({
     const previewRow: PreviewRow = {
       _originalRowIndex: index,
     }
-    
+
     Object.entries(mappingDict).forEach(([csvHeader, crmField]) => {
       const friendlyLabel = FIELD_LABELS[crmField] || crmField
       previewRow[friendlyLabel] = row[csvHeader]?.trim() || null
     })
-    
+
     return previewRow
   })
 
   // Create columns for DataTable
   const columns = Object.keys(previewData[0] || {})
-    .filter(key => key !== '_originalRowIndex')
-    .map(key => ({
+    .filter((key) => key !== '_originalRowIndex')
+    .map((key) => ({
       key: key,
       header: key,
       cell: (row: PreviewRow) => {
@@ -249,10 +261,11 @@ export function SmartPreviewComponent({
           <AlertDescription className="text-green-800">
             <div className="flex items-center justify-between">
               <span>
-                Perfect! Your data is ready to import. We'll add {totalRecords.toLocaleString()} organizations to your CRM.
+                Perfect! Your data is ready to import. We'll add {totalRecords.toLocaleString()}{' '}
+                organizations to your CRM.
               </span>
               {onProceedToImport && (
-                <Button 
+                <Button
                   onClick={onProceedToImport}
                   className="ml-4 bg-green-600 hover:bg-green-700"
                 >
@@ -268,8 +281,8 @@ export function SmartPreviewComponent({
           <AlertDescription className="text-amber-800">
             {needsReview > 0 ? (
               <>
-                We need to review {needsReview} field{needsReview !== 1 ? 's' : ''} before importing. 
-                Click "Improve Mapping" above or check the field mapping section.
+                We need to review {needsReview} field{needsReview !== 1 ? 's' : ''} before
+                importing. Click "Improve Mapping" above or check the field mapping section.
               </>
             ) : (
               'No fields are mapped yet. Use the AI mapping feature to get started.'
@@ -286,21 +299,21 @@ export function SmartPreviewComponent({
             <div className="text-xs text-slate-600">Total Records</div>
           </CardContent>
         </Card>
-        
+
         <Card className="bg-green-50">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-green-600">{autoMappedFields}</div>
             <div className="text-xs text-slate-600">Auto-Mapped</div>
           </CardContent>
         </Card>
-        
+
         <Card className="bg-amber-50">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-amber-600">{needsReview}</div>
             <div className="text-xs text-slate-600">Need Review</div>
           </CardContent>
         </Card>
-        
+
         <Card className="bg-blue-50">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-blue-600">{mappedFields}</div>

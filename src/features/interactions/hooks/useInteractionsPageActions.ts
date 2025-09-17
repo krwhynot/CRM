@@ -3,11 +3,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { toast } from '@/lib/toast-styles'
 import { COPY } from '@/lib/copy'
-import type { 
-  InteractionFormData, 
-  InteractionWithRelations, 
-  InteractionInsert, 
-  InteractionUpdate 
+import type {
+  InteractionFormData,
+  InteractionWithRelations,
+  InteractionInsert,
+  InteractionUpdate,
 } from '@/types/interaction.types'
 
 export function useInteractionsPageActions(
@@ -28,7 +28,7 @@ export function useInteractionsPageActions(
         notes: data.notes || null,
         duration_minutes: data.duration_minutes || null,
         location: data.location || null,
-        outcome: data.outcome as any || null,
+        outcome: (data.outcome as any) || null,
         follow_up_required: data.follow_up_required || false,
         follow_up_date: data.follow_up_date || null,
         follow_up_notes: data.follow_up_notes || null,
@@ -40,12 +40,14 @@ export function useInteractionsPageActions(
       const { data: interaction, error } = await supabase
         .from('interactions')
         .insert(insertData)
-        .select(`
+        .select(
+          `
           *,
           contact:contacts(*),
           organization:organizations(*),
           opportunity:opportunities(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -65,12 +67,12 @@ export function useInteractionsPageActions(
 
   // Update interaction mutation
   const updateMutation = useMutation({
-    mutationFn: async ({ 
-      id, 
-      data 
-    }: { 
-      id: string; 
-      data: InteractionFormData 
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string
+      data: InteractionFormData
     }): Promise<InteractionWithRelations> => {
       const updateData: InteractionUpdate = {
         type: data.type as any,
@@ -80,7 +82,7 @@ export function useInteractionsPageActions(
         notes: data.notes || null,
         duration_minutes: data.duration_minutes || null,
         location: data.location || null,
-        outcome: data.outcome as any || null,
+        outcome: (data.outcome as any) || null,
         follow_up_required: data.follow_up_required || false,
         follow_up_date: data.follow_up_date || null,
         follow_up_notes: data.follow_up_notes || null,
@@ -94,12 +96,14 @@ export function useInteractionsPageActions(
         .from('interactions')
         .update(updateData)
         .eq('id', id)
-        .select(`
+        .select(
+          `
           *,
           contact:contacts(*),
           organization:organizations(*),
           opportunity:opportunities(*)
-        `)
+        `
+        )
         .single()
 
       if (error) throw error
@@ -166,12 +170,12 @@ export function useInteractionsPageActions(
     handleCreate,
     handleUpdate,
     handleDelete,
-    
+
     // Loading states
     isCreating: createMutation.isPending,
     isUpdating: updateMutation.isPending,
     isDeleting: deleteMutation.isPending,
-    
+
     // Mutation objects for additional control
     createMutation,
     updateMutation,

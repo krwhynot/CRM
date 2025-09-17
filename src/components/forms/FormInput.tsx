@@ -61,185 +61,185 @@ interface FormInputProps {
 
 export const FormInput = React.forwardRef<HTMLElement, FormInputProps>(
   ({ value, onChange, onBlur, name, config, disabled }, ref) => {
-  const commonDisabled = disabled || config.disabled
-  const baseClassName = cn('h-11', config.className)
-  
-  const stringValue = value ? String(value) : ''
+    const commonDisabled = disabled || config.disabled
+    const baseClassName = cn('h-11', config.className)
 
-  switch (config.type) {
-    case 'select':
-      return (
-        <Select 
-          value={stringValue} 
-          onValueChange={(val) => onChange?.(val || null)} 
-          disabled={commonDisabled}
-        >
-          <SelectTrigger ref={ref as React.RefObject<HTMLButtonElement>} className="h-11">
-            <SelectValue placeholder={config.placeholder} />
-          </SelectTrigger>
-          <SelectContent>
-            {config.options?.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                <div className="flex items-center gap-2">
-                  {option.icon && <span className="text-sm">{option.icon}</span>}
-                  <div className="flex flex-col">
-                    <span>{option.label}</span>
-                    {option.description && (
-                      <span className="text-xs text-muted-foreground">{option.description}</span>
-                    )}
-                  </div>
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      )
+    const stringValue = value ? String(value) : ''
 
-    case 'textarea':
-      return (
-        <Textarea
-          ref={ref as React.RefObject<HTMLTextAreaElement>}
-          value={stringValue}
-          onChange={(e) => onChange?.(e.target.value || null)}
-          onBlur={onBlur}
-          disabled={commonDisabled}
-          placeholder={config.placeholder}
-          rows={config.rows ?? 3}
-          className="min-h-20 resize-y"
-        />
-      )
-
-    case 'radio':
-      return (
-        <RadioGroup
-          value={stringValue}
-          onValueChange={(val) => onChange?.(val || null)}
-          disabled={commonDisabled}
-          className={config.className}
-        >
-          {config.options?.map((option) => (
-            <div key={option.value} className="flex items-center space-x-2">
-              <RadioGroupItem value={option.value} id={`${name}-${option.value}`} />
-              <Label
-                htmlFor={`${name}-${option.value}`}
-                className="cursor-pointer text-sm font-normal"
-              >
-                {option.label}
-              </Label>
-            </div>
-          ))}
-        </RadioGroup>
-      )
-
-    case 'switch':
-      return (
-        <div className="flex items-center space-x-3 py-2">
-          <Switch
-            ref={ref as React.RefObject<HTMLButtonElement>}
-            checked={Boolean(value)}
-            onCheckedChange={(checked) => onChange?.(checked)}
+    switch (config.type) {
+      case 'select':
+        return (
+          <Select
+            value={stringValue}
+            onValueChange={(val) => onChange?.(val || null)}
             disabled={commonDisabled}
+          >
+            <SelectTrigger ref={ref as React.RefObject<HTMLButtonElement>} className="h-11">
+              <SelectValue placeholder={config.placeholder} />
+            </SelectTrigger>
+            <SelectContent>
+              {config.options?.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  <div className="flex items-center gap-2">
+                    {option.icon && <span className="text-sm">{option.icon}</span>}
+                    <div className="flex flex-col">
+                      <span>{option.label}</span>
+                      {option.description && (
+                        <span className="text-xs text-muted-foreground">{option.description}</span>
+                      )}
+                    </div>
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )
+
+      case 'textarea':
+        return (
+          <Textarea
+            ref={ref as React.RefObject<HTMLTextAreaElement>}
+            value={stringValue}
+            onChange={(e) => onChange?.(e.target.value || null)}
+            onBlur={onBlur}
+            disabled={commonDisabled}
+            placeholder={config.placeholder}
+            rows={config.rows ?? 3}
+            className="min-h-20 resize-y"
           />
-          {config.switchLabel && (
-            <span className="text-sm text-gray-700">{config.switchLabel}</span>
-          )}
-        </div>
-      )
+        )
 
-    case 'date':
-      return (
-        <Input
-          ref={ref as React.RefObject<HTMLInputElement>}
-          value={stringValue}
-          onChange={(e) => onChange?.(e.target.value || null)}
-          onBlur={onBlur}
-          disabled={commonDisabled}
-          placeholder={config.placeholder}
-          className={baseClassName}
-          type="date"
-        />
-      )
+      case 'radio':
+        return (
+          <RadioGroup
+            value={stringValue}
+            onValueChange={(val) => onChange?.(val || null)}
+            disabled={commonDisabled}
+            className={config.className}
+          >
+            {config.options?.map((option) => (
+              <div key={option.value} className="flex items-center space-x-2">
+                <RadioGroupItem value={option.value} id={`${name}-${option.value}`} />
+                <Label
+                  htmlFor={`${name}-${option.value}`}
+                  className="cursor-pointer text-sm font-normal"
+                >
+                  {option.label}
+                </Label>
+              </div>
+            ))}
+          </RadioGroup>
+        )
 
-    case 'email':
-      return (
-        <Input
-          ref={ref as React.RefObject<HTMLInputElement>}
-          value={stringValue}
-          onChange={(e) => onChange?.(e.target.value || null)}
-          onBlur={onBlur}
-          disabled={commonDisabled}
-          placeholder={config.placeholder}
-          className={baseClassName}
-          type="email"
-          autoComplete="email"
-        />
-      )
+      case 'switch':
+        return (
+          <div className="flex items-center space-x-3 py-2">
+            <Switch
+              ref={ref as React.RefObject<HTMLButtonElement>}
+              checked={Boolean(value)}
+              onCheckedChange={(checked) => onChange?.(checked)}
+              disabled={commonDisabled}
+            />
+            {config.switchLabel && (
+              <span className="text-sm text-foreground">{config.switchLabel}</span>
+            )}
+          </div>
+        )
 
-    case 'tel':
-      return (
-        <Input
-          ref={ref as React.RefObject<HTMLInputElement>}
-          value={stringValue}
-          onChange={(e) => onChange?.(e.target.value || null)}
-          onBlur={onBlur}
-          disabled={commonDisabled}
-          placeholder={config.placeholder}
-          className={baseClassName}
-          type="tel"
-          autoComplete="tel"
-        />
-      )
+      case 'date':
+        return (
+          <Input
+            ref={ref as React.RefObject<HTMLInputElement>}
+            value={stringValue}
+            onChange={(e) => onChange?.(e.target.value || null)}
+            onBlur={onBlur}
+            disabled={commonDisabled}
+            placeholder={config.placeholder}
+            className={baseClassName}
+            type="date"
+          />
+        )
 
-    case 'url':
-      return (
-        <Input
-          ref={ref as React.RefObject<HTMLInputElement>}
-          value={stringValue}
-          onChange={(e) => onChange?.(e.target.value || null)}
-          onBlur={onBlur}
-          disabled={commonDisabled}
-          placeholder={config.placeholder}
-          className={baseClassName}
-          type="url"
-          autoComplete="url"
-        />
-      )
+      case 'email':
+        return (
+          <Input
+            ref={ref as React.RefObject<HTMLInputElement>}
+            value={stringValue}
+            onChange={(e) => onChange?.(e.target.value || null)}
+            onBlur={onBlur}
+            disabled={commonDisabled}
+            placeholder={config.placeholder}
+            className={baseClassName}
+            type="email"
+            autoComplete="email"
+          />
+        )
 
-    case 'number':
-      return (
-        <Input
-          ref={ref as React.RefObject<HTMLInputElement>}
-          value={stringValue}
-          onChange={(e) => {
-            const numValue = parseFloat(e.target.value)
-            onChange?.(isNaN(numValue) ? null : numValue)
-          }}
-          onBlur={onBlur}
-          disabled={commonDisabled}
-          placeholder={config.placeholder}
-          className={baseClassName}
-          type="number"
-          min={config.min}
-          max={config.max}
-          step={config.step}
-        />
-      )
+      case 'tel':
+        return (
+          <Input
+            ref={ref as React.RefObject<HTMLInputElement>}
+            value={stringValue}
+            onChange={(e) => onChange?.(e.target.value || null)}
+            onBlur={onBlur}
+            disabled={commonDisabled}
+            placeholder={config.placeholder}
+            className={baseClassName}
+            type="tel"
+            autoComplete="tel"
+          />
+        )
 
-    case 'text':
-    default:
-      return (
-        <Input
-          ref={ref as React.RefObject<HTMLInputElement>}
-          value={stringValue}
-          onChange={(e) => onChange?.(e.target.value || null)}
-          onBlur={onBlur}
-          disabled={commonDisabled}
-          placeholder={config.placeholder}
-          className={baseClassName}
-          type="text"
-          autoComplete={getAutoComplete(name || '')}
-        />
-      )
+      case 'url':
+        return (
+          <Input
+            ref={ref as React.RefObject<HTMLInputElement>}
+            value={stringValue}
+            onChange={(e) => onChange?.(e.target.value || null)}
+            onBlur={onBlur}
+            disabled={commonDisabled}
+            placeholder={config.placeholder}
+            className={baseClassName}
+            type="url"
+            autoComplete="url"
+          />
+        )
+
+      case 'number':
+        return (
+          <Input
+            ref={ref as React.RefObject<HTMLInputElement>}
+            value={stringValue}
+            onChange={(e) => {
+              const numValue = parseFloat(e.target.value)
+              onChange?.(isNaN(numValue) ? null : numValue)
+            }}
+            onBlur={onBlur}
+            disabled={commonDisabled}
+            placeholder={config.placeholder}
+            className={baseClassName}
+            type="number"
+            min={config.min}
+            max={config.max}
+            step={config.step}
+          />
+        )
+
+      case 'text':
+      default:
+        return (
+          <Input
+            ref={ref as React.RefObject<HTMLInputElement>}
+            value={stringValue}
+            onChange={(e) => onChange?.(e.target.value || null)}
+            onBlur={onBlur}
+            disabled={commonDisabled}
+            placeholder={config.placeholder}
+            className={baseClassName}
+            type="text"
+            autoComplete={getAutoComplete(name || '')}
+          />
+        )
     }
   }
 )

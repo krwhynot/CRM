@@ -116,20 +116,23 @@ export function EntityFilters({
   const effectiveMaxFiltersPerRow = isNonInlineMode ? 1 : maxFiltersPerRow
 
   // Helper function to update filters with touch optimization
-  const updateFilter = useCallback((key: string, value: string | undefined) => {
-    const newFilters = { ...filters }
+  const updateFilter = useCallback(
+    (key: string, value: string | undefined) => {
+      const newFilters = { ...filters }
 
-    if (value === undefined || value === '' || value === 'all' || value === 'none') {
-      delete newFilters[key]
-    } else {
-      newFilters[key] = value
-    }
+      if (value === undefined || value === '' || value === 'all' || value === 'none') {
+        delete newFilters[key]
+      } else {
+        newFilters[key] = value
+      }
 
-    onFiltersChange(newFilters)
-  }, [filters, onFiltersChange])
+      onFiltersChange(newFilters)
+    },
+    [filters, onFiltersChange]
+  )
 
   // Calculate active filter count
-  const activeFilterCount = Object.keys(filters).filter(key => {
+  const activeFilterCount = Object.keys(filters).filter((key) => {
     const value = filters[key]
     return value && value !== '' && value !== 'all' && value !== 'none'
   }).length
@@ -158,33 +161,41 @@ export function EntityFilters({
   const renderFilterContent = () => (
     <>
       {/* Primary Filter Controls Row */}
-      <div className={cn(
-        'grid',
-        // Enhanced spacing for touch devices
-        deviceContext === 'mobile' ? 'gap-4' : 'gap-3 sm:gap-4',
-        effectiveMaxFiltersPerRow === 1 && 'grid-cols-1',
-        effectiveMaxFiltersPerRow === 2 && 'grid-cols-1 md:grid-cols-2',
-        effectiveMaxFiltersPerRow === 3 && 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-        effectiveMaxFiltersPerRow === 4 && 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
-        effectiveMaxFiltersPerRow === 5 && 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5',
-        // Layout-specific adjustments with touch considerations
-        isNonInlineMode && (deviceContext === 'mobile' ? 'gap-5' : 'gap-4'),
-      )}>
-
+      <div
+        className={cn(
+          'grid',
+          // Enhanced spacing for touch devices
+          deviceContext === 'mobile' ? 'gap-4' : 'gap-3 sm:gap-4',
+          effectiveMaxFiltersPerRow === 1 && 'grid-cols-1',
+          effectiveMaxFiltersPerRow === 2 && 'grid-cols-1 md:grid-cols-2',
+          effectiveMaxFiltersPerRow === 3 && 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+          effectiveMaxFiltersPerRow === 4 && 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
+          effectiveMaxFiltersPerRow === 5 &&
+            'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5',
+          // Layout-specific adjustments with touch considerations
+          isNonInlineMode && (deviceContext === 'mobile' ? 'gap-5' : 'gap-4')
+        )}
+      >
         {/* Search Filter */}
         {showSearch && (
           <div className="flex flex-col space-y-1">
             {!effectiveCompact && (
-              <label className={cn(
-                'text-xs font-medium text-muted-foreground',
-                deviceContext === 'mobile' && 'text-sm'
-              )}>Search</label>
+              <label
+                className={cn(
+                  'text-xs font-medium text-muted-foreground',
+                  deviceContext === 'mobile' && 'text-sm'
+                )}
+              >
+                Search
+              </label>
             )}
             <div className="relative">
-              <Search className={cn(
-                'absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground',
-                deviceContext === 'mobile' ? 'size-5' : 'size-4'
-              )} />
+              <Search
+                className={cn(
+                  'absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground',
+                  deviceContext === 'mobile' ? 'size-5' : 'size-4'
+                )}
+              />
               <Input
                 placeholder={getSearchPlaceholder()}
                 value={filters.search || ''}
@@ -216,20 +227,26 @@ export function EntityFilters({
         {showPrincipalFilter && principals.length > 0 && (
           <div className="flex flex-col space-y-1">
             {!effectiveCompact && (
-              <label className={cn(
-                'text-xs font-medium text-muted-foreground',
-                deviceContext === 'mobile' && 'text-sm'
-              )}>Principal</label>
+              <label
+                className={cn(
+                  'text-xs font-medium text-muted-foreground',
+                  deviceContext === 'mobile' && 'text-sm'
+                )}
+              >
+                Principal
+              </label>
             )}
             <Select
               value={filters.principal || 'all'}
               onValueChange={(value) => updateFilter('principal', value)}
               disabled={isLoading}
             >
-              <SelectTrigger className={cn(
-                deviceContext === 'mobile' && 'h-12 text-base',
-                isTouch && 'touch-manipulation'
-              )}>
+              <SelectTrigger
+                className={cn(
+                  deviceContext === 'mobile' && 'h-12 text-base',
+                  isTouch && 'touch-manipulation'
+                )}
+              >
                 <SelectValue placeholder="Select principal" />
               </SelectTrigger>
               <SelectContent>
@@ -238,9 +255,7 @@ export function EntityFilters({
                   <SelectItem
                     key={principal.value}
                     value={principal.value}
-                    className={cn(
-                      deviceContext === 'mobile' && 'min-h-[44px] text-base'
-                    )}
+                    className={cn(deviceContext === 'mobile' && 'min-h-[44px] text-base')}
                   >
                     {principal.label}
                   </SelectItem>
@@ -254,20 +269,26 @@ export function EntityFilters({
         {showStatusFilter && statuses.length > 0 && (
           <div className="flex flex-col space-y-1">
             {!effectiveCompact && (
-              <label className={cn(
-                'text-xs font-medium text-muted-foreground',
-                deviceContext === 'mobile' && 'text-sm'
-              )}>Status</label>
+              <label
+                className={cn(
+                  'text-xs font-medium text-muted-foreground',
+                  deviceContext === 'mobile' && 'text-sm'
+                )}
+              >
+                Status
+              </label>
             )}
             <Select
               value={filters.status || 'all'}
               onValueChange={(value) => updateFilter('status', value)}
               disabled={isLoading}
             >
-              <SelectTrigger className={cn(
-                deviceContext === 'mobile' && 'h-12 text-base',
-                isTouch && 'touch-manipulation'
-              )}>
+              <SelectTrigger
+                className={cn(
+                  deviceContext === 'mobile' && 'h-12 text-base',
+                  isTouch && 'touch-manipulation'
+                )}
+              >
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
               <SelectContent>
@@ -276,9 +297,7 @@ export function EntityFilters({
                   <SelectItem
                     key={status.value}
                     value={status.value}
-                    className={cn(
-                      deviceContext === 'mobile' && 'min-h-[44px] text-base'
-                    )}
+                    className={cn(deviceContext === 'mobile' && 'min-h-[44px] text-base')}
                   >
                     {status.label}
                   </SelectItem>
@@ -292,20 +311,26 @@ export function EntityFilters({
         {showPriorityFilter && priorities.length > 0 && (
           <div className="flex flex-col space-y-1">
             {!effectiveCompact && (
-              <label className={cn(
-                'text-xs font-medium text-muted-foreground',
-                deviceContext === 'mobile' && 'text-sm'
-              )}>Priority</label>
+              <label
+                className={cn(
+                  'text-xs font-medium text-muted-foreground',
+                  deviceContext === 'mobile' && 'text-sm'
+                )}
+              >
+                Priority
+              </label>
             )}
             <Select
               value={filters.priority || 'all'}
               onValueChange={(value) => updateFilter('priority', value)}
               disabled={isLoading}
             >
-              <SelectTrigger className={cn(
-                deviceContext === 'mobile' && 'h-12 text-base',
-                isTouch && 'touch-manipulation'
-              )}>
+              <SelectTrigger
+                className={cn(
+                  deviceContext === 'mobile' && 'h-12 text-base',
+                  isTouch && 'touch-manipulation'
+                )}
+              >
                 <SelectValue placeholder="Select priority" />
               </SelectTrigger>
               <SelectContent>
@@ -314,9 +339,7 @@ export function EntityFilters({
                   <SelectItem
                     key={priority.value}
                     value={priority.value}
-                    className={cn(
-                      deviceContext === 'mobile' && 'min-h-[44px] text-base'
-                    )}
+                    className={cn(deviceContext === 'mobile' && 'min-h-[44px] text-base')}
                   >
                     {priority.label}
                   </SelectItem>
@@ -366,14 +389,13 @@ export function EntityFilters({
                       if (key === 'quickView') displayValue = value.replace('_', ' ')
 
                       return (
-                        <Badge
-                          key={key}
-                          variant="secondary"
-                          className="text-xs"
-                        >
-                          {key === 'timeRange' ? 'Time' :
-                           key === 'quickView' ? 'Quick' :
-                           key.charAt(0).toUpperCase() + key.slice(1)}: {displayValue}
+                        <Badge key={key} variant="secondary" className="text-xs">
+                          {key === 'timeRange'
+                            ? 'Time'
+                            : key === 'quickView'
+                              ? 'Quick'
+                              : key.charAt(0).toUpperCase() + key.slice(1)}
+                          : {displayValue}
                           <Button
                             variant="ghost"
                             size="sm"
@@ -388,9 +410,9 @@ export function EntityFilters({
                             onClick={() => updateFilter(key, undefined)}
                             aria-label={`Remove ${key} filter`}
                           >
-                            <RotateCcw className={cn(
-                              deviceContext === 'mobile' ? 'size-4' : 'size-3'
-                            )} />
+                            <RotateCcw
+                              className={cn(deviceContext === 'mobile' ? 'size-4' : 'size-3')}
+                            />
                           </Button>
                         </Badge>
                       )
@@ -418,16 +440,13 @@ export function EntityFilters({
                   disabled={isLoading}
                   className={cn(
                     'touch-manipulation',
-                    deviceContext === 'mobile'
-                      ? 'text-sm h-10 px-4 min-h-[44px]'
-                      : 'text-xs h-8',
+                    deviceContext === 'mobile' ? 'text-sm h-10 px-4 min-h-[44px]' : 'text-xs h-8',
                     isTouch && 'active:scale-95 transition-transform duration-75'
                   )}
                 >
-                  <RotateCcw className={cn(
-                    'mr-1',
-                    deviceContext === 'mobile' ? 'size-4' : 'size-3'
-                  )} />
+                  <RotateCcw
+                    className={cn('mr-1', deviceContext === 'mobile' ? 'size-4' : 'size-3')}
+                  />
                   Clear All
                 </Button>
               )}
@@ -441,31 +460,25 @@ export function EntityFilters({
   // Return content with layout-specific wrapper
   switch (effectiveLayoutMode) {
     case 'inline':
-      return (
-        <div className={cn('space-y-4', className)}>
-          {renderFilterContent()}
-        </div>
-      )
+      return <div className={cn('space-y-4', className)}>{renderFilterContent()}</div>
 
     case 'sheet':
     case 'drawer':
       // For sheet/drawer modes, return the content with mobile optimizations
       return (
-        <div className={cn(
-          'space-y-4 p-4',
-          isNonInlineMode && 'max-h-screen overflow-y-auto',
-          className
-        )}>
+        <div
+          className={cn(
+            'space-y-4 p-4',
+            isNonInlineMode && 'max-h-screen overflow-y-auto',
+            className
+          )}
+        >
           {renderFilterContent()}
         </div>
       )
 
     default:
-      return (
-        <div className={cn('space-y-4', className)}>
-          {renderFilterContent()}
-        </div>
-      )
+      return <div className={cn('space-y-4', className)}>{renderFilterContent()}</div>
   }
 }
 

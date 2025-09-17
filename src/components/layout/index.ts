@@ -11,8 +11,5 @@ export { ContentSection } from './ContentSection'
 export { Breadcrumbs } from './Breadcrumbs'
 export { EmptyState, EmptyStatePresets } from './EmptyState'
 export type { EmptyStateProps } from './EmptyState'
-export { EntityListWrapper } from './EntityListWrapper'
 
-// Complex layout components (legacy - being phased out)
-export { LayoutProvider } from './LayoutProvider'
-export { PageLayoutRenderer } from './PageLayoutRenderer'
+// Note: Complex schema-driven layout components removed as part of architecture simplification

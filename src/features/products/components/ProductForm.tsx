@@ -278,15 +278,15 @@ function getSegmentDescription(segment: string): string {
     'Fine Dining': 'Upscale restaurants with premium service and cuisine',
     'Fast Food': 'Quick service restaurants with limited menus',
     'Fast Casual': 'Higher quality fast food with customizable options',
-    'Healthcare': 'Hospitals, clinics, and medical facilities',
-    'Education': 'Schools, universities, and educational institutions',
+    Healthcare: 'Hospitals, clinics, and medical facilities',
+    Education: 'Schools, universities, and educational institutions',
     'Corporate Catering': 'Office buildings and corporate dining',
     'Hotel & Resort': 'Hotels, resorts, and hospitality venues',
     'Entertainment Venue': 'Sports venues, theaters, and entertainment facilities',
     'Retail Food Service': 'Grocery stores and retail food operations',
-    'Government': 'Military, government facilities, and public institutions',
+    Government: 'Military, government facilities, and public institutions',
     'Senior Living': 'Retirement homes and senior care facilities',
-    'Other': 'Other food service segments not listed above',
+    Other: 'Other food service segments not listed above',
   }
   return descriptions[segment] || 'Food service segment'
 }

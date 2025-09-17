@@ -1,14 +1,13 @@
 import * as React from 'react'
 import { DataTable } from '@/components/data-table/data-table'
 import { createContactColumns } from '@/components/data-table/columns/contacts'
-import { EntityListWrapper } from '@/components/layout/EntityListWrapper'
 import { useStandardDataTable } from '@/hooks/useStandardDataTable'
+import { useUnifiedBulkOperations } from '@/hooks/useUnifiedBulkOperations'
 import { BulkActionsToolbar, BulkDeleteDialog } from '@/components/bulk-actions'
 import { Button } from '@/components/ui/button'
 import { Shield, Crown, Users, Star, Mail, Phone, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useContactsDisplay } from '@/features/contacts/hooks/useContactsDisplay'
-import { useContactsSelection } from '@/features/contacts/hooks/useContactsSelection'
 import { useDeleteContact } from '@/features/contacts/hooks/useContacts'
 import { toast } from '@/lib/toast-styles'
 import { DEFAULT_CONTACTS } from '@/data/sample-contacts'
@@ -33,11 +32,14 @@ interface ContactWithWeeklyContext extends ContactWithOrganization {
 interface ContactsListProps {
   contacts: ContactWithWeeklyContext[]
   loading?: boolean
+  isError?: boolean
+  error?: Error | null
   onEdit?: (contact: Contact) => void
   onDelete?: (contact: Contact) => void
   onView?: (contact: Contact) => void
   onContact?: (contact: Contact) => void
   onAddNew?: () => void
+  onRefresh?: () => void
   showOrganization?: boolean
   principals?: Array<{ value: string; label: string }>
 }
@@ -45,18 +47,18 @@ interface ContactsListProps {
 export function ContactsList({
   contacts = DEFAULT_CONTACTS as ContactWithWeeklyContext[],
   loading = false,
+  isError = false,
+  error = null,
   onEdit,
   onView,
   onContact,
+  onRefresh,
   showOrganization = true,
   principals = [],
 }: ContactsListProps) {
   // Use DEFAULT_CONTACTS when empty array is passed (for testing purposes)
-  const displayContacts = contacts.length === 0 ? DEFAULT_CONTACTS as ContactWithWeeklyContext[] : contacts
-
-  // Bulk delete state
-  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
-  const [isDeleting, setIsDeleting] = React.useState(false)
+  const displayContacts =
+    contacts.length === 0 ? (DEFAULT_CONTACTS as ContactWithWeeklyContext[]) : contacts
 
   // EntityFilterState using the same conversion pattern as ContactsFilters.tsx
   const [filters, setFilters] = React.useState<EntityFilterState>({
@@ -86,84 +88,22 @@ export function ContactsList({
 
   const { toggleRowExpansion, isRowExpanded } = useContactsDisplay(displayContacts.map((c) => c.id))
 
-  const { selectedItems, handleSelectAll, handleSelectItem, clearSelection } =
-    useContactsSelection()
-
   // Hooks
   const deleteContact = useDeleteContact()
 
-  // Convert Set to Array for easier manipulation
-  const selectedIds = Array.from(selectedItems)
-  const selectedContacts = displayContacts.filter((contact) => selectedItems.has(contact.id))
+  // Unified bulk operations
+  const bulkOperations = useUnifiedBulkOperations({
+    entities: displayContacts,
+    deleteEntity: (id: string) => deleteContact.mutateAsync(id),
+    entityType: 'contact',
+    entityTypePlural: 'contacts',
+  })
 
-  // Transform contacts to have 'name' property for BulkDeleteDialog
-  const selectedContactsForDialog = selectedContacts.map((contact) => ({
+  // Transform selected contacts for BulkDeleteDialog
+  const selectedContactsForDialog = bulkOperations.selectedEntities.map((contact) => ({
     ...contact,
     name: `${contact.first_name} ${contact.last_name}`,
   }))
-
-  // Bulk action handlers
-  const handleSelectAllFromToolbar = () => {
-    handleSelectAll(true, displayContacts)
-  }
-
-  const handleSelectNoneFromToolbar = () => {
-    handleSelectAll(false, displayContacts)
-  }
-
-  const handleBulkDelete = () => {
-    setDeleteDialogOpen(true)
-  }
-
-  const handleConfirmDelete = async () => {
-    if (selectedIds.length === 0) return
-
-    setIsDeleting(true)
-    const results = []
-    let successCount = 0
-    let errorCount = 0
-
-    try {
-      // Process deletions sequentially for maximum safety
-      for (const contactId of selectedIds) {
-        try {
-          await deleteContact.mutateAsync(contactId)
-          results.push({ id: contactId, status: 'success' })
-          successCount++
-        } catch (error) {
-          // Log error to results for user feedback
-          results.push({
-            id: contactId,
-            status: 'error',
-            error: error instanceof Error ? error.message : 'Unknown error',
-          })
-          errorCount++
-        }
-      }
-
-      // Show results to user
-      if (successCount > 0 && errorCount === 0) {
-        toast.success(
-          `Successfully archived ${successCount} contact${successCount !== 1 ? 's' : ''}`
-        )
-      } else if (successCount > 0 && errorCount > 0) {
-        toast.warning(`Archived ${successCount} contacts, but ${errorCount} failed`)
-      } else if (errorCount > 0) {
-        toast.error(`Failed to archive ${errorCount} contact${errorCount !== 1 ? 's' : ''}`)
-      }
-
-      // Clear selection if any operations succeeded
-      if (successCount > 0) {
-        clearSelection()
-      }
-    } catch (error) {
-      // Handle unexpected errors during bulk delete operation
-      toast.error('An unexpected error occurred during bulk deletion')
-    } finally {
-      setIsDeleting(false)
-      setDeleteDialogOpen(false)
-    }
-  }
 
   // Helper component for empty cell display
   const EmptyCell = () => <span className="text-sm italic text-muted">—</span>
@@ -185,9 +125,11 @@ export function ContactsList({
                 <Users className="size-4 text-gray-400" />
               )}
               <span className="text-sm font-medium">
-                {contact.decision_authority === 'Decision Maker' || contact.budget_authority ? 'High Authority' :
-                 contact.decision_authority === 'Influencer' || contact.technical_authority ? 'Medium Authority' :
-                 'Limited Authority'}
+                {contact.decision_authority === 'Decision Maker' || contact.budget_authority
+                  ? 'High Authority'
+                  : contact.decision_authority === 'Influencer' || contact.technical_authority
+                    ? 'Medium Authority'
+                    : 'Limited Authority'}
               </span>
             </div>
 
@@ -225,9 +167,7 @@ export function ContactsList({
                 Influence Level: {contact.purchase_influence}
               </div>
             ) : (
-              <div className="text-sm italic text-muted-foreground">
-                Not assessed
-              </div>
+              <div className="text-sm italic text-muted-foreground">Not assessed</div>
             )}
 
             {contact.high_value_contact && (
@@ -294,9 +234,7 @@ export function ContactsList({
             <div className="space-y-1 text-sm text-muted-foreground">
               <div>Name: {contact.organization.name}</div>
               <div>Type: {contact.organization.type}</div>
-              {contact.organization.segment && (
-                <div>Segment: {contact.organization.segment}</div>
-              )}
+              {contact.organization.segment && <div>Segment: {contact.organization.segment}</div>}
             </div>
           </div>
         )}
@@ -324,81 +262,64 @@ export function ContactsList({
   })
 
   return (
-    <EntityListWrapper
-      title="Contacts"
-      description="Manage your contact relationships and communication history"
-      action={{
-        label: "Add Contact",
-        onClick: () => onEdit?.({} as Contact),
-        icon: <Plus className="size-4" />
-      }}
-    >
-      <div className="space-y-4">
-        {/* Bulk Actions Toolbar */}
+    <div className="space-y-4">
+      {/* Bulk Actions Toolbar */}
+      {bulkOperations.showBulkActions && (
         <BulkActionsToolbar
-          selectedCount={selectedItems.size}
+          selectedCount={bulkOperations.selectedCount}
           totalCount={displayContacts.length}
-          onBulkDelete={handleBulkDelete}
-          onClearSelection={clearSelection}
-          onSelectAll={handleSelectAllFromToolbar}
-          onSelectNone={handleSelectNoneFromToolbar}
+          onBulkDelete={() => bulkOperations.setIsDeleteDialogOpen(true)}
+          onClearSelection={bulkOperations.clearSelection}
+          onSelectAll={() => bulkOperations.handleSelectAll(true, displayContacts)}
+          onSelectNone={() => bulkOperations.handleSelectAll(false, displayContacts)}
           entityType="contact"
           entityTypePlural="contacts"
         />
+      )}
 
-        {/* DataTable with integrated ResponsiveFilterWrapper */}
-        <DataTable<ContactWithWeeklyContext, unknown>
-          data={displayContacts}
-          columns={columns}
-          loading={loading}
-          {...dataTableProps}
-          entityFilters={filters}
-          onEntityFiltersChange={setFilters}
-          principals={principals}
-          totalCount={displayContacts.length}
-          expandedContent={renderExpandableContent}
-          onSelectionChange={(ids) => {
-            // Sync selection state with the contacts selection hook
-            ids.forEach(id => {
-              const isSelected = selectedItems.has(id)
-              if (!isSelected) {
-                handleSelectItem(id, true)
-              }
-            })
-            // Remove unselected items
-            selectedItems.forEach(id => {
-              if (!ids.includes(id)) {
-                handleSelectItem(id, false)
-              }
-            })
-          }}
-          emptyState={{
-            title: filters.search || filters.quickView !== 'none'
+      {/* DataTable with integrated ResponsiveFilterWrapper */}
+      <DataTable<ContactWithWeeklyContext, unknown>
+        data={displayContacts}
+        columns={columns}
+        loading={loading}
+        isError={isError}
+        error={error}
+        onRetry={onRefresh}
+        {...dataTableProps}
+        entityFilters={filters}
+        onEntityFiltersChange={setFilters}
+        principals={principals}
+        totalCount={displayContacts.length}
+        expandedContent={renderExpandableContent}
+        onSelectionChange={bulkOperations.handleSelectionChange}
+        emptyState={{
+          title:
+            filters.search || filters.quickView !== 'none'
               ? 'No contacts match your criteria'
               : 'No contacts found',
-            description: filters.search || filters.quickView !== 'none'
+          description:
+            filters.search || filters.quickView !== 'none'
               ? 'Try adjusting your search or filters'
               : 'Get started by adding your first contact',
-            action: onEdit && (
-              <Button onClick={() => onEdit({} as Contact)} variant="default">
-                Add Contact
-              </Button>
-            )
-          }}
-        />
+          action: onEdit && (
+            <Button onClick={() => onEdit({} as Contact)} variant="default">
+              Add Contact
+            </Button>
+          ),
+        }}
+      />
 
-        {/* Bulk Delete Dialog */}
-        <BulkDeleteDialog
-          open={deleteDialogOpen}
-          onOpenChange={setDeleteDialogOpen}
-          entities={selectedContactsForDialog}
-          onConfirm={handleConfirmDelete}
-          isDeleting={isDeleting}
-          entityType="contact"
-          entityTypePlural="contacts"
-        />
-      </div>
-    </EntityListWrapper>
+      {/* Bulk Delete Dialog */}
+      <BulkDeleteDialog
+        open={bulkOperations.isDeleteDialogOpen}
+        onOpenChange={bulkOperations.setIsDeleteDialogOpen}
+        entities={selectedContactsForDialog}
+        onConfirm={bulkOperations.handleBulkDelete}
+        isDeleting={bulkOperations.isDeleting}
+        entityType="contact"
+        entityTypePlural="contacts"
+      />
+    </div>
   )
 }
 

@@ -1,6 +1,6 @@
 # Design Token Documentation
 
-Comprehensive guide to the KitchenPantry CRM design token system, featuring a three-tier architecture with MFB brand integration, OKLCH color science, and density-aware responsive design.
+Comprehensive guide to the KitchenPantry CRM design token system, featuring a simplified two-layer architecture with MFB brand integration, OKLCH color science, and enhanced theme provider capabilities.
 
 ## Table of Contents
 
@@ -16,18 +16,18 @@ Comprehensive guide to the KitchenPantry CRM design token system, featuring a th
 
 ## Architecture Overview
 
-The KitchenPantry CRM design system follows industry-standard three-tier design token architecture:
+The KitchenPantry CRM design system follows a simplified two-layer design token architecture:
 
 ```
-Primitive Tokens  →  Semantic Tokens  →  Component Tokens
-(Base Values)        (Contextual)        (Specific Usage)
+Primitive Tokens  →  Semantic Tokens
+(Base Values)        (Contextual Usage)
 ```
 
 ### Design System Foundation
 
 - **Color Science**: OKLCH color space for perceptual uniformity with HSL fallbacks
 - **Accessibility**: WCAG AAA compliance with scientifically calculated contrast ratios
-- **Density System**: Three responsive modes (compact/comfortable/spacious)
+- **Theme Provider**: Enhanced DOM class management for light/dark mode switching
 - **Framework Integration**: Complete shadcn/ui compatibility with custom brand extensions
 
 ## MFB Brand Colors
@@ -157,26 +157,6 @@ Context-aware tokens that map primitives to meaning:
 --destructive: var(--mfb-danger-hsl)
 ```
 
-### 3. Component Tokens (Specific Layer)
-
-Component-specific tokens for consistent styling:
-
-```css
-/* Button Tokens */
---button-height-sm: var(--button-height-sm)
---button-height-md: var(--button-height-md)
---button-height-lg: var(--button-height-lg)
-
-/* Layout Tokens */
---header-height: 4rem
---sidebar-width: 16rem
---dialog-max-height: min(80vh, 40rem)
-
-/* Card System */
---card-padding: var(--spacing-md)
---card-radius: 0.75rem
---card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1)
-```
 
 ## CSS Variables Reference
 
@@ -336,18 +316,40 @@ declare module 'csstype' {
 
 ## Density System
 
-The KitchenPantry CRM features an advanced three-tier density system that adapts the interface based on usage context:
+The KitchenPantry CRM features an enhanced theme provider system with basic density modes that adapt the interface based on usage context:
 
-### Density Modes
+### Theme Provider Capabilities
 
+#### Light/Dark Mode Switching
+The enhanced theme provider includes:
+- **DOM Class Management**: Automatic `dark` class application to `document.documentElement`
+- **localStorage Persistence**: User preference preservation across sessions
+- **System Detection**: Automatic detection and switching based on system preferences
+
+#### Basic Density Support
 1. **Compact** (`density-compact`) - Optimized for field work and mobile devices
 2. **Comfortable** (`density-comfortable`) - Balanced for office productivity
 3. **Spacious** (`density-spacious`) - Enhanced for presentations and accessibility
 
+### Theme Provider Implementation
+
+```typescript
+// Enhanced theme provider with DOM class management
+const themeProvider = {
+  applyTheme: (theme: 'light' | 'dark') => {
+    document.documentElement.className = theme === 'dark' ? 'dark' : '';
+    localStorage.setItem('theme', theme);
+  },
+  detectSystemTheme: () => {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+};
+```
+
 ### Density-Aware Tokens
 
 ```css
-/* Density-responsive variables defined in tokens/features.css */
+/* Basic density-responsive variables defined in semantic tokens */
 --kpi-height                  /* Adapts: 140px → 180px → 220px */
 --card-padding               /* Adapts: 16px → 24px → 32px */
 --section-gap                /* Adapts: 16px → 24px → 32px */
@@ -388,19 +390,14 @@ const cardPadding = getDensityToken('cardPadding') // "var(--card-padding)"
 ### When to Use Each Token Type
 
 #### Primitive Tokens
-- **Use for**: Building new semantic or component tokens
+- **Use for**: Building new semantic tokens
 - **Don't use for**: Direct application styling
 - **Example**: `--primary-500` → `--success` (semantic mapping)
 
 #### Semantic Tokens
-- **Use for**: General styling, theme-aware components
-- **Don't use for**: Highly specific component styling
-- **Example**: `background-color: hsl(var(--background))`
-
-#### Component Tokens
-- **Use for**: Component-specific styling, consistent patterns
-- **Don't use for**: One-off customizations
-- **Example**: `height: var(--button-height-md)`
+- **Use for**: All component styling, theme-aware components, specific patterns
+- **Don't use for**: Creating new primitive values without system integration
+- **Example**: `background-color: hsl(var(--background))`, `height: var(--button-height-md)`
 
 ### Color Usage Patterns
 
@@ -529,7 +526,7 @@ All text tokens meet or exceed WCAG AAA standards:
 3. **Test in both light and dark modes**
 4. **Validate contrast ratios** for custom color combinations
 5. **Use density-aware tokens** for responsive layouts
-6. **Follow the three-tier hierarchy** when creating new tokens
+6. **Follow the two-layer hierarchy** when creating new tokens
 7. **Use MFB brand colors** for brand emphasis and recognition
 
 ### DON'T ❌
@@ -538,8 +535,7 @@ All text tokens meet or exceed WCAG AAA standards:
 2. **Don't hardcode color values** when tokens exist
 3. **Don't create one-off CSS variables** without system integration
 4. **Don't override semantic tokens** without careful consideration
-5. **Don't ignore density modes** in layout components
-6. **Don't use non-brand colors** for primary interface elements
+5. **Don't use non-brand colors** for primary interface elements
 
 ### Token Naming Conventions
 
@@ -547,8 +543,8 @@ All text tokens meet or exceed WCAG AAA standards:
 /* Follow established patterns */
 --{brand}-{color}-{variant}          /* --mfb-green-hover */
 --{semantic}-{context}               /* --text-primary */
---{component}-{property}-{size}      /* --button-height-md */
 --{category}-{subcategory}           /* --spacing-md */
+--{property}-{size}                  /* --button-height-md */
 ```
 
 ### Performance Considerations

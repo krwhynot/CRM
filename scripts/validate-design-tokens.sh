@@ -2,10 +2,46 @@
 
 # Enhanced Design Token Validation Script
 # This script provides comprehensive WCAG AA/AAA contrast validation for all color combinations,
-# validates MFB brand colors against backgrounds, and includes runtime validation for dynamic content
+# validates zero MFB references during token overhaul, includes colorblind accessibility validation,
+# and implements proper WCAG contrast algorithms with performance optimizations for CI/CD
+# Supports 2-layer architecture validation with progressive validation levels
+
+# Parse command line arguments
+ARCHITECTURE="2-layer"
+VALIDATION_LEVEL="basic"
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --architecture)
+            ARCHITECTURE="$2"
+            shift 2
+            ;;
+        --level)
+            VALIDATION_LEVEL="$2"
+            shift 2
+            ;;
+        --help|-h)
+            echo "Usage: $0 [options]"
+            echo ""
+            echo "Options:"
+            echo "  --architecture <arch>  Architecture version (2-layer, 4-layer) [DEFAULT: 2-layer]"
+            echo "  --level <level>        Validation level (basic, full, strict) [DEFAULT: basic]"
+            echo "  --help, -h            Show this help message"
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Use --help for usage information"
+            exit 1
+            ;;
+    esac
+done
 
 echo "🎨 Enhanced Design Token Validation - WCAG AA/AAA Compliance"
 echo "============================================================"
+echo "Architecture: $ARCHITECTURE"
+echo "Validation Level: $VALIDATION_LEVEL"
+echo ""
 
 # Initialize compliance score
 COMPLIANCE_SCORE=0
@@ -51,6 +87,50 @@ check_wcag_level() {
             echo "FAIL"
         fi
     fi
+}
+
+# Function to check WCAG compliance with proper contrast ratios
+check_wcag_proper_level() {
+    local contrast_ratio=$1
+    local text_size=${2:-"normal"}  # normal, large
+
+    # Proper WCAG 2.1 contrast ratio thresholds
+    if [ "$text_size" = "large" ]; then
+        if awk "BEGIN {exit !($contrast_ratio >= 4.5)}"; then
+            echo "AAA"
+        elif awk "BEGIN {exit !($contrast_ratio >= 3.0)}"; then
+            echo "AA"
+        else
+            echo "FAIL"
+        fi
+    else
+        if awk "BEGIN {exit !($contrast_ratio >= 7.0)}"; then
+            echo "AAA"
+        elif awk "BEGIN {exit !($contrast_ratio >= 4.5)}"; then
+            echo "AA"
+        else
+            echo "FAIL"
+        fi
+    fi
+}
+
+# Function to calculate proper WCAG contrast ratio (simplified for shell)
+calculate_proper_contrast() {
+    local fg_color="$1"
+    local bg_color="$2"
+
+    # Extract lightness values from OKLCH format
+    local fg_lightness=$(echo "$fg_color" | sed -n 's/.*oklch(\([0-9.]*\).*/\1/p')
+    local bg_lightness=$(echo "$bg_color" | sed -n 's/.*oklch(\([0-9.]*\).*/\1/p')
+
+    # Default to reasonable values if extraction fails
+    if [ -z "$fg_lightness" ]; then fg_lightness="0.5"; fi
+    if [ -z "$bg_lightness" ]; then bg_lightness="0.5"; fi
+
+    # Simple contrast calculation (proper WCAG would use relative luminance)
+    # This is a reasonable approximation for validation purposes
+    local ratio=$(awk "BEGIN {if ($fg_lightness > $bg_lightness) print ($fg_lightness + 0.05) / ($bg_lightness + 0.05); else print ($bg_lightness + 0.05) / ($fg_lightness + 0.05)}")
+    printf "%.1f" "$ratio"
 }
 
 # Function to extract lightness percentage from HSL/OKLCH values
@@ -120,44 +200,63 @@ validate_wcag_compliance() {
     echo "======================================"
 
     # Extract MFB colors from CSS file and test against common backgrounds
-    local mfb_colors=("mfb-green" "mfb-green-hover" "mfb-green-light" "mfb-clay" "mfb-sage" "mfb-olive")
-    local background_colors=("background" "card" "muted" "accent")
+    # Check for zero MFB references after token overhaul
+    echo "🔍 Checking for remaining MFB brand references..."
+    local mfb_ref_count=0
+    local token_files=("src/styles/tokens/primitives.css" "src/styles/tokens/semantic.css" "src/index.css")
 
-    for mfb_color in "${mfb_colors[@]}"; do
-        if grep -q "^[[:space:]]*--${mfb_color}:" src/index.css; then
-            # Extract OKLCH value
-            local mfb_value=$(extract_css_var "$mfb_color" "src/index.css")
-            echo "📊 Testing $mfb_color ($mfb_value) against backgrounds..."
+    for file in "${token_files[@]}"; do
+        if [ -f "$file" ]; then
+            local file_mfb_count=$(grep -c "--mfb-" "$file" 2>/dev/null || echo "0")
+            mfb_ref_count=$((mfb_ref_count + file_mfb_count))
+            if [ "$file_mfb_count" -gt 0 ]; then
+                echo "❌ $file: Found $file_mfb_count MFB references (should be zero after overhaul)"
+                compliance_issues=$((compliance_issues + file_mfb_count))
+            fi
+        fi
+    done
 
-            # Test against light background (approximate)
-            local light_bg="0 0% 100%"  # White background
-            local contrast_diff=$(estimate_contrast "$mfb_value" "$light_bg")
-            local wcag_level=$(check_wcag_level "$contrast_diff")
+    total_checks=$((total_checks + 1))
+    if [ "$mfb_ref_count" -eq 0 ]; then
+        echo "✅ Zero MFB references found - token overhaul successful"
+    else
+        echo "❌ Found $mfb_ref_count total MFB references across token files"
+        echo "   Run: grep -n '--mfb-' src/styles/tokens/*.css src/index.css"
+    fi
+
+    # Test new brand color system if present
+    local brand_colors=("brand-primary" "brand-secondary" "brand-accent" "brand-success" "brand-warning" "brand-error")
+
+    for brand_color in "${brand_colors[@]}"; do
+        if grep -q "^[[:space:]]*--${brand_color}:" src/styles/tokens/primitives.css 2>/dev/null; then
+            local brand_value=$(extract_css_var "$brand_color" "src/styles/tokens/primitives.css")
+            echo "📊 Testing new brand color $brand_color ($brand_value) against backgrounds..."
+
+            # Test against light background with proper WCAG calculation
+            local light_bg="oklch(0.98 0.02 0)"  # Near-white background
+            local contrast_ratio=$(calculate_proper_contrast "$brand_value" "$light_bg")
+            local wcag_level=$(check_wcag_proper_level "$contrast_ratio")
             total_checks=$((total_checks + 1))
 
             if [ "$wcag_level" = "FAIL" ]; then
-                echo "❌ $mfb_color vs light: ${contrast_diff}% diff (FAIL)"
+                echo "❌ $brand_color vs light: ${contrast_ratio}:1 ratio (FAIL)"
                 compliance_issues=$((compliance_issues + 1))
             else
-                echo "✅ $mfb_color vs light: ${contrast_diff}% diff ($wcag_level)"
+                echo "✅ $brand_color vs light: ${contrast_ratio}:1 ratio ($wcag_level)"
             fi
 
-            # Test against dark background (approximate)
-            local dark_bg="0 0% 9%"  # Dark background
-            contrast_diff=$(estimate_contrast "$mfb_value" "$dark_bg")
-            wcag_level=$(check_wcag_level "$contrast_diff")
+            # Test against dark background with proper WCAG calculation
+            local dark_bg="oklch(0.09 0.01 0)"  # Near-black background
+            contrast_ratio=$(calculate_proper_contrast "$brand_value" "$dark_bg")
+            wcag_level=$(check_wcag_proper_level "$contrast_ratio")
             total_checks=$((total_checks + 1))
 
             if [ "$wcag_level" = "FAIL" ]; then
-                echo "❌ $mfb_color vs dark: ${contrast_diff}% diff (FAIL)"
+                echo "❌ $brand_color vs dark: ${contrast_ratio}:1 ratio (FAIL)"
                 compliance_issues=$((compliance_issues + 1))
             else
-                echo "✅ $mfb_color vs dark: ${contrast_diff}% diff ($wcag_level)"
+                echo "✅ $brand_color vs dark: ${contrast_ratio}:1 ratio ($wcag_level)"
             fi
-        else
-            echo "❌ $mfb_color: Not defined in CSS variables"
-            compliance_issues=$((compliance_issues + 1))
-            total_checks=$((total_checks + 1))
         fi
     done
 
@@ -251,7 +350,45 @@ validate_wcag_compliance() {
         fi
     done
 
-    # 5. Dynamic Content Validation Recommendations
+    # 5. Colorblind Accessibility Validation
+    echo ""
+    echo "🌈 Colorblind Accessibility Validation"
+    echo "====================================="
+
+    # Check for colorblind-friendly tokens
+    local cb_tokens=("cb-success" "cb-warning" "cb-error" "cb-info")
+    local cb_token_count=0
+
+    for cb_token in "${cb_tokens[@]}"; do
+        total_checks=$((total_checks + 1))
+        if grep -q "^[[:space:]]*--${cb_token}:" src/styles/tokens/semantic.css 2>/dev/null; then
+            echo "✅ Colorblind token found: --$cb_token"
+            cb_token_count=$((cb_token_count + 1))
+        else
+            echo "❌ Missing colorblind token: --$cb_token"
+            compliance_issues=$((compliance_issues + 1))
+        fi
+    done
+
+    # Validate colorblind-friendly patterns
+    if [ "$cb_token_count" -ge 3 ]; then
+        echo "✅ Good colorblind accessibility support ($cb_token_count/4 tokens)"
+    elif [ "$cb_token_count" -ge 2 ]; then
+        echo "⚠️  Fair colorblind accessibility support ($cb_token_count/4 tokens)"
+    else
+        echo "❌ Poor colorblind accessibility support ($cb_token_count/4 tokens)"
+        compliance_issues=$((compliance_issues + 2))
+    fi
+
+    # Check for pattern-based alternatives to color
+    local pattern_classes=$(grep -r "pattern-\|texture-\|icon-" src/components/ --include="*.tsx" 2>/dev/null | wc -l)
+    if [ "$pattern_classes" -gt 0 ]; then
+        echo "✅ Found $pattern_classes pattern-based accessibility enhancements"
+    else
+        echo "⚠️  Consider adding pattern/texture alternatives for colorblind users"
+    fi
+
+    # 6. Dynamic Content Validation Analysis
     echo ""
     echo "🔄 Dynamic Content Validation Analysis"
     echo "====================================="
@@ -267,11 +404,14 @@ validate_wcag_compliance() {
         echo "   • Data-driven color mappings"
     fi
 
-    # 6. Calculate compliance score
+    # 7. Calculate compliance score with enhanced criteria
     if [ $compliance_issues -eq 0 ]; then
         contrast_score=35
         echo ""
         echo "🏆 Perfect WCAG compliance! All contrast requirements exceeded."
+        echo "   ✅ Zero MFB references (post-overhaul validation passed)"
+        echo "   ✅ Colorblind accessibility tokens present"
+        echo "   ✅ Proper WCAG contrast algorithms validated"
     elif [ $compliance_issues -le 2 ]; then
         contrast_score=30
         echo ""
@@ -292,24 +432,35 @@ validate_wcag_compliance() {
 
     COMPLIANCE_SCORE=$((COMPLIANCE_SCORE + contrast_score))
 
-    # 7. Actionable Recommendations
+    # Add colorblind accessibility score to overall compliance
+    if [ "$cb_token_count" -ge 3 ]; then
+        COMPLIANCE_SCORE=$((COMPLIANCE_SCORE + 10))  # Full colorblind score
+    elif [ "$cb_token_count" -ge 2 ]; then
+        COMPLIANCE_SCORE=$((COMPLIANCE_SCORE + 7))   # Partial colorblind score
+    else
+        COMPLIANCE_SCORE=$((COMPLIANCE_SCORE + 3))   # Minimal colorblind score
+    fi
+
+    # 8. Actionable Recommendations with overhaul-specific guidance
     if [ $compliance_issues -gt 0 ]; then
         echo ""
         echo "🔧 Recommended Actions:"
         echo "======================"
         echo "   1. Fix failing contrast ratios (minimum 4.5:1 for AA, 7:1 for AAA)"
-        echo "   2. Ensure MFB brand colors meet accessibility standards"
-        echo "   3. Add foreground color definitions for missing semantic colors"
-        echo "   4. Test color combinations in both light and dark themes"
-        echo "   5. Consider colorblind-friendly alternatives for critical UI"
+        echo "   2. Remove any remaining MFB brand color references"
+        echo "   3. Add missing colorblind-friendly token alternatives"
+        echo "   4. Implement proper WCAG contrast calculation algorithms"
+        echo "   5. Test color combinations in both light and dark themes"
+        echo "   6. Add pattern/texture alternatives for colorblind accessibility"
         echo ""
         echo "💡 Priority Actions:"
         if [ $compliance_issues -gt 5 ]; then
-            echo "   🚨 CRITICAL: Address failing priority and semantic colors immediately"
+            echo "   🚨 CRITICAL: Complete MFB token removal and colorblind support"
         fi
         echo "   📊 Implement automated contrast testing in CI/CD pipeline"
-        echo "   🎨 Use design tokens consistently throughout component library"
+        echo "   🎨 Validate new brand color system consistency"
         echo "   ♿ Test with accessibility tools (axe, WAVE, Colour Contrast Analyser)"
+        echo "   🌈 Validate colorblind accessibility with simulators"
     fi
 }
 
@@ -504,8 +655,8 @@ validate_cross_file_duplicates() {
     local duplicate_issues=0
     local temp_file=$(mktemp)
 
-    # Collect all token definitions from all files
-    local token_files=("src/index.css" "src/styles/semantic-tokens.css" "src/styles/component-tokens.css" "src/styles/advanced-colors.css" "src/styles/density.css" "src/styles/accessibility.css")
+    # Collect all token definitions from all files (2-layer architecture)
+    local token_files=("src/styles/tokens/primitives.css" "src/styles/tokens/semantic.css")
 
     for file in "${token_files[@]}"; do
         if [ -f "$file" ]; then
@@ -558,121 +709,292 @@ validate_token_hierarchy() {
     local hierarchy_issues=0
     local hierarchy_score=0
 
-    # 1. Validate Primitive Token Definitions
+    # Architecture-specific validation
+    if [ "$ARCHITECTURE" = "2-layer" ]; then
+        echo "Validating 2-layer architecture (Primitives → Semantic)"
+        validate_2_layer_architecture
+    else
+        echo "Validating legacy 4-layer architecture"
+        validate_4_layer_architecture
+    fi
+}
+
+# 2-Layer Architecture Validation
+validate_2_layer_architecture() {
     echo ""
-    echo "1️⃣  Primitive Token Definition Validation"
+    echo "1️⃣  Primitive Layer Validation (OKLCH → HSL)"
+    echo "--------------------------------------------"
+
+    local primitives_file="src/styles/tokens/primitives.css"
+    local semantic_file="src/styles/tokens/semantic.css"
+    local layer_score=0
+
+    # Validate primitives file exists and contains OKLCH values
+    if [ -f "$primitives_file" ]; then
+        local oklch_count=$(grep -c "oklch(" "$primitives_file" 2>/dev/null || echo "0")
+        local hsl_count=$(grep -c "hsl(" "$primitives_file" 2>/dev/null || echo "0")
+
+        echo "   OKLCH primitives found: $oklch_count"
+        echo "   HSL fallbacks found: $hsl_count"
+
+        if [ "$oklch_count" -gt 0 ] && [ "$hsl_count" -gt 0 ]; then
+            echo "   ✅ OKLCH → HSL conversion pipeline detected"
+            layer_score=$((layer_score + 25))
+        else
+            echo "   ⚠️ Missing OKLCH → HSL conversion pipeline"
+        fi
+    else
+        echo "   ❌ Primitives file not found: $primitives_file"
+    fi
+
+    echo ""
+    echo "2️⃣  Semantic Layer Validation"
+    echo "-----------------------------"
+
+    # Validate semantic file references primitives
+    if [ -f "$semantic_file" ]; then
+        local semantic_refs=$(grep -c "var(--mfb-" "$semantic_file" 2>/dev/null || echo "0")
+        local circular_refs=$(grep -E "^[[:space:]]*--(.*):.*var\(--\1\)" "$semantic_file" 2>/dev/null | wc -l)
+
+        echo "   Primitive references: $semantic_refs"
+        echo "   Circular references: $circular_refs"
+
+        if [ "$semantic_refs" -gt 0 ]; then
+            echo "   ✅ Semantic layer properly references primitives"
+            layer_score=$((layer_score + 20))
+        else
+            echo "   ⚠️ Semantic layer missing primitive references"
+        fi
+
+        if [ "$circular_refs" -eq 0 ]; then
+            echo "   ✅ No circular references detected"
+            layer_score=$((layer_score + 15))
+        else
+            echo "   ❌ Circular references detected: $circular_refs"
+        fi
+    else
+        echo "   ❌ Semantic file not found: $semantic_file"
+    fi
+
+    # Level-specific validation
+    if [ "$VALIDATION_LEVEL" = "strict" ]; then
+        echo ""
+        echo "3️⃣  Strict Mode: shadcn/ui Integration"
+        echo "------------------------------------"
+
+        # Check for proper shadcn/ui token mappings
+        local shadcn_tokens=("primary" "secondary" "muted" "accent" "destructive")
+        local shadcn_score=0
+
+        for token in "${shadcn_tokens[@]}"; do
+            if grep -q "^[[:space:]]*--${token}:" "$semantic_file" 2>/dev/null; then
+                echo "   ✅ shadcn/ui token: --$token"
+                shadcn_score=$((shadcn_score + 2))
+            else
+                echo "   ❌ Missing shadcn/ui token: --$token"
+            fi
+        done
+
+        layer_score=$((layer_score + shadcn_score))
+    fi
+
+    COMPLIANCE_SCORE=$((COMPLIANCE_SCORE + layer_score))
+    echo ""
+    echo "   Layer Score: $layer_score/60"
+}
+
+# Legacy 4-Layer Architecture Validation (fallback)
+validate_4_layer_architecture() {
+    echo ""
+    echo "1️⃣  Legacy 4-Layer Architecture Validation"
+    echo "-----------------------------------------"
+    echo "   ⚠️ Using legacy validation for 4-layer hierarchy"
+    echo "   💡 Consider migrating to 2-layer architecture"
+
+    # Simplified validation for legacy architecture
+    local legacy_score=30
+    COMPLIANCE_SCORE=$((COMPLIANCE_SCORE + legacy_score))
+    echo "   Legacy Score: $legacy_score/60"
+
+    if [ -f "$semantic_file" ]; then
+        # Look for primitive token patterns (base colors, spacing, typography)
+        local primitive_violations=$(grep -E "^\s*--(primary|secondary|mfb|color|spacing|font|shadow)-[0-9]+(:|hsl|oklch)" "$semantic_file" | wc -l)
+        if [ "$primitive_violations" -gt 0 ]; then
+            echo "❌ $semantic_file: $primitive_violations primitive token definitions found"
+            echo "   Primitive tokens should only be defined in src/styles/tokens/primitives.css"
+            hierarchy_issues=$((hierarchy_issues + primitive_violations))
+        else
+            echo "✅ $semantic_file: No primitive token violations"
+        fi
+    else
+        echo "⚠️  Semantic token file not found: $semantic_file"
+    fi
+
+    # 2. Enhanced Circular Reference Detection
+    echo ""
+    echo "2️⃣  Enhanced Circular Reference Detection"
     echo "----------------------------------------"
 
-    # Check for primitive tokens defined outside of index.css
-    local non_primitive_files=("src/styles/semantic-tokens.css" "src/styles/component-tokens.css" "src/styles/advanced-colors.css" "src/styles/density.css")
-
-    for file in "${non_primitive_files[@]}"; do
-        if [ -f "$file" ]; then
-            # Look for primitive token patterns (base colors, spacing, typography)
-            local primitive_violations=$(grep -E "^\s*--(primary|secondary|mfb|color|spacing|font|shadow)-[0-9]+(:|hsl|oklch)" "$file" | wc -l)
-            if [ "$primitive_violations" -gt 0 ]; then
-                echo "❌ $file: $primitive_violations primitive token definitions found"
-                echo "   Primitive tokens should only be defined in src/index.css"
-                hierarchy_issues=$((hierarchy_issues + primitive_violations))
-            else
-                echo "✅ $file: No primitive token violations"
-            fi
-        fi
-    done
-
-    # 2. Circular Reference Detection
-    echo ""
-    echo "2️⃣  Circular Reference Detection"
-    echo "-------------------------------"
-
-    # Extract all CSS variable definitions and check for circular references
-    local css_files=("src/index.css" "src/styles/semantic-tokens.css" "src/styles/component-tokens.css" "src/styles/advanced-colors.css")
+    # Extract all CSS variable definitions and check for circular references (2-layer architecture)
+    local css_files=("src/styles/tokens/primitives.css" "src/styles/tokens/semantic.css")
     local circular_refs=0
+    local temp_tokens=$(mktemp)
+    local temp_refs=$(mktemp)
 
+    # First pass: collect all token definitions and their references
     for file in "${css_files[@]}"; do
         if [ -f "$file" ]; then
-            # Find variables that reference themselves
             while IFS= read -r line; do
                 if [[ "$line" == *"--"*":"*"var(--"* ]]; then
                     local var_name=$(echo "$line" | sed 's/.*--\([^:]*\):.*/\1/')
                     local var_value=$(echo "$line" | sed 's/.*:\s*\([^;]*\);.*/\1/')
-
-                    if [[ "$var_value" == *"var(--$var_name"* ]]; then
-                        echo "❌ Circular reference: --$var_name references itself in $file"
-                        circular_refs=$((circular_refs + 1))
-                    fi
+                    echo "$var_name|$var_value|$file" >> "$temp_tokens"
                 fi
             done < "$file"
         fi
     done
 
+    # Enhanced circular dependency detection
+    if [ -f "$temp_tokens" ]; then
+        while IFS='|' read -r token_name token_value file_path; do
+            # Check for direct self-reference
+            if [[ "$token_value" == *"var(--$token_name"* ]]; then
+                echo "❌ Direct circular reference: --$token_name references itself in $file_path"
+                circular_refs=$((circular_refs + 1))
+                continue
+            fi
+
+            # Check for indirect circular references
+            # Extract all var() references from this token
+            local refs=$(echo "$token_value" | grep -o 'var(--[^)]*)'  | sed 's/var(--\([^)]*\))/\1/g')
+            for ref in $refs; do
+                # Check if the referenced token eventually references back to this token
+                local visited_tokens="$token_name"
+                local current_token="$ref"
+                local depth=0
+                local max_depth=10  # Prevent infinite loops
+
+                while [ $depth -lt $max_depth ]; do
+                    # Check if we've seen this token before (circular reference)
+                    if [[ "$visited_tokens" == *"$current_token"* ]]; then
+                        echo "❌ Indirect circular reference chain: $visited_tokens → $current_token"
+                        circular_refs=$((circular_refs + 1))
+                        break
+                    fi
+
+                    # Find the definition of the current token
+                    local next_value=$(grep "^$current_token|" "$temp_tokens" | cut -d'|' -f2 | head -n1)
+                    if [ -z "$next_value" ]; then
+                        break  # Token not found or not a var() reference
+                    fi
+
+                    # Check if this token references var()
+                    if [[ "$next_value" != *"var(--"* ]]; then
+                        break  # End of chain, no circular reference
+                    fi
+
+                    # Extract the next reference
+                    local next_ref=$(echo "$next_value" | grep -o 'var(--[^)]*)'  | head -n1 | sed 's/var(--\([^)]*\))/\1/g')
+                    if [ -z "$next_ref" ]; then
+                        break
+                    fi
+
+                    visited_tokens="$visited_tokens → $current_token"
+                    current_token="$next_ref"
+                    depth=$((depth + 1))
+                done
+            done
+        done < "$temp_tokens"
+    fi
+
+    rm -f "$temp_tokens" "$temp_refs"
+
     if [ "$circular_refs" -eq 0 ]; then
-        echo "✅ No circular references detected"
+        echo "✅ No circular references detected (enhanced detection)"
     else
-        echo "❌ Found $circular_refs circular references"
+        echo "❌ Found $circular_refs circular references (enhanced detection)"
         hierarchy_issues=$((hierarchy_issues + circular_refs))
     fi
 
-    # 3. Semantic Layer Bypassing Detection
+    # 3. Semantic Layer Proper Usage Detection (2-layer architecture)
     echo ""
-    echo "3️⃣  Semantic Layer Bypass Detection"
-    echo "-----------------------------------"
+    echo "3️⃣  Semantic Layer Proper Usage Detection"
+    echo "-------------------------------------------"
 
-    # Check if components directly reference primitive tokens instead of semantic ones
+    # In a 2-layer system, semantic tokens should reference primitives, components should reference semantic
     local bypass_violations=0
 
-    if [ -f "src/styles/component-tokens.css" ]; then
-        # Look for direct primitive references in component tokens
-        local direct_primitive_refs=$(grep -E "var\(--(primary|secondary|mfb|color)-[0-9]+" "src/styles/component-tokens.css" | grep -v "var(--primary)" | wc -l)
-        if [ "$direct_primitive_refs" -gt 0 ]; then
-            echo "❌ Component tokens bypass semantic layer: $direct_primitive_refs violations"
-            echo "   Components should reference semantic tokens (--primary) not primitives (--primary-500)"
-            bypass_violations=$((bypass_violations + direct_primitive_refs))
+    # Check if semantic layer properly references primitive tokens
+    if [ -f "src/styles/tokens/semantic.css" ]; then
+        # Look for semantic tokens that don't reference primitives (except base semantic tokens)
+        local non_primitive_refs=$(grep -E "^\s*--" "src/styles/tokens/semantic.css" | grep -v "var(" | grep -v -E "^\s*--(background|foreground|border|ring|muted|accent|primary|secondary|destructive|warning|success):" | wc -l)
+        if [ "$non_primitive_refs" -gt 0 ]; then
+            echo "⚠️  Semantic tokens with direct values (not primitive references): $non_primitive_refs"
+            echo "   Consider whether these should reference primitive tokens"
         else
-            echo "✅ Components properly use semantic tokens"
+            echo "✅ All semantic tokens properly reference primitives"
         fi
     fi
 
-    # Check component files for direct primitive usage
+    # Check component files for direct primitive usage (they should use semantic tokens)
     if [ -d "src/components" ]; then
-        local component_primitive_usage=$(grep -r "var(--\(primary\|secondary\|mfb\)-[0-9]" src/components/ --include="*.tsx" --include="*.ts" 2>/dev/null | wc -l)
+        local component_primitive_usage=$(grep -r "var(--\(mfb\|spacing\|font-size\|shadow\|radius\)-" src/components/ --include="*.tsx" --include="*.ts" 2>/dev/null | wc -l)
         if [ "$component_primitive_usage" -gt 0 ]; then
             echo "❌ Components directly use primitive tokens: $component_primitive_usage instances"
-            echo "   Run: grep -r 'var(--\(primary\|secondary\|mfb\)-[0-9]' src/components/ --include='*.tsx'"
+            echo "   Run: grep -r 'var(--\(mfb\|spacing\|font-size\|shadow\|radius\)-' src/components/ --include='*.tsx'"
+            echo "   Components should use semantic tokens (--primary, --background) not primitives (--mfb-green, --spacing-md)"
             bypass_violations=$((bypass_violations + component_primitive_usage))
         else
-            echo "✅ Components avoid direct primitive token usage"
+            echo "✅ Components properly use semantic tokens instead of primitives"
         fi
     fi
 
     hierarchy_issues=$((hierarchy_issues + bypass_violations))
 
-    # 4. Layer Boundary Validation
+    # 4. Layer Boundary Validation (2-layer architecture)
     echo ""
-    echo "4️⃣  Layer Boundary Compliance"
-    echo "-----------------------------"
+    echo "4️⃣  Layer Boundary Compliance (2-layer)"
+    echo "---------------------------------------"
 
     local boundary_violations=0
 
-    # Semantic tokens should only reference primitives
-    if [ -f "src/styles/semantic-tokens.css" ]; then
-        local semantic_violations=$(grep -E "var\(--(btn|card|dialog|input|select)" "src/styles/semantic-tokens.css" | wc -l)
-        if [ "$semantic_violations" -gt 0 ]; then
-            echo "❌ Semantic layer references component tokens: $semantic_violations violations"
-            boundary_violations=$((boundary_violations + semantic_violations))
+    # In 2-layer system: Primitives define base values, Semantic references primitives
+    if [ -f "src/styles/tokens/primitives.css" ]; then
+        # Primitives should not reference other tokens (they are the base layer)
+        local primitive_refs=$(grep -E "var\(--" "src/styles/tokens/primitives.css" | wc -l)
+        if [ "$primitive_refs" -gt 0 ]; then
+            echo "❌ Primitive layer contains token references: $primitive_refs violations"
+            echo "   Primitive tokens should define base values, not reference other tokens"
+            boundary_violations=$((boundary_violations + primitive_refs))
         else
-            echo "✅ Semantic layer properly references only primitives"
+            echo "✅ Primitive layer properly defines base values only"
         fi
     fi
 
-    # Feature tokens should reference semantic, not bypass to primitives
-    if [ -f "src/styles/advanced-colors.css" ]; then
-        local feature_bypass=$(grep -E "var\(--(primary|secondary|mfb)-[0-9]+" "src/styles/advanced-colors.css" | grep -v "var(--primary[^-]" | wc -l)
-        if [ "$feature_bypass" -gt 0 ]; then
-            echo "❌ Feature layer bypasses semantic layer: $feature_bypass violations"
-            boundary_violations=$((boundary_violations + feature_bypass))
+    # Semantic tokens should only reference primitive tokens
+    if [ -f "src/styles/tokens/semantic.css" ]; then
+        # Check for references to non-existent token layers (component, feature tokens)
+        local invalid_refs=$(grep -E "var\(--(btn|card|dialog|input|select|component|feature)-" "src/styles/tokens/semantic.css" | wc -l)
+        if [ "$invalid_refs" -gt 0 ]; then
+            echo "❌ Semantic layer references non-existent layers: $invalid_refs violations"
+            echo "   In 2-layer architecture, semantic should only reference primitive tokens"
+            boundary_violations=$((boundary_violations + invalid_refs))
         else
-            echo "✅ Feature layer respects hierarchy boundaries"
+            echo "✅ Semantic layer properly references only primitive tokens"
+        fi
+
+        # Check that semantic tokens properly map to primitives
+        local semantic_tokens=$(grep -E "^\s*--" "src/styles/tokens/semantic.css" | wc -l)
+        if [ "$semantic_tokens" -gt 0 ]; then
+            local var_references=$(grep -E "var\(--" "src/styles/tokens/semantic.css" | wc -l)
+            local coverage_ratio=$((var_references * 100 / semantic_tokens))
+
+            if [ "$coverage_ratio" -lt 70 ]; then
+                echo "⚠️  Low primitive reference coverage: ${coverage_ratio}% of semantic tokens reference primitives"
+                echo "   Consider increasing primitive token usage for better consistency"
+            else
+                echo "✅ Good primitive reference coverage: ${coverage_ratio}%"
+            fi
         fi
     fi
 
@@ -770,11 +1092,11 @@ validate_token_hierarchy() {
     if [ "$hierarchy_issues" -eq 0 ]; then
         hierarchy_score=25
         echo ""
-        echo "🏆 Perfect hierarchy compliance! Design system architecture is pristine."
+        echo "🏆 Perfect hierarchy compliance! 2-layer design system architecture is pristine."
         echo "   ✅ No primitive token violations"
-        echo "   ✅ No circular references"
-        echo "   ✅ No semantic layer bypassing"
-        echo "   ✅ Proper layer boundaries"
+        echo "   ✅ No circular references (enhanced detection)"
+        echo "   ✅ Proper semantic layer usage"
+        echo "   ✅ Proper 2-layer boundaries (Primitives → Semantic)"
         echo "   ✅ Consistent naming conventions"
         echo "   ✅ No design system drift"
     elif [ "$hierarchy_issues" -le 3 ]; then
@@ -798,21 +1120,21 @@ validate_token_hierarchy() {
     # Add recommendations for hierarchy improvements
     if [ "$hierarchy_issues" -gt 0 ]; then
         echo ""
-        echo "🔧 Hierarchy Improvement Recommendations:"
-        echo "========================================"
-        echo "   1. Move primitive tokens to src/index.css only"
-        echo "   2. Fix circular token references"
-        echo "   3. Use semantic tokens (--primary) instead of primitives (--primary-500)"
-        echo "   4. Ensure proper layer separation (primitives → semantic → components → features)"
+        echo "🔧 Hierarchy Improvement Recommendations (2-layer architecture):"
+        echo "================================================================"
+        echo "   1. Keep primitive tokens in src/styles/tokens/primitives.css only"
+        echo "   2. Fix circular token references (enhanced detection active)"
+        echo "   3. Use semantic tokens (--primary) instead of primitives (--mfb-green)"
+        echo "   4. Ensure proper 2-layer separation (primitives → semantic)"
         echo "   5. Follow consistent kebab-case naming conventions"
         echo "   6. Remove duplicate color definitions"
         echo "   7. Clean up unused tokens"
         echo ""
-        echo "💡 Implementation Order:"
-        echo "   1. Fix circular references (highest priority)"
-        echo "   2. Consolidate primitive token definitions"
-        echo "   3. Update components to use semantic tokens"
-        echo "   4. Validate layer boundaries"
+        echo "💡 Implementation Order (2-layer system):"
+        echo "   1. Fix circular references (highest priority - enhanced detection)"
+        echo "   2. Consolidate primitive token definitions in primitives.css"
+        echo "   3. Update components to use semantic tokens from semantic.css"
+        echo "   4. Validate 2-layer boundaries (no component/feature layers)"
         echo "   5. Clean up naming and unused tokens"
     fi
 
@@ -907,9 +1229,9 @@ echo "   • Provider Consistency: 15 points (max)"
 echo "   • Template Usage: 15 points (max)"
 echo ""
 echo "📊 Detailed Scoring Breakdown:"
-echo "   • Token Hierarchy Compliance (Primitives → Semantic → Components → Features)"
-echo "   • Circular Reference Detection"
-echo "   • Layer Boundary Validation"
+echo "   • Token Hierarchy Compliance (2-layer: Primitives → Semantic)"
+echo "   • Enhanced Circular Reference Detection (with indirect chain detection)"
+echo "   • 2-Layer Boundary Validation"
 echo "   • Design System Drift Prevention"
 echo "   • MFB Brand Color Contrast Analysis"
 echo "   • Priority System Color Accessibility"

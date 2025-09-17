@@ -47,7 +47,7 @@ interface FilterLayoutToggleProps {
 export function FilterLayoutToggle({
   showDebugInfo = false,
   compact = false,
-  className
+  className,
 }: FilterLayoutToggleProps) {
   const { currentMode, setMode, availableModes, deviceContext } = useFilterModeSelector()
 
@@ -69,7 +69,7 @@ export function FilterLayoutToggle({
 
   // Get display label for current mode
   const getCurrentModeLabel = () => {
-    const mode = availableModes.find(m => m.value === currentMode)
+    const mode = availableModes.find((m) => m.value === currentMode)
     return mode?.label || 'Unknown'
   }
 
@@ -95,11 +95,8 @@ export function FilterLayoutToggle({
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
-            size={compact ? "sm" : "default"}
-            className={cn(
-              'flex items-center gap-2',
-              compact && 'h-8 px-2'
-            )}
+            size={compact ? 'sm' : 'default'}
+            className={cn('flex items-center gap-2', compact && 'h-8 px-2')}
           >
             <Settings className={cn('h-4 w-4', compact && 'h-3 w-3')} />
             {!compact && (
@@ -125,9 +122,7 @@ export function FilterLayoutToggle({
                   {getDeviceIcon()}
                   <span>Device: {deviceContext.replace('-', ' ')}</span>
                 </div>
-                <div className="mt-1 text-xs text-muted-foreground">
-                  Active: {currentMode}
-                </div>
+                <div className="mt-1 text-xs text-muted-foreground">Active: {currentMode}</div>
               </div>
             </>
           )}
@@ -148,9 +143,7 @@ export function FilterLayoutToggle({
                   </Badge>
                 )}
               </div>
-              {mode.value === currentMode && (
-                <Check className="size-4 text-green-600" />
-              )}
+              {mode.value === currentMode && <Check className="size-4 text-green-600" />}
             </DropdownMenuItem>
           ))}
 
@@ -197,14 +190,7 @@ export function LayoutModeBadge({ className }: LayoutModeBadgeProps) {
   }
 
   return (
-    <Badge
-      variant="outline"
-      className={cn(
-        'text-xs font-mono',
-        getBadgeColor(),
-        className
-      )}
-    >
+    <Badge variant="outline" className={cn('text-xs font-mono', getBadgeColor(), className)}>
       {currentMode}
     </Badge>
   )
@@ -229,10 +215,18 @@ export function LayoutDebugger({ className }: LayoutDebuggerProps) {
     <div className={cn('rounded-md border bg-muted/20 p-3 font-mono text-xs', className)}>
       <div className="mb-2 font-semibold">Filter Layout Debug</div>
       <div className="space-y-1 text-muted-foreground">
-        <div>Device: <span className="text-foreground">{deviceContext}</span></div>
-        <div>Preferred: <span className="text-foreground">{preferredMode}</span></div>
-        <div>Current: <span className="text-foreground">{currentMode}</span></div>
-        <div>Open: <span className="text-foreground">{isOpen ? 'true' : 'false'}</span></div>
+        <div>
+          Device: <span className="text-foreground">{deviceContext}</span>
+        </div>
+        <div>
+          Preferred: <span className="text-foreground">{preferredMode}</span>
+        </div>
+        <div>
+          Current: <span className="text-foreground">{currentMode}</span>
+        </div>
+        <div>
+          Open: <span className="text-foreground">{isOpen ? 'true' : 'false'}</span>
+        </div>
       </div>
     </div>
   )

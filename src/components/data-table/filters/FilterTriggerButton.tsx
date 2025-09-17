@@ -80,17 +80,20 @@ export function FilterTriggerButton({
   const { deviceContext, isTouch } = useDeviceDetection()
 
   // Handle click event with touch optimization
-  const handleClick = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-    // Prevent double-tap zoom on mobile
-    if (isTouch) {
-      event.preventDefault()
-    }
+  const handleClick = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      // Prevent double-tap zoom on mobile
+      if (isTouch) {
+        event.preventDefault()
+      }
 
-    const clickHandler = onClickOverride || onClick
-    if (clickHandler) {
-      clickHandler()
-    }
-  }, [onClickOverride, onClick, isTouch])
+      const clickHandler = onClickOverride || onClick
+      if (clickHandler) {
+        clickHandler()
+      }
+    },
+    [onClickOverride, onClick, isTouch]
+  )
 
   // Don't render if not needed (inline mode on desktop)
   if (!shouldShow && !onClickOverride) {
@@ -105,7 +108,8 @@ export function FilterTriggerButton({
   const IconComponent = icon === 'sidebar' ? SlidersHorizontal : Filter
 
   // Generate accessible label
-  const accessibleLabel = ariaLabel ||
+  const accessibleLabel =
+    ariaLabel ||
     (activeFilterCount > 0
       ? `${displayLabel || 'Filters'} (${activeFilterCount} active)`
       : displayLabel || 'Open filters')
@@ -131,7 +135,7 @@ export function FilterTriggerButton({
         activeFilterCount > 0 && [
           'ring-2 ring-primary/30 shadow-sm',
           variant === 'outline' && 'border-primary/60 bg-primary/5',
-          variant === 'ghost' && 'bg-primary/10'
+          variant === 'ghost' && 'bg-primary/10',
         ],
         // Enhanced hover states for non-touch devices
         !isTouch && 'hover:shadow-md transition-shadow duration-200',
@@ -206,26 +210,19 @@ export function FilterTriggerButton({
 /**
  * Compact variant for tight spaces
  */
-export function CompactFilterTriggerButton(props: Omit<FilterTriggerButtonProps, 'size' | 'forceShowLabel'>) {
-  return (
-    <FilterTriggerButton
-      {...props}
-      size="icon"
-      forceShowLabel={false}
-    />
-  )
+export function CompactFilterTriggerButton(
+  props: Omit<FilterTriggerButtonProps, 'size' | 'forceShowLabel'>
+) {
+  return <FilterTriggerButton {...props} size="icon" forceShowLabel={false} />
 }
 
 /**
  * Extended variant that always shows label
  */
-export function ExtendedFilterTriggerButton(props: Omit<FilterTriggerButtonProps, 'forceShowLabel'>) {
-  return (
-    <FilterTriggerButton
-      {...props}
-      forceShowLabel={true}
-    />
-  )
+export function ExtendedFilterTriggerButton(
+  props: Omit<FilterTriggerButtonProps, 'forceShowLabel'>
+) {
+  return <FilterTriggerButton {...props} forceShowLabel={true} />
 }
 
 export type { FilterTriggerButtonProps }

@@ -103,7 +103,8 @@ export const FEATURE_FLAGS: FeatureFlagsConfig = {
   responsiveFilters: {
     enabled: import.meta.env.VITE_ENABLE_RESPONSIVE_FILTERS === 'true',
     userMessage: 'Responsive filters are being rolled out gradually',
-    description: 'Enable responsive filter layouts with mobile drawer, tablet sheet, and desktop inline modes',
+    description:
+      'Enable responsive filter layouts with mobile drawer, tablet sheet, and desktop inline modes',
     githubIssue: '#TBD',
     targetRelease: 'v1.2.0',
   },

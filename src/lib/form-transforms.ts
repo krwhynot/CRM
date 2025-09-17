@@ -59,7 +59,7 @@ export const ZodTransforms = {
     z.preprocess((val) => {
       if (val === null || val === undefined) return []
       if (Array.isArray(val)) {
-        return val.filter(item => item !== undefined)
+        return val.filter((item) => item !== undefined)
       }
       return []
     }, z.array(itemSchema)),
@@ -132,7 +132,7 @@ export const ZodTransforms = {
       return z.object({
         ...baseFields,
         ...additionalFields,
-        [discriminator]: z.literal(value)
+        [discriminator]: z.literal(value),
       })
     })
     return z.discriminatedUnion(discriminator as any, cases as any)
@@ -165,7 +165,12 @@ export const ZodTransforms = {
  */
 export const SchemaFactories = {
   // Creates a nullable string schema with empty string → null transform
-  nullableString: (constraints?: { min?: number; max?: number; regex?: RegExp; message?: string }) =>
+  nullableString: (constraints?: {
+    min?: number
+    max?: number
+    regex?: RegExp
+    message?: string
+  }) =>
     FormTransforms.nullableString.refine(
       (val) => {
         if (val === null) return true
@@ -181,7 +186,7 @@ export const SchemaFactories = {
   nullableEmail: (required = false) => {
     const schema = FormTransforms.nullableEmail
     return required
-      ? schema.refine(val => val !== null, { message: 'Email is required' })
+      ? schema.refine((val) => val !== null, { message: 'Email is required' })
       : schema
   },
 
@@ -189,16 +194,14 @@ export const SchemaFactories = {
   nullablePhone: (required = false) => {
     const schema = FormTransforms.nullablePhone
     return required
-      ? schema.refine(val => val !== null, { message: 'Phone number is required' })
+      ? schema.refine((val) => val !== null, { message: 'Phone number is required' })
       : schema
   },
 
   // Creates a UUID schema with null handling
   nullableUuid: (required = false) => {
     const schema = FormTransforms.uuidField
-    return required
-      ? schema.refine(val => val !== null, { message: 'ID is required' })
-      : schema
+    return required ? schema.refine((val) => val !== null, { message: 'ID is required' }) : schema
   },
 
   // Creates a discriminated union for conditional validation
@@ -210,7 +213,7 @@ export const SchemaFactories = {
       schema.extend({ [discriminator]: z.literal(value) })
     )
     return z.discriminatedUnion(discriminator as any, schemas as any)
-  }
+  },
 }
 
 // Export with both names for backward compatibility

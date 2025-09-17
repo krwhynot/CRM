@@ -1,0 +1,286 @@
+/**
+ * SEMANTIC LAYER - Design Token Semantic Mappings
+ *
+ * Maps MFB primitive tokens to semantic meanings for shadcn/ui integration.
+ * This file establishes the semantic abstraction layer where components reference
+ * semantic tokens (--primary) rather than primitives (--mfb-green).
+ *
+ * HIERARCHY: PRIMITIVES → SEMANTIC (this file) → COMPONENTS → FEATURES
+ *
+ * CRITICAL: This file only contains semantic mappings that reference primitives.
+ * No primitive definitions should exist here - only references to primitives.
+ */
+
+:root {
+  /* Surface Colors */
+  --background: 0 0% 98%;
+  --foreground: 240 10% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 10%;
+
+  /* Brand Color Semantic Mappings */
+  --primary: var(--mfb-green-hsl, hsl(82 87% 36%));        /* MFB Green → Primary Brand Color */
+  --primary-foreground: 0 0% 98%;
+  --primary-50: var(--mfb-green-subtle-hsl, hsl(91 47% 91%));   /* References MFB Green subtle variant */
+  --primary-100: var(--mfb-green-light-hsl, hsl(87 48% 51%));    /* References MFB Green light variant */
+  --primary-400: var(--mfb-green-hsl, hsl(82 87% 36%));          /* References MFB Green base */
+  --primary-600: var(--mfb-green-active-hsl, hsl(87 100% 27%));   /* References MFB Green active variant */
+
+  --secondary: var(--mfb-clay-hsl, hsl(16 31% 49%));       /* MFB Clay → Secondary Brand Color */
+  --secondary-foreground: 0 0% 98%;
+
+  /* Intent Color Semantic Mappings */
+  --success: var(--mfb-success-hsl, hsl(115 42% 46%));      /* MFB Success Green → Success State */
+  --success-foreground: 0 0% 98%;
+  --warning: var(--mfb-warning-hsl, hsl(32 100% 48%));      /* MFB Warning Amber → Warning State */
+  --warning-foreground: 240 10% 10%;
+  --info: var(--mfb-info-hsl, hsl(200 91% 43%));           /* MFB Info Blue → Information State */
+  --info-foreground: 0 0% 98%;
+  --destructive: var(--mfb-danger-hsl, hsl(356 75% 50%));  /* MFB Danger Red → Error/Delete State */
+  --destructive-foreground: 0 0% 98%;
+
+  /* Interaction Type Semantic Mappings */
+  --demo: 25 95% 53%;                     /* Demo Interaction → Orange */
+  --demo-foreground: 0 0% 98%;
+  --trade-show: 330 81% 60%;              /* Trade Show Interaction → Pink */
+  --trade-show-foreground: 0 0% 98%;
+  --site-visit: 238 84% 67%;              /* Site Visit Interaction → Indigo */
+  --site-visit-foreground: 0 0% 98%;
+
+  /* Interface Element Semantic Mappings */
+  --muted: 0 0% 95%;
+  --muted-foreground: 240 3% 35%;         /* AAA compliance at 35% */
+  --accent: 0 0% 95%;
+  --accent-foreground: 240 10% 10%;
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
+  --ring: 95 71% 56%;                     /* Focus ring uses MFB Green */
+  --radius: 0.375rem;
+
+  /*
+   * Unified Focus Ring System
+   * Consolidates 12 different focus ring implementations into semantic tokens
+   * References MFB brand colors for consistency across all components
+   */
+  --focus-ring: var(--mfb-green-hsl, hsl(82 87% 36%));     /* Primary focus ring using MFB Green */
+  --focus-ring-width: 2px;                /* Standard WCAG compliant width */
+  --focus-ring-offset: 2px;               /* Clear separation from element */
+  --focus-ring-opacity: 0.8;              /* Strong visibility */
+  --focus-ring-style: solid;              /* Focus Ring Variants for Different Contexts */
+  --focus-ring-inverse: 0 0% 98%;         /* White on dark backgrounds */
+  --focus-ring-destructive: var(--mfb-danger-hsl, hsl(356 75% 50%)); /* Red for dangerous actions */
+  --focus-ring-success: var(--mfb-success-hsl, hsl(115 42% 46%));    /* Green for positive actions */
+  --focus-ring-warning: var(--mfb-warning-hsl, hsl(32 100% 48%));    /*
+   * Sidebar Semantic Tokens
+   * Sidebar-specific semantic mappings for navigation elements
+   */
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: 0 0% 30%;
+  --sidebar-primary: 95 71% 56%;          /* Uses MFB Green */
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 95 60% 90%;           /* Light MFB Green accent */
+  --sidebar-accent-foreground: 95 71% 25%;
+  --sidebar-border: 95 71% 56%;           /* Uses MFB Green */
+  --sidebar-ring: 95 71% 56%;             /* Priority Level Semantic Mappings */
+  --priority-a-plus: 0 84% 60%;           /* Critical Priority → Red */
+  --priority-a-plus-foreground: 0 0% 98%;
+  --priority-a: 0 74% 42%;                /* High Priority → Solid Red */
+  --priority-a-foreground: 0 0% 98%;
+  --priority-b: 25 95% 53%;               /* Medium Priority → Orange */
+  --priority-b-foreground: 0 0% 98%;
+  --priority-c: 45 93% 47%;               /* Low Priority → Yellow */
+  --priority-c-foreground: 240 10% 10%;
+  --priority-d: 220 9% 46%;               /* Minimal Priority → Gray */
+  --priority-d-foreground: 0 0% 98%;
+
+  /* Organization Type Semantic Mappings */
+  --org-customer: 217 91% 60%;            /* Customer Organizations → Blue */
+  --org-customer-foreground: 0 0% 98%;
+  --org-distributor: 142 71% 45%;         /* Distributor Organizations → Green */
+  --org-distributor-foreground: 0 0% 98%;
+  --org-principal: 262 83% 58%;           /* Principal Organizations → Purple */
+  --org-principal-foreground: 0 0% 98%;
+  --org-supplier: 238 84% 67%;            /* Supplier Organizations → Indigo */
+  --org-supplier-foreground: 0 0% 98%;
+
+  /* Market Segment Semantic Mappings */
+  --segment-restaurant: 45 93% 47%;       /* Restaurant Segment → Amber */
+  --segment-restaurant-foreground: 240 10% 10%;
+  --segment-healthcare: 188 95% 68%;      /* Healthcare Segment → Cyan */
+  --segment-healthcare-foreground: 0 0% 98%;
+  --segment-education: 258 90% 66%;       /* Education Segment → Violet */
+  --segment-education-foreground: 0 0% 98%;
+
+  /* Special Status Combination Semantic Mappings */
+  --vip-customer: linear-gradient(45deg, hsl(45 93% 47%), hsl(25 95% 53%)); /* VIP Status → Gold Gradient */
+  --key-partner: linear-gradient(45deg, hsl(142 71% 45%), hsl(160 84% 39%)); /* Brand-specific semantic spacing */
+  --space-card-padding: 1.5rem;      /* 24px - Professional card padding */
+  --space-dashboard-grid-gap: 1.5rem; /*
+   * Essential Brand Radius Mappings
+   * Only brand-specific radius that provides professional appearance
+   * Standard radius should use Tailwind classes (rounded-md, rounded-lg, etc.)
+   */
+  --radius-card: 0.75rem;          /*
+   * Semantic Shadow Mappings
+   * Maps primitive shadows to component meanings
+   */
+  --shadow-button: var(--shadow-sm, 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.06));          /* Button elevation */
+  --shadow-button-hover: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06));    /* Button hover elevation */
+  --shadow-card: var(--shadow-sm, 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.06));            /* Card elevation */
+  --shadow-card-hover: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06));      /* Card hover elevation */
+  --shadow-dialog: var(--shadow-xl, 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04));          /* Dialog elevation */
+  --shadow-popover: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05));         /*
+   * MFB Brand Typography Semantic Mappings
+   * Maps MFB brand typography to semantic meanings while using Tailwind defaults
+   */
+  --font-family-body: var(--font-family-nunito, 'Nunito', system-ui, -apple-system, sans-serif);  /* MFB brand font for all body text */
+  --font-family-heading: var(--font-family-nunito, 'Nunito', system-ui, -apple-system, sans-serif); /* MFB brand font for headings */
+  --font-size-body: var(--font-size-body-mfb, 0.9375rem);    /* MFB brand body text size (15px) */
+  --text-heading: var(--text-heading-mfb, hsl(62 23% 28%));        /*
+   * AAA Text Contrast Semantic Mappings
+   * Maps to primitive colors for WCAG AAA compliance
+   */
+  --text-primary: 240 10% 10%;    /* Same as foreground - 15.8:1 ratio */
+  --text-body: 240 5% 20%;        /* #2E3338 - 12.6:1 ratio */
+  --text-muted: 240 3% 35%;       /* #575A5E - 7.5:1 ratio */
+  --text-disabled: 240 2% 55%;    /*
+   * Chart Color Semantic Mappings - MFB Brand Palette
+   * HSL format for component compatibility
+   */
+  --chart-1: 130 62% 50%; /* MFB Green */
+  --chart-2: 130 57% 60%; /* Lighter Green */
+  --chart-3: 130 58% 46%; /* Medium Green */
+  --chart-4: 160 42% 56%; /* Teal Green */
+  --chart-5: 110 35% 42%; /* Executive Chef Chart Colors (compatible with existing MFB palette) */
+  --chart-primary: 95 71% 56%;      /* MFB Green - Primary brand */
+  --chart-success: 142 76% 52%;     /* Success Green - Emerald */
+  --chart-warning: 38 92% 50%;      /* Warning Amber */
+  --chart-info: 217 91% 60%;        /* Info Blue */
+  --chart-accent: 262 83% 58%;      /*
+   * Essential Brand Layout Dimensions
+   * iPad-optimized and professional appearance requirements
+   */
+  --dialog-max-height: min(80vh, 40rem); /*
+   * Note: Standard layout dimensions, shadows, and typography now use Tailwind classes.
+   * Components should use Tailwind utilities (w-60, h-96, shadow-lg, text-sm, etc.)
+   * Only essential brand-specific tokens retained above.
+   */
+}
+
+/*
+ * Dark Mode Semantic Token Overrides
+ * Redefines semantic mappings for dark theme while maintaining brand relationships
+ */
+.dark {
+  /* Core Surface Colors - Dark Mode */
+  --background: 240 10% 4%;
+  --foreground: 0 0% 98%;
+  --card: 240 10% 8%;
+  --card-foreground: 0 0% 98%;
+  --popover: 240 10% 8%;
+  --popover-foreground: 0 0% 98%;
+
+  /* Brand Color Semantic Mappings - Dark Mode */
+  --primary: var(--mfb-green-hsl, hsl(95 68% 62%));        /* Still maps to MFB Green (dark variant) */
+  --primary-foreground: 0 0% 98%;
+  --primary-50: var(--mfb-green-subtle-hsl, hsl(91 47% 91%));   /* References MFB Green subtle variant (dark mode) */
+  --primary-100: var(--mfb-green-light-hsl, hsl(95 60% 72%));    /* References MFB Green light variant (dark mode) */
+  --primary-400: var(--mfb-green-hsl, hsl(95 68% 62%));          /* References MFB Green base (dark mode) */
+  --primary-600: var(--mfb-green-active-hsl, hsl(95 70% 56%));   /* References MFB Green active variant (dark mode) */
+
+  --secondary: var(--mfb-clay-hsl, hsl(40 32% 52%));       /* Still maps to MFB Clay (dark variant) */
+  --secondary-foreground: 0 0% 98%;
+
+  /* Intent Color Semantic Mappings - Dark Mode */
+  --success: var(--mfb-success-hsl, hsl(142 60% 60%));      /* Maps to MFB Success (dark variant) */
+  --success-foreground: 0 0% 98%;
+  --warning: var(--mfb-warning-hsl, hsl(60 80% 70%));      /* Maps to MFB Warning (dark variant) */
+  --warning-foreground: 0 0% 98%;
+  --info: var(--mfb-info-hsl, hsl(240 65% 62%));           /* Maps to MFB Info (dark variant) */
+  --info-foreground: 0 0% 98%;
+  --destructive: var(--mfb-danger-hsl, hsl(25 75% 55%));  /* Maps to MFB Danger (dark variant) */
+  --destructive-foreground: 0 0% 98%;
+
+  /* Interaction Type Semantic Mappings - Dark Mode (Enhanced Brightness) */
+  --demo: 25 95% 58%;                     /* Demo Interaction → Brighter Orange */
+  --demo-foreground: 0 0% 98%;
+  --trade-show: 330 81% 65%;              /* Trade Show Interaction → Brighter Pink */
+  --trade-show-foreground: 0 0% 98%;
+  --site-visit: 238 84% 72%;              /* Site Visit Interaction → Brighter Indigo */
+  --site-visit-foreground: 0 0% 98%;
+
+  /* Interface Element Semantic Mappings - Dark Mode */
+  --muted: 240 4% 16%;
+  --muted-foreground: 0 0% 70%;           /* AAA compliance at 70% in dark mode */
+  --accent: 240 4% 16%;
+  --accent-foreground: 0 0% 98%;
+  --border: 240 4% 16%;
+  --input: 240 4% 16%;
+  --ring: 95 71% 56%;                     /* Unified Focus Ring System - Dark Mode */
+  --focus-ring: var(--mfb-green-hsl, hsl(95 68% 62%));     /* Primary focus ring still uses MFB Green */
+  --focus-ring-width: 2px;                /* Consistent width in dark mode */
+  --focus-ring-offset: 2px;               /* Consistent offset in dark mode */
+  --focus-ring-opacity: 0.9;              /* Slightly higher opacity for dark backgrounds */
+  --focus-ring-style: solid;              /* Focus Ring Variants - Dark Mode */
+  --focus-ring-inverse: 240 10% 10%;      /* Dark on light backgrounds */
+  --focus-ring-destructive: var(--mfb-danger-hsl, hsl(25 75% 55%)); /* Red still used for dangerous actions */
+  --focus-ring-success: var(--mfb-success-hsl, hsl(142 60% 60%));    /* Green still used for positive actions */
+  --focus-ring-warning: var(--mfb-warning-hsl, hsl(60 80% 70%));    /* Sidebar Semantic Tokens - Dark Mode */
+  --sidebar-background: 240 10% 4%;
+  --sidebar-foreground: 0 0% 85%;
+  --sidebar-primary: 95 71% 56%;          /* Still uses MFB Green */
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 240 4% 16%;
+  --sidebar-accent-foreground: 0 0% 98%;
+  --sidebar-border: 240 4% 16%;
+  --sidebar-ring: 95 71% 56%;             /* Priority Level Semantic Mappings - Dark Mode (Enhanced Brightness) */
+  --priority-a-plus: 0 84% 65%;           /* Brighter red for dark backgrounds */
+  --priority-a-plus-foreground: 0 0% 98%;
+  --priority-a: 0 74% 47%;                /* Brighter solid red */
+  --priority-a-foreground: 0 0% 98%;
+  --priority-b: 25 95% 58%;               /* Brighter orange */
+  --priority-b-foreground: 0 0% 98%;
+  --priority-c: 45 93% 52%;               /* Brighter yellow */
+  --priority-c-foreground: 240 10% 10%;
+  --priority-d: 220 9% 51%;               /* Brighter gray */
+  --priority-d-foreground: 0 0% 98%;
+
+  /* Organization Type Semantic Mappings - Dark Mode (Enhanced Brightness) */
+  --org-customer: 217 91% 65%;            /* Brighter blue */
+  --org-customer-foreground: 0 0% 98%;
+  --org-distributor: 142 71% 50%;         /* Brighter green */
+  --org-distributor-foreground: 0 0% 98%;
+  --org-principal: 262 83% 63%;           /* Brighter purple */
+  --org-principal-foreground: 0 0% 98%;
+  --org-supplier: 238 84% 72%;            /* Brighter indigo */
+  --org-supplier-foreground: 0 0% 98%;
+
+  /* Market Segment Semantic Mappings - Dark Mode (Enhanced Brightness) */
+  --segment-restaurant: 45 93% 52%;       /* Brighter amber */
+  --segment-restaurant-foreground: 240 10% 10%;
+  --segment-healthcare: 188 95% 73%;      /* Brighter cyan */
+  --segment-healthcare-foreground: 0 0% 98%;
+  --segment-education: 258 90% 71%;       /* Brighter violet */
+  --segment-education-foreground: 0 0% 98%;
+
+  /* Special Status Combination Semantic Mappings - Dark Mode */
+  --vip-customer: linear-gradient(45deg, hsl(45 93% 52%), hsl(25 95% 58%)); /* VIP Status → Brighter Gold Gradient */
+  --key-partner: linear-gradient(45deg, hsl(142 71% 50%), hsl(160 84% 44%)); /* AAA Text Contrast Levels - Dark Mode */
+  --text-primary: 0 0% 98%;         /* Same as foreground - 15.8:1 ratio */
+  --text-body: 0 0% 85%;           /* #D9D9D9 - 12.1:1 ratio */
+  --text-muted: 0 0% 70%;          /* #B3B3B3 - 7.4:1 ratio */
+  --text-disabled: 0 0% 50%;       /* Chart Colors - Dark mode variants (slightly brighter for visibility) */
+  --chart-1: 130 62% 55%; /* MFB Green - brighter */
+  --chart-2: 130 57% 65%; /* Lighter Green - brighter */
+  --chart-3: 130 58% 51%; /* Medium Green - brighter */
+  --chart-4: 160 42% 61%; /* Teal Green - brighter */
+  --chart-5: 110 35% 47%; /* Executive Chef Chart Colors - Dark mode variants */
+  --chart-primary: 95 71% 61%;      /* MFB Green - Primary brand (brighter) */
+  --chart-success: 142 76% 57%;     /* Success Green - Emerald (brighter) */
+  --chart-warning: 38 92% 55%;      /* Warning Amber (brighter) */
+  --chart-info: 217 91% 65%;        /* Info Blue (brighter) */
+  --chart-accent: 262 83% 63%;      /* Header Shadow - Dark mode */
+  --header-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}

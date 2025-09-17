@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import type { Table } from "@tanstack/react-table"
-import { X, SlidersHorizontal, Search } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import * as React from 'react'
+import type { Table } from '@tanstack/react-table'
+import { X, SlidersHorizontal, Search } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -12,10 +12,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
-import { EntityFilters, type EntityFilterState } from "./filters/EntityFilters"
+} from '@/components/ui/dropdown-menu'
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
+import { EntityFilters, type EntityFilterState } from './filters/EntityFilters'
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -47,7 +47,7 @@ interface DataTableToolbarProps<TData> {
 export function DataTableToolbar<TData>({
   table,
   searchKey,
-  searchPlaceholder = "Search...",
+  searchPlaceholder = 'Search...',
   filterableColumns = [],
   actions,
   className,
@@ -63,7 +63,7 @@ export function DataTableToolbar<TData>({
   priorities = [],
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
-  const [searchValue, setSearchValue] = React.useState("")
+  const [searchValue, setSearchValue] = React.useState('')
 
   // Handle search for legacy mode
   React.useEffect(() => {
@@ -85,7 +85,7 @@ export function DataTableToolbar<TData>({
   // If using entity filters, render the enhanced filter system
   if (useEntityFilters && onEntityFiltersChange) {
     return (
-      <div className={cn("space-y-4", className)}>
+      <div className={cn('space-y-4', className)}>
         <EntityFilters
           entityType={entityType}
           filters={entityFilters}
@@ -109,11 +109,7 @@ export function DataTableToolbar<TData>({
             {/* Column visibility toggle */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="ml-auto h-8 lg:flex"
-                >
+                <Button variant="outline" size="sm" className="ml-auto h-8 lg:flex">
                   <SlidersHorizontal className="mr-2 size-4" />
                   View
                 </Button>
@@ -124,8 +120,7 @@ export function DataTableToolbar<TData>({
                 {table
                   .getAllColumns()
                   .filter(
-                    (column) =>
-                      typeof column.accessorFn !== "undefined" && column.getCanHide()
+                    (column) => typeof column.accessorFn !== 'undefined' && column.getCanHide()
                   )
                   .map((column) => {
                     return (
@@ -149,7 +144,7 @@ export function DataTableToolbar<TData>({
 
   // Legacy toolbar for backwards compatibility
   return (
-    <div className={cn("flex items-center justify-between space-x-2", className)}>
+    <div className={cn('flex items-center justify-between space-x-2', className)}>
       <div className="flex flex-1 items-center space-x-2">
         {/* Search input */}
         {searchKey && (
@@ -178,18 +173,12 @@ export function DataTableToolbar<TData>({
                 <Button
                   variant="outline"
                   size="sm"
-                  className={cn(
-                    "h-8 border-dashed",
-                    hasActiveFilter && "border-solid bg-accent"
-                  )}
+                  className={cn('h-8 border-dashed', hasActiveFilter && 'border-solid bg-accent')}
                 >
                   <SlidersHorizontal className="mr-2 size-4" />
                   {column.title}
                   {hasActiveFilter && (
-                    <Badge
-                      variant="secondary"
-                      className="ml-2 rounded-sm px-1 font-normal"
-                    >
+                    <Badge variant="secondary" className="ml-2 rounded-sm px-1 font-normal">
                       {filterValue.length}
                     </Badge>
                   )}
@@ -251,7 +240,7 @@ export function DataTableToolbar<TData>({
         {activeFiltersCount > 0 && (
           <div className="flex items-center space-x-1">
             <span className="text-sm text-muted-foreground">
-              {activeFiltersCount} filter{activeFiltersCount !== 1 ? "s" : ""} active
+              {activeFiltersCount} filter{activeFiltersCount !== 1 ? 's' : ''} active
             </span>
           </div>
         )}
@@ -264,11 +253,7 @@ export function DataTableToolbar<TData>({
         {/* Column visibility toggle */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className="ml-auto h-8 lg:flex"
-            >
+            <Button variant="outline" size="sm" className="ml-auto h-8 lg:flex">
               <SlidersHorizontal className="mr-2 size-4" />
               View
             </Button>
@@ -278,10 +263,7 @@ export function DataTableToolbar<TData>({
             <DropdownMenuSeparator />
             {table
               .getAllColumns()
-              .filter(
-                (column) =>
-                  typeof column.accessorFn !== "undefined" && column.getCanHide()
-              )
+              .filter((column) => typeof column.accessorFn !== 'undefined' && column.getCanHide())
               .map((column) => {
                 return (
                   <DropdownMenuCheckboxItem
@@ -302,19 +284,11 @@ export function DataTableToolbar<TData>({
 }
 
 // Data table view options component for column visibility
-export function DataTableViewOptions<TData>({
-  table,
-}: {
-  table: Table<TData>
-}) {
+export function DataTableViewOptions<TData>({ table }: { table: Table<TData> }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="ml-auto hidden h-8 lg:flex"
-        >
+        <Button variant="outline" size="sm" className="ml-auto hidden h-8 lg:flex">
           <SlidersHorizontal className="mr-2 size-4" />
           View
         </Button>
@@ -324,10 +298,7 @@ export function DataTableViewOptions<TData>({
         <DropdownMenuSeparator />
         {table
           .getAllColumns()
-          .filter(
-            (column) =>
-              typeof column.accessorFn !== "undefined" && column.getCanHide()
-          )
+          .filter((column) => typeof column.accessorFn !== 'undefined' && column.getCanHide())
           .map((column) => {
             return (
               <DropdownMenuCheckboxItem
@@ -376,7 +347,7 @@ export function DataTableFacetedFilter<TData, TValue>({
   title,
   options,
 }: {
-  column?: ReturnType<Table<TData>["getColumn"]>
+  column?: ReturnType<Table<TData>['getColumn']>
   title?: string
   options: {
     label: string
@@ -396,18 +367,12 @@ export function DataTableFacetedFilter<TData, TValue>({
           {selectedValues?.size > 0 && (
             <>
               <DropdownMenuSeparator orientation="vertical" className="mx-2 h-4" />
-              <Badge
-                variant="secondary"
-                className="rounded-sm px-1 font-normal lg:hidden"
-              >
+              <Badge variant="secondary" className="rounded-sm px-1 font-normal lg:hidden">
                 {selectedValues.size}
               </Badge>
               <div className="hidden space-x-1 lg:flex">
                 {selectedValues.size > 2 ? (
-                  <Badge
-                    variant="secondary"
-                    className="rounded-sm px-1 font-normal"
-                  >
+                  <Badge variant="secondary" className="rounded-sm px-1 font-normal">
                     {selectedValues.size} selected
                   </Badge>
                 ) : (
@@ -444,14 +409,10 @@ export function DataTableFacetedFilter<TData, TValue>({
                   selectedValues.delete(option.value)
                 }
                 const filterValues = Array.from(selectedValues)
-                column?.setFilterValue(
-                  filterValues.length ? filterValues : undefined
-                )
+                column?.setFilterValue(filterValues.length ? filterValues : undefined)
               }}
             >
-              {option.icon && (
-                <option.icon className="mr-2 size-4 text-muted-foreground" />
-              )}
+              {option.icon && <option.icon className="mr-2 size-4 text-muted-foreground" />}
               <span>{option.label}</span>
               {facets?.get(option.value) && (
                 <span className="ml-auto flex size-4 items-center justify-center font-mono text-xs">

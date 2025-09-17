@@ -188,19 +188,22 @@ export function FilterLayoutProvider({
   const currentMode = resolveLayoutMode(preferredMode, enhancedDeviceContext, isIPad, orientation)
 
   // Update preferred mode and persist if enabled
-  const setPreferredMode = useCallback((mode: FilterLayoutMode) => {
-    setPreferredModeState(mode)
+  const setPreferredMode = useCallback(
+    (mode: FilterLayoutMode) => {
+      setPreferredModeState(mode)
 
-    if (persistent) {
-      // Save globally for 'auto' mode, device-specific for others
-      // Use enhanced device context for iPad-specific persistence
-      savePreferences(enhancedDeviceContext, mode, mode === 'auto')
-    }
-  }, [enhancedDeviceContext, persistent])
+      if (persistent) {
+        // Save globally for 'auto' mode, device-specific for others
+        // Use enhanced device context for iPad-specific persistence
+        savePreferences(enhancedDeviceContext, mode, mode === 'auto')
+      }
+    },
+    [enhancedDeviceContext, persistent]
+  )
 
   // Toggle open state
   const toggleOpen = useCallback(() => {
-    setIsOpen(prev => !prev)
+    setIsOpen((prev) => !prev)
   }, [])
 
   // Set open state explicitly
@@ -262,9 +265,7 @@ export function FilterLayoutProvider({
   }
 
   return (
-    <FilterLayoutContext.Provider value={contextValue}>
-      {children}
-    </FilterLayoutContext.Provider>
+    <FilterLayoutContext.Provider value={contextValue}>{children}</FilterLayoutContext.Provider>
   )
 }
 
@@ -330,7 +331,10 @@ export const FilterLayoutUtils = {
   /**
    * Get recommended sheet/drawer side based on device context with iPad-specific logic
    */
-  getSheetSide: (deviceContext: DeviceContext, isIPad?: boolean): 'top' | 'right' | 'bottom' | 'left' => {
+  getSheetSide: (
+    deviceContext: DeviceContext,
+    isIPad?: boolean
+  ): 'top' | 'right' | 'bottom' | 'left' => {
     // iPad-specific logic for optimal enterprise usage
     if (isIPad) {
       switch (deviceContext) {
@@ -362,7 +366,7 @@ export const FilterLayoutUtils = {
    */
   getStorageKey: (key: string): string => {
     return `${STORAGE_KEY}-${key}`
-  }
+  },
 }
 
 // Export context for advanced usage

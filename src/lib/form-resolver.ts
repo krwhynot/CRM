@@ -16,7 +16,6 @@ export function createTypedZodResolver<T extends FieldValues>(
   return zodResolver(schema) as Resolver<T>
 }
 
-
 /**
  * Type-safe form prop helper for components that receive form instances
  * Ensures proper typing without 'as any' casting
@@ -39,14 +38,11 @@ export interface TypedFormProps<T extends FieldValues> {
   }
 }
 
-
 /**
  * Creates a Zod resolver with type safety
  * Simplified resolver creation for Zod schemas only
  */
-export function createResolver<T extends FieldValues>(
-  schema: z.ZodType<T, any, any>
-): Resolver<T> {
+export function createResolver<T extends FieldValues>(schema: z.ZodType<T, any, any>): Resolver<T> {
   return createTypedZodResolver(schema)
 }
 
@@ -56,7 +52,8 @@ export function createResolver<T extends FieldValues>(
  */
 export function createTypedFormHelper<T extends FieldValues>() {
   return {
-    castForm: (form: UseFormReturn<T>): TypedFormProps<T>['form'] => form as TypedFormProps<T>['form'],
+    castForm: (form: UseFormReturn<T>): TypedFormProps<T>['form'] =>
+      form as TypedFormProps<T>['form'],
     createResolver: (schema: z.ZodType<T, any, any>) => createTypedZodResolver(schema),
   }
 }

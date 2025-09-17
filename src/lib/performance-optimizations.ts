@@ -273,7 +273,10 @@ export const ResponsiveFilterPerformance = {
   /**
    * Optimized filter state comparison for React.memo
    */
-  compareFilterState: (prevFilters: Record<string, unknown>, nextFilters: Record<string, unknown>) => {
+  compareFilterState: (
+    prevFilters: Record<string, unknown>,
+    nextFilters: Record<string, unknown>
+  ) => {
     // Fast path for identical objects
     if (prevFilters === nextFilters) return true
 
@@ -283,7 +286,7 @@ export const ResponsiveFilterPerformance = {
 
     if (prevKeys.length !== nextKeys.length) return false
 
-    return prevKeys.every(key => {
+    return prevKeys.every((key) => {
       const prevValue = prevFilters[key]
       const nextValue = nextFilters[key]
 
@@ -304,7 +307,7 @@ export const ResponsiveFilterPerformance = {
    * Calculate active filter count efficiently
    */
   getActiveFilterCount: (filters: Record<string, unknown>) => {
-    return Object.keys(filters).filter(key => {
+    return Object.keys(filters).filter((key) => {
       const value = filters[key]
       return value && value !== '' && value !== 'all' && value !== 'none'
     }).length
@@ -315,19 +318,19 @@ export const ResponsiveFilterPerformance = {
    */
   getMediaQueryMetrics: () => {
     const queries = [
-      '(max-width: 767px)',      // mobile
+      '(max-width: 767px)', // mobile
       '(min-width: 768px) and (max-width: 1023px)', // tablet
-      '(min-width: 1024px)',     // desktop
+      '(min-width: 1024px)', // desktop
       '(orientation: portrait)', // orientation
-      '(orientation: landscape)'
+      '(orientation: landscape)',
     ]
 
-    return queries.map(query => {
+    return queries.map((query) => {
       const media = window.matchMedia(query)
       return {
         query,
         matches: media.matches,
-        listeners: 0 // Note: listeners count not always exposed in all browsers
+        listeners: 0, // Note: listeners count not always exposed in all browsers
       }
     })
   },
@@ -349,19 +352,17 @@ export const ResponsiveFilterPerformance = {
       transferSize: navigation.transferSize || 0,
       encodedBodySize: navigation.encodedBodySize || 0,
       decodedBodySize: navigation.decodedBodySize || 0,
-      compressionRatio: navigation.encodedBodySize > 0
-        ? Math.round((1 - navigation.encodedBodySize / navigation.decodedBodySize) * 100)
-        : 0
+      compressionRatio:
+        navigation.encodedBodySize > 0
+          ? Math.round((1 - navigation.encodedBodySize / navigation.decodedBodySize) * 100)
+          : 0,
     }
   },
 
   /**
    * Filter rendering performance benchmarks
    */
-  benchmarkFilterRendering: (
-    renderFn: () => void,
-    iterations: number = 100
-  ) => {
+  benchmarkFilterRendering: (renderFn: () => void, iterations: number = 100) => {
     const times: number[] = []
 
     // Warmup
@@ -383,7 +384,7 @@ export const ResponsiveFilterPerformance = {
       average: times.reduce((a, b) => a + b, 0) / times.length,
       median: times.sort((a, b) => a - b)[Math.floor(times.length / 2)],
       p95: times.sort((a, b) => a - b)[Math.floor(times.length * 0.95)],
-      iterations
+      iterations,
     }
   },
 
@@ -410,7 +411,7 @@ export const ResponsiveFilterPerformance = {
       duration: end - start,
       memoryDelta: memoryAfter - memoryBefore,
       stateComplexityDelta: stateComplexityAfter - stateComplexityBefore,
-      complexity: stateComplexityAfter > 10 ? 'high' : stateComplexityAfter > 5 ? 'medium' : 'low'
+      complexity: stateComplexityAfter > 10 ? 'high' : stateComplexityAfter > 5 ? 'medium' : 'low',
     }
   },
 
@@ -421,7 +422,7 @@ export const ResponsiveFilterPerformance = {
     const touchMetrics = {
       touchStartTime: 0,
       touchEndTime: 0,
-      responses: [] as number[]
+      responses: [] as number[],
     }
 
     const touchStart = () => {
@@ -439,17 +440,18 @@ export const ResponsiveFilterPerformance = {
 
     return {
       getMetrics: () => ({
-        averageResponse: touchMetrics.responses.length > 0
-          ? touchMetrics.responses.reduce((a, b) => a + b, 0) / touchMetrics.responses.length
-          : 0,
+        averageResponse:
+          touchMetrics.responses.length > 0
+            ? touchMetrics.responses.reduce((a, b) => a + b, 0) / touchMetrics.responses.length
+            : 0,
         maxResponse: Math.max(...touchMetrics.responses, 0),
         minResponse: Math.min(...touchMetrics.responses, 0),
-        totalTouches: touchMetrics.responses.length
+        totalTouches: touchMetrics.responses.length,
       }),
       cleanup: () => {
         element.removeEventListener('touchstart', touchStart)
         element.removeEventListener('touchend', touchEnd)
-      }
+      },
     }
   },
 
@@ -463,17 +465,18 @@ export const ResponsiveFilterPerformance = {
   ) => {
     const thresholds = {
       inline: 16, // 60fps
-      sheet: 50,  // Acceptable for overlay
-      drawer: 50  // Acceptable for overlay
+      sheet: 50, // Acceptable for overlay
+      drawer: 50, // Acceptable for overlay
     }
 
     const deviceMultipliers = {
-      mobile: 1.5,     // Allow more time on mobile
-      tablet: 1.2,     // Slightly more time on tablet
-      desktop: 1.0     // Base performance on desktop
+      mobile: 1.5, // Allow more time on mobile
+      tablet: 1.2, // Slightly more time on tablet
+      desktop: 1.0, // Base performance on desktop
     }
 
-    const threshold = thresholds[mode] * (deviceMultipliers[deviceContext as keyof typeof deviceMultipliers] || 1.0)
+    const threshold =
+      thresholds[mode] * (deviceMultipliers[deviceContext as keyof typeof deviceMultipliers] || 1.0)
 
     return {
       passed: renderTime < threshold,
@@ -481,9 +484,14 @@ export const ResponsiveFilterPerformance = {
       threshold,
       mode,
       deviceContext,
-      performanceGrade: renderTime < threshold * 0.5 ? 'excellent' :
-                       renderTime < threshold * 0.8 ? 'good' :
-                       renderTime < threshold ? 'acceptable' : 'poor'
+      performanceGrade:
+        renderTime < threshold * 0.5
+          ? 'excellent'
+          : renderTime < threshold * 0.8
+            ? 'good'
+            : renderTime < threshold
+              ? 'acceptable'
+              : 'poor',
     }
   },
 
@@ -491,20 +499,22 @@ export const ResponsiveFilterPerformance = {
    * Memory leak detection for filter operations
    */
   detectMemoryLeaks: (operation: () => void, iterations: number = 100) => {
-    const initialMemory = typeof process !== 'undefined' ? process.memoryUsage?.()?.heapUsed || 0 : 0
+    const initialMemory =
+      typeof process !== 'undefined' ? process.memoryUsage?.()?.heapUsed || 0 : 0
     const samples: number[] = []
 
     for (let i = 0; i < iterations; i++) {
       operation()
 
       if (i % 10 === 0) {
-        const currentMemory = typeof process !== 'undefined' ? process.memoryUsage?.()?.heapUsed || 0 : 0
+        const currentMemory =
+          typeof process !== 'undefined' ? process.memoryUsage?.()?.heapUsed || 0 : 0
         samples.push(currentMemory - initialMemory)
       }
     }
 
-    const trend = samples.length > 1 ?
-      (samples[samples.length - 1] - samples[0]) / samples.length : 0
+    const trend =
+      samples.length > 1 ? (samples[samples.length - 1] - samples[0]) / samples.length : 0
 
     return {
       initialMemory,
@@ -512,7 +522,7 @@ export const ResponsiveFilterPerformance = {
       memoryGrowth: samples[samples.length - 1] || 0,
       growthTrend: trend,
       suspicious: trend > 1024 * 10, // Flag if growing more than 10KB per iteration
-      samples
+      samples,
     }
-  }
+  },
 }

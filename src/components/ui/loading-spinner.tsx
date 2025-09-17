@@ -22,11 +22,11 @@ export function LoadingSpinner({ className, size = 'md', text }: LoadingSpinnerP
       aria-label={text || 'Loading content'}
     >
       <Loader2
-        className={cn('animate-spin border-mfb-green text-mfb-green', sizeClasses[size], className)}
+        className={cn('animate-spin border-primary text-primary', sizeClasses[size], className)}
         aria-hidden="true"
       />
       {text && (
-        <p className="text-mfb-olive/60 font-nunito text-sm" aria-live="polite">
+        <p className="text-muted-foreground font-nunito text-sm" aria-live="polite">
           {text}
         </p>
       )}

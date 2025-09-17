@@ -1,23 +1,19 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import type { ColumnDef } from "@tanstack/react-table"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import {
-  TrendingUp,
-  Users,
-  MoreHorizontal
-} from "lucide-react"
+import * as React from 'react'
+import type { ColumnDef } from '@tanstack/react-table'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { TrendingUp, Users, MoreHorizontal } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { cn } from "@/lib/utils"
-import type { Organization } from "@/types/entities"
+} from '@/components/ui/dropdown-menu'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { cn } from '@/lib/utils'
+import type { Organization } from '@/types/entities'
 
 // Extended organization interface with weekly context (matches OrganizationsTable.tsx)
 interface OrganizationWithWeeklyContext extends Organization {
@@ -52,7 +48,7 @@ interface OrganizationActions {
 }
 
 // Helper component for empty cell display
-const EmptyCell = () => <span className="italic text-gray-400">Not provided</span>
+const EmptyCell = () => <span className="italic text-muted-foreground">Not provided</span>
 
 // Organization badges component
 const OrganizationBadges: React.FC<{
@@ -61,23 +57,35 @@ const OrganizationBadges: React.FC<{
   segment: string
 }> = ({ priority, type, segment }) => (
   <div className="flex flex-wrap items-center gap-1">
-    <Badge variant="outline" className={cn(
-      priority === 'A' ? 'bg-red-100 text-red-800 border-red-300' :
-      priority === 'B' ? 'bg-orange-100 text-orange-800 border-orange-300' :
-      priority === 'C' ? 'bg-yellow-100 text-yellow-800 border-yellow-300' :
-      'bg-gray-100 text-gray-700 border-gray-300'
-    )}>
+    <Badge
+      variant="outline"
+      className={cn(
+        priority === 'A'
+          ? 'bg-priority-a text-priority-a-foreground border-priority-a'
+          : priority === 'B'
+            ? 'bg-priority-b text-priority-b-foreground border-priority-b'
+            : priority === 'C'
+              ? 'bg-priority-c text-priority-c-foreground border-priority-c'
+              : 'bg-priority-d text-priority-d-foreground border-priority-d'
+      )}
+    >
       {priority}
     </Badge>
-    <Badge variant="outline" className={cn(
-      type === 'customer' ? 'bg-blue-100 text-blue-800 border-blue-300' :
-      type === 'distributor' ? 'bg-green-100 text-green-800 border-green-300' :
-      type === 'principal' ? 'bg-purple-100 text-purple-800 border-purple-300' :
-      'bg-indigo-100 text-indigo-800 border-indigo-300'
-    )}>
+    <Badge
+      variant="outline"
+      className={cn(
+        type === 'customer'
+          ? 'bg-org-customer text-org-customer-foreground border-org-customer'
+          : type === 'distributor'
+            ? 'bg-org-distributor text-org-distributor-foreground border-org-distributor'
+            : type === 'principal'
+              ? 'bg-org-principal text-org-principal-foreground border-org-principal'
+              : 'bg-org-supplier text-org-supplier-foreground border-org-supplier'
+      )}
+    >
       {type}
     </Badge>
-    <Badge variant="outline" className="border-gray-200 bg-gray-50 text-xs text-gray-700">
+    <Badge variant="outline" className="border-border bg-muted text-xs text-muted-foreground">
       {segment}
     </Badge>
   </div>
@@ -90,11 +98,7 @@ const OrganizationActionsDropdown: React.FC<{
 }> = ({ organization, actions }) => (
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
-      <Button
-        variant="ghost"
-        className="size-8 p-0"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <Button variant="ghost" className="size-8 p-0" onClick={(e) => e.stopPropagation()}>
         <span className="sr-only">Open menu</span>
         <MoreHorizontal className="size-4" />
       </Button>
@@ -116,10 +120,7 @@ const OrganizationActionsDropdown: React.FC<{
         </DropdownMenuItem>
       )}
       {actions?.onDelete && (
-        <DropdownMenuItem
-          onClick={() => actions.onDelete!(organization)}
-          className="text-red-600"
-        >
+        <DropdownMenuItem onClick={() => actions.onDelete!(organization)} className="text-destructive">
           Archive Organization
         </DropdownMenuItem>
       )}
@@ -153,15 +154,15 @@ export function createOrganizationColumns(
   // Main columns
   columns.push(
     {
-      id: "organization",
-      header: "Organization",
+      id: 'organization',
+      header: 'Organization',
       accessorFn: (row) => row.name, // Maps to 'name' field
       cell: ({ row }) => {
         const organization = row.original
         return (
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <div className="text-base font-semibold text-gray-900">
+              <div className="text-base font-semibold text-foreground">
                 {organization.name || <EmptyCell />}
               </div>
               {organization.high_engagement_this_week && (
@@ -169,7 +170,7 @@ export function createOrganizationColumns(
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="flex items-center">
-                        <TrendingUp className="size-3 text-green-500" />
+                        <TrendingUp className="size-3 text-success" />
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
@@ -183,7 +184,7 @@ export function createOrganizationColumns(
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="flex items-center">
-                        <Users className="size-3 text-blue-500" />
+                        <Users className="size-3 text-info" />
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
@@ -197,7 +198,7 @@ export function createOrganizationColumns(
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="flex items-center">
-                        <span className="size-2 animate-pulse rounded-full bg-red-500" />
+                        <span className="size-2 animate-pulse rounded-full bg-destructive" />
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
@@ -215,13 +216,21 @@ export function createOrganizationColumns(
                 segment={organization.segment}
               />
               {(organization.active_opportunities || 0) > 0 && (
-                <Badge variant="secondary" className="border-blue-200 bg-blue-50 text-xs text-blue-700">
-                  {organization.active_opportunities} active opp{(organization.active_opportunities || 0) !== 1 ? 's' : ''}
+                <Badge
+                  variant="secondary"
+                  className="border-info bg-info/10 text-xs text-info-foreground"
+                >
+                  {organization.active_opportunities} active opp
+                  {(organization.active_opportunities || 0) !== 1 ? 's' : ''}
                 </Badge>
               )}
               {(organization.total_products || 0) > 0 && (
-                <Badge variant="secondary" className="border-gray-200 bg-gray-50 text-xs text-gray-700">
-                  {organization.total_products} product{(organization.total_products || 0) !== 1 ? 's' : ''}
+                <Badge
+                  variant="secondary"
+                  className="border-border bg-muted text-xs text-muted-foreground"
+                >
+                  {organization.total_products} product
+                  {(organization.total_products || 0) !== 1 ? 's' : ''}
                 </Badge>
               )}
             </div>
@@ -229,19 +238,24 @@ export function createOrganizationColumns(
             {/* Weekly engagement score */}
             {organization.weekly_engagement_score && organization.weekly_engagement_score > 0 && (
               <div className="flex items-center gap-1">
-                <span className="text-xs text-gray-400">Engagement:</span>
+                <span className="text-xs text-muted-foreground">Engagement:</span>
                 <div className="flex items-center">
-                  <div className="h-1.5 w-12 overflow-hidden rounded-full bg-gray-200">
+                  <div className="h-1.5 w-12 overflow-hidden rounded-full bg-muted">
                     <div
                       className={cn(
-                        "h-full rounded-full",
-                        organization.weekly_engagement_score >= 70 ? "bg-green-500" :
-                        organization.weekly_engagement_score >= 40 ? "bg-yellow-500" : "bg-red-500"
+                        'h-full rounded-full',
+                        organization.weekly_engagement_score >= 70
+                          ? 'bg-success'
+                          : organization.weekly_engagement_score >= 40
+                            ? 'bg-warning'
+                            : 'bg-destructive'
                       )}
                       style={{ width: `${organization.weekly_engagement_score}%` }}
                     />
                   </div>
-                  <span className="ml-1 text-xs text-gray-400">{organization.weekly_engagement_score}</span>
+                  <span className="ml-1 text-xs text-muted-foreground">
+                    {organization.weekly_engagement_score}
+                  </span>
                 </div>
               </div>
             )}
@@ -252,9 +266,9 @@ export function createOrganizationColumns(
       enableHiding: false,
     },
     {
-      id: "phone",
-      header: "Phone",
-      accessorKey: "phone", // Maps to 'phone' field
+      id: 'phone',
+      header: 'Phone',
+      accessorKey: 'phone', // Maps to 'phone' field
       cell: ({ row }) => (
         <span className="text-foreground">{row.original.phone || <EmptyCell />}</span>
       ),
@@ -262,16 +276,16 @@ export function createOrganizationColumns(
       enableHiding: true,
     },
     {
-      id: "managers",
-      header: "Managers",
+      id: 'managers',
+      header: 'Managers',
       accessorFn: (row) => row.primary_manager_name, // Maps to display field
       cell: ({ row }) => (
         <div className="space-y-1">
-          <div className="text-sm font-medium text-gray-900">
+          <div className="text-sm font-medium text-foreground">
             {row.original.primary_manager_name || <EmptyCell />}
           </div>
           {row.original.secondary_manager_name && (
-            <div className="text-xs text-gray-600">+ {row.original.secondary_manager_name}</div>
+            <div className="text-xs text-muted-foreground">+ {row.original.secondary_manager_name}</div>
           )}
         </div>
       ),
@@ -279,8 +293,8 @@ export function createOrganizationColumns(
       enableHiding: true,
     },
     {
-      id: "location",
-      header: "Location",
+      id: 'location',
+      header: 'Location',
       accessorFn: (row) => `${row.city || ''} ${row.state_province || ''}`.trim(), // Maps to 'city' and 'state_province' fields
       cell: ({ row }) => {
         const { city, state_province } = row.original
@@ -299,13 +313,10 @@ export function createOrganizationColumns(
       enableHiding: true,
     },
     {
-      id: "actions",
-      header: "Actions",
+      id: 'actions',
+      header: 'Actions',
       cell: ({ row }) => (
-        <OrganizationActionsDropdown
-          organization={row.original}
-          actions={actions}
-        />
+        <OrganizationActionsDropdown organization={row.original} actions={actions} />
       ),
       enableSorting: false,
       enableHiding: false,

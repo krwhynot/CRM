@@ -24,16 +24,13 @@ export const useBulkOperations = <T extends DeletableEntity>({
   const showBulkActions = selectedCount > 0
 
   // Selection handlers
-  const handleSelectAll = useCallback(
-    (checked: boolean, entitiesArray: T[]) => {
-      if (checked) {
-        setSelectedItems(new Set(entitiesArray.map((entity) => entity.id)))
-      } else {
-        setSelectedItems(new Set())
-      }
-    },
-    []
-  )
+  const handleSelectAll = useCallback((checked: boolean, entitiesArray: T[]) => {
+    if (checked) {
+      setSelectedItems(new Set(entitiesArray.map((entity) => entity.id)))
+    } else {
+      setSelectedItems(new Set())
+    }
+  }, [])
 
   const handleSelectItem = useCallback((id: string, checked: boolean) => {
     setSelectedItems((prev) => {
