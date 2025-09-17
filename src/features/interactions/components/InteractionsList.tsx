@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { DataTable } from '@/components/data-table/data-table'
 import { createInteractionColumns } from '@/components/data-table/columns/interactions'
 import { useStandardDataTable } from '@/hooks/useStandardDataTable'
@@ -219,26 +219,26 @@ export function InteractionsList({
     </div>
   )
 
-  // Selection handlers
-  const handleSelectionChange = (selectedIds: string[]) => {
+  // Selection handlers - wrapped in useCallback to prevent infinite re-renders
+  const handleSelectionChange = useCallback((selectedIds: string[]) => {
     setSelectedIds(selectedIds)
-  }
+  }, [])
 
-  const handleSelectAllFromToolbar = () => {
+  const handleSelectAllFromToolbar = useCallback(() => {
     setSelectedIds(displayInteractions.map((interaction) => interaction.id))
-  }
+  }, [displayInteractions])
 
-  const handleSelectNoneFromToolbar = () => {
+  const handleSelectNoneFromToolbar = useCallback(() => {
     setSelectedIds([])
-  }
+  }, [])
 
-  const handleClearSelection = () => {
+  const handleClearSelection = useCallback(() => {
     setSelectedIds([])
-  }
+  }, [])
 
-  const handleBulkDelete = () => {
+  const handleBulkDelete = useCallback(() => {
     setDeleteDialogOpen(true)
-  }
+  }, [])
 
   const handleConfirmDelete = async () => {
     if (selectedIds.length === 0) return
@@ -317,7 +317,7 @@ export function InteractionsList({
       )}
 
       {/* Data Table with integrated ResponsiveFilterWrapper */}
-      <DataTable<InteractionWithContext, any>
+      <DataTable<InteractionWithContext, unknown>
         {...dataTableProps}
         data={displayInteractions}
         columns={columns}
