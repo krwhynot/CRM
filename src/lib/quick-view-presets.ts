@@ -3,7 +3,11 @@
  * Defines preset filter combinations for common dashboard views
  */
 
-import type { QuickViewType, QuickViewPresetConfig, UniversalFilterState } from '@/types/filters.types'
+import type {
+  QuickViewType,
+  QuickViewPresetConfig,
+  UniversalFilterState,
+} from '@/types/filters.types'
 
 export const QUICK_VIEW_PRESETS: Record<QuickViewType, QuickViewPresetConfig> = {
   action_items_due: {
@@ -14,13 +18,13 @@ export const QUICK_VIEW_PRESETS: Record<QuickViewType, QuickViewPresetConfig> = 
     filters: {
       timeRange: 'this_week',
       focus: 'my_tasks',
-      quickView: 'action_items_due'
+      quickView: 'action_items_due',
     },
     badge: async () => {
       // This would connect to actual data source
       // For now, return mock data
       return Math.floor(Math.random() * 10) + 1
-    }
+    },
   },
 
   pipeline_movers: {
@@ -31,11 +35,11 @@ export const QUICK_VIEW_PRESETS: Record<QuickViewType, QuickViewPresetConfig> = 
     filters: {
       timeRange: 'last_week',
       focus: 'all_activity',
-      quickView: 'pipeline_movers'
+      quickView: 'pipeline_movers',
     },
     badge: async () => {
       return Math.floor(Math.random() * 15) + 5
-    }
+    },
   },
 
   recent_wins: {
@@ -46,11 +50,11 @@ export const QUICK_VIEW_PRESETS: Record<QuickViewType, QuickViewPresetConfig> = 
     filters: {
       timeRange: 'this_month',
       focus: 'team_activity',
-      quickView: 'recent_wins'
+      quickView: 'recent_wins',
     },
     badge: async () => {
       return Math.floor(Math.random() * 8) + 1
-    }
+    },
   },
 
   needs_attention: {
@@ -61,11 +65,11 @@ export const QUICK_VIEW_PRESETS: Record<QuickViewType, QuickViewPresetConfig> = 
     filters: {
       timeRange: 'this_week',
       focus: 'high_priority',
-      quickView: 'needs_attention'
+      quickView: 'needs_attention',
     },
     badge: async () => {
       return Math.floor(Math.random() * 6) + 2
-    }
+    },
   },
 
   upcoming_meetings: {
@@ -76,11 +80,11 @@ export const QUICK_VIEW_PRESETS: Record<QuickViewType, QuickViewPresetConfig> = 
     filters: {
       timeRange: 'this_week',
       focus: 'my_tasks',
-      quickView: 'upcoming_meetings'
+      quickView: 'upcoming_meetings',
     },
     badge: async () => {
       return Math.floor(Math.random() * 12) + 3
-    }
+    },
   },
 
   new_opportunities: {
@@ -91,11 +95,11 @@ export const QUICK_VIEW_PRESETS: Record<QuickViewType, QuickViewPresetConfig> = 
     filters: {
       timeRange: 'this_month',
       focus: 'all_activity',
-      quickView: 'new_opportunities'
+      quickView: 'new_opportunities',
     },
     badge: async () => {
       return Math.floor(Math.random() * 20) + 5
-    }
+    },
   },
 
   follow_up_required: {
@@ -106,12 +110,12 @@ export const QUICK_VIEW_PRESETS: Record<QuickViewType, QuickViewPresetConfig> = 
     filters: {
       timeRange: 'this_week',
       focus: 'my_tasks',
-      quickView: 'follow_up_required'
+      quickView: 'follow_up_required',
     },
     badge: async () => {
       return Math.floor(Math.random() * 18) + 4
-    }
-  }
+    },
+  },
 }
 
 /**
@@ -122,7 +126,7 @@ export function applyQuickViewPreset(
   currentFilters: UniversalFilterState
 ): UniversalFilterState {
   const presetConfig = QUICK_VIEW_PRESETS[preset]
-  
+
   if (!presetConfig) {
     console.warn(`Unknown quick view preset: ${preset}`)
     return currentFilters
@@ -131,7 +135,7 @@ export function applyQuickViewPreset(
   return {
     ...currentFilters,
     ...presetConfig.filters,
-    quickView: preset
+    quickView: preset,
   }
 }
 
@@ -157,13 +161,13 @@ export function isPresetActive(
   currentFilters: UniversalFilterState
 ): boolean {
   const presetConfig = QUICK_VIEW_PRESETS[preset]
-  
+
   if (!presetConfig) return false
 
   // Check if current filters match the preset
   const presetFilters = presetConfig.filters
-  
-  return Object.keys(presetFilters).every(key => {
+
+  return Object.keys(presetFilters).every((key) => {
     const filterKey = key as keyof UniversalFilterState
     return currentFilters[filterKey] === presetFilters[filterKey]
   })
@@ -177,14 +181,14 @@ const BADGE_CACHE_DURATION = 60000 // 1 minute
 
 export async function getPresetBadgeCount(preset: QuickViewType): Promise<number> {
   const cached = badgeCache.get(preset)
-  
+
   // Return cached count if still valid
   if (cached && Date.now() - cached.timestamp < BADGE_CACHE_DURATION) {
     return cached.count
   }
 
   const presetConfig = QUICK_VIEW_PRESETS[preset]
-  
+
   if (!presetConfig.badge) {
     return 0
   }
@@ -218,22 +222,22 @@ export const WORKFLOW_PRESETS = {
   weekly_review: {
     name: 'Weekly Review',
     description: 'Start the week with overdue tasks and new opportunities',
-    presets: ['action_items_due', 'new_opportunities'] as QuickViewType[]
+    presets: ['action_items_due', 'new_opportunities'] as QuickViewType[],
   },
 
   // End of day workflow
   daily_wrap_up: {
     name: 'Daily Wrap-up',
     description: 'Review pipeline progress and plan follow-ups',
-    presets: ['pipeline_movers', 'follow_up_required'] as QuickViewType[]
+    presets: ['pipeline_movers', 'follow_up_required'] as QuickViewType[],
   },
 
   // Manager review workflow
   team_oversight: {
     name: 'Team Oversight',
     description: 'Monitor team activity and celebrate wins',
-    presets: ['recent_wins', 'needs_attention'] as QuickViewType[]
-  }
+    presets: ['recent_wins', 'needs_attention'] as QuickViewType[],
+  },
 }
 
 /**

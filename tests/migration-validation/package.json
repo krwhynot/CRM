@@ -1,0 +1,23 @@
+{
+  "name": "migration-validation-tests",
+  "version": "1.0.0",
+  "description": "Comprehensive test suite for layout-as-data migration validation",
+  "scripts": {
+    "test": "node run-all-tests.ts",
+    "test:smoke": "vitest run smoke-tests.test.ts",
+    "test:registry": "vitest run component-registry.test.ts",
+    "test:compatibility": "vitest run backward-compatibility.test.ts",
+    "test:data-binding": "vitest run data-binding-integration.test.ts",
+    "test:render-modes": "node test-render-modes.ts",
+    "test:performance": "node test-performance-scale.ts",
+    "test:errors": "node test-error-scenarios.ts"
+  },
+  "devDependencies": {
+    "playwright": "^1.40.0",
+    "@playwright/test": "^1.40.0",
+    "vitest": "^1.0.0",
+    "@testing-library/react": "^13.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/user-event": "^14.0.0"
+  }
+}

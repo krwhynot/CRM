@@ -9,15 +9,16 @@ import { usePrincipals, useOrganizations } from '@/features/organizations/hooks/
 import type { UniversalFilterState, EnhancedUniversalFilterState } from '@/types/filters.types'
 import type { Organization } from '@/types/entities'
 
-interface UseUniversalFiltersWithOrganizationsReturn extends ReturnType<typeof useUniversalFilters> {
+interface UseUniversalFiltersWithOrganizationsReturn
+  extends ReturnType<typeof useUniversalFilters> {
   // Organization data
   principals: Organization[]
   managers: string[]
   isLoadingOrganizations: boolean
-  
+
   // Enhanced filters with organization context
   enhancedFilters: EnhancedUniversalFilterState
-  
+
   // Organization-specific filter functions
   updatePrincipal: (principalId: string) => void
   updateManager: (managerName: string) => void
@@ -32,23 +33,17 @@ export const useUniversalFiltersWithOrganizations = (
   const universalFilters = useUniversalFilters(initialFilters)
 
   // Fetch organization data
-  const { 
-    data: principals = [], 
-    isLoading: isLoadingPrincipals 
-  } = usePrincipals()
+  const { data: principals = [], isLoading: isLoadingPrincipals } = usePrincipals()
 
-  const { 
-    data: allOrganizations = [], 
-    isLoading: isLoadingAllOrganizations 
-  } = useOrganizations()
+  const { data: allOrganizations = [], isLoading: isLoadingAllOrganizations } = useOrganizations()
 
   const isLoadingOrganizations = isLoadingPrincipals || isLoadingAllOrganizations
 
   // Extract unique manager names from organizations
   const managers = useMemo(() => {
     const managerSet = new Set<string>()
-    
-    allOrganizations.forEach(org => {
+
+    allOrganizations.forEach((org) => {
       // Extract manager names from organization data
       // This could be from a manager field, or derived from relationships
       if (org.notes) {
@@ -64,17 +59,21 @@ export const useUniversalFiltersWithOrganizations = (
   }, [allOrganizations])
 
   // Create enhanced filters with organization context
-  const enhancedFilters = useMemo((): EnhancedUniversalFilterState => ({
-    ...universalFilters.filters,
-    selectedPrincipal: universalFilters.filters.principal !== 'all' 
-      ? universalFilters.filters.principal 
-      : undefined,
-    selectedManager: undefined, // This would be tracked separately if needed
-    principalFilters: {
-      includeInactive: false,
-      priorityFilter: 'all'
-    }
-  }), [universalFilters.filters])
+  const enhancedFilters = useMemo(
+    (): EnhancedUniversalFilterState => ({
+      ...universalFilters.filters,
+      selectedPrincipal:
+        universalFilters.filters.principal !== 'all'
+          ? universalFilters.filters.principal
+          : undefined,
+      selectedManager: undefined, // This would be tracked separately if needed
+      principalFilters: {
+        includeInactive: false,
+        priorityFilter: 'all',
+      },
+    }),
+    [universalFilters.filters]
+  )
 
   // Organization-specific filter functions
   const updatePrincipal = (principalId: string) => {
@@ -84,10 +83,10 @@ export const useUniversalFiltersWithOrganizations = (
   const updateManager = (managerName: string) => {
     // This could filter organizations by manager
     // For now, we'll use the principal filter as a proxy
-    const managerOrganizations = allOrganizations.filter(org => 
+    const managerOrganizations = allOrganizations.filter((org) =>
       org.notes?.toLowerCase().includes(`manager: ${managerName.toLowerCase()}`)
     )
-    
+
     if (managerOrganizations.length > 0) {
       // Select the first organization as the principal filter
       universalFilters.updateFilter('principal', managerOrganizations[0].id)
@@ -95,12 +94,12 @@ export const useUniversalFiltersWithOrganizations = (
   }
 
   const getPrincipalName = (principalId: string): string => {
-    const principal = principals.find(p => p.id === principalId)
+    const principal = principals.find((p) => p.id === principalId)
     return principal?.name || principalId
   }
 
   const getManagerOrganizations = (managerName: string): Organization[] => {
-    return allOrganizations.filter(org => 
+    return allOrganizations.filter((org) =>
       org.notes?.toLowerCase().includes(`manager: ${managerName.toLowerCase()}`)
     )
   }
@@ -108,20 +107,20 @@ export const useUniversalFiltersWithOrganizations = (
   return {
     // Spread all base universal filters functionality
     ...universalFilters,
-    
+
     // Organization data
     principals,
     managers,
     isLoadingOrganizations,
-    
+
     // Enhanced filters
     enhancedFilters,
-    
+
     // Organization-specific functions
     updatePrincipal,
     updateManager,
     getPrincipalName,
-    getManagerOrganizations
+    getManagerOrganizations,
   }
 }
 
@@ -130,12 +129,12 @@ export const useUniversalFiltersWithOrganizations = (
  */
 export const usePrincipalFilterSuggestions = (principalId?: string) => {
   const { data: organizations = [] } = useOrganizations({
-    is_principal: true
+    is_principal: true,
   })
 
   return useMemo(() => {
-    const principal = organizations.find(org => org.id === principalId)
-    
+    const principal = organizations.find((org) => org.id === principalId)
+
     if (!principal) return []
 
     const suggestions = []
@@ -145,7 +144,7 @@ export const usePrincipalFilterSuggestions = (principalId?: string) => {
       suggestions.push({
         type: 'timeRange' as const,
         value: 'this_quarter',
-        reason: 'Principals typically review quarterly performance'
+        reason: 'Principals typically review quarterly performance',
       })
     }
 
@@ -154,7 +153,7 @@ export const usePrincipalFilterSuggestions = (principalId?: string) => {
       suggestions.push({
         type: 'focus' as const,
         value: 'high_priority',
-        reason: 'High priority principal requires focused attention'
+        reason: 'High priority principal requires focused attention',
       })
     }
 
@@ -163,7 +162,7 @@ export const usePrincipalFilterSuggestions = (principalId?: string) => {
       suggestions.push({
         type: 'quickView' as const,
         value: 'pipeline_movers',
-        reason: 'Food service principals benefit from pipeline visibility'
+        reason: 'Food service principals benefit from pipeline visibility',
       })
     }
 
@@ -180,18 +179,16 @@ export const useManagerFiltering = (managerName?: string) => {
   return useMemo(() => {
     if (!managerName) return { organizations: [], principalIds: [] }
 
-    const managerOrganizations = organizations.filter(org =>
+    const managerOrganizations = organizations.filter((org) =>
       org.notes?.toLowerCase().includes(`manager: ${managerName.toLowerCase()}`)
     )
 
-    const principalIds = managerOrganizations
-      .filter(org => org.is_principal)
-      .map(org => org.id)
+    const principalIds = managerOrganizations.filter((org) => org.is_principal).map((org) => org.id)
 
     return {
       organizations: managerOrganizations,
       principalIds,
-      count: managerOrganizations.length
+      count: managerOrganizations.length,
     }
   }, [organizations, managerName])
 }

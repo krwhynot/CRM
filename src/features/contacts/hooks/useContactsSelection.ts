@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react'
+import { useCallback } from 'react'
 import type { ContactWithOrganization } from '@/types/entities'
+import { useEntitySelection, type UseEntitySelectionReturn } from '@/hooks/useEntitySelection'
 
 interface UseContactsSelectionReturn {
   selectedItems: Set<string>
@@ -9,34 +10,20 @@ interface UseContactsSelectionReturn {
 }
 
 export const useContactsSelection = (): UseContactsSelectionReturn => {
-  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set())
+  const {
+    selectedItems,
+    handleSelectAll: genericHandleSelectAll,
+    handleSelectItem,
+    clearSelection,
+  } = useEntitySelection<ContactWithOrganization>()
 
+  // Maintain backward compatibility with existing interface
   const handleSelectAll = useCallback(
     (checked: boolean, contacts: ContactWithOrganization[]) => {
-      if (checked) {
-        setSelectedItems(new Set(contacts.map((contact) => contact.id)))
-      } else {
-        setSelectedItems(new Set())
-      }
+      genericHandleSelectAll(checked, contacts)
     },
-    []
+    [genericHandleSelectAll]
   )
-
-  const handleSelectItem = useCallback((id: string, checked: boolean) => {
-    setSelectedItems((prev) => {
-      const newSelected = new Set(prev)
-      if (checked) {
-        newSelected.add(id)
-      } else {
-        newSelected.delete(id)
-      }
-      return newSelected
-    })
-  }, [])
-
-  const clearSelection = useCallback(() => {
-    setSelectedItems(new Set())
-  }, [])
 
   return {
     selectedItems,

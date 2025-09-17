@@ -1,13 +1,12 @@
 /**
  * Design Utility Functions
- * 
+ *
  * Helper functions for applying design tokens consistently across components.
  * These utilities abstract common design patterns and ensure consistency.
  */
 
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { designTokens } from '@/lib/design-tokens'
 
 // =============================================================================
 // CORE UTILITY FUNCTIONS
@@ -29,10 +28,13 @@ export function getVariantClasses(
   additionalClasses?: string
 ) {
   const baseClasses: Record<string, string> = {
-    button: 'inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
-    input: 'flex w-full border border-input bg-transparent transition-colors file:border-0 file:bg-transparent file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+    button:
+      'inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
+    input:
+      'flex w-full border border-input bg-transparent transition-colors file:border-0 file:bg-transparent file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
     card: 'rounded-lg border bg-card text-card-foreground shadow-sm',
-    badge: 'inline-flex items-center border font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+    badge:
+      'inline-flex items-center border font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
   }
 
   const sizeClasses: Record<string, Record<string, string>> = {
@@ -66,11 +68,7 @@ export function getVariantClasses(
     },
   }
 
-  return cn(
-    baseClasses[component],
-    sizeClasses[component][variant],
-    additionalClasses
-  )
+  return cn(baseClasses[component], sizeClasses[component][variant], additionalClasses)
 }
 
 // =============================================================================
@@ -84,13 +82,13 @@ export function getGridClasses(
   columns: { xs?: number; sm?: number; md?: number; lg?: number; xl?: number } = { md: 1 }
 ) {
   const classes = []
-  
+
   if (columns.xs) classes.push(`grid-cols-${columns.xs}`)
   if (columns.sm) classes.push(`sm:grid-cols-${columns.sm}`)
   if (columns.md) classes.push(`md:grid-cols-${columns.md}`)
   if (columns.lg) classes.push(`lg:grid-cols-${columns.lg}`)
   if (columns.xl) classes.push(`xl:grid-cols-${columns.xl}`)
-  
+
   return cn('grid gap-4', classes.join(' '))
 }
 
@@ -113,7 +111,7 @@ export function getSpacingClasses(
 
   const prefix = type === 'padding' ? 'p' : type === 'margin' ? 'm' : 'gap'
   const suffix = direction ? `-${direction}` : ''
-  
+
   return `${prefix}${suffix}-${sizeMap[size]}`
 }
 
@@ -129,34 +127,31 @@ export function getFormFieldClasses(
   size: 'sm' | 'md' | 'lg' = 'md'
 ) {
   const baseClasses = 'space-y-2'
-  
+
   const layoutClasses = {
     vertical: 'flex flex-col',
     horizontal: 'flex flex-row items-center space-y-0 space-x-4',
   }
-  
+
   const sizeClasses = {
     sm: 'text-sm',
     md: 'text-base',
     lg: 'text-lg',
   }
-  
+
   return cn(baseClasses, layoutClasses[layout], sizeClasses[size])
 }
 
 /**
  * Generate form grid layout classes
  */
-export function getFormGridClasses(
-  columns: 1 | 2 | 3 | 4 = 1,
-  responsive = true
-) {
+export function getFormGridClasses(columns: 1 | 2 | 3 | 4 = 1, responsive = true) {
   const baseClasses = 'grid gap-4'
-  
+
   if (!responsive) {
     return cn(baseClasses, `grid-cols-${columns}`)
   }
-  
+
   // Responsive grid patterns
   const responsiveClasses = {
     1: 'grid-cols-1',
@@ -164,7 +159,7 @@ export function getFormGridClasses(
     3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
     4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
   }
-  
+
   return cn(baseClasses, responsiveClasses[columns])
 }
 
@@ -206,7 +201,7 @@ export function getStatusClasses(
       subtle: 'bg-muted/50 text-muted-foreground border-muted',
     },
   }
-  
+
   return statusMap[status][variant]
 }
 
@@ -222,13 +217,13 @@ export function getLoadingClasses(
     md: 'w-6 h-6',
     lg: 'w-8 h-8',
   }
-  
+
   const typeClasses = {
     spinner: 'animate-spin',
     skeleton: 'animate-pulse bg-muted rounded',
     pulse: 'animate-pulse',
   }
-  
+
   return cn(sizeClasses[size], typeClasses[type])
 }
 
@@ -239,15 +234,15 @@ export function getLoadingClasses(
 /**
  * Generate focus ring classes
  */
-export function getFocusClasses(
-  variant: 'default' | 'inset' | 'none' = 'default'
-) {
+export function getFocusClasses(variant: 'default' | 'inset' | 'none' = 'default') {
   const variants = {
-    default: 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-    inset: 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
+    default:
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+    inset:
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
     none: 'focus-visible:outline-none',
   }
-  
+
   return variants[variant]
 }
 
@@ -275,7 +270,7 @@ export function getHoverClasses(
       strong: 'hover:text-primary hover:underline hover:underline-offset-4',
     },
   }
-  
+
   return typeMap[type][intensity]
 }
 
@@ -292,23 +287,26 @@ export function getVisibilityClasses(
 ) {
   const prefix = direction === 'show' ? '' : 'hidden '
   const suffix = direction === 'show' ? `:block` : `:hidden`
-  
+
   return `${prefix}${breakpoint}${suffix}`
 }
 
 /**
  * Generate responsive text size classes
  */
-export function getResponsiveTextClasses(
-  sizes: { sm?: string; md?: string; lg?: string; xl?: string }
-) {
+export function getResponsiveTextClasses(sizes: {
+  sm?: string
+  md?: string
+  lg?: string
+  xl?: string
+}) {
   const classes = []
-  
+
   if (sizes.sm) classes.push(`text-${sizes.sm}`)
   if (sizes.md) classes.push(`md:text-${sizes.md}`)
   if (sizes.lg) classes.push(`lg:text-${sizes.lg}`)
   if (sizes.xl) classes.push(`xl:text-${sizes.xl}`)
-  
+
   return cn(classes.join(' '))
 }
 
@@ -320,23 +318,23 @@ export const designUtils = {
   // Core
   cn,
   getVariantClasses,
-  
+
   // Layout
   getGridClasses,
   getSpacingClasses,
-  
+
   // Forms
   getFormFieldClasses,
   getFormGridClasses,
-  
+
   // Status & State
   getStatusClasses,
   getLoadingClasses,
-  
+
   // Interaction
   getFocusClasses,
   getHoverClasses,
-  
+
   // Responsive
   getVisibilityClasses,
   getResponsiveTextClasses,

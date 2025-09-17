@@ -1,9 +1,8 @@
 // Interactions Feature - Main Exports
 
 // Page Components
-export { InteractionsDataDisplay } from './components/InteractionsDataDisplay'
 export { InteractionsTable } from './components/InteractionsTable'
-export { InteractionsFilters } from './components/InteractionsFilters'
+export { InteractionsList } from './components/InteractionsList'
 export { InteractionsTableActions } from './components/InteractionsTableActions'
 
 // Timeline Components
@@ -16,7 +15,6 @@ export { InteractionTimelineEmbed } from './components/InteractionTimelineEmbed'
 export { QuickInteractionBar } from './components/QuickInteractionBar'
 
 // Page Management Hooks
-export { useInteractionsPageState } from './hooks/useInteractionsPageState'
 export { useInteractionsPageActions } from './hooks/useInteractionsPageActions'
 export { useInteractionFormData } from './hooks/useInteractionFormData'
 
@@ -30,3 +28,4 @@ export { useInteractionTimelineState } from './hooks/useInteractionTimelineState
 export { useInteractionTimelineActions } from './hooks/useInteractionTimelineActions'
 export { useInteractionTimelineItemActions } from './hooks/useInteractionTimelineItemActions'
 export { useInteractionTimelineItemFormatting } from './hooks/useInteractionTimelineItemFormatting'
+export { useInteractionsSelection } from './hooks/useInteractionsSelection'

@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react'
+import { useCallback } from 'react'
 import type { OpportunityWithLastActivity } from '@/types/opportunity.types'
+import { useEntitySelection, type UseEntitySelectionReturn } from '@/hooks/useEntitySelection'
 
 interface UseOpportunitiesSelectionReturn {
   selectedItems: Set<string>
@@ -9,34 +10,20 @@ interface UseOpportunitiesSelectionReturn {
 }
 
 export const useOpportunitiesSelection = (): UseOpportunitiesSelectionReturn => {
-  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set())
+  const {
+    selectedItems,
+    handleSelectAll: genericHandleSelectAll,
+    handleSelectItem,
+    clearSelection,
+  } = useEntitySelection<OpportunityWithLastActivity>()
 
+  // Maintain backward compatibility with existing interface
   const handleSelectAll = useCallback(
     (checked: boolean, opportunities: OpportunityWithLastActivity[]) => {
-      if (checked) {
-        setSelectedItems(new Set(opportunities.map((opp) => opp.id)))
-      } else {
-        setSelectedItems(new Set())
-      }
+      genericHandleSelectAll(checked, opportunities)
     },
-    []
+    [genericHandleSelectAll]
   )
-
-  const handleSelectItem = useCallback((id: string, checked: boolean) => {
-    setSelectedItems((prev) => {
-      const newSelected = new Set(prev)
-      if (checked) {
-        newSelected.add(id)
-      } else {
-        newSelected.delete(id)
-      }
-      return newSelected
-    })
-  }, [])
-
-  const clearSelection = useCallback(() => {
-    setSelectedItems(new Set())
-  }, [])
 
   return {
     selectedItems,

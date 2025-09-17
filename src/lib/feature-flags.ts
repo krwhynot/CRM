@@ -37,6 +37,9 @@ interface FeatureFlagsConfig {
   // Table Features
   contactDateSorting: FeatureFlag
 
+  // UI/UX Features
+  responsiveFilters: FeatureFlag
+
   // Development Features
   debugMode: FeatureFlag
 }
@@ -95,6 +98,15 @@ export const FEATURE_FLAGS: FeatureFlagsConfig = {
     description: 'Sort contacts by created_at date with filters',
     githubIssue: '#TBD',
     targetRelease: 'v1.1.0',
+  },
+
+  responsiveFilters: {
+    enabled: import.meta.env.VITE_ENABLE_RESPONSIVE_FILTERS === 'true',
+    userMessage: 'Responsive filters are being rolled out gradually',
+    description:
+      'Enable responsive filter layouts with mobile drawer, tablet sheet, and desktop inline modes',
+    githubIssue: '#TBD',
+    targetRelease: 'v1.2.0',
   },
 
   debugMode: {

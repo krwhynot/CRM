@@ -34,7 +34,7 @@ export function SmartImportWizard({
   currentStep,
   completedSteps,
   title = 'Import Organizations',
-  subtitle = 'Upload your spreadsheet and we\'ll handle the rest - just 3 simple steps',
+  subtitle = "Upload your spreadsheet and we'll handle the rest - just 3 simple steps",
   children,
   onStepClick,
   className,
@@ -171,13 +171,9 @@ export function SmartImportWizard({
                 <CardDescription>{STEP_CONFIGS[currentStep].description}</CardDescription>
               </div>
             </div>
-            
+
             {/* Right side content (like Next button) */}
-            {rightHeaderContent && (
-              <div className="shrink-0">
-                {rightHeaderContent}
-              </div>
-            )}
+            {rightHeaderContent && <div className="shrink-0">{rightHeaderContent}</div>}
           </div>
         </CardHeader>
 

@@ -4,8 +4,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
 import {
   MetricCard,
   ProgressCard,
@@ -13,7 +20,7 @@ import {
   QuickActionsCard,
   ChartCard,
   StatusOverviewCard,
-  type ActivityItem
+  type ActivityItem,
 } from '../CRMDashboardCards'
 import {
   DashboardGrid,
@@ -22,8 +29,9 @@ import {
   ResponsiveDashboard,
   DashboardLayouts,
   useDashboardBreakpoints,
-  useDashboardCardSizes
+  useDashboardCardSizes,
 } from '../CRMDashboardLayout'
+import { chartColors } from '../chart-colors'
 import {
   TrendingUp,
   TrendingDown,
@@ -52,14 +60,16 @@ import {
   Layout,
   Smartphone,
   Monitor,
-  Tablet
+  Tablet,
 } from 'lucide-react'
 
 export function CRMDashboardExample() {
-  const [selectedLayout, setSelectedLayout] = useState<'executive' | 'sales' | 'analytics'>('executive')
+  const [selectedLayout, setSelectedLayout] = useState<'executive' | 'sales' | 'analytics'>(
+    'executive'
+  )
   const [viewMode, setViewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop')
   const [refreshing, setRefreshing] = useState(false)
-  
+
   const breakpoint = useDashboardBreakpoints()
   const { getCardSize, getCardSpan } = useDashboardCardSizes()
 
@@ -74,17 +84,18 @@ export function CRMDashboardExample() {
       status: 'completed',
       user: {
         name: 'Sarah Johnson',
-        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b5bc?w=150&h=150&fit=crop&crop=face'
-      }
+        avatar:
+          'https://images.unsplash.com/photo-1494790108755-2616b612b5bc?w=150&h=150&fit=crop&crop=face',
+      },
     },
     {
-      id: '2', 
+      id: '2',
       type: 'opportunity',
       title: 'Created new opportunity',
       description: 'Enterprise Software Deal - $250k',
       timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
       status: 'pending',
-      priority: 'high'
+      priority: 'high',
     },
     {
       id: '3',
@@ -94,8 +105,8 @@ export function CRMDashboardExample() {
       timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4),
       status: 'pending',
       user: {
-        name: 'Mike Wilson'
-      }
+        name: 'Mike Wilson',
+      },
     },
     {
       id: '4',
@@ -103,14 +114,14 @@ export function CRMDashboardExample() {
       title: 'Sent proposal',
       description: 'Premium Support Package proposal',
       timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
-      status: 'completed'
-    }
+      status: 'completed',
+    },
   ]
 
   const mockChart = (
-    <div className="w-full h-full bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/20 dark:to-blue-900/20 rounded-lg flex items-center justify-center text-muted-foreground">
+    <div className="flex size-full items-center justify-center rounded-lg bg-gradient-to-br from-info/10 to-info/20 text-muted-foreground dark:from-info/5 dark:to-info/10">
       <div className="text-center">
-        <BarChart3 className="h-12 w-12 mx-auto mb-2 opacity-50" />
+        <BarChart3 className="mx-auto mb-2 size-12 opacity-50" />
         <p className="text-sm">Chart placeholder</p>
       </div>
     </div>
@@ -118,7 +129,7 @@ export function CRMDashboardExample() {
 
   const handleRefresh = async () => {
     setRefreshing(true)
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
     setRefreshing(false)
     toast.success('Dashboard refreshed successfully')
   }
@@ -130,7 +141,7 @@ export function CRMDashboardExample() {
       description: 'Add a new contact',
       icon: Users,
       onClick: () => toast.success('Creating new contact...'),
-      shortcut: 'Ctrl+N'
+      shortcut: 'Ctrl+N',
     },
     {
       id: 'new-deal',
@@ -138,7 +149,7 @@ export function CRMDashboardExample() {
       description: 'Create opportunity',
       icon: Target,
       onClick: () => toast.success('Creating new deal...'),
-      shortcut: 'Ctrl+D'
+      shortcut: 'Ctrl+D',
     },
     {
       id: 'schedule',
@@ -146,7 +157,7 @@ export function CRMDashboardExample() {
       description: 'Book a meeting',
       icon: Phone,
       onClick: () => toast.success('Opening calendar...'),
-      shortcut: 'Ctrl+S'
+      shortcut: 'Ctrl+S',
     },
     {
       id: 'report',
@@ -154,22 +165,25 @@ export function CRMDashboardExample() {
       description: 'Create sales report',
       icon: BarChart3,
       onClick: () => toast.success('Generating report...'),
-      shortcut: 'Ctrl+R'
-    }
+      shortcut: 'Ctrl+R',
+    },
   ]
 
   const statusItems = [
-    { label: 'Qualified', count: 45, color: '#10b981', percentage: 35 },
-    { label: 'Proposal', count: 28, color: '#f59e0b', percentage: 22 },
-    { label: 'Negotiation', count: 32, color: '#3b82f6', percentage: 25 },
-    { label: 'Closed Won', count: 23, color: '#8b5cf6', percentage: 18, trend: 'up' as const }
+    { label: 'Qualified', count: 45, color: chartColors.pipeline.qualified, percentage: 35 },
+    { label: 'Proposal', count: 28, color: chartColors.pipeline.proposal, percentage: 22 },
+    { label: 'Negotiation', count: 32, color: chartColors.pipeline.negotiation, percentage: 25 },
+    { label: 'Closed Won', count: 23, color: chartColors.pipeline.closed, percentage: 18, trend: 'up' as const },
   ]
 
   const getViewportClass = () => {
     switch (viewMode) {
-      case 'mobile': return 'max-w-sm mx-auto'
-      case 'tablet': return 'max-w-2xl mx-auto'
-      case 'desktop': return 'max-w-full'
+      case 'mobile':
+        return 'max-w-sm mx-auto'
+      case 'tablet':
+        return 'max-w-2xl mx-auto'
+      case 'desktop':
+        return 'max-w-full'
     }
   }
 
@@ -184,39 +198,39 @@ export function CRMDashboardExample() {
       </div>
 
       {/* Features Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="p-4">
           <div className="flex items-center space-x-2">
             <Badge variant="default">Responsive</Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-2">
+          <p className="mt-2 text-sm text-muted-foreground">
             Mobile-first responsive design with adaptive layouts
           </p>
         </Card>
-        
+
         <Card className="p-4">
           <div className="flex items-center space-x-2">
             <Badge variant="secondary">Interactive</Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-2">
+          <p className="mt-2 text-sm text-muted-foreground">
             Rich interaction patterns with actions and drill-downs
           </p>
         </Card>
-        
+
         <Card className="p-4">
           <div className="flex items-center space-x-2">
             <Badge variant="outline">Performance</Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-2">
+          <p className="mt-2 text-sm text-muted-foreground">
             Optimized rendering with lazy loading and priority
           </p>
         </Card>
-        
+
         <Card className="p-4">
           <div className="flex items-center space-x-2">
             <Badge variant="destructive">CRM-Ready</Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-2">
+          <p className="mt-2 text-sm text-muted-foreground">
             Pre-built components for sales, marketing, and service
           </p>
         </Card>
@@ -235,7 +249,10 @@ export function CRMDashboardExample() {
             {/* Layout Selection */}
             <div className="flex items-center space-x-2">
               <span className="text-sm text-muted-foreground">Layout:</span>
-              <Select value={selectedLayout} onValueChange={(value: any) => setSelectedLayout(value)}>
+              <Select
+                value={selectedLayout}
+                onValueChange={(value: any) => setSelectedLayout(value)}
+              >
                 <SelectTrigger className="w-32">
                   <SelectValue />
                 </SelectTrigger>
@@ -259,7 +276,7 @@ export function CRMDashboardExample() {
                   onClick={() => setViewMode('desktop')}
                   className="h-7 px-2"
                 >
-                  <Monitor className="h-3 w-3" />
+                  <Monitor className="size-3" />
                 </Button>
                 <Button
                   variant={viewMode === 'tablet' ? 'default' : 'ghost'}
@@ -267,7 +284,7 @@ export function CRMDashboardExample() {
                   onClick={() => setViewMode('tablet')}
                   className="h-7 px-2"
                 >
-                  <Tablet className="h-3 w-3" />
+                  <Tablet className="size-3" />
                 </Button>
                 <Button
                   variant={viewMode === 'mobile' ? 'default' : 'ghost'}
@@ -275,7 +292,7 @@ export function CRMDashboardExample() {
                   onClick={() => setViewMode('mobile')}
                   className="h-7 px-2"
                 >
-                  <Smartphone className="h-3 w-3" />
+                  <Smartphone className="size-3" />
                 </Button>
               </div>
             </div>
@@ -283,17 +300,12 @@ export function CRMDashboardExample() {
             <Separator orientation="vertical" className="h-6" />
 
             {/* Actions */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleRefresh}
-              disabled={refreshing}
-            >
-              <RefreshCw className={`h-4 w-4 mr-1 ${refreshing ? 'animate-spin' : ''}`} />
+            <Button variant="outline" size="sm" onClick={handleRefresh} disabled={refreshing}>
+              <RefreshCw className={`mr-1 size-4 ${refreshing ? 'animate-spin' : ''}`} />
               Refresh Data
             </Button>
 
-            <div className="text-xs text-muted-foreground ml-auto">
+            <div className="ml-auto text-xs text-muted-foreground">
               Current breakpoint: <Badge variant="outline">{breakpoint}</Badge>
             </div>
           </div>
@@ -304,7 +316,7 @@ export function CRMDashboardExample() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Layout className="h-5 w-5" />
+            <Layout className="size-5" />
             Live Dashboard Demo
           </CardTitle>
           <CardDescription>
@@ -312,7 +324,7 @@ export function CRMDashboardExample() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className={cn("border rounded-lg p-6 bg-background", getViewportClass())}>
+          <div className={cn('border rounded-lg p-6 bg-background', getViewportClass())}>
             <ResponsiveDashboard
               layout={selectedLayout}
               title={`${selectedLayout.charAt(0).toUpperCase() + selectedLayout.slice(1)} Dashboard`}
@@ -320,11 +332,11 @@ export function CRMDashboardExample() {
               actions={
                 <div className="flex items-center space-x-2">
                   <Button variant="outline" size="sm">
-                    <Filter className="h-4 w-4 mr-1" />
+                    <Filter className="mr-1 size-4" />
                     Filter
                   </Button>
                   <Button variant="outline" size="sm">
-                    <Download className="h-4 w-4 mr-1" />
+                    <Download className="mr-1 size-4" />
                     Export
                   </Button>
                 </div>
@@ -340,7 +352,7 @@ export function CRMDashboardExample() {
                 icon={DollarSign}
                 size={getCardSize('high')}
                 variant="primary"
-                badge={{ text: "This Month", variant: "secondary" }}
+                badge={{ text: 'This Month', variant: 'secondary' }}
               />
 
               <MetricCard
@@ -353,7 +365,7 @@ export function CRMDashboardExample() {
                 size={getCardSize('high')}
                 actions={[
                   { label: 'View Pipeline', onClick: () => toast.info('Opening pipeline...') },
-                  { label: 'Add Deal', onClick: () => toast.success('Creating deal...') }
+                  { label: 'Add Deal', onClick: () => toast.success('Creating deal...') },
                 ]}
               />
 
@@ -387,8 +399,8 @@ export function CRMDashboardExample() {
                 max={2400000}
                 size={getCardSize('medium')}
                 segments={[
-                  { label: 'Closed', value: 850000, color: '#10b981' },
-                  { label: 'Pending', value: 830000, color: '#f59e0b' }
+                  { label: 'Closed', value: 850000, color: 'hsl(var(--success))' },
+                  { label: 'Pending', value: 830000, color: 'hsl(var(--warning))' },
                 ]}
               />
 
@@ -428,12 +440,20 @@ export function CRMDashboardExample() {
                     period="Last 12 months"
                     size="xl"
                     actions={[
-                      { label: 'Export Data', onClick: () => toast.info('Exporting...'), icon: Download },
-                      { label: 'View Details', onClick: () => toast.info('Opening details...'), icon: Eye }
+                      {
+                        label: 'Export Data',
+                        onClick: () => toast.info('Exporting...'),
+                        icon: Download,
+                      },
+                      {
+                        label: 'View Details',
+                        onClick: () => toast.info('Opening details...'),
+                        icon: Eye,
+                      },
                     ]}
                     filters={
                       <Select defaultValue="12m">
-                        <SelectTrigger className="w-24 h-7">
+                        <SelectTrigger className="h-7 w-24">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -510,13 +530,11 @@ export function CRMDashboardExample() {
 
         {/* Card Types */}
         <TabsContent value="cards" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle>Metric Cards</CardTitle>
-                <CardDescription>
-                  Display key performance indicators with trends
-                </CardDescription>
+                <CardDescription>Display key performance indicators with trends</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <MetricCard
@@ -557,9 +575,7 @@ export function CRMDashboardExample() {
             <Card>
               <CardHeader>
                 <CardTitle>Activity Cards</CardTitle>
-                <CardDescription>
-                  Display recent activities and interactions
-                </CardDescription>
+                <CardDescription>Display recent activities and interactions</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <ActivityCard
@@ -577,9 +593,7 @@ export function CRMDashboardExample() {
             <Card>
               <CardHeader>
                 <CardTitle>Status Overview</CardTitle>
-                <CardDescription>
-                  Breakdown of items by status or category
-                </CardDescription>
+                <CardDescription>Breakdown of items by status or category</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <StatusOverviewCard
@@ -606,60 +620,60 @@ export function CRMDashboardExample() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="border rounded-lg p-4">
-                    <h4 className="font-medium mb-2">Executive Layout</h4>
-                    <p className="text-sm text-muted-foreground mb-3">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                  <div className="rounded-lg border p-4">
+                    <h4 className="mb-2 font-medium">Executive Layout</h4>
+                    <p className="mb-3 text-sm text-muted-foreground">
                       High-level KPIs and summary information
                     </p>
-                    <div className="grid grid-cols-3 gap-1 mb-2">
-                      {Array.from({length: 3}).map((_, i) => (
-                        <div key={i} className="h-6 bg-primary/20 rounded" />
+                    <div className="mb-2 grid grid-cols-3 gap-1">
+                      {Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="h-6 rounded bg-primary/20" />
                       ))}
                     </div>
                     <div className="grid grid-cols-2 gap-1">
-                      {Array.from({length: 4}).map((_, i) => (
-                        <div key={i} className="h-4 bg-muted rounded" />
+                      {Array.from({ length: 4 }).map((_, i) => (
+                        <div key={i} className="h-4 rounded bg-muted" />
                       ))}
                     </div>
                   </div>
 
-                  <div className="border rounded-lg p-4">
-                    <h4 className="font-medium mb-2">Sales Layout</h4>
-                    <p className="text-sm text-muted-foreground mb-3">
+                  <div className="rounded-lg border p-4">
+                    <h4 className="mb-2 font-medium">Sales Layout</h4>
+                    <p className="mb-3 text-sm text-muted-foreground">
                       Pipeline, activities, and performance metrics
                     </p>
-                    <div className="grid grid-cols-4 gap-1 mb-2">
-                      {Array.from({length: 4}).map((_, i) => (
-                        <div key={i} className="h-4 bg-green-200 rounded" />
+                    <div className="mb-2 grid grid-cols-4 gap-1">
+                      {Array.from({ length: 4 }).map((_, i) => (
+                        <div key={i} className="h-4 rounded bg-success/20" />
                       ))}
                     </div>
-                    <div className="grid grid-cols-2 gap-1 mb-2">
-                      {Array.from({length: 2}).map((_, i) => (
-                        <div key={i} className="h-8 bg-muted rounded" />
+                    <div className="mb-2 grid grid-cols-2 gap-1">
+                      {Array.from({ length: 2 }).map((_, i) => (
+                        <div key={i} className="h-8 rounded bg-muted" />
                       ))}
                     </div>
                     <div className="grid grid-cols-3 gap-1">
-                      {Array.from({length: 3}).map((_, i) => (
-                        <div key={i} className="h-4 bg-muted rounded" />
+                      {Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="h-4 rounded bg-muted" />
                       ))}
                     </div>
                   </div>
 
-                  <div className="border rounded-lg p-4">
-                    <h4 className="font-medium mb-2">Analytics Layout</h4>
-                    <p className="text-sm text-muted-foreground mb-3">
+                  <div className="rounded-lg border p-4">
+                    <h4 className="mb-2 font-medium">Analytics Layout</h4>
+                    <p className="mb-3 text-sm text-muted-foreground">
                       Detailed charts and comprehensive reporting
                     </p>
-                    <div className="grid grid-cols-6 gap-1 mb-2">
-                      {Array.from({length: 6}).map((_, i) => (
-                        <div key={i} className="h-3 bg-blue-200 rounded" />
+                    <div className="mb-2 grid grid-cols-6 gap-1">
+                      {Array.from({ length: 6 }).map((_, i) => (
+                        <div key={i} className="h-3 rounded bg-info/20" />
                       ))}
                     </div>
-                    <div className="h-8 bg-muted rounded mb-2" />
+                    <div className="mb-2 h-8 rounded bg-muted" />
                     <div className="grid grid-cols-4 gap-1">
-                      {Array.from({length: 4}).map((_, i) => (
-                        <div key={i} className="h-4 bg-muted rounded" />
+                      {Array.from({ length: 4 }).map((_, i) => (
+                        <div key={i} className="h-4 rounded bg-muted" />
                       ))}
                     </div>
                   </div>
@@ -671,23 +685,29 @@ export function CRMDashboardExample() {
 
         {/* Responsive Design */}
         <TabsContent value="responsive" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle>Breakpoint System</CardTitle>
-                <CardDescription>
-                  Adaptive layouts based on screen size
-                </CardDescription>
+                <CardDescription>Adaptive layouts based on screen size</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <div className="text-sm">
-                    <p className="font-medium mb-1">Current breakpoint: {breakpoint}</p>
+                    <p className="mb-1 font-medium">Current breakpoint: {breakpoint}</p>
                     <ul className="space-y-1 text-muted-foreground">
-                      <li>• <code>sm</code> - &lt; 640px (Mobile)</li>
-                      <li>• <code>md</code> - 640px - 768px (Large mobile)</li>
-                      <li>• <code>lg</code> - 768px - 1024px (Tablet)</li>
-                      <li>• <code>xl</code> - &gt; 1024px (Desktop)</li>
+                      <li>
+                        • <code>sm</code> - &lt; 640px (Mobile)
+                      </li>
+                      <li>
+                        • <code>md</code> - 640px - 768px (Large mobile)
+                      </li>
+                      <li>
+                        • <code>lg</code> - 768px - 1024px (Tablet)
+                      </li>
+                      <li>
+                        • <code>xl</code> - &gt; 1024px (Desktop)
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -697,9 +717,7 @@ export function CRMDashboardExample() {
             <Card>
               <CardHeader>
                 <CardTitle>Responsive Features</CardTitle>
-                <CardDescription>
-                  Adaptive behavior and optimizations
-                </CardDescription>
+                <CardDescription>Adaptive behavior and optimizations</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -725,13 +743,11 @@ export function CRMDashboardExample() {
             <Card>
               <CardHeader>
                 <CardTitle>Basic Dashboard Setup</CardTitle>
-                <CardDescription>
-                  Simple dashboard with responsive layout
-                </CardDescription>
+                <CardDescription>Simple dashboard with responsive layout</CardDescription>
               </CardHeader>
               <CardContent>
-                <pre className="text-xs bg-muted p-4 rounded-md overflow-auto">
-{`import { 
+                <pre className="overflow-auto rounded-md bg-muted p-4 text-xs">
+                  {`import { 
   ResponsiveDashboard, 
   MetricCard, 
   ActivityCard 
@@ -775,8 +791,8 @@ export function SalesDashboard() {
                 <CardTitle>Custom Layout with Sections</CardTitle>
               </CardHeader>
               <CardContent>
-                <pre className="text-xs bg-muted p-4 rounded-md overflow-auto">
-{`export function CustomDashboard() {
+                <pre className="overflow-auto rounded-md bg-muted p-4 text-xs">
+                  {`export function CustomDashboard() {
   return (
     <ResponsiveDashboard
       layout="custom"
@@ -816,8 +832,8 @@ export function SalesDashboard() {
                 <CardTitle>Responsive Hooks Usage</CardTitle>
               </CardHeader>
               <CardContent>
-                <pre className="text-xs bg-muted p-4 rounded-md overflow-auto">
-{`import { 
+                <pre className="overflow-auto rounded-md bg-muted p-4 text-xs">
+                  {`import { 
   useDashboardBreakpoints, 
   useDashboardCardSizes 
 } from '@/components/dashboard'

@@ -1,0 +1,778 @@
+/**
+ * SEMANTIC LAYER - New Design Token Semantic Mappings
+ *
+ * Maps new brand primitive tokens to semantic meanings for shadcn/ui integration.
+ * This file establishes the semantic abstraction layer where components reference
+ * semantic tokens (--primary) rather than primitives (--brand-primary).
+ *
+ * HIERARCHY: PRIMITIVES → SEMANTIC (this file) → COMPONENTS → FEATURES
+ *
+ * CRITICAL: This file only contains semantic mappings that reference primitives.
+ * No primitive definitions should exist here - only references to primitives.
+ */
+
+:root {
+  /*
+   * Core shadcn/ui Semantic Mappings
+   * Maps new brand primitives to UI component semantic meanings
+   */
+
+  /* Surface Colors */
+  --background: 0 0% 98%;
+  --foreground: var(--text-primary-hsl, 0 0% 13%);
+  --card: 0 0% 100%;
+  --card-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --popover: 0 0% 100%;
+  --popover-foreground: var(--text-primary-hsl, 0 0% 13%);
+
+  /* Brand Color Semantic Mappings - New Brand System */
+  --primary: var(--brand-primary-hsl, 124 55% 55%);        /* New yellow-green primary */
+  --primary-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --primary-50: var(--brand-primary-subtle-hsl, 124 20% 93%);
+  --primary-100: var(--brand-primary-light-hsl, 124 42% 75%);
+  --primary-400: var(--brand-primary-hsl, 124 55% 55%);
+  --primary-600: var(--brand-primary-active-hsl, 124 62% 45%);
+
+  --secondary: var(--brand-secondary-hsl, 285 45% 52%);    /* New purple secondary */
+  --secondary-foreground: var(--text-inverse-hsl, 0 0% 98%);
+
+  /* Intent Color Semantic Mappings - New Semantic System */
+  --success: var(--semantic-success-hsl, 142 55% 48%);      /* New success green */
+  --success-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --warning: var(--semantic-warning-hsl, 60 85% 52%);      /* New warning amber */
+  --warning-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --info: var(--semantic-info-hsl, 240 65% 52%);           /* New info blue */
+  --info-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --destructive: var(--semantic-error-hsl, 25 78% 52%);    /* New error red */
+  --destructive-foreground: var(--text-inverse-hsl, 0 0% 98%);
+
+  /* Interaction Type Semantic Mappings - Enhanced with new brand colors */
+  --demo: var(--semantic-warning-hsl, 60 85% 52%);         /* Demo Interaction → Amber */
+  --demo-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --trade-show: 330 81% 60%;                               /* Trade Show Interaction → Pink */
+  --trade-show-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --site-visit: var(--brand-accent-hsl, 220 48% 58%);      /* Site Visit → New brand accent */
+  --site-visit-foreground: var(--text-inverse-hsl, 0 0% 98%);
+
+  /* Interface Element Semantic Mappings */
+  --muted: var(--gray-100-hsl, 0 0% 95%);
+  --muted-foreground: var(--text-tertiary-hsl, 0 0% 55%);  /* Maps to new typography tokens */
+  --accent: var(--gray-100-hsl, 0 0% 95%);
+  --accent-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --border: var(--border-default-hsl, 0 0% 87%);
+  --input: var(--border-default-hsl, 0 0% 87%);
+  --ring: var(--brand-primary-hsl, 124 55% 55%);           /* Focus ring uses new primary */
+  --radius: 0.375rem;
+
+  /*
+   * Enhanced Focus Ring System - Context-Specific Focus with WCAG Compliance
+   * Advanced focus system with context-aware variants, keyboard navigation,
+   * and touch interface feedback for comprehensive accessibility
+   */
+
+  /* Base Focus Ring System */
+  --focus-ring: var(--brand-primary-hsl, 124 55% 55%);     /* Primary focus ring */
+  --focus-ring-width: 2px;                                 /* Standard WCAG compliant width */
+  --focus-ring-offset: 2px;                                /* Clear separation from element */
+  --focus-ring-opacity: 0.8;                               /* Strong visibility */
+  --focus-ring-style: solid;                               /* Clear definition */
+
+  /* Enhanced Context-Specific Focus Ring Variants */
+  --focus-ring-inverse: var(--text-inverse-hsl, 0 0% 98%); /* White on dark backgrounds */
+  --focus-ring-destructive: var(--semantic-error-hsl, 25 78% 52%);   /* Red for dangerous actions */
+  --focus-ring-success: var(--semantic-success-hsl, 142 55% 48%);    /* Green for positive actions */
+  --focus-ring-warning: var(--semantic-warning-hsl, 60 85% 52%);     /* Amber for warning actions */
+  --focus-ring-info: var(--semantic-info-hsl, 240 65% 52%);          /* Blue for informational actions */
+
+  /* Enhanced Focus Ring Widths for Different Contexts */
+  --focus-ring-width-thin: 1px;                           /* Subtle focus for dense interfaces */
+  --focus-ring-width-standard: 2px;                       /* Standard WCAG compliant width */
+  --focus-ring-width-thick: 3px;                          /* Enhanced visibility for critical actions */
+  --focus-ring-width-touch: 4px;                          /* Touch interface enhanced visibility */
+
+  /* Focus Ring Offset Variations */
+  --focus-ring-offset-none: 0px;                          /* Direct outline for compact elements */
+  --focus-ring-offset-tight: 1px;                         /* Tight spacing for dense layouts */
+  --focus-ring-offset-standard: 2px;                      /* Standard spacing */
+  --focus-ring-offset-loose: 3px;                         /* Loose spacing for prominent elements */
+
+  /* Focus Ring Opacity Variations */
+  --focus-ring-opacity-subtle: 0.6;                       /* Subtle focus for secondary elements */
+  --focus-ring-opacity-standard: 0.8;                     /* Standard visibility */
+  --focus-ring-opacity-prominent: 0.95;                   /* High visibility for critical actions */
+
+  /* Keyboard Navigation Indicators */
+  --focus-ring-keyboard: var(--brand-primary-hsl, 124 55% 55%);       /* Keyboard-specific focus */
+  --focus-ring-keyboard-width: 2px;
+  --focus-ring-keyboard-offset: 2px;
+  --focus-ring-keyboard-style: solid;
+  --focus-ring-keyboard-opacity: 0.9;                     /* Slightly higher for keyboard users */
+
+  /* Touch Interface Focus Feedback */
+  --focus-ring-touch: var(--brand-primary-hsl, 124 55% 55%);          /* Touch-specific focus */
+  --focus-ring-touch-width: 4px;                          /* Larger for touch interfaces */
+  --focus-ring-touch-offset: 1px;                         /* Tighter offset for touch */
+  --focus-ring-touch-style: solid;
+  --focus-ring-touch-opacity: 0.7;                        /* Slightly lower to avoid overwhelming */
+
+  /* Interactive State Focus Variants */
+  --focus-ring-hover: var(--brand-primary-light-hsl, 124 42% 75%);    /* Focus during hover */
+  --focus-ring-active: var(--brand-primary-active-hsl, 124 62% 45%);  /* Focus during active */
+  --focus-ring-disabled: var(--gray-400-hsl, 0 0% 65%);               /* Focus for disabled elements */
+
+  /* Component-Specific Focus Ring Variants */
+  --focus-ring-button: var(--brand-primary-hsl, 124 55% 55%);         /* Button focus */
+  --focus-ring-button-destructive: var(--semantic-error-hsl, 25 78% 52%);  /* Destructive button focus */
+  --focus-ring-button-success: var(--semantic-success-hsl, 142 55% 48%);   /* Success button focus */
+  --focus-ring-input: var(--brand-primary-hsl, 124 55% 55%);          /* Form input focus */
+  --focus-ring-input-error: var(--semantic-error-hsl, 25 78% 52%);    /* Error input focus */
+  --focus-ring-input-success: var(--semantic-success-hsl, 142 55% 48%); /* Valid input focus */
+  --focus-ring-link: var(--brand-primary-hsl, 124 55% 55%);           /* Link focus */
+  --focus-ring-card: var(--brand-primary-hsl, 124 55% 55%);           /* Interactive card focus */
+  --focus-ring-tab: var(--brand-primary-hsl, 124 55% 55%);            /* Tab navigation focus */
+
+  /* Data Table Focus Variants */
+  --focus-ring-table-cell: var(--brand-primary-hsl, 124 55% 55%);     /* Table cell focus */
+  --focus-ring-table-row: var(--brand-primary-subtle-hsl, 124 20% 93%); /* Table row focus background */
+  --focus-ring-table-header: var(--brand-primary-hsl, 124 55% 55%);   /* Table header focus */
+
+  /* Modal and Dialog Focus */
+  --focus-ring-modal: var(--brand-primary-hsl, 124 55% 55%);          /* Modal element focus */
+  --focus-ring-dialog: var(--brand-primary-hsl, 124 55% 55%);         /* Dialog element focus */
+  --focus-ring-popover: var(--brand-primary-hsl, 124 55% 55%);        /* Popover element focus */
+
+  /* Priority-Based Focus Ring Colors */
+  --focus-ring-priority-critical: var(--semantic-error-hsl, 25 78% 52%);     /* Critical priority focus */
+  --focus-ring-priority-high: var(--semantic-error-light-hsl, 25 65% 67%);   /* High priority focus */
+  --focus-ring-priority-medium: var(--semantic-warning-hsl, 60 85% 52%);     /* Medium priority focus */
+  --focus-ring-priority-normal: var(--brand-primary-hsl, 124 55% 55%);       /* Normal priority focus */
+  --focus-ring-priority-low: var(--gray-500-hsl, 0 0% 50%);                  /* Low priority focus */
+
+  /* CRM Entity Focus Variants */
+  --focus-ring-customer: var(--org-customer, 220 48% 58%);            /* Customer entity focus */
+  --focus-ring-distributor: var(--org-distributor, 142 55% 48%);      /* Distributor entity focus */
+  --focus-ring-principal: var(--org-principal, 285 45% 52%);          /* Principal entity focus */
+  --focus-ring-supplier: var(--org-supplier, 220 35% 75%);            /* Supplier entity focus */
+
+  /* Focus Visible States (keyboard-only focus) */
+  --focus-visible-ring: var(--brand-primary-hsl, 124 55% 55%);        /* Keyboard-only focus */
+  --focus-visible-ring-width: 2px;
+  --focus-visible-ring-offset: 2px;
+  --focus-visible-ring-style: solid;
+  --focus-visible-ring-opacity: 0.9;
+
+  /* Skip Link Focus */
+  --focus-ring-skip-link: var(--brand-primary-hsl, 124 55% 55%);      /* Skip link focus */
+  --focus-ring-skip-link-bg: var(--brand-primary-hsl, 124 55% 55%);   /* Skip link background */
+  --focus-ring-skip-link-text: var(--text-inverse-hsl, 0 0% 98%);     /* Skip link text */
+
+  /* Focus Shadow System for Enhanced Depth */
+  --focus-shadow-button: 0 0 0 2px var(--focus-ring-hsl), 0 0 8px 0 hsla(var(--focus-ring-hsl) / 0.3);
+  --focus-shadow-input: 0 0 0 2px var(--focus-ring-input-hsl), 0 0 6px 0 hsla(var(--focus-ring-input-hsl) / 0.2);
+  --focus-shadow-card: 0 0 0 2px var(--focus-ring-card-hsl), 0 4px 12px 0 hsla(var(--focus-ring-card-hsl) / 0.15);
+  --focus-shadow-destructive: 0 0 0 2px var(--focus-ring-destructive-hsl), 0 0 8px 0 hsla(var(--focus-ring-destructive-hsl) / 0.3);
+
+  /*
+   * Sidebar Semantic Tokens - New Brand System
+   * Sidebar-specific semantic mappings for navigation elements
+   */
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: var(--text-secondary-hsl, 0 0% 40%);
+  --sidebar-primary: var(--brand-primary-hsl, 124 55% 55%);     /* Uses new primary */
+  --sidebar-primary-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --sidebar-accent: var(--brand-primary-subtle-hsl, 124 20% 93%);  /* Light primary accent */
+  --sidebar-accent-foreground: var(--brand-primary-hsl, 124 55% 55%);
+  --sidebar-border: var(--brand-primary-hsl, 124 55% 55%);       /* Uses new primary */
+  --sidebar-ring: var(--brand-primary-hsl, 124 55% 55%);         /* Uses new primary */
+
+  /*
+   * CRM-Specific Semantic Token Extensions - Fresh Implementation
+   * Domain-specific semantic mappings for CRM entities with new color system
+   */
+
+  /* Enhanced Priority Level Semantic Mappings - Fresh Visual Hierarchy */
+  --priority-critical: var(--semantic-error-hsl, 25 78% 52%);          /* Critical Priority → Red */
+  --priority-critical-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --priority-high: var(--semantic-error-light-hsl, 25 65% 67%);        /* High Priority → Light Red */
+  --priority-high-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --priority-medium: var(--semantic-warning-hsl, 60 85% 52%);          /* Medium Priority → Amber */
+  --priority-medium-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --priority-normal: var(--brand-primary-hsl, 124 55% 55%);            /* Normal Priority → New Primary */
+  --priority-normal-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --priority-low: var(--gray-500-hsl, 0 0% 50%);                      /* Low Priority → Gray */
+  --priority-low-foreground: var(--text-inverse-hsl, 0 0% 98%);
+
+  /* Legacy Priority Mappings (for backward compatibility during transition) */
+  --priority-a-plus: var(--priority-critical);                         /* Critical Priority → Red */
+  --priority-a-plus-foreground: var(--priority-critical-foreground);
+  --priority-a: var(--priority-high);                                  /* High Priority → Light Red */
+  --priority-a-foreground: var(--priority-high-foreground);
+  --priority-b: var(--priority-medium);                                /* Medium Priority → Amber */
+  --priority-b-foreground: var(--priority-medium-foreground);
+  --priority-c: var(--priority-normal);                                /* Normal Priority → Primary */
+  --priority-c-foreground: var(--priority-normal-foreground);
+  --priority-d: var(--priority-low);                                   /* Low Priority → Gray */
+  --priority-d-foreground: var(--priority-low-foreground);
+
+  /* Enhanced Organization Type Semantic Mappings - Fresh Color System */
+  --org-customer: var(--brand-accent-hsl, 220 48% 58%);               /* Customer → New brand accent blue */
+  --org-customer-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --org-distributor: var(--semantic-success-hsl, 142 55% 48%);        /* Distributor → Success green */
+  --org-distributor-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --org-principal: var(--brand-secondary-hsl, 285 45% 52%);           /* Principal → New brand secondary purple */
+  --org-principal-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --org-supplier: var(--brand-accent-light-hsl, 220 35% 75%);         /* Supplier → Light brand accent */
+  --org-supplier-foreground: var(--text-primary-hsl, 0 0% 13%);
+
+  /* NEW: Missing Organization Type Tokens - Proper contrast ratios */
+  --org-vendor: 15 85% 55%;                                           /* Vendor → Orange */
+  --org-vendor-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --org-prospect: 160 50% 50%;                                        /* Prospect → Teal */
+  --org-prospect-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --org-unknown: var(--gray-400-hsl, 0 0% 65%);                      /* Unknown → Gray */
+  --org-unknown-foreground: var(--text-inverse-hsl, 0 0% 98%);
+
+  /* Legacy organization mappings for badge.variants.ts compatibility */
+  --organization-customer: var(--org-customer);
+  --organization-customer-foreground: var(--org-customer-foreground);
+  --organization-distributor: var(--org-distributor);
+  --organization-distributor-foreground: var(--org-distributor-foreground);
+  --organization-principal: var(--org-principal);
+  --organization-principal-foreground: var(--org-principal-foreground);
+  --organization-supplier: var(--org-supplier);
+  --organization-supplier-foreground: var(--org-supplier-foreground);
+  --organization-vendor: var(--org-vendor);
+  --organization-vendor-foreground: var(--org-vendor-foreground);
+  --organization-prospect: var(--org-prospect);
+  --organization-prospect-foreground: var(--org-prospect-foreground);
+
+  /* Market Segment Semantic Mappings - Enhanced with new brand colors */
+  --segment-restaurant: var(--semantic-warning-hsl, 60 85% 52%);      /* Restaurant → Amber */
+  --segment-restaurant-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --segment-healthcare: 188 95% 68%;                                  /* Healthcare → Cyan */
+  --segment-healthcare-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --segment-education: var(--brand-secondary-light-hsl, 285 30% 70%); /* Education → Light purple */
+  --segment-education-foreground: var(--text-primary-hsl, 0 0% 13%);
+
+  /* Special Status Combination Semantic Mappings - Enhanced gradients */
+  --vip-customer: linear-gradient(45deg, var(--semantic-warning-hsl, 60 85% 52%), 25 95% 53%); /* VIP → Gold gradient */
+  --key-partner: linear-gradient(45deg, var(--semantic-success-hsl, 142 55% 48%), 160 84% 39%); /* Key Partner → Green gradient */
+
+  /*
+   * CRM Workflow State Tokens - NEW IMPLEMENTATION
+   * Enhanced tokens for CRM-specific workflow states
+   */
+
+  /* Data Entry Validation States */
+  --data-valid: var(--semantic-success-hsl, 142 55% 48%);             /* Valid data → Success green */
+  --data-valid-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --data-invalid: var(--semantic-error-hsl, 25 78% 52%);              /* Invalid data → Error red */
+  --data-invalid-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --data-pending: var(--semantic-warning-hsl, 60 85% 52%);            /* Pending validation → Warning amber */
+  --data-pending-foreground: var(--text-primary-hsl, 0 0% 13%);
+
+  /* Bulk Operations States */
+  --bulk-selected: var(--brand-primary-subtle-hsl, 124 20% 93%);      /* Selected items → Primary subtle */
+  --bulk-selected-foreground: var(--brand-primary-hsl, 124 55% 55%);
+  --bulk-processing: var(--semantic-info-subtle-hsl, 240 30% 92%);    /* Processing → Info subtle */
+  --bulk-processing-foreground: var(--semantic-info-hsl, 240 65% 52%);
+
+  /* Import/Export Progress States */
+  --import-in-progress: var(--semantic-info-hsl, 240 65% 52%);        /* Import in progress → Info blue */
+  --import-in-progress-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --import-complete: var(--semantic-success-hsl, 142 55% 48%);        /* Import complete → Success green */
+  --import-complete-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --import-failed: var(--semantic-error-hsl, 25 78% 52%);             /* Import failed → Error red */
+  --import-failed-foreground: var(--text-inverse-hsl, 0 0% 98%);
+
+  /* Sync Operations States */
+  --sync-synced: var(--semantic-success-light-hsl, 142 45% 63%);      /* Synced → Light success */
+  --sync-synced-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --sync-pending: var(--semantic-warning-light-hsl, 60 70% 67%);      /* Sync pending → Light warning */
+  --sync-pending-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --sync-error: var(--semantic-error-light-hsl, 25 65% 67%);          /* Sync error → Light error */
+  --sync-error-foreground: var(--text-primary-hsl, 0 0% 13%);
+
+  /*
+   * COMPREHENSIVE CRM WORKFLOW STATES - Task 2.2 Implementation
+   * Additional workflow states for complete CRM operations coverage
+   */
+
+  /* Enhanced Data Entry States */
+  --data-required: var(--semantic-error-light-hsl, 25 65% 67%);       /* Required field indicator → Light error */
+  --data-required-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --data-optional: var(--gray-300-hsl, 0 0% 85%);                    /* Optional field indicator → Light gray */
+  --data-optional-foreground: var(--text-tertiary-hsl, 0 0% 55%);
+  --data-saving: var(--semantic-info-light-hsl, 240 35% 77%);        /* Data save in progress → Light info */
+  --data-saving-foreground: var(--text-primary-hsl, 0 0% 13%);
+
+  /* Advanced Bulk Operations States */
+  --bulk-preview: var(--brand-primary-subtle-hsl, 124 20% 93%);      /* Bulk action preview → Primary subtle */
+  --bulk-preview-foreground: var(--brand-primary-hsl, 124 55% 55%);
+  --bulk-confirmed: var(--semantic-success-light-hsl, 142 45% 63%);  /* Bulk action confirmed → Light success */
+  --bulk-confirmed-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --bulk-cancelled: var(--gray-300-hsl, 0 0% 85%);                  /* Bulk action cancelled → Light gray */
+  --bulk-cancelled-foreground: var(--text-tertiary-hsl, 0 0% 55%);
+  --bulk-partial: var(--semantic-warning-light-hsl, 60 70% 67%);     /* Partial bulk success → Light warning */
+  --bulk-partial-foreground: var(--text-primary-hsl, 0 0% 13%);
+
+  /* Extended Import/Export Progress States */
+  --export-queued: var(--gray-400-hsl, 0 0% 65%);                   /* Export queued → Gray */
+  --export-queued-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --export-generating: var(--semantic-info-hsl, 240 65% 52%);       /* Export generating → Info blue */
+  --export-generating-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --export-ready: var(--semantic-success-hsl, 142 55% 48%);         /* Export ready → Success green */
+  --export-ready-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --export-expired: var(--semantic-warning-hsl, 60 85% 52%);        /* Export expired → Warning amber */
+  --export-expired-foreground: var(--text-primary-hsl, 0 0% 13%);
+
+  /* Enhanced Sync Operations States */
+  --sync-conflicted: var(--semantic-error-hsl, 25 78% 52%);         /* Sync conflict → Error red */
+  --sync-conflicted-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --sync-resolving: var(--semantic-warning-hsl, 60 85% 52%);        /* Conflict resolution → Warning amber */
+  --sync-resolving-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --sync-offline: var(--gray-500-hsl, 0 0% 50%);                   /* Offline mode → Gray */
+  --sync-offline-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --sync-queued: var(--semantic-info-light-hsl, 240 35% 77%);      /* Sync queued → Light info */
+  --sync-queued-foreground: var(--text-primary-hsl, 0 0% 13%);
+
+  /* Data Processing States */
+  --processing-validating: var(--semantic-info-hsl, 240 65% 52%);   /* Data validation → Info blue */
+  --processing-validating-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --processing-transforming: var(--brand-primary-hsl, 124 55% 55%); /* Data transformation → Primary */
+  --processing-transforming-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --processing-enriching: var(--brand-secondary-hsl, 285 45% 52%);  /* Data enrichment → Secondary purple */
+  --processing-enriching-foreground: var(--text-inverse-hsl, 0 0% 98%);
+
+  /* Connection and Service States */
+  --connection-online: var(--semantic-success-hsl, 142 55% 48%);    /* Online connection → Success green */
+  --connection-online-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --connection-degraded: var(--semantic-warning-hsl, 60 85% 52%);   /* Degraded connection → Warning amber */
+  --connection-degraded-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --connection-offline: var(--semantic-error-hsl, 25 78% 52%);      /* Offline connection → Error red */
+  --connection-offline-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --connection-reconnecting: var(--semantic-info-hsl, 240 65% 52%); /* Reconnecting → Info blue */
+  --connection-reconnecting-foreground: var(--text-inverse-hsl, 0 0% 98%);
+
+  /*
+   * Essential Brand Spacing Semantic Mappings
+   * Only brand-specific spacing that requires tokens
+   * Standard spacing should use Tailwind classes (p-4, m-6, gap-4, etc.)
+   */
+  --space-card-padding: 1.5rem;      /* 24px - Professional card padding */
+  --space-dashboard-grid-gap: 1.5rem; /* 24px - Dashboard grid consistency */
+
+  /*
+   * Essential Brand Radius Mappings
+   * Only brand-specific radius that provides professional appearance
+   * Standard radius should use Tailwind classes (rounded-md, rounded-lg, etc.)
+   */
+  --radius-card: 0.75rem;          /* Professional card radius (12px) */
+
+  /*
+   * Semantic Shadow Mappings
+   * Maps primitive shadows to component meanings
+   */
+  --shadow-button: var(--shadow-sm, 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.06));
+  --shadow-button-hover: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06));
+  --shadow-card: var(--shadow-sm, 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.06));
+  --shadow-card-hover: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06));
+  --shadow-dialog: var(--shadow-xl, 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04));
+  --shadow-popover: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05));
+
+  /*
+   * Brand Typography Semantic Mappings
+   * Maps brand typography to semantic meanings while using new text tokens
+   */
+  --font-family-body: var(--font-family-nunito, 'Nunito', system-ui, -apple-system, sans-serif);
+  --font-family-heading: var(--font-family-nunito, 'Nunito', system-ui, -apple-system, sans-serif);
+  --font-size-body: var(--font-size-body-brand, 0.9375rem);    /* Brand-specific body text size */
+  --text-heading: var(--text-primary-hsl, 0 0% 13%);           /* Primary text for headings */
+
+  /*
+   * AAA Text Contrast Semantic Mappings
+   * Maps to new typography color primitives for WCAG AAA compliance
+   */
+  --text-primary-semantic: var(--text-primary-hsl, 0 0% 13%);    /* Primary text (15.8:1 ratio) */
+  --text-body-semantic: var(--text-secondary-hsl, 0 0% 40%);     /* Body text (12.6:1 ratio) */
+  --text-muted-semantic: var(--text-tertiary-hsl, 0 0% 55%);     /* Muted text (7.5:1 ratio) */
+  --text-disabled-semantic: var(--text-disabled-hsl, 0 0% 62%);  /* Disabled text (4.5:1 minimum) */
+
+  /*
+   * Chart Color Semantic Mappings - New Brand Palette
+   * HSL format for component compatibility using new brand colors
+   */
+  --chart-1: var(--brand-primary-hsl, 124 55% 55%);        /* New primary */
+  --chart-2: var(--brand-primary-light-hsl, 124 42% 75%);  /* Light primary */
+  --chart-3: var(--brand-secondary-hsl, 285 45% 52%);      /* Secondary */
+  --chart-4: var(--brand-accent-hsl, 220 48% 58%);         /* Accent */
+  --chart-5: var(--semantic-success-hsl, 142 55% 48%);     /* Success green */
+
+  /* Enhanced Chart Colors with new semantic system */
+  --chart-primary: var(--brand-primary-hsl, 124 55% 55%);       /* New primary brand */
+  --chart-success: var(--semantic-success-hsl, 142 55% 48%);    /* Success green */
+  --chart-warning: var(--semantic-warning-hsl, 60 85% 52%);     /* Warning amber */
+  --chart-info: var(--semantic-info-hsl, 240 65% 52%);          /* Info blue */
+  --chart-accent: var(--brand-secondary-hsl, 285 45% 52%);      /* Secondary purple */
+
+  /*
+   * Essential Brand Layout Dimensions
+   * iPad-optimized and professional appearance requirements
+   */
+  --dialog-max-height: min(80vh, 40rem); /* iPad-optimized responsive dialog height */
+
+  /*
+   * Note: Standard layout dimensions, shadows, and typography now use Tailwind classes.
+   * Components should use Tailwind utilities (w-60, h-96, shadow-lg, text-sm, etc.)
+   * Only essential brand-specific tokens retained above.
+   */
+}
+
+/*
+ * Dark Mode Semantic Token Overrides
+ * Redefines semantic mappings for dark theme while maintaining brand relationships
+ */
+.dark {
+  /* Core Surface Colors - Dark Mode */
+  --background: 240 10% 4%;
+  --foreground: var(--text-primary-hsl, 0 0% 95%);
+  --card: 240 10% 8%;
+  --card-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --popover: 240 10% 8%;
+  --popover-foreground: var(--text-primary-hsl, 0 0% 95%);
+
+  /* Brand Color Semantic Mappings - Dark Mode with enhanced brightness */
+  --primary: var(--brand-primary-hsl, 124 50% 70%);        /* Brighter primary for dark mode */
+  --primary-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --primary-50: var(--brand-primary-subtle-hsl, 124 20% 20%);   /* Dark mode subtle */
+  --primary-100: var(--brand-primary-light-hsl, 124 40% 85%);   /* Light variant for dark mode */
+  --primary-400: var(--brand-primary-hsl, 124 50% 70%);         /* Base for dark mode */
+  --primary-600: var(--brand-primary-active-hsl, 124 55% 65%);  /* Active for dark mode */
+
+  --secondary: var(--brand-secondary-hsl, 285 40% 62%);     /* Brighter secondary for dark mode */
+  --secondary-foreground: var(--text-inverse-hsl, 0 0% 13%);
+
+  /* Intent Color Semantic Mappings - Dark Mode enhanced */
+  --success: var(--semantic-success-hsl, 142 50% 65%);      /* Brighter success for dark mode */
+  --success-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --warning: var(--semantic-warning-hsl, 60 75% 72%);      /* Brighter warning for dark mode */
+  --warning-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --info: var(--semantic-info-hsl, 240 60% 63%);           /* Brighter info for dark mode */
+  --info-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --destructive: var(--semantic-error-hsl, 25 70% 60%);    /* Brighter error for dark mode */
+  --destructive-foreground: var(--text-inverse-hsl, 0 0% 13%);
+
+  /* Interaction Type Semantic Mappings - Dark Mode enhanced brightness */
+  --demo: var(--semantic-warning-hsl, 60 75% 72%);         /* Brighter amber for dark mode */
+  --demo-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --trade-show: 330 81% 65%;                               /* Brighter pink for dark mode */
+  --trade-show-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --site-visit: var(--brand-accent-hsl, 220 45% 65%);      /* Brighter accent for dark mode */
+  --site-visit-foreground: var(--text-inverse-hsl, 0 0% 13%);
+
+  /* Interface Element Semantic Mappings - Dark Mode */
+  --muted: 240 4% 16%;
+  --muted-foreground: var(--text-tertiary-hsl, 0 0% 65%);  /* Brighter muted text for dark mode */
+  --accent: 240 4% 16%;
+  --accent-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --border: var(--border-default-hsl, 0 0% 25%);
+  --input: var(--border-default-hsl, 0 0% 25%);
+  --ring: var(--brand-primary-hsl, 124 50% 70%);           /* Brighter focus ring for dark mode */
+
+  /*
+   * Enhanced Focus Ring System - Dark Mode Context-Specific Focus
+   * Advanced focus system optimized for dark theme with enhanced brightness
+   * and touch interface optimization
+   */
+
+  /* Base Focus Ring System - Dark Mode */
+  --focus-ring: var(--brand-primary-hsl, 124 50% 70%);     /* Brighter primary focus ring */
+  --focus-ring-width: 2px;                                 /* Consistent width */
+  --focus-ring-offset: 2px;                                /* Consistent offset */
+  --focus-ring-opacity: 0.9;                               /* Higher opacity for dark backgrounds */
+  --focus-ring-style: solid;                               /* Consistent style */
+
+  /* Enhanced Context-Specific Focus Ring Variants - Dark Mode */
+  --focus-ring-inverse: var(--text-primary-hsl, 0 0% 95%); /* Light on dark backgrounds */
+  --focus-ring-destructive: var(--semantic-error-hsl, 25 70% 60%);   /* Brighter red for dark mode */
+  --focus-ring-success: var(--semantic-success-hsl, 142 50% 65%);    /* Brighter green for dark mode */
+  --focus-ring-warning: var(--semantic-warning-hsl, 60 75% 72%);     /* Brighter amber for dark mode */
+  --focus-ring-info: var(--semantic-info-hsl, 240 60% 63%);          /* Brighter blue for dark mode */
+
+  /* Enhanced Focus Ring Widths - Dark Mode */
+  --focus-ring-width-thin: 1px;                           /* Subtle focus for dense interfaces */
+  --focus-ring-width-standard: 2px;                       /* Standard WCAG compliant width */
+  --focus-ring-width-thick: 3px;                          /* Enhanced visibility for critical actions */
+  --focus-ring-width-touch: 4px;                          /* Touch interface enhanced visibility */
+
+  /* Focus Ring Offset Variations - Dark Mode */
+  --focus-ring-offset-none: 0px;                          /* Direct outline for compact elements */
+  --focus-ring-offset-tight: 1px;                         /* Tight spacing for dense layouts */
+  --focus-ring-offset-standard: 2px;                      /* Standard spacing */
+  --focus-ring-offset-loose: 3px;                         /* Loose spacing for prominent elements */
+
+  /* Focus Ring Opacity Variations - Dark Mode */
+  --focus-ring-opacity-subtle: 0.7;                       /* Subtle focus for secondary elements */
+  --focus-ring-opacity-standard: 0.9;                     /* Higher standard visibility for dark mode */
+  --focus-ring-opacity-prominent: 1.0;                    /* Maximum visibility for critical actions */
+
+  /* Keyboard Navigation Indicators - Dark Mode */
+  --focus-ring-keyboard: var(--brand-primary-hsl, 124 50% 70%);       /* Brighter keyboard-specific focus */
+  --focus-ring-keyboard-width: 2px;
+  --focus-ring-keyboard-offset: 2px;
+  --focus-ring-keyboard-style: solid;
+  --focus-ring-keyboard-opacity: 0.95;                    /* Higher opacity for keyboard users */
+
+  /* Touch Interface Focus Feedback - Dark Mode */
+  --focus-ring-touch: var(--brand-primary-hsl, 124 50% 70%);          /* Brighter touch-specific focus */
+  --focus-ring-touch-width: 4px;                          /* Larger for touch interfaces */
+  --focus-ring-touch-offset: 1px;                         /* Tighter offset for touch */
+  --focus-ring-touch-style: solid;
+  --focus-ring-touch-opacity: 0.8;                        /* Higher opacity for dark mode */
+
+  /* Interactive State Focus Variants - Dark Mode */
+  --focus-ring-hover: var(--brand-primary-light-hsl, 124 40% 85%);    /* Brighter focus during hover */
+  --focus-ring-active: var(--brand-primary-active-hsl, 124 55% 65%);  /* Brighter focus during active */
+  --focus-ring-disabled: var(--gray-400-hsl, 0 0% 70%);               /* Brighter focus for disabled elements */
+
+  /* Component-Specific Focus Ring Variants - Dark Mode */
+  --focus-ring-button: var(--brand-primary-hsl, 124 50% 70%);         /* Brighter button focus */
+  --focus-ring-button-destructive: var(--semantic-error-hsl, 25 70% 60%);  /* Brighter destructive button focus */
+  --focus-ring-button-success: var(--semantic-success-hsl, 142 50% 65%);   /* Brighter success button focus */
+  --focus-ring-input: var(--brand-primary-hsl, 124 50% 70%);          /* Brighter form input focus */
+  --focus-ring-input-error: var(--semantic-error-hsl, 25 70% 60%);    /* Brighter error input focus */
+  --focus-ring-input-success: var(--semantic-success-hsl, 142 50% 65%); /* Brighter valid input focus */
+  --focus-ring-link: var(--brand-primary-hsl, 124 50% 70%);           /* Brighter link focus */
+  --focus-ring-card: var(--brand-primary-hsl, 124 50% 70%);           /* Brighter interactive card focus */
+  --focus-ring-tab: var(--brand-primary-hsl, 124 50% 70%);            /* Brighter tab navigation focus */
+
+  /* Data Table Focus Variants - Dark Mode */
+  --focus-ring-table-cell: var(--brand-primary-hsl, 124 50% 70%);     /* Brighter table cell focus */
+  --focus-ring-table-row: var(--brand-primary-subtle-hsl, 124 20% 25%); /* Dark mode table row focus background */
+  --focus-ring-table-header: var(--brand-primary-hsl, 124 50% 70%);   /* Brighter table header focus */
+
+  /* Modal and Dialog Focus - Dark Mode */
+  --focus-ring-modal: var(--brand-primary-hsl, 124 50% 70%);          /* Brighter modal element focus */
+  --focus-ring-dialog: var(--brand-primary-hsl, 124 50% 70%);         /* Brighter dialog element focus */
+  --focus-ring-popover: var(--brand-primary-hsl, 124 50% 70%);        /* Brighter popover element focus */
+
+  /* Priority-Based Focus Ring Colors - Dark Mode */
+  --focus-ring-priority-critical: var(--semantic-error-hsl, 25 70% 60%);     /* Brighter critical priority focus */
+  --focus-ring-priority-high: var(--semantic-error-light-hsl, 25 65% 70%);   /* Brighter high priority focus */
+  --focus-ring-priority-medium: var(--semantic-warning-hsl, 60 75% 72%);     /* Brighter medium priority focus */
+  --focus-ring-priority-normal: var(--brand-primary-hsl, 124 50% 70%);       /* Brighter normal priority focus */
+  --focus-ring-priority-low: var(--gray-500-hsl, 0 0% 55%);                  /* Brighter low priority focus */
+
+  /* CRM Entity Focus Variants - Dark Mode */
+  --focus-ring-customer: var(--org-customer, 220 45% 65%);            /* Brighter customer entity focus */
+  --focus-ring-distributor: var(--org-distributor, 142 50% 65%);      /* Brighter distributor entity focus */
+  --focus-ring-principal: var(--org-principal, 285 40% 62%);          /* Brighter principal entity focus */
+  --focus-ring-supplier: var(--org-supplier, 220 40% 80%);            /* Brighter supplier entity focus */
+
+  /* Focus Visible States (keyboard-only focus) - Dark Mode */
+  --focus-visible-ring: var(--brand-primary-hsl, 124 50% 70%);        /* Brighter keyboard-only focus */
+  --focus-visible-ring-width: 2px;
+  --focus-visible-ring-offset: 2px;
+  --focus-visible-ring-style: solid;
+  --focus-visible-ring-opacity: 0.95;
+
+  /* Skip Link Focus - Dark Mode */
+  --focus-ring-skip-link: var(--brand-primary-hsl, 124 50% 70%);      /* Brighter skip link focus */
+  --focus-ring-skip-link-bg: var(--brand-primary-hsl, 124 50% 70%);   /* Brighter skip link background */
+  --focus-ring-skip-link-text: var(--text-primary-hsl, 0 0% 95%);     /* Bright skip link text */
+
+  /* Focus Shadow System for Enhanced Depth - Dark Mode */
+  --focus-shadow-button: 0 0 0 2px var(--focus-ring-hsl), 0 0 8px 0 hsla(var(--focus-ring-hsl) / 0.4);
+  --focus-shadow-input: 0 0 0 2px var(--focus-ring-input-hsl), 0 0 6px 0 hsla(var(--focus-ring-input-hsl) / 0.3);
+  --focus-shadow-card: 0 0 0 2px var(--focus-ring-card-hsl), 0 4px 12px 0 hsla(var(--focus-ring-card-hsl) / 0.2);
+  --focus-shadow-destructive: 0 0 0 2px var(--focus-ring-destructive-hsl), 0 0 8px 0 hsla(var(--focus-ring-destructive-hsl) / 0.4);
+
+  /* Sidebar Semantic Tokens - Dark Mode */
+  --sidebar-background: 240 10% 4%;
+  --sidebar-foreground: var(--text-secondary-hsl, 0 0% 80%);
+  --sidebar-primary: var(--brand-primary-hsl, 124 50% 70%);     /* Brighter primary for dark mode */
+  --sidebar-primary-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --sidebar-accent: 240 4% 16%;
+  --sidebar-accent-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --sidebar-border: 240 4% 16%;
+  --sidebar-ring: var(--brand-primary-hsl, 124 50% 70%);        /* Brighter primary for dark mode */
+
+  /* Enhanced Priority Level Semantic Mappings - Dark Mode enhanced brightness */
+  --priority-critical: var(--semantic-error-hsl, 25 70% 60%);          /* Brighter red for dark mode */
+  --priority-critical-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --priority-high: var(--semantic-error-light-hsl, 25 65% 70%);        /* Brighter light red */
+  --priority-high-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --priority-medium: var(--semantic-warning-hsl, 60 75% 72%);          /* Brighter amber */
+  --priority-medium-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --priority-normal: var(--brand-primary-hsl, 124 50% 70%);            /* Brighter primary */
+  --priority-normal-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --priority-low: var(--gray-500-hsl, 0 0% 55%);                      /* Brighter gray */
+  --priority-low-foreground: var(--text-inverse-hsl, 0 0% 13%);
+
+  /* Legacy Priority Mappings - Dark Mode */
+  --priority-a-plus: var(--priority-critical);
+  --priority-a-plus-foreground: var(--priority-critical-foreground);
+  --priority-a: var(--priority-high);
+  --priority-a-foreground: var(--priority-high-foreground);
+  --priority-b: var(--priority-medium);
+  --priority-b-foreground: var(--priority-medium-foreground);
+  --priority-c: var(--priority-normal);
+  --priority-c-foreground: var(--priority-normal-foreground);
+  --priority-d: var(--priority-low);
+  --priority-d-foreground: var(--priority-low-foreground);
+
+  /* Enhanced Organization Type Semantic Mappings - Dark Mode enhanced brightness */
+  --org-customer: var(--brand-accent-hsl, 220 45% 65%);               /* Brighter blue for dark mode */
+  --org-customer-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --org-distributor: var(--semantic-success-hsl, 142 50% 65%);        /* Brighter green for dark mode */
+  --org-distributor-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --org-principal: var(--brand-secondary-hsl, 285 40% 62%);           /* Brighter purple for dark mode */
+  --org-principal-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --org-supplier: var(--brand-accent-light-hsl, 220 40% 80%);         /* Much brighter light blue */
+  --org-supplier-foreground: var(--text-primary-hsl, 0 0% 95%);
+
+  /* Missing Organization Type Tokens - Dark Mode */
+  --org-vendor: 15 85% 65%;                                           /* Brighter orange for dark mode */
+  --org-vendor-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --org-prospect: 160 50% 60%;                                        /* Brighter teal for dark mode */
+  --org-prospect-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --org-unknown: var(--gray-400-hsl, 0 0% 70%);                      /* Brighter gray for dark mode */
+  --org-unknown-foreground: var(--text-primary-hsl, 0 0% 95%);
+
+  /* Legacy organization mappings - Dark Mode */
+  --organization-customer: var(--org-customer);
+  --organization-customer-foreground: var(--org-customer-foreground);
+  --organization-distributor: var(--org-distributor);
+  --organization-distributor-foreground: var(--org-distributor-foreground);
+  --organization-principal: var(--org-principal);
+  --organization-principal-foreground: var(--org-principal-foreground);
+  --organization-supplier: var(--org-supplier);
+  --organization-supplier-foreground: var(--org-supplier-foreground);
+  --organization-vendor: var(--org-vendor);
+  --organization-vendor-foreground: var(--org-vendor-foreground);
+  --organization-prospect: var(--org-prospect);
+  --organization-prospect-foreground: var(--org-prospect-foreground);
+
+  /* Market Segment Semantic Mappings - Dark Mode enhanced brightness */
+  --segment-restaurant: var(--semantic-warning-hsl, 60 75% 72%);      /* Brighter amber */
+  --segment-restaurant-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --segment-healthcare: 188 95% 73%;                                  /* Brighter cyan */
+  --segment-healthcare-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --segment-education: var(--brand-secondary-light-hsl, 285 35% 75%); /* Brighter light purple */
+  --segment-education-foreground: var(--text-primary-hsl, 0 0% 95%);
+
+  /* Special Status Combination Semantic Mappings - Dark Mode */
+  --vip-customer: linear-gradient(45deg, var(--semantic-warning-hsl, 60 75% 72%), 25 95% 58%); /* Brighter VIP gradient */
+  --key-partner: linear-gradient(45deg, var(--semantic-success-hsl, 142 50% 65%), 160 84% 44%); /* Brighter partner gradient */
+
+  /* CRM Workflow State Tokens - Dark Mode enhanced */
+  --data-valid: var(--semantic-success-hsl, 142 50% 65%);             /* Brighter success for dark mode */
+  --data-valid-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --data-invalid: var(--semantic-error-hsl, 25 70% 60%);              /* Brighter error for dark mode */
+  --data-invalid-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --data-pending: var(--semantic-warning-hsl, 60 75% 72%);            /* Brighter warning for dark mode */
+  --data-pending-foreground: var(--text-primary-hsl, 0 0% 95%);
+
+  --bulk-selected: var(--brand-primary-subtle-hsl, 124 20% 25%);      /* Dark mode subtle background */
+  --bulk-selected-foreground: var(--brand-primary-hsl, 124 50% 70%);
+  --bulk-processing: var(--semantic-info-subtle-hsl, 240 30% 25%);    /* Dark mode info subtle */
+  --bulk-processing-foreground: var(--semantic-info-hsl, 240 60% 63%);
+
+  --import-in-progress: var(--semantic-info-hsl, 240 60% 63%);        /* Brighter info for dark mode */
+  --import-in-progress-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --import-complete: var(--semantic-success-hsl, 142 50% 65%);        /* Brighter success for dark mode */
+  --import-complete-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --import-failed: var(--semantic-error-hsl, 25 70% 60%);             /* Brighter error for dark mode */
+  --import-failed-foreground: var(--text-inverse-hsl, 0 0% 13%);
+
+  --sync-synced: var(--semantic-success-light-hsl, 142 45% 70%);      /* Brighter light success */
+  --sync-synced-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --sync-pending: var(--semantic-warning-light-hsl, 60 70% 75%);      /* Brighter light warning */
+  --sync-pending-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --sync-error: var(--semantic-error-light-hsl, 25 65% 75%);          /* Brighter light error */
+  --sync-error-foreground: var(--text-primary-hsl, 0 0% 95%);
+
+  /*
+   * COMPREHENSIVE CRM WORKFLOW STATES - Dark Mode
+   * Dark mode variants of CRM workflow states for optimal visibility
+   */
+
+  /* Enhanced Data Entry States - Dark Mode */
+  --data-required: var(--semantic-error-light-hsl, 25 65% 75%);       /* Brighter required indicator */
+  --data-required-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --data-optional: var(--gray-300-hsl, 0 0% 25%);                    /* Dark mode optional indicator */
+  --data-optional-foreground: var(--text-tertiary-hsl, 0 0% 65%);
+  --data-saving: var(--semantic-info-light-hsl, 240 35% 80%);        /* Brighter saving indicator */
+  --data-saving-foreground: var(--text-primary-hsl, 0 0% 95%);
+
+  /* Advanced Bulk Operations States - Dark Mode */
+  --bulk-preview: var(--brand-primary-subtle-hsl, 124 20% 25%);      /* Dark mode bulk preview */
+  --bulk-preview-foreground: var(--brand-primary-hsl, 124 50% 70%);
+  --bulk-confirmed: var(--semantic-success-light-hsl, 142 45% 70%);  /* Brighter bulk confirmed */
+  --bulk-confirmed-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --bulk-cancelled: var(--gray-300-hsl, 0 0% 25%);                  /* Dark mode bulk cancelled */
+  --bulk-cancelled-foreground: var(--text-tertiary-hsl, 0 0% 65%);
+  --bulk-partial: var(--semantic-warning-light-hsl, 60 70% 75%);     /* Brighter partial success */
+  --bulk-partial-foreground: var(--text-primary-hsl, 0 0% 95%);
+
+  /* Extended Import/Export Progress States - Dark Mode */
+  --export-queued: var(--gray-400-hsl, 0 0% 70%);                   /* Brighter export queued */
+  --export-queued-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --export-generating: var(--semantic-info-hsl, 240 60% 63%);       /* Brighter export generating */
+  --export-generating-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --export-ready: var(--semantic-success-hsl, 142 50% 65%);         /* Brighter export ready */
+  --export-ready-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --export-expired: var(--semantic-warning-hsl, 60 75% 72%);        /* Brighter export expired */
+  --export-expired-foreground: var(--text-primary-hsl, 0 0% 95%);
+
+  /* Enhanced Sync Operations States - Dark Mode */
+  --sync-conflicted: var(--semantic-error-hsl, 25 70% 60%);         /* Brighter sync conflict */
+  --sync-conflicted-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --sync-resolving: var(--semantic-warning-hsl, 60 75% 72%);        /* Brighter conflict resolution */
+  --sync-resolving-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --sync-offline: var(--gray-500-hsl, 0 0% 55%);                   /* Brighter offline mode */
+  --sync-offline-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --sync-queued: var(--semantic-info-light-hsl, 240 35% 80%);      /* Brighter sync queued */
+  --sync-queued-foreground: var(--text-primary-hsl, 0 0% 95%);
+
+  /* Data Processing States - Dark Mode */
+  --processing-validating: var(--semantic-info-hsl, 240 60% 63%);   /* Brighter data validation */
+  --processing-validating-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --processing-transforming: var(--brand-primary-hsl, 124 50% 70%); /* Brighter data transformation */
+  --processing-transforming-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --processing-enriching: var(--brand-secondary-hsl, 285 40% 62%);  /* Brighter data enrichment */
+  --processing-enriching-foreground: var(--text-inverse-hsl, 0 0% 13%);
+
+  /* Connection and Service States - Dark Mode */
+  --connection-online: var(--semantic-success-hsl, 142 50% 65%);    /* Brighter online connection */
+  --connection-online-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --connection-degraded: var(--semantic-warning-hsl, 60 75% 72%);   /* Brighter degraded connection */
+  --connection-degraded-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --connection-offline: var(--semantic-error-hsl, 25 70% 60%);      /* Brighter offline connection */
+  --connection-offline-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --connection-reconnecting: var(--semantic-info-hsl, 240 60% 63%); /* Brighter reconnecting */
+  --connection-reconnecting-foreground: var(--text-inverse-hsl, 0 0% 13%);
+
+  /* AAA Text Contrast Levels - Dark Mode */
+  --text-primary-semantic: var(--text-primary-hsl, 0 0% 95%);         /* Primary text for dark mode */
+  --text-body-semantic: var(--text-secondary-hsl, 0 0% 80%);          /* Body text for dark mode */
+  --text-muted-semantic: var(--text-tertiary-hsl, 0 0% 65%);          /* Muted text for dark mode */
+  --text-disabled-semantic: var(--text-disabled-hsl, 0 0% 50%);       /* Disabled text for dark mode */
+
+  /* Chart Colors - Dark mode variants (brighter for visibility) */
+  --chart-1: var(--brand-primary-hsl, 124 50% 70%);         /* Brighter primary */
+  --chart-2: var(--brand-primary-light-hsl, 124 40% 80%);   /* Brighter light primary */
+  --chart-3: var(--brand-secondary-hsl, 285 40% 62%);       /* Brighter secondary */
+  --chart-4: var(--brand-accent-hsl, 220 45% 65%);          /* Brighter accent */
+  --chart-5: var(--semantic-success-hsl, 142 50% 65%);      /* Brighter success */
+
+  /* Enhanced Chart Colors - Dark mode variants */
+  --chart-primary: var(--brand-primary-hsl, 124 50% 70%);       /* Brighter primary brand */
+  --chart-success: var(--semantic-success-hsl, 142 50% 65%);    /* Brighter success green */
+  --chart-warning: var(--semantic-warning-hsl, 60 75% 72%);     /* Brighter warning amber */
+  --chart-info: var(--semantic-info-hsl, 240 60% 63%);          /* Brighter info blue */
+  --chart-accent: var(--brand-secondary-hsl, 285 40% 62%);      /* Brighter secondary purple */
+
+  /* Header Shadow - Dark mode */
+  --header-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}

@@ -19,7 +19,7 @@ export const defaultContactFormValues: ContactFormData = {
   organization_id: '',
   purchase_influence: 'Unknown',
   decision_authority: 'Gatekeeper',
-  
+
   // Organization mode - defaults to existing
   organization_mode: 'existing',
 
@@ -38,7 +38,7 @@ export const defaultContactFormValues: ContactFormData = {
 
   // Virtual fields
   preferred_principals: [],
-  
+
   // Organization creation fields (for new organization mode)
   organization_name: null,
   organization_type: null,

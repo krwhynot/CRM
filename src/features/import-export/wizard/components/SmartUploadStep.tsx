@@ -35,7 +35,7 @@ const FILE_REQUIREMENTS = {
   encoding: 'UTF-8',
   requirements: [
     'Spreadsheet saved as CSV format',
-    'First row should contain column headers', 
+    'First row should contain column headers',
     'Must include company/organization names',
     'Files up to 5MB accepted',
     'Large files may take a few minutes to process',
@@ -127,7 +127,6 @@ export function SmartUploadStep({
 
   return (
     <div className={cn('space-y-3', className)}>
-
       {/* File Upload Area */}
       <Card>
         <CardContent className="p-3">
@@ -168,15 +167,16 @@ export function SmartUploadStep({
                   </div>
 
                   <div className="flex flex-col justify-center gap-2 sm:flex-row">
-                    <Button
-                      onClick={handleBrowseClick}
-                      className="h-8 px-3 text-sm"
-                    >
+                    <Button onClick={handleBrowseClick} className="h-8 px-3 text-sm">
                       <FileSpreadsheet className="mr-2 size-4" />
                       Browse Files
                     </Button>
 
-                    <Button variant="outline" onClick={onDownloadTemplate} className="h-8 px-3 text-sm">
+                    <Button
+                      variant="outline"
+                      onClick={onDownloadTemplate}
+                      className="h-8 px-3 text-sm"
+                    >
                       <Download className="mr-2 size-4" />
                       Download Template
                     </Button>
@@ -216,7 +216,8 @@ export function SmartUploadStep({
                           <div className="mt-2 flex items-center space-x-2">
                             <AlertCircle className="size-4 text-amber-500" />
                             <span className="text-sm text-amber-600">
-                              Large file detected - estimated processing time: {getProcessingEstimate(file.size)}
+                              Large file detected - estimated processing time:{' '}
+                              {getProcessingEstimate(file.size)}
                             </span>
                           </div>
                         )}
@@ -254,9 +255,7 @@ export function SmartUploadStep({
               <Sparkles className="size-4 text-amber-500" />
               <h4 className="text-sm font-medium text-foreground">AI-Enhanced</h4>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Smart mapping & validation
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">Smart mapping & validation</p>
           </CardContent>
         </Card>
 
@@ -267,9 +266,7 @@ export function SmartUploadStep({
               <FileSpreadsheet className="size-4 text-muted-foreground" />
               <h4 className="text-sm font-medium text-foreground">Requirements</h4>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              CSV • Max 5MB • UTF-8
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">CSV • Max 5MB • UTF-8</p>
           </CardContent>
         </Card>
       </div>

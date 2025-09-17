@@ -1,19 +1,19 @@
-import { yupResolver } from '@hookform/resolvers/yup'
+import { zodResolver } from '@hookform/resolvers/zod'
 import type { FieldValues, Resolver, UseFormReturn } from 'react-hook-form'
-import type * as yup from 'yup'
-import type React from 'react'
+import type { z } from 'zod'
+import type * as React from 'react'
 
 /**
- * Creates a properly typed Yup resolver for React Hook Form
+ * Creates a properly typed Zod resolver for React Hook Form
  * Eliminates the need for 'as any' casting while maintaining type safety
  *
- * @param schema - Yup schema for validation
+ * @param schema - Zod schema for validation
  * @returns Typed resolver that matches form data structure
  */
-export function createTypedYupResolver<T extends FieldValues>(
-  schema: yup.ObjectSchema<T>
+export function createTypedZodResolver<T extends FieldValues>(
+  schema: z.ZodType<T, any, any>
 ): Resolver<T> {
-  return yupResolver(schema) as Resolver<T>
+  return zodResolver(schema) as Resolver<T>
 }
 
 /**
@@ -39,12 +39,21 @@ export interface TypedFormProps<T extends FieldValues> {
 }
 
 /**
+ * Creates a Zod resolver with type safety
+ * Simplified resolver creation for Zod schemas only
+ */
+export function createResolver<T extends FieldValues>(schema: z.ZodType<T, any, any>): Resolver<T> {
+  return createTypedZodResolver(schema)
+}
+
+/**
  * Creates a typed form helper that eliminates 'form as any' casting
  * Use this for form components that need proper typing
  */
 export function createTypedFormHelper<T extends FieldValues>() {
   return {
-    castForm: (form: UseFormReturn<T>): TypedFormProps<T>['form'] => form as TypedFormProps<T>['form'],
-    createResolver: (schema: yup.ObjectSchema<T>) => createTypedYupResolver(schema),
+    castForm: (form: UseFormReturn<T>): TypedFormProps<T>['form'] =>
+      form as TypedFormProps<T>['form'],
+    createResolver: (schema: z.ZodType<T, any, any>) => createTypedZodResolver(schema),
   }
 }

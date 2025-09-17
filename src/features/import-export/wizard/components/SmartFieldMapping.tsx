@@ -30,12 +30,12 @@ export function SmartFieldMappingComponent({
   onProceedToImport,
   className,
 }: SmartFieldMappingProps) {
-  const needsReviewMappings = mappings.filter(m => m.status === 'needs_review')
+  const needsReviewMappings = mappings.filter((m) => m.status === 'needs_review')
   const hasReviewItems = needsReviewMappings.length > 0
-  
+
   // Handle confirm all mappings
   const handleConfirmAll = () => {
-    needsReviewMappings.forEach(mapping => {
+    needsReviewMappings.forEach((mapping) => {
       if (mapping.crmField) {
         onConfirmMapping(mapping.csvHeader)
       }

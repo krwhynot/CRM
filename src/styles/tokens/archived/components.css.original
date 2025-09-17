@@ -1,0 +1,388 @@
+/**
+ * COMPONENTS LAYER - Component-Specific Design Tokens
+ *
+ * Component-specific token definitions that reference semantic and primitive tokens.
+ * This layer provides component-level customization while maintaining design system consistency.
+ *
+ * HIERARCHY: PRIMITIVES → SEMANTIC → COMPONENTS (this file) → FEATURES
+ *
+ * CRITICAL: This file only contains component-specific token mappings.
+ * All values should reference semantic or primitive tokens, never hardcoded values.
+ */
+
+@layer base {
+  :root {
+    /* =======================================================================
+     * BUTTON COMPONENT TOKENS
+     * Consistent button styling with MFB brand integration
+     * ======================================================================= */
+
+    /* Primary Button (Semantic Primary) */
+    --btn-primary-bg: hsl(var(--primary));
+    --btn-primary-bg-hover: hsl(var(--primary) / 0.9);
+    --btn-primary-bg-focus: hsl(var(--primary));
+    --btn-primary-bg-active: hsl(var(--primary) / 0.8);
+    --btn-primary-text: hsl(var(--primary-foreground));
+    --btn-primary-border: hsl(var(--primary));
+    --btn-primary-shadow: var(--shadow-button);
+    --btn-primary-shadow-hover: var(--shadow-button-hover);
+    --btn-primary-ring: var(--focus-ring);
+    --btn-primary-ring-offset: var(--focus-ring-offset);
+    --btn-primary-radius: var(--radius-button);
+    --btn-primary-padding-x: var(--space-button-padding-x);
+    --btn-primary-padding-y: var(--space-button-padding-y);
+
+    /* Secondary Button (Semantic Secondary) */
+    --btn-secondary-bg: hsl(var(--secondary));
+    --btn-secondary-bg-hover: hsl(var(--secondary) / 0.9);
+    --btn-secondary-bg-focus: hsl(var(--secondary));
+    --btn-secondary-bg-active: hsl(var(--secondary) / 0.8);
+    --btn-secondary-text: hsl(var(--secondary-foreground));
+    --btn-secondary-border: hsl(var(--secondary));
+    --btn-secondary-shadow: var(--shadow-button);
+    --btn-secondary-shadow-hover: var(--shadow-button-hover);
+    --btn-secondary-ring: var(--focus-ring);
+    --btn-secondary-ring-offset: var(--focus-ring-offset);
+    --btn-secondary-radius: var(--radius-button);
+    --btn-secondary-padding-x: var(--space-button-padding-x);
+    --btn-secondary-padding-y: var(--space-button-padding-y);
+
+    /* Success Button (Semantic Success) */
+    --btn-success-bg: hsl(var(--success));
+    --btn-success-bg-hover: hsl(var(--success) / 0.9);
+    --btn-success-bg-focus: hsl(var(--success));
+    --btn-success-bg-active: hsl(var(--success) / 0.8);
+    --btn-success-text: hsl(var(--success-foreground));
+    --btn-success-border: hsl(var(--success));
+    --btn-success-shadow: var(--shadow-button);
+    --btn-success-shadow-hover: var(--shadow-button-hover);
+    --btn-success-ring: var(--focus-ring-success);
+    --btn-success-ring-offset: var(--focus-ring-offset);
+    --btn-success-radius: var(--radius-button);
+    --btn-success-padding-x: var(--space-button-padding-x);
+    --btn-success-padding-y: var(--space-button-padding-y);
+
+    /* Warning Button (Semantic Warning) */
+    --btn-warning-bg: hsl(var(--warning));
+    --btn-warning-bg-hover: hsl(var(--warning) / 0.9);
+    --btn-warning-bg-focus: hsl(var(--warning));
+    --btn-warning-bg-active: hsl(var(--warning) / 0.8);
+    --btn-warning-text: hsl(var(--warning-foreground));
+    --btn-warning-border: hsl(var(--warning));
+    --btn-warning-shadow: var(--shadow-button);
+    --btn-warning-shadow-hover: var(--shadow-button-hover);
+    --btn-warning-ring: var(--focus-ring-warning);
+    --btn-warning-ring-offset: var(--focus-ring-offset);
+    --btn-warning-radius: var(--radius-button);
+    --btn-warning-padding-x: var(--space-button-padding-x);
+    --btn-warning-padding-y: var(--space-button-padding-y);
+
+    /* Destructive Button (Semantic Destructive) */
+    --btn-destructive-bg: hsl(var(--destructive));
+    --btn-destructive-bg-hover: hsl(var(--destructive) / 0.9);
+    --btn-destructive-bg-focus: hsl(var(--destructive));
+    --btn-destructive-bg-active: hsl(var(--destructive) / 0.8);
+    --btn-destructive-text: hsl(var(--destructive-foreground));
+    --btn-destructive-border: hsl(var(--destructive));
+    --btn-destructive-shadow: var(--shadow-button);
+    --btn-destructive-shadow-hover: var(--shadow-button-hover);
+    --btn-destructive-ring: var(--focus-ring-destructive);
+    --btn-destructive-ring-offset: var(--focus-ring-offset);
+    --btn-destructive-radius: var(--radius-button);
+    --btn-destructive-padding-x: var(--space-button-padding-x);
+    --btn-destructive-padding-y: var(--space-button-padding-y);
+
+    /* Outline Button */
+    --btn-outline-bg: transparent;
+    --btn-outline-bg-hover: hsl(var(--accent));
+    --btn-outline-bg-focus: transparent;
+    --btn-outline-bg-active: hsl(var(--accent) / 0.9);
+    --btn-outline-text: hsl(var(--foreground));
+    --btn-outline-text-hover: hsl(var(--accent-foreground));
+    --btn-outline-border: hsl(var(--input));
+    --btn-outline-border-hover: hsl(var(--accent));
+    --btn-outline-shadow: none;
+    --btn-outline-shadow-hover: none;
+    --btn-outline-ring: var(--focus-ring);
+    --btn-outline-ring-offset: var(--focus-ring-offset);
+    --btn-outline-radius: var(--radius-button);
+    --btn-outline-padding-x: var(--space-button-padding-x);
+    --btn-outline-padding-y: var(--space-button-padding-y);
+
+    /* Ghost Button */
+    --btn-ghost-bg: transparent;
+    --btn-ghost-bg-hover: hsl(var(--accent));
+    --btn-ghost-bg-focus: transparent;
+    --btn-ghost-bg-active: hsl(var(--accent) / 0.9);
+    --btn-ghost-text: hsl(var(--foreground));
+    --btn-ghost-text-hover: hsl(var(--accent-foreground));
+    --btn-ghost-border: transparent;
+    --btn-ghost-border-hover: transparent;
+    --btn-ghost-shadow: none;
+    --btn-ghost-shadow-hover: none;
+    --btn-ghost-ring: var(--focus-ring);
+    --btn-ghost-ring-offset: var(--focus-ring-offset);
+    --btn-ghost-radius: var(--radius-button);
+    --btn-ghost-padding-x: var(--space-button-padding-x);
+    --btn-ghost-padding-y: var(--space-button-padding-y);
+
+    /* Link Button */
+    --btn-link-bg: transparent;
+    --btn-link-bg-hover: transparent;
+    --btn-link-bg-focus: transparent;
+    --btn-link-bg-active: transparent;
+    --btn-link-text: hsl(var(--primary));
+    --btn-link-text-hover: hsl(var(--primary) / 0.8);
+    --btn-link-border: transparent;
+    --btn-link-border-hover: transparent;
+    --btn-link-shadow: none;
+    --btn-link-shadow-hover: none;
+    --btn-link-ring: var(--focus-ring);
+    --btn-link-ring-offset: var(--focus-ring-offset);
+    --btn-link-radius: var(--radius-button);
+    --btn-link-padding-x: 0;
+    --btn-link-padding-y: 0;
+
+    /* =======================================================================
+     * CARD COMPONENT TOKENS
+     * Consistent card styling across the application
+     * ======================================================================= */
+
+    --card-bg: hsl(var(--card));
+    --card-text: hsl(var(--card-foreground));
+    --card-border: hsl(var(--border));
+    --card-border-hover: hsl(var(--primary) / 0.2);
+    --card-shadow: var(--shadow-card);
+    --card-shadow-hover: var(--shadow-card-hover);
+    --card-radius: var(--radius-card);
+    --card-padding: var(--space-card-padding);
+    --card-padding-sm: var(--space-card-padding-sm);
+    --card-padding-lg: var(--space-card-padding-lg);
+    --card-gap: var(--space-card-gap);
+
+    /* =======================================================================
+     * INPUT COMPONENT TOKENS
+     * Form input styling with proper focus states
+     * ======================================================================= */
+
+    --input-bg: hsl(var(--background));
+    --input-text: hsl(var(--foreground));
+    --input-placeholder: hsl(var(--muted-foreground));
+    --input-border: hsl(var(--input));
+    --input-border-focus: hsl(var(--ring));
+    --input-border-error: hsl(var(--destructive));
+    --input-shadow: none;
+    --input-shadow-focus: var(--shadow-sm);
+    --input-ring: var(--focus-ring);
+    --input-ring-offset: var(--focus-ring-offset);
+    --input-ring-error: var(--focus-ring-destructive);
+    --input-radius: var(--radius-input);
+    --input-padding-x: var(--space-component-md);
+    --input-padding-y: var(--space-component-sm);
+    --input-height: 2.5rem; /* 40px standard input height */
+
+    /* =======================================================================
+     * DIALOG COMPONENT TOKENS
+     * Modal and dialog styling
+     * ======================================================================= */
+
+    --dialog-bg: hsl(var(--background));
+    --dialog-text: hsl(var(--foreground));
+    --dialog-border: hsl(var(--border));
+    --dialog-shadow: var(--shadow-dialog);
+    --dialog-overlay-bg: hsl(0 0% 0% / 0.8);
+    --dialog-radius: var(--radius-dialog);
+    --dialog-padding: var(--space-section-lg);
+    --dialog-max-width: 32rem; /* 512px */
+    --dialog-max-height: var(--dialog-max-height);
+
+    /* =======================================================================
+     * TABLE COMPONENT TOKENS
+     * Data table styling with proper spacing and borders
+     * ======================================================================= */
+
+    --table-bg: hsl(var(--background));
+    --table-header-bg: hsl(var(--muted) / 0.5);
+    --table-row-bg: transparent;
+    --table-row-bg-hover: hsl(var(--muted) / 0.5);
+    --table-row-bg-selected: hsl(var(--primary) / 0.1);
+    --table-text: hsl(var(--foreground));
+    --table-text-muted: hsl(var(--muted-foreground));
+    --table-border: hsl(var(--border));
+    --table-radius: var(--radius-lg);
+    --table-cell-padding-x: var(--space-component-md);
+    --table-cell-padding-y: var(--space-component-sm);
+    --table-header-padding-x: var(--space-component-md);
+    --table-header-padding-y: var(--space-component-md);
+
+    /* =======================================================================
+     * BADGE COMPONENT TOKENS
+     * Status badges and indicators
+     * ======================================================================= */
+
+    /* Default Badge */
+    --badge-bg: hsl(var(--secondary));
+    --badge-text: hsl(var(--secondary-foreground));
+    --badge-border: transparent;
+    --badge-radius: var(--radius-sm);
+    --badge-padding-x: var(--space-component-sm);
+    --badge-padding-y: var(--space-component-xs);
+    --badge-font-size: var(--font-size-small);
+
+    /* Primary Badge */
+    --badge-primary-bg: hsl(var(--primary));
+    --badge-primary-text: hsl(var(--primary-foreground));
+
+    /* Success Badge */
+    --badge-success-bg: hsl(var(--success));
+    --badge-success-text: hsl(var(--success-foreground));
+
+    /* Warning Badge */
+    --badge-warning-bg: hsl(var(--warning));
+    --badge-warning-text: hsl(var(--warning-foreground));
+
+    /* Destructive Badge */
+    --badge-destructive-bg: hsl(var(--destructive));
+    --badge-destructive-text: hsl(var(--destructive-foreground));
+
+    /* Outline Badge */
+    --badge-outline-bg: transparent;
+    --badge-outline-text: hsl(var(--foreground));
+    --badge-outline-border: hsl(var(--border));
+
+    /* =======================================================================
+     * NAVIGATION COMPONENT TOKENS
+     * Navigation menus and breadcrumbs
+     * ======================================================================= */
+
+    --nav-bg: hsl(var(--background));
+    --nav-text: hsl(var(--foreground));
+    --nav-text-muted: hsl(var(--muted-foreground));
+    --nav-item-bg: transparent;
+    --nav-item-bg-hover: hsl(var(--accent));
+    --nav-item-bg-active: hsl(var(--primary));
+    --nav-item-text: hsl(var(--foreground));
+    --nav-item-text-hover: hsl(var(--accent-foreground));
+    --nav-item-text-active: hsl(var(--primary-foreground));
+    --nav-border: hsl(var(--border));
+    --nav-radius: var(--radius-md);
+    --nav-padding: var(--space-component-md);
+    --nav-item-padding-x: var(--space-component-md);
+    --nav-item-padding-y: var(--space-component-sm);
+
+    /* =======================================================================
+     * TOAST COMPONENT TOKENS
+     * Notification toast styling
+     * ======================================================================= */
+
+    --toast-bg: hsl(var(--background));
+    --toast-text: hsl(var(--foreground));
+    --toast-border: hsl(var(--border));
+    --toast-shadow: var(--shadow-lg);
+    --toast-radius: var(--radius-lg);
+    --toast-padding: var(--space-component-lg);
+
+    /* Success Toast */
+    --toast-success-bg: hsl(var(--success));
+    --toast-success-text: hsl(var(--success-foreground));
+    --toast-success-border: hsl(var(--success));
+
+    /* Warning Toast */
+    --toast-warning-bg: hsl(var(--warning));
+    --toast-warning-text: hsl(var(--warning-foreground));
+    --toast-warning-border: hsl(var(--warning));
+
+    /* Error Toast */
+    --toast-error-bg: hsl(var(--destructive));
+    --toast-error-text: hsl(var(--destructive-foreground));
+    --toast-error-border: hsl(var(--destructive));
+
+    /* Info Toast */
+    --toast-info-bg: hsl(var(--info));
+    --toast-info-text: hsl(var(--info-foreground));
+    --toast-info-border: hsl(var(--info));
+
+    /* =======================================================================
+     * POPOVER COMPONENT TOKENS
+     * Dropdown and popover styling
+     * ======================================================================= */
+
+    --popover-bg: hsl(var(--popover));
+    --popover-text: hsl(var(--popover-foreground));
+    --popover-border: hsl(var(--border));
+    --popover-shadow: var(--shadow-popover);
+    --popover-radius: var(--radius-lg);
+    --popover-padding: var(--space-component-lg);
+
+    /* =======================================================================
+     * TOOLTIP COMPONENT TOKENS
+     * Tooltip styling with arrow support
+     * ======================================================================= */
+
+    --tooltip-bg: hsl(var(--foreground));
+    --tooltip-text: hsl(var(--background));
+    --tooltip-shadow: var(--shadow-md);
+    --tooltip-radius: var(--radius-md);
+    --tooltip-padding-x: var(--space-component-md);
+    --tooltip-padding-y: var(--space-component-sm);
+    --tooltip-font-size: var(--font-size-caption);
+
+    /* =======================================================================
+     * LOADING COMPONENT TOKENS
+     * Loading states and skeletons
+     * ======================================================================= */
+
+    --loading-bg: hsl(var(--muted));
+    --loading-shimmer: hsl(var(--background));
+    --loading-radius: var(--radius-md);
+    --loading-animation-duration: 1.5s;
+
+    /* Skeleton specific */
+    --skeleton-bg: hsl(var(--muted));
+    --skeleton-shimmer: hsl(var(--muted-foreground) / 0.1);
+
+    /* =======================================================================
+     * FORM COMPONENT TOKENS
+     * Form layout and styling
+     * ======================================================================= */
+
+    --form-bg: hsl(var(--background));
+    --form-label-text: hsl(var(--foreground));
+    --form-help-text: hsl(var(--muted-foreground));
+    --form-error-text: hsl(var(--destructive));
+    --form-success-text: hsl(var(--success));
+    --form-field-gap: var(--space-form-field-gap);
+    --form-section-gap: var(--space-form-section-gap);
+    --form-padding: var(--space-form-padding);
+
+    /* =======================================================================
+     * KPI CARD COMPONENT TOKENS
+     * Dashboard KPI card specific styling
+     * ======================================================================= */
+
+    --kpi-card-bg: hsl(var(--card));
+    --kpi-card-text: hsl(var(--card-foreground));
+    --kpi-card-border: hsl(var(--border));
+    --kpi-card-border-hover: hsl(var(--primary) / 0.2);
+    --kpi-card-shadow: var(--shadow-card);
+    --kpi-card-shadow-hover: var(--shadow-card-hover);
+    --kpi-card-radius: var(--radius-card);
+    --kpi-card-padding: var(--space-kpi-padding);
+    --kpi-card-height: 180px; /* Fixed height for consistency */
+
+    /* KPI Value Typography */
+    --kpi-value-text: hsl(var(--foreground));
+    --kpi-value-font-size: var(--font-size-3xl);
+    --kpi-value-font-weight: var(--font-weight-bold);
+
+    /* KPI Label Typography */
+    --kpi-label-text: hsl(var(--muted-foreground));
+    --kpi-label-font-size: var(--font-size-small);
+    --kpi-label-font-weight: var(--font-weight-medium);
+
+    /* KPI Change Indicators */
+    --kpi-change-positive: hsl(var(--success));
+    --kpi-change-negative: hsl(var(--destructive));
+    --kpi-change-neutral: hsl(var(--muted-foreground));
+  }
+}

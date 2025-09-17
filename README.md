@@ -65,13 +65,32 @@ This codebase contains one main application:
 
 ```
 src/
-├── components/     # React components (forms, UI components)
-├── components/ui/  # shadcn/ui components  
-├── hooks/         # Custom React hooks
-├── lib/           # Utilities and shared functions
-├── types/         # TypeScript type definitions
-docs/              # Architecture and development documentation
+├── components/           # React components organized by function
+│   ├── ui/              # shadcn/ui primitives (Button, Input, etc.)
+│   ├── forms/           # Form components and builders
+│   ├── data-table/      # Data table with filtering and expansion
+│   ├── layout/          # Page layout and container components
+│   ├── app/             # Dashboard and app-level components
+│   └── dashboard/       # KPI cards, charts, and dashboard widgets
+├── hooks/               # Custom React hooks
+├── lib/                 # Utilities and shared functions
+├── types/               # TypeScript type definitions
+docs/                    # Architecture and development documentation
 ```
+
+### Component Architecture
+
+**Simplified Component Structure (Architecture Refactor)**:
+- **`/components/ui/`** - shadcn/ui primitives and basic building blocks
+- **`/components/forms/`** - Complete form system with validation and entity-specific forms
+- **`/components/data-table/`** - Advanced data tables with responsive filtering, sorting, and expandable rows
+- **`/components/layout/`** - Page layouts, containers, and structural components
+- **`/components/app/`** - Dashboard widgets, charts, and app-level UI components
+
+**Responsive Filter System**:
+- **ResponsiveFilterWrapper** - Smart filter wrapper that adapts between mobile drawer, tablet sheet, and desktop inline modes
+- **FilterLayoutProvider** - Device-aware context for responsive filter layouts
+- **EntityFilters** - Unified filter component with touch optimizations and responsive grid layouts
 
 ## 🗃️ Database Entities
 
@@ -111,7 +130,8 @@ npx tsc --noEmit   # Type checking
 - **5 Core Entities**: Organizations, Contacts, Products, Opportunities, Interactions
 - **Authentication**: Supabase Auth with Row Level Security (RLS)
 - **Business Logic**: Database constraints, validation triggers
-- **Mobile-Optimized**: iPad-focused responsive design for field sales
+- **Responsive Filtering**: Smart adaptive filters with mobile drawer, tablet sheet, and desktop inline modes
+- **Mobile-Optimized**: iPad-focused responsive design for field sales with orientation-aware behavior
 - **Performance**: Sub-5ms database queries, <3s page loads
 - **Search**: Full-text search with trigram indexing
 - **Dashboard**: Clean minimal interface ready for customization
@@ -136,6 +156,7 @@ npx tsc --noEmit   # Type checking
 - **[Database Schema](docs/DATABASE_SCHEMA.md)** - Complete database design
 - **[Coding Rules](docs/Coding_Rules.md)** - 10 essential development rules
 - **[State Management Guide](docs/STATE_MANAGEMENT_GUIDE.md)** - Client/server state patterns
+- **[Responsive Filters Guide](docs/guides/responsive-filters.md)** - Complete ResponsiveFilterWrapper implementation guide
 
 ### 🚀 Production & Deployment
 - **[Production Deployment Guide](docs/PRODUCTION_DEPLOYMENT_GUIDE.md)** - Complete deployment process

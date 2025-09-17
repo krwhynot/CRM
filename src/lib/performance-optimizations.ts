@@ -4,7 +4,9 @@
  */
 
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react'
-import { isDevelopment } from '@/config/environment'
+
+// Development environment check
+const isDevelopment = typeof process !== 'undefined' && process.env.NODE_ENV === 'development'
 
 // Debounce utility for search inputs and API calls
 export function useDebounce<T>(value: T, delay: number): T {
@@ -264,4 +266,263 @@ export function useCachedSearch<T>(
   }, [debouncedQuery, searchFn, cacheTime])
 
   return { results, isLoading }
+}
+
+// Responsive filter performance utilities
+export const ResponsiveFilterPerformance = {
+  /**
+   * Optimized filter state comparison for React.memo
+   */
+  compareFilterState: (
+    prevFilters: Record<string, unknown>,
+    nextFilters: Record<string, unknown>
+  ) => {
+    // Fast path for identical objects
+    if (prevFilters === nextFilters) return true
+
+    // Deep comparison for filter values
+    const prevKeys = Object.keys(prevFilters)
+    const nextKeys = Object.keys(nextFilters)
+
+    if (prevKeys.length !== nextKeys.length) return false
+
+    return prevKeys.every((key) => {
+      const prevValue = prevFilters[key]
+      const nextValue = nextFilters[key]
+
+      // Handle arrays and objects
+      if (Array.isArray(prevValue) && Array.isArray(nextValue)) {
+        return JSON.stringify(prevValue) === JSON.stringify(nextValue)
+      }
+
+      if (typeof prevValue === 'object' && typeof nextValue === 'object') {
+        return JSON.stringify(prevValue) === JSON.stringify(nextValue)
+      }
+
+      return prevValue === nextValue
+    })
+  },
+
+  /**
+   * Calculate active filter count efficiently
+   */
+  getActiveFilterCount: (filters: Record<string, unknown>) => {
+    return Object.keys(filters).filter((key) => {
+      const value = filters[key]
+      return value && value !== '' && value !== 'all' && value !== 'none'
+    }).length
+  },
+
+  /**
+   * Media query performance metrics
+   */
+  getMediaQueryMetrics: () => {
+    const queries = [
+      '(max-width: 767px)', // mobile
+      '(min-width: 768px) and (max-width: 1023px)', // tablet
+      '(min-width: 1024px)', // desktop
+      '(orientation: portrait)', // orientation
+      '(orientation: landscape)',
+    ]
+
+    return queries.map((query) => {
+      const media = window.matchMedia(query)
+      return {
+        query,
+        matches: media.matches,
+        listeners: 0, // Note: listeners count not always exposed in all browsers
+      }
+    })
+  },
+
+  /**
+   * Bundle size impact analysis
+   */
+  getBundleMetrics: () => {
+    if (typeof window === 'undefined') return null
+
+    const performance = window.performance
+    const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming
+
+    if (!navigation) return null
+
+    return {
+      domContentLoaded: navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
+      loadComplete: navigation.loadEventEnd - navigation.loadEventStart,
+      transferSize: navigation.transferSize || 0,
+      encodedBodySize: navigation.encodedBodySize || 0,
+      decodedBodySize: navigation.decodedBodySize || 0,
+      compressionRatio:
+        navigation.encodedBodySize > 0
+          ? Math.round((1 - navigation.encodedBodySize / navigation.decodedBodySize) * 100)
+          : 0,
+    }
+  },
+
+  /**
+   * Filter rendering performance benchmarks
+   */
+  benchmarkFilterRendering: (renderFn: () => void, iterations: number = 100) => {
+    const times: number[] = []
+
+    // Warmup
+    for (let i = 0; i < 10; i++) {
+      renderFn()
+    }
+
+    // Actual benchmarking
+    for (let i = 0; i < iterations; i++) {
+      const start = performance.now()
+      renderFn()
+      const end = performance.now()
+      times.push(end - start)
+    }
+
+    return {
+      min: Math.min(...times),
+      max: Math.max(...times),
+      average: times.reduce((a, b) => a + b, 0) / times.length,
+      median: times.sort((a, b) => a - b)[Math.floor(times.length / 2)],
+      p95: times.sort((a, b) => a - b)[Math.floor(times.length * 0.95)],
+      iterations,
+    }
+  },
+
+  /**
+   * Measure state transition performance
+   */
+  measureStateTransition: (
+    beforeState: Record<string, unknown>,
+    afterState: Record<string, unknown>,
+    transitionFn: () => void
+  ) => {
+    const start = performance.now()
+    const memoryBefore = typeof process !== 'undefined' ? process.memoryUsage?.()?.heapUsed || 0 : 0
+
+    transitionFn()
+
+    const end = performance.now()
+    const memoryAfter = typeof process !== 'undefined' ? process.memoryUsage?.()?.heapUsed || 0 : 0
+
+    const stateComplexityBefore = Object.keys(beforeState).length
+    const stateComplexityAfter = Object.keys(afterState).length
+
+    return {
+      duration: end - start,
+      memoryDelta: memoryAfter - memoryBefore,
+      stateComplexityDelta: stateComplexityAfter - stateComplexityBefore,
+      complexity: stateComplexityAfter > 10 ? 'high' : stateComplexityAfter > 5 ? 'medium' : 'low',
+    }
+  },
+
+  /**
+   * Touch responsiveness monitoring
+   */
+  monitorTouchResponse: (element: HTMLElement) => {
+    const touchMetrics = {
+      touchStartTime: 0,
+      touchEndTime: 0,
+      responses: [] as number[],
+    }
+
+    const touchStart = () => {
+      touchMetrics.touchStartTime = performance.now()
+    }
+
+    const touchEnd = () => {
+      touchMetrics.touchEndTime = performance.now()
+      const responseTime = touchMetrics.touchEndTime - touchMetrics.touchStartTime
+      touchMetrics.responses.push(responseTime)
+    }
+
+    element.addEventListener('touchstart', touchStart, { passive: true })
+    element.addEventListener('touchend', touchEnd, { passive: true })
+
+    return {
+      getMetrics: () => ({
+        averageResponse:
+          touchMetrics.responses.length > 0
+            ? touchMetrics.responses.reduce((a, b) => a + b, 0) / touchMetrics.responses.length
+            : 0,
+        maxResponse: Math.max(...touchMetrics.responses, 0),
+        minResponse: Math.min(...touchMetrics.responses, 0),
+        totalTouches: touchMetrics.responses.length,
+      }),
+      cleanup: () => {
+        element.removeEventListener('touchstart', touchStart)
+        element.removeEventListener('touchend', touchEnd)
+      },
+    }
+  },
+
+  /**
+   * Layout mode performance validation
+   */
+  validateLayoutPerformance: (
+    mode: 'inline' | 'sheet' | 'drawer',
+    deviceContext: string,
+    renderTime: number
+  ) => {
+    const thresholds = {
+      inline: 16, // 60fps
+      sheet: 50, // Acceptable for overlay
+      drawer: 50, // Acceptable for overlay
+    }
+
+    const deviceMultipliers = {
+      mobile: 1.5, // Allow more time on mobile
+      tablet: 1.2, // Slightly more time on tablet
+      desktop: 1.0, // Base performance on desktop
+    }
+
+    const threshold =
+      thresholds[mode] * (deviceMultipliers[deviceContext as keyof typeof deviceMultipliers] || 1.0)
+
+    return {
+      passed: renderTime < threshold,
+      renderTime,
+      threshold,
+      mode,
+      deviceContext,
+      performanceGrade:
+        renderTime < threshold * 0.5
+          ? 'excellent'
+          : renderTime < threshold * 0.8
+            ? 'good'
+            : renderTime < threshold
+              ? 'acceptable'
+              : 'poor',
+    }
+  },
+
+  /**
+   * Memory leak detection for filter operations
+   */
+  detectMemoryLeaks: (operation: () => void, iterations: number = 100) => {
+    const initialMemory =
+      typeof process !== 'undefined' ? process.memoryUsage?.()?.heapUsed || 0 : 0
+    const samples: number[] = []
+
+    for (let i = 0; i < iterations; i++) {
+      operation()
+
+      if (i % 10 === 0) {
+        const currentMemory =
+          typeof process !== 'undefined' ? process.memoryUsage?.()?.heapUsed || 0 : 0
+        samples.push(currentMemory - initialMemory)
+      }
+    }
+
+    const trend =
+      samples.length > 1 ? (samples[samples.length - 1] - samples[0]) / samples.length : 0
+
+    return {
+      initialMemory,
+      finalMemory: typeof process !== 'undefined' ? process.memoryUsage?.()?.heapUsed || 0 : 0,
+      memoryGrowth: samples[samples.length - 1] || 0,
+      growthTrend: trend,
+      suspicious: trend > 1024 * 10, // Flag if growing more than 10KB per iteration
+      samples,
+    }
+  },
 }

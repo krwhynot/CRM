@@ -17,6 +17,13 @@ const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableE
   ({ className, ...props }, ref) => (
     <div className="relative w-full overflow-auto">
       <table ref={ref} className={cn('w-full caption-bottom text-sm', className)} {...props} />
+      {/* Mobile scroll indicator - shows on touch devices when content overflows */}
+      <div
+        className="pointer-events-none absolute bottom-0 right-0 size-8 bg-gradient-to-l from-background to-transparent opacity-0 transition-opacity duration-200 md:hidden"
+        style={{
+          opacity: 'var(--scroll-indicator-opacity, 0)',
+        }}
+      />
     </div>
   )
 )

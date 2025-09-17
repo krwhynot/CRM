@@ -1,280 +1,37 @@
-@import './styles/compact.css';
-@import './styles/mobile.css';
-@import './styles/accessibility.css';
-@import './styles/density.css';
+/* =======================================================================
+ * SIMPLIFIED 2-LAYER CSS ORGANIZATION - DESIGN TOKENS ARCHITECTURE
+ *
+ * Streamlined two-tier hierarchy for simplified maintenance:
+ * 1. PRIMITIVES → Pure primitive definitions + essential accessibility tokens
+ * 2. SEMANTIC → Semantic mappings + essential component tokens
+ *
+ * Import order is CRITICAL - semantic layer references primitive layer
+ * ======================================================================= */
+
+@import './styles/tokens/primitives.css';    /* LAYER 1: Primitives + accessibility */
+@import './styles/tokens/semantic.css';      /* LAYER 2: Semantic + components */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* =======================================================================
+ * APPLICATION-LEVEL UTILITIES AND LAYOUT STYLES
+ *
+ * This section contains application-specific utilities, typography, and
+ * component classes that use the layered token system above.
+ *
+ * All tokens reference the layered token system:
+ * - Semantic tokens (--primary, --success, etc.)
+ * - Component tokens (--btn-primary-bg, --card-padding, etc.)
+ * - Feature tokens (--density-scale, --hc-primary-bg, etc.)
+ * ======================================================================= */
+
 @layer base {
   :root {
-    /* Primary Colors - Master Food Brokers Green (matching logo #8DC63F) */
-    --primary-50: oklch(0.9600 0.0300 130);
-    --primary-100: oklch(0.9200 0.0600 130);
-    --primary-200: oklch(0.8500 0.1000 130);
-    --primary-300: oklch(0.7800 0.1400 130);
-    --primary-400: oklch(0.7000 0.1700 130);
-    --primary-500: oklch(0.6200 0.2000 130); /* Main Brand Color - MFB Green */
-    --primary-600: oklch(0.5600 0.1800 130);
-    --primary-700: oklch(0.4800 0.1600 130);
-    --primary-800: oklch(0.4000 0.1400 130);
-    --primary-900: oklch(0.3200 0.1200 130);
-    
-    /* Secondary - Warm Gray */
-    --secondary-50: oklch(0.9800 0.0100 80);
-    --secondary-100: oklch(0.9500 0.0150 80);
-    --secondary-200: oklch(0.9000 0.0200 80);
-    --secondary-300: oklch(0.8000 0.0250 80);
-    --secondary-400: oklch(0.6500 0.0300 80);
-    --secondary-500: oklch(0.5000 0.0350 80);
-    --secondary-600: oklch(0.4000 0.0300 80);
-    --secondary-700: oklch(0.3000 0.0250 80);
-    --secondary-800: oklch(0.2000 0.0200 80);
-    --secondary-900: oklch(0.1000 0.0150 80);
-    
-    /* Chart Colors - MFB Brand Palette (HSL format for component compatibility) */
-    --chart-1: 130 62% 50%; /* MFB Green */
-    --chart-2: 130 57% 60%; /* Lighter Green */
-    --chart-3: 130 58% 46%; /* Medium Green */
-    --chart-4: 160 42% 56%; /* Teal Green */
-    --chart-5: 110 35% 42%; /* Olive Green */
-    
-    /* Base Grayscale */
-    --gray-50: oklch(0.9800 0 0);
-    --gray-100: oklch(0.9500 0 0);
-    --gray-200: oklch(0.9000 0 0);
-    --gray-300: oklch(0.8000 0 0);
-    --gray-400: oklch(0.6500 0 0);
-    --gray-500: oklch(0.5000 0 0);
-    --gray-600: oklch(0.4000 0 0);
-    --gray-700: oklch(0.3000 0 0);
-    --gray-800: oklch(0.2000 0 0);
-    --gray-900: oklch(0.1000 0 0);
-    --gray-950: oklch(0.0500 0 0);
-    
-    /* Semantic Colors - HSL format for Tailwind compatibility */
-    --success: 142 76% 36%;
-    --success-foreground: 0 0% 98%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 98%;
-    --info: 199 89% 48%;
-    --info-foreground: 0 0% 98%;
-
-    /* CRM Priority System - A+ through D ratings */
-    --priority-a-plus: 0 84% 60%;           /* Red gradient base */
-    --priority-a-plus-foreground: 0 0% 98%;
-    --priority-a: 0 74% 42%;                /* Solid red */
-    --priority-a-foreground: 0 0% 98%;
-    --priority-b: 25 95% 53%;               /* Orange */
-    --priority-b-foreground: 0 0% 98%;
-    --priority-c: 45 93% 47%;               /* Yellow */
-    --priority-c-foreground: 240 10% 10%;
-    --priority-d: 220 9% 46%;               /* Gray */
-    --priority-d-foreground: 0 0% 98%;
-
-    /* Organization Type Colors */
-    --org-customer: 217 91% 60%;            /* Blue */
-    --org-customer-foreground: 0 0% 98%;
-    --org-distributor: 142 71% 45%;         /* Green */
-    --org-distributor-foreground: 0 0% 98%;
-    --org-principal: 262 83% 58%;           /* Purple */
-    --org-principal-foreground: 0 0% 98%;
-    --org-supplier: 238 84% 67%;            /* Indigo */
-    --org-supplier-foreground: 0 0% 98%;
-
-    /* Market Segment Colors */
-    --segment-restaurant: 45 93% 47%;       /* Amber */
-    --segment-restaurant-foreground: 240 10% 10%;
-    --segment-healthcare: 188 95% 68%;      /* Cyan */
-    --segment-healthcare-foreground: 0 0% 98%;
-    --segment-education: 258 90% 66%;       /* Violet */
-    --segment-education-foreground: 0 0% 98%;
-
-    /* Special Status Combinations */
-    --vip-customer: linear-gradient(45deg, hsl(45 93% 47%), hsl(25 95% 53%)); /* Gold gradient */
-    --key-partner: linear-gradient(45deg, hsl(142 71% 45%), hsl(160 84% 39%)); /* Green gradient */
-    
-    /* AAA Text Contrast Levels */
-    --text-primary: 240 10% 10%;    /* Same as foreground - 15.8:1 ratio */
-    --text-body: 240 5% 20%;        /* #2E3338 - 12.6:1 ratio */
-    --text-muted: 240 3% 35%;       /* #575A5E - 7.5:1 ratio */
-    --text-disabled: 240 2% 55%;    /* #898B8D - 4.5:1 minimum */
-
-    /* shadcn/ui compatibility - converting OKLCH to HSL approximations */
-    --background: 0 0% 98%;
-    --foreground: 240 10% 10%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 10%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 10%;
-    --primary: 95 71% 56%;
-    --primary-foreground: 0 0% 98%;
-    --primary-50: 95 60% 95%;
-    --primary-100: 95 65% 90%;
-    --primary-400: 95 68% 48%;
-    --primary-600: 95 75% 42%;
-    --secondary: 48 5% 95%;
-    --secondary-foreground: 240 10% 10%;
-    --muted: 0 0% 95%;
-    --muted-foreground: 240 3% 35%;    /* Fixed from 40% to 35% for AAA compliance */
-    --accent: 0 0% 95%;
-    --accent-foreground: 240 10% 10%;
-    --destructive: 20 100% 50%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 95 71% 56%;
-    --radius: 0.375rem;
-    
-    /* Sidebar Colors */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 0 0% 30%;
-    --sidebar-primary: 95 71% 56%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 95 60% 90%;
-    --sidebar-accent-foreground: 95 71% 25%;
-    --sidebar-border: 95 71% 56%;
-    --sidebar-ring: 95 71% 56%;
-    
-    /* Header Shadow */
-    --header-shadow: 0 2px 8px rgba(141, 198, 63, 0.15);
-    
-    /* Executive Chef Design System */
-    --spacing-xs: 0.5rem;     /* 8px */
-    --spacing-sm: 1rem;       /* 16px */
-    --spacing-md: 1.5rem;     /* 24px - Primary card padding */
-    --spacing-lg: 2rem;       /* 32px */
-    --spacing-xl: 3rem;       /* 48px */
-    
-    /* Visual Hierarchy */
-    --radius-card: 0.75rem;   /* 12px - Professional rounded corners */
-    --shadow-subtle: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-    --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    --shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-    
-    /* Executive Chef Chart Colors (compatible with existing MFB palette) */
-    --chart-primary: 95 71% 56%;      /* MFB Green - Primary brand */
-    --chart-success: 142 76% 52%;     /* Success Green - Emerald */
-    --chart-warning: 38 92% 50%;      /* Warning Amber */
-    --chart-info: 217 91% 60%;        /* Info Blue */
-    --chart-accent: 262 83% 58%;      /* Purple accent */
-    
-    /* Common Layout Dimensions */
-    --header-height: 4rem;
-    --dialog-max-height: min(80vh, 40rem); /* Responsive with 640px cap */
-    --search-width-sm: 12rem;
-    --search-width-lg: 18rem;
-    --filter-width-sm: 8.75rem; /* 140px */
-    --filter-width-md: 11.25rem; /* 180px */
-    --table-min-width-xs: 5rem;
-    --table-min-width-sm: 6rem;
-    --table-min-width-md: 7rem;
-    --table-min-width-lg: 14rem;
-    
-    /* Chart and Feed Heights */
-    --chart-height: 15rem; /* 240px - reduced from 300px */
-    --chart-height-sm: 12.5rem; /* 200px - reduced from 250px */
-    --chart-height-lg: 17.5rem; /* 280px - reduced from 380px */
-    --activity-feed-height: 25rem; /* 400px */
-    --kanban-column-min-width: 8.125rem; /* 130px */
-    --kanban-content-height: 11.25rem; /* 180px */
-    
-    /* Dashboard Shadows */
-    --dashboard-shadow: 0 2px 8px rgba(141, 198, 63, 0.15);
-    --quick-action-shadow: 0 2px 4px rgba(141, 198, 63, 0.2);
-    --quick-action-shadow-hover: 0 4px 8px rgba(141, 198, 63, 0.3);
   }
 
   .dark {
-    /* AAA Text Contrast Levels - Dark Mode */
-    --text-primary: 0 0% 98%;         /* Same as foreground - 15.8:1 ratio */
-    --text-body: 0 0% 85%;           /* #D9D9D9 - 12.1:1 ratio */
-    --text-muted: 0 0% 70%;          /* #B3B3B3 - 7.4:1 ratio */
-    --text-disabled: 0 0% 50%;       /* #808080 - 4.5:1 minimum */
-
-    /* Keep dark mode with same MFB green primary colors */
-    --background: 240 10% 4%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 8%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 8%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 95 71% 56%;
-    --primary-foreground: 0 0% 98%;
-    --primary-50: 95 60% 15%;
-    --primary-100: 95 65% 20%;
-    --primary-400: 95 68% 60%;
-    --primary-600: 95 75% 50%;
-    --secondary: 240 4% 16%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 4% 16%;
-    --muted-foreground: 0 0% 70%;    /* Fixed from 65% to 70% for AAA compliance */
-    --accent: 240 4% 16%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 20 62% 30%;
-    --destructive-foreground: 0 0% 98%;
-    --success: 142 76% 45%;
-    --success-foreground: 0 0% 98%;
-    --warning: 38 92% 60%;
-    --warning-foreground: 0 0% 98%;
-    --info: 199 89% 58%;
-    --info-foreground: 0 0% 98%;
-    --border: 240 4% 16%;
-    --input: 240 4% 16%;
-    --ring: 95 71% 56%;
-    --sidebar-background: 240 10% 4%;
-    --sidebar-foreground: 0 0% 85%;
-    --sidebar-primary: 95 71% 56%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4% 16%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 240 4% 16%;
-    --sidebar-ring: 95 71% 56%;
-    
-    /* Chart Colors - Dark mode variants (slightly brighter for visibility) */
-    --chart-1: 130 62% 55%; /* MFB Green - brighter */
-    --chart-2: 130 57% 65%; /* Lighter Green - brighter */
-    --chart-3: 130 58% 51%; /* Medium Green - brighter */
-    --chart-4: 160 42% 61%; /* Teal Green - brighter */
-    --chart-5: 110 35% 47%; /* Olive Green - brighter */
-
-    /* CRM Priority System - Dark mode variants */
-    --priority-a-plus: 0 84% 65%;           /* Brighter red for dark mode */
-    --priority-a-plus-foreground: 0 0% 98%;
-    --priority-a: 0 74% 47%;                /* Brighter solid red */
-    --priority-a-foreground: 0 0% 98%;
-    --priority-b: 25 95% 58%;               /* Brighter orange */
-    --priority-b-foreground: 0 0% 98%;
-    --priority-c: 45 93% 52%;               /* Brighter yellow */
-    --priority-c-foreground: 240 10% 10%;
-    --priority-d: 220 9% 51%;               /* Brighter gray */
-    --priority-d-foreground: 0 0% 98%;
-
-    /* Organization Type Colors - Dark mode variants */
-    --org-customer: 217 91% 65%;            /* Brighter blue */
-    --org-customer-foreground: 0 0% 98%;
-    --org-distributor: 142 71% 50%;         /* Brighter green */
-    --org-distributor-foreground: 0 0% 98%;
-    --org-principal: 262 83% 63%;           /* Brighter purple */
-    --org-principal-foreground: 0 0% 98%;
-    --org-supplier: 238 84% 72%;            /* Brighter indigo */
-    --org-supplier-foreground: 0 0% 98%;
-
-    /* Market Segment Colors - Dark mode variants */
-    --segment-restaurant: 45 93% 52%;       /* Brighter amber */
-    --segment-restaurant-foreground: 240 10% 10%;
-    --segment-healthcare: 188 95% 73%;      /* Brighter cyan */
-    --segment-healthcare-foreground: 0 0% 98%;
-    --segment-education: 258 90% 71%;       /* Brighter violet */
-    --segment-education-foreground: 0 0% 98%;
-
-    /* Special Status Combinations - Dark mode variants */
-    --vip-customer: linear-gradient(45deg, hsl(45 93% 52%), hsl(25 95% 58%)); /* Brighter gold gradient */
-    --key-partner: linear-gradient(45deg, hsl(142 71% 50%), hsl(160 84% 44%)); /* Brighter green gradient */
-    
-    /* Header Shadow - Dark mode */
-    --header-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
   /* Responsive Dialog Heights - iPad optimized */
@@ -311,7 +68,7 @@
     font-size: 2rem; /* 32px equivalent */
     font-weight: 700; /* bold */
     line-height: 1.2;
-    color: var(--mfb-olive);
+    color: hsl(var(--text-heading-mfb));
     margin-bottom: 0.5rem;
   }
   
@@ -320,7 +77,7 @@
     font-size: 1.125rem; /* 18px equivalent */
     font-weight: 600; /* semibold */
     line-height: 1.3;
-    color: var(--mfb-olive);
+    color: hsl(var(--text-heading-mfb));
     margin-bottom: 0.375rem;
   }
   
@@ -337,7 +94,7 @@
     font-family: 'Nunito', system-ui, sans-serif;
     font-size: 0.9375rem; /* 15px equivalent */
     font-weight: 600; /* semibold */
-    color: var(--mfb-olive);
+    color: hsl(var(--text-heading-mfb));
   }
 }
 
@@ -347,8 +104,8 @@
     @apply bg-card rounded-xl border border-border shadow-sm;
     @apply transition-all duration-200 ease-in-out;
     @apply hover:shadow-md hover:border-primary/20;
-    padding: var(--spacing-md); /* 24px consistent padding */
-    border-radius: var(--radius-card); /* 12px professional corners */
+    padding: var(--space-card-padding, 1.5rem); /* 24px consistent padding via semantic token */
+    border-radius: var(--radius-card, 0.75rem); /* 12px professional corners */
   }
 
   /* KPI Card Consistency - Force uniform 180px height */
@@ -428,11 +185,11 @@
 
   .activity-feed-item:hover {
     @apply bg-muted/50;
-    border-left-color: var(--chart-primary, #3B82F6);
+    border-left-color: hsl(var(--chart-primary));
   }
 
   .dashboard-grid {
-    @apply grid gap-6; /* Consistent 24px gaps */
+    gap: var(--space-dashboard-grid-gap, 1.5rem); /* Consistent 24px gaps via semantic token */
   }
 
   .dashboard-grid-kpi {
@@ -472,21 +229,21 @@
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
     @apply disabled:pointer-events-none disabled:opacity-50;
     
-    /* MFB Green Primary Styling */
-    background-color: var(--mfb-green);
-    color: white;
+    /* Brand Primary Styling using semantic tokens */
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    
+
     /* Hover state with darker tone and elevation */
     &:hover:not(:disabled) {
-      background-color: var(--mfb-green-hover);
+      background-color: hsl(var(--primary) / 0.9);
       box-shadow: 0 4px 8px rgba(0,0,0,0.15);
       transform: translateY(-1px);
     }
-    
-    /* Focus state with MFB green ring */
+
+    /* Focus state with brand primary ring */
     &:focus-visible {
-      ring-color: var(--mfb-green-focus);
+      ring-color: hsl(var(--focus-ring));
     }
     
     /* Active state */
@@ -498,21 +255,21 @@
   
   .btn-secondary {
     @apply btn-primary;
-    background-color: var(--mfb-clay);
-    
+    background-color: hsl(var(--secondary));
+
     &:hover:not(:disabled) {
-      background-color: var(--mfb-clay-hover);
+      background-color: hsl(var(--secondary) / 0.9);
     }
   }
   
   .btn-ghost {
     @apply btn-primary;
     background-color: transparent;
-    color: var(--mfb-olive);
+    color: hsl(var(--text-heading-mfb));
     box-shadow: none;
-    
+
     &:hover:not(:disabled) {
-      background-color: var(--mfb-sage-tint);
+      background-color: hsl(var(--muted));
       box-shadow: none;
       transform: none;
     }

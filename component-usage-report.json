@@ -1,0 +1,2268 @@
+[
+  {
+    "name": "CommandPalette",
+    "path": "components/CommandPalette.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "ErrorBoundary",
+    "path": "components/ErrorBoundary.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "BulkActionsToolbar",
+    "path": "components/bulk-actions/BulkActionsToolbar.tsx",
+    "totalUsages": 9,
+    "featuresUsing": [
+      "contacts",
+      "interactions",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 5,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "BulkDeleteDialog",
+    "path": "components/bulk-actions/BulkDeleteDialog.tsx",
+    "totalUsages": 8,
+    "featuresUsing": [
+      "contacts",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 4,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "types",
+    "path": "components/bulk-actions/types.ts",
+    "totalUsages": 149,
+    "featuresUsing": [
+      "contacts",
+      "dashboard",
+      "import-export",
+      "interactions",
+      "layout-templates",
+      "monitoring",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 9,
+    "usedInPages": true,
+    "type": "Shared"
+  },
+  {
+    "name": "useBulkOperations",
+    "path": "components/bulk-actions/useBulkOperations.ts",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "CRMDashboardCards",
+    "path": "components/dashboard/CRMDashboardCards.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "CRMDashboardLayout",
+    "path": "components/dashboard/CRMDashboardLayout.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "chart-colors",
+    "path": "components/dashboard/chart-colors.ts",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "chart-wrapper",
+    "path": "components/dashboard/chart-wrapper.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "CRMDashboardExample",
+    "path": "components/dashboard/examples/CRMDashboardExample.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "kpi-card",
+    "path": "components/dashboard/kpi-card.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "loading-states",
+    "path": "components/dashboard/loading-states.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "contacts",
+    "path": "components/data-table/columns/contacts.tsx",
+    "totalUsages": 10,
+    "featuresUsing": [
+      "contacts",
+      "interactions",
+      "opportunities"
+    ],
+    "featureCount": 3,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "opportunities",
+    "path": "components/data-table/columns/opportunities.tsx",
+    "totalUsages": 5,
+    "featuresUsing": [
+      "interactions",
+      "opportunities"
+    ],
+    "featureCount": 2,
+    "usedInPages": true,
+    "type": "Shared"
+  },
+  {
+    "name": "organizations",
+    "path": "components/data-table/columns/organizations.tsx",
+    "totalUsages": 14,
+    "featuresUsing": [
+      "contacts",
+      "import-export",
+      "interactions",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 6,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "products",
+    "path": "components/data-table/columns/products.tsx",
+    "totalUsages": 3,
+    "featuresUsing": [
+      "products"
+    ],
+    "featureCount": 1,
+    "usedInPages": true,
+    "type": "Shared"
+  },
+  {
+    "name": "columns",
+    "path": "components/data-table/columns.tsx",
+    "totalUsages": 4,
+    "featuresUsing": [
+      "contacts",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 4,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "data-table",
+    "path": "components/data-table/data-table.tsx",
+    "totalUsages": 6,
+    "featuresUsing": [
+      "contacts",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 4,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "OrganizationExpansion",
+    "path": "components/data-table/expansion/OrganizationExpansion.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "EntityFilters",
+    "path": "components/data-table/filters/EntityFilters.tsx",
+    "totalUsages": 4,
+    "featuresUsing": [
+      "contacts",
+      "opportunities",
+      "organizations"
+    ],
+    "featureCount": 3,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "QuickFilters",
+    "path": "components/data-table/filters/QuickFilters.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "TimeRangeFilter",
+    "path": "components/data-table/filters/TimeRangeFilter.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "pagination",
+    "path": "components/data-table/pagination.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "toolbar",
+    "path": "components/data-table/toolbar.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "EntitySelect",
+    "path": "components/forms/EntitySelect.tsx",
+    "totalUsages": 13,
+    "featuresUsing": [
+      "contacts",
+      "interactions",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 5,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "FormCard",
+    "path": "components/forms/FormCard.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "FormField.enhanced",
+    "path": "components/forms/FormField.enhanced.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "FormField",
+    "path": "components/forms/FormField.tsx",
+    "totalUsages": 9,
+    "featuresUsing": [
+      "contacts",
+      "interactions",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 5,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "FormInput",
+    "path": "components/forms/FormInput.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "FormSubmitButton",
+    "path": "components/forms/FormSubmitButton.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "FormValidationFeedback",
+    "path": "components/forms/FormValidationFeedback.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "ProgressiveDetails",
+    "path": "components/forms/ProgressiveDetails.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "SimpleForm",
+    "path": "components/forms/SimpleForm.tsx",
+    "totalUsages": 7,
+    "featuresUsing": [
+      "contacts",
+      "interactions",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 5,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "EntitySelectLoadingState",
+    "path": "components/forms/entity-select/EntitySelectLoadingState.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "EntitySelectOptionsList",
+    "path": "components/forms/entity-select/EntitySelectOptionsList.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "EntitySelectSearchBox",
+    "path": "components/forms/entity-select/EntitySelectSearchBox.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "form-field-builders",
+    "path": "components/forms/form-field-builders.ts",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "useFormProgress",
+    "path": "components/forms/hooks/useFormProgress.ts",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "Container",
+    "path": "components/layout/Container.tsx",
+    "totalUsages": 6,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": true,
+    "type": "Shared"
+  },
+  {
+    "name": "ContentSection",
+    "path": "components/layout/ContentSection.tsx",
+    "totalUsages": 5,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": true,
+    "type": "Shared"
+  },
+  {
+    "name": "LayoutProvider",
+    "path": "components/layout/LayoutProvider.tsx",
+    "totalUsages": 2,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "PageContainer",
+    "path": "components/layout/PageContainer.tsx",
+    "totalUsages": 5,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": true,
+    "type": "Shared"
+  },
+  {
+    "name": "PageHeader",
+    "path": "components/layout/PageHeader.tsx",
+    "totalUsages": 7,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": true,
+    "type": "Shared"
+  },
+  {
+    "name": "PageLayout",
+    "path": "components/layout/PageLayout.tsx",
+    "totalUsages": 8,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": true,
+    "type": "Shared"
+  },
+  {
+    "name": "PageLayout.types",
+    "path": "components/layout/PageLayout.types.ts",
+    "totalUsages": 2,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "PageLayoutRenderer",
+    "path": "components/layout/PageLayoutRenderer.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "theme-provider",
+    "path": "components/theme-provider.tsx",
+    "totalUsages": 2,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "theme-toggle",
+    "path": "components/theme-toggle.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "CollapsibleSection",
+    "path": "components/ui/CollapsibleSection.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "DataTable",
+    "path": "components/ui/DataTable.tsx",
+    "totalUsages": 11,
+    "featuresUsing": [
+      "contacts",
+      "import-export",
+      "interactions",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 6,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "StandardDialog",
+    "path": "components/ui/StandardDialog.tsx",
+    "totalUsages": 8,
+    "featuresUsing": [
+      "contacts",
+      "interactions",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 5,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "alert-dialog",
+    "path": "components/ui/alert-dialog.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "alert",
+    "path": "components/ui/alert.tsx",
+    "totalUsages": 13,
+    "featuresUsing": [
+      "import-export",
+      "opportunities"
+    ],
+    "featureCount": 2,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "avatar",
+    "path": "components/ui/avatar.tsx",
+    "totalUsages": 3,
+    "featuresUsing": [
+      "auth"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "badge",
+    "path": "components/ui/badge.tsx",
+    "totalUsages": 50,
+    "featuresUsing": [
+      "contacts",
+      "import-export",
+      "interactions",
+      "layout-templates",
+      "monitoring",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 8,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "badge.variants",
+    "path": "components/ui/badge.variants.ts",
+    "totalUsages": 4,
+    "featuresUsing": [
+      "contacts",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 3,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "breadcrumb",
+    "path": "components/ui/breadcrumb.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "button-variants",
+    "path": "components/ui/button-variants.ts",
+    "totalUsages": 3,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "button",
+    "path": "components/ui/button.tsx",
+    "totalUsages": 81,
+    "featuresUsing": [
+      "auth",
+      "contacts",
+      "import-export",
+      "interactions",
+      "layout-templates",
+      "monitoring",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 9,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "calendar",
+    "path": "components/ui/calendar.tsx",
+    "totalUsages": 2,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "card",
+    "path": "components/ui/card.tsx",
+    "totalUsages": 36,
+    "featuresUsing": [
+      "auth",
+      "import-export",
+      "interactions",
+      "layout-templates",
+      "monitoring",
+      "opportunities"
+    ],
+    "featureCount": 6,
+    "usedInPages": true,
+    "type": "Shared"
+  },
+  {
+    "name": "chart",
+    "path": "components/ui/chart.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "checkbox",
+    "path": "components/ui/checkbox.tsx",
+    "totalUsages": 14,
+    "featuresUsing": [
+      "contacts",
+      "import-export",
+      "interactions",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 6,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "collapsible",
+    "path": "components/ui/collapsible.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "command",
+    "path": "components/ui/command.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "data-state",
+    "path": "components/ui/data-state.tsx",
+    "totalUsages": 4,
+    "featuresUsing": [
+      "contacts",
+      "interactions",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 4,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "dialog",
+    "path": "components/ui/dialog.tsx",
+    "totalUsages": 3,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "dropdown-menu",
+    "path": "components/ui/dropdown-menu.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "form",
+    "path": "components/ui/form.tsx",
+    "totalUsages": 71,
+    "featuresUsing": [
+      "auth",
+      "contacts",
+      "import-export",
+      "interactions",
+      "layout-templates",
+      "monitoring",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 9,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "input",
+    "path": "components/ui/input.tsx",
+    "totalUsages": 26,
+    "featuresUsing": [
+      "auth",
+      "contacts",
+      "interactions",
+      "layout-templates",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 7,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "input.variants",
+    "path": "components/ui/input.variants.ts",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "label",
+    "path": "components/ui/label.tsx",
+    "totalUsages": 7,
+    "featuresUsing": [
+      "layout-templates"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "loading-spinner",
+    "path": "components/ui/loading-spinner.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "mini-sparkline",
+    "path": "components/ui/mini-sparkline.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "PageHeader",
+    "path": "components/ui/new/PageHeader.tsx",
+    "totalUsages": 7,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": true,
+    "type": "Shared"
+  },
+  {
+    "name": "PriorityBadge",
+    "path": "components/ui/new/PriorityBadge.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "QuickActionsBar",
+    "path": "components/ui/new/QuickActionsBar.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "popover",
+    "path": "components/ui/popover.tsx",
+    "totalUsages": 4,
+    "featuresUsing": [
+      "contacts"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "priority-indicator",
+    "path": "components/ui/priority-indicator.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "priority-indicator.variants",
+    "path": "components/ui/priority-indicator.variants.ts",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "progress",
+    "path": "components/ui/progress.tsx",
+    "totalUsages": 13,
+    "featuresUsing": [
+      "import-export",
+      "opportunities"
+    ],
+    "featureCount": 2,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "radio-group",
+    "path": "components/ui/radio-group.tsx",
+    "totalUsages": 3,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "scroll-area",
+    "path": "components/ui/scroll-area.tsx",
+    "totalUsages": 4,
+    "featuresUsing": [
+      "interactions",
+      "layout-templates"
+    ],
+    "featureCount": 2,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "select",
+    "path": "components/ui/select.tsx",
+    "totalUsages": 5,
+    "featuresUsing": [
+      "interactions"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "separator",
+    "path": "components/ui/separator.tsx",
+    "totalUsages": 8,
+    "featuresUsing": [
+      "layout-templates"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "sheet",
+    "path": "components/ui/sheet.tsx",
+    "totalUsages": 4,
+    "featuresUsing": [
+      "import-export",
+      "interactions"
+    ],
+    "featureCount": 2,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "sidebar.constants",
+    "path": "components/ui/sidebar.constants.ts",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "sidebar",
+    "path": "components/ui/sidebar.tsx",
+    "totalUsages": 2,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "skeleton",
+    "path": "components/ui/skeleton.tsx",
+    "totalUsages": 8,
+    "featuresUsing": [
+      "interactions"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "sonner",
+    "path": "components/ui/sonner.tsx",
+    "totalUsages": 5,
+    "featuresUsing": [
+      "interactions"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "status-indicator",
+    "path": "components/ui/status-indicator.tsx",
+    "totalUsages": 3,
+    "featuresUsing": [
+      "opportunities"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "status-indicator.variants",
+    "path": "components/ui/status-indicator.variants.ts",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "switch",
+    "path": "components/ui/switch.tsx",
+    "totalUsages": 4,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "table",
+    "path": "components/ui/table.tsx",
+    "totalUsages": 15,
+    "featuresUsing": [
+      "contacts",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 4,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "tabs",
+    "path": "components/ui/tabs.tsx",
+    "totalUsages": 6,
+    "featuresUsing": [
+      "import-export",
+      "layout-templates"
+    ],
+    "featureCount": 2,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "textarea",
+    "path": "components/ui/textarea.tsx",
+    "totalUsages": 8,
+    "featuresUsing": [
+      "interactions",
+      "layout-templates",
+      "opportunities"
+    ],
+    "featureCount": 3,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "toggle-group",
+    "path": "components/ui/toggle-group.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "toggle",
+    "path": "components/ui/toggle.tsx",
+    "totalUsages": 3,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "tooltip",
+    "path": "components/ui/tooltip.tsx",
+    "totalUsages": 12,
+    "featuresUsing": [
+      "contacts",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 4,
+    "usedInPages": false,
+    "type": "Shared"
+  },
+  {
+    "name": "AuthCallbackHandler",
+    "path": "features/auth/components/AuthCallbackHandler.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "auth"
+  },
+  {
+    "name": "AuthPage",
+    "path": "features/auth/components/AuthPage.tsx",
+    "totalUsages": 2,
+    "featuresUsing": [
+      "auth"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "auth"
+  },
+  {
+    "name": "ForgotPasswordForm",
+    "path": "features/auth/components/ForgotPasswordForm.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "auth"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "auth"
+  },
+  {
+    "name": "LoginForm",
+    "path": "features/auth/components/LoginForm.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "auth"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "auth"
+  },
+  {
+    "name": "ProtectedRoute",
+    "path": "features/auth/components/ProtectedRoute.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "auth"
+  },
+  {
+    "name": "ResetPasswordPage",
+    "path": "features/auth/components/ResetPasswordPage.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "auth"
+  },
+  {
+    "name": "SignUpForm",
+    "path": "features/auth/components/SignUpForm.tsx",
+    "totalUsages": 2,
+    "featuresUsing": [
+      "auth"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "auth"
+  },
+  {
+    "name": "UserMenu",
+    "path": "features/auth/components/UserMenu.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "auth"
+  },
+  {
+    "name": "FormAlert",
+    "path": "features/auth/components/form-components/FormAlert.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "auth"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "auth"
+  },
+  {
+    "name": "PasswordInput",
+    "path": "features/auth/components/form-components/PasswordInput.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "auth"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "auth"
+  },
+  {
+    "name": "SignUpFormLayout",
+    "path": "features/auth/components/form-components/SignUpFormLayout.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "auth"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "auth"
+  },
+  {
+    "name": "ErrorState",
+    "path": "features/auth/components/reset-password/ErrorState.tsx",
+    "totalUsages": 5,
+    "featuresUsing": [
+      "auth",
+      "contacts",
+      "interactions",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 5,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "auth"
+  },
+  {
+    "name": "LoadingState",
+    "path": "features/auth/components/reset-password/LoadingState.tsx",
+    "totalUsages": 6,
+    "featuresUsing": [
+      "auth",
+      "contacts",
+      "interactions",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 5,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "auth"
+  },
+  {
+    "name": "ResetPasswordForm",
+    "path": "features/auth/components/reset-password/ResetPasswordForm.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "auth"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "auth"
+  },
+  {
+    "name": "SuccessState",
+    "path": "features/auth/components/reset-password/SuccessState.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "auth"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "auth"
+  },
+  {
+    "name": "ContactActions",
+    "path": "features/contacts/components/ContactActions.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "contacts"
+  },
+  {
+    "name": "ContactBadges",
+    "path": "features/contacts/components/ContactBadges.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "contacts"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "contacts"
+  },
+  {
+    "name": "ContactForm",
+    "path": "features/contacts/components/ContactForm.tsx",
+    "totalUsages": 4,
+    "featuresUsing": [
+      "contacts"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "contacts"
+  },
+  {
+    "name": "ContactSelect",
+    "path": "features/contacts/components/ContactSelect.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "contacts"
+  },
+  {
+    "name": "ContactsDataDisplay",
+    "path": "features/contacts/components/ContactsDataDisplay.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "contacts"
+  },
+  {
+    "name": "ContactsDialogs",
+    "path": "features/contacts/components/ContactsDialogs.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "contacts"
+  },
+  {
+    "name": "ContactsFilters",
+    "path": "features/contacts/components/ContactsFilters.tsx",
+    "totalUsages": 2,
+    "featuresUsing": [
+      "contacts"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "contacts"
+  },
+  {
+    "name": "ContactsList",
+    "path": "features/contacts/components/ContactsList.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "contacts"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "contacts"
+  },
+  {
+    "name": "ContactsTable",
+    "path": "features/contacts/components/ContactsTable.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "contacts"
+  },
+  {
+    "name": "PreferredPrincipalsSelect",
+    "path": "features/contacts/components/PreferredPrincipalsSelect.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "contacts"
+  },
+  {
+    "name": "CRMDashboard",
+    "path": "features/dashboard/components/CRMDashboard.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": true,
+    "type": "Feature",
+    "feature": "dashboard"
+  },
+  {
+    "name": "types",
+    "path": "features/dashboard/components/types.ts",
+    "totalUsages": 149,
+    "featuresUsing": [
+      "contacts",
+      "dashboard",
+      "import-export",
+      "interactions",
+      "layout-templates",
+      "monitoring",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 9,
+    "usedInPages": true,
+    "type": "Feature",
+    "feature": "dashboard"
+  },
+  {
+    "name": "FileUploadArea",
+    "path": "features/import-export/components/FileUploadArea.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "import-export"
+  },
+  {
+    "name": "ImportProgress",
+    "path": "features/import-export/components/ImportProgress.tsx",
+    "totalUsages": 2,
+    "featuresUsing": [
+      "import-export"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "import-export"
+  },
+  {
+    "name": "OrganizationExporter",
+    "path": "features/import-export/components/OrganizationExporter.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "import-export"
+  },
+  {
+    "name": "ExportAction",
+    "path": "features/import-export/components/export/ExportAction.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "import-export"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "import-export"
+  },
+  {
+    "name": "ExportConfiguration",
+    "path": "features/import-export/components/export/ExportConfiguration.tsx",
+    "totalUsages": 4,
+    "featuresUsing": [
+      "import-export"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "import-export"
+  },
+  {
+    "name": "ExportError",
+    "path": "features/import-export/components/export/ExportError.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "import-export"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "import-export"
+  },
+  {
+    "name": "ExportProgress",
+    "path": "features/import-export/components/export/ExportProgress.tsx",
+    "totalUsages": 5,
+    "featuresUsing": [
+      "import-export"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "import-export"
+  },
+  {
+    "name": "ExportResults",
+    "path": "features/import-export/components/export/ExportResults.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "import-export"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "import-export"
+  },
+  {
+    "name": "EnhancedInteractionTimelineEmbed",
+    "path": "features/interactions/components/EnhancedInteractionTimelineEmbed.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "interactions"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "EnhancedQuickInteractionBar",
+    "path": "features/interactions/components/EnhancedQuickInteractionBar.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "interactions"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "InteractionDialogs",
+    "path": "features/interactions/components/InteractionDialogs.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "InteractionForm",
+    "path": "features/interactions/components/InteractionForm.tsx",
+    "totalUsages": 5,
+    "featuresUsing": [
+      "interactions",
+      "opportunities"
+    ],
+    "featureCount": 2,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "InteractionTimeline",
+    "path": "features/interactions/components/InteractionTimeline.tsx",
+    "totalUsages": 7,
+    "featuresUsing": [
+      "interactions",
+      "opportunities"
+    ],
+    "featureCount": 2,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "InteractionTimelineEmbed",
+    "path": "features/interactions/components/InteractionTimelineEmbed.tsx",
+    "totalUsages": 3,
+    "featuresUsing": [
+      "interactions",
+      "opportunities"
+    ],
+    "featureCount": 2,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "InteractionTimelineItem",
+    "path": "features/interactions/components/InteractionTimelineItem.tsx",
+    "totalUsages": 2,
+    "featuresUsing": [
+      "interactions"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "InteractionTimelineSkeleton",
+    "path": "features/interactions/components/InteractionTimelineSkeleton.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "interactions"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "InteractionsDataDisplay",
+    "path": "features/interactions/components/InteractionsDataDisplay.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "InteractionsFilters",
+    "path": "features/interactions/components/InteractionsFilters.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "interactions"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "InteractionsTable",
+    "path": "features/interactions/components/InteractionsTable.tsx",
+    "totalUsages": 2,
+    "featuresUsing": [
+      "interactions"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "InteractionsTableActions",
+    "path": "features/interactions/components/InteractionsTableActions.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "interactions"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "QuickInteractionBar",
+    "path": "features/interactions/components/QuickInteractionBar.tsx",
+    "totalUsages": 3,
+    "featuresUsing": [
+      "interactions",
+      "opportunities"
+    ],
+    "featureCount": 2,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "TimelineEmptyState",
+    "path": "features/interactions/components/timeline/TimelineEmptyState.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "interactions"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "TimelineHeader",
+    "path": "features/interactions/components/timeline/TimelineHeader.tsx",
+    "totalUsages": 2,
+    "featuresUsing": [
+      "interactions"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "TimelineItems",
+    "path": "features/interactions/components/timeline/TimelineItems.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "interactions"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "InteractionTimelineContent",
+    "path": "features/interactions/components/timeline-item/InteractionTimelineContent.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "interactions"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "InteractionTimelineDot",
+    "path": "features/interactions/components/timeline-item/InteractionTimelineDot.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "interactions"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "InteractionTimelineHeader",
+    "path": "features/interactions/components/timeline-item/InteractionTimelineHeader.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "interactions"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "interactions"
+  },
+  {
+    "name": "TemplateDetailsModal",
+    "path": "features/layout-templates/components/TemplateDetailsModal.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "layout-templates"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "layout-templates"
+  },
+  {
+    "name": "TemplateGallery",
+    "path": "features/layout-templates/components/TemplateGallery.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "layout-templates"
+  },
+  {
+    "name": "TemplateIntegration",
+    "path": "features/layout-templates/components/TemplateIntegration.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "layout-templates"
+  },
+  {
+    "name": "TemplatePreviewCard",
+    "path": "features/layout-templates/components/TemplatePreviewCard.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "layout-templates"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "layout-templates"
+  },
+  {
+    "name": "HealthDashboard",
+    "path": "features/monitoring/components/HealthDashboard.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "monitoring"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "monitoring"
+  },
+  {
+    "name": "DetailedSystemInfo",
+    "path": "features/monitoring/components/health-dashboard/DetailedSystemInfo.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "monitoring"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "monitoring"
+  },
+  {
+    "name": "PerformanceMetrics",
+    "path": "features/monitoring/components/health-dashboard/PerformanceMetrics.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "monitoring"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "monitoring"
+  },
+  {
+    "name": "ServiceStatusCard",
+    "path": "features/monitoring/components/health-dashboard/ServiceStatusCard.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "monitoring"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "monitoring"
+  },
+  {
+    "name": "SystemStatusOverview",
+    "path": "features/monitoring/components/health-dashboard/SystemStatusOverview.tsx",
+    "totalUsages": 2,
+    "featuresUsing": [
+      "monitoring"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "monitoring"
+  },
+  {
+    "name": "OpportunitiesFilters",
+    "path": "features/opportunities/components/OpportunitiesFilters.tsx",
+    "totalUsages": 2,
+    "featuresUsing": [
+      "opportunities"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "opportunities"
+  },
+  {
+    "name": "OpportunitiesList",
+    "path": "features/opportunities/components/OpportunitiesList.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": true,
+    "type": "Feature",
+    "feature": "opportunities"
+  },
+  {
+    "name": "OpportunitiesTable",
+    "path": "features/opportunities/components/OpportunitiesTable.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "opportunities"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "opportunities"
+  },
+  {
+    "name": "OpportunitiesTableActions",
+    "path": "features/opportunities/components/OpportunitiesTableActions.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "opportunities"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "opportunities"
+  },
+  {
+    "name": "OpportunityDetailCard",
+    "path": "features/opportunities/components/OpportunityDetailCard.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "opportunities"
+  },
+  {
+    "name": "OpportunityDialogs",
+    "path": "features/opportunities/components/OpportunityDialogs.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": true,
+    "type": "Feature",
+    "feature": "opportunities"
+  },
+  {
+    "name": "OpportunityForm",
+    "path": "features/opportunities/components/OpportunityForm.tsx",
+    "totalUsages": 13,
+    "featuresUsing": [
+      "opportunities"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "opportunities"
+  },
+  {
+    "name": "OpportunityWizard",
+    "path": "features/opportunities/components/OpportunityWizard.tsx",
+    "totalUsages": 2,
+    "featuresUsing": [
+      "opportunities"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "opportunities"
+  },
+  {
+    "name": "SimpleMultiPrincipalForm",
+    "path": "features/opportunities/components/SimpleMultiPrincipalForm.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": true,
+    "type": "Feature",
+    "feature": "opportunities"
+  },
+  {
+    "name": "WizardNavigation",
+    "path": "features/opportunities/components/WizardNavigation.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "opportunities"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "opportunities"
+  },
+  {
+    "name": "WizardStepBasicInfo",
+    "path": "features/opportunities/components/WizardStepBasicInfo.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "opportunities"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "opportunities"
+  },
+  {
+    "name": "WizardStepDetails",
+    "path": "features/opportunities/components/WizardStepDetails.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "opportunities"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "opportunities"
+  },
+  {
+    "name": "WizardStepFinancial",
+    "path": "features/opportunities/components/WizardStepFinancial.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "opportunities"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "opportunities"
+  },
+  {
+    "name": "WizardStepOrganization",
+    "path": "features/opportunities/components/WizardStepOrganization.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "opportunities"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "opportunities"
+  },
+  {
+    "name": "WizardStepTimeline",
+    "path": "features/opportunities/components/WizardStepTimeline.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "opportunities"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "opportunities"
+  },
+  {
+    "name": "OpportunityBasicFields",
+    "path": "features/opportunities/components/multi-principal-form/OpportunityBasicFields.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "opportunities"
+  },
+  {
+    "name": "OpportunityFormActions",
+    "path": "features/opportunities/components/multi-principal-form/OpportunityFormActions.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "opportunities"
+  },
+  {
+    "name": "PrincipalSelector",
+    "path": "features/opportunities/components/multi-principal-form/PrincipalSelector.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "opportunities"
+  },
+  {
+    "name": "BulkActionsToolbar",
+    "path": "features/organizations/components/BulkActionsToolbar.tsx",
+    "totalUsages": 9,
+    "featuresUsing": [
+      "contacts",
+      "interactions",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 5,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "organizations"
+  },
+  {
+    "name": "BulkDeleteDialog",
+    "path": "features/organizations/components/BulkDeleteDialog.tsx",
+    "totalUsages": 8,
+    "featuresUsing": [
+      "contacts",
+      "opportunities",
+      "organizations",
+      "products"
+    ],
+    "featureCount": 4,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "organizations"
+  },
+  {
+    "name": "OrganizationActions",
+    "path": "features/organizations/components/OrganizationActions.tsx",
+    "totalUsages": 2,
+    "featuresUsing": [
+      "organizations"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "organizations"
+  },
+  {
+    "name": "OrganizationBadges",
+    "path": "features/organizations/components/OrganizationBadges.tsx",
+    "totalUsages": 2,
+    "featuresUsing": [
+      "organizations"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "organizations"
+  },
+  {
+    "name": "OrganizationDialogs",
+    "path": "features/organizations/components/OrganizationDialogs.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "organizations"
+  },
+  {
+    "name": "OrganizationForm",
+    "path": "features/organizations/components/OrganizationForm.tsx",
+    "totalUsages": 7,
+    "featuresUsing": [
+      "organizations"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "organizations"
+  },
+  {
+    "name": "OrganizationSelect",
+    "path": "features/organizations/components/OrganizationSelect.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "organizations"
+  },
+  {
+    "name": "OrganizationsDataDisplay",
+    "path": "features/organizations/components/OrganizationsDataDisplay.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "organizations"
+  },
+  {
+    "name": "OrganizationsFilters",
+    "path": "features/organizations/components/OrganizationsFilters.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "organizations"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "organizations"
+  },
+  {
+    "name": "OrganizationsList",
+    "path": "features/organizations/components/OrganizationsList.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "organizations"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "organizations"
+  },
+  {
+    "name": "OrganizationsTable",
+    "path": "features/organizations/components/OrganizationsTable.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "organizations"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "organizations"
+  },
+  {
+    "name": "ProductActions",
+    "path": "features/products/components/ProductActions.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "products"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "products"
+  },
+  {
+    "name": "ProductBadges",
+    "path": "features/products/components/ProductBadges.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "products"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "products"
+  },
+  {
+    "name": "ProductDialogs",
+    "path": "features/products/components/ProductDialogs.tsx",
+    "totalUsages": 3,
+    "featuresUsing": [
+      "products"
+    ],
+    "featureCount": 1,
+    "usedInPages": true,
+    "type": "Feature",
+    "feature": "products"
+  },
+  {
+    "name": "ProductForm",
+    "path": "features/products/components/ProductForm.tsx",
+    "totalUsages": 2,
+    "featuresUsing": [
+      "products"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "products"
+  },
+  {
+    "name": "ProductSelect",
+    "path": "features/products/components/ProductSelect.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "products"
+  },
+  {
+    "name": "ProductsDataDisplay",
+    "path": "features/products/components/ProductsDataDisplay.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": true,
+    "type": "Feature",
+    "feature": "products"
+  },
+  {
+    "name": "ProductsFilters",
+    "path": "features/products/components/ProductsFilters.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "products"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "products"
+  },
+  {
+    "name": "ProductsList",
+    "path": "features/products/components/ProductsList.tsx",
+    "totalUsages": 1,
+    "featuresUsing": [
+      "products"
+    ],
+    "featureCount": 1,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "products"
+  },
+  {
+    "name": "ProductsTable",
+    "path": "features/products/components/ProductsTable.tsx",
+    "totalUsages": 0,
+    "featuresUsing": [],
+    "featureCount": 0,
+    "usedInPages": false,
+    "type": "Feature",
+    "feature": "products"
+  }
+]

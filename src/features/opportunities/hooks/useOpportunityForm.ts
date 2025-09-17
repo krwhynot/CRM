@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { useMemo } from 'react'
-import { opportunitySchema, type OpportunityFormData } from '@/types/opportunity.types'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { opportunityZodSchema, type OpportunityZodFormData } from '@/types/opportunity.types'
+import { createResolver } from '@/lib/form-resolver'
 import { DEFAULT_OPPORTUNITY_STAGE } from '@/lib/opportunity-stage-mapping'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
 import { useContacts } from '@/features/contacts/hooks/useContacts'
@@ -11,37 +11,47 @@ interface UseOpportunityFormProps {
   preselectedContact?: string
 }
 
-export interface UseOpportunityFormReturn {
+export interface UseOpportunityFormReturn<T = OpportunityZodFormData> {
   // Form methods
-  register: ReturnType<typeof useForm<OpportunityFormData>>['register']
-  handleSubmit: ReturnType<typeof useForm<OpportunityFormData>>['handleSubmit']
-  setValue: ReturnType<typeof useForm<OpportunityFormData>>['setValue']
-  watch: ReturnType<typeof useForm<OpportunityFormData>>['watch']
-  trigger: ReturnType<typeof useForm<OpportunityFormData>>['trigger']
-  formState: ReturnType<typeof useForm<OpportunityFormData>>['formState']
-  errors: ReturnType<typeof useForm<OpportunityFormData>>['formState']['errors']
+  register: ReturnType<typeof useForm<T>>['register']
+  handleSubmit: ReturnType<typeof useForm<T>>['handleSubmit']
+  setValue: ReturnType<typeof useForm<T>>['setValue']
+  watch: ReturnType<typeof useForm<T>>['watch']
+  trigger: ReturnType<typeof useForm<T>>['trigger']
+  formState: ReturnType<typeof useForm<T>>['formState']
+  errors: ReturnType<typeof useForm<T>>['formState']['errors']
 
   // Derived data
   organizations: ReturnType<typeof useOrganizations>['data']
   contacts: ReturnType<typeof useContacts>['data']
   filteredContacts: ReturnType<typeof useContacts>['data']
-  watchedValues: OpportunityFormData
+  watchedValues: T
   selectedOrganization: string
 
   // Validation helpers
   getStepValidation: (step: number) => Promise<boolean>
   validateStepsRange: (fromStep: number, toStep: number) => Promise<boolean>
+  validateField: (fieldName: keyof T) => Promise<boolean>
+  getFieldErrors: (fieldName: keyof T) => string[]
+
+  // Schema info
+  isUsingZodSchema: boolean
+  validationSchema: typeof opportunityZodSchema
 }
 
 export const useOpportunityForm = ({
   preselectedOrganization,
   preselectedContact,
-}: UseOpportunityFormProps = {}): UseOpportunityFormReturn => {
+}: UseOpportunityFormProps = {}): UseOpportunityFormReturn<OpportunityZodFormData> => {
   const { data: organizations = [] } = useOrganizations()
   const { data: contacts = [] } = useContacts()
 
-  const form = useForm<OpportunityFormData>({
-    resolver: yupResolver(opportunitySchema) as never,
+  // Use Zod schema only
+  const schema = opportunityZodSchema
+  const resolver = createResolver(opportunityZodSchema)
+
+  const form = useForm<OpportunityZodFormData>({
+    resolver,
     mode: 'onBlur',
     defaultValues: {
       name: '',
@@ -59,7 +69,7 @@ export const useOpportunityForm = ({
       principal_id: null,
       probability: null,
       deal_owner: null,
-    },
+    } as OpportunityZodFormData,
   })
 
   const { watch, trigger } = form
@@ -74,6 +84,7 @@ export const useOpportunityForm = ({
   }, [selectedOrganization, contacts])
 
   const getStepValidation = async (step: number): Promise<boolean> => {
+    // Enhanced step validation with Zod-specific handling
     switch (step) {
       case 1:
         return await trigger(['name'])
@@ -82,9 +93,10 @@ export const useOpportunityForm = ({
       case 3:
         return await trigger(['stage'])
       case 4:
-        return true // Financial info is optional
+        // Validate financial fields
+        return await trigger(['estimated_value', 'probability'])
       case 5:
-        return true // Timeline is optional
+        return await trigger(['estimated_close_date'])
       default:
         return true
     }
@@ -100,6 +112,27 @@ export const useOpportunityForm = ({
       }
     }
     return canProceed
+  }
+
+  // Enhanced field validation for individual field checking
+  const validateField = async (fieldName: keyof OpportunityZodFormData): Promise<boolean> => {
+    return await trigger([fieldName as never])
+  }
+
+  // Get formatted errors for specific field
+  const getFieldErrors = (fieldName: keyof OpportunityZodFormData): string[] => {
+    const fieldError = form.formState.errors[fieldName as never]
+    if (!fieldError) return []
+
+    // Handle Zod error format
+    if (fieldError) {
+      if (Array.isArray(fieldError)) {
+        return fieldError.map((err) => err.message || 'Invalid value')
+      }
+      return [fieldError.message || 'Invalid value']
+    }
+
+    return []
   }
 
   return {
@@ -122,5 +155,11 @@ export const useOpportunityForm = ({
     // Validation helpers
     getStepValidation,
     validateStepsRange,
+    validateField,
+    getFieldErrors,
+
+    // Schema info
+    isUsingZodSchema: true,
+    validationSchema: schema,
   }
 }

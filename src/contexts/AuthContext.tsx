@@ -39,13 +39,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // ⚠️  Set VITE_DEV_BYPASS_AUTH=false in .env.development to disable
     // ⚠️  This bypass is automatically disabled in production builds
     const bypassAuth = appConfig.devBypassAuth
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    
+    const isLocalhost =
+      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+
     if (isDevelopment && bypassAuth && isLocalhost) {
       console.warn('🚨 AUTH BYPASS ACTIVE: Development mode with bypassed authentication')
       console.warn('🔓 This should NEVER be enabled in production!')
       console.warn('🔧 To disable: Set VITE_DEV_BYPASS_AUTH=false in .env.development')
-      
+
       // Create a mock user for development
       const mockUser: User = {
         id: 'dev-user-mock-id',
@@ -55,7 +56,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         aud: 'authenticated',
         created_at: new Date().toISOString(),
       }
-      
+
       // Create a mock session
       const mockSession: Session = {
         access_token: 'mock-access-token',
@@ -65,7 +66,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         token_type: 'bearer',
         user: mockUser,
       }
-      
+
       setUser(mockUser)
       setSession(mockSession)
       setLoading(false)

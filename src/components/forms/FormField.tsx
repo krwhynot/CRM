@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils'
 import { useDialogContext } from '@/contexts/DialogContext'
 import { getFormSpacingClasses } from '@/lib/utils/form-utils'
 import { FormInput, type InputConfig, type SelectOption } from './FormInput'
+import { type ZodError } from 'zod'
 
 /**
  * FormField - Field wrapper component with label, validation, and description
@@ -29,7 +30,9 @@ export interface RegularFieldConfig extends BaseFieldConfig, InputConfig {
   name: string
   required?: boolean
   description?: string
-  validation?: Record<string, unknown> // Yup schema validation
+  validation?: Record<string, unknown> // Schema validation (Yup or Zod compatible)
+  errorMessage?: string // Custom error message override
+  zodErrorPath?: string[] // Specific path for Zod error handling
 }
 
 export interface HeadingFieldConfig extends BaseFieldConfig {
@@ -47,7 +50,43 @@ interface FormFieldProps<T extends FieldValues = FieldValues> {
   className?: string
 }
 
-export function FormFieldNew<T extends FieldValues = FieldValues>({ control, name, config, disabled, className }: FormFieldProps<T>) {
+// Utility function to format validation errors for better UX
+const formatValidationError = (error: any, config: RegularFieldConfig): string => {
+  // Use custom error message if provided
+  if (config.errorMessage) {
+    return config.errorMessage
+  }
+
+  // Handle Zod error structures
+  if (error && typeof error === 'object') {
+    // Zod errors have a message property
+    if (error.message) {
+      return error.message
+    }
+
+    // Handle nested error structures
+    if (error.errors && Array.isArray(error.errors)) {
+      const firstError = error.errors[0]
+      return firstError?.message || 'Invalid value'
+    }
+  }
+
+  // Fallback for string errors
+  if (typeof error === 'string') {
+    return error
+  }
+
+  // Default fallback
+  return 'Invalid value'
+}
+
+export function FormFieldNew<T extends FieldValues = FieldValues>({
+  control,
+  name,
+  config,
+  disabled,
+  className,
+}: FormFieldProps<T>) {
   const { isInDialog } = useDialogContext()
   const spacingClasses = getFormSpacingClasses(isInDialog)
 
@@ -56,10 +95,10 @@ export function FormFieldNew<T extends FieldValues = FieldValues>({ control, nam
     const headingConfig = config as HeadingFieldConfig
     const level = headingConfig.level || 3
     const HeadingTag = `h${level}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
-    
+
     return (
       <div className={cn('col-span-full', config.className, className)}>
-        <HeadingTag className="text-md mb-2 mt-4 font-semibold text-gray-900 first:mt-0">
+        <HeadingTag className="text-md mb-2 mt-4 font-semibold text-foreground first:mt-0">
           {config.label}
         </HeadingTag>
       </div>
@@ -80,9 +119,9 @@ export function FormFieldNew<T extends FieldValues = FieldValues>({ control, nam
       name={name}
       render={({ field }) => (
         <FormItem className={cn(spacingClasses, config.className, className)}>
-          <FormLabel className="text-sm font-medium text-gray-700">
+          <FormLabel className="text-sm font-medium text-foreground">
             {config.label}
-            {regularConfig.required && <span className="ml-1 text-red-500">*</span>}
+            {regularConfig.required && <span className="ml-1 text-destructive">*</span>}
           </FormLabel>
 
           <FormControl>

@@ -6,9 +6,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { 
-  MoreHorizontal, Edit, Trash, Eye, Copy, 
-  CheckCircle, Clock, AlertCircle 
+import {
+  MoreHorizontal,
+  Edit,
+  Trash,
+  Eye,
+  Copy,
+  CheckCircle,
+  Clock,
+  AlertCircle,
 } from 'lucide-react'
 import type { InteractionWithRelations } from '@/types/interaction.types'
 
@@ -31,10 +37,13 @@ export function InteractionsTableActions({
       `Date: ${interaction.interaction_date}`,
       interaction.subject && `Subject: ${interaction.subject}`,
       interaction.description && `Description: ${interaction.description}`,
-      interaction.contact && `Contact: ${interaction.contact.first_name} ${interaction.contact.last_name}`,
+      interaction.contact &&
+        `Contact: ${interaction.contact.first_name} ${interaction.contact.last_name}`,
       interaction.organization && `Organization: ${interaction.organization.name}`,
       interaction.opportunity && `Opportunity: ${interaction.opportunity.name}`,
-    ].filter(Boolean).join('\n')
+    ]
+      .filter(Boolean)
+      .join('\n')
 
     navigator.clipboard.writeText(details)
   }
@@ -64,30 +73,30 @@ export function InteractionsTableActions({
           <Copy className="mr-2 size-4" />
           Copy Details
         </DropdownMenuItem>
-        
+
         <DropdownMenuSeparator />
-        
+
         {!interaction.follow_up_required && (
           <DropdownMenuItem>
             <AlertCircle className="mr-2 size-4" />
             Add Follow-up
           </DropdownMenuItem>
         )}
-        
+
         <DropdownMenuItem>
           <CheckCircle className="mr-2 size-4" />
           Mark Complete
         </DropdownMenuItem>
-        
+
         <DropdownMenuItem>
           <Clock className="mr-2 size-4" />
           Snooze
         </DropdownMenuItem>
-        
+
         <DropdownMenuSeparator />
-        
+
         {onDelete && (
-          <DropdownMenuItem 
+          <DropdownMenuItem
             onClick={() => onDelete(interaction)}
             className="text-destructive focus:text-destructive"
           >

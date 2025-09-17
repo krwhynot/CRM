@@ -27,11 +27,11 @@ interface InteractionTimelineEmbedProps {
 
 /**
  * InteractionTimelineEmbed Component
- * 
+ *
  * An embedded timeline component that displays interactions for a specific opportunity.
  * Now enhanced with priority badges, account manager display, and multiple principal support.
  * Supports mobile-responsive design, lazy loading, and expandable interaction items.
- * 
+ *
  * @example
  * ```tsx
  * <InteractionTimelineEmbed
@@ -42,7 +42,7 @@ interface InteractionTimelineEmbedProps {
  *   showGrouping={true}
  * />
  * ```
- * 
+ *
  * @param props - The component props
  * @returns A timeline component showing interactions with mobile-optimized layout
  */
@@ -54,7 +54,7 @@ export function InteractionTimelineEmbed({
   onAddNew,
   className,
   enabled = true,
-  showGrouping = true
+  showGrouping = true,
 }: InteractionTimelineEmbedProps) {
   // Forward all props to the enhanced timeline component
   return (

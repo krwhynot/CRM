@@ -15,10 +15,12 @@ export const useContactsBadges = () => {
         low: { props: { influence: 'low' }, label: 'Low Influence' },
       }
 
-      return influenceMap[influence?.toLowerCase() || ''] || { 
-        props: { influence: 'low' }, 
-        label: 'Unknown Influence' 
-      }
+      return (
+        influenceMap[influence?.toLowerCase() || ''] || {
+          props: { influence: 'low' },
+          label: 'Unknown Influence',
+        }
+      )
     }
   }, [])
 
@@ -31,10 +33,12 @@ export const useContactsBadges = () => {
         gatekeeper: { props: { status: 'pending' }, label: 'Gatekeeper' },
       }
 
-      return authorityMap[authority?.toLowerCase() || ''] || { 
-        props: { status: 'inactive' }, 
-        label: 'Unknown Authority' 
-      }
+      return (
+        authorityMap[authority?.toLowerCase() || ''] || {
+          props: { status: 'inactive' },
+          label: 'Unknown Authority',
+        }
+      )
     }
   }, [])
 

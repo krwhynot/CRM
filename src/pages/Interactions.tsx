@@ -1,12 +1,11 @@
-import {
-  useInteractions,
-  InteractionsDataDisplay,
-  InteractionDialogs,
-} from '@/features/interactions'
-import { useInteractionsPageState } from '@/features/interactions/hooks/useInteractionsPageState'
+import { useInteractions, InteractionDialogs, InteractionsList } from '@/features/interactions'
 import { useInteractionsPageActions } from '@/features/interactions/hooks/useInteractionsPageActions'
-import { QueryErrorBoundary } from '@/components/error-boundaries/QueryErrorBoundary'
-import { EntityManagementTemplate } from '@/components/templates/EntityManagementTemplate'
+import { useEntityPageState } from '@/hooks/useEntityPageState'
+import type { InteractionWithRelations } from '@/types/interaction.types'
+import { PageLayout } from '@/components/layout/PageLayout'
+import { PageHeader } from '@/components/layout/PageHeader'
+import { ContentSection } from '@/components/layout/ContentSection'
+import { FilterLayoutProvider } from '@/contexts/FilterLayoutContext'
 
 function InteractionsPage() {
   const { data: interactions = [], isLoading, error, isError, refetch } = useInteractions()
@@ -15,61 +14,53 @@ function InteractionsPage() {
     isCreateDialogOpen,
     isEditDialogOpen,
     isDeleteDialogOpen,
-    selectedInteraction,
+    selectedEntity: selectedInteraction,
     openCreateDialog,
     closeCreateDialog,
     openEditDialog,
     closeEditDialog,
     openDeleteDialog,
     closeDeleteDialog,
-    handleViewInteraction,
-  } = useInteractionsPageState()
+  } = useEntityPageState<InteractionWithRelations>()
 
-  const { 
-    handleCreate, 
-    handleUpdate, 
-    handleDelete, 
-    isCreating, 
-    isUpdating, 
-    isDeleting 
-  } = useInteractionsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
-
-
-  const refreshInteractions = () => {
-    refetch()
-  }
+  const { handleCreate, handleUpdate, handleDelete, isCreating, isUpdating, isDeleting } =
+    useInteractionsPageActions(closeCreateDialog, closeEditDialog, closeDeleteDialog)
 
   return (
-    <QueryErrorBoundary>
-      <EntityManagementTemplate
-        entityType="INTERACTION"
-        entityCount={interactions.length}
-        onAddClick={openCreateDialog}
-      >
-        <InteractionsDataDisplay
-          isLoading={isLoading}
-          isError={isError}
-          error={error}
-          interactions={interactions}
-          onEdit={openEditDialog}
-          onDelete={openDeleteDialog}
-          onView={handleViewInteraction}
-          onRefresh={refreshInteractions}
+    <FilterLayoutProvider>
+      <PageLayout showBreadcrumbs={true}>
+        <PageHeader
+          title="Interactions"
+          description={`Track ${interactions.length} interactions across your CRM`}
+          action={{
+            label: 'Add Interaction',
+            onClick: openCreateDialog,
+          }}
         />
 
-        <InteractionDialogs
-          isCreateDialogOpen={isCreateDialogOpen}
-          isEditDialogOpen={isEditDialogOpen}
-          editingInteraction={selectedInteraction}
-          onCreateSubmit={handleCreate}
-          onEditSubmit={handleUpdate}
-          onCreateDialogChange={closeCreateDialog}
-          onEditDialogChange={closeEditDialog}
-          isCreating={isCreating}
-          isUpdating={isUpdating}
-        />
-      </EntityManagementTemplate>
-    </QueryErrorBoundary>
+        <ContentSection>
+          <InteractionsList
+            interactions={interactions}
+            loading={isLoading}
+            onEdit={openEditDialog}
+            onDelete={openDeleteDialog}
+            onAddNew={openCreateDialog}
+          />
+
+          <InteractionDialogs
+            isCreateDialogOpen={isCreateDialogOpen}
+            isEditDialogOpen={isEditDialogOpen}
+            editingInteraction={selectedInteraction}
+            onCreateSubmit={handleCreate}
+            onEditSubmit={handleUpdate}
+            onCreateDialogChange={closeCreateDialog}
+            onEditDialogChange={closeEditDialog}
+            isCreating={isCreating}
+            isUpdating={isUpdating}
+          />
+        </ContentSection>
+      </PageLayout>
+    </FilterLayoutProvider>
   )
 }
 

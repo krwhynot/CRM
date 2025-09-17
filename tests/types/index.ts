@@ -20,7 +20,7 @@ import type {
   InteractionInsert
 } from '@/types/entities'
 
-// Form types
+// Form types (now Zod-only after architecture simplification)
 import type {
   ContactFormData,
   OrganizationFormData,

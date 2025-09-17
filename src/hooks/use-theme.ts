@@ -1,23 +1,7 @@
-import * as React from 'react'
+import { useTheme as useThemeContext } from '@/contexts/ThemeContext'
 
-type Theme = 'dark' | 'light' | 'system'
+// Re-export the useTheme hook from the context for backwards compatibility
+export const useTheme = useThemeContext
 
-type ThemeProviderState = {
-  theme: Theme
-  setTheme: (theme: Theme) => void
-}
-
-const initialState: ThemeProviderState = {
-  theme: 'system',
-  setTheme: () => null,
-}
-
-export const ThemeProviderContext = React.createContext<ThemeProviderState>(initialState)
-
-export const useTheme = () => {
-  const context = React.useContext(ThemeProviderContext)
-
-  if (context === undefined) throw new Error('useTheme must be used within a ThemeProvider')
-
-  return context
-}
+// Re-export types for convenience
+export type { Theme, ThemeProviderState } from '@/contexts/ThemeContext'

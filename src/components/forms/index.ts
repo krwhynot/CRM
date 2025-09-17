@@ -1,21 +1,39 @@
 // Form Architecture: Modern Dialog + Form System
 // Use StandardDialog -> SimpleForm pattern
 
-// Core Form Components  
+// Core Form Components
 export { FormFieldNew } from './FormField'
 export { FormInput } from './FormInput'
 export { FormSubmitButton } from './FormSubmitButton'
+export { FormCard } from './FormCard'
+export { FormValidationFeedback } from './FormValidationFeedback'
 
 // Form Builders
 export { SimpleForm, type SimpleFormField } from './SimpleForm'
-export { FormProgressBar } from './FormProgressBar'
 export { useFormProgress } from './hooks/useFormProgress'
 
 // Specialized Components
 export { EntitySelect } from './EntitySelect'
 export { ProgressiveDetails } from './ProgressiveDetails'
 
-// All legacy form components have been successfully migrated
+// Generated Form Components
+// NOTE: Generated form components have been removed as they are superseded by SimpleForm pattern
+
+// Form Building Utilities
+export {
+  createTextField,
+  createEmailField,
+  createSelectField,
+  createTextareaField,
+  createNumberField,
+  createDateField,
+  createSwitchField,
+} from './form-field-builders'
+
+// Entity Select Sub-components
+export { EntitySelectLoadingState } from './entity-select/EntitySelectLoadingState'
+export { EntitySelectSearchBox } from './entity-select/EntitySelectSearchBox'
+export { EntitySelectOptionsList } from './entity-select/EntitySelectOptionsList'
 
 // Hooks
 export { useProgressiveDetails } from '@/hooks/useProgressiveDetails'

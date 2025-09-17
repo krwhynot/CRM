@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react'
 import type { FieldValues, SubmitHandler } from 'react-hook-form'
-import type * as yup from 'yup'
+import type { z } from 'zod'
 
 // ===== Base Form Types =====
 
@@ -72,7 +72,7 @@ export interface FormConfig<T extends FormData> {
   submitLabel?: string
 
   // Form schema and validation
-  schema: yup.ObjectSchema<T>
+  schema: z.ZodType<T>
 
   // Form structure
   sections: FormSection[]

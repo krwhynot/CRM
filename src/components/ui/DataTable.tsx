@@ -33,6 +33,18 @@ export interface DataTableProps<T> {
 }
 
 /**
+ * @deprecated This DataTable component is deprecated. Use the enhanced DataTable from
+ * @/components/data-table/data-table.tsx instead which includes:
+ * - TanStack Table integration
+ * - Enhanced selection and expansion features
+ * - Better performance optimizations
+ * - Standardized column definitions
+ *
+ * Migration path:
+ * 1. Import from '@/components/data-table/data-table'
+ * 2. Use column definitions from '@/components/data-table/columns/*'
+ * 3. Update props to TanStack Table format
+ *
  * DataTable - Unified table component for the CRM system
  *
  * A generic, accessible table component that consolidates all table functionality
@@ -186,7 +198,7 @@ export function DataTable<T>({
               data.flatMap((row) => {
                 const rowKeyValue = rowKey(row)
                 const isExpanded = expandedRows.includes(rowKeyValue)
-                
+
                 const mainRow = (
                   <tr
                     key={rowKeyValue}
@@ -226,15 +238,14 @@ export function DataTable<T>({
                   </tr>
                 )
 
-                const expandedRow = isExpanded && expandableContent ? (
-                  <tr key={`${rowKeyValue}-expanded`} className="border-b bg-gray-50/50">
-                    <td colSpan={columns.length} className="p-0">
-                      <div className="p-6">
-                        {expandableContent(row)}
-                      </div>
-                    </td>
-                  </tr>
-                ) : null
+                const expandedRow =
+                  isExpanded && expandableContent ? (
+                    <tr key={`${rowKeyValue}-expanded`} className="border-b bg-gray-50/50">
+                      <td colSpan={columns.length} className="p-0">
+                        <div className="p-6">{expandableContent(row)}</div>
+                      </td>
+                    </tr>
+                  ) : null
 
                 return expandedRow ? [mainRow, expandedRow] : [mainRow]
               })

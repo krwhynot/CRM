@@ -2,7 +2,7 @@
 // This file re-exports entity types from individual type files
 
 // Import database types for supporting entities
-import type { Database } from './database.types'
+import type { Database } from '../lib/database.types'
 
 // Re-export main entity types from individual files
 export type {
@@ -69,7 +69,6 @@ export type PriorityLevel = Database['public']['Enums']['priority_level']
 export type ProductCategory = Database['public']['Enums']['product_category']
 
 // Extended types moved to product-extensions.ts for better organization
-
 
 // Re-export filter types from individual entity files
 export type { ContactFilters } from './contact.types'

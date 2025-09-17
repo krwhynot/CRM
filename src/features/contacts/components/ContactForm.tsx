@@ -1,11 +1,11 @@
 import { SimpleForm, type SimpleFormField } from '@/components/forms'
-import { contactSchema, type ContactFormData, CONTACT_ROLES } from '@/types/contact.types'
+import { contactZodSchema, type ContactZodFormData, CONTACT_ROLES } from '@/types/contact.types'
 import { useOrganizations } from '@/features/organizations/hooks/useOrganizations'
 import { placeholderUrls } from '@/config/urls'
 
 interface ContactFormProps {
-  onSubmit: (data: ContactFormData) => Promise<void> | void
-  initialData?: Partial<ContactFormData>
+  onSubmit: (data: ContactZodFormData) => Promise<void> | void
+  initialData?: Partial<ContactZodFormData>
   loading?: boolean
   submitLabel?: string
   preselectedOrganization?: string
@@ -116,7 +116,11 @@ export function ContactForm({
       type: 'select',
       required: true,
       options: [
-        { value: 'customer', label: 'Customer', description: 'Restaurant or food service establishment' },
+        {
+          value: 'customer',
+          label: 'Customer',
+          description: 'Restaurant or food service establishment',
+        },
         { value: 'principal', label: 'Principal', description: 'Manufacturer or brand' },
         { value: 'distributor', label: 'Distributor', description: 'Distribution company' },
         { value: 'prospect', label: 'Prospect', description: 'Potential customer' },
@@ -243,9 +247,9 @@ export function ContactForm({
   const enhancedInitialData = {
     organization_mode: 'existing' as 'existing' | 'new', // Default to existing organization mode
     ...initialData,
-    ...(preselectedOrganization && { 
+    ...(preselectedOrganization && {
       organization_id: preselectedOrganization,
-      organization_mode: 'existing' as 'existing' | 'new'
+      organization_mode: 'existing' as 'existing' | 'new',
     }),
   }
 
@@ -253,7 +257,7 @@ export function ContactForm({
     <SimpleForm<ContactFormData>
       fields={fields}
       onSubmit={onSubmit}
-      validationSchema={contactSchema}
+      validationSchema={contactZodSchema}
       defaultValues={enhancedInitialData}
       loading={loading}
       submitLabel={submitLabel}

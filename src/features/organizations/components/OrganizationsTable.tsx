@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { DataTable, type DataTableColumn } from '@/components/ui/DataTable'
-import { OrganizationsFilters } from './OrganizationsFilters'
 import { BulkActionsToolbar } from './BulkActionsToolbar'
 import { BulkDeleteDialog } from './BulkDeleteDialog'
 import { OrganizationBadges } from './OrganizationBadges'
@@ -28,14 +27,14 @@ interface OrganizationWithWeeklyContext extends Organization {
     list_price?: number
     opportunity_count?: number
   }>
-  
+
   // Organization metrics
   total_opportunities?: number
   active_opportunities?: number
   total_products?: number
   weekly_engagement_score?: number
   last_interaction_date?: string | Date
-  
+
   // Weekly context
   high_engagement_this_week?: boolean
   multiple_opportunities?: boolean
@@ -175,24 +174,23 @@ export function OrganizationsTable({
     principal: 'all',
     quickView: 'none',
     search: '',
-    ...filters // merge any filters passed as props
+    ...filters, // merge any filters passed as props
   })
 
   // Hooks
   const deleteOrganization = useDeleteOrganization()
 
   // Simple filtering logic (using the new weekly pattern)
-  const filteredOrganizations = organizations.filter(organization => {
+  const filteredOrganizations = organizations.filter((organization) => {
     // Apply search filter
     if (organizationFilters.search) {
       const searchTerm = organizationFilters.search.toLowerCase()
-      const matchesSearch = (
+      const matchesSearch =
         organization.name?.toLowerCase().includes(searchTerm) ||
         organization.primary_manager_name?.toLowerCase().includes(searchTerm) ||
         organization.phone?.toLowerCase().includes(searchTerm) ||
         organization.segment?.toLowerCase().includes(searchTerm) ||
         organization.city?.toLowerCase().includes(searchTerm)
-      )
       if (!matchesSearch) return false
     }
 
@@ -200,7 +198,10 @@ export function OrganizationsTable({
     if (organizationFilters.quickView && organizationFilters.quickView !== 'none') {
       switch (organizationFilters.quickView) {
         case 'high_engagement':
-          return organization.high_engagement_this_week || (organization.weekly_engagement_score || 0) > 70
+          return (
+            organization.high_engagement_this_week ||
+            (organization.weekly_engagement_score || 0) > 70
+          )
         case 'multiple_opportunities':
           return (organization.active_opportunities || 0) > 1
         case 'inactive_orgs':
@@ -313,9 +314,13 @@ export function OrganizationsTable({
         <div>
           <h4 className="mb-2 font-medium text-gray-900">Top Principal Products</h4>
           <div className="space-y-2">
-            {organization.top_principal_products && organization.top_principal_products.length > 0 ? (
+            {organization.top_principal_products &&
+            organization.top_principal_products.length > 0 ? (
               organization.top_principal_products.slice(0, 3).map((product, index) => (
-                <div key={product.id} className="flex items-center justify-between rounded-md bg-gray-50 p-2">
+                <div
+                  key={product.id}
+                  className="flex items-center justify-between rounded-md bg-gray-50 p-2"
+                >
                   <div className="flex items-center gap-2">
                     <Package className="size-3 text-gray-500" />
                     <div>
@@ -354,7 +359,9 @@ export function OrganizationsTable({
             </div>
             <div className="flex justify-between">
               <span>Active Opportunities:</span>
-              <span className="font-medium text-green-600">{organization.active_opportunities || 0}</span>
+              <span className="font-medium text-green-600">
+                {organization.active_opportunities || 0}
+              </span>
             </div>
             <div className="flex justify-between">
               <span>Total Products:</span>
@@ -365,16 +372,21 @@ export function OrganizationsTable({
                 <span>Engagement Score:</span>
                 <div className="flex items-center gap-2">
                   <div className="h-1.5 w-16 overflow-hidden rounded-full bg-gray-200">
-                    <div 
+                    <div
                       className={cn(
-                        "h-full rounded-full",
-                        organization.weekly_engagement_score >= 70 ? "bg-green-500" :
-                        organization.weekly_engagement_score >= 40 ? "bg-yellow-500" : "bg-red-500"
+                        'h-full rounded-full',
+                        organization.weekly_engagement_score >= 70
+                          ? 'bg-green-500'
+                          : organization.weekly_engagement_score >= 40
+                            ? 'bg-yellow-500'
+                            : 'bg-red-500'
                       )}
                       style={{ width: `${organization.weekly_engagement_score}%` }}
                     />
                   </div>
-                  <span className="text-xs font-medium">{organization.weekly_engagement_score}</span>
+                  <span className="text-xs font-medium">
+                    {organization.weekly_engagement_score}
+                  </span>
                 </div>
               </div>
             )}
@@ -409,9 +421,11 @@ export function OrganizationsTable({
                 <span className="text-sm">⚠️ Low activity - needs attention</span>
               </div>
             )}
-            {!organization.high_engagement_this_week && !organization.multiple_opportunities && !organization.inactive_status && (
-              <span className="text-sm italic text-gray-400">Standard activity level</span>
-            )}
+            {!organization.high_engagement_this_week &&
+              !organization.multiple_opportunities &&
+              !organization.inactive_status && (
+                <span className="text-sm italic text-gray-400">Standard activity level</span>
+              )}
           </div>
         </div>
       </div>
@@ -576,7 +590,7 @@ export function OrganizationsTable({
               </TooltipProvider>
             )}
           </div>
-          
+
           <div className="flex items-center gap-2">
             <OrganizationBadges
               priority={organization.priority}
@@ -584,13 +598,21 @@ export function OrganizationsTable({
               segment={organization.segment}
             />
             {(organization.active_opportunities || 0) > 0 && (
-              <Badge variant="secondary" className="border-blue-200 bg-blue-50 text-xs text-blue-700">
-                {organization.active_opportunities} active opp{(organization.active_opportunities || 0) !== 1 ? 's' : ''}
+              <Badge
+                variant="secondary"
+                className="border-blue-200 bg-blue-50 text-xs text-blue-700"
+              >
+                {organization.active_opportunities} active opp
+                {(organization.active_opportunities || 0) !== 1 ? 's' : ''}
               </Badge>
             )}
             {(organization.total_products || 0) > 0 && (
-              <Badge variant="secondary" className="border-gray-200 bg-gray-50 text-xs text-gray-700">
-                {organization.total_products} product{(organization.total_products || 0) !== 1 ? 's' : ''}
+              <Badge
+                variant="secondary"
+                className="border-gray-200 bg-gray-50 text-xs text-gray-700"
+              >
+                {organization.total_products} product
+                {(organization.total_products || 0) !== 1 ? 's' : ''}
               </Badge>
             )}
           </div>
@@ -601,16 +623,21 @@ export function OrganizationsTable({
               <span className="text-xs text-gray-400">Engagement:</span>
               <div className="flex items-center">
                 <div className="h-1.5 w-12 overflow-hidden rounded-full bg-gray-200">
-                  <div 
+                  <div
                     className={cn(
-                      "h-full rounded-full",
-                      organization.weekly_engagement_score >= 70 ? "bg-green-500" :
-                      organization.weekly_engagement_score >= 40 ? "bg-yellow-500" : "bg-red-500"
+                      'h-full rounded-full',
+                      organization.weekly_engagement_score >= 70
+                        ? 'bg-green-500'
+                        : organization.weekly_engagement_score >= 40
+                          ? 'bg-yellow-500'
+                          : 'bg-red-500'
                     )}
                     style={{ width: `${organization.weekly_engagement_score}%` }}
                   />
                 </div>
-                <span className="ml-1 text-xs text-gray-400">{organization.weekly_engagement_score}</span>
+                <span className="ml-1 text-xs text-gray-400">
+                  {organization.weekly_engagement_score}
+                </span>
               </div>
             </div>
           )}
@@ -676,17 +703,7 @@ export function OrganizationsTable({
 
   return (
     <div className="space-y-4">
-      {/* Filters Component */}
-      <OrganizationsFilters
-        filters={organizationFilters}
-        onFiltersChange={handleFiltersChange}
-        principals={[]} // TODO: Add principals data from hook
-        isLoading={loading}
-        totalOrganizations={organizations.length}
-        filteredCount={filteredOrganizations.length}
-        showBadges={true}
-        onAddNew={onAddNew}
-      />
+      {/* Note: Filters component removed - OrganizationsList now uses ResponsiveFilterWrapper */}
 
       {/* Bulk Actions Toolbar */}
       <BulkActionsToolbar
@@ -710,12 +727,14 @@ export function OrganizationsTable({
           .map((organization) => organization.id)}
         onToggleRow={toggleRowExpansion}
         empty={{
-          title: organizationFilters.search || organizationFilters.quickView !== 'none' 
-            ? 'No organizations match your criteria'
-            : 'No organizations found',
-          description: organizationFilters.search || organizationFilters.quickView !== 'none'
-            ? 'Try adjusting your filters'
-            : 'Get started by adding your first organization',
+          title:
+            organizationFilters.search || organizationFilters.quickView !== 'none'
+              ? 'No organizations match your criteria'
+              : 'No organizations found',
+          description:
+            organizationFilters.search || organizationFilters.quickView !== 'none'
+              ? 'Try adjusting your filters'
+              : 'Get started by adding your first organization',
         }}
       />
 
@@ -727,7 +746,7 @@ export function OrganizationsTable({
           </span>
           <span>
             {organizationFilters.quickView !== 'none' &&
-              `Quick View: ${organizationFilters.quickView?.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}`}
+              `Quick View: ${organizationFilters.quickView?.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}`}
           </span>
         </div>
       )}
