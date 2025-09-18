@@ -60,7 +60,7 @@ interface OpportunityActions {
 // Helper component for empty cell display
 const EmptyCell = () => <span className="italic text-muted-foreground">Not provided</span>
 
-// Opportunity stage badge component
+// Opportunity stage badge component using enhanced semantic tokens
 const StageBadge: React.FC<{ stage: string }> = ({ stage }) => {
   const getStageColor = (stage: string) => {
     const lowerStage = stage.toLowerCase()

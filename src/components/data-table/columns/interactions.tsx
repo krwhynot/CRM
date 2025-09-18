@@ -45,7 +45,7 @@ interface InteractionActions {
   onContact?: (interaction: InteractionWithRelations) => void
 }
 
-// Interaction type colors mapping using semantic tokens
+// Interaction type colors mapping using semantic tokens from new brand system
 const INTERACTION_COLORS = {
   call: 'bg-info/10 text-info-foreground border-info',
   email: 'bg-success/10 text-success-foreground border-success',
@@ -56,8 +56,8 @@ const INTERACTION_COLORS = {
   trade_show: 'bg-trade-show/10 text-trade-show-foreground border-trade-show',
   site_visit: 'bg-site-visit/10 text-site-visit-foreground border-site-visit',
   contract_review: 'bg-destructive/10 text-destructive-foreground border-destructive',
-  in_person: 'bg-info text-info-foreground border-info',
-  quoted: 'bg-success text-success-foreground border-success',
+  in_person: 'bg-info/10 text-info-foreground border-info',
+  quoted: 'bg-success/10 text-success-foreground border-success',
   distribution: 'bg-muted text-muted-foreground border-border',
 } as const
 

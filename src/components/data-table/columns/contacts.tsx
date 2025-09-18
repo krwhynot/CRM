@@ -52,7 +52,7 @@ interface ContactActions {
 // Helper component for empty cell display
 const EmptyCell = () => <span className="italic text-muted-foreground">Not provided</span>
 
-// Contact authority badges component
+// Contact authority badges component using enhanced semantic tokens
 const AuthorityBadges: React.FC<{
   purchaseInfluence: string
   decisionAuthority: string
@@ -62,11 +62,11 @@ const AuthorityBadges: React.FC<{
       variant="outline"
       className={cn(
         purchaseInfluence === 'High'
-          ? 'bg-success text-success-foreground border-success'
+          ? 'bg-success/10 text-success-foreground border-success'
           : purchaseInfluence === 'Medium'
-            ? 'bg-warning text-warning-foreground border-warning'
+            ? 'bg-warning/10 text-warning-foreground border-warning'
             : purchaseInfluence === 'Low'
-              ? 'bg-destructive text-destructive-foreground border-destructive'
+              ? 'bg-destructive/10 text-destructive-foreground border-destructive'
               : 'bg-muted text-muted-foreground border-border'
       )}
     >
@@ -76,11 +76,11 @@ const AuthorityBadges: React.FC<{
       variant="outline"
       className={cn(
         decisionAuthority === 'Decision Maker'
-          ? 'bg-org-principal text-org-principal-foreground border-org-principal'
+          ? 'bg-org-principal/10 text-org-principal-foreground border-org-principal'
           : decisionAuthority === 'Influencer'
-            ? 'bg-org-customer text-org-customer-foreground border-org-customer'
+            ? 'bg-org-customer/10 text-org-customer-foreground border-org-customer'
             : decisionAuthority === 'End User'
-              ? 'bg-org-supplier text-org-supplier-foreground border-org-supplier'
+              ? 'bg-org-supplier/10 text-org-supplier-foreground border-org-supplier'
               : 'bg-muted text-muted-foreground border-border'
       )}
     >

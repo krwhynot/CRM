@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+// Tailwind CSS Configuration for Fresh Brand Design Token System
+// Integrates with new OKLCH-based primitives and semantic tokens (primitives-new.css & semantic-new.css)
+// Provides comprehensive accessibility features including colorblind support and enhanced focus states
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -207,6 +210,20 @@ module.exports = {
           'education': 'hsl(var(--segment-education))',
           'education-foreground': 'hsl(var(--segment-education-foreground))',
         },
+        // Enhanced Grayscale System - New Token Integration
+        gray: {
+          50: 'hsl(var(--gray-50-hsl))',
+          100: 'hsl(var(--gray-100-hsl))',
+          200: 'hsl(var(--gray-200-hsl))',
+          300: 'hsl(var(--gray-300-hsl))',
+          400: 'hsl(var(--gray-400-hsl))',
+          500: 'hsl(var(--gray-500-hsl))',
+          600: 'hsl(var(--gray-600-hsl))',
+          700: 'hsl(var(--gray-700-hsl))',
+          800: 'hsl(var(--gray-800-hsl))',
+          900: 'hsl(var(--gray-900-hsl))',
+          950: 'hsl(var(--gray-950-hsl))',
+        },
         // CRM Workflow States - New Implementation
         data: {
           'valid': 'hsl(var(--data-valid))',
@@ -237,6 +254,31 @@ module.exports = {
           'pending-foreground': 'hsl(var(--sync-pending-foreground))',
           'error': 'hsl(var(--sync-error))',
           'error-foreground': 'hsl(var(--sync-error-foreground))',
+        },
+        // Enhanced Focus System - New Accessibility Tokens
+        focus: {
+          'ring': 'hsl(var(--brand-primary-hsl))',
+          'ring-destructive': 'hsl(var(--focus-ring-destructive-hsl))',
+          'ring-secondary': 'hsl(var(--focus-ring-secondary-hsl))',
+          'ring-accent': 'hsl(var(--focus-ring-accent-hsl))',
+          'ring-success': 'hsl(var(--semantic-success-hsl))',
+          'ring-warning': 'hsl(var(--semantic-warning-hsl))',
+          'ring-info': 'hsl(var(--semantic-info-hsl))',
+        },
+        // Colorblind-Safe Color System - New Accessibility Features
+        colorblind: {
+          'success-bg': 'hsl(var(--cb-success-bg-hsl))',
+          'success-text': 'hsl(var(--cb-success-text-hsl))',
+          'success-border': 'hsl(var(--cb-success-border-hsl))',
+          'warning-bg': 'hsl(var(--cb-warning-bg-hsl))',
+          'warning-text': 'hsl(var(--cb-warning-text-hsl))',
+          'warning-border': 'hsl(var(--cb-warning-border-hsl))',
+          'danger-bg': 'hsl(var(--cb-danger-bg-hsl))',
+          'danger-text': 'hsl(var(--cb-danger-text-hsl))',
+          'danger-border': 'hsl(var(--cb-danger-border-hsl))',
+          'info-bg': 'hsl(var(--cb-info-bg-hsl))',
+          'info-text': 'hsl(var(--cb-info-text-hsl))',
+          'info-border': 'hsl(var(--cb-info-border-hsl))',
         },
       },
       fontFamily: {

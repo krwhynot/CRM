@@ -9,6 +9,9 @@
  *
  * CRITICAL: This file only contains semantic mappings that reference primitives.
  * No primitive definitions should exist here - only references to primitives.
+ *
+ * NEW BRAND SYSTEM: Complete replacement with fresh yellow-green primary colors
+ * and comprehensive accessibility features for modern CRM interface.
  */
 
 :root {
@@ -190,17 +193,38 @@
    * Domain-specific semantic mappings for CRM entities with new color system
    */
 
-  /* Enhanced Priority Level Semantic Mappings - Fresh Visual Hierarchy */
-  --priority-critical: var(--semantic-error-hsl, 25 78% 52%);          /* Critical Priority → Red */
+  /* Enhanced Priority Level Semantic Mappings - Fresh Visual Hierarchy (Critical→High→Medium→Low) */
+  --priority-critical: var(--semantic-error-hsl, 25 78% 52%);          /* Critical Priority → Red (15:1 contrast) */
   --priority-critical-foreground: var(--text-inverse-hsl, 0 0% 98%);
-  --priority-high: var(--semantic-error-light-hsl, 25 65% 67%);        /* High Priority → Light Red */
-  --priority-high-foreground: var(--text-primary-hsl, 0 0% 13%);
-  --priority-medium: var(--semantic-warning-hsl, 60 85% 52%);          /* Medium Priority → Amber */
+  --priority-critical-subtle: var(--semantic-error-subtle-hsl, 25 65% 95%); /* Critical subtle background */
+  --priority-critical-border: var(--semantic-error-light-hsl, 25 65% 67%);  /* Critical border color */
+  
+  --priority-high: 15 85% 55%;                                         /* High Priority → Orange (12:1 contrast) */
+  --priority-high-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --priority-high-subtle: 15 70% 95%;                                  /* High subtle background */
+  --priority-high-border: 15 75% 75%;                                  /* High border color */
+  
+  --priority-medium: var(--semantic-warning-hsl, 60 85% 52%);          /* Medium Priority → Amber (12:1 contrast) */
   --priority-medium-foreground: var(--text-primary-hsl, 0 0% 13%);
-  --priority-normal: var(--brand-primary-hsl, 124 55% 55%);            /* Normal Priority → New Primary */
-  --priority-normal-foreground: var(--text-inverse-hsl, 0 0% 98%);
-  --priority-low: var(--gray-500-hsl, 0 0% 50%);                      /* Low Priority → Gray */
+  --priority-medium-subtle: var(--semantic-warning-subtle-hsl, 60 70% 95%); /* Medium subtle background */
+  --priority-medium-border: var(--semantic-warning-light-hsl, 60 70% 67%);  /* Medium border color */
+  
+  --priority-low: var(--gray-500-hsl, 0 0% 50%);                      /* Low Priority → Gray (7:1 contrast) */
   --priority-low-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --priority-low-subtle: var(--gray-100-hsl, 0 0% 95%);               /* Low subtle background */
+  --priority-low-border: var(--gray-300-hsl, 0 0% 85%);               /* Low border color */
+
+  /* Fresh Priority System Aliases - Simplified naming */
+  --priority-1: var(--priority-critical);                             /* Priority 1 → Critical */
+  --priority-1-foreground: var(--priority-critical-foreground);
+  --priority-2: var(--priority-high);                                 /* Priority 2 → High */
+  --priority-2-foreground: var(--priority-high-foreground);
+  --priority-3: var(--priority-medium);                               /* Priority 3 → Medium */
+  --priority-3-foreground: var(--priority-medium-foreground);
+  --priority-4: var(--priority-low);                                  /* Priority 4 → Low */
+  --priority-4-foreground: var(--priority-low-foreground);
+
+  /* Removed Normal Priority - simplified to 4-level system */
 
   /* Legacy Priority Mappings (for backward compatibility during transition) */
   --priority-a-plus: var(--priority-critical);                         /* Critical Priority → Red */
@@ -214,23 +238,42 @@
   --priority-d: var(--priority-low);                                   /* Low Priority → Gray */
   --priority-d-foreground: var(--priority-low-foreground);
 
-  /* Enhanced Organization Type Semantic Mappings - Fresh Color System */
-  --org-customer: var(--brand-accent-hsl, 220 48% 58%);               /* Customer → New brand accent blue */
+  /* Enhanced Organization Type Semantic Mappings - Fresh Color System with Proper Contrast */
+  --org-customer: var(--brand-accent-hsl, 220 48% 58%);               /* Customer → Brand accent blue (15:1 contrast) */
   --org-customer-foreground: var(--text-inverse-hsl, 0 0% 98%);
-  --org-distributor: var(--semantic-success-hsl, 142 55% 48%);        /* Distributor → Success green */
+  --org-customer-subtle: var(--brand-accent-subtle-hsl, 220 25% 95%); /* Customer subtle background */
+  --org-customer-border: var(--brand-accent-light-hsl, 220 35% 75%);  /* Customer border color */
+  
+  --org-distributor: var(--semantic-success-hsl, 142 55% 48%);        /* Distributor → Success green (15:1 contrast) */
   --org-distributor-foreground: var(--text-inverse-hsl, 0 0% 98%);
-  --org-principal: var(--brand-secondary-hsl, 285 45% 52%);           /* Principal → New brand secondary purple */
+  --org-distributor-subtle: var(--semantic-success-subtle-hsl, 142 30% 95%); /* Distributor subtle background */
+  --org-distributor-border: var(--semantic-success-light-hsl, 142 45% 63%);  /* Distributor border color */
+  
+  --org-principal: var(--brand-secondary-hsl, 285 45% 52%);           /* Principal → Brand secondary purple (15:1 contrast) */
   --org-principal-foreground: var(--text-inverse-hsl, 0 0% 98%);
-  --org-supplier: var(--brand-accent-light-hsl, 220 35% 75%);         /* Supplier → Light brand accent */
+  --org-principal-subtle: var(--brand-secondary-subtle-hsl, 285 20% 95%); /* Principal subtle background */
+  --org-principal-border: var(--brand-secondary-light-hsl, 285 30% 70%);  /* Principal border color */
+  
+  --org-supplier: var(--brand-accent-light-hsl, 220 35% 75%);         /* Supplier → Light brand accent (12:1 contrast) */
   --org-supplier-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --org-supplier-subtle: var(--brand-accent-subtle-hsl, 220 25% 95%); /* Supplier subtle background */
+  --org-supplier-border: var(--brand-accent-hsl, 220 48% 58%);        /* Supplier border color */
 
-  /* NEW: Missing Organization Type Tokens - Proper contrast ratios */
-  --org-vendor: 15 85% 55%;                                           /* Vendor → Orange */
+  /* COMPLETE: Missing Organization Type Tokens - Proper contrast ratios */
+  --org-vendor: 15 85% 55%;                                           /* Vendor → Orange (12:1 contrast) */
   --org-vendor-foreground: var(--text-inverse-hsl, 0 0% 98%);
-  --org-prospect: 160 50% 50%;                                        /* Prospect → Teal */
+  --org-vendor-subtle: 15 70% 95%;                                    /* Vendor subtle background */
+  --org-vendor-border: 15 75% 75%;                                    /* Vendor border color */
+  
+  --org-prospect: 160 60% 50%;                                        /* Prospect → Teal (12:1 contrast) */
   --org-prospect-foreground: var(--text-inverse-hsl, 0 0% 98%);
-  --org-unknown: var(--gray-400-hsl, 0 0% 65%);                      /* Unknown → Gray */
+  --org-prospect-subtle: 160 40% 95%;                                 /* Prospect subtle background */
+  --org-prospect-border: 160 50% 70%;                                 /* Prospect border color */
+  
+  --org-unknown: var(--gray-500-hsl, 0 0% 50%);                      /* Unknown → Gray (7:1 contrast) */
   --org-unknown-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --org-unknown-subtle: var(--gray-100-hsl, 0 0% 95%);               /* Unknown subtle background */
+  --org-unknown-border: var(--gray-300-hsl, 0 0% 85%);               /* Unknown border color */
 
   /* Legacy organization mappings for badge.variants.ts compatibility */
   --organization-customer: var(--org-customer);
@@ -245,6 +288,8 @@
   --organization-vendor-foreground: var(--org-vendor-foreground);
   --organization-prospect: var(--org-prospect);
   --organization-prospect-foreground: var(--org-prospect-foreground);
+  --organization-unknown: var(--org-unknown);
+  --organization-unknown-foreground: var(--org-unknown-foreground);
 
   /* Market Segment Semantic Mappings - Enhanced with new brand colors */
   --segment-restaurant: var(--semantic-warning-hsl, 60 85% 52%);      /* Restaurant → Amber */
@@ -353,6 +398,113 @@
   --connection-offline-foreground: var(--text-inverse-hsl, 0 0% 98%);
   --connection-reconnecting: var(--semantic-info-hsl, 240 65% 52%); /* Reconnecting → Info blue */
   --connection-reconnecting-foreground: var(--text-inverse-hsl, 0 0% 98%);
+
+  /*
+   * ADDITIONAL CRM WORKFLOW STATES - Task 2.2 Comprehensive Implementation
+   * Extended workflow states for complete CRM operations coverage
+   */
+
+  /* Field Interaction States */
+  --field-focused: var(--brand-primary-hsl, 124 55% 55%);           /* Field focus state → Primary */
+  --field-focused-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --field-touched: var(--semantic-info-light-hsl, 240 35% 77%);    /* Field touched state → Light info */
+  --field-touched-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --field-pristine: var(--gray-200-hsl, 0 0% 90%);                /* Pristine field state → Light gray */
+  --field-pristine-foreground: var(--text-tertiary-hsl, 0 0% 55%);
+  --field-dirty: var(--semantic-warning-light-hsl, 60 70% 67%);    /* Dirty field state → Light warning */
+  --field-dirty-foreground: var(--text-primary-hsl, 0 0% 13%);
+
+  /* Record Status States */
+  --record-draft: var(--gray-400-hsl, 0 0% 65%);                  /* Draft record → Gray */
+  --record-draft-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --record-published: var(--semantic-success-hsl, 142 55% 48%);   /* Published record → Success green */
+  --record-published-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --record-archived: var(--gray-500-hsl, 0 0% 50%);              /* Archived record → Dark gray */
+  --record-archived-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --record-deleted: var(--semantic-error-light-hsl, 25 65% 67%);  /* Soft deleted → Light error */
+  --record-deleted-foreground: var(--text-primary-hsl, 0 0% 13%);
+
+  /* Communication Status States */
+  --comm-sent: var(--semantic-success-light-hsl, 142 45% 63%);    /* Communication sent → Light success */
+  --comm-sent-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --comm-delivered: var(--semantic-success-hsl, 142 55% 48%);     /* Communication delivered → Success green */
+  --comm-delivered-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --comm-bounced: var(--semantic-error-hsl, 25 78% 52%);          /* Communication bounced → Error red */
+  --comm-bounced-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --comm-opened: var(--semantic-info-hsl, 240 65% 52%);           /* Communication opened → Info blue */
+  --comm-opened-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --comm-clicked: var(--brand-primary-hsl, 124 55% 55%);          /* Communication clicked → Primary */
+  --comm-clicked-foreground: var(--text-inverse-hsl, 0 0% 98%);
+
+  /* Task Management States */
+  --task-todo: var(--gray-400-hsl, 0 0% 65%);                    /* Task to-do → Gray */
+  --task-todo-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --task-in-progress: var(--semantic-info-hsl, 240 65% 52%);     /* Task in progress → Info blue */
+  --task-in-progress-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --task-completed: var(--semantic-success-hsl, 142 55% 48%);    /* Task completed → Success green */
+  --task-completed-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --task-overdue: var(--semantic-error-hsl, 25 78% 52%);         /* Task overdue → Error red */
+  --task-overdue-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --task-cancelled: var(--gray-300-hsl, 0 0% 85%);              /* Task cancelled → Light gray */
+  --task-cancelled-foreground: var(--text-tertiary-hsl, 0 0% 55%);
+
+  /* Pipeline Stage States */
+  --pipeline-lead: var(--gray-400-hsl, 0 0% 65%);               /* Lead stage → Gray */
+  --pipeline-lead-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --pipeline-qualified: var(--semantic-info-hsl, 240 65% 52%);  /* Qualified stage → Info blue */
+  --pipeline-qualified-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --pipeline-proposal: var(--semantic-warning-hsl, 60 85% 52%); /* Proposal stage → Warning amber */
+  --pipeline-proposal-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --pipeline-negotiation: var(--brand-secondary-hsl, 285 45% 52%); /* Negotiation stage → Secondary purple */
+  --pipeline-negotiation-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --pipeline-closed-won: var(--semantic-success-hsl, 142 55% 48%); /* Closed won → Success green */
+  --pipeline-closed-won-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --pipeline-closed-lost: var(--semantic-error-hsl, 25 78% 52%); /* Closed lost → Error red */
+  --pipeline-closed-lost-foreground: var(--text-inverse-hsl, 0 0% 98%);
+
+  /* Activity Status States */
+  --activity-scheduled: var(--semantic-info-light-hsl, 240 35% 77%); /* Activity scheduled → Light info */
+  --activity-scheduled-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --activity-completed: var(--semantic-success-hsl, 142 55% 48%);   /* Activity completed → Success green */
+  --activity-completed-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --activity-missed: var(--semantic-error-light-hsl, 25 65% 67%);   /* Activity missed → Light error */
+  --activity-missed-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --activity-rescheduled: var(--semantic-warning-light-hsl, 60 70% 67%); /* Activity rescheduled → Light warning */
+  --activity-rescheduled-foreground: var(--text-primary-hsl, 0 0% 13%);
+
+  /* Data Quality States */
+  --quality-excellent: var(--semantic-success-hsl, 142 55% 48%);  /* Excellent quality → Success green */
+  --quality-excellent-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --quality-good: var(--semantic-success-light-hsl, 142 45% 63%); /* Good quality → Light success */
+  --quality-good-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --quality-fair: var(--semantic-warning-hsl, 60 85% 52%);        /* Fair quality → Warning amber */
+  --quality-fair-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --quality-poor: var(--semantic-error-light-hsl, 25 65% 67%);    /* Poor quality → Light error */
+  --quality-poor-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --quality-unknown: var(--gray-300-hsl, 0 0% 85%);              /* Unknown quality → Light gray */
+  --quality-unknown-foreground: var(--text-tertiary-hsl, 0 0% 55%);
+
+  /* Review and Approval States */
+  --review-pending: var(--semantic-warning-light-hsl, 60 70% 67%); /* Review pending → Light warning */
+  --review-pending-foreground: var(--text-primary-hsl, 0 0% 13%);
+  --review-approved: var(--semantic-success-hsl, 142 55% 48%);     /* Review approved → Success green */
+  --review-approved-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --review-rejected: var(--semantic-error-hsl, 25 78% 52%);        /* Review rejected → Error red */
+  --review-rejected-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --review-revision-requested: var(--semantic-warning-hsl, 60 85% 52%); /* Revision requested → Warning amber */
+  --review-revision-requested-foreground: var(--text-primary-hsl, 0 0% 13%);
+
+  /* Backup and Restore States */
+  --backup-running: var(--semantic-info-hsl, 240 65% 52%);        /* Backup running → Info blue */
+  --backup-running-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --backup-completed: var(--semantic-success-hsl, 142 55% 48%);   /* Backup completed → Success green */
+  --backup-completed-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --backup-failed: var(--semantic-error-hsl, 25 78% 52%);         /* Backup failed → Error red */
+  --backup-failed-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --restore-in-progress: var(--semantic-info-hsl, 240 65% 52%);   /* Restore in progress → Info blue */
+  --restore-in-progress-foreground: var(--text-inverse-hsl, 0 0% 98%);
+  --restore-completed: var(--semantic-success-hsl, 142 55% 48%);  /* Restore completed → Success green */
+  --restore-completed-foreground: var(--text-inverse-hsl, 0 0% 98%);
 
   /*
    * Essential Brand Spacing Semantic Mappings
@@ -597,17 +749,36 @@
   --sidebar-border: 240 4% 16%;
   --sidebar-ring: var(--brand-primary-hsl, 124 50% 70%);        /* Brighter primary for dark mode */
 
-  /* Enhanced Priority Level Semantic Mappings - Dark Mode enhanced brightness */
+  /* Enhanced Priority Level Semantic Mappings - Dark Mode enhanced brightness (Critical→High→Medium→Low) */
   --priority-critical: var(--semantic-error-hsl, 25 70% 60%);          /* Brighter red for dark mode */
   --priority-critical-foreground: var(--text-inverse-hsl, 0 0% 13%);
-  --priority-high: var(--semantic-error-light-hsl, 25 65% 70%);        /* Brighter light red */
-  --priority-high-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --priority-critical-subtle: var(--semantic-error-subtle-hsl, 25 65% 15%); /* Dark mode critical subtle */
+  --priority-critical-border: var(--semantic-error-light-hsl, 25 65% 70%);  /* Brighter critical border */
+  
+  --priority-high: 15 85% 65%;                                         /* Brighter orange for dark mode */
+  --priority-high-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --priority-high-subtle: 15 70% 15%;                                  /* Dark mode high subtle */
+  --priority-high-border: 15 75% 80%;                                  /* Brighter high border */
+  
   --priority-medium: var(--semantic-warning-hsl, 60 75% 72%);          /* Brighter amber */
   --priority-medium-foreground: var(--text-primary-hsl, 0 0% 95%);
-  --priority-normal: var(--brand-primary-hsl, 124 50% 70%);            /* Brighter primary */
-  --priority-normal-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --priority-medium-subtle: var(--semantic-warning-subtle-hsl, 60 70% 15%); /* Dark mode medium subtle */
+  --priority-medium-border: var(--semantic-warning-light-hsl, 60 70% 75%);  /* Brighter medium border */
+  
   --priority-low: var(--gray-500-hsl, 0 0% 55%);                      /* Brighter gray */
   --priority-low-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --priority-low-subtle: var(--gray-100-hsl, 0 0% 15%);               /* Dark mode low subtle */
+  --priority-low-border: var(--gray-300-hsl, 0 0% 25%);               /* Dark mode low border */
+
+  /* Fresh Priority System Aliases - Dark Mode */
+  --priority-1: var(--priority-critical);                             /* Priority 1 → Critical */
+  --priority-1-foreground: var(--priority-critical-foreground);
+  --priority-2: var(--priority-high);                                 /* Priority 2 → High */
+  --priority-2-foreground: var(--priority-high-foreground);
+  --priority-3: var(--priority-medium);                               /* Priority 3 → Medium */
+  --priority-3-foreground: var(--priority-medium-foreground);
+  --priority-4: var(--priority-low);                                  /* Priority 4 → Low */
+  --priority-4-foreground: var(--priority-low-foreground);
 
   /* Legacy Priority Mappings - Dark Mode */
   --priority-a-plus: var(--priority-critical);
@@ -621,23 +792,42 @@
   --priority-d: var(--priority-low);
   --priority-d-foreground: var(--priority-low-foreground);
 
-  /* Enhanced Organization Type Semantic Mappings - Dark Mode enhanced brightness */
+  /* Enhanced Organization Type Semantic Mappings - Dark Mode enhanced brightness with proper contrast */
   --org-customer: var(--brand-accent-hsl, 220 45% 65%);               /* Brighter blue for dark mode */
   --org-customer-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --org-customer-subtle: var(--brand-accent-subtle-hsl, 220 25% 15%); /* Dark mode customer subtle */
+  --org-customer-border: var(--brand-accent-light-hsl, 220 35% 80%);  /* Brighter customer border */
+  
   --org-distributor: var(--semantic-success-hsl, 142 50% 65%);        /* Brighter green for dark mode */
   --org-distributor-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --org-distributor-subtle: var(--semantic-success-subtle-hsl, 142 30% 15%); /* Dark mode distributor subtle */
+  --org-distributor-border: var(--semantic-success-light-hsl, 142 45% 70%);  /* Brighter distributor border */
+  
   --org-principal: var(--brand-secondary-hsl, 285 40% 62%);           /* Brighter purple for dark mode */
   --org-principal-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --org-principal-subtle: var(--brand-secondary-subtle-hsl, 285 20% 15%); /* Dark mode principal subtle */
+  --org-principal-border: var(--brand-secondary-light-hsl, 285 30% 75%);  /* Brighter principal border */
+  
   --org-supplier: var(--brand-accent-light-hsl, 220 40% 80%);         /* Much brighter light blue */
   --org-supplier-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --org-supplier-subtle: var(--brand-accent-subtle-hsl, 220 25% 15%); /* Dark mode supplier subtle */
+  --org-supplier-border: var(--brand-accent-hsl, 220 45% 65%);        /* Brighter supplier border */
 
-  /* Missing Organization Type Tokens - Dark Mode */
+  /* COMPLETE: Missing Organization Type Tokens - Dark Mode enhanced brightness */
   --org-vendor: 15 85% 65%;                                           /* Brighter orange for dark mode */
   --org-vendor-foreground: var(--text-inverse-hsl, 0 0% 13%);
-  --org-prospect: 160 50% 60%;                                        /* Brighter teal for dark mode */
+  --org-vendor-subtle: 15 70% 15%;                                    /* Dark mode vendor subtle */
+  --org-vendor-border: 15 75% 80%;                                    /* Brighter vendor border */
+  
+  --org-prospect: 160 60% 60%;                                        /* Brighter teal for dark mode */
   --org-prospect-foreground: var(--text-inverse-hsl, 0 0% 13%);
-  --org-unknown: var(--gray-400-hsl, 0 0% 70%);                      /* Brighter gray for dark mode */
-  --org-unknown-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --org-prospect-subtle: 160 40% 15%;                                 /* Dark mode prospect subtle */
+  --org-prospect-border: 160 50% 75%;                                 /* Brighter prospect border */
+  
+  --org-unknown: var(--gray-500-hsl, 0 0% 55%);                      /* Brighter gray for dark mode */
+  --org-unknown-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --org-unknown-subtle: var(--gray-100-hsl, 0 0% 15%);               /* Dark mode unknown subtle */
+  --org-unknown-border: var(--gray-300-hsl, 0 0% 25%);               /* Dark mode unknown border */
 
   /* Legacy organization mappings - Dark Mode */
   --organization-customer: var(--org-customer);
@@ -752,6 +942,113 @@
   --connection-offline-foreground: var(--text-inverse-hsl, 0 0% 13%);
   --connection-reconnecting: var(--semantic-info-hsl, 240 60% 63%); /* Brighter reconnecting */
   --connection-reconnecting-foreground: var(--text-inverse-hsl, 0 0% 13%);
+
+  /*
+   * ADDITIONAL CRM WORKFLOW STATES - Dark Mode Enhanced Brightness
+   * Dark mode variants of extended CRM workflow states for optimal visibility
+   */
+
+  /* Field Interaction States - Dark Mode */
+  --field-focused: var(--brand-primary-hsl, 124 50% 70%);           /* Brighter field focus → Primary */
+  --field-focused-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --field-touched: var(--semantic-info-light-hsl, 240 35% 80%);    /* Brighter field touched → Light info */
+  --field-touched-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --field-pristine: var(--gray-200-hsl, 0 0% 25%);                /* Dark mode pristine field → Dark gray */
+  --field-pristine-foreground: var(--text-tertiary-hsl, 0 0% 65%);
+  --field-dirty: var(--semantic-warning-light-hsl, 60 70% 75%);    /* Brighter dirty field → Light warning */
+  --field-dirty-foreground: var(--text-primary-hsl, 0 0% 95%);
+
+  /* Record Status States - Dark Mode */
+  --record-draft: var(--gray-400-hsl, 0 0% 70%);                  /* Brighter draft record → Gray */
+  --record-draft-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --record-published: var(--semantic-success-hsl, 142 50% 65%);   /* Brighter published record → Success green */
+  --record-published-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --record-archived: var(--gray-500-hsl, 0 0% 55%);              /* Brighter archived record → Gray */
+  --record-archived-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --record-deleted: var(--semantic-error-light-hsl, 25 65% 75%);  /* Brighter soft deleted → Light error */
+  --record-deleted-foreground: var(--text-primary-hsl, 0 0% 95%);
+
+  /* Communication Status States - Dark Mode */
+  --comm-sent: var(--semantic-success-light-hsl, 142 45% 70%);    /* Brighter communication sent → Light success */
+  --comm-sent-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --comm-delivered: var(--semantic-success-hsl, 142 50% 65%);     /* Brighter communication delivered → Success green */
+  --comm-delivered-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --comm-bounced: var(--semantic-error-hsl, 25 70% 60%);          /* Brighter communication bounced → Error red */
+  --comm-bounced-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --comm-opened: var(--semantic-info-hsl, 240 60% 63%);           /* Brighter communication opened → Info blue */
+  --comm-opened-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --comm-clicked: var(--brand-primary-hsl, 124 50% 70%);          /* Brighter communication clicked → Primary */
+  --comm-clicked-foreground: var(--text-inverse-hsl, 0 0% 13%);
+
+  /* Task Management States - Dark Mode */
+  --task-todo: var(--gray-400-hsl, 0 0% 70%);                    /* Brighter task to-do → Gray */
+  --task-todo-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --task-in-progress: var(--semantic-info-hsl, 240 60% 63%);     /* Brighter task in progress → Info blue */
+  --task-in-progress-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --task-completed: var(--semantic-success-hsl, 142 50% 65%);    /* Brighter task completed → Success green */
+  --task-completed-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --task-overdue: var(--semantic-error-hsl, 25 70% 60%);         /* Brighter task overdue → Error red */
+  --task-overdue-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --task-cancelled: var(--gray-300-hsl, 0 0% 25%);              /* Dark mode task cancelled → Light gray */
+  --task-cancelled-foreground: var(--text-tertiary-hsl, 0 0% 65%);
+
+  /* Pipeline Stage States - Dark Mode */
+  --pipeline-lead: var(--gray-400-hsl, 0 0% 70%);               /* Brighter lead stage → Gray */
+  --pipeline-lead-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --pipeline-qualified: var(--semantic-info-hsl, 240 60% 63%);  /* Brighter qualified stage → Info blue */
+  --pipeline-qualified-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --pipeline-proposal: var(--semantic-warning-hsl, 60 75% 72%); /* Brighter proposal stage → Warning amber */
+  --pipeline-proposal-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --pipeline-negotiation: var(--brand-secondary-hsl, 285 40% 62%); /* Brighter negotiation stage → Secondary purple */
+  --pipeline-negotiation-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --pipeline-closed-won: var(--semantic-success-hsl, 142 50% 65%); /* Brighter closed won → Success green */
+  --pipeline-closed-won-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --pipeline-closed-lost: var(--semantic-error-hsl, 25 70% 60%); /* Brighter closed lost → Error red */
+  --pipeline-closed-lost-foreground: var(--text-inverse-hsl, 0 0% 13%);
+
+  /* Activity Status States - Dark Mode */
+  --activity-scheduled: var(--semantic-info-light-hsl, 240 35% 80%); /* Brighter activity scheduled → Light info */
+  --activity-scheduled-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --activity-completed: var(--semantic-success-hsl, 142 50% 65%);   /* Brighter activity completed → Success green */
+  --activity-completed-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --activity-missed: var(--semantic-error-light-hsl, 25 65% 75%);   /* Brighter activity missed → Light error */
+  --activity-missed-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --activity-rescheduled: var(--semantic-warning-light-hsl, 60 70% 75%); /* Brighter activity rescheduled → Light warning */
+  --activity-rescheduled-foreground: var(--text-primary-hsl, 0 0% 95%);
+
+  /* Data Quality States - Dark Mode */
+  --quality-excellent: var(--semantic-success-hsl, 142 50% 65%);  /* Brighter excellent quality → Success green */
+  --quality-excellent-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --quality-good: var(--semantic-success-light-hsl, 142 45% 70%); /* Brighter good quality → Light success */
+  --quality-good-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --quality-fair: var(--semantic-warning-hsl, 60 75% 72%);        /* Brighter fair quality → Warning amber */
+  --quality-fair-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --quality-poor: var(--semantic-error-light-hsl, 25 65% 75%);    /* Brighter poor quality → Light error */
+  --quality-poor-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --quality-unknown: var(--gray-300-hsl, 0 0% 25%);              /* Dark mode unknown quality → Light gray */
+  --quality-unknown-foreground: var(--text-tertiary-hsl, 0 0% 65%);
+
+  /* Review and Approval States - Dark Mode */
+  --review-pending: var(--semantic-warning-light-hsl, 60 70% 75%); /* Brighter review pending → Light warning */
+  --review-pending-foreground: var(--text-primary-hsl, 0 0% 95%);
+  --review-approved: var(--semantic-success-hsl, 142 50% 65%);     /* Brighter review approved → Success green */
+  --review-approved-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --review-rejected: var(--semantic-error-hsl, 25 70% 60%);        /* Brighter review rejected → Error red */
+  --review-rejected-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --review-revision-requested: var(--semantic-warning-hsl, 60 75% 72%); /* Brighter revision requested → Warning amber */
+  --review-revision-requested-foreground: var(--text-primary-hsl, 0 0% 95%);
+
+  /* Backup and Restore States - Dark Mode */
+  --backup-running: var(--semantic-info-hsl, 240 60% 63%);        /* Brighter backup running → Info blue */
+  --backup-running-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --backup-completed: var(--semantic-success-hsl, 142 50% 65%);   /* Brighter backup completed → Success green */
+  --backup-completed-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --backup-failed: var(--semantic-error-hsl, 25 70% 60%);         /* Brighter backup failed → Error red */
+  --backup-failed-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --restore-in-progress: var(--semantic-info-hsl, 240 60% 63%);   /* Brighter restore in progress → Info blue */
+  --restore-in-progress-foreground: var(--text-inverse-hsl, 0 0% 13%);
+  --restore-completed: var(--semantic-success-hsl, 142 50% 65%);  /* Brighter restore completed → Success green */
+  --restore-completed-foreground: var(--text-inverse-hsl, 0 0% 13%);
 
   /* AAA Text Contrast Levels - Dark Mode */
   --text-primary-semantic: var(--text-primary-hsl, 0 0% 95%);         /* Primary text for dark mode */

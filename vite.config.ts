@@ -2,13 +2,23 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
-import { createCssTreeShakingPlugin } from './scripts/optimize-css-variables.mjs'
+import { createCssTreeShakingPlugin } from './scripts/optimize-css-variables.js'
+// OKLCH converter plugin has completed its task - new token system is now active
+// import { oklchConverterPlugin } from './src/lib/build-plugins/oklch-converter.js'
 
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
+    // OKLCH to HSL conversion plugin - COMPLETED, no longer needed after atomic replacement
+    // oklchConverterPlugin({
+    //   inputFile: 'src/styles/tokens/primitives-new.css',
+    //   outputFile: 'src/styles/tokens/primitives.css',
+    //   watchMode: true,
+    //   enableCaching: true,
+    //   logLevel: mode === 'development' ? 'info' : 'info'
+    // }),
     visualizer({
       filename: 'dist/stats.html',
       open: true,
@@ -18,8 +28,12 @@ export default defineConfig(({ mode }) => ({
       mode,
       outputDir: 'dist/optimized-tokens',
       debug: mode === 'development',
-      // Preserve critical shadcn/ui variables in production
+      verbose: mode === 'development',
+      enableCaching: true,
+      parallelProcessing: true,
+      // Enhanced preservation list with new brand tokens
       preserveVariables: [
+        // Core shadcn/ui variables
         '--background',
         '--foreground',
         '--card',
@@ -39,7 +53,18 @@ export default defineConfig(({ mode }) => ({
         '--border',
         '--input',
         '--ring',
-        '--radius'
+        '--radius',
+        // Enhanced design system tokens
+        '--warning',
+        '--warning-foreground',
+        '--info',
+        '--info-foreground',
+        '--success',
+        '--success-foreground',
+        // Core brand tokens (always preserve for design consistency)
+        '--brand-primary',
+        '--brand-secondary',
+        '--brand-accent'
       ]
     })
   ],

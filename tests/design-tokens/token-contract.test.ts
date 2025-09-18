@@ -22,6 +22,10 @@ interface TokenContract {
   required: boolean
   deprecationDate?: string
   replacementToken?: string
+  overhaul?: {
+    shouldBeRemoved?: boolean  // MFB tokens should be removed
+    isNewBrandToken?: boolean  // New brand system tokens
+  }
 }
 
 interface TokenLayer {
@@ -31,18 +35,52 @@ interface TokenLayer {
   tokens: TokenContract[]
 }
 
-// Design token contract definitions
+// Design token contract definitions (updated for overhaul)
 const TOKEN_CONTRACTS: Record<string, TokenContract[]> = {
   primitive: [
-    // MFB Brand Colors (Primitives Layer)
-    { name: '--mfb-green', expectedValue: /^#[0-9a-fA-F]{6}$/, layer: 'primitive', required: true },
-    { name: '--mfb-green-hover', expectedValue: /^#[0-9a-fA-F]{6}$/, layer: 'primitive', required: true },
-    { name: '--mfb-green-focus', expectedValue: /^#[0-9a-fA-F]{6}$/, layer: 'primitive', required: true },
-    { name: '--mfb-green-active', expectedValue: /^#[0-9a-fA-F]{6}$/, layer: 'primitive', required: true },
-    { name: '--mfb-clay', expectedValue: /^#[0-9a-fA-F]{6}$/, layer: 'primitive', required: true },
-    { name: '--mfb-cream', expectedValue: /^#[0-9a-fA-F]{6}$/, layer: 'primitive', required: true },
-    { name: '--mfb-sage', expectedValue: /^#[0-9a-fA-F]{6}$/, layer: 'primitive', required: true },
-    { name: '--mfb-olive', expectedValue: /^#[0-9a-fA-F]{6}$/, layer: 'primitive', required: true },
+    // MFB Brand Colors (Legacy - should be removed in overhaul)
+    { name: '--mfb-green', expectedValue: /^#[0-9a-fA-F]{6}$/, layer: 'primitive', required: false, 
+      deprecationDate: '2025-01-01', replacementToken: '--brand-primary',
+      overhaul: { shouldBeRemoved: true } },
+    { name: '--mfb-green-hover', expectedValue: /^#[0-9a-fA-F]{6}$/, layer: 'primitive', required: false,
+      deprecationDate: '2025-01-01', replacementToken: '--brand-primary-hover',
+      overhaul: { shouldBeRemoved: true } },
+    { name: '--mfb-green-focus', expectedValue: /^#[0-9a-fA-F]{6}$/, layer: 'primitive', required: false,
+      deprecationDate: '2025-01-01', replacementToken: '--brand-primary-focus',
+      overhaul: { shouldBeRemoved: true } },
+    { name: '--mfb-green-active', expectedValue: /^#[0-9a-fA-F]{6}$/, layer: 'primitive', required: false,
+      deprecationDate: '2025-01-01', replacementToken: '--brand-primary-active',
+      overhaul: { shouldBeRemoved: true } },
+    { name: '--mfb-clay', expectedValue: /^#[0-9a-fA-F]{6}$/, layer: 'primitive', required: false,
+      deprecationDate: '2025-01-01', replacementToken: '--brand-secondary',
+      overhaul: { shouldBeRemoved: true } },
+    { name: '--mfb-cream', expectedValue: /^#[0-9a-fA-F]{6}$/, layer: 'primitive', required: false,
+      deprecationDate: '2025-01-01', replacementToken: '--brand-accent',
+      overhaul: { shouldBeRemoved: true } },
+    { name: '--mfb-sage', expectedValue: /^#[0-9a-fA-F]{6}$/, layer: 'primitive', required: false,
+      deprecationDate: '2025-01-01', replacementToken: '--brand-success',
+      overhaul: { shouldBeRemoved: true } },
+    { name: '--mfb-olive', expectedValue: /^#[0-9a-fA-F]{6}$/, layer: 'primitive', required: false,
+      deprecationDate: '2025-01-01', replacementToken: '--brand-warning',
+      overhaul: { shouldBeRemoved: true } },
+
+    // New Brand System (OKLCH-based)
+    { name: '--brand-primary', expectedValue: /^oklch\([0-9.]+\s+[0-9.]+\s+[0-9.]+\)$/, layer: 'primitive', required: true,
+      overhaul: { isNewBrandToken: true } },
+    { name: '--brand-primary-hover', expectedValue: /^oklch\([0-9.]+\s+[0-9.]+\s+[0-9.]+\)$/, layer: 'primitive', required: true,
+      overhaul: { isNewBrandToken: true } },
+    { name: '--brand-primary-focus', expectedValue: /^oklch\([0-9.]+\s+[0-9.]+\s+[0-9.]+\)$/, layer: 'primitive', required: true,
+      overhaul: { isNewBrandToken: true } },
+    { name: '--brand-secondary', expectedValue: /^oklch\([0-9.]+\s+[0-9.]+\s+[0-9.]+\)$/, layer: 'primitive', required: true,
+      overhaul: { isNewBrandToken: true } },
+    { name: '--brand-accent', expectedValue: /^oklch\([0-9.]+\s+[0-9.]+\s+[0-9.]+\)$/, layer: 'primitive', required: true,
+      overhaul: { isNewBrandToken: true } },
+    { name: '--brand-success', expectedValue: /^oklch\([0-9.]+\s+[0-9.]+\s+[0-9.]+\)$/, layer: 'primitive', required: true,
+      overhaul: { isNewBrandToken: true } },
+    { name: '--brand-warning', expectedValue: /^oklch\([0-9.]+\s+[0-9.]+\s+[0-9.]+\)$/, layer: 'primitive', required: true,
+      overhaul: { isNewBrandToken: true } },
+    { name: '--brand-error', expectedValue: /^oklch\([0-9.]+\s+[0-9.]+\s+[0-9.]+\)$/, layer: 'primitive', required: true,
+      overhaul: { isNewBrandToken: true } },
 
     // Base Spacing (Primitives Layer)
     { name: '--spacing-xs', expectedValue: /^\d+(\.\d+)?(px|rem)$/, layer: 'primitive', required: true },
@@ -70,17 +108,43 @@ const TOKEN_CONTRACTS: Record<string, TokenContract[]> = {
   ],
 
   semantic: [
-    // Core Semantic Tokens (must reference primitives)
-    { name: '--color-primary', expectedValue: /^var\(--mfb-green\)$/, layer: 'semantic', required: true },
-    { name: '--color-primary-hover', expectedValue: /^var\(--mfb-green-hover\)$/, layer: 'semantic', required: true },
-    { name: '--color-primary-focus', expectedValue: /^var\(--mfb-green-focus\)$/, layer: 'semantic', required: true },
-    { name: '--color-primary-active', expectedValue: /^var\(--mfb-green-active\)$/, layer: 'semantic', required: true },
+    // Core Semantic Tokens (updated for new brand system)
+    { name: '--primary', expectedValue: /^var\(--brand-primary\)$/, layer: 'semantic', required: true,
+      overhaul: { isNewBrandToken: true } },
+    { name: '--primary-hover', expectedValue: /^var\(--brand-primary-hover\)$/, layer: 'semantic', required: true,
+      overhaul: { isNewBrandToken: true } },
+    { name: '--primary-focus', expectedValue: /^var\(--brand-primary-focus\)$/, layer: 'semantic', required: true,
+      overhaul: { isNewBrandToken: true } },
+    { name: '--secondary', expectedValue: /^var\(--brand-secondary\)$/, layer: 'semantic', required: true,
+      overhaul: { isNewBrandToken: true } },
 
-    // Status Colors (must reference primitives)
-    { name: '--color-success', expectedValue: /^var\(--\w+-\w+\)$/, layer: 'semantic', required: true },
-    { name: '--color-warning', expectedValue: /^var\(--\w+-\w+\)$/, layer: 'semantic', required: true },
-    { name: '--color-destructive', expectedValue: /^var\(--\w+-\w+\)$/, layer: 'semantic', required: true },
-    { name: '--color-info', expectedValue: /^var\(--\w+-\w+\)$/, layer: 'semantic', required: true },
+    // Legacy semantic tokens (should reference new brand tokens after migration)
+    { name: '--color-primary', expectedValue: /^var\(--(brand-primary|mfb-green)\)$/, layer: 'semantic', required: false,
+      deprecationDate: '2025-01-01', replacementToken: '--primary' },
+    { name: '--color-primary-hover', expectedValue: /^var\(--(brand-primary-hover|mfb-green-hover)\)$/, layer: 'semantic', required: false,
+      deprecationDate: '2025-01-01', replacementToken: '--primary-hover' },
+    { name: '--color-primary-focus', expectedValue: /^var\(--(brand-primary-focus|mfb-green-focus)\)$/, layer: 'semantic', required: false,
+      deprecationDate: '2025-01-01', replacementToken: '--primary-focus' },
+
+    // Status Colors (updated for new brand system)
+    { name: '--success', expectedValue: /^var\(--brand-success\)$/, layer: 'semantic', required: true,
+      overhaul: { isNewBrandToken: true } },
+    { name: '--warning', expectedValue: /^var\(--brand-warning\)$/, layer: 'semantic', required: true,
+      overhaul: { isNewBrandToken: true } },
+    { name: '--destructive', expectedValue: /^var\(--brand-error\)$/, layer: 'semantic', required: true,
+      overhaul: { isNewBrandToken: true } },
+    { name: '--info', expectedValue: /^var\(--brand-accent\)$/, layer: 'semantic', required: true,
+      overhaul: { isNewBrandToken: true } },
+
+    // Legacy status colors
+    { name: '--color-success', expectedValue: /^var\(--(brand-success|\w+-\w+)\)$/, layer: 'semantic', required: false,
+      deprecationDate: '2025-01-01', replacementToken: '--success' },
+    { name: '--color-warning', expectedValue: /^var\(--(brand-warning|\w+-\w+)\)$/, layer: 'semantic', required: false,
+      deprecationDate: '2025-01-01', replacementToken: '--warning' },
+    { name: '--color-destructive', expectedValue: /^var\(--(brand-error|\w+-\w+)\)$/, layer: 'semantic', required: false,
+      deprecationDate: '2025-01-01', replacementToken: '--destructive' },
+    { name: '--color-info', expectedValue: /^var\(--(brand-accent|\w+-\w+)\)$/, layer: 'semantic', required: false,
+      deprecationDate: '2025-01-01', replacementToken: '--info' },
 
     // Background Semantics
     { name: '--color-background', expectedValue: /^var\(--\w+-\w+\)$/, layer: 'semantic', required: true },
@@ -114,7 +178,7 @@ const TOKEN_CONTRACTS: Record<string, TokenContract[]> = {
 
 }
 
-// Token layer hierarchy definition (2-layer simplified architecture)
+// Token layer hierarchy definition (2-layer simplified architecture with overhaul support)
 const TOKEN_LAYERS: TokenLayer[] = [
   {
     name: 'primitives',
@@ -123,10 +187,22 @@ const TOKEN_LAYERS: TokenLayer[] = [
     tokens: TOKEN_CONTRACTS.primitive
   },
   {
+    name: 'primitives-new',
+    file: 'src/styles/tokens/primitives-new.css',
+    dependencies: [],
+    tokens: TOKEN_CONTRACTS.primitive.filter(t => t.overhaul?.isNewBrandToken)
+  },
+  {
     name: 'semantic',
     file: 'src/styles/tokens/semantic.css',
     dependencies: ['primitives'],
     tokens: TOKEN_CONTRACTS.semantic
+  },
+  {
+    name: 'semantic-new',
+    file: 'src/styles/tokens/semantic-new.css',
+    dependencies: ['primitives-new'],
+    tokens: TOKEN_CONTRACTS.semantic.filter(t => t.overhaul?.isNewBrandToken)
   }
 ]
 
@@ -369,65 +445,92 @@ describe('Token Contract Tests', () => {
     })
   })
 
-  describe('MFB Brand Token Cleanup Validation', () => {
+  describe('Design Token System Overhaul Validation', () => {
     it('should confirm MFB brand tokens are completely removed', () => {
-      const primitiveTokens = extractedTokens.primitives
+      const allLayerTokens = Object.values(extractedTokens).reduce((acc, layerTokens) => {
+        return { ...acc, ...layerTokens }
+      }, {})
 
-      // These MFB tokens should no longer exist
-      const legacyMFBTokens = [
-        '--mfb-green',
-        '--mfb-clay',
-        '--mfb-cream',
-        '--mfb-sage',
-        '--mfb-olive',
-        '--mfb-green-hover',
-        '--mfb-green-focus',
-        '--mfb-green-active'
-      ]
+      // Check for MFB tokens that should be removed
+      const mfbTokensToRemove = TOKEN_CONTRACTS.primitive
+        .filter(contract => contract.overhaul?.shouldBeRemoved)
+        .map(contract => contract.name)
 
-      const remainingMFBTokens = legacyMFBTokens.filter(tokenName =>
-        primitiveTokens[tokenName] !== undefined
+      const foundMFBTokens = mfbTokensToRemove.filter(tokenName =>
+        allLayerTokens[tokenName] !== undefined
       )
 
-      expect(remainingMFBTokens.length).toBe(0,
-        `Found ${remainingMFBTokens.length} legacy MFB tokens that should be removed: ${remainingMFBTokens.join(', ')}`
+      // Also check for any MFB references in token values
+      const mfbReferences: Array<{ token: string; value: string }> = []
+      Object.entries(allLayerTokens).forEach(([tokenName, tokenValue]) => {
+        if (tokenValue.includes('--mfb-')) {
+          mfbReferences.push({ token: tokenName, value: tokenValue })
+        }
+      })
+
+      expect(foundMFBTokens.length).toBe(0,
+        `Found ${foundMFBTokens.length} legacy MFB tokens that should be removed: ${foundMFBTokens.join(', ')}`
       )
 
-      if (remainingMFBTokens.length === 0) {
-        console.log('✅ MFB token cleanup complete - all legacy tokens removed')
+      expect(mfbReferences.length).toBe(0,
+        `Found ${mfbReferences.length} MFB references in token values: ${mfbReferences.map(r => `${r.token}=${r.value}`).join(', ')}`
+      )
+
+      if (foundMFBTokens.length === 0 && mfbReferences.length === 0) {
+        console.log('✅ MFB token cleanup complete - all legacy tokens and references removed')
       } else {
-        console.error('❌ MFB token cleanup incomplete:', remainingMFBTokens)
+        console.error('❌ MFB token cleanup incomplete:', { foundMFBTokens, mfbReferences })
       }
     })
 
     it('should validate new brand color system is implemented', () => {
-      const primitiveTokens = extractedTokens.primitives
+      // Check both current and new primitive files
+      const allPrimitiveTokens = {
+        ...extractedTokens.primitives,
+        ...extractedTokens['primitives-new']
+      }
 
-      // Check for new brand token structure
-      const expectedNewTokens = [
-        '--brand-primary',
-        '--brand-primary-hover',
-        '--brand-primary-focus',
-        '--brand-success',
-        '--brand-warning',
-        '--brand-error'
-      ]
+      // Get expected new brand tokens from contracts
+      const expectedNewTokens = TOKEN_CONTRACTS.primitive
+        .filter(contract => contract.overhaul?.isNewBrandToken)
+        .map(contract => contract.name)
 
       const foundNewTokens = expectedNewTokens.filter(tokenName =>
-        primitiveTokens[tokenName] !== undefined
+        allPrimitiveTokens[tokenName] !== undefined
       )
 
-      console.log(`Found ${foundNewTokens.length}/${expectedNewTokens.length} new brand tokens`)
+      console.log(`🎨 Found ${foundNewTokens.length}/${expectedNewTokens.length} new brand tokens`)
 
-      // Allow gradual implementation
-      if (foundNewTokens.length >= expectedNewTokens.length * 0.5) {
-        console.log('✅ New brand system implementation in progress')
+      // Validate OKLCH format for found tokens
+      let oklchTokens = 0
+      foundNewTokens.forEach(tokenName => {
+        const tokenValue = allPrimitiveTokens[tokenName]
+        if (tokenValue?.includes('oklch(')) {
+          oklchTokens++
+          console.log(`✅ ${tokenName}: ${tokenValue} (OKLCH format)`)
+        } else {
+          console.warn(`⚠️ ${tokenName}: ${tokenValue} (not OKLCH format)`)
+        }
+      })
+
+      // Track progress but allow gradual implementation
+      const implementationProgress = foundNewTokens.length / expectedNewTokens.length
+      
+      if (implementationProgress >= 0.8) {
+        console.log('✅ New brand system implementation nearly complete')
+      } else if (implementationProgress >= 0.5) {
+        console.log('🔄 New brand system implementation in progress')
+      } else if (implementationProgress > 0) {
+        console.warn('⚠️ New brand system implementation started but needs more work')
       } else {
-        console.warn('⚠️ New brand system implementation not yet started')
+        console.warn('❌ New brand system implementation not yet started')
       }
 
       // Don't fail test during transition, just track progress
       expect(foundNewTokens.length).toBeGreaterThanOrEqual(0)
+      
+      console.log(`📊 Brand system progress: ${Math.round(implementationProgress * 100)}%`)
+      console.log(`🎨 OKLCH compliance: ${oklchTokens}/${foundNewTokens.length} tokens`)
     })
 
     it('should validate new brand tokens replace MFB mappings', () => {
@@ -507,40 +610,67 @@ describe('Token Contract Tests', () => {
     })
   })
 
-  describe('Colorblind Accessibility Contract', () => {
-    it('should validate colorblind-friendly token existence', () => {
-      const semanticTokens = extractedTokens.semantic
+  describe('Enhanced Colorblind Accessibility Contract', () => {
+    it('should validate comprehensive colorblind-friendly token system', () => {
+      // Check all semantic layers for colorblind tokens
+      const allSemanticTokens = {
+        ...extractedTokens.semantic,
+        ...extractedTokens['semantic-new']
+      }
 
       // Check for colorblind-friendly token patterns
-      const colorblindTokens = Object.keys(semanticTokens).filter(token =>
+      const colorblindTokens = Object.keys(allSemanticTokens).filter(token =>
         token.includes('--cb-') ||
         token.includes('colorblind') ||
         token.includes('accessible')
       )
 
-      // Expected colorblind token categories
-      const expectedColorblindCategories = [
-        'cb-success',
-        'cb-warning',
-        'cb-error',
-        'cb-info'
+      // Enhanced colorblind token requirements
+      const expectedColorblindTokens = [
+        '--cb-success-bg',
+        '--cb-success-text',
+        '--cb-warning-bg',
+        '--cb-warning-text',
+        '--cb-error-bg',
+        '--cb-error-text',
+        '--cb-info-bg',
+        '--cb-info-text'
       ]
 
-      let foundCategories = 0
-      expectedColorblindCategories.forEach(category => {
-        const hasCategory = colorblindTokens.some(token => token.includes(category))
-        if (hasCategory) {
-          foundCategories++
-          console.log(`✅ Found colorblind tokens for: ${category}`)
+      let foundTokens = 0
+      const missingTokens: string[] = []
+      
+      expectedColorblindTokens.forEach(expectedToken => {
+        if (colorblindTokens.includes(expectedToken)) {
+          foundTokens++
+          console.log(`✅ Found colorblind token: ${expectedToken}`)
         } else {
-          console.warn(`⚠️ Missing colorblind tokens for: ${category}`)
+          missingTokens.push(expectedToken)
+          console.warn(`⚠️ Missing colorblind token: ${expectedToken}`)
         }
       })
 
-      // Track but don't fail during implementation
-      expect(foundCategories).toBeGreaterThanOrEqual(0)
+      // Calculate coverage
+      const coverage = foundTokens / expectedColorblindTokens.length
+      
+      if (coverage >= 0.8) {
+        console.log(`✅ Excellent colorblind accessibility coverage: ${Math.round(coverage * 100)}%`)
+      } else if (coverage >= 0.5) {
+        console.log(`🔄 Good colorblind accessibility coverage: ${Math.round(coverage * 100)}%`)
+      } else if (coverage > 0) {
+        console.warn(`⚠️ Basic colorblind accessibility coverage: ${Math.round(coverage * 100)}%`)
+      } else {
+        console.error(`❌ No colorblind accessibility tokens found`)
+      }
 
-      console.log(`Colorblind accessibility coverage: ${foundCategories}/${expectedColorblindCategories.length} categories`)
+      // Track but allow gradual implementation
+      expect(foundTokens).toBeGreaterThanOrEqual(0)
+
+      console.log(`🌈 Colorblind accessibility: ${foundTokens}/${expectedColorblindTokens.length} tokens (${Math.round(coverage * 100)}%)`)
+      
+      if (missingTokens.length > 0) {
+        console.log(`📝 Missing tokens: ${missingTokens.join(', ')}`)
+      }
     })
 
     it('should ensure zero MFB references across all token layers', () => {

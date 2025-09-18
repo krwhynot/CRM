@@ -1,17 +1,17 @@
 import { cva } from 'class-variance-authority'
 
 export const statusIndicatorVariants = cva(
-  'inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+  'inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--focus-ring))] focus:ring-offset-2',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-[hsl(var(--focus-ring-button))]',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        success: 'border border-success bg-success text-success-foreground hover:bg-success/90',
-        warning: 'border border-warning bg-warning text-warning-foreground hover:bg-warning/90',
-        info: 'border border-info bg-info text-info-foreground hover:bg-info/90',
+        success: 'border border-success bg-success text-success-foreground hover:bg-success/90 focus:ring-[hsl(var(--focus-ring-success))]',
+        warning: 'border border-warning bg-warning text-warning-foreground hover:bg-warning/90 focus:ring-[hsl(var(--focus-ring-warning))]',
+        info: 'border border-info bg-info text-info-foreground hover:bg-info/90 focus:ring-[hsl(var(--focus-ring-info))]',
         destructive:
-          'border border-destructive bg-destructive text-destructive-foreground hover:bg-destructive/90',
+          'border border-destructive bg-destructive text-destructive-foreground hover:bg-destructive/90 focus:ring-[hsl(var(--focus-ring-destructive))]',
         outline: 'border border-input text-foreground hover:bg-accent hover:text-accent-foreground',
         // CRM-specific workflow states
         'data-valid': 'border border-[hsl(var(--data-valid))] bg-[hsl(var(--data-valid))] text-[hsl(var(--data-valid-foreground))] hover:bg-[hsl(var(--data-valid))]/90',

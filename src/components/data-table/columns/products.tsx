@@ -44,7 +44,7 @@ interface ProductActions {
 // Helper component for empty cell display
 const EmptyCell = () => <span className="italic text-muted-foreground">Not provided</span>
 
-// Product badges component
+// Product badges component using enhanced semantic tokens
 const ProductBadges: React.FC<{
   category?: string
   price?: number | null

@@ -2,7 +2,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import * as React from 'react'
 
 export const badgeVariants = cva(
-  'inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+  'inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-[hsl(var(--focus-ring))] focus:ring-offset-2',
   {
     variants: {
       variant: {
@@ -18,13 +18,13 @@ export const badgeVariants = cva(
           'border-priority-critical bg-priority-critical bg-gradient-to-r from-priority-critical to-destructive text-priority-critical-foreground shadow-lg',
         high: 'border-priority-high bg-priority-high text-priority-high-foreground',
         medium: 'border-priority-medium bg-priority-medium text-priority-medium-foreground',
-        normal: 'border-priority-normal bg-priority-normal text-priority-normal-foreground',
+        normal: 'border-primary bg-primary text-primary-foreground',
         low: 'border-priority-low bg-priority-low text-priority-low-foreground',
         // Legacy priority mappings for backward compatibility
         'a-plus': 'border-priority-critical bg-priority-critical text-priority-critical-foreground shadow-lg',
         a: 'border-priority-high bg-priority-high text-priority-high-foreground',
         b: 'border-priority-medium bg-priority-medium text-priority-medium-foreground',
-        c: 'border-priority-normal bg-priority-normal text-priority-normal-foreground',
+        c: 'border-primary bg-primary text-primary-foreground',
         d: 'border-priority-low bg-priority-low text-priority-low-foreground',
         unassigned: 'border-muted bg-muted text-muted-foreground',
       },
@@ -63,6 +63,7 @@ export const badgeVariants = cva(
       },
     },
     compoundVariants: [
+      // Critical priority variants
       {
         priority: ['critical', 'a-plus'],
         orgType: 'customer',
@@ -70,16 +71,54 @@ export const badgeVariants = cva(
           'border-organization-customer bg-gradient-to-r from-organization-customer to-priority-critical text-white shadow-lg',
       },
       {
-        priority: ['critical', 'high', 'a-plus', 'a'],
+        priority: ['critical', 'a-plus'],
         orgType: 'distributor',
         className:
-          'border-organization-distributor bg-gradient-to-r from-organization-distributor to-priority-high text-white shadow-lg',
+          'border-organization-distributor bg-gradient-to-r from-organization-distributor to-priority-critical text-white shadow-lg',
       },
       {
         priority: ['critical', 'a-plus'],
         orgType: 'principal',
         className:
           'border-organization-principal bg-gradient-to-r from-organization-principal to-priority-critical text-white shadow-lg',
+      },
+      // High priority variants
+      {
+        priority: ['high', 'a'],
+        orgType: 'customer',
+        className:
+          'border-organization-customer bg-gradient-to-r from-organization-customer to-priority-high text-white shadow-md',
+      },
+      {
+        priority: ['high', 'a'],
+        orgType: 'distributor',
+        className:
+          'border-organization-distributor bg-gradient-to-r from-organization-distributor to-priority-high text-white shadow-md',
+      },
+      {
+        priority: ['high', 'a'],
+        orgType: 'principal',
+        className:
+          'border-organization-principal bg-gradient-to-r from-organization-principal to-priority-high text-white shadow-md',
+      },
+      // Medium priority variants
+      {
+        priority: ['medium', 'b'],
+        orgType: 'customer',
+        className:
+          'border-organization-customer bg-gradient-to-r from-organization-customer to-priority-medium text-primary',
+      },
+      {
+        priority: ['medium', 'b'],
+        orgType: 'distributor',
+        className:
+          'border-organization-distributor bg-gradient-to-r from-organization-distributor to-priority-medium text-primary',
+      },
+      {
+        priority: ['medium', 'b'],
+        orgType: 'principal',
+        className:
+          'border-organization-principal bg-gradient-to-r from-organization-principal to-priority-medium text-primary',
       },
     ],
     defaultVariants: {
